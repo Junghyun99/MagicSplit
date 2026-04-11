@@ -1,0 +1,26 @@
+{
+    "stocks": [
+        {
+            "ticker": "AAPL",
+            "exchange": "NAS",
+            "buy_threshold_pct": -5.0,
+            "sell_threshold_pct": 10.0,
+            "buy_amount": 500,
+            "max_lots": 10,
+            "enabled": true
+        },
+        {
+            "ticker": "MSFT",
+            "exchange": "NAS",
+            "buy_threshold_pct": -5.0,
+            "sell_threshold_pct": 10.0,
+            "buy_amount": 500,
+            "max_lots": 10,
+            "enabled": true
+        }
+    ],
+    "global": {
+        "check_interval_minutes": 60,
+        "notification_enabled": true
+    }
+}

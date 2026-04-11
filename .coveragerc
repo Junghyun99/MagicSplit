@@ -1,0 +1,16 @@
+[run]
+source = src
+omit =
+    src/infra/broker/kis_base.py
+    src/infra/broker/kis_domestic.py
+    src/infra/broker/kis_http.py
+    src/infra/broker/kis_order_helpers.py
+    src/infra/broker/kis_overseas.py
+    src/infra/broker/kis_token_cache.py
+
+[report]
+exclude_lines =
+    pragma: no cover
+    raise NotImplementedError
+    if __name__ == .__main__.:
+    pass

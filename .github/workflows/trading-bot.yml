@@ -1,0 +1,45 @@
+name: MagicSplit Trading Bot
+
+on:
+  schedule:
+    # 한국 시간 기준 매시 정각 (UTC 기준)
+    # 미국 장 운영시간: 한국시간 23:30~06:00 (서머타임 22:30~05:00)
+    - cron: '0 14-21 * * 1-5'  # UTC 14:00~21:00 = KST 23:00~06:00 (월~금)
+  workflow_dispatch:  # 수동 실행 허용
+
+jobs:
+  trade:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v3
+      with:
+        python-version: "3.10"
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Run MagicSplit Bot
+      env:
+        ACCOUNTS_CONFIG_PATH: accounts.yaml
+        CONFIG_JSON_PATH: config.json
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        # 계정별 KIS API 시크릿 (accounts.yaml의 kis_env_prefix에 맞춰 설정)
+        MY_ACCOUNT_KIS_APP_KEY: ${{ secrets.MY_ACCOUNT_KIS_APP_KEY }}
+        MY_ACCOUNT_KIS_APP_SECRET: ${{ secrets.MY_ACCOUNT_KIS_APP_SECRET }}
+        MY_ACCOUNT_KIS_ACC_NO: ${{ secrets.MY_ACCOUNT_KIS_ACC_NO }}
+      run: |
+        python src/main.py
+
+    - name: Commit updated data files
+      run: |
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+        git add docs/data/ || true
+        git diff --staged --quiet || git commit -m "Auto-update trading data [skip ci]"
+        git push || true
