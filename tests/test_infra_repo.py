@@ -16,8 +16,8 @@ class TestPositions:
     def test_save_and_load_positions(self, repo):
         """포지션 저장/로드 라운드트립"""
         lots = [
-            PositionLot("lot_001", "AAPL", 150.0, 5, "2026-04-01"),
-            PositionLot("lot_002", "MSFT", 300.0, 3, "2026-04-02"),
+            PositionLot("lot_001", "AAPL", 150.0, 5, "2026-04-01", level=1),
+            PositionLot("lot_002", "MSFT", 300.0, 3, "2026-04-02", level=1),
         ]
         repo.save_positions(lots)
         loaded = repo.load_positions()
@@ -27,7 +27,9 @@ class TestPositions:
         assert loaded[0].ticker == "AAPL"
         assert loaded[0].buy_price == 150.0
         assert loaded[0].quantity == 5
+        assert loaded[0].level == 1
         assert loaded[1].lot_id == "lot_002"
+        assert loaded[1].level == 1
 
     def test_load_empty_positions(self, repo):
         """파일이 없으면 빈 리스트"""
@@ -36,8 +38,8 @@ class TestPositions:
 
     def test_overwrite_positions(self, repo):
         """저장 시 기존 데이터 덮어쓰기"""
-        repo.save_positions([PositionLot("lot_001", "AAPL", 100.0, 5, "2026-04-01")])
-        repo.save_positions([PositionLot("lot_002", "MSFT", 200.0, 3, "2026-04-02")])
+        repo.save_positions([PositionLot("lot_001", "AAPL", 100.0, 5, "2026-04-01", level=1)])
+        repo.save_positions([PositionLot("lot_002", "MSFT", 200.0, 3, "2026-04-02", level=1)])
 
         loaded = repo.load_positions()
         assert len(loaded) == 1
@@ -85,7 +87,7 @@ class TestStatus:
     def test_update_and_get_status(self, repo):
         """상태 저장 및 마지막 실행일 조회"""
         portfolio = Portfolio(10000.0, {"AAPL": 5}, {"AAPL": 150.0})
-        positions = [PositionLot("lot_001", "AAPL", 140.0, 5, "2026-04-01")]
+        positions = [PositionLot("lot_001", "AAPL", 140.0, 5, "2026-04-01", level=1)]
 
         repo.update_status(portfolio, positions, "모니터링", sim_date="2026-04-10")
 
@@ -97,9 +99,9 @@ class TestStatus:
         assert repo.get_last_run_date() is None
 
     def test_status_contains_position_details(self, repo):
-        """상태에 포지션 상세 정보 포함"""
+        """상태에 포지션 상세 정보 포함 (level 포함)"""
         portfolio = Portfolio(10000.0, {"AAPL": 5}, {"AAPL": 160.0})
-        positions = [PositionLot("lot_001", "AAPL", 150.0, 5, "2026-04-01")]
+        positions = [PositionLot("lot_001", "AAPL", 150.0, 5, "2026-04-01", level=1)]
 
         repo.update_status(portfolio, positions, "test")
 
@@ -110,3 +112,20 @@ class TestStatus:
         # pct_change: (160-150)/150*100 = 6.67%
         lot_detail = data["positions"]["AAPL"]["lots"][0]
         assert lot_detail["pct_change"] == pytest.approx(6.67, abs=0.01)
+        assert lot_detail["level"] == 1
+
+    def test_load_legacy_positions_without_level(self, repo):
+        """레거시 positions.json (level 필드 없음) 정상 로드 및 마이그레이션"""
+        legacy_data = [
+            {"lot_id": "lot_001", "ticker": "AAPL", "buy_price": 100.0,
+             "quantity": 5, "buy_date": "2026-04-01"},
+            {"lot_id": "lot_002", "ticker": "AAPL", "buy_price": 95.0,
+             "quantity": 5, "buy_date": "2026-04-05"},
+        ]
+        with open(repo.positions_file, 'w') as f:
+            json.dump(legacy_data, f)
+
+        loaded = repo.load_positions()
+        assert len(loaded) == 2
+        assert loaded[0].level == 1
+        assert loaded[1].level == 2

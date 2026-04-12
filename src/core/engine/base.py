@@ -97,7 +97,7 @@ class MagicSplitEngine:
 
             # 3c. 포지션 즉시 반영 (다음 종목 판단에 영향)
             if executions:
-                positions = self._update_positions(positions, executions, today)
+                positions = self._update_positions(positions, signals, executions, today)
                 # 포트폴리오 갱신 (현금 잔고 변동 반영)
                 portfolio = self._refresh_portfolio(portfolio)
 
@@ -174,65 +174,63 @@ class MagicSplitEngine:
     def _update_positions(
         self,
         positions: List[PositionLot],
+        signals: List[SplitSignal],
         executions: List[TradeExecution],
         today: str,
     ) -> List[PositionLot]:
         """체결 결과를 반영하여 포지션을 업데이트한다.
 
-        - 매수 체결 → 새 lot 추가
-        - 매도 체결 → 해당 종목의 가장 오래된 lot부터 제거 (FIFO)
+        - 매수 체결 → 신호의 level로 새 lot 추가
+        - 매도 체결 → 신호의 lot_id로 해당 차수 lot 제거
         """
         updated = list(positions)
 
+        # 신호 매핑: (ticker, action) → signal
+        # 한 종목당 한 사이클에 하나의 신호만 발생하므로 unambiguous
+        signal_map = {}
+        for sig in signals:
+            signal_map[(sig.ticker, sig.action)] = sig
+
         for exe in executions:
             if exe.action == OrderAction.BUY:
-                # 새 lot 생성
-                lot_id = f"lot_{today.replace('-', '')}_{exe.ticker}_{len(updated):03d}"
+                sig = signal_map.get((exe.ticker, OrderAction.BUY))
+                level = sig.level if sig else 1
+                lot_id = f"lot_{today.replace('-', '')}_{exe.ticker}_{level:03d}"
                 new_lot = PositionLot(
                     lot_id=lot_id,
                     ticker=exe.ticker,
                     buy_price=exe.price,
                     quantity=exe.quantity,
                     buy_date=today,
+                    level=level,
                 )
                 updated.append(new_lot)
                 self.logger.info(
-                    f"[Position] New lot: {lot_id} "
+                    f"[Position] New lot: {lot_id} Lv{level} "
                     f"{exe.ticker} {exe.quantity}주 @${exe.price:.2f}"
                 )
 
             elif exe.action == OrderAction.SELL:
-                # 해당 종목의 가장 오래된 lot부터 제거 (FIFO)
-                remaining_qty = exe.quantity
-                to_remove = []
-                for lot in updated:
-                    if lot.ticker == exe.ticker and remaining_qty > 0:
-                        if lot.quantity <= remaining_qty:
-                            remaining_qty -= lot.quantity
-                            to_remove.append(lot)
-                            self.logger.info(
-                                f"[Position] Remove lot: {lot.lot_id} "
-                                f"({lot.quantity}주 전량 매도)"
-                            )
-                        else:
-                            lot_quantity_before = lot.quantity
-                            # 직접 수정하지 않고 새 객체로 교체
-                            idx = updated.index(lot)
-                            updated[idx] = PositionLot(
-                                lot_id=lot.lot_id,
-                                ticker=lot.ticker,
-                                buy_price=lot.buy_price,
-                                quantity=lot.quantity - remaining_qty,
-                                buy_date=lot.buy_date,
-                            )
-                            self.logger.info(
-                                f"[Position] Partial sell: {lot.lot_id} "
-                                f"{lot_quantity_before}주 → {updated[idx].quantity}주"
-                            )
-                            remaining_qty = 0
-
-                for lot in to_remove:
-                    updated.remove(lot)
+                sig = signal_map.get((exe.ticker, OrderAction.SELL))
+                if sig and sig.lot_id:
+                    # 신호에 지정된 lot_id로 제거
+                    target = [l for l in updated if l.lot_id == sig.lot_id]
+                    if target:
+                        updated.remove(target[0])
+                        self.logger.info(
+                            f"[Position] Remove lot: {sig.lot_id} Lv{sig.level} "
+                            f"({target[0].quantity}주 전량 매도)"
+                        )
+                else:
+                    # 폴백: 가장 높은 level lot 제거
+                    ticker_lots = [l for l in updated if l.ticker == exe.ticker]
+                    if ticker_lots:
+                        highest = max(ticker_lots, key=lambda l: l.level)
+                        updated.remove(highest)
+                        self.logger.info(
+                            f"[Position] Remove lot: {highest.lot_id} Lv{highest.level} "
+                            f"({highest.quantity}주 전량 매도)"
+                        )
 
         return updated
 

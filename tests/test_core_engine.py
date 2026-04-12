@@ -70,8 +70,6 @@ class TestEngineInit:
 class TestRunOneCycle:
     def test_full_cycle_no_signals(self, engine, mock_repo):
         """신호 없을 때 전체 사이클 정상 완료"""
-        # 현재가 100, 매수가 없음 (lot 없으면 초기 매수 발생)
-        # 하지만 mock_broker가 execute_orders를 빈 리스트로 반환
         result = engine.run_one_cycle(sim_date="2026-04-10")
 
         assert result.date == "2026-04-10"
@@ -94,12 +92,13 @@ class TestRunOneCycle:
         mock_repo.save_positions.assert_called_once()
         saved_positions = mock_repo.save_positions.call_args[0][0]
         assert len(saved_positions) == 1  # 새 lot 1개
+        assert saved_positions[0].level == 1  # 초기 매수 = Lv1
 
     def test_full_cycle_with_sell(self, engine, mock_broker, mock_repo):
         """익절 매도 시 전체 사이클"""
         # 기존 lot: 매수가 90, 현재가 100 → +11.1% (> 10% 임계치)
         mock_repo.load_positions.return_value = [
-            PositionLot("lot_001", "AAPL", 90.0, 5, "2026-04-01"),
+            PositionLot("lot_001", "AAPL", 90.0, 5, "2026-04-01", level=1),
         ]
 
         execution = TradeExecution(
@@ -115,62 +114,81 @@ class TestRunOneCycle:
 
 
 class TestUpdatePositions:
-    def test_buy_adds_new_lot(self, engine):
-        """매수 체결 → 새 lot 추가"""
+    def test_buy_adds_new_lot_with_level(self, engine):
+        """매수 체결 → level이 설정된 새 lot 추가"""
         positions = []
+        signals = [
+            SplitSignal("AAPL", None, OrderAction.BUY, 5, 100.0,
+                        "초기 매수 Lv1", 0.0, level=1),
+        ]
         executions = [
             TradeExecution("AAPL", OrderAction.BUY, 5, 100.0, 1.0,
                            "2026-04-10", ExecutionStatus.FILLED),
         ]
 
-        updated = engine._update_positions(positions, executions, "2026-04-10")
+        updated = engine._update_positions(positions, signals, executions, "2026-04-10")
 
         assert len(updated) == 1
         assert updated[0].ticker == "AAPL"
         assert updated[0].buy_price == 100.0
         assert updated[0].quantity == 5
+        assert updated[0].level == 1
 
-    def test_sell_removes_lot(self, engine):
-        """매도 체결 → lot 제거"""
+    def test_sell_removes_specific_lot(self, engine):
+        """매도 체결 → signal의 lot_id로 특정 lot 제거"""
         positions = [
-            PositionLot("lot_001", "AAPL", 90.0, 5, "2026-04-01"),
+            PositionLot("lot_001", "AAPL", 90.0, 5, "2026-04-01", level=1),
+        ]
+        signals = [
+            SplitSignal("AAPL", "lot_001", OrderAction.SELL, 5, 100.0,
+                        "Lv1 +11.1% → 익절", 11.1, level=1),
         ]
         executions = [
             TradeExecution("AAPL", OrderAction.SELL, 5, 100.0, 1.0,
                            "2026-04-10", ExecutionStatus.FILLED),
         ]
 
-        updated = engine._update_positions(positions, executions, "2026-04-10")
+        updated = engine._update_positions(positions, signals, executions, "2026-04-10")
         assert len(updated) == 0
 
-    def test_partial_sell(self, engine):
-        """부분 매도 → lot 수량 감소"""
+    def test_sell_removes_by_level_not_fifo(self, engine):
+        """매도는 FIFO가 아닌 마지막 차수(가장 높은 level) lot을 제거"""
         positions = [
-            PositionLot("lot_001", "AAPL", 90.0, 10, "2026-04-01"),
+            PositionLot("lot_001", "AAPL", 90.0, 3, "2026-04-01", level=1),
+            PositionLot("lot_002", "AAPL", 95.0, 5, "2026-04-05", level=2),
+        ]
+        signals = [
+            SplitSignal("AAPL", "lot_002", OrderAction.SELL, 5, 110.0,
+                        "Lv2 +15.8% → 익절", 15.8, level=2),
         ]
         executions = [
-            TradeExecution("AAPL", OrderAction.SELL, 3, 100.0, 1.0,
+            TradeExecution("AAPL", OrderAction.SELL, 5, 110.0, 1.0,
                            "2026-04-10", ExecutionStatus.FILLED),
         ]
 
-        updated = engine._update_positions(positions, executions, "2026-04-10")
-        assert len(updated) == 1
-        assert updated[0].quantity == 7
+        updated = engine._update_positions(positions, signals, executions, "2026-04-10")
 
-    def test_sell_fifo_order(self, engine):
-        """FIFO: 가장 오래된 lot부터 매도"""
+        assert len(updated) == 1
+        assert updated[0].lot_id == "lot_001"
+        assert updated[0].level == 1
+
+    def test_buy_adds_correct_level(self, engine):
+        """추가 매수 시 signal의 level이 새 lot에 반영"""
         positions = [
-            PositionLot("lot_001", "AAPL", 90.0, 3, "2026-04-01"),
-            PositionLot("lot_002", "AAPL", 95.0, 5, "2026-04-05"),
+            PositionLot("lot_001", "AAPL", 100.0, 5, "2026-04-01", level=1),
+        ]
+        signals = [
+            SplitSignal("AAPL", None, OrderAction.BUY, 5, 94.0,
+                        "추가 매수 Lv2", -6.0, level=2),
         ]
         executions = [
-            TradeExecution("AAPL", OrderAction.SELL, 5, 100.0, 1.0,
+            TradeExecution("AAPL", OrderAction.BUY, 5, 94.0, 1.0,
                            "2026-04-10", ExecutionStatus.FILLED),
         ]
 
-        updated = engine._update_positions(positions, executions, "2026-04-10")
+        updated = engine._update_positions(positions, signals, executions, "2026-04-10")
 
-        # lot_001(3주) 전량 + lot_002(2주) 부분 매도 = 5주
-        assert len(updated) == 1
-        assert updated[0].lot_id == "lot_002"
-        assert updated[0].quantity == 3  # 5 - 2 = 3
+        assert len(updated) == 2
+        new_lot = [l for l in updated if l.level == 2][0]
+        assert new_lot.buy_price == 94.0
+        assert new_lot.level == 2

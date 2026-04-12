@@ -41,8 +41,39 @@ class JsonRepository(IRepository):
                 buy_price=item["buy_price"],
                 quantity=item["quantity"],
                 buy_date=item["buy_date"],
+                level=item.get("level", 0),
             ))
+
+        # 레거시 마이그레이션: level=0인 lot에 순차 level 부여
+        if any(lot.level == 0 for lot in lots):
+            lots = self._migrate_legacy_levels(lots)
+
         return lots
+
+    @staticmethod
+    def _migrate_legacy_levels(lots: List[PositionLot]) -> List[PositionLot]:
+        """level=0인 레거시 lot에 buy_date 순으로 순차 level을 부여한다."""
+        by_ticker: dict = {}
+        for lot in lots:
+            by_ticker.setdefault(lot.ticker, []).append(lot)
+
+        result = []
+        for ticker, ticker_lots in by_ticker.items():
+            has_legacy = any(l.level == 0 for l in ticker_lots)
+            if has_legacy:
+                sorted_lots = sorted(ticker_lots, key=lambda l: (l.buy_date, l.lot_id))
+                for i, lot in enumerate(sorted_lots, start=1):
+                    result.append(PositionLot(
+                        lot_id=lot.lot_id,
+                        ticker=lot.ticker,
+                        buy_price=lot.buy_price,
+                        quantity=lot.quantity,
+                        buy_date=lot.buy_date,
+                        level=i,
+                    ))
+            else:
+                result.extend(ticker_lots)
+        return result
 
     def save_positions(self, lots: List[PositionLot]) -> None:
         """분할 포지션 목록을 저장한다."""
@@ -112,6 +143,7 @@ class JsonRepository(IRepository):
                 "buy_price": lot.buy_price,
                 "quantity": lot.quantity,
                 "buy_date": lot.buy_date,
+                "level": lot.level,
                 "current_price": current_price,
                 "pct_change": round(pct, 2),
             })
