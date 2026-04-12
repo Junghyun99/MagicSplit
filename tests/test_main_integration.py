@@ -20,8 +20,8 @@ def setup_bot(tmp_path):
     repo = JsonRepository(str(tmp_path))
     logger = MagicMock()
     rules = [
-        StockRule("AAPL", -5.0, 10.0, 500, 10),
-        StockRule("MSFT", -5.0, 10.0, 1000, 5),
+        StockRule("AAPL", -5.0, 10.0, 500, 100),
+        StockRule("MSFT", -5.0, 10.0, 1000, 100),
     ]
     engine = MagicSplitEngine(
         broker=broker,

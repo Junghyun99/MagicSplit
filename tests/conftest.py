@@ -27,6 +27,7 @@ def sample_lot():
         buy_price=100.0,
         quantity=5,
         buy_date="2026-04-01",
+        level=1,
     )
 
 
@@ -72,13 +73,14 @@ def create_rule():
 def create_lot():
     """원하는 값만 바꿔서 PositionLot을 만드는 팩토리"""
     def _create(lot_id="lot_001", ticker="AAPL", buy_price=100.0,
-                quantity=5, buy_date="2026-04-01"):
+                quantity=5, buy_date="2026-04-01", level=1):
         return PositionLot(
             lot_id=lot_id,
             ticker=ticker,
             buy_price=buy_price,
             quantity=quantity,
             buy_date=buy_date,
+            level=level,
         )
     return _create
 

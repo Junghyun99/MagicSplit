@@ -35,12 +35,19 @@ class TestPositionLot:
             buy_price=150.0,
             quantity=3,
             buy_date="2026-04-01",
+            level=1,
         )
         assert lot.lot_id == "lot_001"
         assert lot.ticker == "AAPL"
         assert lot.buy_price == 150.0
         assert lot.quantity == 3
         assert lot.buy_date == "2026-04-01"
+        assert lot.level == 1
+
+    def test_default_level(self):
+        """level 미지정 시 기본값 0 (레거시 호환)"""
+        lot = PositionLot("lot_001", "AAPL", 150.0, 3, "2026-04-01")
+        assert lot.level == 0
 
 
 class TestPortfolio:
@@ -101,11 +108,13 @@ class TestSplitSignal:
             action=OrderAction.BUY,
             quantity=5,
             price=95.0,
-            reason="초기 매수",
+            reason="초기 매수 Lv1",
             pct_change=0.0,
+            level=1,
         )
         assert sig.lot_id is None
         assert sig.action == OrderAction.BUY
+        assert sig.level == 1
 
     def test_sell_signal(self):
         sig = SplitSignal(
@@ -114,11 +123,18 @@ class TestSplitSignal:
             action=OrderAction.SELL,
             quantity=5,
             price=110.0,
-            reason="익절 +10.0%",
+            reason="Lv1 +10.0% → 익절",
             pct_change=10.0,
+            level=1,
         )
         assert sig.lot_id == "lot_001"
         assert sig.action == OrderAction.SELL
+        assert sig.level == 1
+
+    def test_default_level(self):
+        """level 미지정 시 기본값 0"""
+        sig = SplitSignal("AAPL", None, OrderAction.BUY, 5, 100.0, "test", 0.0)
+        assert sig.level == 0
 
 
 class TestOrderAction:

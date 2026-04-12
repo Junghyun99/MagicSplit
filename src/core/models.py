@@ -36,12 +36,13 @@ class StockRule:
 
 @dataclass
 class PositionLot:
-    """개별 분할 매수 건 (분할별 개별 관리)"""
+    """개별 분할 매수 건 (차수별 개별 관리)"""
     lot_id: str          # 고유 ID (예: "lot_20260410_001")
     ticker: str
     buy_price: float     # 매수 단가
     quantity: int        # 매수 수량
     buy_date: str        # 매수 일자
+    level: int = 0       # 차수 (1차, 2차, ..., 100차). 0 = 레거시 데이터
 
 
 @dataclass
@@ -86,8 +87,9 @@ class SplitSignal:
     action: OrderAction
     quantity: int
     price: float
-    reason: str             # 판단 사유 (예: "lot_001 +12.3% → 익절")
+    reason: str             # 판단 사유 (예: "Lv3 +12.3% → 익절")
     pct_change: float       # 매수가 대비 변동률
+    level: int = 0          # 대상 차수 (매도: 해당 lot 차수, 매수: 새로운 차수)
 
 
 @dataclass
