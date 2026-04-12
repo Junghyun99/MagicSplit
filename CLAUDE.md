@@ -17,10 +17,9 @@
 ## 프로젝트 구조
 ```
 src/
-├── main.py              # MagicSplitBot 진입점 (멀티 계정 지원)
-├── config.py            # 티커-거래소 매핑, 인프라 설정
+├── main.py              # MagicSplitBot 진입점 (단일 계좌, 국내/해외 독립 운용)
+├── config.py            # 티커-거래소 매핑, 인프라 설정, KIS 인증
 ├── strategy_config.py   # config.json 로더 → StockRule 리스트
-├── account_config.py    # accounts.yaml 로더
 ├── core/
 │   ├── engine/          # base (MagicSplitEngine), registry
 │   ├── logic/           # split_evaluator (분할 매수/매도 판단)
@@ -34,7 +33,6 @@ src/
 ├── utils/               # TradeLogger
 tests/                   # 테스트 (80% 커버리지 요구)
 docs/                    # 웹 대시보드 및 데이터 저장
-accounts.yaml            # 멀티 계정 설정 (accounts.yaml.example 참고)
 config.json              # 종목별 매매 규칙 (GitHub Pages UI에서 수정)
 ```
 
@@ -42,7 +40,9 @@ config.json              # 종목별 매매 규칙 (GitHub Pages UI에서 수정
 - Clean Architecture 패턴: core(도메인) → infra(인프라) 방향으로 의존
 - core/interfaces.py에 정의된 추상 인터페이스를 통해 의존성 주입
 - 엔진 레지스트리 패턴: `@register_engine` 데코레이터로 엔진 등록
-- 멀티 계정: accounts.yaml → AccountConfig → 계정별 엔진 인스턴스 생성
+- 단일 계좌: .env의 KIS 인증으로 국내/해외 브로커 각각 생성
+- 국내/해외 독립 운용: 별도 브로커, 저장소, 엔진 인스턴스로 완전 분리
+- 종목별 순차 실행: 평가 → 주문 → 포지션 반영 → 다음 종목
 
 ## 핵심 알고리즘 (MagicSplit)
 - 종목별 `config.json`에 정의된 매매 규칙(StockRule)에 따라 동작
@@ -50,20 +50,16 @@ config.json              # 종목별 매매 규칙 (GitHub Pages UI에서 수정
 - lot의 매수가 대비 현재가 % 변동으로 매수/매도 판단:
   - 하락 N% 이하 → 추가 매수 (max_lots 미만일 때)
   - 상승 M% 이상 → 매도 (익절)
+- 종목별 순차 실행: 한 종목 평가→주문→반영 후 다음 종목
 - 매도 주문을 먼저 실행한 후 매수 진행 (자금 부족 방지)
 
 ## 환경변수 (.env)
-- `ACCOUNTS_CONFIG_PATH` - accounts.yaml 경로 (기본값: "accounts.yaml")
-- `{PREFIX}_KIS_APP_KEY`, `{PREFIX}_KIS_APP_SECRET`, `{PREFIX}_KIS_ACC_NO` - 계정별 KIS API 인증
+- `KIS_APP_KEY` - KIS API 앱 키
+- `KIS_APP_SECRET` - KIS API 앱 시크릿
+- `KIS_ACC_NO` - KIS 계좌번호
+- `IS_LIVE` - 실거래 여부 ("true" / "false", 기본값: "false")
 - `SLACK_WEBHOOK_URL` - Slack 알림
-
-## 멀티 계정 설정 (accounts.yaml)
-각 계정 항목:
-- `id` - 계정 식별자
-- `market_type` - "domestic" 또는 "overseas"
-- `is_live` - 실거래 여부 (true/false)
-- `engine` - 사용할 엔진 이름 (레지스트리 키)
-- `kis_env_prefix` - 환경변수 prefix (예: "ACC1" → `ACC1_KIS_APP_KEY`)
+- `CONFIG_JSON_PATH` - config.json 경로 (기본값: "config.json")
 
 ## CI/CD
 GitHub Actions 워크플로우:
@@ -71,7 +67,7 @@ GitHub Actions 워크플로우:
 - `trading-bot.yml` - 크론 스케줄: 매매 봇 자동 실행
 
 ## 주의사항
-- .env 파일과 accounts.yaml은 절대 커밋하지 않을 것 (accounts.yaml.example 참고)
-- 실거래 여부는 accounts.yaml의 `is_live` 필드로 계정별 설정
+- .env 파일은 절대 커밋하지 않을 것
+- 실거래 여부는 .env의 `IS_LIVE` 필드로 설정
 - 매도 주문을 먼저 실행한 후 매수 진행 (자금 부족 방지)
 - 코드 편집할때는 반드시 파일을 먼저 읽어라

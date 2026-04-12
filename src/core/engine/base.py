@@ -21,12 +21,11 @@ from src.core.engine.registry import register_engine
 
 @register_engine(color="#1f77b4")
 class MagicSplitEngine:
-    """MagicSplit 매매 사이클 엔진 (Template Method 패턴).
+    """MagicSplit 매매 사이클 엔진.
 
-    run_one_cycle()이 전체 사이클의 뼈대(template)를 정의하며,
-    각 단계(Step 1~6)는 개별 메서드로 분리되어 서브클래스에서 오버라이드 가능하다.
+    run_one_cycle()이 전체 사이클의 뼈대를 정의한다.
+    종목별로 순차 실행: 평가 → 주문 → 포지션 반영 → 다음 종목.
 
-    main.py (실시간)에서 이 엔진을 사용한다.
     환경별 차이는 주입되는 구현체(broker, repo, notifier)가 담당하며,
     비즈니스 로직 자체는 단일 위치(이 클래스)에서만 관리된다.
     """
@@ -50,7 +49,9 @@ class MagicSplitEngine:
         self.is_live_trading = is_live_trading
 
     def run_one_cycle(self, sim_date: Optional[str] = None) -> DayResult:
-        """하루치 매매 사이클 전체를 실행한다 (Template Method).
+        """하루치 매매 사이클 전체를 실행한다.
+
+        종목별 순차 실행: 각 종목을 평가 → 주문 → 포지션 반영 후 다음 종목으로.
 
         Args:
             sim_date: 시뮬레이션 날짜 ("YYYY-MM-DD").
@@ -61,7 +62,7 @@ class MagicSplitEngine:
         """
         today = sim_date or datetime.now().strftime("%Y-%m-%d")
 
-        # Step 1: 포트폴리오 조회 + 실시간 가격
+        # Step 1: 포트폴리오 조회 + 실시간 가격 (전 종목 일괄)
         self.logger.info(">>> Step 1: Portfolio & Price Fetch")
         portfolio = self.get_portfolio()
         self.logger.info(
@@ -74,36 +75,52 @@ class MagicSplitEngine:
         positions = self.repo.load_positions()
         self.logger.info(f"Loaded {len(positions)} position lot(s)")
 
-        # Step 3: 종목별 매수/매도 신호 평가
-        self.logger.info(">>> Step 3: Evaluate Split Signals")
-        signals = self.evaluator.evaluate(
-            stock_rules=self.stock_rules,
-            positions=positions,
-            portfolio=portfolio,
-        )
-        self.logger.info(f"Generated {len(signals)} signal(s)")
+        # Step 3~5: 종목별 순차 실행
+        all_signals: List[SplitSignal] = []
+        all_executions: List[TradeExecution] = []
 
-        # Step 4: 주문 실행 (매도 우선)
-        self.logger.info(">>> Step 4: Execute Orders")
-        orders = self._signals_to_orders(signals)
-        executions, final_pf = self._execute_orders(orders, portfolio)
+        for rule in self.stock_rules:
+            self.logger.info(f">>> Processing {rule.ticker}")
 
-        # Step 5: 포지션 업데이트
-        self.logger.info(">>> Step 5: Update Positions")
-        updated_positions = self._update_positions(positions, executions, today)
+            # 3a. 해당 종목 신호 평가
+            signals = self.evaluator.evaluate_stock(rule, positions, portfolio)
+            all_signals.extend(signals)
 
-        # Step 6: 저장
+            if not signals:
+                self.logger.info(f"  [{rule.ticker}] 신호 없음. 스킵.")
+                continue
+
+            # 3b. 주문 실행
+            orders = self._signals_to_orders(signals)
+            executions = self._execute_stock_orders(orders)
+            all_executions.extend(executions)
+
+            # 3c. 포지션 즉시 반영 (다음 종목 판단에 영향)
+            if executions:
+                positions = self._update_positions(positions, executions, today)
+                # 포트폴리오 갱신 (현금 잔고 변동 반영)
+                portfolio = self._refresh_portfolio(portfolio)
+
+        # Step 6: 저장 (모든 종목 처리 후 1회)
         self.logger.info(">>> Step 6: Persist")
-        self._persist(final_pf, signals, executions, updated_positions,
+        final_pf = portfolio
+        self._persist(final_pf, all_signals, all_executions, positions,
                       sim_date=sim_date)
 
-        has_orders = len(executions) > 0
+        # 알림
+        if all_executions:
+            self._notify_message(f"Orders Executed. Count: {len(all_executions)}")
+        else:
+            self._notify_message(
+                f"모니터링 완료. 신호 없음 | ${portfolio.total_value:,.0f}"
+            )
+
         return DayResult(
             date=today,
-            signals=signals,
-            executions=executions,
+            signals=all_signals,
+            executions=all_executions,
             final_portfolio=final_pf,
-            has_orders=has_orders,
+            has_orders=len(all_executions) > 0,
         )
 
     # ── Overridable step methods ─────────────────────────────────
@@ -130,43 +147,29 @@ class MagicSplitEngine:
             ))
         return orders
 
-    def _execute_orders(
+    def _execute_stock_orders(
         self,
         orders: List[Order],
-        portfolio: Portfolio,
-    ) -> Tuple[List[TradeExecution], Portfolio]:
-        """Step 4: 주문을 실행한다 (매도 → 매수 순서)."""
-        executions: List[TradeExecution] = []
-        final_pf = portfolio
-
+    ) -> List[TradeExecution]:
+        """종목 단위 주문을 실행한다."""
         if not orders:
-            self.logger.info("No orders to execute.")
-            self._notify_message(
-                f"모니터링 완료. 신호 없음 | ${portfolio.total_value:,.0f}"
-            )
-            return executions, final_pf
-
+            return []
         self.logger.info(f"Executing {len(orders)} order(s)...")
         executions = self.broker.execute_orders(orders)
-
-        if executions:
-            self._notify_message(f"Orders Executed. Count: {len(executions)}")
-            if self.is_live_trading:
-                time.sleep(3)
-            final_pf = self.broker.get_portfolio()
-            # 실시간 가격 다시 반영
-            real_time_prices = self.broker.fetch_current_prices(self.all_tickers)
-            for ticker, price in real_time_prices.items():
-                if price > 0:
-                    final_pf.current_prices[ticker] = price
-            self.logger.info(
-                f"Updated Portfolio: Cash=${final_pf.total_cash:,.0f}, "
-                f"Value=${final_pf.total_value:,.0f}"
-            )
-        else:
+        if not executions:
             self._notify_alert("Orders sent but NO execution result returned.")
+        return executions
 
-        return executions, final_pf
+    def _refresh_portfolio(self, old_portfolio: Portfolio) -> Portfolio:
+        """종목 처리 후 포트폴리오(현금 잔고) 갱신."""
+        if self.is_live_trading:
+            time.sleep(3)
+        new_pf = self.broker.get_portfolio()
+        # 이미 조회한 가격 유지, 추가 API 호출 최소화
+        for ticker, price in old_portfolio.current_prices.items():
+            if ticker not in new_pf.current_prices or new_pf.current_prices[ticker] <= 0:
+                new_pf.current_prices[ticker] = price
+        return new_pf
 
     def _update_positions(
         self,
@@ -174,10 +177,10 @@ class MagicSplitEngine:
         executions: List[TradeExecution],
         today: str,
     ) -> List[PositionLot]:
-        """Step 5: 체결 결과를 반영하여 포지션을 업데이트한다.
+        """체결 결과를 반영하여 포지션을 업데이트한다.
 
         - 매수 체결 → 새 lot 추가
-        - 매도 체결 → 해당 lot 제거 (lot_id가 SplitSignal에서 지정됨)
+        - 매도 체결 → 해당 종목의 가장 오래된 lot부터 제거 (FIFO)
         """
         updated = list(positions)
 

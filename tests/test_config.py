@@ -6,11 +6,11 @@ from src.config import Config, TICKER_EXCHANGE_MAP, EXCHANGE_CODE_SHORT_TO_FULL
 class TestConfig:
     def test_default_values(self):
         config = Config()
-        assert config.ACCOUNTS_CONFIG_PATH == "accounts.yaml"
         assert config.DATA_PATH == "docs/data"
         assert config.LOG_PATH == "logs"
         assert config.CONFIG_JSON_PATH == "config.json"
         assert config.MAX_HISTORY_RECORDS == 100000
+        assert config.IS_LIVE is False
 
     def test_ticker_exchange_map(self):
         assert "AAPL" in TICKER_EXCHANGE_MAP

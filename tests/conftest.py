@@ -54,13 +54,15 @@ def empty_portfolio():
 def create_rule():
     """원하는 값만 바꿔서 StockRule을 만드는 팩토리"""
     def _create(ticker="AAPL", buy_pct=-5.0, sell_pct=10.0,
-                buy_amount=500, max_lots=10, enabled=True):
+                buy_amount=500, max_lots=10, market_type="overseas",
+                enabled=True):
         return StockRule(
             ticker=ticker,
             buy_threshold_pct=buy_pct,
             sell_threshold_pct=sell_pct,
             buy_amount=buy_amount,
             max_lots=max_lots,
+            market_type=market_type,
             enabled=enabled,
         )
     return _create

@@ -42,34 +42,50 @@ class SplitEvaluator:
             매수/매도 신호 리스트 (매도 신호가 먼저)
         """
         signals: List[SplitSignal] = []
-
         for rule in stock_rules:
-            if not rule.enabled:
-                continue
-
-            ticker_lots = [p for p in positions if p.ticker == rule.ticker]
-            current_price = portfolio.current_prices.get(rule.ticker, 0)
-
-            if current_price <= 0:
-                if self._logger:
-                    self._logger.warning(
-                        f"[{rule.ticker}] 현재가 조회 실패 (price={current_price}). 스킵."
-                    )
-                continue
-
-            # 1. 기존 lot별 매도 판단
-            sell_signals = self._evaluate_sells(rule, ticker_lots, current_price)
-            signals.extend(sell_signals)
-
-            # 2. 매수 판단 (초기 매수 또는 추가 매수)
-            buy_signal = self._evaluate_buy(rule, ticker_lots, current_price)
-            if buy_signal is not None:
-                signals.append(buy_signal)
+            signals.extend(self.evaluate_stock(rule, positions, portfolio))
 
         # 매도 신호를 먼저, 매수 신호를 나중에 (자금 확보 우선)
         sell_first = [s for s in signals if s.action == OrderAction.SELL]
         buy_later = [s for s in signals if s.action == OrderAction.BUY]
         return sell_first + buy_later
+
+    def evaluate_stock(
+        self,
+        rule: StockRule,
+        positions: List[PositionLot],
+        portfolio: Portfolio,
+    ) -> List[SplitSignal]:
+        """단일 종목에 대해 매수/매도 신호를 평가한다.
+
+        Returns:
+            매도 신호 → 매수 신호 순서의 리스트
+        """
+        if not rule.enabled:
+            return []
+
+        ticker_lots = [p for p in positions if p.ticker == rule.ticker]
+        current_price = portfolio.current_prices.get(rule.ticker, 0)
+
+        if current_price <= 0:
+            if self._logger:
+                self._logger.warning(
+                    f"[{rule.ticker}] 현재가 조회 실패 (price={current_price}). 스킵."
+                )
+            return []
+
+        signals: List[SplitSignal] = []
+
+        # 1. 기존 lot별 매도 판단
+        sell_signals = self._evaluate_sells(rule, ticker_lots, current_price)
+        signals.extend(sell_signals)
+
+        # 2. 매수 판단 (초기 매수 또는 추가 매수)
+        buy_signal = self._evaluate_buy(rule, ticker_lots, current_price)
+        if buy_signal is not None:
+            signals.append(buy_signal)
+
+        return signals
 
     def _evaluate_sells(
         self,

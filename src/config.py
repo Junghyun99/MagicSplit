@@ -28,8 +28,11 @@ EXCHANGE_CODE_SHORT_TO_FULL: dict[str, str] = {
 
 class Config:
     def __init__(self):
-        # 멀티 계좌 설정 파일 경로
-        self.ACCOUNTS_CONFIG_PATH = os.getenv("ACCOUNTS_CONFIG_PATH", "accounts.yaml")
+        # KIS 단일 계좌 인증
+        self.KIS_APP_KEY = os.getenv("KIS_APP_KEY", "")
+        self.KIS_APP_SECRET = os.getenv("KIS_APP_SECRET", "")
+        self.KIS_ACC_NO = os.getenv("KIS_ACC_NO", "")
+        self.IS_LIVE = os.getenv("IS_LIVE", "false").lower() == "true"
 
         # 알림
         self.SLACK_WEBHOOK_URL = os.getenv("SLACK_WEBHOOK_URL", "")
