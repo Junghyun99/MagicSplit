@@ -30,6 +30,7 @@ class StockRule:
     sell_threshold_pct: float   # 매수가 대비 +N% 이상 시 매도 (양수, 예: 10.0)
     buy_amount: float           # 1회 매수 금액 (원 or USD)
     max_lots: int               # 최대 분할 횟수
+    market_type: str = "overseas"  # "overseas" | "domestic"
     enabled: bool = True
 
 

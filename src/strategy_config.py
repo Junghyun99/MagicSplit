@@ -7,6 +7,7 @@ config.json 구조:
         {
             "ticker": "AAPL",
             "exchange": "NAS",
+            "market_type": "overseas",
             "buy_threshold_pct": -5.0,
             "sell_threshold_pct": 10.0,
             "buy_amount": 500,
@@ -41,6 +42,10 @@ class StrategyConfig:
         self.global_config: dict = {}
         self._load()
 
+    def get_rules_by_market(self, market_type: str) -> List[StockRule]:
+        """지정된 market_type에 해당하는 규칙만 반환한다."""
+        return [r for r in self.rules if r.market_type == market_type]
+
     def _load(self):
         if not os.path.exists(self.config_path):
             raise FileNotFoundError(
@@ -67,12 +72,20 @@ class StrategyConfig:
             if exchange and ticker not in TICKER_EXCHANGE_MAP:
                 TICKER_EXCHANGE_MAP[ticker] = exchange
 
+            market_type = raw.get("market_type", "overseas")
+            if market_type not in ("overseas", "domestic"):
+                raise ValueError(
+                    f"{self.config_path}[{idx}]: market_type은 "
+                    f"'overseas' 또는 'domestic'이어야 합니다. got '{market_type}'"
+                )
+
             rule = StockRule(
                 ticker=ticker,
                 buy_threshold_pct=float(raw.get("buy_threshold_pct", -5.0)),
                 sell_threshold_pct=float(raw.get("sell_threshold_pct", 10.0)),
                 buy_amount=float(raw.get("buy_amount", 500)),
                 max_lots=int(raw.get("max_lots", 10)),
+                market_type=market_type,
                 enabled=bool(raw.get("enabled", True)),
             )
             self.rules.append(rule)
