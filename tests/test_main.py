@@ -85,16 +85,15 @@ class TestMagicSplitBot:
             notifier_cls.return_value = MagicMock()
 
             bot = MagicSplitBot()
-            assert len(bot.engines) == 1
-            market_type, engine = bot.engines[0]
-            assert market_type == "overseas"
+            assert bot.market_type == "overseas"
+            assert bot.engine is not None
 
             # run_one_cycle 자체는 엔진이 호출. 엔진을 목으로 갈아끼워 run() 검증
-            bot.engines[0] = ("overseas", MagicMock())
+            bot.engine = MagicMock()
             bot.run()
-            bot.engines[0][1].run_one_cycle.assert_called_once()
+            bot.engine.run_one_cycle.assert_called_once()
 
-    def test_run_market_failure_continues(self, bot_env):
+    def test_run_engine_failure_raises(self, bot_env):
         with patch("src.main.KisOverseasPaperBroker"), \
              patch("src.main.SlackNotifier") as notifier_cls:
             notifier_cls.return_value = MagicMock()
@@ -103,7 +102,7 @@ class TestMagicSplitBot:
             # 엔진이 예외를 던지도록 설정
             mock_engine = MagicMock()
             mock_engine.run_one_cycle.side_effect = RuntimeError("boom")
-            bot.engines[0] = ("overseas", mock_engine)
+            bot.engine = mock_engine
 
             with pytest.raises(RuntimeError, match="boom"):
                 bot.run()
