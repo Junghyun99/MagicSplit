@@ -57,9 +57,8 @@ class MagicSplitBot:
 
         # 2. 마켓별 엔진 생성 (config에 정의된 마켓만)
         self.engines: List[Tuple[str, MagicSplitEngine]] = []
-        market_types = sorted(set(r.market_type for r in self.strategy.rules))
 
-        for market_type in market_types:
+        for market_type in sorted(self.strategy.market_types):
             rules = [r for r in self.strategy.get_rules_by_market(market_type)
                      if r.enabled]
             if not rules:
