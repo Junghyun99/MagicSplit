@@ -1,7 +1,7 @@
 # src/core/interfaces.py
 from abc import ABC, abstractmethod
 from typing import List, Dict, Optional
-from src.core.models import Portfolio, Order, TradeExecution, PositionLot
+from src.core.models import Portfolio, Order, TradeExecution, PositionLot, SplitSignal
 
 
 class IBrokerAdapter(ABC):
@@ -43,6 +43,7 @@ class IRepository(ABC):
     @abstractmethod
     def save_trade_history(self, executions: List[TradeExecution],
                            portfolio: Portfolio, reason: str,
+                           signals: Optional[List[SplitSignal]] = None,
                            sim_date: Optional[str] = None) -> None:
         """매매 내역을 저장한다."""
         ...

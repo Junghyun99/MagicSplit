@@ -121,6 +121,7 @@ class SplitEvaluator:
                 reason=f"Lv{last_lot.level} {pct_change:+.1f}% → 익절",
                 pct_change=pct_change,
                 level=last_lot.level,
+                buy_price=last_lot.buy_price,
             )
         return None
 

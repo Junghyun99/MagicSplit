@@ -195,7 +195,8 @@ class MagicSplitEngine:
             if exe.action == OrderAction.BUY:
                 sig = signal_map.get((exe.ticker, OrderAction.BUY))
                 level = sig.level if sig else 1
-                lot_id = f"lot_{today.replace('-', '')}_{exe.ticker}_{level:03d}"
+                ts = datetime.now().strftime("%Y%m%d_%H%M%S")
+                lot_id = f"lot_{ts}_{exe.ticker}_{level:03d}"
                 new_lot = PositionLot(
                     lot_id=lot_id,
                     ticker=exe.ticker,
@@ -246,7 +247,8 @@ class MagicSplitEngine:
         reason = self._build_reason(signals)
 
         self.repo.save_positions(positions)
-        self.repo.save_trade_history(executions, portfolio, reason, sim_date=sim_date)
+        self.repo.save_trade_history(executions, portfolio, reason,
+                                        signals=signals, sim_date=sim_date)
         self.repo.update_status(portfolio, positions, reason, sim_date=sim_date)
 
     # ── Private helpers ──────────────────────────────────────────

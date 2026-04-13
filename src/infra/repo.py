@@ -6,7 +6,7 @@ from typing import List, Optional
 from dataclasses import asdict
 from datetime import datetime
 
-from src.core.models import PositionLot, Portfolio, TradeExecution
+from src.core.models import PositionLot, Portfolio, TradeExecution, SplitSignal, OrderAction
 from src.core.interfaces import IRepository
 
 
@@ -84,6 +84,7 @@ class JsonRepository(IRepository):
 
     def save_trade_history(self, executions: List[TradeExecution],
                            portfolio: Portfolio, reason: str,
+                           signals: Optional[List[SplitSignal]] = None,
                            sim_date: Optional[str] = None) -> None:
         """매매 내역 저장 (Append 방식)"""
         if not executions:
@@ -98,13 +99,33 @@ class JsonRepository(IRepository):
             date_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             tx_id = f"tx_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
 
+        # 신호 매핑: (ticker, action) → signal (손익 정보 enrichment용)
+        signal_map: dict = {}
+        if signals:
+            for sig in signals:
+                signal_map[(sig.ticker, sig.action)] = sig
+
+        enriched_execs = []
+        for e in executions:
+            rec = asdict(e)
+            sig = signal_map.get((e.ticker, OrderAction(e.action)))
+            if sig:
+                rec["lot_id"] = sig.lot_id
+                rec["level"] = sig.level
+                if sig.action == OrderAction.SELL and sig.buy_price > 0:
+                    rec["buy_price"] = sig.buy_price
+                    rec["realized_pnl"] = round(
+                        (e.price - sig.buy_price) * e.quantity - e.fee, 2
+                    )
+            enriched_execs.append(rec)
+
         record = {
             "id": tx_id,
             "date": date_str,
             "portfolio_value": portfolio.total_value,
             "total_trade_amount": trade_amt,
             "reason": reason,
-            "executions": [asdict(e) for e in executions],
+            "executions": enriched_execs,
         }
 
         data = self._load_json(self.history_file, default=[])
