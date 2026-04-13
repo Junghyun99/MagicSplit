@@ -23,7 +23,7 @@ config.json 구조:
 """
 import json
 import os
-from typing import List
+from typing import List, Set
 
 from src.core.models import StockRule
 from src.config import TICKER_EXCHANGE_MAP
@@ -39,6 +39,7 @@ class StrategyConfig:
     def __init__(self, config_path: str = "config.json"):
         self.config_path = config_path
         self.rules: List[StockRule] = []
+        self.market_types: Set[str] = set()
         self.global_config: dict = {}
         self._load()
 
@@ -89,3 +90,4 @@ class StrategyConfig:
                 enabled=bool(raw.get("enabled", True)),
             )
             self.rules.append(rule)
+            self.market_types.add(market_type)

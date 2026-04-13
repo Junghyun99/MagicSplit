@@ -79,27 +79,34 @@ class MagicSplitEngine:
         all_signals: List[SplitSignal] = []
         all_executions: List[TradeExecution] = []
 
+        failed_tickers: List[str] = []
+
         for rule in self.stock_rules:
-            self.logger.info(f">>> Processing {rule.ticker}")
+            try:
+                self.logger.info(f">>> Processing {rule.ticker}")
 
-            # 3a. 해당 종목 신호 평가
-            signals = self.evaluator.evaluate_stock(rule, positions, portfolio)
-            all_signals.extend(signals)
+                # 3a. 해당 종목 신호 평가
+                signals = self.evaluator.evaluate_stock(rule, positions, portfolio)
+                all_signals.extend(signals)
 
-            if not signals:
-                self.logger.info(f"  [{rule.ticker}] 신호 없음. 스킵.")
-                continue
+                if not signals:
+                    self.logger.info(f"  [{rule.ticker}] 신호 없음. 스킵.")
+                    continue
 
-            # 3b. 주문 실행
-            orders = self._signals_to_orders(signals)
-            executions = self._execute_stock_orders(orders)
-            all_executions.extend(executions)
+                # 3b. 주문 실행
+                orders = self._signals_to_orders(signals)
+                executions = self._execute_stock_orders(orders)
+                all_executions.extend(executions)
 
-            # 3c. 포지션 즉시 반영 (다음 종목 판단에 영향)
-            if executions:
-                positions = self._update_positions(positions, signals, executions, today)
-                # 포트폴리오 갱신 (현금 잔고 변동 반영)
-                portfolio = self._refresh_portfolio(portfolio)
+                # 3c. 포지션 즉시 반영 (다음 종목 판단에 영향)
+                if executions:
+                    positions = self._update_positions(positions, signals, executions, today)
+                    # 포트폴리오 갱신 (현금 잔고 변동 반영)
+                    portfolio = self._refresh_portfolio(portfolio)
+            except Exception as e:
+                self.logger.error(f"[{rule.ticker}] 처리 실패: {e}")
+                self._notify_alert(f"[{rule.ticker}] Error: {e}")
+                failed_tickers.append(rule.ticker)
 
         # Step 6: 저장 (모든 종목 처리 후 1회)
         self.logger.info(">>> Step 6: Persist")
@@ -108,11 +115,12 @@ class MagicSplitEngine:
                       sim_date=sim_date)
 
         # 알림
+        fail_suffix = f" (실패: {', '.join(failed_tickers)})" if failed_tickers else ""
         if all_executions:
-            self._notify_message(f"Orders Executed. Count: {len(all_executions)}")
+            self._notify_message(f"Orders Executed. Count: {len(all_executions)}{fail_suffix}")
         else:
             self._notify_message(
-                f"모니터링 완료. 신호 없음 | ${portfolio.total_value:,.0f}"
+                f"모니터링 완료. 신호 없음 | ${portfolio.total_value:,.0f}{fail_suffix}"
             )
 
         return DayResult(
