@@ -62,67 +62,94 @@ class MagicSplitEngine:
         """
         today = sim_date or datetime.now().strftime("%Y-%m-%d")
 
-        # Step 1: 포트폴리오 조회 + 실시간 가격 (전 종목 일괄)
-        self.logger.info(">>> Step 1: Portfolio & Price Fetch")
-        portfolio = self.get_portfolio()
-        self.logger.info(
-            f"Portfolio: Cash=${portfolio.total_cash:,.0f}, "
-            f"Value=${portfolio.total_value:,.0f}"
-        )
-
-        # Step 2: 기존 분할 포지션 로드
-        self.logger.info(">>> Step 2: Load Positions")
-        positions = self.repo.load_positions()
-        self.logger.info(f"Loaded {len(positions)} position lot(s)")
-
-        # Step 3~5: 종목별 순차 실행
         all_signals: List[SplitSignal] = []
         all_executions: List[TradeExecution] = []
-
         failed_tickers: List[str] = []
+        portfolio: Optional[Portfolio] = None
+        positions: List[PositionLot] = []
 
-        for rule in self.stock_rules:
-            try:
-                self.logger.info(f">>> Processing {rule.ticker}")
+        try:
+            # Step 1: 포트폴리오 조회 + 실시간 가격 (전 종목 일괄)
+            self.logger.info(">>> Step 1: Portfolio & Price Fetch")
+            portfolio = self.get_portfolio()
+            self.logger.info(
+                f"Portfolio: Cash=${portfolio.total_cash:,.0f}, "
+                f"Value=${portfolio.total_value:,.0f}"
+            )
 
-                # 3a. 해당 종목 신호 평가
-                signals = self.evaluator.evaluate_stock(rule, positions, portfolio)
-                all_signals.extend(signals)
+            # Step 2: 기존 분할 포지션 로드
+            self.logger.info(">>> Step 2: Load Positions")
+            positions = self.repo.load_positions()
+            self.logger.info(f"Loaded {len(positions)} position lot(s)")
 
-                if not signals:
-                    self.logger.info(f"  [{rule.ticker}] 신호 없음. 스킵.")
-                    continue
+            # Step 3~5: 종목별 순차 실행
+            for rule in self.stock_rules:
+                try:
+                    self.logger.info(f">>> Processing {rule.ticker}")
 
-                # 3b. 주문 실행
-                orders = self._signals_to_orders(signals)
-                executions = self._execute_stock_orders(orders)
-                all_executions.extend(executions)
+                    # 3a. 해당 종목 신호 평가
+                    signals = self.evaluator.evaluate_stock(rule, positions, portfolio)
+                    all_signals.extend(signals)
 
-                # 3c. 포지션 즉시 반영 (다음 종목 판단에 영향)
-                if executions:
-                    positions = self._update_positions(positions, signals, executions, today)
-                    # 포트폴리오 갱신 (현금 잔고 변동 반영)
-                    portfolio = self._refresh_portfolio(portfolio)
-            except Exception as e:
-                self.logger.error(f"[{rule.ticker}] 처리 실패: {e}")
-                self._notify_alert(f"[{rule.ticker}] Error: {e}")
-                failed_tickers.append(rule.ticker)
+                    if not signals:
+                        self.logger.info(f"  [{rule.ticker}] 신호 없음. 스킵.")
+                        continue
 
-        # Step 6: 저장 (모든 종목 처리 후 1회)
-        self.logger.info(">>> Step 6: Persist")
-        final_pf = portfolio
-        self._persist(final_pf, all_signals, all_executions, positions,
-                      sim_date=sim_date)
+                    # 3b. 주문 실행
+                    orders = self._signals_to_orders(signals)
+                    executions = self._execute_stock_orders(orders)
+                    all_executions.extend(executions)
+
+                    # 3c. 포지션 즉시 반영 (다음 종목 판단에 영향)
+                    if executions:
+                        try:
+                            positions = self._update_positions(
+                                positions, signals, executions, today,
+                            )
+                            portfolio = self._refresh_portfolio(portfolio)
+                        except Exception as e:
+                            self.logger.error(
+                                f"[{rule.ticker}] 포지션 반영 실패 "
+                                f"(체결은 완료됨): {e}"
+                            )
+                            self._notify_alert(
+                                f"[{rule.ticker}] 포지션 반영 실패 "
+                                f"(체결 {len(executions)}건 완료됨): {e}"
+                            )
+                            failed_tickers.append(rule.ticker)
+                except Exception as e:
+                    self.logger.error(f"[{rule.ticker}] 처리 실패: {e}")
+                    self._notify_alert(f"[{rule.ticker}] Error: {e}")
+                    failed_tickers.append(rule.ticker)
+
+        except Exception as e:
+            self.logger.error(f"사이클 초기화 실패: {e}")
+            self._notify_alert(f"Cycle init error: {e}")
+        finally:
+            # Step 6: 저장 — 포트폴리오가 있으면 항상 저장 시도
+            if portfolio is not None:
+                self.logger.info(">>> Step 6: Persist")
+                self._persist(portfolio, all_signals, all_executions, positions,
+                              sim_date=sim_date)
+            else:
+                self.logger.error(
+                    ">>> Step 6: 포트폴리오 조회 실패로 저장 생략"
+                )
 
         # 알림
         fail_suffix = f" (실패: {', '.join(failed_tickers)})" if failed_tickers else ""
         if all_executions:
             self._notify_message(f"Orders Executed. Count: {len(all_executions)}{fail_suffix}")
-        else:
+        elif portfolio is not None:
             self._notify_message(
                 f"모니터링 완료. 신호 없음 | ${portfolio.total_value:,.0f}{fail_suffix}"
             )
+        else:
+            self._notify_message(f"사이클 실패{fail_suffix}")
 
+        final_pf = portfolio or Portfolio(
+            total_cash=0, holdings={}, current_prices={},
+        )
         return DayResult(
             date=today,
             signals=all_signals,
