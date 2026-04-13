@@ -66,7 +66,7 @@ class MagicSplitEngine:
         all_executions: List[TradeExecution] = []
         failed_tickers: List[str] = []
         portfolio: Optional[Portfolio] = None
-        positions: List[PositionLot] = []
+        positions: Optional[List[PositionLot]] = None
 
         try:
             # Step 1: 포트폴리오 조회 + 실시간 가격 (전 종목 일괄)
@@ -126,14 +126,19 @@ class MagicSplitEngine:
             self.logger.error(f"사이클 초기화 실패: {e}")
             self._notify_alert(f"Cycle init error: {e}")
         finally:
-            # Step 6: 저장 — 포트폴리오가 있으면 항상 저장 시도
-            if portfolio is not None:
+            # Step 6: 저장 — 포트폴리오와 포지션 모두 정상 로드된 경우에만 저장
+            if portfolio is not None and positions is not None:
                 self.logger.info(">>> Step 6: Persist")
                 self._persist(portfolio, all_signals, all_executions, positions,
                               sim_date=sim_date)
             else:
+                missing = []
+                if portfolio is None:
+                    missing.append("포트폴리오")
+                if positions is None:
+                    missing.append("포지션")
                 self.logger.error(
-                    ">>> Step 6: 포트폴리오 조회 실패로 저장 생략"
+                    f">>> Step 6: {', '.join(missing)} 조회 실패로 저장 생략"
                 )
 
         # 알림
