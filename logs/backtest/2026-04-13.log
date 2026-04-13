@@ -1,0 +1,534 @@
+2026-04-13 15:09:28,984 [INFO] --- 데이터 다운로드: ['AAPL'] (2024-01-02 ~ 2024-01-15) ---
+2026-04-13 15:09:28,985 [INFO] --- 백테스트 시작 (10 거래일) ---
+2026-04-13 15:09:28,987 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-04-13 15:09:28,988 [INFO] Fetching real-time prices from Broker...
+2026-04-13 15:09:28,988 [INFO] Portfolio: Cash=$10,000, Value=$10,000
+2026-04-13 15:09:28,988 [INFO] >>> Step 2: Load Positions
+2026-04-13 15:09:28,989 [INFO] Loaded 0 position lot(s)
+2026-04-13 15:09:28,989 [INFO] >>> Processing AAPL
+2026-04-13 15:09:28,989 [INFO] [AAPL] 보유 lot 없음 → 초기 매수 Lv1 5주 @$100.00
+2026-04-13 15:09:28,989 [INFO] Executing 1 order(s)...
+2026-04-13 15:09:28,989 [INFO] [FILLED] BUY AAPL: 5 @ $100.10 (Fee: $1.25)
+2026-04-13 15:09:28,990 [INFO] [Position] New lot: lot_20260413_150928_AAPL_001 Lv1 AAPL 5주 @$100.10
+2026-04-13 15:09:28,990 [INFO] >>> Step 6: Persist
+2026-04-13 15:09:28,993 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-04-13 15:09:28,993 [INFO] Fetching real-time prices from Broker...
+2026-04-13 15:09:28,993 [INFO] Portfolio: Cash=$9,498, Value=$9,988
+2026-04-13 15:09:28,993 [INFO] >>> Step 2: Load Positions
+2026-04-13 15:09:28,994 [INFO] Loaded 1 position lot(s)
+2026-04-13 15:09:28,994 [INFO] >>> Processing AAPL
+2026-04-13 15:09:28,994 [INFO]   [AAPL] 신호 없음. 스킵.
+2026-04-13 15:09:28,994 [INFO] >>> Step 6: Persist
+2026-04-13 15:09:28,997 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-04-13 15:09:28,997 [INFO] Fetching real-time prices from Broker...
+2026-04-13 15:09:28,997 [INFO] Portfolio: Cash=$9,498, Value=$9,978
+2026-04-13 15:09:28,997 [INFO] >>> Step 2: Load Positions
+2026-04-13 15:09:28,998 [INFO] Loaded 1 position lot(s)
+2026-04-13 15:09:28,998 [INFO] >>> Processing AAPL
+2026-04-13 15:09:28,998 [INFO]   [AAPL] 신호 없음. 스킵.
+2026-04-13 15:09:28,998 [INFO] >>> Step 6: Persist
+2026-04-13 15:09:29,000 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-04-13 15:09:29,000 [INFO] Fetching real-time prices from Broker...
+2026-04-13 15:09:29,001 [INFO] Portfolio: Cash=$9,498, Value=$9,968
+2026-04-13 15:09:29,001 [INFO] >>> Step 2: Load Positions
+2026-04-13 15:09:29,001 [INFO] Loaded 1 position lot(s)
+2026-04-13 15:09:29,001 [INFO] >>> Processing AAPL
+2026-04-13 15:09:29,001 [INFO] [AAPL] Lv1 매수가 $100.10 대비 -6.1% → 추가 매수 Lv2 5주 @$94.00
+2026-04-13 15:09:29,002 [INFO] Executing 1 order(s)...
+2026-04-13 15:09:29,002 [INFO] [FILLED] BUY AAPL: 5 @ $94.09 (Fee: $1.18)
+2026-04-13 15:09:29,002 [INFO] [Position] New lot: lot_20260413_150929_AAPL_002 Lv2 AAPL 5주 @$94.09
+2026-04-13 15:09:29,002 [INFO] >>> Step 6: Persist
+2026-04-13 15:09:29,005 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-04-13 15:09:29,005 [INFO] Fetching real-time prices from Broker...
+2026-04-13 15:09:29,006 [INFO] Portfolio: Cash=$9,027, Value=$9,947
+2026-04-13 15:09:29,006 [INFO] >>> Step 2: Load Positions
+2026-04-13 15:09:29,006 [INFO] Loaded 2 position lot(s)
+2026-04-13 15:09:29,006 [INFO] >>> Processing AAPL
+2026-04-13 15:09:29,007 [INFO]   [AAPL] 신호 없음. 스킵.
+2026-04-13 15:09:29,007 [INFO] >>> Step 6: Persist
+2026-04-13 15:09:29,009 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-04-13 15:09:29,009 [INFO] Fetching real-time prices from Broker...
+2026-04-13 15:09:29,009 [INFO] Portfolio: Cash=$9,027, Value=$9,927
+2026-04-13 15:09:29,009 [INFO] >>> Step 2: Load Positions
+2026-04-13 15:09:29,010 [INFO] Loaded 2 position lot(s)
+2026-04-13 15:09:29,010 [INFO] >>> Processing AAPL
+2026-04-13 15:09:29,010 [INFO]   [AAPL] 신호 없음. 스킵.
+2026-04-13 15:09:29,010 [INFO] >>> Step 6: Persist
+2026-04-13 15:09:29,012 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-04-13 15:09:29,013 [INFO] Fetching real-time prices from Broker...
+2026-04-13 15:09:29,013 [INFO] Portfolio: Cash=$9,027, Value=$9,907
+2026-04-13 15:09:29,013 [INFO] >>> Step 2: Load Positions
+2026-04-13 15:09:29,014 [INFO] Loaded 2 position lot(s)
+2026-04-13 15:09:29,014 [INFO] >>> Processing AAPL
+2026-04-13 15:09:29,014 [INFO] [AAPL] Lv2 매수가 $94.09 대비 -6.5% → 추가 매수 Lv3 5주 @$88.00
+2026-04-13 15:09:29,014 [INFO] Executing 1 order(s)...
+2026-04-13 15:09:29,015 [INFO] [FILLED] BUY AAPL: 5 @ $88.09 (Fee: $1.10)
+2026-04-13 15:09:29,015 [INFO] [Position] New lot: lot_20260413_150929_AAPL_003 Lv3 AAPL 5주 @$88.09
+2026-04-13 15:09:29,015 [INFO] >>> Step 6: Persist
+2026-04-13 15:09:29,018 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-04-13 15:09:29,018 [INFO] Fetching real-time prices from Broker...
+2026-04-13 15:09:29,018 [INFO] Portfolio: Cash=$8,585, Value=$9,875
+2026-04-13 15:09:29,018 [INFO] >>> Step 2: Load Positions
+2026-04-13 15:09:29,019 [INFO] Loaded 3 position lot(s)
+2026-04-13 15:09:29,019 [INFO] >>> Processing AAPL
+2026-04-13 15:09:29,020 [INFO]   [AAPL] 신호 없음. 스킵.
+2026-04-13 15:09:29,020 [INFO] >>> Step 6: Persist
+2026-04-13 15:09:29,022 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-04-13 15:09:29,023 [INFO] Fetching real-time prices from Broker...
+2026-04-13 15:09:29,023 [INFO] Portfolio: Cash=$8,585, Value=$9,845
+2026-04-13 15:09:29,023 [INFO] >>> Step 2: Load Positions
+2026-04-13 15:09:29,024 [INFO] Loaded 3 position lot(s)
+2026-04-13 15:09:29,024 [INFO] >>> Processing AAPL
+2026-04-13 15:09:29,024 [INFO]   [AAPL] 신호 없음. 스킵.
+2026-04-13 15:09:29,024 [INFO] >>> Step 6: Persist
+2026-04-13 15:09:29,026 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-04-13 15:09:29,026 [INFO] Fetching real-time prices from Broker...
+2026-04-13 15:09:29,026 [INFO] Portfolio: Cash=$8,585, Value=$9,815
+2026-04-13 15:09:29,026 [INFO] >>> Step 2: Load Positions
+2026-04-13 15:09:29,027 [INFO] Loaded 3 position lot(s)
+2026-04-13 15:09:29,027 [INFO] >>> Processing AAPL
+2026-04-13 15:09:29,028 [INFO] [AAPL] Lv3 매수가 $88.09 대비 -6.9% → 추가 매수 Lv4 6주 @$82.00
+2026-04-13 15:09:29,028 [INFO] Executing 1 order(s)...
+2026-04-13 15:09:29,028 [INFO] [FILLED] BUY AAPL: 6 @ $82.08 (Fee: $1.23)
+2026-04-13 15:09:29,029 [INFO] [Position] New lot: lot_20260413_150929_AAPL_004 Lv4 AAPL 6주 @$82.08
+2026-04-13 15:09:29,029 [INFO] >>> Step 6: Persist
+2026-04-13 15:09:29,032 [INFO] --- 백테스트 완료 ---
+2026-04-13 15:09:29,032 [INFO] 최종: Cash=$8,091, Value=$9,813
+2026-04-13 15:09:29,040 [INFO] --- 데이터 다운로드: ['AAPL'] (2024-01-02 ~ 2024-01-08) ---
+2026-04-13 15:09:29,041 [INFO] --- 백테스트 시작 (5 거래일) ---
+2026-04-13 15:09:29,042 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-04-13 15:09:29,042 [INFO] Fetching real-time prices from Broker...
+2026-04-13 15:09:29,042 [INFO] Portfolio: Cash=$10,000, Value=$10,000
+2026-04-13 15:09:29,042 [INFO] >>> Step 2: Load Positions
+2026-04-13 15:09:29,043 [INFO] Loaded 0 position lot(s)
+2026-04-13 15:09:29,044 [INFO] >>> Processing AAPL
+2026-04-13 15:09:29,044 [INFO] [AAPL] 보유 lot 없음 → 초기 매수 Lv1 5주 @$100.00
+2026-04-13 15:09:29,044 [INFO] Executing 1 order(s)...
+2026-04-13 15:09:29,044 [INFO] [FILLED] BUY AAPL: 5 @ $100.10 (Fee: $1.25)
+2026-04-13 15:09:29,044 [INFO] [Position] New lot: lot_20260413_150929_AAPL_001 Lv1 AAPL 5주 @$100.10
+2026-04-13 15:09:29,044 [INFO] >>> Step 6: Persist
+2026-04-13 15:09:29,047 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-04-13 15:09:29,047 [INFO] Fetching real-time prices from Broker...
+2026-04-13 15:09:29,047 [INFO] Portfolio: Cash=$9,498, Value=$9,998
+2026-04-13 15:09:29,048 [INFO] >>> Step 2: Load Positions
+2026-04-13 15:09:29,048 [INFO] Loaded 1 position lot(s)
+2026-04-13 15:09:29,048 [INFO] >>> Processing AAPL
+2026-04-13 15:09:29,048 [INFO]   [AAPL] 신호 없음. 스킵.
+2026-04-13 15:09:29,048 [INFO] >>> Step 6: Persist
+2026-04-13 15:09:29,050 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-04-13 15:09:29,050 [INFO] Fetching real-time prices from Broker...
+2026-04-13 15:09:29,050 [INFO] Portfolio: Cash=$9,498, Value=$9,998
+2026-04-13 15:09:29,050 [INFO] >>> Step 2: Load Positions
+2026-04-13 15:09:29,051 [INFO] Loaded 1 position lot(s)
+2026-04-13 15:09:29,051 [INFO] >>> Processing AAPL
+2026-04-13 15:09:29,051 [INFO]   [AAPL] 신호 없음. 스킵.
+2026-04-13 15:09:29,051 [INFO] >>> Step 6: Persist
+2026-04-13 15:09:29,053 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-04-13 15:09:29,054 [INFO] Fetching real-time prices from Broker...
+2026-04-13 15:09:29,054 [INFO] Portfolio: Cash=$9,498, Value=$9,998
+2026-04-13 15:09:29,054 [INFO] >>> Step 2: Load Positions
+2026-04-13 15:09:29,055 [INFO] Loaded 1 position lot(s)
+2026-04-13 15:09:29,055 [INFO] >>> Processing AAPL
+2026-04-13 15:09:29,056 [INFO]   [AAPL] 신호 없음. 스킵.
+2026-04-13 15:09:29,056 [INFO] >>> Step 6: Persist
+2026-04-13 15:09:29,058 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-04-13 15:09:29,058 [INFO] Fetching real-time prices from Broker...
+2026-04-13 15:09:29,058 [INFO] Portfolio: Cash=$9,498, Value=$9,998
+2026-04-13 15:09:29,058 [INFO] >>> Step 2: Load Positions
+2026-04-13 15:09:29,059 [INFO] Loaded 1 position lot(s)
+2026-04-13 15:09:29,059 [INFO] >>> Processing AAPL
+2026-04-13 15:09:29,059 [INFO]   [AAPL] 신호 없음. 스킵.
+2026-04-13 15:09:29,059 [INFO] >>> Step 6: Persist
+2026-04-13 15:09:29,061 [INFO] --- 백테스트 완료 ---
+2026-04-13 15:09:29,061 [INFO] 최종: Cash=$9,498, Value=$9,998
+2026-04-13 15:09:29,069 [WARNING] 'overseas' 마켓에 해당하는 종목이 없습니다.
+2026-04-13 15:09:29,076 [INFO] --- 데이터 다운로드: ['AAPL', 'MSFT'] (2024-01-02 ~ 2024-01-15) ---
+2026-04-13 15:09:29,078 [INFO] --- 백테스트 시작 (10 거래일) ---
+2026-04-13 15:09:29,079 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-04-13 15:09:29,079 [INFO] Fetching real-time prices from Broker...
+2026-04-13 15:09:29,080 [INFO] Portfolio: Cash=$10,000, Value=$10,000
+2026-04-13 15:09:29,080 [INFO] >>> Step 2: Load Positions
+2026-04-13 15:09:29,080 [INFO] Loaded 0 position lot(s)
+2026-04-13 15:09:29,080 [INFO] >>> Processing AAPL
+2026-04-13 15:09:29,080 [INFO] [AAPL] 보유 lot 없음 → 초기 매수 Lv1 3주 @$100.00
+2026-04-13 15:09:29,080 [INFO] Executing 1 order(s)...
+2026-04-13 15:09:29,081 [INFO] [FILLED] BUY AAPL: 3 @ $100.10 (Fee: $0.75)
+2026-04-13 15:09:29,081 [INFO] [Position] New lot: lot_20260413_150929_AAPL_001 Lv1 AAPL 3주 @$100.10
+2026-04-13 15:09:29,081 [INFO] >>> Processing MSFT
+2026-04-13 15:09:29,081 [INFO] [MSFT] 보유 lot 없음 → 초기 매수 Lv1 3주 @$100.00
+2026-04-13 15:09:29,082 [INFO] Executing 1 order(s)...
+2026-04-13 15:09:29,082 [INFO] [FILLED] BUY MSFT: 3 @ $100.10 (Fee: $0.75)
+2026-04-13 15:09:29,082 [INFO] [Position] New lot: lot_20260413_150929_MSFT_001 Lv1 MSFT 3주 @$100.10
+2026-04-13 15:09:29,082 [INFO] >>> Step 6: Persist
+2026-04-13 15:09:29,085 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-04-13 15:09:29,086 [INFO] Fetching real-time prices from Broker...
+2026-04-13 15:09:29,086 [INFO] Portfolio: Cash=$9,398, Value=$9,992
+2026-04-13 15:09:29,086 [INFO] >>> Step 2: Load Positions
+2026-04-13 15:09:29,087 [INFO] Loaded 2 position lot(s)
+2026-04-13 15:09:29,087 [INFO] >>> Processing AAPL
+2026-04-13 15:09:29,087 [INFO]   [AAPL] 신호 없음. 스킵.
+2026-04-13 15:09:29,087 [INFO] >>> Processing MSFT
+2026-04-13 15:09:29,087 [INFO]   [MSFT] 신호 없음. 스킵.
+2026-04-13 15:09:29,087 [INFO] >>> Step 6: Persist
+2026-04-13 15:09:29,090 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-04-13 15:09:29,090 [INFO] Fetching real-time prices from Broker...
+2026-04-13 15:09:29,091 [INFO] Portfolio: Cash=$9,398, Value=$9,986
+2026-04-13 15:09:29,091 [INFO] >>> Step 2: Load Positions
+2026-04-13 15:09:29,091 [INFO] Loaded 2 position lot(s)
+2026-04-13 15:09:29,091 [INFO] >>> Processing AAPL
+2026-04-13 15:09:29,091 [INFO]   [AAPL] 신호 없음. 스킵.
+2026-04-13 15:09:29,092 [INFO] >>> Processing MSFT
+2026-04-13 15:09:29,092 [INFO]   [MSFT] 신호 없음. 스킵.
+2026-04-13 15:09:29,092 [INFO] >>> Step 6: Persist
+2026-04-13 15:09:29,094 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-04-13 15:09:29,094 [INFO] Fetching real-time prices from Broker...
+2026-04-13 15:09:29,095 [INFO] Portfolio: Cash=$9,398, Value=$9,980
+2026-04-13 15:09:29,095 [INFO] >>> Step 2: Load Positions
+2026-04-13 15:09:29,095 [INFO] Loaded 2 position lot(s)
+2026-04-13 15:09:29,096 [INFO] >>> Processing AAPL
+2026-04-13 15:09:29,096 [INFO]   [AAPL] 신호 없음. 스킵.
+2026-04-13 15:09:29,096 [INFO] >>> Processing MSFT
+2026-04-13 15:09:29,096 [INFO]   [MSFT] 신호 없음. 스킵.
+2026-04-13 15:09:29,096 [INFO] >>> Step 6: Persist
+2026-04-13 15:09:29,099 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-04-13 15:09:29,099 [INFO] Fetching real-time prices from Broker...
+2026-04-13 15:09:29,099 [INFO] Portfolio: Cash=$9,398, Value=$9,974
+2026-04-13 15:09:29,099 [INFO] >>> Step 2: Load Positions
+2026-04-13 15:09:29,100 [INFO] Loaded 2 position lot(s)
+2026-04-13 15:09:29,100 [INFO] >>> Processing AAPL
+2026-04-13 15:09:29,100 [INFO]   [AAPL] 신호 없음. 스킵.
+2026-04-13 15:09:29,100 [INFO] >>> Processing MSFT
+2026-04-13 15:09:29,100 [INFO]   [MSFT] 신호 없음. 스킵.
+2026-04-13 15:09:29,100 [INFO] >>> Step 6: Persist
+2026-04-13 15:09:29,103 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-04-13 15:09:29,103 [INFO] Fetching real-time prices from Broker...
+2026-04-13 15:09:29,103 [INFO] Portfolio: Cash=$9,398, Value=$9,968
+2026-04-13 15:09:29,103 [INFO] >>> Step 2: Load Positions
+2026-04-13 15:09:29,103 [INFO] Loaded 2 position lot(s)
+2026-04-13 15:09:29,104 [INFO] >>> Processing AAPL
+2026-04-13 15:09:29,104 [INFO] [AAPL] Lv1 매수가 $100.10 대비 -5.1% → 추가 매수 Lv2 3주 @$95.00
+2026-04-13 15:09:29,105 [INFO] Executing 1 order(s)...
+2026-04-13 15:09:29,105 [INFO] [FILLED] BUY AAPL: 3 @ $95.09 (Fee: $0.71)
+2026-04-13 15:09:29,105 [INFO] [Position] New lot: lot_20260413_150929_AAPL_002 Lv2 AAPL 3주 @$95.09
+2026-04-13 15:09:29,105 [INFO] >>> Processing MSFT
+2026-04-13 15:09:29,105 [INFO] [MSFT] Lv1 매수가 $100.10 대비 -5.1% → 추가 매수 Lv2 3주 @$95.00
+2026-04-13 15:09:29,105 [INFO] Executing 1 order(s)...
+2026-04-13 15:09:29,105 [INFO] [FILLED] BUY MSFT: 3 @ $95.09 (Fee: $0.71)
+2026-04-13 15:09:29,105 [INFO] [Position] New lot: lot_20260413_150929_MSFT_002 Lv2 MSFT 3주 @$95.09
+2026-04-13 15:09:29,105 [INFO] >>> Step 6: Persist
+2026-04-13 15:09:29,110 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-04-13 15:09:29,110 [INFO] Fetching real-time prices from Broker...
+2026-04-13 15:09:29,110 [INFO] Portfolio: Cash=$8,826, Value=$9,954
+2026-04-13 15:09:29,111 [INFO] >>> Step 2: Load Positions
+2026-04-13 15:09:29,111 [INFO] Loaded 4 position lot(s)
+2026-04-13 15:09:29,111 [INFO] >>> Processing AAPL
+2026-04-13 15:09:29,111 [INFO]   [AAPL] 신호 없음. 스킵.
+2026-04-13 15:09:29,111 [INFO] >>> Processing MSFT
+2026-04-13 15:09:29,112 [INFO]   [MSFT] 신호 없음. 스킵.
+2026-04-13 15:09:29,112 [INFO] >>> Step 6: Persist
+2026-04-13 15:09:29,114 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-04-13 15:09:29,115 [INFO] Fetching real-time prices from Broker...
+2026-04-13 15:09:29,115 [INFO] Portfolio: Cash=$8,826, Value=$9,942
+2026-04-13 15:09:29,116 [INFO] >>> Step 2: Load Positions
+2026-04-13 15:09:29,116 [INFO] Loaded 4 position lot(s)
+2026-04-13 15:09:29,116 [INFO] >>> Processing AAPL
+2026-04-13 15:09:29,116 [INFO]   [AAPL] 신호 없음. 스킵.
+2026-04-13 15:09:29,116 [INFO] >>> Processing MSFT
+2026-04-13 15:09:29,117 [INFO]   [MSFT] 신호 없음. 스킵.
+2026-04-13 15:09:29,117 [INFO] >>> Step 6: Persist
+2026-04-13 15:09:29,119 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-04-13 15:09:29,119 [INFO] Fetching real-time prices from Broker...
+2026-04-13 15:09:29,120 [INFO] Portfolio: Cash=$8,826, Value=$9,930
+2026-04-13 15:09:29,120 [INFO] >>> Step 2: Load Positions
+2026-04-13 15:09:29,120 [INFO] Loaded 4 position lot(s)
+2026-04-13 15:09:29,121 [INFO] >>> Processing AAPL
+2026-04-13 15:09:29,121 [INFO]   [AAPL] 신호 없음. 스킵.
+2026-04-13 15:09:29,121 [INFO] >>> Processing MSFT
+2026-04-13 15:09:29,121 [INFO]   [MSFT] 신호 없음. 스킵.
+2026-04-13 15:09:29,121 [INFO] >>> Step 6: Persist
+2026-04-13 15:09:29,124 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-04-13 15:09:29,124 [INFO] Fetching real-time prices from Broker...
+2026-04-13 15:09:29,124 [INFO] Portfolio: Cash=$8,826, Value=$9,918
+2026-04-13 15:09:29,124 [INFO] >>> Step 2: Load Positions
+2026-04-13 15:09:29,125 [INFO] Loaded 4 position lot(s)
+2026-04-13 15:09:29,125 [INFO] >>> Processing AAPL
+2026-04-13 15:09:29,125 [INFO]   [AAPL] 신호 없음. 스킵.
+2026-04-13 15:09:29,125 [INFO] >>> Processing MSFT
+2026-04-13 15:09:29,125 [INFO]   [MSFT] 신호 없음. 스킵.
+2026-04-13 15:09:29,125 [INFO] >>> Step 6: Persist
+2026-04-13 15:09:29,127 [INFO] --- 백테스트 완료 ---
+2026-04-13 15:09:29,127 [INFO] 최종: Cash=$8,826, Value=$9,918
+2026-04-13 15:09:29,136 [INFO] --- 데이터 다운로드: ['AAPL'] (2024-01-02 ~ 2024-01-08) ---
+2026-04-13 15:09:29,137 [WARNING] 데이터 미수신 티커 ['AAPL'] — 백테스트를 중단합니다.
+2026-04-13 15:09:43,131 [INFO] --- 데이터 다운로드: ['AAPL'] (2024-01-02 ~ 2024-01-15) ---
+2026-04-13 15:09:43,134 [INFO] --- 백테스트 시작 (10 거래일) ---
+2026-04-13 15:09:43,135 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-04-13 15:09:43,135 [INFO] Fetching real-time prices from Broker...
+2026-04-13 15:09:43,135 [INFO] Portfolio: Cash=$10,000, Value=$10,000
+2026-04-13 15:09:43,136 [INFO] >>> Step 2: Load Positions
+2026-04-13 15:09:43,136 [INFO] Loaded 0 position lot(s)
+2026-04-13 15:09:43,136 [INFO] >>> Processing AAPL
+2026-04-13 15:09:43,137 [INFO] [AAPL] 보유 lot 없음 → 초기 매수 Lv1 5주 @$100.00
+2026-04-13 15:09:43,137 [INFO] Executing 1 order(s)...
+2026-04-13 15:09:43,137 [INFO] [FILLED] BUY AAPL: 5 @ $100.10 (Fee: $1.25)
+2026-04-13 15:09:43,138 [INFO] [Position] New lot: lot_20260413_150943_AAPL_001 Lv1 AAPL 5주 @$100.10
+2026-04-13 15:09:43,138 [INFO] >>> Step 6: Persist
+2026-04-13 15:09:43,142 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-04-13 15:09:43,143 [INFO] Fetching real-time prices from Broker...
+2026-04-13 15:09:43,144 [INFO] Portfolio: Cash=$9,498, Value=$9,988
+2026-04-13 15:09:43,144 [INFO] >>> Step 2: Load Positions
+2026-04-13 15:09:43,145 [INFO] Loaded 1 position lot(s)
+2026-04-13 15:09:43,145 [INFO] >>> Processing AAPL
+2026-04-13 15:09:43,146 [INFO]   [AAPL] 신호 없음. 스킵.
+2026-04-13 15:09:43,146 [INFO] >>> Step 6: Persist
+2026-04-13 15:09:43,149 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-04-13 15:09:43,150 [INFO] Fetching real-time prices from Broker...
+2026-04-13 15:09:43,150 [INFO] Portfolio: Cash=$9,498, Value=$9,978
+2026-04-13 15:09:43,150 [INFO] >>> Step 2: Load Positions
+2026-04-13 15:09:43,151 [INFO] Loaded 1 position lot(s)
+2026-04-13 15:09:43,151 [INFO] >>> Processing AAPL
+2026-04-13 15:09:43,151 [INFO]   [AAPL] 신호 없음. 스킵.
+2026-04-13 15:09:43,151 [INFO] >>> Step 6: Persist
+2026-04-13 15:09:43,154 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-04-13 15:09:43,155 [INFO] Fetching real-time prices from Broker...
+2026-04-13 15:09:43,155 [INFO] Portfolio: Cash=$9,498, Value=$9,968
+2026-04-13 15:09:43,155 [INFO] >>> Step 2: Load Positions
+2026-04-13 15:09:43,158 [INFO] Loaded 1 position lot(s)
+2026-04-13 15:09:43,160 [INFO] >>> Processing AAPL
+2026-04-13 15:09:43,161 [INFO] [AAPL] Lv1 매수가 $100.10 대비 -6.1% → 추가 매수 Lv2 5주 @$94.00
+2026-04-13 15:09:43,162 [INFO] Executing 1 order(s)...
+2026-04-13 15:09:43,163 [INFO] [FILLED] BUY AAPL: 5 @ $94.09 (Fee: $1.18)
+2026-04-13 15:09:43,164 [INFO] [Position] New lot: lot_20260413_150943_AAPL_002 Lv2 AAPL 5주 @$94.09
+2026-04-13 15:09:43,164 [INFO] >>> Step 6: Persist
+2026-04-13 15:09:43,172 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-04-13 15:09:43,172 [INFO] Fetching real-time prices from Broker...
+2026-04-13 15:09:43,173 [INFO] Portfolio: Cash=$9,027, Value=$9,947
+2026-04-13 15:09:43,174 [INFO] >>> Step 2: Load Positions
+2026-04-13 15:09:43,175 [INFO] Loaded 2 position lot(s)
+2026-04-13 15:09:43,175 [INFO] >>> Processing AAPL
+2026-04-13 15:09:43,175 [INFO]   [AAPL] 신호 없음. 스킵.
+2026-04-13 15:09:43,175 [INFO] >>> Step 6: Persist
+2026-04-13 15:09:43,179 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-04-13 15:09:43,179 [INFO] Fetching real-time prices from Broker...
+2026-04-13 15:09:43,180 [INFO] Portfolio: Cash=$9,027, Value=$9,927
+2026-04-13 15:09:43,180 [INFO] >>> Step 2: Load Positions
+2026-04-13 15:09:43,181 [INFO] Loaded 2 position lot(s)
+2026-04-13 15:09:43,181 [INFO] >>> Processing AAPL
+2026-04-13 15:09:43,181 [INFO]   [AAPL] 신호 없음. 스킵.
+2026-04-13 15:09:43,182 [INFO] >>> Step 6: Persist
+2026-04-13 15:09:43,185 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-04-13 15:09:43,186 [INFO] Fetching real-time prices from Broker...
+2026-04-13 15:09:43,186 [INFO] Portfolio: Cash=$9,027, Value=$9,907
+2026-04-13 15:09:43,187 [INFO] >>> Step 2: Load Positions
+2026-04-13 15:09:43,188 [INFO] Loaded 2 position lot(s)
+2026-04-13 15:09:43,188 [INFO] >>> Processing AAPL
+2026-04-13 15:09:43,189 [INFO] [AAPL] Lv2 매수가 $94.09 대비 -6.5% → 추가 매수 Lv3 5주 @$88.00
+2026-04-13 15:09:43,189 [INFO] Executing 1 order(s)...
+2026-04-13 15:09:43,189 [INFO] [FILLED] BUY AAPL: 5 @ $88.09 (Fee: $1.10)
+2026-04-13 15:09:43,189 [INFO] [Position] New lot: lot_20260413_150943_AAPL_003 Lv3 AAPL 5주 @$88.09
+2026-04-13 15:09:43,190 [INFO] >>> Step 6: Persist
+2026-04-13 15:09:43,194 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-04-13 15:09:43,194 [INFO] Fetching real-time prices from Broker...
+2026-04-13 15:09:43,194 [INFO] Portfolio: Cash=$8,585, Value=$9,875
+2026-04-13 15:09:43,195 [INFO] >>> Step 2: Load Positions
+2026-04-13 15:09:43,195 [INFO] Loaded 3 position lot(s)
+2026-04-13 15:09:43,196 [INFO] >>> Processing AAPL
+2026-04-13 15:09:43,196 [INFO]   [AAPL] 신호 없음. 스킵.
+2026-04-13 15:09:43,196 [INFO] >>> Step 6: Persist
+2026-04-13 15:09:43,199 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-04-13 15:09:43,200 [INFO] Fetching real-time prices from Broker...
+2026-04-13 15:09:43,201 [INFO] Portfolio: Cash=$8,585, Value=$9,845
+2026-04-13 15:09:43,202 [INFO] >>> Step 2: Load Positions
+2026-04-13 15:09:43,203 [INFO] Loaded 3 position lot(s)
+2026-04-13 15:09:43,203 [INFO] >>> Processing AAPL
+2026-04-13 15:09:43,203 [INFO]   [AAPL] 신호 없음. 스킵.
+2026-04-13 15:09:43,203 [INFO] >>> Step 6: Persist
+2026-04-13 15:09:43,206 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-04-13 15:09:43,206 [INFO] Fetching real-time prices from Broker...
+2026-04-13 15:09:43,206 [INFO] Portfolio: Cash=$8,585, Value=$9,815
+2026-04-13 15:09:43,207 [INFO] >>> Step 2: Load Positions
+2026-04-13 15:09:43,207 [INFO] Loaded 3 position lot(s)
+2026-04-13 15:09:43,207 [INFO] >>> Processing AAPL
+2026-04-13 15:09:43,208 [INFO] [AAPL] Lv3 매수가 $88.09 대비 -6.9% → 추가 매수 Lv4 6주 @$82.00
+2026-04-13 15:09:43,208 [INFO] Executing 1 order(s)...
+2026-04-13 15:09:43,208 [INFO] [FILLED] BUY AAPL: 6 @ $82.08 (Fee: $1.23)
+2026-04-13 15:09:43,208 [INFO] [Position] New lot: lot_20260413_150943_AAPL_004 Lv4 AAPL 6주 @$82.08
+2026-04-13 15:09:43,208 [INFO] >>> Step 6: Persist
+2026-04-13 15:09:43,213 [INFO] --- 백테스트 완료 ---
+2026-04-13 15:09:43,214 [INFO] 최종: Cash=$8,091, Value=$9,813
+2026-04-13 15:09:43,225 [INFO] --- 데이터 다운로드: ['AAPL'] (2024-01-02 ~ 2024-01-08) ---
+2026-04-13 15:09:43,226 [INFO] --- 백테스트 시작 (5 거래일) ---
+2026-04-13 15:09:43,227 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-04-13 15:09:43,227 [INFO] Fetching real-time prices from Broker...
+2026-04-13 15:09:43,227 [INFO] Portfolio: Cash=$10,000, Value=$10,000
+2026-04-13 15:09:43,227 [INFO] >>> Step 2: Load Positions
+2026-04-13 15:09:43,228 [INFO] Loaded 0 position lot(s)
+2026-04-13 15:09:43,228 [INFO] >>> Processing AAPL
+2026-04-13 15:09:43,228 [INFO] [AAPL] 보유 lot 없음 → 초기 매수 Lv1 5주 @$100.00
+2026-04-13 15:09:43,228 [INFO] Executing 1 order(s)...
+2026-04-13 15:09:43,228 [INFO] [FILLED] BUY AAPL: 5 @ $100.10 (Fee: $1.25)
+2026-04-13 15:09:43,229 [INFO] [Position] New lot: lot_20260413_150943_AAPL_001 Lv1 AAPL 5주 @$100.10
+2026-04-13 15:09:43,229 [INFO] >>> Step 6: Persist
+2026-04-13 15:09:43,232 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-04-13 15:09:43,233 [INFO] Fetching real-time prices from Broker...
+2026-04-13 15:09:43,233 [INFO] Portfolio: Cash=$9,498, Value=$9,998
+2026-04-13 15:09:43,233 [INFO] >>> Step 2: Load Positions
+2026-04-13 15:09:43,234 [INFO] Loaded 1 position lot(s)
+2026-04-13 15:09:43,234 [INFO] >>> Processing AAPL
+2026-04-13 15:09:43,234 [INFO]   [AAPL] 신호 없음. 스킵.
+2026-04-13 15:09:43,234 [INFO] >>> Step 6: Persist
+2026-04-13 15:09:43,237 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-04-13 15:09:43,237 [INFO] Fetching real-time prices from Broker...
+2026-04-13 15:09:43,237 [INFO] Portfolio: Cash=$9,498, Value=$9,998
+2026-04-13 15:09:43,237 [INFO] >>> Step 2: Load Positions
+2026-04-13 15:09:43,238 [INFO] Loaded 1 position lot(s)
+2026-04-13 15:09:43,239 [INFO] >>> Processing AAPL
+2026-04-13 15:09:43,239 [INFO]   [AAPL] 신호 없음. 스킵.
+2026-04-13 15:09:43,239 [INFO] >>> Step 6: Persist
+2026-04-13 15:09:43,242 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-04-13 15:09:43,242 [INFO] Fetching real-time prices from Broker...
+2026-04-13 15:09:43,243 [INFO] Portfolio: Cash=$9,498, Value=$9,998
+2026-04-13 15:09:43,243 [INFO] >>> Step 2: Load Positions
+2026-04-13 15:09:43,244 [INFO] Loaded 1 position lot(s)
+2026-04-13 15:09:43,244 [INFO] >>> Processing AAPL
+2026-04-13 15:09:43,244 [INFO]   [AAPL] 신호 없음. 스킵.
+2026-04-13 15:09:43,244 [INFO] >>> Step 6: Persist
+2026-04-13 15:09:43,247 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-04-13 15:09:43,247 [INFO] Fetching real-time prices from Broker...
+2026-04-13 15:09:43,247 [INFO] Portfolio: Cash=$9,498, Value=$9,998
+2026-04-13 15:09:43,247 [INFO] >>> Step 2: Load Positions
+2026-04-13 15:09:43,248 [INFO] Loaded 1 position lot(s)
+2026-04-13 15:09:43,248 [INFO] >>> Processing AAPL
+2026-04-13 15:09:43,248 [INFO]   [AAPL] 신호 없음. 스킵.
+2026-04-13 15:09:43,249 [INFO] >>> Step 6: Persist
+2026-04-13 15:09:43,250 [INFO] --- 백테스트 완료 ---
+2026-04-13 15:09:43,250 [INFO] 최종: Cash=$9,498, Value=$9,998
+2026-04-13 15:09:43,258 [WARNING] 'overseas' 마켓에 해당하는 종목이 없습니다.
+2026-04-13 15:09:43,266 [INFO] --- 데이터 다운로드: ['AAPL', 'MSFT'] (2024-01-02 ~ 2024-01-15) ---
+2026-04-13 15:09:43,268 [INFO] --- 백테스트 시작 (10 거래일) ---
+2026-04-13 15:09:43,269 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-04-13 15:09:43,270 [INFO] Fetching real-time prices from Broker...
+2026-04-13 15:09:43,270 [INFO] Portfolio: Cash=$10,000, Value=$10,000
+2026-04-13 15:09:43,270 [INFO] >>> Step 2: Load Positions
+2026-04-13 15:09:43,271 [INFO] Loaded 0 position lot(s)
+2026-04-13 15:09:43,271 [INFO] >>> Processing AAPL
+2026-04-13 15:09:43,271 [INFO] [AAPL] 보유 lot 없음 → 초기 매수 Lv1 3주 @$100.00
+2026-04-13 15:09:43,271 [INFO] Executing 1 order(s)...
+2026-04-13 15:09:43,272 [INFO] [FILLED] BUY AAPL: 3 @ $100.10 (Fee: $0.75)
+2026-04-13 15:09:43,272 [INFO] [Position] New lot: lot_20260413_150943_AAPL_001 Lv1 AAPL 3주 @$100.10
+2026-04-13 15:09:43,272 [INFO] >>> Processing MSFT
+2026-04-13 15:09:43,272 [INFO] [MSFT] 보유 lot 없음 → 초기 매수 Lv1 3주 @$100.00
+2026-04-13 15:09:43,272 [INFO] Executing 1 order(s)...
+2026-04-13 15:09:43,272 [INFO] [FILLED] BUY MSFT: 3 @ $100.10 (Fee: $0.75)
+2026-04-13 15:09:43,272 [INFO] [Position] New lot: lot_20260413_150943_MSFT_001 Lv1 MSFT 3주 @$100.10
+2026-04-13 15:09:43,273 [INFO] >>> Step 6: Persist
+2026-04-13 15:09:43,278 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-04-13 15:09:43,278 [INFO] Fetching real-time prices from Broker...
+2026-04-13 15:09:43,279 [INFO] Portfolio: Cash=$9,398, Value=$9,992
+2026-04-13 15:09:43,279 [INFO] >>> Step 2: Load Positions
+2026-04-13 15:09:43,280 [INFO] Loaded 2 position lot(s)
+2026-04-13 15:09:43,281 [INFO] >>> Processing AAPL
+2026-04-13 15:09:43,281 [INFO]   [AAPL] 신호 없음. 스킵.
+2026-04-13 15:09:43,282 [INFO] >>> Processing MSFT
+2026-04-13 15:09:43,282 [INFO]   [MSFT] 신호 없음. 스킵.
+2026-04-13 15:09:43,282 [INFO] >>> Step 6: Persist
+2026-04-13 15:09:43,285 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-04-13 15:09:43,286 [INFO] Fetching real-time prices from Broker...
+2026-04-13 15:09:43,286 [INFO] Portfolio: Cash=$9,398, Value=$9,986
+2026-04-13 15:09:43,286 [INFO] >>> Step 2: Load Positions
+2026-04-13 15:09:43,287 [INFO] Loaded 2 position lot(s)
+2026-04-13 15:09:43,287 [INFO] >>> Processing AAPL
+2026-04-13 15:09:43,287 [INFO]   [AAPL] 신호 없음. 스킵.
+2026-04-13 15:09:43,287 [INFO] >>> Processing MSFT
+2026-04-13 15:09:43,287 [INFO]   [MSFT] 신호 없음. 스킵.
+2026-04-13 15:09:43,288 [INFO] >>> Step 6: Persist
+2026-04-13 15:09:43,291 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-04-13 15:09:43,291 [INFO] Fetching real-time prices from Broker...
+2026-04-13 15:09:43,291 [INFO] Portfolio: Cash=$9,398, Value=$9,980
+2026-04-13 15:09:43,291 [INFO] >>> Step 2: Load Positions
+2026-04-13 15:09:43,292 [INFO] Loaded 2 position lot(s)
+2026-04-13 15:09:43,292 [INFO] >>> Processing AAPL
+2026-04-13 15:09:43,292 [INFO]   [AAPL] 신호 없음. 스킵.
+2026-04-13 15:09:43,292 [INFO] >>> Processing MSFT
+2026-04-13 15:09:43,292 [INFO]   [MSFT] 신호 없음. 스킵.
+2026-04-13 15:09:43,292 [INFO] >>> Step 6: Persist
+2026-04-13 15:09:43,295 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-04-13 15:09:43,295 [INFO] Fetching real-time prices from Broker...
+2026-04-13 15:09:43,295 [INFO] Portfolio: Cash=$9,398, Value=$9,974
+2026-04-13 15:09:43,295 [INFO] >>> Step 2: Load Positions
+2026-04-13 15:09:43,296 [INFO] Loaded 2 position lot(s)
+2026-04-13 15:09:43,296 [INFO] >>> Processing AAPL
+2026-04-13 15:09:43,297 [INFO]   [AAPL] 신호 없음. 스킵.
+2026-04-13 15:09:43,297 [INFO] >>> Processing MSFT
+2026-04-13 15:09:43,298 [INFO]   [MSFT] 신호 없음. 스킵.
+2026-04-13 15:09:43,298 [INFO] >>> Step 6: Persist
+2026-04-13 15:09:43,301 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-04-13 15:09:43,301 [INFO] Fetching real-time prices from Broker...
+2026-04-13 15:09:43,301 [INFO] Portfolio: Cash=$9,398, Value=$9,968
+2026-04-13 15:09:43,301 [INFO] >>> Step 2: Load Positions
+2026-04-13 15:09:43,302 [INFO] Loaded 2 position lot(s)
+2026-04-13 15:09:43,302 [INFO] >>> Processing AAPL
+2026-04-13 15:09:43,303 [INFO] [AAPL] Lv1 매수가 $100.10 대비 -5.1% → 추가 매수 Lv2 3주 @$95.00
+2026-04-13 15:09:43,303 [INFO] Executing 1 order(s)...
+2026-04-13 15:09:43,303 [INFO] [FILLED] BUY AAPL: 3 @ $95.09 (Fee: $0.71)
+2026-04-13 15:09:43,303 [INFO] [Position] New lot: lot_20260413_150943_AAPL_002 Lv2 AAPL 3주 @$95.09
+2026-04-13 15:09:43,303 [INFO] >>> Processing MSFT
+2026-04-13 15:09:43,303 [INFO] [MSFT] Lv1 매수가 $100.10 대비 -5.1% → 추가 매수 Lv2 3주 @$95.00
+2026-04-13 15:09:43,304 [INFO] Executing 1 order(s)...
+2026-04-13 15:09:43,304 [INFO] [FILLED] BUY MSFT: 3 @ $95.09 (Fee: $0.71)
+2026-04-13 15:09:43,304 [INFO] [Position] New lot: lot_20260413_150943_MSFT_002 Lv2 MSFT 3주 @$95.09
+2026-04-13 15:09:43,304 [INFO] >>> Step 6: Persist
+2026-04-13 15:09:43,308 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-04-13 15:09:43,308 [INFO] Fetching real-time prices from Broker...
+2026-04-13 15:09:43,309 [INFO] Portfolio: Cash=$8,826, Value=$9,954
+2026-04-13 15:09:43,309 [INFO] >>> Step 2: Load Positions
+2026-04-13 15:09:43,310 [INFO] Loaded 4 position lot(s)
+2026-04-13 15:09:43,310 [INFO] >>> Processing AAPL
+2026-04-13 15:09:43,310 [INFO]   [AAPL] 신호 없음. 스킵.
+2026-04-13 15:09:43,310 [INFO] >>> Processing MSFT
+2026-04-13 15:09:43,310 [INFO]   [MSFT] 신호 없음. 스킵.
+2026-04-13 15:09:43,310 [INFO] >>> Step 6: Persist
+2026-04-13 15:09:43,314 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-04-13 15:09:43,314 [INFO] Fetching real-time prices from Broker...
+2026-04-13 15:09:43,314 [INFO] Portfolio: Cash=$8,826, Value=$9,942
+2026-04-13 15:09:43,314 [INFO] >>> Step 2: Load Positions
+2026-04-13 15:09:43,315 [INFO] Loaded 4 position lot(s)
+2026-04-13 15:09:43,316 [INFO] >>> Processing AAPL
+2026-04-13 15:09:43,316 [INFO]   [AAPL] 신호 없음. 스킵.
+2026-04-13 15:09:43,316 [INFO] >>> Processing MSFT
+2026-04-13 15:09:43,316 [INFO]   [MSFT] 신호 없음. 스킵.
+2026-04-13 15:09:43,316 [INFO] >>> Step 6: Persist
+2026-04-13 15:09:43,319 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-04-13 15:09:43,319 [INFO] Fetching real-time prices from Broker...
+2026-04-13 15:09:43,320 [INFO] Portfolio: Cash=$8,826, Value=$9,930
+2026-04-13 15:09:43,322 [INFO] >>> Step 2: Load Positions
+2026-04-13 15:09:43,324 [INFO] Loaded 4 position lot(s)
+2026-04-13 15:09:43,325 [INFO] >>> Processing AAPL
+2026-04-13 15:09:43,325 [INFO]   [AAPL] 신호 없음. 스킵.
+2026-04-13 15:09:43,326 [INFO] >>> Processing MSFT
+2026-04-13 15:09:43,326 [INFO]   [MSFT] 신호 없음. 스킵.
+2026-04-13 15:09:43,326 [INFO] >>> Step 6: Persist
+2026-04-13 15:09:43,330 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-04-13 15:09:43,330 [INFO] Fetching real-time prices from Broker...
+2026-04-13 15:09:43,330 [INFO] Portfolio: Cash=$8,826, Value=$9,918
+2026-04-13 15:09:43,331 [INFO] >>> Step 2: Load Positions
+2026-04-13 15:09:43,331 [INFO] Loaded 4 position lot(s)
+2026-04-13 15:09:43,332 [INFO] >>> Processing AAPL
+2026-04-13 15:09:43,332 [INFO]   [AAPL] 신호 없음. 스킵.
+2026-04-13 15:09:43,332 [INFO] >>> Processing MSFT
+2026-04-13 15:09:43,332 [INFO]   [MSFT] 신호 없음. 스킵.
+2026-04-13 15:09:43,332 [INFO] >>> Step 6: Persist
+2026-04-13 15:09:43,335 [INFO] --- 백테스트 완료 ---
+2026-04-13 15:09:43,335 [INFO] 최종: Cash=$8,826, Value=$9,918
+2026-04-13 15:09:43,348 [INFO] --- 데이터 다운로드: ['AAPL'] (2024-01-02 ~ 2024-01-08) ---
+2026-04-13 15:09:43,349 [WARNING] 데이터 미수신 티커 ['AAPL'] — 백테스트를 중단합니다.
+2026-04-13 15:09:43,707 [INFO] === Initializing MagicSplit Bot (single account) ===
+2026-04-13 15:09:43,708 [INFO] Loaded 1 stock rule(s) from /tmp/pytest-of-root/pytest-1/test_init_and_run0/config.json
+2026-04-13 15:09:43,708 [INFO] [overseas] 1 rule(s), mode=PAPER
+2026-04-13 15:09:43,709 [INFO] === Running overseas engine ===
+2026-04-13 15:09:43,721 [INFO] === Initializing MagicSplit Bot (single account) ===
+2026-04-13 15:09:43,722 [INFO] Loaded 1 stock rule(s) from /tmp/pytest-of-root/pytest-1/test_run_engine_failure_raises0/config.json
+2026-04-13 15:09:43,722 [INFO] [overseas] 1 rule(s), mode=PAPER
+2026-04-13 15:09:43,725 [INFO] === Running overseas engine ===
+2026-04-13 15:09:43,740 [INFO] === Initializing MagicSplit Bot (single account) ===
+2026-04-13 15:09:43,741 [INFO] Loaded 1 stock rule(s) from /tmp/pytest-of-root/pytest-1/test_no_active_stocks_raises0/config.json
