@@ -1,0 +1,28 @@
+name: Backup to Google Drive
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    steps:
+    - name: 저장소 코드 불러오기
+      uses: actions/checkout@v4
+
+    - name: 코드를 ZIP 파일로 압축하기
+      # 파일명 자체를 업로드할 이름으로 지정하여 압축합니다.
+      run: zip -r repo-MagicSplit-latest-backup.zip . -x "*.git/*"
+
+    - name: 구글 드라이브에 업로드하기 (OAuth 방식)
+      uses: logickoder/google-drive-upload@main
+      with:
+        filename: repo-MagicSplit-latest-backup.zip
+        folderId: ${{ secrets.GDRIVE_FOLDER_ID }}
+        clientId: ${{ secrets.GDRIVE_CLIENT_ID }}
+        clientSecret: ${{ secrets.GDRIVE_CLIENT_SECRET }}
+        refreshToken: ${{ secrets.GDRIVE_REFRESH_TOKEN }}
+        authType: oauth
+        overwrite: true
