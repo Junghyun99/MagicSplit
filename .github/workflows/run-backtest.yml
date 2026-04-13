@@ -1,0 +1,72 @@
+name: Run MagicSplit Backtest
+
+on:
+  workflow_dispatch:
+    inputs:
+      start:
+        description: '시작 날짜 (예: 2023-01-01)'
+        required: true
+        type: string
+      end:
+        description: '종료 날짜 (예: 2024-12-31)'
+        required: true
+        type: string
+      initial_cash:
+        description: '초기 자본 (기본값: 10000)'
+        required: false
+        type: string
+        default: '10000'
+      config_path:
+        description: 'config.json 경로 (기본값: config_overseas.json)'
+        required: false
+        type: string
+        default: 'config_overseas.json'
+      market_type:
+        description: '마켓 타입 (overseas 또는 domestic)'
+        required: false
+        type: string
+        default: 'overseas'
+
+permissions:
+  contents: write
+
+jobs:
+  backtest:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.10"
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Run backtest
+      run: |
+        python -c "
+        from src.backtest.runner import run_backtest
+        result = run_backtest(
+            config_path='${{ inputs.config_path }}',
+            start_date='${{ inputs.start }}',
+            end_date='${{ inputs.end }}',
+            initial_cash=float('${{ inputs.initial_cash }}'),
+            market_type='${{ inputs.market_type }}',
+        )
+        if result:
+            pf = result.final_portfolio
+            print(f'Final: Cash=\${pf.total_cash:,.0f}, Value=\${pf.total_value:,.0f}')
+        else:
+            print('Backtest returned no result.')
+        "
+
+    - name: Commit and Push Results
+      uses: stefanzweifel/git-auto-commit-action@v5
+      with:
+        commit_message: "backtest result update (${{ inputs.start }} ~ ${{ inputs.end }}) [skip ci]"
+        file_pattern: "docs/data/backtest/** logs/backtest/*"
