@@ -55,10 +55,11 @@ class MagicSplitBot:
             f"Loaded {len(self.strategy.rules)} stock rule(s) from {self.config.CONFIG_JSON_PATH}"
         )
 
-        # 2. 마켓별 엔진 생성 (국내/해외 독립 운용)
+        # 2. 마켓별 엔진 생성 (config에 정의된 마켓만)
         self.engines: List[Tuple[str, MagicSplitEngine]] = []
+        market_types = sorted(set(r.market_type for r in self.strategy.rules))
 
-        for market_type in ("domestic", "overseas"):
+        for market_type in market_types:
             rules = [r for r in self.strategy.get_rules_by_market(market_type)
                      if r.enabled]
             if not rules:
