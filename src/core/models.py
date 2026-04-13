@@ -90,6 +90,7 @@ class SplitSignal:
     reason: str             # 판단 사유 (예: "Lv3 +12.3% → 익절")
     pct_change: float       # 매수가 대비 변동률
     level: int = 0          # 대상 차수 (매도: 해당 lot 차수, 매수: 새로운 차수)
+    buy_price: float = 0.0  # 매도 시 원래 매수 단가 (손익 계산용)
 
 
 @dataclass
