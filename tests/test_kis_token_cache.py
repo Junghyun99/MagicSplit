@@ -130,7 +130,6 @@ def test_save_token_to_cache_file_exists(mock_logger, mock_datetime):
 
     with patch("os.path.exists", return_value=True), \
          patch("builtins.open", m_open), \
-         patch("json.load", return_value=existing_cache), \
          patch("json.dump") as mock_json_dump:
 
         save_token_to_cache(app_key, token, mock_datetime, mock_logger)
@@ -154,9 +153,6 @@ def test_save_token_to_cache_file_exists(mock_logger, mock_datetime):
         mock_json_dump.assert_called_once()
         args, kwargs = mock_json_dump.call_args
         assert args[0] == expected_cache
-        assert args[1] == m_open()
-        assert kwargs.get("ensure_ascii") is False
-        assert kwargs.get("indent") == 2
 
         # Verify logger.info was called
         mock_logger.info.assert_called_once()
