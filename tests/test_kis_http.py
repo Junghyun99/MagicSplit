@@ -46,7 +46,7 @@ def test_fetch_hashkey_success():
 
         assert result == "mock-hash-value"
         mock_post.assert_called_once_with(
-            "https://mock-api.com/uapi/hashkey",
+            f"{base_url}/uapi/hashkey",
             headers={
                 "content-type": "application/json",
                 "appkey": "mock-app-key",
