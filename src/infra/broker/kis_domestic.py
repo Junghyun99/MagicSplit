@@ -6,6 +6,7 @@ import src.infra.broker as _pkg  # test patch 타깃: src.infra.broker.requests
 from datetime import datetime
 from src.config import DEFAULT_HTTP_TIMEOUT
 
+from src.config import DEFAULT_HTTP_TIMEOUT
 from src.core.models import Portfolio, Order, TradeExecution, OrderAction, ExecutionStatus
 
 from .kis_base import KisBrokerCommon
@@ -14,7 +15,8 @@ from .kis_order_helpers import poll_order_fill
 
 def _to_kis_code(ticker: str) -> str:
     """yfinance 티커 → KIS 종목코드. '069500.KS' → '069500'"""
-    return ticker.removesuffix(".KS")
+    code = ticker.split(".")[0]
+    return code.zfill(6)
 
 
 def _to_yf_ticker(code: str) -> str:
