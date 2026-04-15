@@ -13,7 +13,8 @@ from .kis_order_helpers import poll_order_fill
 
 def _to_kis_code(ticker: str) -> str:
     """yfinance 티커 → KIS 종목코드. '069500.KS' → '069500'"""
-    return ticker.removesuffix(".KS")
+    code = ticker.split(".")[0]
+    return code.zfill(6)
 
 
 def _to_yf_ticker(code: str) -> str:
