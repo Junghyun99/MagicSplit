@@ -17,8 +17,12 @@ def _to_kis_code(ticker: str) -> str:
 
 
 def _to_yf_ticker(code: str) -> str:
-    """KIS 종목코드 → yfinance 티커. '069500' → '069500.KS'"""
-    return code if code.endswith(".KS") else code + ".KS"
+    """KIS 종목코드(6자리)를 Yahoo Finance 티커로 변환 (기본값 .KS)"""
+    # 정확한 시장 구분(KS, KQ)을 위해서는 추가 매핑이 필요하지만,
+    # 현재는 호환성을 위해 우선 .KS로 일괄 처리하거나 원본을 유지하는 방식 권장
+    if "." not in code:
+        return f"{code}.KS"
+    return code
 
 
 class KisDomesticBrokerBase(KisBrokerCommon):
