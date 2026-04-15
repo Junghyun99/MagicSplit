@@ -28,7 +28,7 @@ class TestKisHttpHelpers:
         assert headers["custtype"] == "P"
         assert "hashkey" not in headers
 
-    @patch("src.infra.broker.requests.post")
+    @patch("src.infra.broker.kis_http._pkg.requests.post")
     def test_fetch_hashkey_success(self, mock_post):
         mock_response = MagicMock()
         mock_response.json.return_value = {"HASH": "fake_hash_123"}
@@ -49,7 +49,7 @@ class TestKisHttpHelpers:
         )
         mock_response.raise_for_status.assert_called_once()
 
-    @patch("src.infra.broker.requests.post")
+    @patch("src.infra.broker.kis_http._pkg.requests.post")
     def test_fetch_hashkey_failure(self, mock_post):
         mock_post.side_effect = Exception("Network Error")
         mock_logger = MagicMock()
@@ -61,7 +61,16 @@ class TestKisHttpHelpers:
         mock_logger.error.assert_called_once()
         assert "HashKey 생성 실패: Network Error" in mock_logger.error.call_args[0][0]
 
-    @patch("src.infra.broker.requests.post")
+    @patch("src.infra.broker.kis_http._pkg.requests.post")
+    def test_fetch_hashkey_no_logger(self, mock_post):
+        mock_post.side_effect = Exception("Mock exception")
+        data = {"key": "value"}
+
+        result = fetch_hashkey(self.base_url, self.app_key, self.app_secret, data, None)
+
+        assert result is None
+
+    @patch("src.infra.broker.kis_http._pkg.requests.post")
     def test_build_header_with_data_success(self, mock_post):
         mock_response = MagicMock()
         mock_response.json.return_value = {"HASH": "fake_hash_456"}
@@ -79,7 +88,7 @@ class TestKisHttpHelpers:
 
         assert headers["hashkey"] == "fake_hash_456"
 
-    @patch("src.infra.broker.requests.post")
+    @patch("src.infra.broker.kis_http._pkg.requests.post")
     def test_build_header_with_data_failure(self, mock_post):
         mock_post.side_effect = Exception("API Error")
 
