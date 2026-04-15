@@ -5,6 +5,7 @@ import time
 import src.infra.broker as _pkg  # test patch 타깃: src.infra.broker.requests
 from datetime import datetime, timedelta
 
+from src.config import DEFAULT_HTTP_TIMEOUT
 from src.core.interfaces import IBrokerAdapter
 from src.core.models import Portfolio, Order, TradeExecution, OrderAction, ExecutionStatus
 
@@ -60,7 +61,7 @@ class KisBrokerCommon(IBrokerAdapter):
             "appsecret": self.app_secret,
         }
         try:
-            res = _pkg.requests.post(url, json=payload)
+            res = _pkg.requests.post(url, json=payload, timeout=DEFAULT_HTTP_TIMEOUT)
             res.raise_for_status()
             data = res.json()
             if 'access_token' not in data:

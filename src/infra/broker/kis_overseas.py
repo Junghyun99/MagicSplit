@@ -6,7 +6,7 @@ import src.infra.broker as _pkg  # test patch 타깃: src.infra.broker.requests
 from datetime import datetime
 
 from src.core.models import Portfolio, Order, TradeExecution, OrderAction, ExecutionStatus
-from src.config import TICKER_EXCHANGE_MAP, EXCHANGE_CODE_SHORT_TO_FULL
+from src.config import TICKER_EXCHANGE_MAP, EXCHANGE_CODE_SHORT_TO_FULL, DEFAULT_HTTP_TIMEOUT
 
 from .kis_base import KisBrokerCommon
 from .kis_order_helpers import poll_order_fill
@@ -27,7 +27,7 @@ class KisOverseasBrokerBase(KisBrokerCommon):
             headers = self._get_header(tr_id)
             try:
                 time.sleep(0.1)
-                res = _pkg.requests.get(url, headers=headers, params=params)
+                res = _pkg.requests.get(url, headers=headers, params=params, timeout=DEFAULT_HTTP_TIMEOUT)
                 res.raise_for_status()
                 data = res.json()
 
@@ -37,6 +37,9 @@ class KisOverseasBrokerBase(KisBrokerCommon):
                 else:
                     self.logger.warning(f"[KisBroker] Price fetch failed for {ticker}: {data.get('msg1')}")
                     prices[ticker] = 0.0
+            except _pkg.requests.exceptions.Timeout:
+                self.logger.error(f"[KisBroker] Price fetch error {ticker}: Timeout")
+                prices[ticker] = 0.0
             except Exception as e:
                 self.logger.error(f"[KisBroker] Price fetch error {ticker}: {e}")
                 prices[ticker] = 0.0
@@ -72,7 +75,7 @@ class KisOverseasBrokerBase(KisBrokerCommon):
             headers = self._get_header(tr_id)
             try:
                 time.sleep(0.2)
-                res = _pkg.requests.get(url, headers=headers, params=params)
+                res = _pkg.requests.get(url, headers=headers, params=params, timeout=DEFAULT_HTTP_TIMEOUT)
                 res.raise_for_status()
                 data = res.json()
 
@@ -91,6 +94,8 @@ class KisOverseasBrokerBase(KisBrokerCommon):
                         all_holdings[ticker] = qty
                         all_prices[ticker] = float(item['now_pric2'])
 
+            except _pkg.requests.exceptions.Timeout:
+                self.logger.error(f"[KisBroker] Error getting portfolio ({exch}): Timeout")
             except Exception as e:
                 self.logger.error(f"[KisBroker] Error getting portfolio ({exch}): {e}")
 
@@ -139,7 +144,7 @@ class KisOverseasBrokerBase(KisBrokerCommon):
 
         try:
             headers = self._get_header(tr_id, data)
-            res = _pkg.requests.post(url, headers=headers, json=data)
+            res = _pkg.requests.post(url, headers=headers, json=data, timeout=DEFAULT_HTTP_TIMEOUT)
             res.raise_for_status()
             resp_data = res.json()
 
@@ -159,6 +164,9 @@ class KisOverseasBrokerBase(KisBrokerCommon):
                 status=ExecutionStatus.ORDERED
             )
 
+        except _pkg.requests.exceptions.Timeout:
+            self.logger.error(f"[KisBroker] Order Error: Timeout")
+            return None
         except Exception as e:
             self.logger.error(f"[KisBroker] Order Error: {e}")
             return None
@@ -206,7 +214,7 @@ class KisOverseasBrokerBase(KisBrokerCommon):
 
         try:
             headers = self._get_header(tr_id, data)
-            res = _pkg.requests.post(url, headers=headers, json=data)
+            res = _pkg.requests.post(url, headers=headers, json=data, timeout=DEFAULT_HTTP_TIMEOUT)
             res.raise_for_status()
             resp_data = res.json()
 
@@ -262,6 +270,9 @@ class KisOverseasBrokerBase(KisBrokerCommon):
                 reason=f"ODNO={odno}" if odno else ""
             )
 
+        except _pkg.requests.exceptions.Timeout:
+            self.logger.error(f"[KisBroker] Order Error: Timeout")
+            return None
         except Exception as e:
             self.logger.error(f"[KisBroker] Order Error: {e}")
             return None
@@ -289,7 +300,7 @@ class KisOverseasBrokerBase(KisBrokerCommon):
             "CTX_AREA_NK200": ""
         }
         headers = self._get_header(tr_id)
-        res = _pkg.requests.get(url, headers=headers, params=params)
+        res = _pkg.requests.get(url, headers=headers, params=params, timeout=DEFAULT_HTTP_TIMEOUT)
         res.raise_for_status()
         data = res.json()
         if data['rt_cd'] == '0':
@@ -317,7 +328,7 @@ class KisOverseasBrokerBase(KisBrokerCommon):
         }
         try:
             headers = self._get_header(self.FILL_TR_ID)
-            res = _pkg.requests.get(url, headers=headers, params=params)
+            res = _pkg.requests.get(url, headers=headers, params=params, timeout=DEFAULT_HTTP_TIMEOUT)
             res.raise_for_status()
             data = res.json()
             if data['rt_cd'] != '0':
@@ -330,6 +341,8 @@ class KisOverseasBrokerBase(KisBrokerCommon):
                 fill_qty = int(item.get('ft_ccld_qty', 0) or 0)
                 fill_fee = float(item.get('ovrs_stck_ccld_fee', 0) or 0)
                 return fill_price, fill_qty, fill_fee
+        except _pkg.requests.exceptions.Timeout:
+            self.logger.warning(f"[KisBroker] Fill detail query error (ODNO={odno}): Timeout")
         except Exception as e:
             self.logger.warning(f"[KisBroker] Fill detail query error (ODNO={odno}): {e}")
         return 0.0, 0, 0.0
@@ -357,7 +370,7 @@ class KisOverseasBrokerBase(KisBrokerCommon):
         }
         try:
             headers = self._get_header(self.CANCEL_TR_ID, data)
-            res = _pkg.requests.post(url, headers=headers, json=data)
+            res = _pkg.requests.post(url, headers=headers, json=data, timeout=DEFAULT_HTTP_TIMEOUT)
             res.raise_for_status()
             resp_data = res.json()
             if resp_data['rt_cd'] == '0':
@@ -368,6 +381,9 @@ class KisOverseasBrokerBase(KisBrokerCommon):
                     f"[KisBroker] Cancel Failed: {ticker} ODNO={odno} — {resp_data.get('msg1')}"
                 )
                 return False
+        except _pkg.requests.exceptions.Timeout:
+            self.logger.error(f"[KisBroker] Cancel Error: {ticker} ODNO={odno} — Timeout")
+            return False
         except Exception as e:
             self.logger.error(f"[KisBroker] Cancel Error: {ticker} ODNO={odno} — {e}")
             return False
@@ -396,7 +412,7 @@ class KisOverseasBrokerBase(KisBrokerCommon):
 
             try:
                 time.sleep(0.2)
-                res = _pkg.requests.get(url, headers=headers, params=params)
+                res = _pkg.requests.get(url, headers=headers, params=params, timeout=DEFAULT_HTTP_TIMEOUT)
                 res.raise_for_status()
                 data = res.json()
 
@@ -408,6 +424,8 @@ class KisOverseasBrokerBase(KisBrokerCommon):
                 else:
                     self.logger.warning(f"[KisBroker] Pending Check Failed ({exch}): {data.get('msg1')}")
 
+            except _pkg.requests.exceptions.Timeout:
+                self.logger.error(f"[KisBroker] Pending Check Error ({exch}): Timeout")
             except Exception as e:
                 self.logger.error(f"[KisBroker] Pending Check Error ({exch}): {e}")
 
@@ -422,7 +440,7 @@ class KisOverseasBrokerBase(KisBrokerCommon):
         headers = self._get_header(self.ASKING_PRICE_TR_ID)
         try:
             time.sleep(0.1)
-            res = _pkg.requests.get(url, headers=headers, params=params)
+            res = _pkg.requests.get(url, headers=headers, params=params, timeout=DEFAULT_HTTP_TIMEOUT)
             res.raise_for_status()
             data = res.json()
 
@@ -436,6 +454,9 @@ class KisOverseasBrokerBase(KisBrokerCommon):
             ask = float(output2.get('pask1', 0) or 0)
             return (bid, ask)
 
+        except _pkg.requests.exceptions.Timeout:
+            self.logger.warning(f"[KisBroker] 호가 조회 에러 {ticker}: Timeout")
+            return (0.0, 0.0)
         except Exception as e:
             self.logger.warning(f"[KisBroker] 호가 조회 에러 {ticker}: {e}")
             return (0.0, 0.0)
