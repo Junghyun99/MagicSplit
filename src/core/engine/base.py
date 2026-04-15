@@ -11,7 +11,6 @@ from src.core.models import (
     Order,
     OrderAction,
     TradeExecution,
-    TradeSignal,
     SplitSignal,
     DayResult,
 )
