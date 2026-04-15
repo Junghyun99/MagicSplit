@@ -88,9 +88,9 @@ def test_save_token_to_cache_file_not_exists(mock_logger, mock_datetime):
 
     m_open = mock_open()
 
-    with patch("os.path.exists", return_value=False), \
-         patch("builtins.open", m_open), \
-         patch("json.dump") as mock_json_dump:
+    with patch("src.infra.broker.kis_token_cache.os.path.exists", return_value=False), \
+         patch("src.infra.broker.kis_token_cache.open", m_open), \
+         patch("src.infra.broker.kis_token_cache.json.dump") as mock_json_dump:
 
         save_token_to_cache(app_key, token, mock_datetime, mock_logger)
 
@@ -128,9 +128,9 @@ def test_save_token_to_cache_file_exists(mock_logger, mock_datetime):
 
     m_open = mock_open(read_data=json.dumps(existing_cache))
 
-    with patch("os.path.exists", return_value=True), \
-         patch("builtins.open", m_open), \
-         patch("json.dump") as mock_json_dump:
+    with patch("src.infra.broker.kis_token_cache.os.path.exists", return_value=True), \
+         patch("src.infra.broker.kis_token_cache.open", m_open), \
+         patch("src.infra.broker.kis_token_cache.json.dump") as mock_json_dump:
 
         save_token_to_cache(app_key, token, mock_datetime, mock_logger)
 
@@ -163,7 +163,7 @@ def test_save_token_to_cache_exception_handling(mock_logger, mock_datetime):
     app_key = "test_app_key"
     token = "test_token"
 
-    with patch("os.path.exists", side_effect=Exception("Test Error")):
+    with patch("src.infra.broker.kis_token_cache.os.path.exists", side_effect=Exception("Test Error")):
         save_token_to_cache(app_key, token, mock_datetime, mock_logger)
 
         # Check if exception was logged
