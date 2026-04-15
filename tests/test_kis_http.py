@@ -55,4 +55,5 @@ def test_fetch_hashkey_success():
             json={"key": "value"},
         )
         mock_response.raise_for_status.assert_called_once()
+        mock_response.json.assert_called_once()
         logger.error.assert_not_called()
