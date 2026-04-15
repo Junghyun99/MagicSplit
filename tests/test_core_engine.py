@@ -68,6 +68,100 @@ class TestEngineInit:
 
 
 class TestRunOneCycle:
+    def test_engine_continues_on_rule_error(self, mock_broker, mock_repo, mock_logger):
+        """특정 종목 평가 중 에러 발생 시, 해당 종목을 건너뛰고 다음 종목은 정상 처리"""
+        rules = [
+            StockRule("AAPL", -5.0, 10.0, 500, 10),
+            StockRule("MSFT", -5.0, 10.0, 500, 10),
+        ]
+        engine = MagicSplitEngine(
+            broker=mock_broker, repo=mock_repo,
+            logger=mock_logger, stock_rules=rules,
+        )
+
+        def mock_evaluate_stock(rule, positions, portfolio):
+            if rule.ticker == "AAPL":
+                raise Exception("Mock evaluator error")
+            elif rule.ticker == "MSFT":
+                return [SplitSignal("MSFT", None, OrderAction.BUY, 5, 200.0, "MSFT Buy", 0.0, 1)]
+            return []
+
+        engine.evaluator.evaluate_stock = MagicMock(side_effect=mock_evaluate_stock)
+
+        execution = TradeExecution(
+            "MSFT", OrderAction.BUY, 5, 200.0, 1.0,
+            "2026-04-10", ExecutionStatus.FILLED,
+        )
+        mock_broker.execute_orders.return_value = [execution]
+
+        result = engine.run_one_cycle(sim_date="2026-04-10")
+
+        mock_logger.error.assert_any_call("[AAPL] 처리 실패: Mock evaluator error")
+
+        assert result.has_orders is True
+        assert len(result.executions) == 1
+        assert result.executions[0].ticker == "MSFT"
+
+        # MSFT 포지션만 저장되었는지 확인
+        mock_repo.save_positions.assert_called_once()
+        saved_positions = mock_repo.save_positions.call_args[0][0]
+        assert len(saved_positions) == 1
+        assert saved_positions[0].ticker == "MSFT"
+
+    def test_engine_continues_on_position_update_error(self, mock_broker, mock_repo, mock_logger):
+        """포지션 업데이트 중 에러 발생 시, 해당 종목을 건너뛰고 다음 종목은 정상 처리"""
+        rules = [
+            StockRule("AAPL", -5.0, 10.0, 500, 10),
+            StockRule("MSFT", -5.0, 10.0, 500, 10),
+        ]
+        engine = MagicSplitEngine(
+            broker=mock_broker, repo=mock_repo,
+            logger=mock_logger, stock_rules=rules,
+        )
+
+        def mock_evaluate_stock(rule, positions, portfolio):
+            if rule.ticker == "AAPL":
+                return [SplitSignal("AAPL", None, OrderAction.BUY, 5, 100.0, "AAPL Buy", 0.0, 1)]
+            elif rule.ticker == "MSFT":
+                return [SplitSignal("MSFT", None, OrderAction.BUY, 5, 200.0, "MSFT Buy", 0.0, 1)]
+            return []
+
+        engine.evaluator.evaluate_stock = MagicMock(side_effect=mock_evaluate_stock)
+
+        def mock_execute_orders(orders):
+            return [
+                TradeExecution(
+                    o.ticker, o.action, o.quantity, o.price, 1.0,
+                    "2026-04-10", ExecutionStatus.FILLED,
+                ) for o in orders
+            ]
+
+        mock_broker.execute_orders = MagicMock(side_effect=mock_execute_orders)
+
+        # Original _update_positions method
+        original_update_positions = engine._update_positions
+
+        def mock_update_positions(positions, signals, executions, today):
+            # Check if this is the AAPL update
+            if any(e.ticker == "AAPL" for e in executions):
+                raise Exception("Mock position update error")
+            return original_update_positions(positions, signals, executions, today)
+
+        engine._update_positions = MagicMock(side_effect=mock_update_positions)
+
+        result = engine.run_one_cycle(sim_date="2026-04-10")
+
+        # AAPL 에러 로그 확인
+        mock_logger.error.assert_any_call("[AAPL] 포지션 반영 실패 (체결은 완료됨): Mock position update error")
+
+        # 두 종목 모두 체결은 완료되었는지 확인
+        assert result.has_orders is True
+        assert len(result.executions) == 2
+
+        # MSFT 포지션 반영은 정상 수행되었는지 확인 (_update_positions가 여러 번 불렸는지)
+        assert engine._update_positions.call_count == 2
+
+
     def test_full_cycle_no_signals(self, engine, mock_repo):
         """신호 없을 때 전체 사이클 정상 완료"""
         result = engine.run_one_cycle(sim_date="2026-04-10")
