@@ -25,6 +25,8 @@ EXCHANGE_CODE_SHORT_TO_FULL: dict[str, str] = {
     'AMS': 'AMEX',
 }
 
+DEFAULT_HTTP_TIMEOUT = 10
+
 
 class Config:
     def __init__(self):
