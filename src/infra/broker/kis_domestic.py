@@ -6,6 +6,7 @@ import src.infra.broker as _pkg  # test patch 타깃: src.infra.broker.requests
 from datetime import datetime
 
 from src.core.models import Portfolio, Order, TradeExecution, OrderAction, ExecutionStatus
+from src.config import CONFIGURED_DOMESTIC_TICKERS
 
 from .kis_base import KisBrokerCommon
 from .kis_order_helpers import poll_order_fill
@@ -19,7 +20,17 @@ def _to_kis_code(ticker: str) -> str:
 
 def _to_yf_ticker(code: str) -> str:
     """KIS 종목코드 → yfinance 티커. '069500' → '069500.KS'"""
-    return code if code.endswith(".KS") else code + ".KS"
+    # 이미 .KS나 .KQ 등이 붙어 있는 경우 그대로 반환
+    if "." in code:
+        return code
+
+    # config에 등록된 티커 중 code로 시작하는 것이 있으면 그것을 반환
+    for ticker in CONFIGURED_DOMESTIC_TICKERS:
+        if ticker.startswith(f"{code}."):
+            return ticker
+
+    # 없으면 기본값으로 .KS를 붙여 반환
+    return code + ".KS"
 
 
 class KisDomesticBrokerBase(KisBrokerCommon):

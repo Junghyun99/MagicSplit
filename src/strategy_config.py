@@ -26,7 +26,7 @@ import os
 from typing import List, Set
 
 from src.core.models import StockRule
-from src.config import TICKER_EXCHANGE_MAP
+from src.config import TICKER_EXCHANGE_MAP, CONFIGURED_DOMESTIC_TICKERS
 
 
 class StrategyConfig:
@@ -79,6 +79,9 @@ class StrategyConfig:
                     f"{self.config_path}[{idx}]: market_type은 "
                     f"'overseas' 또는 'domestic'이어야 합니다. got '{market_type}'"
                 )
+
+            if market_type == "domestic":
+                CONFIGURED_DOMESTIC_TICKERS.add(ticker)
 
             rule = StockRule(
                 ticker=ticker,

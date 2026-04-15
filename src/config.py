@@ -25,6 +25,9 @@ EXCHANGE_CODE_SHORT_TO_FULL: dict[str, str] = {
     'AMS': 'AMEX',
 }
 
+# 설정에 추가된 국내 주식 티커들을 기록하는 집합 (예: '005930.KS', '000660.KQ')
+CONFIGURED_DOMESTIC_TICKERS: set[str] = set()
+
 
 class Config:
     def __init__(self):
