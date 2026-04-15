@@ -39,27 +39,30 @@ class KisDomesticBrokerBase(KisBrokerCommon):
         prices = {}
         tr_id = self.PRICE_TR_ID
         url = f"{self.base_url}/uapi/domestic-stock/v1/quotations/inquire-price"
-        for ticker in tickers:
-            params = {
-                "FID_COND_MRKT_DIV_CODE": "J",
-                "FID_INPUT_ISCD": _to_kis_code(ticker)
-            }
-            headers = self._get_header(tr_id)
-            try:
-                time.sleep(0.1)
-                res = _pkg.requests.get(url, headers=headers, params=params)
-                res.raise_for_status()
-                data = res.json()
 
-                if data['rt_cd'] == '0':
-                    price = float(data['output']['stck_prpr'])
-                    prices[ticker] = price
-                else:
-                    self.logger.warning(f"[KisDomestic] Price fetch failed for {ticker}: {data.get('msg1')}")
+        headers = self._get_header(tr_id)
+        with _pkg.requests.Session() as session:
+            session.headers.update(headers)
+            for ticker in tickers:
+                params = {
+                    "FID_COND_MRKT_DIV_CODE": "J",
+                    "FID_INPUT_ISCD": _to_kis_code(ticker)
+                }
+                try:
+                    time.sleep(0.1)
+                    res = session.get(url, params=params)
+                    res.raise_for_status()
+                    data = res.json()
+
+                    if data['rt_cd'] == '0':
+                        price = float(data['output']['stck_prpr'])
+                        prices[ticker] = price
+                    else:
+                        self.logger.warning(f"[KisDomestic] Price fetch failed for {ticker}: {data.get('msg1')}")
+                        prices[ticker] = 0.0
+                except Exception as e:
+                    self.logger.error(f"[KisDomestic] Price fetch error {ticker}: {e}")
                     prices[ticker] = 0.0
-            except Exception as e:
-                self.logger.error(f"[KisDomestic] Price fetch error {ticker}: {e}")
-                prices[ticker] = 0.0
 
         return prices
 

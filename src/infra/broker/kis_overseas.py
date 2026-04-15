@@ -21,25 +21,28 @@ class KisOverseasBrokerBase(KisBrokerCommon):
         prices = {}
         tr_id = self.PRICE_TR_ID
         url = f"{self.base_url}/uapi/overseas-price/v1/quotations/price"
-        for ticker in tickers:
-            exch = self._get_exchange_code(ticker)
-            params = {"AUTH": "", "EXCD": exch, "SYMB": ticker}
-            headers = self._get_header(tr_id)
-            try:
-                time.sleep(0.1)
-                res = _pkg.requests.get(url, headers=headers, params=params)
-                res.raise_for_status()
-                data = res.json()
 
-                if data['rt_cd'] == '0':
-                    price = float(data['output']['last'])
-                    prices[ticker] = price
-                else:
-                    self.logger.warning(f"[KisBroker] Price fetch failed for {ticker}: {data.get('msg1')}")
+        headers = self._get_header(tr_id)
+        with _pkg.requests.Session() as session:
+            session.headers.update(headers)
+            for ticker in tickers:
+                exch = self._get_exchange_code(ticker)
+                params = {"AUTH": "", "EXCD": exch, "SYMB": ticker}
+                try:
+                    time.sleep(0.1)
+                    res = session.get(url, params=params)
+                    res.raise_for_status()
+                    data = res.json()
+
+                    if data['rt_cd'] == '0':
+                        price = float(data['output']['last'])
+                        prices[ticker] = price
+                    else:
+                        self.logger.warning(f"[KisBroker] Price fetch failed for {ticker}: {data.get('msg1')}")
+                        prices[ticker] = 0.0
+                except Exception as e:
+                    self.logger.error(f"[KisBroker] Price fetch error {ticker}: {e}")
                     prices[ticker] = 0.0
-            except Exception as e:
-                self.logger.error(f"[KisBroker] Price fetch error {ticker}: {e}")
-                prices[ticker] = 0.0
 
         return prices
 
