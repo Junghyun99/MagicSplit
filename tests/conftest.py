@@ -1,4 +1,4 @@
-# tests/conftest.py
+import tests.mock_imports
 import pytest
 from src.core.models import (
     StockRule, PositionLot, Portfolio, Order, OrderAction,
