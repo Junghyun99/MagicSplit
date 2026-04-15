@@ -46,3 +46,4 @@ class Config:
 
         # 저장소 크기 제한
         self.MAX_HISTORY_RECORDS = 100000
+DEFAULT_HTTP_TIMEOUT = 10
