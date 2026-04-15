@@ -52,7 +52,7 @@ def test_fetch_hashkey_success():
                 "appkey": "mock-app-key",
                 "appsecret": "mock-app-secret",
             },
-            json={"key": "value"},
+            json=data,
         )
         mock_response.raise_for_status.assert_called_once()
         mock_response.json.assert_called_once()
