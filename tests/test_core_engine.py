@@ -112,7 +112,7 @@ class TestRunOneCycle:
         assert result.has_orders is True
         mock_repo.save_positions.assert_called_once()
 
-    def test_update_positions_exception(self, engine, mock_broker, mock_logger):
+    def test_update_positions_exception(self, engine, mock_broker, mock_logger, mock_repo):
         """포지션 반영 실패 시 예외 처리 및 알림 확인"""
         engine.notifier = MagicMock()
 
@@ -126,23 +126,23 @@ class TestRunOneCycle:
             result = engine.run_one_cycle(sim_date="2026-04-10")
 
         # 확인 사항
-        # 1. logger.error가 호출되었는지
-        assert any(
-            "포지션 반영 실패" in str(call) and "Test Error" in str(call)
-            for call in mock_logger.error.call_args_list
+        # 1. logger.error가 명확한 인자와 함께 호출되었는지
+        mock_logger.error.assert_called_once_with(
+            "[AAPL] 포지션 반영 실패 (체결은 완료됨): Test Error"
         )
 
-        # 2. _notify_alert가 호출되었는지
-        assert any(
-            "포지션 반영 실패" in str(call) and "Test Error" in str(call)
-            for call in engine.notifier.send_alert.call_args_list
+        # 2. _notify_alert가 명확한 인자와 함께 호출되었는지
+        engine.notifier.send_alert.assert_called_once_with(
+            "[AAPL] 포지션 반영 실패 (체결 1건 완료됨): Test Error"
         )
 
         # 3. failed_tickers에 추가되어 결과 노티에 반영되었는지
-        assert any(
-            "(실패: AAPL)" in str(call)
-            for call in engine.notifier.send_message.call_args_list
+        engine.notifier.send_message.assert_called_once_with(
+            "Orders Executed. Count: 1 (실패: AAPL)"
         )
+
+        # 4. _update_positions 실패 시에도 포지션 저장 등 finally 블록이 실행되었는지
+        mock_repo.save_positions.assert_called_once()
 
 
 class TestUpdatePositions:
