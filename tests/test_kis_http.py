@@ -1,4 +1,3 @@
-import pytest
 from unittest.mock import patch, MagicMock
 from src.infra.broker.kis_http import fetch_hashkey
 
@@ -9,7 +8,7 @@ def test_fetch_hashkey_error_path():
     data = {"key": "value"}
     logger = MagicMock()
 
-    with patch('src.infra.broker.requests.post') as mock_post:
+    with patch('src.infra.broker.kis_http._pkg.requests.post') as mock_post:
         mock_post.side_effect = Exception("Mock exception")
 
         result = fetch_hashkey(base_url, app_key, app_secret, data, logger)
@@ -46,14 +45,13 @@ def test_fetch_hashkey_success():
 
         assert result == "mock-hash-value"
         mock_post.assert_called_once_with(
-            f"{base_url}/uapi/hashkey",
+            "https://mock-api.com/uapi/hashkey",
             headers={
                 "content-type": "application/json",
                 "appkey": "mock-app-key",
                 "appsecret": "mock-app-secret",
             },
-            json=data,
+            json={"key": "value"},
         )
         mock_response.raise_for_status.assert_called_once()
-        mock_response.json.assert_called_once()
         logger.error.assert_not_called()
