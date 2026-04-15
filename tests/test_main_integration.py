@@ -1,3 +1,4 @@
+import tests.mock_imports
 # tests/test_main_integration.py
 """MagicSplitBot 통합 테스트 — MockBroker를 사용한 전체 플로우."""
 import json
