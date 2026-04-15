@@ -60,8 +60,8 @@ def test_load_token_expired_token(mock_logger):
         }
     }
 
-    with patch("os.path.exists", return_value=True), \
-         patch("builtins.open", mock_open(read_data=json.dumps(mock_cache_data))):
+    with patch("src.infra.broker.kis_token_cache.os.path.exists", return_value=True), \
+         patch("src.infra.broker.kis_token_cache.open", mock_open(read_data=json.dumps(mock_cache_data))):
         result = load_token_from_cache(TEST_APP_KEY, mock_logger)
         assert result is None
         mock_logger.info.assert_called_once_with("[KisBroker] 캐시 토큰 만료됨, 재발급 필요")
