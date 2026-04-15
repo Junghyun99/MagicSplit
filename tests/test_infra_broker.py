@@ -1,4 +1,3 @@
-import tests.mock_imports
 # tests/test_infra_broker.py
 import pytest
 from src.infra.broker.mock import MockBroker
