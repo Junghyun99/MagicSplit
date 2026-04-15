@@ -1,6 +1,8 @@
 import pytest
 from unittest.mock import patch, MagicMock
 from src.infra.broker.kis_http import build_header, fetch_hashkey
+from src.config import DEFAULT_HTTP_TIMEOUT
+
 
 
 class TestKisHttpHelpers:
@@ -46,6 +48,7 @@ class TestKisHttpHelpers:
                 "appsecret": self.app_secret,
             },
             json=data,
+            timeout=DEFAULT_HTTP_TIMEOUT,
         )
         mock_response.raise_for_status.assert_called_once()
 

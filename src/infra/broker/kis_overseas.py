@@ -6,7 +6,7 @@ import src.infra.broker as _pkg  # test patch 타깃: src.infra.broker.requests
 from datetime import datetime
 
 from src.core.models import Portfolio, Order, TradeExecution, OrderAction, ExecutionStatus
-from src.config import TICKER_EXCHANGE_MAP, EXCHANGE_CODE_SHORT_TO_FULL
+from src.config import TICKER_EXCHANGE_MAP, EXCHANGE_CODE_SHORT_TO_FULL, DEFAULT_HTTP_TIMEOUT
 
 from .kis_base import KisBrokerCommon
 from .kis_order_helpers import poll_order_fill
@@ -27,7 +27,7 @@ class KisOverseasBrokerBase(KisBrokerCommon):
             headers = self._get_header(tr_id)
             try:
                 time.sleep(0.1)
-                res = _pkg.requests.get(url, headers=headers, params=params)
+                res = _pkg.requests.get(url, headers=headers, params=params, timeout=DEFAULT_HTTP_TIMEOUT)
                 res.raise_for_status()
                 data = res.json()
 
@@ -72,7 +72,7 @@ class KisOverseasBrokerBase(KisBrokerCommon):
             headers = self._get_header(tr_id)
             try:
                 time.sleep(0.2)
-                res = _pkg.requests.get(url, headers=headers, params=params)
+                res = _pkg.requests.get(url, headers=headers, params=params, timeout=DEFAULT_HTTP_TIMEOUT)
                 res.raise_for_status()
                 data = res.json()
 
@@ -139,7 +139,7 @@ class KisOverseasBrokerBase(KisBrokerCommon):
 
         try:
             headers = self._get_header(tr_id, data)
-            res = _pkg.requests.post(url, headers=headers, json=data)
+            res = _pkg.requests.post(url, headers=headers, json=data, timeout=DEFAULT_HTTP_TIMEOUT)
             res.raise_for_status()
             resp_data = res.json()
 
@@ -206,7 +206,7 @@ class KisOverseasBrokerBase(KisBrokerCommon):
 
         try:
             headers = self._get_header(tr_id, data)
-            res = _pkg.requests.post(url, headers=headers, json=data)
+            res = _pkg.requests.post(url, headers=headers, json=data, timeout=DEFAULT_HTTP_TIMEOUT)
             res.raise_for_status()
             resp_data = res.json()
 
@@ -289,7 +289,7 @@ class KisOverseasBrokerBase(KisBrokerCommon):
             "CTX_AREA_NK200": ""
         }
         headers = self._get_header(tr_id)
-        res = _pkg.requests.get(url, headers=headers, params=params)
+        res = _pkg.requests.get(url, headers=headers, params=params, timeout=DEFAULT_HTTP_TIMEOUT)
         res.raise_for_status()
         data = res.json()
         if data['rt_cd'] == '0':
@@ -317,7 +317,7 @@ class KisOverseasBrokerBase(KisBrokerCommon):
         }
         try:
             headers = self._get_header(self.FILL_TR_ID)
-            res = _pkg.requests.get(url, headers=headers, params=params)
+            res = _pkg.requests.get(url, headers=headers, params=params, timeout=DEFAULT_HTTP_TIMEOUT)
             res.raise_for_status()
             data = res.json()
             if data['rt_cd'] != '0':
@@ -357,7 +357,7 @@ class KisOverseasBrokerBase(KisBrokerCommon):
         }
         try:
             headers = self._get_header(self.CANCEL_TR_ID, data)
-            res = _pkg.requests.post(url, headers=headers, json=data)
+            res = _pkg.requests.post(url, headers=headers, json=data, timeout=DEFAULT_HTTP_TIMEOUT)
             res.raise_for_status()
             resp_data = res.json()
             if resp_data['rt_cd'] == '0':
@@ -396,7 +396,7 @@ class KisOverseasBrokerBase(KisBrokerCommon):
 
             try:
                 time.sleep(0.2)
-                res = _pkg.requests.get(url, headers=headers, params=params)
+                res = _pkg.requests.get(url, headers=headers, params=params, timeout=DEFAULT_HTTP_TIMEOUT)
                 res.raise_for_status()
                 data = res.json()
 
@@ -422,7 +422,7 @@ class KisOverseasBrokerBase(KisBrokerCommon):
         headers = self._get_header(self.ASKING_PRICE_TR_ID)
         try:
             time.sleep(0.1)
-            res = _pkg.requests.get(url, headers=headers, params=params)
+            res = _pkg.requests.get(url, headers=headers, params=params, timeout=DEFAULT_HTTP_TIMEOUT)
             res.raise_for_status()
             data = res.json()
 
