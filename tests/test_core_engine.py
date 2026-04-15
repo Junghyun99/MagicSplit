@@ -102,6 +102,12 @@ class TestRunOneCycle:
         assert len(result.executions) == 1
         assert result.executions[0].ticker == "MSFT"
 
+        # MSFT 포지션만 저장되었는지 확인
+        mock_repo.save_positions.assert_called_once()
+        saved_positions = mock_repo.save_positions.call_args[0][0]
+        assert len(saved_positions) == 1
+        assert saved_positions[0].ticker == "MSFT"
+
     def test_engine_continues_on_position_update_error(self, mock_broker, mock_repo, mock_logger):
         """포지션 업데이트 중 에러 발생 시, 해당 종목을 건너뛰고 다음 종목은 정상 처리"""
         rules = [
@@ -154,12 +160,6 @@ class TestRunOneCycle:
 
         # MSFT 포지션 반영은 정상 수행되었는지 확인 (_update_positions가 여러 번 불렸는지)
         assert engine._update_positions.call_count == 2
-
-        # MSFT 포지션만 저장되었는지 확인 (AAPL은 실패했으므로 제외)
-        mock_repo.save_positions.assert_called_once()
-        saved_positions = mock_repo.save_positions.call_args[0][0]
-        assert len(saved_positions) == 1
-        assert saved_positions[0].ticker == "MSFT"
 
 
     def test_full_cycle_no_signals(self, engine, mock_repo):
