@@ -112,6 +112,38 @@ class TestRunOneCycle:
         assert result.has_orders is True
         mock_repo.save_positions.assert_called_once()
 
+    def test_update_positions_exception(self, engine, mock_broker, mock_logger):
+        """포지션 반영 실패 시 예외 처리 및 알림 확인"""
+        engine.notifier = MagicMock()
+
+        execution = TradeExecution(
+            "AAPL", OrderAction.BUY, 5, 100.1, 1.25,
+            "2026-04-10", ExecutionStatus.FILLED,
+        )
+        mock_broker.execute_orders.return_value = [execution]
+
+        with patch.object(engine, '_update_positions', side_effect=Exception("Test Error")):
+            result = engine.run_one_cycle(sim_date="2026-04-10")
+
+        # 확인 사항
+        # 1. logger.error가 호출되었는지
+        assert any(
+            "포지션 반영 실패" in str(call) and "Test Error" in str(call)
+            for call in mock_logger.error.call_args_list
+        )
+
+        # 2. _notify_alert가 호출되었는지
+        assert any(
+            "포지션 반영 실패" in str(call) and "Test Error" in str(call)
+            for call in engine.notifier.send_alert.call_args_list
+        )
+
+        # 3. failed_tickers에 추가되어 결과 노티에 반영되었는지
+        assert any(
+            "(실패: AAPL)" in str(call)
+            for call in engine.notifier.send_message.call_args_list
+        )
+
 
 class TestUpdatePositions:
     def test_buy_adds_new_lot_with_level(self, engine):
