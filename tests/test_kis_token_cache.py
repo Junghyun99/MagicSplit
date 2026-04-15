@@ -72,5 +72,4 @@ def test_load_token_exception_handling(mock_logger):
          patch("src.infra.broker.kis_token_cache.open", side_effect=Exception("Read error")):
         result = load_token_from_cache(TEST_APP_KEY, mock_logger)
         assert result is None
-        mock_logger.warning.assert_called_once()
-        assert "[KisBroker] 토큰 캐시 로드 실패 (무시): Read error" in mock_logger.warning.call_args[0][0]
+        mock_logger.warning.assert_called_once_with("[KisBroker] 토큰 캐시 로드 실패 (무시): Read error")
