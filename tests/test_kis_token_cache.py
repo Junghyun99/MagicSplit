@@ -16,7 +16,7 @@ def mock_logger():
 
 def test_load_token_cache_file_not_exists(mock_logger):
     """Test when the cache file does not exist."""
-    with patch("os.path.exists", return_value=False):
+    with patch("src.infra.broker.kis_token_cache.os.path.exists", return_value=False):
         result = load_token_from_cache(TEST_APP_KEY, mock_logger)
         assert result is None
         mock_logger.info.assert_not_called()
