@@ -86,6 +86,9 @@ class TestKisHttpHelpers:
         )
 
         assert headers["hashkey"] == "fake_hash_456"
+        assert headers["authorization"] == f"Bearer {self.access_token}"
+        assert headers["appkey"] == self.app_key
+        assert headers["tr_id"] == self.tr_id
 
     @patch("src.infra.broker.kis_http._pkg.requests.post")
     def test_build_header_with_data_failure(self, mock_post):
