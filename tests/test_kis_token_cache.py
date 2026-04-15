@@ -42,8 +42,8 @@ def test_load_token_valid_token(mock_logger):
         }
     }
 
-    with patch("os.path.exists", return_value=True), \
-         patch("builtins.open", mock_open(read_data=json.dumps(mock_cache_data))):
+    with patch("src.infra.broker.kis_token_cache.os.path.exists", return_value=True), \
+         patch("src.infra.broker.kis_token_cache.open", mock_open(read_data=json.dumps(mock_cache_data))):
         result = load_token_from_cache(TEST_APP_KEY, mock_logger)
         assert result is not None
         assert result["access_token"] == VALID_TOKEN
