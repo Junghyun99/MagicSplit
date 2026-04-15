@@ -68,8 +68,8 @@ def test_load_token_expired_token(mock_logger):
 
 def test_load_token_exception_handling(mock_logger):
     """Test exception handling during file reading/JSON parsing."""
-    with patch("os.path.exists", return_value=True), \
-         patch("builtins.open", side_effect=Exception("Read error")):
+    with patch("src.infra.broker.kis_token_cache.os.path.exists", return_value=True), \
+         patch("src.infra.broker.kis_token_cache.open", side_effect=Exception("Read error")):
         result = load_token_from_cache(TEST_APP_KEY, mock_logger)
         assert result is None
         mock_logger.warning.assert_called_once()
