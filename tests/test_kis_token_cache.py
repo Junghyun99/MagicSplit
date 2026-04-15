@@ -26,8 +26,8 @@ def test_load_token_app_key_not_in_cache(mock_logger):
     """Test when the cache file exists but app_key is not present."""
     mock_cache_data = {"other_app_key": {"access_token": "some_token", "expires_at": "2024-01-01T00:00:00"}}
 
-    with patch("os.path.exists", return_value=True), \
-         patch("builtins.open", mock_open(read_data=json.dumps(mock_cache_data))):
+    with patch("src.infra.broker.kis_token_cache.os.path.exists", return_value=True), \
+         patch("src.infra.broker.kis_token_cache.open", mock_open(read_data=json.dumps(mock_cache_data))):
         result = load_token_from_cache(TEST_APP_KEY, mock_logger)
         assert result is None
 
