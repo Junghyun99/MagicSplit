@@ -58,8 +58,7 @@ class TestKisHttpHelpers:
         result = fetch_hashkey(self.base_url, self.app_key, self.app_secret, data, mock_logger)
 
         assert result is None
-        mock_logger.error.assert_called_once()
-        assert "HashKey 생성 실패: Network Error" in mock_logger.error.call_args[0][0]
+        mock_logger.error.assert_called_once_with("[KisBroker] HashKey 생성 실패: Network Error")
 
     @patch("src.infra.broker.kis_http._pkg.requests.post")
     def test_fetch_hashkey_no_logger(self, mock_post):
