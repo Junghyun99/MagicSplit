@@ -17,3 +17,14 @@ def test_to_yf_ticker():
     assert _to_yf_ticker("005930") == "005930.KS"
     # Already has extension
     assert _to_yf_ticker("005930.KS") == "005930.KS"
+
+def test_to_yf_ticker_kosdaq():
+    import src.config
+    src.config.CONFIGURED_DOMESTIC_TICKERS.add("000660.KQ")
+
+    try:
+        # Should resolve to .KQ instead of .KS since it's in the config
+        assert _to_yf_ticker("000660") == "000660.KQ"
+    finally:
+        # Cleanup
+        src.config.CONFIGURED_DOMESTIC_TICKERS.remove("000660.KQ")
