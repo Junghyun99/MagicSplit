@@ -9,7 +9,7 @@ def test_fetch_hashkey_error_path():
     data = {"key": "value"}
     logger = MagicMock()
 
-    with patch('src.infra.broker.kis_http._pkg.requests.post') as mock_post:
+    with patch('src.infra.broker.requests.post') as mock_post:
         mock_post.side_effect = Exception("Mock exception")
 
         result = fetch_hashkey(base_url, app_key, app_secret, data, logger)
