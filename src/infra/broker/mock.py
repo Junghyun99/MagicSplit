@@ -1,6 +1,5 @@
 # src/infra/broker/mock.py
 from typing import List, Dict, Optional
-import time
 from datetime import datetime
 
 from src.core.interfaces import IBrokerAdapter, ILogger
