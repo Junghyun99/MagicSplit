@@ -239,13 +239,17 @@ class KisDomesticBrokerBase(KisBrokerCommon):
             "INQR_DVSN_1": "0",
             "INQR_DVSN_2": "0"
         }
-        headers = self._get_header(tr_id)
-        res = _pkg.requests.get(url, headers=headers, params=params, timeout=DEFAULT_HTTP_TIMEOUT)
-        res.raise_for_status()
-        data = res.json()
-        if data['rt_cd'] == '0':
-            return {item.get('odno', '') for item in data.get('output', [])}
-        return set()
+        try:
+            headers = self._get_header(tr_id)
+            res = _pkg.requests.get(url, headers=headers, params=params, timeout=DEFAULT_HTTP_TIMEOUT)
+            res.raise_for_status()
+            data = res.json()
+            if data['rt_cd'] == '0':
+                return {item.get('odno', '') for item in data.get('output', [])}
+            return set()
+        except Exception as e:
+            self.logger.warning(f"[KisDomestic] _get_pending_order_ids error: {e}")
+            return set()
 
     def _get_pending_orders_count(self) -> int:
         """국내주식 미체결 건수 조회."""
