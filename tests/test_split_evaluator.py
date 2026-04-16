@@ -2,7 +2,7 @@
 import pytest
 from src.core.logic.split_evaluator import SplitEvaluator
 from src.core.models import (
-    StockRule, PositionLot, Portfolio, OrderAction, SplitSignal,
+    OrderAction,
 )
 
 
