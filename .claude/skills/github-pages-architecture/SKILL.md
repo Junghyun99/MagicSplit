@@ -173,7 +173,6 @@ export function resizeAllCharts() {
 ```javascript
 import { renderSummaryCards, renderDataTable } from './ui.js';
 import { renderReturnChart, resizeAllCharts } from './charts.js';
-import { filterByDateRange } from './utils.js';
 
 // 진입점: 모든 모듈을 조율
 document.addEventListener('DOMContentLoaded', async () => {
