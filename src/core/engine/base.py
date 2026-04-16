@@ -1,7 +1,7 @@
 # src/core/engine/base.py
 import time
 from datetime import datetime
-from typing import List, Optional, Tuple
+from typing import List, Optional
 
 from src.core.interfaces import IBrokerAdapter, IRepository, ILogger, INotifier
 from src.core.models import (
@@ -11,7 +11,6 @@ from src.core.models import (
     Order,
     OrderAction,
     TradeExecution,
-    TradeSignal,
     SplitSignal,
     DayResult,
 )
@@ -255,7 +254,7 @@ class MagicSplitEngine:
                 sig = signal_map.get((exe.ticker, OrderAction.SELL))
                 if sig and sig.lot_id:
                     # 신호에 지정된 lot_id로 제거
-                    target = [l for l in updated if l.lot_id == sig.lot_id]
+                    target = [lot for lot in updated if lot.lot_id == sig.lot_id]
                     if target:
                         updated.remove(target[0])
                         self.logger.info(
@@ -264,9 +263,9 @@ class MagicSplitEngine:
                         )
                 else:
                     # 폴백: 가장 높은 level lot 제거
-                    ticker_lots = [l for l in updated if l.ticker == exe.ticker]
+                    ticker_lots = [lot for lot in updated if lot.ticker == exe.ticker]
                     if ticker_lots:
-                        highest = max(ticker_lots, key=lambda l: l.level)
+                        highest = max(ticker_lots, key=lambda lot: lot.level)
                         updated.remove(highest)
                         self.logger.info(
                             f"[Position] Remove lot: {highest.lot_id} Lv{highest.level} "

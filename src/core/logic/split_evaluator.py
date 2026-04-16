@@ -83,7 +83,7 @@ class SplitEvaluator:
             return [signal] if signal else []
 
         # 마지막 차수(가장 높은 level) lot 찾기
-        last_lot = max(ticker_lots, key=lambda l: l.level)
+        last_lot = max(ticker_lots, key=lambda lot: lot.level)
 
         # 매도 확인 (우선)
         sell_signal = self._evaluate_sell(rule, last_lot, current_price)

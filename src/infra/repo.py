@@ -59,9 +59,9 @@ class JsonRepository(IRepository):
 
         result = []
         for ticker, ticker_lots in by_ticker.items():
-            has_legacy = any(l.level == 0 for l in ticker_lots)
+            has_legacy = any(lot.level == 0 for lot in ticker_lots)
             if has_legacy:
-                sorted_lots = sorted(ticker_lots, key=lambda l: (l.buy_date, l.lot_id))
+                sorted_lots = sorted(ticker_lots, key=lambda lot: (lot.buy_date, lot.lot_id))
                 for i, lot in enumerate(sorted_lots, start=1):
                     result.append(PositionLot(
                         lot_id=lot.lot_id,

@@ -1,9 +1,9 @@
 # tests/test_core_engine.py
 import pytest
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 from src.core.engine.base import MagicSplitEngine
 from src.core.models import (
-    StockRule, PositionLot, Portfolio, Order, OrderAction,
+    StockRule, PositionLot, Portfolio, OrderAction,
     TradeExecution, ExecutionStatus, SplitSignal,
 )
 

@@ -60,7 +60,7 @@ class KisBrokerCommon(IBrokerAdapter):
             "appsecret": self.app_secret,
         }
         try:
-            res = _pkg.requests.post(url, json=payload)
+            res = _pkg.requests.post(url, json=payload, timeout=10)
             res.raise_for_status()
             data = res.json()
             if 'access_token' not in data:
@@ -133,7 +133,8 @@ class KisBrokerCommon(IBrokerAdapter):
             self.logger.info(f"[KisBroker] Processing {len(sell_orders)} SELL orders...")
             for order in sell_orders:
                 res = self._send_order_and_wait(order, timeout=30)
-                if res: executions.append(res)
+                if res:
+                    executions.append(res)
                 time.sleep(0.2)  # API 제한 고려
 
         # === 2. 잔고 갱신 및 매수 재계산 ===
@@ -168,7 +169,8 @@ class KisBrokerCommon(IBrokerAdapter):
                     self.logger.warning(f"[KisBroker] 스프레드 비정상 — {order.ticker} 매수 건너뜀")
                     continue
                 estimated_price = ask if ask > 0 else order.price * 1.02
-                if estimated_price <= 0: continue
+                if estimated_price <= 0:
+                    continue
 
                 # 수량 재계산
                 max_qty = int(budget / estimated_price)

@@ -1,8 +1,7 @@
 # tests/conftest.py
 import pytest
 from src.core.models import (
-    StockRule, PositionLot, Portfolio, Order, OrderAction,
-    TradeExecution, ExecutionStatus, SplitSignal,
+    StockRule, PositionLot, Portfolio,
 )
 
 

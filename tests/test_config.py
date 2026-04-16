@@ -1,5 +1,4 @@
 # tests/test_config.py
-import pytest
 from src.config import Config, TICKER_EXCHANGE_MAP, EXCHANGE_CODE_SHORT_TO_FULL
 
 
