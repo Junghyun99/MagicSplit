@@ -126,13 +126,13 @@ export function filterByDateRange(data, startDate, endDate) {
 ### ui.js — DOM 업데이트 모듈
 
 ```javascript
-import { formatCurrency, computeReturns } from './utils.js';
+import { formatCurrency, computeSummary } from './utils.js';
 
 // DOM 업데이트만 담당
 export function renderSummaryCards(data) {
-    const returns = computeReturns(data);
-    document.getElementById('total-return').textContent = formatCurrency(returns.total);
-    document.getElementById('daily-return').textContent = returns.daily.toFixed(2) + '%';
+    const summary = computeSummary(data);
+    document.getElementById('total-return').textContent = formatCurrency(summary.total);
+    document.getElementById('daily-return').textContent = summary.daily.toFixed(2) + '%';
 }
 
 export function renderDataTable(rows, containerId) {
