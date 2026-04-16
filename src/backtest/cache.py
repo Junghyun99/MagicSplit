@@ -34,9 +34,9 @@ class BacktestDataCache:
         self, tickers: List[str], start_date: str, end_date: str
     ) -> pd.DataFrame:
         """
-        기존 캐시를 삭제하고 전체 티커를 새로 다운로드한다.
+        캐시를 확인하고 없으면 전체 티커를 새로 다운로드한다.
 
-        1. 기존 캐시 삭제
+        1. 기존 캐시 확인
         2. 전 티커 일괄 다운로드 (auto_adjust=False)
         3. Close 컬럼만 추출
         4. NaN을 이전 값으로 채움 (ffill)
@@ -47,7 +47,29 @@ class BacktestDataCache:
         """
         self.cache_dir.mkdir(parents=True, exist_ok=True)
 
-        # 1. 기존 캐시 삭제
+        if self.close_path.exists():
+            try:
+                cached_df = pd.read_parquet(self.close_path)
+                # cached_df might not have all tickers if they were delisted/removed
+                # Just check if we can satisfy the date range. If so, return whatever tickers we have.
+                # However, to be safe, if a requested ticker is NOT in the cache, it's safer to re-download
+                # UNLESS it's a permanent failure. For simplicity and to fix the KeyError,
+                # we return the intersection of requested tickers and cached columns.
+                cached_start = cached_df.index.min().strftime('%Y-%m-%d')
+                cached_end = cached_df.index.max().strftime('%Y-%m-%d')
+
+                # Check if all requested tickers are in the cache
+                missing_tickers = [t for t in tickers if t not in cached_df.columns]
+
+                # If there are missing tickers, we can't reliably use the cache for them
+                # But if we have ALL tickers, AND dates match, use cache
+                if not missing_tickers and cached_start <= start_date and cached_end >= end_date:
+                    self._logger.info(f"캐시 적중: {tickers} ({start_date} ~ {end_date})")
+                    return cached_df.loc[start_date:end_date, tickers]
+            except Exception as e:
+                self._logger.warning(f"캐시 읽기 실패: {e}")
+
+        # 캐시가 유효하지 않으면 삭제하고 다시 받기
         self.clear()
 
         # 2. 전체 다운로드
@@ -68,7 +90,9 @@ class BacktestDataCache:
         # 4. 저장
         self._save_parquet(close_df, self.close_path)
 
-        return close_df
+        # return what we actually have in close_df, avoiding KeyError for missing/delisted tickers
+        valid_tickers = [t for t in tickers if t in close_df.columns]
+        return close_df.loc[start_date:end_date, valid_tickers]
 
     def _download_close(
         self, tickers: List[str], start_date: str, end_date: str
