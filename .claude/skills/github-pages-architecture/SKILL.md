@@ -107,6 +107,11 @@ export function computeReturns(data) {
     return data.map(d => ({ date: d.date, return: d.close / d.open - 1 }));
 }
 
+export function computeSummary(data) {
+    // 요약 통계 계산 로직
+    return { total: 1000000, daily: 5.2 };
+}
+
 export function formatCurrency(value) {
     return new Intl.NumberFormat('ko-KR', { style: 'currency', currency: 'KRW' }).format(value);
 }
