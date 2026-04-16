@@ -40,7 +40,7 @@ curl -fsSL https://github.com/cli/cli/releases/download/version
 인자가 없는 경우:
 - `git remote get-url origin`으로 owner/repo를 파싱한 후 열려 있는 이슈 목록을 가져옵니다:
 ```bash
-gh api repos/{owner}/{repo}/issues?state=open\&per_page=20
+gh api "repos/{owner}/{repo}/issues?state=open&per_page=20"
 ```
 - `locked`, `number`, `title`, `labels`, `created_at`, `body` 필드를 활용합니다.
 
