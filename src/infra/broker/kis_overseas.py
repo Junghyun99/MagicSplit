@@ -94,6 +94,11 @@ class KisOverseasBrokerBase(KisBrokerCommon):
             except Exception as e:
                 self.logger.error(f"[KisBroker] Error getting portfolio ({exch}): {e}")
 
+        if not cash_fetched:
+            raise RuntimeError(
+                "모든 거래소(NASD/NYSE/AMEX) 잔고 조회 실패 — 사이클을 중단합니다."
+            )
+
         return Portfolio(
             total_cash=total_cash,
             holdings=all_holdings,
