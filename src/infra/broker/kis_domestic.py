@@ -378,7 +378,7 @@ class KisDomesticPaperBroker(KisDomesticBrokerBase):
     PORTFOLIO_TR_ID = "VTTC8434R"
     BUY_TR_ID = "VTTC0012U"
     SELL_TR_ID = "VTTC0011U"
-    PENDING_TR_ID = "TTTC0084R"
+    PENDING_TR_ID = "VTTC0084R"
     FILL_TR_ID = "VTTC0081R"
     CANCEL_TR_ID = "VTTC0013U"
 
