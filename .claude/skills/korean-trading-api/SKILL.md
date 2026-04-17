@@ -16,7 +16,7 @@ description: Use when implementing or extending KIS broker for Korean domestic/o
 | 실전 | `https://openapi.koreainvestment.com:9443` |
 | 모의 | `https://openapivts.koreainvestment.com:29443` |
 
-**기존 구현:** `KisPaperBroker`(모의), `KisLiveBroker`(실전) → `src/infra/broker.py:530-555`
+**기존 구현:** `KisOverseasPaperBroker`(모의), `KisOverseasLiveBroker`(실전) → `src/infra/broker/kis_overseas.py`
 
 ## 공통 패턴
 
