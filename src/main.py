@@ -1,8 +1,5 @@
 # src/main.py
-import sys
 import os
-sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/..")
-
 from src.config import Config
 from src.strategy_config import StrategyConfig
 from src.core.engine import MagicSplitEngine  # noqa: F401  (레지스트리 등록)

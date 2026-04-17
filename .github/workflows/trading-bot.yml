@@ -35,7 +35,7 @@ jobs:
         MY_ACCOUNT_KIS_APP_SECRET: ${{ secrets.MY_ACCOUNT_KIS_APP_SECRET }}
         MY_ACCOUNT_KIS_ACC_NO: ${{ secrets.MY_ACCOUNT_KIS_ACC_NO }}
       run: |
-        python src/main.py
+        python -m src.main
 
     - name: Commit updated data files
       run: |
