@@ -11,6 +11,7 @@ from src.core.models import (
     Order,
     OrderAction,
     TradeExecution,
+    ExecutionStatus,
     SplitSignal,
     DayResult,
 )
@@ -231,6 +232,11 @@ class MagicSplitEngine:
             signal_map[(sig.ticker, sig.action)] = sig
 
         for exe in executions:
+            if exe.status == ExecutionStatus.REJECTED:
+                self.logger.warning(
+                    f"[Position] Skip: {exe.ticker} {exe.action} rejected"
+                )
+                continue
             if exe.action == OrderAction.BUY:
                 sig = signal_map.get((exe.ticker, OrderAction.BUY))
                 level = sig.level if sig else 1
