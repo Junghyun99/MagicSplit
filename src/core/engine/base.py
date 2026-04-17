@@ -11,6 +11,7 @@ from src.core.models import (
     Order,
     OrderAction,
     TradeExecution,
+    ExecutionStatus,
     SplitSignal,
     DayResult,
 )
@@ -251,6 +252,11 @@ class MagicSplitEngine:
                 )
 
             elif exe.action == OrderAction.SELL:
+                if exe.status == ExecutionStatus.REJECTED:
+                    self.logger.warning(
+                        f"[Position] Skip lot removal: {exe.ticker} SELL rejected"
+                    )
+                    continue
                 sig = signal_map.get((exe.ticker, OrderAction.SELL))
                 if sig and sig.lot_id:
                     # 신호에 지정된 lot_id로 제거

@@ -81,6 +81,29 @@ class TestMockBroker:
 
         assert executions[0].quantity == 3  # 보유량만큼만
 
+    def test_sell_with_zero_holdings_returns_rejected(self):
+        """보유량 0인 종목 매도 시도 → REJECTED 반환, 상태 변경 없음"""
+        from src.core.models import ExecutionStatus
+        initial_cash = 5000.0
+        broker = MockBroker(initial_cash=initial_cash, holdings={"AAPL": 0}, prices={"AAPL": 100.0})
+        orders = [Order("AAPL", OrderAction.SELL, 10, 100.0)]
+        executions = broker.execute_orders(orders)
+
+        assert len(executions) == 1
+        assert executions[0].status == ExecutionStatus.REJECTED
+        assert executions[0].quantity == 0
+        assert broker.cash == initial_cash  # 현금 변동 없음
+        assert broker.holdings.get("AAPL", 0) == 0  # 보유량 변동 없음
+
+    def test_sell_unowned_ticker_returns_rejected(self):
+        """보유하지 않은 종목 매도 시도 → REJECTED 반환"""
+        from src.core.models import ExecutionStatus
+        broker = MockBroker(holdings={}, prices={"AAPL": 100.0})
+        orders = [Order("AAPL", OrderAction.SELL, 5, 100.0)]
+        executions = broker.execute_orders(orders)
+
+        assert executions[0].status == ExecutionStatus.REJECTED
+
     def test_buy_insufficient_cash(self):
         """자금 부족 시 가능한 만큼만 매수"""
         broker = MockBroker(initial_cash=200.0, prices={"AAPL": 100.0})
