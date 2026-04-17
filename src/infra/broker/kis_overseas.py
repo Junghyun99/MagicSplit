@@ -105,69 +105,6 @@ class KisOverseasBrokerBase(KisBrokerCommon):
             current_prices=all_prices
         )
 
-    def _send_order(self, order: Order) -> Optional[TradeExecution]:
-        """실제 주문 API 호출 (체결 대기 없음)"""
-        tr_id = self.BUY_TR_ID if order.action == OrderAction.BUY else self.SELL_TR_ID
-
-        url = f"{self.base_url}/uapi/overseas-stock/v1/trading/order"
-        exch = self._get_exchange_code(order.ticker, api_type="order")
-
-        bid, ask = self._fetch_asking_price(order.ticker)
-
-        if not self._check_spread(bid, ask):
-            mid = (bid + ask) / 2
-            spread_pct = (ask - bid) / mid * 100
-            self.logger.warning(
-                f"[KisBroker] 스프레드 비정상 — {order.ticker} "
-                f"bid={bid} ask={ask} spread={spread_pct:.2f}% > {self.SPREAD_THRESHOLD_PCT}% — 주문 보류"
-            )
-            return None
-
-        if order.action == OrderAction.BUY:
-            order_price = round(ask, 2) if ask > 0 else round(order.price, 2)
-        else:
-            order_price = round(bid, 2) if bid > 0 else round(order.price, 2)
-
-        data = {
-            "CANO": self.cano,
-            "ACNT_PRDT_CD": self.acnt_prdt_cd,
-            "OVRS_EXCG_CD": exch,
-            "PDNO": order.ticker,
-            "ORD_QTY": str(order.quantity),
-            "OVRS_ORD_UNPR": str(order_price),
-            "CTAC_TLNO": "",
-            "MGCO_APTM_ODNO": "",
-            "SLL_TYPE": "00" if order.action == OrderAction.SELL else "",
-            "ORD_SVR_DVSN_CD": "0",
-            "ORD_DVSN": "00"
-        }
-
-        try:
-            headers = self._get_header(tr_id, data)
-            res = _pkg.requests.post(url, headers=headers, json=data, timeout=DEFAULT_HTTP_TIMEOUT)
-            res.raise_for_status()
-            resp_data = res.json()
-
-            if resp_data['rt_cd'] != '0':
-                self.logger.error(f"[KisBroker] Order Failed: {resp_data.get('msg1')}")
-                return None
-
-            self.logger.info(f"[KisBroker] Order Sent: {order.action} {order.ticker} {order.quantity} @ {order_price}")
-
-            return TradeExecution(
-                ticker=order.ticker,
-                action=order.action,
-                quantity=order.quantity,
-                price=order_price,
-                fee=0.0,
-                date=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                status=ExecutionStatus.ORDERED
-            )
-
-        except Exception as e:
-            self.logger.error(f"[KisBroker] Order Error: {e}")
-            return None
-
     def _send_order_and_wait(self, order: Order, timeout: int = 30) -> Optional[TradeExecution]:
         """주문 전송 후 체결 대기. 체결 시 FILLED, 타임아웃 시 ORDERED(미확인 체결) 반환."""
         tr_id = self.BUY_TR_ID if order.action == OrderAction.BUY else self.SELL_TR_ID
