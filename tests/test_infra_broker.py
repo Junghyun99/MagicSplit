@@ -3,6 +3,7 @@ import pytest
 from unittest.mock import MagicMock, patch
 from src.infra.broker.mock import MockBroker
 from src.infra.broker.kis_base import KisBrokerCommon
+from src.infra.broker.kis_overseas import KisOverseasBrokerBase
 from src.core.models import Order, OrderAction, ExecutionStatus
 
 
@@ -143,3 +144,59 @@ class TestCheckSpread:
 
     def test_inverted_spread_returns_false(self, broker):
         assert broker._check_spread(100.0, 90.0) is False
+
+
+class TestKisOverseasGetPortfolio:
+    @pytest.fixture
+    def broker(self):
+        from datetime import datetime, timedelta
+        b = KisOverseasBrokerBase.__new__(KisOverseasBrokerBase)
+        b.logger = MagicMock()
+        b.base_url = "https://fake"
+        b.cano = "12345678"
+        b.acnt_prdt_cd = "01"
+        b.PORTFOLIO_TR_ID = "TTTS3012R"
+        b.app_key = "fake_key"
+        b.app_secret = "fake_secret"
+        b.access_token = "fake_token"
+        b.token_expires_at = datetime.now() + timedelta(hours=1)
+        return b
+
+    @patch("src.infra.broker.kis_overseas._pkg.requests.get")
+    def test_all_exchanges_fail_raises_runtime_error(self, mock_get, broker):
+        """모든 거래소 조회 실패 시 RuntimeError 발생"""
+        mock_resp = MagicMock()
+        mock_resp.json.return_value = {"rt_cd": "1", "msg1": "error"}
+        mock_resp.raise_for_status.return_value = None
+        mock_get.return_value = mock_resp
+
+        with pytest.raises(RuntimeError, match="모든 거래소"):
+            broker.get_portfolio()
+
+    @patch("src.infra.broker.kis_overseas._pkg.requests.get")
+    def test_all_exchanges_raise_exception_raises_runtime_error(self, mock_get, broker):
+        """모든 거래소에서 예외 발생 시 RuntimeError 발생"""
+        mock_get.side_effect = Exception("network error")
+
+        with pytest.raises(RuntimeError, match="모든 거래소"):
+            broker.get_portfolio()
+
+    @patch("src.infra.broker.kis_overseas._pkg.requests.get")
+    def test_first_exchange_fails_second_succeeds(self, mock_get, broker):
+        """첫 번째 거래소 실패 → 두 번째 성공 시 total_cash 정상 반환"""
+        fail_resp = MagicMock()
+        fail_resp.json.return_value = {"rt_cd": "1", "msg1": "error"}
+        fail_resp.raise_for_status.return_value = None
+
+        success_resp = MagicMock()
+        success_resp.raise_for_status.return_value = None
+        success_resp.json.return_value = {
+            "rt_cd": "0",
+            "output1": [],
+            "output2": {"ovrs_ord_psbl_amt": "5000.00"},
+        }
+
+        mock_get.side_effect = [fail_resp, success_resp, success_resp]
+
+        pf = broker.get_portfolio()
+        assert pf.total_cash == 5000.0
