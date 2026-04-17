@@ -218,7 +218,9 @@ def _handle_ticker(
 def _build_repo_and_broker(logger):
     config = Config()
     strategy = StrategyConfig(config.CONFIG_JSON_PATH)
-    rules = [r for r in strategy.rules if r.enabled] or strategy.rules
+    # detect_mismatches 는 enabled 여부와 무관하게 모든 rule ∪ positions 티커를
+    # 검사하므로, 여기서는 전체 rule 을 그대로 전달한다.
+    rules = strategy.rules
     if not rules:
         raise ValueError("config.json 에 종목이 없습니다.")
     market_type = rules[0].market_type

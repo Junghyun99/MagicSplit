@@ -224,17 +224,21 @@ class MagicSplitEngine:
             self.logger.info(">>> Step 2.5: Reconcile OK (수량 일치)")
             return set()
 
-        self.logger.error(
-            f">>> Step 2.5: 수량 불일치 {len(mismatches)}건 감지 — 해당 종목 매매 중단"
+        # 불일치 N건을 한 통의 알림으로 묶어 전송 — 대규모 코퍼릿 액션 등으로
+        # 다수 종목이 동시에 불일치할 때 Slack 스팸을 방지한다.
+        detail_lines = [
+            f"[{m.ticker}] Qty Mismatch: broker={m.broker_qty}, "
+            f"positions={m.positions_qty} (lots={m.lot_count}, levels={m.levels})"
+            for m in mismatches
+        ]
+        summary = (
+            f">>> Step 2.5: 수량 불일치 {len(mismatches)}건 감지 — "
+            f"해당 종목 매매 중단\n"
+            + "\n".join(detail_lines)
+            + "\n실행 권장: scripts/reconcile_positions.py"
         )
-        for m in mismatches:
-            msg = (
-                f"[{m.ticker}] Qty Mismatch: broker={m.broker_qty}, "
-                f"positions={m.positions_qty} (lots={m.lot_count}, levels={m.levels}) "
-                f"— 매매 중단. scripts/reconcile_positions.py 실행 권장."
-            )
-            self.logger.error(msg)
-            self._notify_alert(msg)
+        self.logger.error(summary)
+        self._notify_alert(summary)
         return {m.ticker for m in mismatches}
 
     def _refresh_portfolio(self, old_portfolio: Portfolio) -> Portfolio:
