@@ -99,11 +99,13 @@ def run_backtest(
     prev_prices: Dict[str, float] = {}
     last_result: Optional[DayResult] = None
 
+    # Pre-convert DataFrame to dict for fast O(1) row access
+    close_dict = close_df.to_dict('index')
+
     for today in sim_days:
         # 종가 추출
         try:
-            row = close_df.loc[today]
-            current_prices = row.to_dict()
+            current_prices = close_dict[today]
             # NaN → 전일 가격으로 대체 (forward-fill)
             current_prices = {
                 t: (p if not pd.isna(p) else prev_prices.get(t))
