@@ -41,3 +41,7 @@ def test_to_yf_ticker():
     assert _to_yf_ticker("005930") == "005930.KS"
     # Already has extension
     assert _to_yf_ticker("005930.KS") == "005930.KS"
+
+
+def test_paper_broker_uses_mock_pending_tr_id():
+    assert KisDomesticPaperBroker.PENDING_TR_ID == "VTTC0084R"
