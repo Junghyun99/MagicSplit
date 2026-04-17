@@ -194,7 +194,7 @@ params = {
 
 ---
 
-## 3. 국내주식 API (미구현)
+## 3. 국내주식 API
 
 ### 3.1 매수/매도
 - **Endpoint:** `POST /uapi/domestic-stock/v1/trading/order-cash`
