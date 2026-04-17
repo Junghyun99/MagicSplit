@@ -221,3 +221,10 @@ class TestKisOverseasGetPortfolio:
 
         pf = broker.get_portfolio()
         assert pf.total_cash == 5000.0
+
+
+class TestKisOverseasSendOrderRemoved:
+    def test_send_order_does_not_exist(self):
+        """_send_order는 dead code로 제거됨 — _send_order_and_wait만 존재해야 함."""
+        assert not hasattr(KisOverseasBrokerBase, '_send_order')
+        assert hasattr(KisOverseasBrokerBase, '_send_order_and_wait')
