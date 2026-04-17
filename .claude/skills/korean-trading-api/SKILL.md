@@ -329,14 +329,14 @@ params = {
 | **해외** 미국 매도 | TTTT1006U | VTTT1006U | POST | O |
 | **해외** 미체결 | TTTS3018R | VTTS3018R | GET | O |
 | **해외** 잔고 | TTTS3012R | VTTS3012R | GET | O |
-| **해외** 체결내역 | TTTS3035R | VTTS3035R | GET | X |
+| **해외** 체결내역 | TTTS3035R | VTTS3035R | GET | O |
 | **해외** 매수가능 | TTTS3007R | VTTS3007R | GET | X |
-| **국내** 매수 | TTTC0012U | VTTC0012U | POST | X |
-| **국내** 매도 | TTTC0011U | VTTC0011U | POST | X |
-| **국내** 정정/취소 | TTTC0013U | VTTC0013U | POST | X |
-| **국내** 미체결 | TTTC0084R | - | GET | X |
-| **국내** 잔고 | TTTC8434R | VTTC8434R | GET | X |
-| **국내** 체결내역 | TTTC0081R | VTTC0081R | GET | X |
+| **국내** 매수 | TTTC0012U | VTTC0012U | POST | O |
+| **국내** 매도 | TTTC0011U | VTTC0011U | POST | O |
+| **국내** 정정/취소 | TTTC0013U | VTTC0013U | POST | O |
+| **국내** 미체결 | TTTC0084R | - | GET | O |
+| **국내** 잔고 | TTTC8434R | VTTC8434R | GET | O |
+| **국내** 체결내역 | TTTC0081R | VTTC0081R | GET | O |
 
 ## 거래소 코드 매핑 (해외주식)
 
