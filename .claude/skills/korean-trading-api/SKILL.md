@@ -8,7 +8,7 @@ description: Use when implementing or extending KIS broker for Korean domestic/o
 ## Overview
 
 한국투자증권 Open Trading API를 통한 국내주식/해외주식 매매 레퍼런스.
-현재 `src/infra/broker.py`의 `KisBrokerBase`는 **해외주식(미국)만 구현**되어 있으며, 국내주식은 미구현 상태.
+현재 `src/infra/broker/` 하위의 `KisBrokerCommon`을 기반으로 해외주식(`kis_overseas.py`) 및 국내주식(`kis_domestic.py`)이 구현되어 있습니다.
 
 **서버 URL:**
 | 환경 | URL |
