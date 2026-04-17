@@ -232,6 +232,11 @@ class MagicSplitEngine:
             signal_map[(sig.ticker, sig.action)] = sig
 
         for exe in executions:
+            if exe.status == ExecutionStatus.REJECTED:
+                self.logger.warning(
+                    f"[Position] Skip: {exe.ticker} {exe.action} rejected"
+                )
+                continue
             if exe.action == OrderAction.BUY:
                 sig = signal_map.get((exe.ticker, OrderAction.BUY))
                 level = sig.level if sig else 1
@@ -252,11 +257,6 @@ class MagicSplitEngine:
                 )
 
             elif exe.action == OrderAction.SELL:
-                if exe.status == ExecutionStatus.REJECTED:
-                    self.logger.warning(
-                        f"[Position] Skip lot removal: {exe.ticker} SELL rejected"
-                    )
-                    continue
                 sig = signal_map.get((exe.ticker, OrderAction.SELL))
                 if sig and sig.lot_id:
                     # 신호에 지정된 lot_id로 제거
