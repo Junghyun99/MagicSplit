@@ -198,9 +198,9 @@ class KisBrokerCommon(IBrokerAdapter):
         return False
 
     def _check_spread(self, bid: float, ask: float) -> bool:
-        """스프레드 정상 여부 반환. bid/ask가 0이면 True (fallback 허용)"""
-        if bid <= 0 or ask <= 0:
-            return True
+        """스프레드 정상 여부 반환. bid/ask가 유효하지 않거나(<=0) 역전되면 False"""
+        if bid <= 0 or ask <= 0 or ask < bid:
+            return False
         mid = (bid + ask) / 2
         spread_pct = (ask - bid) / mid * 100
         return spread_pct <= self.SPREAD_THRESHOLD_PCT
