@@ -13,7 +13,7 @@ def mock_broker():
     broker = MagicMock()
     broker.get_portfolio.return_value = Portfolio(
         total_cash=10000.0,
-        holdings={"AAPL": 5},
+        holdings={},
         current_prices={"AAPL": 100.0},
     )
     broker.fetch_current_prices.return_value = {"AAPL": 100.0}
@@ -194,6 +194,12 @@ class TestRunOneCycle:
         mock_repo.load_positions.return_value = [
             PositionLot("lot_001", "AAPL", 90.0, 5, "2026-04-01", level=1),
         ]
+        # 브로커 수량과 positions 합 일치 (불일치 감지 회피)
+        mock_broker.get_portfolio.return_value = Portfolio(
+            total_cash=10000.0,
+            holdings={"AAPL": 5},
+            current_prices={"AAPL": 100.0},
+        )
 
         execution = TradeExecution(
             "AAPL", OrderAction.SELL, 5, 99.9, 1.25,
@@ -205,6 +211,78 @@ class TestRunOneCycle:
 
         assert result.has_orders is True
         mock_repo.save_positions.assert_called_once()
+
+
+class TestReconcileHalt:
+    """브로커 수량 ≠ positions 수량 합 불일치 감지 후 매매 중단 동작."""
+
+    def test_halts_mismatched_ticker_and_trades_others(
+        self, mock_broker, mock_repo, mock_logger,
+    ):
+        """불일치 종목은 스킵, 일치 종목은 정상 매매."""
+        rules = [
+            StockRule("AAPL", -5.0, 10.0, 500, 10),
+            StockRule("MSFT", -5.0, 10.0, 500, 10),
+        ]
+        # AAPL: broker=7, positions sum=5 → 불일치
+        # MSFT: broker=0, positions=[] → 일치
+        mock_broker.get_portfolio.return_value = Portfolio(
+            total_cash=10000.0,
+            holdings={"AAPL": 7},
+            current_prices={"AAPL": 100.0, "MSFT": 200.0},
+        )
+        mock_broker.fetch_current_prices.return_value = {"AAPL": 100.0, "MSFT": 200.0}
+        mock_repo.load_positions.return_value = [
+            PositionLot("lot_001", "AAPL", 90.0, 5, "2026-04-01", level=1),
+        ]
+
+        notifier = MagicMock()
+        engine = MagicSplitEngine(
+            broker=mock_broker, repo=mock_repo,
+            logger=mock_logger, stock_rules=rules, notifier=notifier,
+        )
+
+        msft_exe = TradeExecution(
+            "MSFT", OrderAction.BUY, 2, 200.0, 1.0,
+            "2026-04-10", ExecutionStatus.FILLED,
+        )
+        mock_broker.execute_orders.return_value = [msft_exe]
+
+        result = engine.run_one_cycle(sim_date="2026-04-10")
+
+        # AAPL 은 매매 신호/체결 없어야 한다
+        assert all(s.ticker != "AAPL" for s in result.signals)
+        assert all(e.ticker != "AAPL" for e in result.executions)
+
+        # MSFT 는 정상 처리
+        assert any(e.ticker == "MSFT" for e in result.executions)
+
+        # 알림이 AAPL 불일치로 한 번 이상 호출되어야 한다
+        alert_msgs = [c.args[0] for c in notifier.send_alert.call_args_list]
+        assert any("AAPL" in m and "Mismatch" in m for m in alert_msgs)
+
+    def test_no_halt_when_all_match(self, mock_broker, mock_repo, mock_logger):
+        """모든 종목 수량 일치 시 halt 티커 없음."""
+        rules = [StockRule("AAPL", -5.0, 10.0, 500, 10)]
+        mock_broker.get_portfolio.return_value = Portfolio(
+            total_cash=10000.0,
+            holdings={"AAPL": 5},
+            current_prices={"AAPL": 100.0},
+        )
+        mock_broker.fetch_current_prices.return_value = {"AAPL": 100.0}
+        mock_repo.load_positions.return_value = [
+            PositionLot("lot_001", "AAPL", 90.0, 5, "2026-04-01", level=1),
+        ]
+
+        engine = MagicSplitEngine(
+            broker=mock_broker, repo=mock_repo,
+            logger=mock_logger, stock_rules=rules,
+        )
+        halted = engine._check_reconcile(
+            mock_repo.load_positions.return_value,
+            mock_broker.get_portfolio.return_value,
+        )
+        assert halted == set()
 
 
 class TestUpdatePositions:
