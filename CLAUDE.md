@@ -11,7 +11,7 @@
 
 ## 주요 명령어
 - 테스트: `pytest --cov=src --cov-report=term-missing --cov-fail-under=80 tests/`
-- 봇 실행: `python src/main.py`
+- 봇 실행: `python -m src.main`
 - 의존성 설치: `pip install -r requirements.txt`
 
 ## 프로젝트 구조

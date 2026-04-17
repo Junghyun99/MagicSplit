@@ -33,7 +33,7 @@ jobs:
         KIS_ACC_NO: ${{ secrets.KIS_ACC_NO }}
         IS_LIVE: ${{ secrets.IS_LIVE }}
       run: |
-        python src/main.py
+        python -m src.main
 
     - name: Commit updated data files
       run: |

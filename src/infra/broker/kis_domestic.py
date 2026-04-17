@@ -5,8 +5,6 @@ import time
 import src.infra.broker as _pkg  # test patch 타깃: src.infra.broker.requests
 from datetime import datetime
 from src.config import DEFAULT_HTTP_TIMEOUT
-
-from src.config import DEFAULT_HTTP_TIMEOUT
 from src.core.models import Portfolio, Order, TradeExecution, OrderAction, ExecutionStatus
 
 from .kis_base import KisBrokerCommon
