@@ -1,7 +1,7 @@
 # src/core/engine/base.py
 import time
 from datetime import datetime
-from typing import List, Optional
+from typing import List, Optional, Set
 
 from src.core.interfaces import IBrokerAdapter, IRepository, ILogger, INotifier
 from src.core.models import (
@@ -14,7 +14,7 @@ from src.core.models import (
     SplitSignal,
     DayResult,
 )
-from src.core.logic import SplitEvaluator
+from src.core.logic import SplitEvaluator, detect_mismatches
 from src.core.engine.registry import register_engine
 
 
@@ -81,8 +81,19 @@ class MagicSplitEngine:
             positions = self.repo.load_positions()
             self.logger.info(f"Loaded {len(positions)} position lot(s)")
 
+            # Step 2.5: 브로커 수량 ↔ positions 수량 합 불일치 검사
+            # 불일치 종목은 이번 사이클에서 매매 중단 (자동 보정 미지원)
+            halted_tickers = self._check_reconcile(positions, portfolio)
+
             # Step 3~5: 종목별 순차 실행
             for rule in self.stock_rules:
+                if rule.ticker in halted_tickers:
+                    self.logger.warning(
+                        f"[{rule.ticker}] 수량 불일치로 매매 중단. "
+                        f"scripts/reconcile_positions.py 로 보정 후 재실행."
+                    )
+                    failed_tickers.append(rule.ticker)
+                    continue
                 try:
                     self.logger.info(f">>> Processing {rule.ticker}")
 
@@ -198,6 +209,33 @@ class MagicSplitEngine:
         if not executions:
             self._notify_alert("Orders sent but NO execution result returned.")
         return executions
+
+    def _check_reconcile(
+        self,
+        positions: List[PositionLot],
+        portfolio: Portfolio,
+    ) -> Set[str]:
+        """브로커 보유수량과 positions 수량 합의 불일치 티커 집합을 반환한다.
+
+        불일치 감지 시 로그 + 알림을 발송한다. 자동 보정은 수행하지 않는다.
+        """
+        mismatches = detect_mismatches(positions, portfolio, self.stock_rules)
+        if not mismatches:
+            self.logger.info(">>> Step 2.5: Reconcile OK (수량 일치)")
+            return set()
+
+        self.logger.error(
+            f">>> Step 2.5: 수량 불일치 {len(mismatches)}건 감지 — 해당 종목 매매 중단"
+        )
+        for m in mismatches:
+            msg = (
+                f"[{m.ticker}] Qty Mismatch: broker={m.broker_qty}, "
+                f"positions={m.positions_qty} (lots={m.lot_count}, levels={m.levels}) "
+                f"— 매매 중단. scripts/reconcile_positions.py 실행 권장."
+            )
+            self.logger.error(msg)
+            self._notify_alert(msg)
+        return {m.ticker for m in mismatches}
 
     def _refresh_portfolio(self, old_portfolio: Portfolio) -> Portfolio:
         """종목 처리 후 포트폴리오(현금 잔고) 갱신."""
