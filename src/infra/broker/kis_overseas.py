@@ -96,7 +96,7 @@ class KisOverseasBrokerBase(KisBrokerCommon):
 
         if not cash_fetched:
             raise RuntimeError(
-                "모든 거래소(NASD/NYSE/AMEX) 잔고 조회 실패 — 사이클을 중단합니다."
+                f"모든 거래소({'/'.join(target_exchanges)}) 잔고 조회 실패 — 사이클을 중단합니다."
             )
 
         return Portfolio(
