@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # 티커별 거래소 단축 코드 (현재가 조회 API용)
-# config.json의 종목 추가 시 StrategyConfig에서 동적으로 확장됨
+# 기본 거래소 단축 코드. config.json에 exchange 미지정 시 fallback으로 사용.
 TICKER_EXCHANGE_MAP: dict[str, str] = {
     'SPY': 'AMS',
     'QQQ': 'NAS',

@@ -32,6 +32,7 @@ class StockRule:
     max_lots: int               # 최대 분할 횟수
     market_type: str = "overseas"  # "overseas" | "domestic"
     enabled: bool = True
+    exchange: str = ""  # 거래소 단축 코드 (NAS, NYS, AMS 등; 해외주식 전용)
 
 
 @dataclass

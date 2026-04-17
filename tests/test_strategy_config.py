@@ -33,6 +33,7 @@ class TestStrategyConfig:
         assert sc.rules[0].buy_amount == 500
         assert sc.rules[0].max_lots == 10
         assert sc.rules[0].enabled is True
+        assert sc.rules[0].exchange == "NAS"
 
     def test_load_multiple_stocks(self, tmp_path):
         """여러 종목 로드"""
@@ -95,14 +96,15 @@ class TestStrategyConfig:
         assert sc.rules[0].enabled is False
 
     def test_exchange_registered(self, tmp_path):
-        """exchange 필드가 TICKER_EXCHANGE_MAP에 동적 등록됨"""
+        """exchange 필드가 StockRule.exchange에 저장되고, TICKER_EXCHANGE_MAP은 변경되지 않음"""
         config = {
             "stocks": [{"ticker": "NEWSTOCK", "exchange": "NYS"}]
         }
         config_file = tmp_path / "config.json"
         config_file.write_text(json.dumps(config))
 
-        StrategyConfig(str(config_file))
+        sc = StrategyConfig(str(config_file))
 
+        assert sc.rules[0].exchange == "NYS"
         from src.config import TICKER_EXCHANGE_MAP
-        assert TICKER_EXCHANGE_MAP.get("NEWSTOCK") == "NYS"
+        assert "NEWSTOCK" not in TICKER_EXCHANGE_MAP

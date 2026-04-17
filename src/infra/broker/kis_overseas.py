@@ -16,6 +16,11 @@ class KisOverseasBrokerBase(KisBrokerCommon):
     """해외주식(미국) 전용 브로커 베이스 클래스."""
     ASKING_PRICE_TR_ID: str = "HHDFS76200100"  # 해외주식 호가 조회 (실전/모의 동일)
 
+    def __init__(self, app_key: str, app_secret: str, acc_no: str, logger,
+                 exchange_map: dict | None = None):
+        super().__init__(app_key, app_secret, acc_no, logger)
+        self._exchange_map: dict[str, str] = exchange_map or {}
+
     def fetch_current_prices(self, tickers: List[str]) -> Dict[str, float]:
         """해외주식 현재가 조회 (반복 호출)"""
         prices = {}
@@ -384,15 +389,16 @@ class KisOverseasBrokerBase(KisBrokerCommon):
 
     def _get_exchange_code(self, ticker: str, api_type: str = "price") -> str:
         """
-        티커별 거래소 코드 반환 (config.TICKER_EXCHANGE_MAP 참조)
+        티커별 거래소 코드 반환.
         - api_type="price"  : 현재가 조회 API용 단축 코드 (NAS, NYS, AMS)
         - api_type="order"  : 주문/잔고/미체결 API용 전체 코드 (NASD, NYSE, AMEX)
+        주입된 exchange_map 우선, 없으면 전역 기본값 fallback.
         """
-        price_code = TICKER_EXCHANGE_MAP.get(ticker)
+        price_code = self._exchange_map.get(ticker) or TICKER_EXCHANGE_MAP.get(ticker)
         if price_code is None:
             self.logger.warning(
                 f"[KisBroker] 알 수 없는 티커 '{ticker}' - 기본 거래소 코드(NAS/NASD) 사용. "
-                f"src/config.py의 TICKER_EXCHANGE_MAP에 티커를 추가하세요."
+                f"config.json의 exchange 필드를 확인하세요."
             )
             price_code = 'NAS'
         if api_type == "order":
@@ -411,8 +417,9 @@ class KisOverseasPaperBroker(KisOverseasBrokerBase):
     FILL_TR_ID = "VTTS3035R"
     CANCEL_TR_ID = "VTTT1004U"
 
-    def __init__(self, app_key: str, app_secret: str, acc_no: str, logger):
-        super().__init__(app_key, app_secret, acc_no, logger)
+    def __init__(self, app_key: str, app_secret: str, acc_no: str, logger,
+                 exchange_map: dict | None = None):
+        super().__init__(app_key, app_secret, acc_no, logger, exchange_map)
         self.logger.info("[KisOverseasPaperBroker] Mode: PAPER TRADING (Virtual)")
 
 
@@ -427,6 +434,7 @@ class KisOverseasLiveBroker(KisOverseasBrokerBase):
     FILL_TR_ID = "TTTS3035R"
     CANCEL_TR_ID = "TTTT1004U"
 
-    def __init__(self, app_key: str, app_secret: str, acc_no: str, logger):
-        super().__init__(app_key, app_secret, acc_no, logger)
+    def __init__(self, app_key: str, app_secret: str, acc_no: str, logger,
+                 exchange_map: dict | None = None):
+        super().__init__(app_key, app_secret, acc_no, logger, exchange_map)
         self.logger.info("[KisOverseasLiveBroker] Mode: LIVE TRADING")
