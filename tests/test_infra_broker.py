@@ -140,3 +140,6 @@ class TestCheckSpread:
         b = broker
         b.SPREAD_THRESHOLD_PCT = 1.0
         assert b._check_spread(99.5, 100.5) is True
+
+    def test_inverted_spread_returns_false(self, broker):
+        assert broker._check_spread(100.0, 90.0) is False
