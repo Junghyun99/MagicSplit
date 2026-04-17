@@ -1,0 +1,2 @@
+- The repository is a Korean trading bot. Respecting KRX conventions, Profit/Up should be Red, and Loss/Down should be Blue.
+- Since dynamic DOM elements are created in Vanilla JS, ARIA labels for accessibility must be injected directly in the template strings.
