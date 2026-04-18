@@ -70,7 +70,7 @@ class StrategyConfig:
             if not ticker:
                 raise ValueError(f"{self.config_path}[{idx}]: 'ticker' 필드가 필요합니다.")
 
-            exchange = raw.get("exchange", "")
+            exchange = raw.get("exchange") or ""
 
             market_type = raw.get("market_type", "overseas")
             if market_type not in ("overseas", "domestic"):
