@@ -33,8 +33,8 @@ def _create_broker(market_type: str, is_live: bool,
     args = (app_key, app_secret, acc_no, logger)
     if market_type == "domestic":
         return KisDomesticLiveBroker(*args) if is_live else KisDomesticPaperBroker(*args)
-    return (KisOverseasLiveBroker(*args, exchange_map)
-            if is_live else KisOverseasPaperBroker(*args, exchange_map))
+    return (KisOverseasLiveBroker(*args, exchange_map=exchange_map)
+            if is_live else KisOverseasPaperBroker(*args, exchange_map=exchange_map))
 
 
 class MagicSplitBot:
