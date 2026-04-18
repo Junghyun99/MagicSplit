@@ -68,12 +68,22 @@ def run_backtest(
     if _validate_tickers(close_df, tickers, logger):
         return None
 
-    # 3. 거래일 산출
-    trading_days = close_df.index
-    sim_days = [d for d in trading_days
-                if start_date <= d.strftime("%Y-%m-%d") <= end_date]
+    # 3. 거래일 산출 및 NaN 처리 (벡터화)
+    close_df = close_df.ffill()
 
-    if not sim_days:
+    # Ensure timezone matching if the index is timezone aware
+    start_dt = pd.to_datetime(start_date)
+    end_dt = pd.to_datetime(end_date)
+
+    if close_df.index.tz is not None:
+        start_dt = start_dt.tz_localize(close_df.index.tz)
+        end_dt = end_dt.tz_localize(close_df.index.tz)
+
+    mask = (close_df.index >= start_dt) & (close_df.index <= end_dt)
+    sim_df = close_df.loc[mask]
+    sim_days = sim_df.index
+
+    if sim_df.empty:
         logger.warning("시뮬레이션 기간에 거래일이 없습니다.")
         return None
 
@@ -96,21 +106,13 @@ def run_backtest(
     # 5. 시뮬레이션 루프
     logger.info(f"--- 백테스트 시작 ({len(sim_days)} 거래일) ---")
 
-    prev_prices: Dict[str, float] = {}
     last_result: Optional[DayResult] = None
+    prices_by_day = sim_df.to_dict(orient='index')
 
     for today in sim_days:
         # 종가 추출
         try:
-            row = close_df.loc[today]
-            current_prices = row.to_dict()
-            # NaN → 전일 가격으로 대체 (forward-fill)
-            current_prices = {
-                t: (p if not pd.isna(p) else prev_prices.get(t))
-                for t, p in current_prices.items()
-                if not pd.isna(p) or prev_prices.get(t) is not None
-            }
-            prev_prices = current_prices
+            current_prices = {t: p for t, p in prices_by_day[today].items() if not pd.isna(p)}
         except Exception as e:
             logger.warning(f"[{today.date()}] 종가 추출 실패, 건너뜀: {e}")
             continue
