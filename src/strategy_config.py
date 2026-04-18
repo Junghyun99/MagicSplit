@@ -23,17 +23,15 @@ config.json 구조:
 """
 import json
 import os
-from typing import List, Set
+from typing import Dict, List, Set
 
 from src.core.models import StockRule
-from src.config import TICKER_EXCHANGE_MAP
 
 
 class StrategyConfig:
     """config.json 로더.
 
-    config.json을 읽어 종목별 StockRule 리스트를 생성하고,
-    종목의 거래소 코드를 TICKER_EXCHANGE_MAP에 동적으로 등록한다.
+    config.json을 읽어 종목별 StockRule 리스트를 생성한다.
     """
 
     def __init__(self, config_path: str = "config.json"):
@@ -46,6 +44,10 @@ class StrategyConfig:
     def get_rules_by_market(self, market_type: str) -> List[StockRule]:
         """지정된 market_type에 해당하는 규칙만 반환한다."""
         return [r for r in self.rules if r.market_type == market_type]
+
+    def get_exchange_map(self) -> Dict[str, str]:
+        """티커→거래소 단축 코드 맵을 반환한다 (exchange 미지정 종목 제외)."""
+        return {r.ticker: r.exchange for r in self.rules if r.exchange}
 
     def _load(self):
         if not os.path.exists(self.config_path):
@@ -68,10 +70,7 @@ class StrategyConfig:
             if not ticker:
                 raise ValueError(f"{self.config_path}[{idx}]: 'ticker' 필드가 필요합니다.")
 
-            # 거래소 코드 동적 등록
-            exchange = raw.get("exchange")
-            if exchange and ticker not in TICKER_EXCHANGE_MAP:
-                TICKER_EXCHANGE_MAP[ticker] = exchange
+            exchange = raw.get("exchange") or ""
 
             market_type = raw.get("market_type", "overseas")
             if market_type not in ("overseas", "domestic"):
@@ -88,6 +87,7 @@ class StrategyConfig:
                 max_lots=int(raw.get("max_lots", 10)),
                 market_type=market_type,
                 enabled=bool(raw.get("enabled", True)),
+                exchange=exchange,
             )
             self.rules.append(rule)
             self.market_types.add(market_type)
