@@ -64,7 +64,6 @@ class MagicSplitBot:
             f"mode={'LIVE' if self.config.IS_LIVE else 'PAPER'}"
         )
 
-        exchange_map = {r.ticker: r.exchange for r in rules if r.exchange}
         broker = _create_broker(
             market_type=self.market_type,
             is_live=self.config.IS_LIVE,
@@ -72,7 +71,7 @@ class MagicSplitBot:
             app_secret=self.config.KIS_APP_SECRET,
             acc_no=self.config.KIS_ACC_NO,
             logger=self.logger,
-            exchange_map=exchange_map,
+            exchange_map=self.strategy.get_exchange_map(),
         )
         repo = JsonRepository(
             os.path.join(self.config.DATA_PATH, self.market_type),

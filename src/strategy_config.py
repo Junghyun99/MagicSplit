@@ -23,7 +23,7 @@ config.json 구조:
 """
 import json
 import os
-from typing import List, Set
+from typing import Dict, List, Set
 
 from src.core.models import StockRule
 
@@ -44,6 +44,10 @@ class StrategyConfig:
     def get_rules_by_market(self, market_type: str) -> List[StockRule]:
         """지정된 market_type에 해당하는 규칙만 반환한다."""
         return [r for r in self.rules if r.market_type == market_type]
+
+    def get_exchange_map(self) -> Dict[str, str]:
+        """티커→거래소 단축 코드 맵을 반환한다 (exchange 미지정 종목 제외)."""
+        return {r.ticker: r.exchange for r in self.rules if r.exchange}
 
     def _load(self):
         if not os.path.exists(self.config_path):
