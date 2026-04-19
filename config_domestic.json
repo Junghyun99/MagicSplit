@@ -1,5 +1,25 @@
 {
     "stocks": [
+        {
+            "ticker": "005930.KS",
+            "exchange": "",
+            "market_type": "domestic",
+            "buy_threshold_pct": -5.0,
+            "sell_threshold_pct": 10.0,
+            "buy_amount": 500000,
+            "max_lots": 10,
+            "enabled": true
+        },
+        {
+            "ticker": "058470.KQ",
+            "exchange": "",
+            "market_type": "domestic",
+            "buy_threshold_pct": -5.0,
+            "sell_threshold_pct": 10.0,
+            "buy_amount": 500000,
+            "max_lots": 10,
+            "enabled": true
+        }
     ],
     "global": {
         "check_interval_minutes": 60,
