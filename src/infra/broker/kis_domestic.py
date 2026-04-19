@@ -18,13 +18,25 @@ def _to_kis_code(ticker: str) -> str:
 
 
 def _to_yf_ticker(code: str) -> str:
-    """KIS 종목코드 → yfinance 티커. '069500' → '069500.KS'"""
-    return code if code.endswith(".KS") else code + ".KS"
+    """KIS 종목코드 → yfinance 티커 (기본 KOSPI). '069500' → '069500.KS'"""
+    if code.endswith(".KS") or code.endswith(".KQ"):
+        return code
+    return code + ".KS"
 
 
 class KisDomesticBrokerBase(KisBrokerCommon):
     """국내주식 전용 브로커 베이스 클래스."""
     ASKING_PRICE_TR_ID: str = "FHKST01010200"  # 국내주식 호가 조회 (실전/모의 동일)
+
+    def __init__(self, app_key: str, app_secret: str, acc_no: str, logger,
+                 known_tickers: list[str] | None = None):
+        super().__init__(app_key, app_secret, acc_no, logger)
+        # code → full yfinance ticker (e.g. '058470' → '058470.KQ')
+        # KOSDAQ 등 .KS 외 suffix 보유 종목의 잔고 조회 시 정확한 티커 매핑에 사용
+        self._code_to_ticker: dict[str, str] = {}
+        if known_tickers:
+            for t in known_tickers:
+                self._code_to_ticker[_to_kis_code(t)] = t
 
     # 하위 호환: 기존 테스트가 인스턴스 메서드로 호출할 수 있어 스태틱 래퍼 유지
     @staticmethod
@@ -107,7 +119,7 @@ class KisDomesticBrokerBase(KisBrokerCommon):
             for item in data.get('output1', []):
                 qty = int(item.get('hldg_qty', 0) or 0)
                 if qty > 0:
-                    ticker = _to_yf_ticker(item['pdno'])
+                    ticker = self._code_to_ticker.get(item['pdno'], _to_yf_ticker(item['pdno']))
                     all_holdings[ticker] = qty
                     all_prices[ticker] = float(item.get('prpr', 0) or 0)
 
@@ -380,8 +392,9 @@ class KisDomesticPaperBroker(KisDomesticBrokerBase):
     FILL_TR_ID = "VTTC0081R"
     CANCEL_TR_ID = "VTTC0013U"
 
-    def __init__(self, app_key: str, app_secret: str, acc_no: str, logger):
-        super().__init__(app_key, app_secret, acc_no, logger)
+    def __init__(self, app_key: str, app_secret: str, acc_no: str, logger,
+                 known_tickers: list[str] | None = None):
+        super().__init__(app_key, app_secret, acc_no, logger, known_tickers=known_tickers)
         self.logger.info("[KisDomesticPaperBroker] Mode: PAPER TRADING (Virtual)")
 
 
@@ -396,6 +409,7 @@ class KisDomesticLiveBroker(KisDomesticBrokerBase):
     FILL_TR_ID = "TTTC0081R"
     CANCEL_TR_ID = "TTTC0013U"
 
-    def __init__(self, app_key: str, app_secret: str, acc_no: str, logger):
-        super().__init__(app_key, app_secret, acc_no, logger)
+    def __init__(self, app_key: str, app_secret: str, acc_no: str, logger,
+                 known_tickers: list[str] | None = None):
+        super().__init__(app_key, app_secret, acc_no, logger, known_tickers=known_tickers)
         self.logger.info("[KisDomesticLiveBroker] Mode: LIVE TRADING")
