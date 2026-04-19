@@ -27,11 +27,17 @@ class JsonRepository(IRepository):
         self.positions_file = os.path.join(self.root, "positions.json")
         self.history_file = os.path.join(self.root, "history.json")
         self.status_file = os.path.join(self.root, "status.json")
+        self._cached_history = None
+        self._cached_realized_pnl = None
+        self._cached_positions = None
 
     # === Positions ===
 
     def load_positions(self) -> List[PositionLot]:
         """저장된 분할 포지션 목록을 로드한다."""
+        if self._cached_positions is not None:
+            return list(self._cached_positions)
+
         data = self._load_json(self.positions_file, default=[])
         lots = []
         for item in data:
@@ -48,6 +54,7 @@ class JsonRepository(IRepository):
         if any(lot.level == 0 for lot in lots):
             lots = self._migrate_legacy_levels(lots)
 
+        self._cached_positions = lots
         return lots
 
     @staticmethod
@@ -78,6 +85,7 @@ class JsonRepository(IRepository):
     def save_positions(self, lots: List[PositionLot]) -> None:
         """분할 포지션 목록을 저장한다."""
         data = [asdict(lot) for lot in lots]
+        self._cached_positions = lots
         self._save_json(self.positions_file, data)
 
     # === Trade History ===
@@ -128,12 +136,15 @@ class JsonRepository(IRepository):
             "executions": enriched_execs,
         }
 
-        data = self._load_json(self.history_file, default=[])
+        data = self._get_history()
         data.append(record)
 
         if self.max_history_records > 0:
             data = data[-self.max_history_records:]
 
+        self._cached_history = data
+        self._cached_realized_pnl = None
+        self._cached_positions = None
         self._save_json(self.history_file, data)
 
     # === Status ===
@@ -218,7 +229,10 @@ class JsonRepository(IRepository):
 
     def _calc_realized_pnl_by_ticker(self) -> dict:
         """history.json에서 종목별 실현 손익 합계를 계산한다."""
-        history = self._load_json(self.history_file, default=[])
+        if self._cached_realized_pnl is not None:
+            return dict(self._cached_realized_pnl)
+
+        history = self._get_history()
         result: dict = {}
         for record in history:
             for exe in record.get("executions", []):
@@ -226,7 +240,13 @@ class JsonRepository(IRepository):
                 if pnl is not None:
                     ticker = exe.get("ticker", "")
                     result[ticker] = result.get(ticker, 0.0) + pnl
+        self._cached_realized_pnl = result
         return result
+
+    def _get_history(self):
+        if self._cached_history is None:
+            self._cached_history = self._load_json(self.history_file, default=[])
+        return list(self._cached_history)
 
     def get_last_run_date(self) -> Optional[str]:
         """마지막 실행 날짜를 반환한다."""
