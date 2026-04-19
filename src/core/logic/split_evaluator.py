@@ -79,7 +79,12 @@ class SplitEvaluator:
 
         # 보유 lot이 없으면 → 1차수 초기 매수
         if not ticker_lots:
-            signal = self._evaluate_initial_buy(rule, current_price)
+            # TODO(reentry_guard): repo/history에서 직전 매도가를 조회하여 전달.
+            # 현재는 None으로 가드 비활성 (기존 동작 유지).
+            last_sell_price: Optional[float] = None
+            signal = self._evaluate_initial_buy(
+                rule, current_price, last_sell_price=last_sell_price,
+            )
             return [signal] if signal else []
 
         # 마지막 차수(가장 높은 level) lot 찾기
@@ -129,8 +134,12 @@ class SplitEvaluator:
         self,
         rule: StockRule,
         current_price: float,
+        last_sell_price: Optional[float] = None,
     ) -> Optional[SplitSignal]:
         """보유 lot이 없을 때 1차수 초기 매수를 평가한다."""
+        if not self._passes_reentry_guard(rule, current_price, last_sell_price):
+            return None
+
         buy_qty = math.floor(rule.buy_amount / current_price)
         if buy_qty <= 0:
             if self._logger:
@@ -154,6 +163,42 @@ class SplitEvaluator:
             pct_change=0.0,
             level=1,
         )
+
+    def _passes_reentry_guard(
+        self,
+        rule: StockRule,
+        current_price: float,
+        last_sell_price: Optional[float],
+    ) -> bool:
+        """1차수 재진입 가드: 직전 매도가 대비 충분히 하락했는지 확인한다.
+
+        예: rule.reentry_guard_pct = -0.1 이면
+            current_price <= last_sell_price * (1 - 0.001) 일 때만 진입 허용.
+
+        Args:
+            rule: 종목 규칙 (reentry_guard_pct 포함)
+            current_price: 현재가
+            last_sell_price: 직전 (전량 청산) 매도 단가. None이면 가드 미적용.
+
+        Returns:
+            True: 진입 허용 (가드 통과 또는 가드 미설정).
+            False: 진입 차단.
+        """
+        if rule.reentry_guard_pct is None:
+            return True
+        if last_sell_price is None or last_sell_price <= 0:
+            return True
+
+        pct_from_sell = (current_price - last_sell_price) / last_sell_price * 100
+        if pct_from_sell <= rule.reentry_guard_pct:
+            return True
+
+        if self._logger:
+            self._logger.info(
+                f"[{rule.ticker}] 재진입 가드: 직전 매도가 ${last_sell_price:.2f} 대비 "
+                f"{pct_from_sell:+.2f}% > 임계 {rule.reentry_guard_pct:+.2f}% → 진입 보류"
+            )
+        return False
 
     def _evaluate_buy(
         self,

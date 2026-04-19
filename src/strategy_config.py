@@ -79,6 +79,11 @@ class StrategyConfig:
                     f"'overseas' 또는 'domestic'이어야 합니다. got '{market_type}'"
                 )
 
+            reentry_raw = raw.get("reentry_guard_pct")
+            reentry_guard_pct = (
+                float(reentry_raw) if reentry_raw is not None else None
+            )
+
             rule = StockRule(
                 ticker=ticker,
                 buy_threshold_pct=float(raw.get("buy_threshold_pct", -5.0)),
@@ -88,6 +93,7 @@ class StrategyConfig:
                 market_type=market_type,
                 enabled=bool(raw.get("enabled", True)),
                 exchange=exchange,
+                reentry_guard_pct=reentry_guard_pct,
             )
             self.rules.append(rule)
             self.market_types.add(market_type)
