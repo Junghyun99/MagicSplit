@@ -79,7 +79,7 @@ class TestRunOneCycle:
             logger=mock_logger, stock_rules=rules,
         )
 
-        def mock_evaluate_stock(rule, positions, portfolio):
+        def mock_evaluate_stock(rule, positions, portfolio, last_sell_prices=None):
             if rule.ticker == "AAPL":
                 raise Exception("Mock evaluator error")
             elif rule.ticker == "MSFT":
@@ -119,7 +119,7 @@ class TestRunOneCycle:
             logger=mock_logger, stock_rules=rules,
         )
 
-        def mock_evaluate_stock(rule, positions, portfolio):
+        def mock_evaluate_stock(rule, positions, portfolio, last_sell_prices=None):
             if rule.ticker == "AAPL":
                 return [SplitSignal("AAPL", None, OrderAction.BUY, 5, 100.0, "AAPL Buy", 0.0, 1)]
             elif rule.ticker == "MSFT":
