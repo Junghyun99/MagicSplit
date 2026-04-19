@@ -1,0 +1,69 @@
+{
+    "last_updated": "2025-12-30",
+    "last_run_date": "2025-12-30",
+    "reason": "모니터링 - 신호 없음",
+    "portfolio": {
+        "total_value": 10475.125173118517,
+        "cash_balance": 9714.565175559923,
+        "holdings": [
+            {
+                "ticker": "AAPL",
+                "qty": 1,
+                "price": 273.0799865722656,
+                "value": 273.0799865722656
+            },
+            {
+                "ticker": "MSFT",
+                "qty": 1,
+                "price": 487.4800109863281,
+                "value": 487.4800109863281
+            }
+        ]
+    },
+    "positions": {
+        "MSFT": {
+            "total_qty": 1,
+            "lot_count": 1,
+            "total_invested": 495.49,
+            "current_value": 487.48,
+            "lots": [
+                {
+                    "lot_id": "lot_20260419_132446_MSFT_001",
+                    "buy_price": 495.49,
+                    "quantity": 1,
+                    "buy_date": "2025-09-05",
+                    "level": 1,
+                    "current_price": 487.4800109863281,
+                    "pct_change": -1.62
+                }
+            ],
+            "avg_buy_price": 495.49,
+            "unrealized_pnl": -8.01,
+            "unrealized_pnl_pct": -1.62,
+            "realized_pnl": 208.53,
+            "total_pnl": 200.52
+        },
+        "AAPL": {
+            "total_qty": 1,
+            "lot_count": 1,
+            "total_invested": 269.27,
+            "current_value": 273.08,
+            "lots": [
+                {
+                    "lot_id": "lot_20260419_132446_AAPL_001",
+                    "buy_price": 269.27,
+                    "quantity": 1,
+                    "buy_date": "2025-10-28",
+                    "level": 1,
+                    "current_price": 273.0799865722656,
+                    "pct_change": 1.41
+                }
+            ],
+            "avg_buy_price": 269.27,
+            "unrealized_pnl": 3.81,
+            "unrealized_pnl_pct": 1.41,
+            "realized_pnl": 284.0,
+            "total_pnl": 287.81
+        }
+    }
+}

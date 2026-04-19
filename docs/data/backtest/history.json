@@ -1,0 +1,501 @@
+[
+    {
+        "id": "tx_20250102",
+        "date": "2025-01-02",
+        "portfolio_value": 9996.825754304276,
+        "total_trade_amount": 907.1800000000001,
+        "reason": "AAPL:BUY(초기 매수 Lv1), MSFT:BUY(초기 매수 Lv1)",
+        "executions": [
+            {
+                "ticker": "AAPL",
+                "action": "BUY",
+                "quantity": 2,
+                "price": 244.09,
+                "fee": 1.22,
+                "date": "2025-01-02",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": null,
+                "level": 1
+            },
+            {
+                "ticker": "MSFT",
+                "action": "BUY",
+                "quantity": 1,
+                "price": 419.0,
+                "fee": 1.05,
+                "date": "2025-01-02",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": null,
+                "level": 1
+            }
+        ]
+    },
+    {
+        "id": "tx_20250116",
+        "date": "2025-01-16",
+        "portfolio_value": 9970.046769849398,
+        "total_trade_amount": 456.98,
+        "reason": "AAPL:BUY(추가 매수 Lv2 (Lv1 대비 -6.5%))",
+        "executions": [
+            {
+                "ticker": "AAPL",
+                "action": "BUY",
+                "quantity": 2,
+                "price": 228.49,
+                "fee": 1.14,
+                "date": "2025-01-16",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": null,
+                "level": 2
+            }
+        ]
+    },
+    {
+        "id": "tx_20250225",
+        "date": "2025-02-25",
+        "portfolio_value": 10017.09312756218,
+        "total_trade_amount": 398.3,
+        "reason": "MSFT:BUY(추가 매수 Lv2 (Lv1 대비 -5.0%))",
+        "executions": [
+            {
+                "ticker": "MSFT",
+                "action": "BUY",
+                "quantity": 1,
+                "price": 398.3,
+                "fee": 1.0,
+                "date": "2025-02-25",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": null,
+                "level": 2
+            }
+        ]
+    },
+    {
+        "id": "tx_20250312",
+        "date": "2025-03-12",
+        "portfolio_value": 9866.07318269211,
+        "total_trade_amount": 434.4,
+        "reason": "AAPL:BUY(추가 매수 Lv3 (Lv2 대비 -5.0%))",
+        "executions": [
+            {
+                "ticker": "AAPL",
+                "action": "BUY",
+                "quantity": 2,
+                "price": 217.2,
+                "fee": 1.09,
+                "date": "2025-03-12",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": null,
+                "level": 3
+            }
+        ]
+    },
+    {
+        "id": "tx_20250331",
+        "date": "2025-03-31",
+        "portfolio_value": 9879.898485366975,
+        "total_trade_amount": 375.77,
+        "reason": "MSFT:BUY(추가 매수 Lv3 (Lv2 대비 -5.8%))",
+        "executions": [
+            {
+                "ticker": "MSFT",
+                "action": "BUY",
+                "quantity": 1,
+                "price": 375.77,
+                "fee": 0.94,
+                "date": "2025-03-31",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": null,
+                "level": 3
+            }
+        ]
+    },
+    {
+        "id": "tx_20250403",
+        "date": "2025-04-03",
+        "portfolio_value": 9757.995036860812,
+        "total_trade_amount": 406.78,
+        "reason": "AAPL:BUY(추가 매수 Lv4 (Lv3 대비 -6.5%))",
+        "executions": [
+            {
+                "ticker": "AAPL",
+                "action": "BUY",
+                "quantity": 2,
+                "price": 203.39,
+                "fee": 1.02,
+                "date": "2025-04-03",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": null,
+                "level": 4
+            }
+        ]
+    },
+    {
+        "id": "tx_20250404",
+        "date": "2025-04-04",
+        "portfolio_value": 9598.385487416841,
+        "total_trade_amount": 377.14,
+        "reason": "AAPL:BUY(추가 매수 Lv5 (Lv4 대비 -7.4%))",
+        "executions": [
+            {
+                "ticker": "AAPL",
+                "action": "BUY",
+                "quantity": 2,
+                "price": 188.57,
+                "fee": 0.94,
+                "date": "2025-04-04",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": null,
+                "level": 5
+            }
+        ]
+    },
+    {
+        "id": "tx_20250408",
+        "date": "2025-04-08",
+        "portfolio_value": 9420.495775461655,
+        "total_trade_amount": 700.09,
+        "reason": "AAPL:BUY(추가 매수 Lv6 (Lv5 대비 -8.6%)), MSFT:BUY(추가 매수 Lv4 (Lv3 대비 -5.6%))",
+        "executions": [
+            {
+                "ticker": "AAPL",
+                "action": "BUY",
+                "quantity": 2,
+                "price": 172.59,
+                "fee": 0.86,
+                "date": "2025-04-08",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": null,
+                "level": 6
+            },
+            {
+                "ticker": "MSFT",
+                "action": "BUY",
+                "quantity": 1,
+                "price": 354.91,
+                "fee": 0.89,
+                "date": "2025-04-08",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": null,
+                "level": 4
+            }
+        ]
+    },
+    {
+        "id": "tx_20250409",
+        "date": "2025-04-09",
+        "portfolio_value": 9878.619146846086,
+        "total_trade_amount": 787.4000000000001,
+        "reason": "AAPL:SELL(Lv6 +15.2% → 익절), MSFT:SELL(Lv4 +10.0% → 익절)",
+        "executions": [
+            {
+                "ticker": "AAPL",
+                "action": "SELL",
+                "quantity": 2,
+                "price": 198.65,
+                "fee": 0.99,
+                "date": "2025-04-09",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260419_132446_AAPL_006",
+                "level": 6,
+                "buy_price": 172.59,
+                "realized_pnl": 51.13
+            },
+            {
+                "ticker": "MSFT",
+                "action": "SELL",
+                "quantity": 1,
+                "price": 390.1,
+                "fee": 0.98,
+                "date": "2025-04-09",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260419_132446_MSFT_004",
+                "level": 4,
+                "buy_price": 354.91,
+                "realized_pnl": 34.21
+            }
+        ]
+    },
+    {
+        "id": "tx_20250424",
+        "date": "2025-04-24",
+        "portfolio_value": 9962.791481542741,
+        "total_trade_amount": 416.32,
+        "reason": "AAPL:SELL(Lv5 +10.5% → 익절)",
+        "executions": [
+            {
+                "ticker": "AAPL",
+                "action": "SELL",
+                "quantity": 2,
+                "price": 208.16,
+                "fee": 1.04,
+                "date": "2025-04-24",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260419_132446_AAPL_005",
+                "level": 5,
+                "buy_price": 188.57,
+                "realized_pnl": 38.14
+            }
+        ]
+    },
+    {
+        "id": "tx_20250501",
+        "date": "2025-05-01",
+        "portfolio_value": 10115.203761030885,
+        "total_trade_amount": 424.97,
+        "reason": "MSFT:SELL(Lv3 +13.2% → 익절)",
+        "executions": [
+            {
+                "ticker": "MSFT",
+                "action": "SELL",
+                "quantity": 1,
+                "price": 424.97,
+                "fee": 1.06,
+                "date": "2025-05-01",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260419_132446_MSFT_003",
+                "level": 3,
+                "buy_price": 375.77,
+                "realized_pnl": 48.14
+            }
+        ]
+    },
+    {
+        "id": "tx_20250508",
+        "date": "2025-05-08",
+        "portfolio_value": 10012.571285822985,
+        "total_trade_amount": 437.73,
+        "reason": "MSFT:SELL(Lv2 +10.0% → 익절)",
+        "executions": [
+            {
+                "ticker": "MSFT",
+                "action": "SELL",
+                "quantity": 1,
+                "price": 437.73,
+                "fee": 1.09,
+                "date": "2025-05-08",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260419_132446_MSFT_002",
+                "level": 2,
+                "buy_price": 398.3,
+                "realized_pnl": 38.34
+            }
+        ]
+    },
+    {
+        "id": "tx_20250602",
+        "date": "2025-06-02",
+        "portfolio_value": 10068.435465177308,
+        "total_trade_amount": 461.51,
+        "reason": "MSFT:SELL(Lv1 +10.3% → 익절)",
+        "executions": [
+            {
+                "ticker": "MSFT",
+                "action": "SELL",
+                "quantity": 1,
+                "price": 461.51,
+                "fee": 1.15,
+                "date": "2025-06-02",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260419_132446_MSFT_001",
+                "level": 1,
+                "buy_price": 419.0,
+                "realized_pnl": 41.36
+            }
+        ]
+    },
+    {
+        "id": "tx_20250603",
+        "date": "2025-06-03",
+        "portfolio_value": 10079.373971341782,
+        "total_trade_amount": 463.43,
+        "reason": "MSFT:BUY(초기 매수 Lv1)",
+        "executions": [
+            {
+                "ticker": "MSFT",
+                "action": "BUY",
+                "quantity": 1,
+                "price": 463.43,
+                "fee": 1.16,
+                "date": "2025-06-03",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": null,
+                "level": 1
+            }
+        ]
+    },
+    {
+        "id": "tx_20250717",
+        "date": "2025-07-17",
+        "portfolio_value": 10180.314311535416,
+        "total_trade_amount": 511.19,
+        "reason": "MSFT:SELL(Lv1 +10.4% → 익절)",
+        "executions": [
+            {
+                "ticker": "MSFT",
+                "action": "SELL",
+                "quantity": 1,
+                "price": 511.19,
+                "fee": 1.28,
+                "date": "2025-07-17",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260419_132446_MSFT_001",
+                "level": 1,
+                "buy_price": 463.43,
+                "realized_pnl": 46.48
+            }
+        ]
+    },
+    {
+        "id": "tx_20250808",
+        "date": "2025-08-08",
+        "portfolio_value": 10333.35002289116,
+        "total_trade_amount": 458.24,
+        "reason": "AAPL:SELL(Lv4 +12.8% → 익절)",
+        "executions": [
+            {
+                "ticker": "AAPL",
+                "action": "SELL",
+                "quantity": 2,
+                "price": 229.12,
+                "fee": 1.15,
+                "date": "2025-08-08",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260419_132446_AAPL_004",
+                "level": 4,
+                "buy_price": 203.39,
+                "realized_pnl": 50.31
+            }
+        ]
+    },
+    {
+        "id": "tx_20250904",
+        "date": "2025-09-04",
+        "portfolio_value": 10394.252717854386,
+        "total_trade_amount": 479.08,
+        "reason": "AAPL:SELL(Lv3 +10.4% → 익절)",
+        "executions": [
+            {
+                "ticker": "AAPL",
+                "action": "SELL",
+                "quantity": 2,
+                "price": 239.54,
+                "fee": 1.2,
+                "date": "2025-09-04",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260419_132446_AAPL_003",
+                "level": 3,
+                "buy_price": 217.2,
+                "realized_pnl": 43.48
+            }
+        ]
+    },
+    {
+        "id": "tx_20250905",
+        "date": "2025-09-05",
+        "portfolio_value": 10392.158995002823,
+        "total_trade_amount": 495.49,
+        "reason": "MSFT:BUY(초기 매수 Lv1)",
+        "executions": [
+            {
+                "ticker": "MSFT",
+                "action": "BUY",
+                "quantity": 1,
+                "price": 495.49,
+                "fee": 1.24,
+                "date": "2025-09-05",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": null,
+                "level": 1
+            }
+        ]
+    },
+    {
+        "id": "tx_20250922",
+        "date": "2025-09-22",
+        "portfolio_value": 10475.377664227219,
+        "total_trade_amount": 511.64,
+        "reason": "AAPL:SELL(Lv2 +12.1% → 익절)",
+        "executions": [
+            {
+                "ticker": "AAPL",
+                "action": "SELL",
+                "quantity": 2,
+                "price": 255.82,
+                "fee": 1.28,
+                "date": "2025-09-22",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260419_132446_AAPL_002",
+                "level": 2,
+                "buy_price": 228.49,
+                "realized_pnl": 53.38
+            }
+        ]
+    },
+    {
+        "id": "tx_20251027",
+        "date": "2025-10-27",
+        "portfolio_value": 10516.027367591172,
+        "total_trade_amount": 537.08,
+        "reason": "AAPL:SELL(Lv1 +10.1% → 익절)",
+        "executions": [
+            {
+                "ticker": "AAPL",
+                "action": "SELL",
+                "quantity": 2,
+                "price": 268.54,
+                "fee": 1.34,
+                "date": "2025-10-27",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260419_132446_AAPL_001",
+                "level": 1,
+                "buy_price": 244.09,
+                "realized_pnl": 47.56
+            }
+        ]
+    },
+    {
+        "id": "tx_20251028",
+        "date": "2025-10-28",
+        "portfolio_value": 10525.635182884142,
+        "total_trade_amount": 269.27,
+        "reason": "AAPL:BUY(초기 매수 Lv1)",
+        "executions": [
+            {
+                "ticker": "AAPL",
+                "action": "BUY",
+                "quantity": 1,
+                "price": 269.27,
+                "fee": 0.67,
+                "date": "2025-10-28",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": null,
+                "level": 1
+            }
+        ]
+    }
+]
