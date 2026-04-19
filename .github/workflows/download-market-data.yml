@@ -51,18 +51,31 @@ jobs:
                    '305080.KS', '148070.KS']
 
         cache = BacktestDataCache(logger=TradeLogger())
-        close_df = cache.get_data(tickers, real_start_str, end_date)
+        ohlcv, vix, dividends = cache.get_data(tickers, real_start_str, end_date)
 
-        print(f'Close shape: {close_df.shape}')
-        print(f'Close range: {close_df.index.min()} ~ {close_df.index.max()}')
-        print(f'Close columns: {list(close_df.columns)}')
-        print(close_df.head(10))
+        print(f'OHLCV shape: {ohlcv.shape}')
+        print(f'OHLCV range: {ohlcv.index.min()} ~ {ohlcv.index.max()}')
+        print(f'OHLCV columns: {ohlcv.columns}')
+        print(ohlcv.head(10))
+        print(f'VIX shape: {vix.shape}')
+        if not vix.empty:
+            print(f'VIX range: {vix.index.min()} ~ {vix.index.max()}')
+            print(f'VIX columns: {vix.columns}')
+            print(vix.head(10))
+        else:
+            print('VIX: empty')
+        print(f'Dividends shape: {dividends.shape}')
+        if not dividends.empty:
+            print(f'Dividends range: {dividends.index.min()} ~ {dividends.index.max()}')
+            print(dividends[dividends.any(axis=1)].head(10))
+        else:
+            print('Dividends: empty')
         print('')
         print('=== NaN 진단 (Close 기준) ===')
-        total_rows = len(close_df)
+        total_rows = len(ohlcv)
         for ticker in tickers:
             try:
-                col = close_df[ticker]
+                col = ohlcv['Close'][ticker]
                 nan_count = int(col.isna().sum())
                 first_valid = col.first_valid_index()
                 pct = nan_count / total_rows * 100 if total_rows > 0 else 0
