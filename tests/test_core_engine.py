@@ -213,6 +213,79 @@ class TestRunOneCycle:
         mock_repo.save_positions.assert_called_once()
 
 
+class TestBudgetWarning:
+    """현재가 > buy_amount 일 때 사용자 경고."""
+
+    def test_warns_when_price_exceeds_buy_amount(
+        self, mock_broker, mock_repo, mock_logger,
+    ):
+        """현재가가 buy_amount보다 크면 logger.warning + notifier.send_alert 발송."""
+        rules = [StockRule("BRK-A", -5.0, 10.0, 500, 10)]
+        mock_broker.get_portfolio.return_value = Portfolio(
+            total_cash=10000.0, holdings={},
+            current_prices={"BRK-A": 600000.0},
+        )
+        mock_broker.fetch_current_prices.return_value = {"BRK-A": 600000.0}
+        notifier = MagicMock()
+        eng = MagicSplitEngine(
+            broker=mock_broker, repo=mock_repo, logger=mock_logger,
+            stock_rules=rules, notifier=notifier,
+        )
+        eng.run_one_cycle(sim_date="2026-04-10")
+
+        mock_logger.warning.assert_any_call(
+            "[BRK-A] buy_amount(500.00) < 현재가(600,000.00) → 1주도 매수 불가. "
+            "config.buy_amount를 상향 조정하세요."
+        )
+        notifier.send_alert.assert_any_call(
+            "[BRK-A] buy_amount(500.00) < 현재가(600,000.00) → 1주도 매수 불가. "
+            "config.buy_amount를 상향 조정하세요."
+        )
+
+    def test_no_warning_when_budget_sufficient(
+        self, mock_broker, mock_repo, mock_logger,
+    ):
+        """buy_amount >= 현재가이면 경고 미발송."""
+        rules = [StockRule("AAPL", -5.0, 10.0, 500, 10)]
+        mock_broker.get_portfolio.return_value = Portfolio(
+            total_cash=10000.0, holdings={},
+            current_prices={"AAPL": 100.0},
+        )
+        mock_broker.fetch_current_prices.return_value = {"AAPL": 100.0}
+        notifier = MagicMock()
+        eng = MagicSplitEngine(
+            broker=mock_broker, repo=mock_repo, logger=mock_logger,
+            stock_rules=rules, notifier=notifier,
+        )
+        eng.run_one_cycle(sim_date="2026-04-10")
+
+        # 예산 경고 문구는 호출되지 않아야 함
+        for call in mock_logger.warning.call_args_list:
+            assert "buy_amount" not in call.args[0]
+        for call in notifier.send_alert.call_args_list:
+            assert "buy_amount" not in call.args[0]
+
+    def test_no_warning_when_price_unavailable(
+        self, mock_broker, mock_repo, mock_logger,
+    ):
+        """현재가 조회 실패(0 이하)이면 예산 경고 미발송 (별도 warning은 존재할 수 있음)."""
+        rules = [StockRule("AAPL", -5.0, 10.0, 500, 10)]
+        mock_broker.get_portfolio.return_value = Portfolio(
+            total_cash=10000.0, holdings={},
+            current_prices={"AAPL": 0.0},
+        )
+        mock_broker.fetch_current_prices.return_value = {"AAPL": 0.0}
+        notifier = MagicMock()
+        eng = MagicSplitEngine(
+            broker=mock_broker, repo=mock_repo, logger=mock_logger,
+            stock_rules=rules, notifier=notifier,
+        )
+        eng.run_one_cycle(sim_date="2026-04-10")
+
+        for call in notifier.send_alert.call_args_list:
+            assert "buy_amount" not in call.args[0]
+
+
 class TestReconcileHalt:
     """브로커 수량 ≠ positions 수량 합 불일치 감지 후 매매 중단 동작."""
 
