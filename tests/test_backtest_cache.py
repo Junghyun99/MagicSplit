@@ -1,5 +1,6 @@
 # tests/test_backtest_cache.py
 import pandas as pd
+import numpy as np
 import pytest
 from pathlib import Path
 from unittest.mock import patch, MagicMock
@@ -123,3 +124,61 @@ class TestBacktestDataCache:
         assert parquet_path.exists()
         content = parquet_path.read_bytes()
         assert content != b"old data"
+
+
+class TestIpoTrim:
+    """가장 늦은 상장 티커 기준으로 시작일 조정"""
+
+    def _make_mixed_ipo_response(self, early_ticker, late_ticker, ipo_date, start, end):
+        """early_ticker는 전 기간, late_ticker는 ipo_date부터만 데이터가 존재하는 응답"""
+        dates = pd.bdate_range(start, end)
+        cols = pd.MultiIndex.from_product(
+            [["Open", "High", "Low", "Close", "Volume"], [early_ticker, late_ticker]]
+        )
+        data = np.random.rand(len(dates), len(cols)) * 100 + 50
+        df = pd.DataFrame(data, index=dates, columns=cols)
+        # late_ticker의 모든 필드를 ipo_date 이전에 NaN으로
+        for field in ["Open", "High", "Low", "Close", "Volume"]:
+            df.loc[df.index < ipo_date, (field, late_ticker)] = np.nan
+        return df
+
+    def test_trims_start_to_latest_ipo(self, cache):
+        """한 티커의 데이터가 늦게 시작하면 해당 날짜부터 잘라낸다"""
+        ipo_date = pd.Timestamp("2023-01-02")
+        yf_response = self._make_mixed_ipo_response(
+            "SPY", "NEW", ipo_date, "2022-01-01", "2023-06-30"
+        )
+
+        with patch("src.backtest.cache.yf.download", return_value=yf_response):
+            result = cache.get_data(["SPY", "NEW"], "2022-01-01", "2023-06-30")
+
+        assert result.index.min() >= ipo_date
+        assert "SPY" in result.columns
+        assert "NEW" in result.columns
+        # ffill 후 NaN 없어야 함
+        assert not result["NEW"].isna().any()
+
+    def test_trim_logs_warning(self, tmp_cache_dir):
+        """시작일 조정 시 logger.warning 호출"""
+        ipo_date = pd.Timestamp("2023-01-02")
+        yf_response = TestIpoTrim._make_mixed_ipo_response(
+            self, "SPY", "NEW", ipo_date, "2022-01-01", "2023-06-30"
+        )
+
+        logger = MagicMock()
+        cache = BacktestDataCache(cache_dir=tmp_cache_dir, logger=logger)
+        with patch("src.backtest.cache.yf.download", return_value=yf_response):
+            cache.get_data(["SPY", "NEW"], "2022-01-01", "2023-06-30")
+
+        warning_msgs = [c.args[0] for c in logger.warning.call_args_list]
+        assert any("조정" in m for m in warning_msgs)
+
+    def test_no_trim_when_all_tickers_have_full_data(self, cache):
+        """모든 티커에 전 기간 데이터가 있으면 시작일이 유지된다"""
+        yf_response = _make_yf_response(["SPY", "IEF"], days=20)
+
+        with patch("src.backtest.cache.yf.download", return_value=yf_response):
+            result = cache.get_data(["SPY", "IEF"], "2024-01-01", "2024-02-01")
+
+        # 트림 없이 yf 응답의 첫 날짜가 그대로 유지
+        assert result.index.min() == pd.Timestamp("2024-01-02")
