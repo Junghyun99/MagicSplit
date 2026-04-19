@@ -37,10 +37,38 @@ def test_to_kis_code():
     assert _to_kis_code("005930") == "005930"
 
 def test_to_yf_ticker():
-    # Standard code
     assert _to_yf_ticker("005930") == "005930.KS"
-    # Already has extension
     assert _to_yf_ticker("005930.KS") == "005930.KS"
+    assert _to_yf_ticker("058470.KQ") == "058470.KQ"
+
+
+def test_get_portfolio_kosdaq_ticker():
+    """KOSDAQ 종목(058470.KQ)이 known_tickers로 전달되면 잔고 조회 시 .KS 대신 .KQ를 반환한다."""
+    from datetime import datetime, timedelta
+    logger = MagicMock()
+
+    mock_resp = MagicMock()
+    mock_resp.raise_for_status.return_value = None
+    mock_resp.json.return_value = {
+        "rt_cd": "0",
+        "output1": [
+            {"pdno": "058470", "hldg_qty": "10", "prpr": "200000"},
+        ],
+        "output2": [{"dnca_tot_amt": "1000000", "cma_evlu_amt": "0"}],
+    }
+
+    with patch.object(KisDomesticPaperBroker, "_auth", return_value="fake_token"), \
+         patch("src.infra.broker.kis_domestic._pkg.requests.get", return_value=mock_resp):
+        broker = KisDomesticPaperBroker(
+            "key", "secret", "12345678AB", logger,
+            known_tickers=["005930.KS", "058470.KQ"]
+        )
+        broker.token_expires_at = datetime.now() + timedelta(hours=1)
+        pf = broker.get_portfolio()
+
+    assert "058470.KQ" in pf.holdings
+    assert "058470.KS" not in pf.holdings
+    assert pf.holdings["058470.KQ"] == 10
 
 
 def test_paper_broker_uses_mock_pending_tr_id():

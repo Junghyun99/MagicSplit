@@ -28,11 +28,13 @@ def _resolve_engine_class(engine_name: str):
 
 def _create_broker(market_type: str, is_live: bool,
                     app_key: str, app_secret: str, acc_no: str, logger,
-                    exchange_map: dict | None = None):
+                    exchange_map: dict | None = None,
+                    known_tickers: list[str] | None = None):
     """(market_type, is_live) 조합에 따라 KIS 브로커를 생성."""
     args = (app_key, app_secret, acc_no, logger)
     if market_type == "domestic":
-        return KisDomesticLiveBroker(*args) if is_live else KisDomesticPaperBroker(*args)
+        return (KisDomesticLiveBroker(*args, known_tickers=known_tickers)
+                if is_live else KisDomesticPaperBroker(*args, known_tickers=known_tickers))
     return (KisOverseasLiveBroker(*args, exchange_map=exchange_map)
             if is_live else KisOverseasPaperBroker(*args, exchange_map=exchange_map))
 
@@ -72,6 +74,7 @@ class MagicSplitBot:
             acc_no=self.config.KIS_ACC_NO,
             logger=self.logger,
             exchange_map=self.strategy.get_exchange_map(),
+            known_tickers=[r.ticker for r in rules],
         )
         repo = JsonRepository(
             os.path.join(self.config.DATA_PATH, self.market_type),
