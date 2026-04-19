@@ -1,6 +1,6 @@
 # src/core/logic/split_evaluator.py
 import math
-from typing import List, Optional
+from typing import Dict, List, Optional
 
 from src.core.interfaces import ILogger
 from src.core.models import (
@@ -31,6 +31,7 @@ class SplitEvaluator:
         stock_rules: List[StockRule],
         positions: List[PositionLot],
         portfolio: Portfolio,
+        last_sell_prices: Optional[Dict[str, float]] = None,
     ) -> List[SplitSignal]:
         """모든 종목에 대해 매수/매도 신호를 평가한다.
 
@@ -38,13 +39,17 @@ class SplitEvaluator:
             stock_rules: config.json에서 로드된 종목별 매매 규칙
             positions: 현재 보유 중인 분할 포지션 목록
             portfolio: 현재 포트폴리오 (현금, 보유 종목, 현재가)
+            last_sell_prices: 티커별 직전(전량 청산) 매도 단가.
+                재진입 가드 평가에만 사용. 미상이면 생략.
 
         Returns:
             매수/매도 신호 리스트 (매도 신호가 먼저, 자금 확보 우선)
         """
         signals: List[SplitSignal] = []
         for rule in stock_rules:
-            signals.extend(self.evaluate_stock(rule, positions, portfolio))
+            signals.extend(
+                self.evaluate_stock(rule, positions, portfolio, last_sell_prices)
+            )
 
         # 매도 신호를 먼저, 매수 신호를 나중에 (자금 확보 우선)
         sell_first = [s for s in signals if s.action == OrderAction.SELL]
@@ -56,10 +61,15 @@ class SplitEvaluator:
         rule: StockRule,
         positions: List[PositionLot],
         portfolio: Portfolio,
+        last_sell_prices: Optional[Dict[str, float]] = None,
     ) -> List[SplitSignal]:
         """단일 종목에 대해 매수/매도 신호를 평가한다.
 
         마지막 차수만 기준으로 판단하며, 매도 OR 매수 중 하나만 반환한다.
+
+        Args:
+            last_sell_prices: 티커별 직전 매도 단가 (재진입 가드용).
+                상위 호출부(엔진)에서 history/repo로부터 조회해 전달한다.
 
         Returns:
             최대 1개의 신호를 담은 리스트
@@ -79,9 +89,9 @@ class SplitEvaluator:
 
         # 보유 lot이 없으면 → 1차수 초기 매수
         if not ticker_lots:
-            # TODO(reentry_guard): repo/history에서 직전 매도가를 조회하여 전달.
-            # 현재는 None으로 가드 비활성 (기존 동작 유지).
-            last_sell_price: Optional[float] = None
+            last_sell_price = (
+                last_sell_prices.get(rule.ticker) if last_sell_prices else None
+            )
             signal = self._evaluate_initial_buy(
                 rule, current_price, last_sell_price=last_sell_price,
             )
@@ -195,7 +205,7 @@ class SplitEvaluator:
 
         if self._logger:
             self._logger.info(
-                f"[{rule.ticker}] 재진입 가드: 직전 매도가 ${last_sell_price:.2f} 대비 "
+                f"[{rule.ticker}] 재진입 가드: 직전 매도가 {last_sell_price:.2f} 대비 "
                 f"{pct_from_sell:+.2f}% > 임계 {rule.reentry_guard_pct:+.2f}% → 진입 보류"
             )
         return False

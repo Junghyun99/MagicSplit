@@ -82,6 +82,11 @@ class MagicSplitEngine:
             positions = self.repo.load_positions()
             self.logger.info(f"Loaded {len(positions)} position lot(s)")
 
+            # 재진입 가드용 직전 매도가 조회.
+            # TODO(reentry_guard): repo/history에서 티커별 직전 (전량 청산)
+            # 매도 단가를 추출해 채운다. 현재는 비어 있어 가드 비활성.
+            last_sell_prices: dict = {}
+
             # Step 2.5: 브로커 수량 ↔ positions 수량 합 불일치 검사
             # 불일치 종목은 이번 사이클에서 매매 중단 (자동 보정 미지원)
             halted_tickers = self._check_reconcile(positions, portfolio)
@@ -99,7 +104,9 @@ class MagicSplitEngine:
                     self.logger.info(f">>> Processing {rule.ticker}")
 
                     # 3a. 해당 종목 신호 평가
-                    signals = self.evaluator.evaluate_stock(rule, positions, portfolio)
+                    signals = self.evaluator.evaluate_stock(
+                        rule, positions, portfolio, last_sell_prices,
+                    )
                     all_signals.extend(signals)
 
                     if not signals:
