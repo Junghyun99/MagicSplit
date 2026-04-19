@@ -40,7 +40,7 @@ def fetch_hashkey(base_url: str, app_key: str, app_secret: str, data: dict, logg
                 "appkey": app_key,
                 "appsecret": app_secret,
             },
-            json=data,
+            json=data, timeout=5
         )
         res.raise_for_status()
         return res.json()["HASH"]
