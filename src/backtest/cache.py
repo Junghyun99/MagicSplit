@@ -2,14 +2,10 @@
 import pandas as pd
 import yfinance as yf
 from pathlib import Path
-from typing import List, Tuple, Optional
+from typing import List, Optional
 from src.core.interfaces import ILogger
 
 CACHE_DIR = Path(__file__).parent / "cache"
-
-# OHLCV에 포함할 필드 (Adj Close, Dividends, Stock Splits 제외)
-# auto_adjust=False: Close는 분할 소급 반영(split-adjusted), 배당 미반영(not dividend-adjusted)
-_OHLCV_FIELDS = ["Close", "Open", "High", "Low", "Volume"]
 
 
 class _NullLogger:
@@ -21,176 +17,130 @@ class _NullLogger:
 
 class BacktestDataCache:
     """
+    yfinance로 종가(Close) 데이터를 다운로드하고 Parquet으로 캐시한다.
+
     요청할 때마다 기존 캐시를 삭제하고 전체 재다운로드한다.
     증분 merge 없이 항상 깨끗한 데이터를 보장한다.
 
-    저장 위치: src/backtest/cache/
-      - ohlcv.parquet
-      - vix.parquet
-      - dividends.parquet
+    저장 위치: src/backtest/cache/close.parquet
     """
 
     def __init__(self, cache_dir: Path = CACHE_DIR, logger: Optional[ILogger] = None):
         self.cache_dir = Path(cache_dir)
-        self.ohlcv_path = self.cache_dir / "ohlcv.parquet"
-        self.vix_path = self.cache_dir / "vix.parquet"
-        self.dividends_path = self.cache_dir / "dividends.parquet"
+        self.close_path = self.cache_dir / "close.parquet"
         self._logger: ILogger = logger if logger is not None else _NullLogger()
 
     def get_data(
         self, tickers: List[str], start_date: str, end_date: str
-    ) -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
+    ) -> pd.DataFrame:
         """
-        기존 캐시를 삭제하고 전체 티커를 새로 다운로드한다.
-        Close(분할 소급 반영, 배당 미반영)를 사용하며 배당 정보를 별도 저장한다.
+        기존 캐시를 삭제하고 전체 티커의 종가를 새로 다운로드한다.
 
         1. 기존 캐시 삭제
-        2. 전 티커 일괄 다운로드 (auto_adjust=False)
+        2. 전 티커 일괄 다운로드 (auto_adjust=False, Close만 추출)
         3. 가장 늦은 상장 티커 기준으로 시작일 조정 (로그 출력)
         4. 남은 NaN을 이전 값으로 채움 (ffill)
         5. 저장 후 반환
 
         Returns:
-            (ohlcv, vix, dividends)
+            Close 가격 DataFrame (index=DatetimeIndex, columns=tickers)
         """
         self.cache_dir.mkdir(parents=True, exist_ok=True)
-
-        need_start = pd.Timestamp(start_date)
-        need_end = pd.Timestamp(end_date)
 
         # 1. 기존 캐시 삭제
         self.clear()
 
         # 2. 전체 다운로드
-        self._logger.info(f"전체 다운로드 시작: {tickers} ({start_date} ~ {end_date})")
-        ohlcv, divs = self._download_ohlcv_and_actions(tickers, need_start, need_end)
-        vix = self._download_vix(need_start, need_end)
+        self._logger.info(f"종가 다운로드 시작: {tickers} ({start_date} ~ {end_date})")
+        close_df = self._download_close(tickers, start_date, end_date)
 
-        if ohlcv is None or ohlcv.empty:
-            raise ValueError(f"OHLCV 다운로드 실패: {tickers} ({start_date} ~ {end_date})")
+        if close_df is None or close_df.empty:
+            raise ValueError(f"종가 다운로드 실패: {tickers} ({start_date} ~ {end_date})")
 
         # 3. 상장일 기준 시작일 조정
-        ohlcv = self._trim_to_latest_ipo(ohlcv, tickers)
+        close_df = self._trim_to_latest_ipo(close_df, tickers)
 
         # 4. 남은 NaN → 이전 값으로 채움
-        nan_before = int(ohlcv.isna().sum().sum())
+        nan_before = int(close_df.isna().sum().sum())
         if nan_before > 0:
-            ohlcv = ohlcv.ffill()
-            nan_after = int(ohlcv.isna().sum().sum())
+            close_df = close_df.ffill()
+            nan_after = int(close_df.isna().sum().sum())
             filled = nan_before - nan_after
             self._logger.info(f"NaN ffill 처리: {filled}개 채움, 잔여 {nan_after}개")
 
         # 5. 저장
-        self._save_parquet(ohlcv, self.ohlcv_path)
-        self._save_parquet(divs if divs is not None else pd.DataFrame(), self.dividends_path)
-        if vix is not None and not vix.empty:
-            self._save_parquet(vix, self.vix_path)
+        self._save_parquet(close_df, self.close_path)
 
-        return (
-            ohlcv,
-            vix if vix is not None else pd.DataFrame(),
-            divs if divs is not None else pd.DataFrame(),
-        )
+        return close_df
 
     # ── 상장일 조정 ────────────────────────────────────────
 
-    def _trim_to_latest_ipo(self, ohlcv: pd.DataFrame, tickers: List[str]) -> pd.DataFrame:
+    def _trim_to_latest_ipo(self, close_df: pd.DataFrame, tickers: List[str]) -> pd.DataFrame:
         """
         가장 늦은 상장 티커의 첫 유효일을 기준으로 DataFrame 시작일을 조정한다.
         조정이 발생하면 원래 요청 시작일과 조정된 시작일을 로그에 출력한다.
         """
-        if not isinstance(ohlcv.columns, pd.MultiIndex):
-            return ohlcv
-
         latest_ipo: Optional[pd.Timestamp] = None
         latest_ticker: Optional[str] = None
 
         for ticker in tickers:
-            if ("Close", ticker) not in ohlcv.columns:
+            if ticker not in close_df.columns:
                 continue
-            first_valid = ohlcv["Close"][ticker].first_valid_index()
+            first_valid = close_df[ticker].first_valid_index()
             if first_valid is not None and (latest_ipo is None or first_valid > latest_ipo):
                 latest_ipo = first_valid
                 latest_ticker = ticker
 
         if latest_ipo is None:
-            return ohlcv
+            return close_df
 
-        original_start = ohlcv.index.min()
+        original_start = close_df.index.min()
         if latest_ipo > original_start:
             self._logger.warning(
                 f"⚠️ 상장일 조정: {latest_ticker} 첫 거래일 {latest_ipo.date()} "
                 f"(요청 시작일 {original_start.date()} → 조정 후 시작일 {latest_ipo.date()})"
             )
-            ohlcv = ohlcv.loc[latest_ipo:]
+            close_df = close_df.loc[latest_ipo:]
         else:
             self._logger.info(f"모든 티커 데이터 정상 (시작일: {original_start.date()})")
 
-        return ohlcv
+        return close_df
 
     # ── 다운로드 ───────────────────────────────────────────
 
-    def _download_ohlcv_and_actions(
-        self, tickers: List[str], start: pd.Timestamp, end: pd.Timestamp
-    ) -> Tuple[Optional[pd.DataFrame], pd.DataFrame]:
-        """
-        단일 yf.download(auto_adjust=False, actions=True) 호출로
-        OHLCV와 실제 배당금액을 함께 다운로드한다.
-
-        auto_adjust=False: Close는 분할 소급 반영(split-adjusted), 배당 미반영
-        actions=True: Dividends 컬럼 포함
-        """
+    def _download_close(
+        self, tickers: List[str], start_date: str, end_date: str
+    ) -> Optional[pd.DataFrame]:
+        """yfinance로 종가를 다운로드한다."""
         try:
             df = yf.download(
-                tickers, start=start, end=end,
-                auto_adjust=False, back_adjust=False, actions=True, progress=True
+                tickers, start=start_date, end=end_date,
+                auto_adjust=False, progress=False,
             )
             if df is None or df.empty:
-                return None, pd.DataFrame()
-
-            # 단일 티커 + SingleIndex → MultiIndex로 정규화
-            if not isinstance(df.columns, pd.MultiIndex) and len(tickers) == 1:
-                df.columns = pd.MultiIndex.from_product([df.columns, tickers])
-
-            level0 = df.columns.get_level_values(0)
-
-            # OHLCV 추출 (Adj Close, Dividends, Stock Splits 제외)
-            available_fields = [f for f in _OHLCV_FIELDS if f in level0]
-            ohlcv = df[available_fields]
-
-            # 배당 추출
-            if "Dividends" in level0:
-                divs = df["Dividends"]
-                if isinstance(divs, pd.Series):
-                    divs = divs.to_frame(name=tickers[0])
-            else:
-                divs = pd.DataFrame()
-
-            return ohlcv, divs
-        except Exception as e:
-            self._logger.warning(f"OHLCV 다운로드 실패: {e}")
-            return None, pd.DataFrame()
-
-    def _download_vix(
-        self, start: pd.Timestamp, end: pd.Timestamp
-    ) -> Optional[pd.DataFrame]:
-        try:
-            df = yf.download("^VIX", start=start, end=end, progress=False)
-            return df if df is not None and not df.empty else None
-        except Exception as e:
-            self._logger.warning(f"VIX 다운로드 실패: {e}")
-            return None
-
-    # ── 유틸리티 ───────────────────────────────────────────
-
-    def _load_parquet(self, path: Path) -> Optional[pd.DataFrame]:
-        if path.exists():
-            try:
-                return pd.read_parquet(path)
-            except Exception as e:
-                self._logger.warning(f"캐시 로드 실패 ({path.name}): {e}")
                 return None
-        return None
+
+            # 단일 티커 + SingleIndex → 정규화
+            if not isinstance(df.columns, pd.MultiIndex) and len(tickers) == 1:
+                if "Close" in df.columns:
+                    close_df = df[["Close"]].copy()
+                    close_df.columns = tickers
+                    return close_df
+                return None
+
+            # MultiIndex DataFrame: ('Close', ticker) 형태
+            if "Close" not in df.columns.get_level_values(0):
+                return None
+            close_df = df["Close"]
+
+            # Series → DataFrame 변환 (단일 티커의 경우)
+            if isinstance(close_df, pd.Series):
+                close_df = close_df.to_frame(name=tickers[0])
+
+            return close_df
+        except Exception as e:
+            self._logger.warning(f"종가 다운로드 실패: {e}")
+            return None
 
     def _save_parquet(self, df: pd.DataFrame, path: Path):
         if df is not None and not df.empty:
@@ -201,7 +151,6 @@ class BacktestDataCache:
 
     def clear(self):
         """캐시 파일 삭제"""
-        for p in [self.ohlcv_path, self.vix_path, self.dividends_path]:
-            if p.exists():
-                p.unlink()
-        self._logger.info("기존 캐시 삭제 완료")
+        if self.close_path.exists():
+            self.close_path.unlink()
+            self._logger.info("기존 캐시 삭제 완료")
