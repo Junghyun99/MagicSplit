@@ -232,6 +232,14 @@ class TestPresets:
         with pytest.raises(FileNotFoundError):
             StrategyConfig(cfg_path)
 
+    def test_empty_presets_file_raises_key_error_not_file_not_found(self, tmp_path):
+        """파일은 존재하나 비어 있으면 FileNotFoundError가 아니라 KeyError(미존재 preset)로 실패."""
+        cfg = {"stocks": [{"ticker": "AAPL", "preset": "large_cap_us"}]}
+        cfg_path = self._write(tmp_path, cfg, presets={})
+
+        with pytest.raises(KeyError, match="large_cap_us"):
+            StrategyConfig(cfg_path)
+
     def test_explicit_presets_path(self, tmp_path):
         presets_file = tmp_path / "custom_presets.json"
         presets_file.write_text(json.dumps({

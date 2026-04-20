@@ -122,12 +122,14 @@ class StrategyConfig:
             raise ValueError(f"{self.config_path}에 'stocks' 항목이 비어 있습니다.")
 
         needs_presets = any("preset" in s for s in raw_stocks)
-        self.presets = self._load_presets()
-        if needs_presets and not self.presets:
+        if needs_presets and not os.path.exists(self.presets_path):
             raise FileNotFoundError(
                 f"프리셋을 참조하는 종목이 있지만 presets 파일을 찾을 수 없습니다: "
                 f"{self.presets_path}"
             )
+        self.presets = self._load_presets()
+        # 파일은 있으나 비어 있거나 참조한 프리셋이 없는 경우는
+        # 아래 _merge_preset에서 KeyError로 구체적으로 실패한다.
 
         for idx, raw in enumerate(raw_stocks):
             merged = self._merge_preset(raw, self.presets)
