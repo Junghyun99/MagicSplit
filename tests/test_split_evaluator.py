@@ -280,3 +280,135 @@ class TestEvaluateEdgeCases:
         assert len(signals) == 2
         tickers = {s.ticker for s in signals}
         assert tickers == {"AAPL", "MSFT"}
+
+
+class TestPerLevelThresholds:
+    """차수별 배열 threshold/amount 테스트"""
+
+    def _rule_with_arrays(
+        self,
+        ticker="AAPL",
+        buy_pcts=None,
+        sell_pcts=None,
+        buy_amounts=None,
+        max_lots=10,
+    ):
+        from src.core.models import StockRule
+        return StockRule(
+            ticker=ticker,
+            buy_threshold_pcts=buy_pcts,
+            sell_threshold_pcts=sell_pcts,
+            buy_amounts=buy_amounts,
+            buy_threshold_pct=(None if buy_pcts else -5.0),
+            sell_threshold_pct=(None if sell_pcts else 10.0),
+            buy_amount=(None if buy_amounts else 500.0),
+            max_lots=max_lots,
+        )
+
+    def test_buy_uses_level_specific_threshold(
+        self, evaluator, create_lot, create_portfolio
+    ):
+        """Lv1 → Lv2 매수 판단은 buy_threshold_pcts[0] 기준, Lv2→Lv3는 [1]."""
+        rule = self._rule_with_arrays(
+            buy_pcts=[-3.0, -5.0, -7.0],
+            buy_amounts=[100.0, 200.0, 300.0],
+            max_lots=5,
+        )
+        # Lv1 매수가 100, 현재가 96 → -4% ≤ -3% → Lv2 매수 트리거
+        lots = [create_lot(ticker="AAPL", buy_price=100.0, quantity=1, level=1)]
+        portfolio = create_portfolio(prices={"AAPL": 96.0}, holdings={"AAPL": 1})
+
+        signals = evaluator.evaluate_stock(rule, lots, portfolio)
+        assert len(signals) == 1
+        assert signals[0].action == OrderAction.BUY
+        assert signals[0].level == 2
+
+    def test_lv2_to_lv3_requires_stricter_drop(
+        self, evaluator, create_lot, create_portfolio
+    ):
+        """Lv2→Lv3 평가는 buy_threshold_pcts[1]=-5% 기준: -4%로는 부족."""
+        rule = self._rule_with_arrays(
+            buy_pcts=[-3.0, -5.0, -7.0],
+            buy_amounts=[100.0, 200.0, 300.0],
+            max_lots=5,
+        )
+        lots = [
+            create_lot(lot_id="l1", ticker="AAPL", buy_price=100.0, level=1),
+            create_lot(lot_id="l2", ticker="AAPL", buy_price=95.0, level=2),
+        ]
+        # Lv2 매수가 95, 현재가 91.2 → -4% (> -5%) → 매수 안 됨
+        portfolio = create_portfolio(prices={"AAPL": 91.2}, holdings={"AAPL": 2})
+
+        buy_signals = [
+            s for s in evaluator.evaluate_stock(rule, lots, portfolio)
+            if s.action == OrderAction.BUY
+        ]
+        assert buy_signals == []
+
+    def test_buy_amount_for_next_level(
+        self, evaluator, create_lot, create_portfolio
+    ):
+        """추가 매수 금액은 다음 차수(new lot) 기준."""
+        rule = self._rule_with_arrays(
+            buy_pcts=[-3.0, -5.0, -7.0],
+            buy_amounts=[100.0, 200.0, 300.0],
+            max_lots=5,
+        )
+        lots = [create_lot(ticker="AAPL", buy_price=100.0, level=1)]
+        portfolio = create_portfolio(prices={"AAPL": 96.0}, holdings={"AAPL": 1})
+
+        signals = evaluator.evaluate_stock(rule, lots, portfolio)
+        # Lv2 신규 lot → buy_amounts[1] = 200, 200/96 = 2주
+        assert signals[0].level == 2
+        assert signals[0].quantity == 2
+
+    def test_sell_uses_level_specific_threshold(
+        self, evaluator, create_lot, create_portfolio
+    ):
+        """Lv2 매도 판단은 sell_threshold_pcts[1] 기준."""
+        rule = self._rule_with_arrays(
+            sell_pcts=[5.0, 8.0, 12.0],
+            buy_amounts=[100.0, 200.0, 300.0],
+            max_lots=5,
+        )
+        lots = [
+            create_lot(lot_id="l1", ticker="AAPL", buy_price=100.0, level=1),
+            create_lot(lot_id="l2", ticker="AAPL", buy_price=100.0, level=2),
+        ]
+        # Lv2 매수가 100, 현재가 109 → +9% ≥ 8% → 매도
+        portfolio = create_portfolio(prices={"AAPL": 109.0}, holdings={"AAPL": 2})
+
+        signals = evaluator.evaluate_stock(rule, lots, portfolio)
+        assert signals and signals[0].action == OrderAction.SELL
+        assert signals[0].level == 2
+
+    def test_sell_threshold_clamps_for_deep_level(
+        self, evaluator, create_lot, create_portfolio
+    ):
+        """배열보다 깊은 level은 마지막 값으로 clamp."""
+        rule = self._rule_with_arrays(
+            sell_pcts=[5.0],
+            buy_amounts=[100.0],
+            max_lots=10,
+        )
+        lots = [create_lot(ticker="AAPL", buy_price=100.0, level=4)]
+        # Lv4에서도 sell threshold는 배열의 마지막 값 5% 사용 → +6% → 매도
+        portfolio = create_portfolio(prices={"AAPL": 106.0}, holdings={"AAPL": 5})
+
+        signals = evaluator.evaluate_stock(rule, lots, portfolio)
+        assert signals and signals[0].action == OrderAction.SELL
+
+    def test_initial_buy_uses_level1_amount(
+        self, evaluator, create_portfolio
+    ):
+        """보유 lot 없을 때 초기 매수는 buy_amounts[0] 사용."""
+        rule = self._rule_with_arrays(
+            buy_amounts=[300.0, 500.0, 800.0],
+            max_lots=5,
+        )
+        portfolio = create_portfolio(cash=10000.0, prices={"AAPL": 100.0})
+
+        signals = evaluator.evaluate([rule], [], portfolio)
+        assert len(signals) == 1
+        assert signals[0].level == 1
+        assert signals[0].quantity == 3  # 300 / 100

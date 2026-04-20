@@ -120,8 +120,9 @@ class SplitEvaluator:
     ) -> Optional[SplitSignal]:
         """마지막 차수 lot의 매도 여부를 평가한다."""
         pct_change = (current_price - last_lot.buy_price) / last_lot.buy_price * 100
+        sell_threshold = rule.sell_threshold_at(last_lot.level)
 
-        if pct_change >= rule.sell_threshold_pct:
+        if pct_change >= sell_threshold:
             if self._logger:
                 self._logger.info(
                     f"[{rule.ticker}] Lv{last_lot.level}: 매수가 ${last_lot.buy_price:.2f} → "
@@ -150,11 +151,12 @@ class SplitEvaluator:
         if not self._passes_reentry_guard(rule, current_price, last_sell_price):
             return None
 
-        buy_qty = math.floor(rule.buy_amount / current_price)
+        buy_amount = rule.buy_amount_at(1)
+        buy_qty = math.floor(buy_amount / current_price)
         if buy_qty <= 0:
             if self._logger:
                 self._logger.info(
-                    f"[{rule.ticker}] 매수 금액(${rule.buy_amount:.2f})으로 "
+                    f"[{rule.ticker}] 매수 금액(${buy_amount:.2f})으로 "
                     f"1주도 매수 불가 (현재가 ${current_price:.2f}). 스킵."
                 )
             return None
@@ -228,20 +230,22 @@ class SplitEvaluator:
                 )
             return None
 
-        # 매수 수량 계산
-        buy_qty = math.floor(rule.buy_amount / current_price)
+        # 매수 수량 계산 (다음 차수 기준 금액)
+        buy_amount = rule.buy_amount_at(next_level)
+        buy_qty = math.floor(buy_amount / current_price)
         if buy_qty <= 0:
             if self._logger:
                 self._logger.info(
-                    f"[{rule.ticker}] 매수 금액(${rule.buy_amount:.2f})으로 "
+                    f"[{rule.ticker}] 매수 금액(${buy_amount:.2f})으로 "
                     f"1주도 매수 불가 (현재가 ${current_price:.2f}). 스킵."
                 )
             return None
 
-        # 마지막 차수 매수가 대비 현재가 비교
+        # 마지막 차수 매수가 대비 현재가 비교 (임계치는 마지막 차수 기준)
         pct_from_last = (current_price - last_lot.buy_price) / last_lot.buy_price * 100
+        buy_threshold = rule.buy_threshold_at(last_lot.level)
 
-        if pct_from_last <= rule.buy_threshold_pct:
+        if pct_from_last <= buy_threshold:
             if self._logger:
                 self._logger.info(
                     f"[{rule.ticker}] Lv{last_lot.level} 매수가 ${last_lot.buy_price:.2f} 대비 "

@@ -24,18 +24,69 @@ class ExecutionStatus(str, Enum):
 
 @dataclass
 class StockRule:
-    """종목별 매매 규칙 (config.json에서 로드)"""
+    """종목별 매매 규칙 (config.json에서 로드).
+
+    차수별 차등을 위해 배열 필드(`*_pcts`, `buy_amounts`)를 제공한다.
+    배열이 있으면 배열이 우선, 없으면 단일값(`*_pct`, `buy_amount`)을 사용.
+    배열 길이가 실제 차수보다 짧으면 마지막 값으로 clamp.
+    """
     ticker: str
-    buy_threshold_pct: float    # 매수가 대비 -N% 이하 시 추가매수 (음수, 예: -5.0)
-    sell_threshold_pct: float   # 매수가 대비 +N% 이상 시 매도 (양수, 예: 10.0)
-    buy_amount: float           # 1회 매수 금액 (원 or USD)
-    max_lots: int               # 최대 분할 횟수
+    buy_threshold_pct: Optional[float] = None    # 매수가 대비 -N% 이하 시 추가매수 (음수, 예: -5.0)
+    sell_threshold_pct: Optional[float] = None   # 매수가 대비 +N% 이상 시 매도 (양수, 예: 10.0)
+    buy_amount: Optional[float] = None           # 1회 매수 금액 (원 or USD)
+    max_lots: int = 10                           # 최대 분할 횟수
     market_type: str = "overseas"  # "overseas" | "domestic"
     enabled: bool = True
     exchange: str = ""  # 거래소 단축 코드 (NAS, NYS, AMS 등; 해외주식 전용)
     # 재진입 가드: 직전 매도가 대비 X% 하락해야 1차수 재매수 허용 (음수, 예: -0.1)
     # None이면 가드 비활성 (전량 청산 직후에도 다음 사이클 즉시 재진입)
     reentry_guard_pct: Optional[float] = None
+    # 차수별 배열 (있으면 단일값보다 우선). level(1-based)을 배열 인덱스로 매핑.
+    buy_threshold_pcts: Optional[List[float]] = None
+    sell_threshold_pcts: Optional[List[float]] = None
+    buy_amounts: Optional[List[float]] = None
+
+    def __post_init__(self):
+        if self.buy_threshold_pct is None and not self.buy_threshold_pcts:
+            raise ValueError(
+                f"StockRule({self.ticker}): buy_threshold_pct 또는 buy_threshold_pcts 중 하나는 필요합니다."
+            )
+        if self.sell_threshold_pct is None and not self.sell_threshold_pcts:
+            raise ValueError(
+                f"StockRule({self.ticker}): sell_threshold_pct 또는 sell_threshold_pcts 중 하나는 필요합니다."
+            )
+        if self.buy_amount is None and not self.buy_amounts:
+            raise ValueError(
+                f"StockRule({self.ticker}): buy_amount 또는 buy_amounts 중 하나는 필요합니다."
+            )
+        for name, arr in (
+            ("buy_threshold_pcts", self.buy_threshold_pcts),
+            ("sell_threshold_pcts", self.sell_threshold_pcts),
+            ("buy_amounts", self.buy_amounts),
+        ):
+            if arr is not None and len(arr) == 0:
+                raise ValueError(f"StockRule({self.ticker}): {name}는 비어 있으면 안 됩니다.")
+
+    @staticmethod
+    def _at(arr: Optional[List[float]], scalar: Optional[float], level: int) -> float:
+        if arr:
+            idx = max(0, min(level - 1, len(arr) - 1))
+            return float(arr[idx])
+        if scalar is not None:
+            return float(scalar)
+        raise ValueError("array and scalar are both missing")
+
+    def buy_threshold_at(self, level: int) -> float:
+        """주어진 차수(1-based)의 매수 임계치(%)를 반환한다."""
+        return self._at(self.buy_threshold_pcts, self.buy_threshold_pct, level)
+
+    def sell_threshold_at(self, level: int) -> float:
+        """주어진 차수(1-based)의 매도 임계치(%)를 반환한다."""
+        return self._at(self.sell_threshold_pcts, self.sell_threshold_pct, level)
+
+    def buy_amount_at(self, level: int) -> float:
+        """주어진 차수(1-based)의 1회 매수 금액을 반환한다."""
+        return self._at(self.buy_amounts, self.buy_amount, level)
 
 
 @dataclass
