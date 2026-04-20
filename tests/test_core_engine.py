@@ -265,6 +265,30 @@ class TestBudgetWarning:
         for call in notifier.send_alert.call_args_list:
             assert "buy_amount" not in call.args[0]
 
+    def test_no_warning_when_max_lots_reached(
+        self, mock_broker, mock_repo, mock_logger,
+    ):
+        """이미 max_lots에 도달한 종목은 어차피 추가 매수 불가 → 경고 생략."""
+        rules = [StockRule("BRK-A", -5.0, 10.0, 500, max_lots=2)]
+        mock_broker.get_portfolio.return_value = Portfolio(
+            total_cash=10000.0, holdings={"BRK-A": 2},
+            current_prices={"BRK-A": 600000.0},
+        )
+        mock_broker.fetch_current_prices.return_value = {"BRK-A": 600000.0}
+        mock_repo.load_positions.return_value = [
+            PositionLot("lot_001", "BRK-A", 100.0, 1, "2026-04-01", level=1),
+            PositionLot("lot_002", "BRK-A", 90.0, 1, "2026-04-05", level=2),
+        ]
+        notifier = MagicMock()
+        eng = MagicSplitEngine(
+            broker=mock_broker, repo=mock_repo, logger=mock_logger,
+            stock_rules=rules, notifier=notifier,
+        )
+        eng.run_one_cycle(sim_date="2026-04-10")
+
+        for call in notifier.send_alert.call_args_list:
+            assert "buy_amount" not in call.args[0]
+
     def test_no_warning_when_price_unavailable(
         self, mock_broker, mock_repo, mock_logger,
     ):
