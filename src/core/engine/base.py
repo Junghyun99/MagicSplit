@@ -103,6 +103,9 @@ class MagicSplitEngine:
                 try:
                     self.logger.info(f">>> Processing {rule.ticker}")
 
+                    # 3a-pre. 자금 설정 점검 (현재가 > buy_amount → 1주도 매수 불가)
+                    self._warn_if_budget_insufficient(rule, portfolio, positions)
+
                     # 3a. 해당 종목 신호 평가
                     signals = self.evaluator.evaluate_stock(
                         rule, positions, portfolio, last_sell_prices,
@@ -248,6 +251,36 @@ class MagicSplitEngine:
         self.logger.error(summary)
         self._notify_alert(summary)
         return {m.ticker for m in mismatches}
+
+    def _warn_if_budget_insufficient(
+        self,
+        rule: StockRule,
+        portfolio: Portfolio,
+        positions: List[PositionLot],
+    ) -> None:
+        """현재가가 buy_amount를 초과해 1주도 매수 불가한 경우 사용자 경고를 보낸다.
+
+        이 상태로는 초기 진입도, 추가 매수(하락 시 분할)도 불가능하므로
+        config의 buy_amount를 상향 조정해야 한다는 알림을 발송한다.
+        단, 이미 max_lots에 도달한 종목은 어차피 추가 매수 대상이 아니므로 생략.
+        """
+        ticker_lot_count = sum(1 for p in positions if p.ticker == rule.ticker)
+        if ticker_lot_count >= rule.max_lots:
+            return
+
+        current_price = portfolio.current_prices.get(rule.ticker, 0)
+        if current_price <= 0 or rule.buy_amount <= 0:
+            return
+        if rule.buy_amount >= current_price:
+            return
+
+        msg = (
+            f"[{rule.ticker}] buy_amount({rule.buy_amount:,.2f}) < "
+            f"현재가({current_price:,.2f}) → 1주도 매수 불가. "
+            f"config.buy_amount를 상향 조정하세요."
+        )
+        self.logger.warning(msg)
+        self._notify_alert(msg)
 
     def _refresh_portfolio(self, old_portfolio: Portfolio) -> Portfolio:
         """종목 처리 후 포트폴리오(현금 잔고) 갱신."""
