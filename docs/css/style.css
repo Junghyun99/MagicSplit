@@ -1,8 +1,8 @@
 /* MagicSplit Dashboard Style */
 :root {
     --primary: #2563eb;
-    --success: #16a34a;
-    --danger: #dc2626;
+    --success: #dc2626; /* KRX convention: Red is up/profit */
+    --danger: #2563eb;  /* KRX convention: Blue is down/loss */
     --warning: #d97706;
     --bg: #f8fafc;
     --card-bg: #ffffff;
