@@ -1,0 +1,2 @@
+Sentinel Journal initialized.
+Sentinel found that API requests lacked explicit timeouts in broker HTTP requests (e.g., KIS API calls), posing a significant financial and security risk. A frozen request during market volatility can cause the bot to freeze, miss important trading signals, or enter a catastrophic loop. Added timeout=10 to all internal API request methods to ensure fail-safe behavior.
