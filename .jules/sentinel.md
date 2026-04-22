@@ -1,0 +1,1 @@
+The codebase uses 'requests' in many places to call brokerage APIs but omits the 'timeout' parameter, which is a critical vulnerability. It also has a 'timeout' param in _send_order_and_wait but this is used for polling, not for the requests themselves.
