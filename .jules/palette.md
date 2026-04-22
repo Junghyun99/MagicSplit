@@ -1,0 +1,1 @@
+# Palette's Journal\n- The site uses a vanilla JS frontend rendering JSON data (`status.json`).\n- Financial metrics should use ARIA labels and visual indicators (like ▲ / ▼) to distinguish profit/loss for colorblind users and screen readers.
