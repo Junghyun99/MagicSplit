@@ -2,8 +2,8 @@
 (function () {
     'use strict';
 
-    const VALID_MODES = ['live', 'backtest'];
-    const DEFAULT_MODE = 'live';
+    const VALID_MODES = ['domestic', 'overseas', 'backtest'];
+    const DEFAULT_MODE = 'domestic';
 
     function resolveMode() {
         const params = new URLSearchParams(window.location.search);
