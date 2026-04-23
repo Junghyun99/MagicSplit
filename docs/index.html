@@ -7,9 +7,17 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <h1>MagicSplit</h1>
+    <header class="page-header">
+        <h1>MagicSplit</h1>
+        <nav class="mode-switch" aria-label="data mode">
+            <a href="?mode=domestic" data-mode="domestic" class="mode-link">Domestic</a>
+            <a href="?mode=overseas" data-mode="overseas" class="mode-link">Overseas</a>
+            <a href="?mode=backtest" data-mode="backtest" class="mode-link">Backtest</a>
+        </nav>
+    </header>
 
     <div class="status-bar" id="status-bar">
+        <span id="mode-badge" class="mode-badge">-</span>
         <span id="last-updated">Loading...</span>
         <span id="total-value">-</span>
     </div>

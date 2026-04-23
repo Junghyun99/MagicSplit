@@ -2,16 +2,23 @@
 (function () {
     'use strict';
 
-    const STATUS_URL = 'data/status.json';
+    const VALID_MODES = ['domestic', 'overseas', 'backtest'];
+    const DEFAULT_MODE = 'domestic';
 
-    async function loadStatus() {
+    function resolveMode() {
+        const params = new URLSearchParams(window.location.search);
+        const requested = (params.get('mode') || '').toLowerCase();
+        return VALID_MODES.includes(requested) ? requested : DEFAULT_MODE;
+    }
+
+    async function loadStatus(mode) {
+        const url = `data/${mode}/status.json?t=${Date.now()}`;
         try {
-            const ts = Date.now();
-            const res = await fetch(`${STATUS_URL}?t=${ts}`);
+            const res = await fetch(url);
             if (!res.ok) throw new Error(`HTTP ${res.status}`);
             return await res.json();
         } catch (e) {
-            console.error('Failed to load status:', e);
+            console.error(`Failed to load status (${mode}):`, e);
             return null;
         }
     }
@@ -23,27 +30,47 @@
         });
     }
 
-    function renderStatus(data) {
+    function applyModeUI(mode) {
+        const badge = document.getElementById('mode-badge');
+        if (badge) {
+            badge.textContent = mode.toUpperCase();
+            badge.dataset.mode = mode;
+        }
+        document.querySelectorAll('.mode-link').forEach((link) => {
+            link.classList.toggle('active', link.dataset.mode === mode);
+        });
+    }
+
+    function renderStatus(data, mode) {
+        const loading = document.getElementById('loading');
+        const container = document.getElementById('positions-container');
+        container.innerHTML = '';
+
         if (!data) {
-            document.getElementById('loading').textContent = 'No data available.';
+            loading.textContent = `No ${mode} data available.`;
+            loading.style.display = '';
             return;
         }
 
-        document.getElementById('loading').style.display = 'none';
+        loading.style.display = 'none';
 
-        // Status bar
         document.getElementById('last-updated').textContent =
             'Updated: ' + (data.last_updated || '-');
         document.getElementById('total-value').textContent =
             formatCurrency(data.portfolio?.total_value || 0);
 
-        // Positions
-        const container = document.getElementById('positions-container');
-        container.innerHTML = '';
-
         const positions = data.positions || {};
         if (Object.keys(positions).length === 0) {
-            container.innerHTML = '<div class="card">No positions yet.</div>';
+            const emptyCard = document.createElement('div');
+            emptyCard.className = 'card';
+            emptyCard.textContent = `No ${mode} positions yet.`;
+            if (data.reason) {
+                const reasonNode = document.createElement('span');
+                reasonNode.className = 'empty-reason';
+                reasonNode.textContent = ` (${data.reason})`;
+                emptyCard.appendChild(reasonNode);
+            }
+            container.appendChild(emptyCard);
             return;
         }
 
@@ -75,8 +102,10 @@
     }
 
     async function init() {
-        const data = await loadStatus();
-        renderStatus(data);
+        const mode = resolveMode();
+        applyModeUI(mode);
+        const data = await loadStatus(mode);
+        renderStatus(data, mode);
     }
 
     init();
