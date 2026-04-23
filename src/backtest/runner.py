@@ -96,24 +96,21 @@ def run_backtest(
     # 5. 시뮬레이션 루프
     logger.info(f"--- 백테스트 시작 ({len(sim_days)} 거래일) ---")
 
-    prev_prices: Dict[str, float] = {}
+    # [⚡Bolt Optimization] 사전 ffill 및 딕셔너리 변환 (Pandas DataFrame row iteration 제거)
+    close_df_ffilled = close_df.ffill()
+    all_prices = close_df_ffilled.to_dict(orient="index")
+
     last_result: Optional[DayResult] = None
 
     for today in sim_days:
         # 종가 추출
-        try:
-            row = close_df.loc[today]
-            current_prices = row.to_dict()
-            # NaN → 전일 가격으로 대체 (forward-fill)
-            current_prices = {
-                t: (p if not pd.isna(p) else prev_prices.get(t))
-                for t, p in current_prices.items()
-                if not pd.isna(p) or prev_prices.get(t) is not None
-            }
-            prev_prices = current_prices
-        except Exception as e:
-            logger.warning(f"[{today.date()}] 종가 추출 실패, 건너뜀: {e}")
+        raw_prices = all_prices.get(today)
+        if raw_prices is None:
+            logger.warning(f"[{today.date()}] 종가 추출 실패, 건너뜀 (데이터 없음)")
             continue
+
+        # [⚡Bolt Optimization] NaN 값 제거 (최초 거래일 이전의 ffill 불가 값 등)
+        current_prices = {t: p for t, p in raw_prices.items() if not pd.isna(p)}
 
         sim_date = today.strftime("%Y-%m-%d")
 
