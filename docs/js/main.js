@@ -61,8 +61,16 @@
 
         const positions = data.positions || {};
         if (Object.keys(positions).length === 0) {
-            const reason = data.reason ? ` (${data.reason})` : '';
-            container.innerHTML = `<div class="card">No ${mode} positions yet.${reason}</div>`;
+            const emptyCard = document.createElement('div');
+            emptyCard.className = 'card';
+            emptyCard.textContent = `No ${mode} positions yet.`;
+            if (data.reason) {
+                const reasonNode = document.createElement('span');
+                reasonNode.className = 'empty-reason';
+                reasonNode.textContent = ` (${data.reason})`;
+                emptyCard.appendChild(reasonNode);
+            }
+            container.appendChild(emptyCard);
             return;
         }
 
