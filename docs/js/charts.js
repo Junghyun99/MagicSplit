@@ -54,28 +54,20 @@
 
         execs.sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : 0));
 
-        const activeLevels = {};            // ticker -> Set<level>
-        const observedMax = {};              // ticker -> {month -> maxLevel}
-        const trades = {};                   // ticker -> {month -> count}
+        // Single pass: group executions by ticker/month and count trades per
+        // ticker/month. This replaces an earlier O(T*E) per-ticker re-scan.
+        const execsByTicker = {};   // ticker -> {month -> [execs]}
+        const trades = {};          // ticker -> {month -> count}
         const tickersSeen = new Set();
 
         for (const ex of execs) {
             const t = ex.ticker;
-            tickersSeen.add(t);
-            if (!activeLevels[t]) activeLevels[t] = new Set();
-            if (!observedMax[t]) observedMax[t] = {};
-            if (!trades[t]) trades[t] = {};
-
-            if (ex.action === 'BUY') {
-                activeLevels[t].add(ex.level);
-            } else if (ex.action === 'SELL') {
-                activeLevels[t].delete(ex.level);
-            }
-
             const mk = monthKey(ex.date);
-            const curMax = activeLevels[t].size > 0 ? Math.max(...activeLevels[t]) : 0;
-            const prev = observedMax[t][mk] || 0;
-            if (curMax > prev) observedMax[t][mk] = curMax;
+            tickersSeen.add(t);
+            if (!execsByTicker[t]) execsByTicker[t] = {};
+            if (!execsByTicker[t][mk]) execsByTicker[t][mk] = [];
+            execsByTicker[t][mk].push(ex);
+            if (!trades[t]) trades[t] = {};
             trades[t][mk] = (trades[t][mk] || 0) + 1;
         }
 
@@ -84,19 +76,13 @@
         const months = enumerateMonths(firstMonth, lastMonth);
 
         // Roll-forward: months without trades inherit prior month's open-level
-        // max. Tracked per ticker by replaying executions month-by-month.
+        // max. For each ticker, replay its executions month-by-month tracking
+        // the set of open levels.
         const grid = {};
         for (const t of tickersSeen) {
             grid[t] = {};
             const open = new Set();
-            // Pre-index executions by month for this ticker.
-            const byMonth = {};
-            for (const ex of execs) {
-                if (ex.ticker !== t) continue;
-                const mk = monthKey(ex.date);
-                if (!byMonth[mk]) byMonth[mk] = [];
-                byMonth[mk].push(ex);
-            }
+            const byMonth = execsByTicker[t] || {};
             for (const m of months) {
                 let monthMax = open.size > 0 ? Math.max(...open) : 0;
                 const list = byMonth[m] || [];
@@ -155,13 +141,6 @@
             const levelLabel = level > 0 ? `Lv${level}` : '보유 없음';
             const tradeLabel = count > 0 ? ` (거래 ${count}건)` : '';
             cell.title = `${ticker} | ${m} | ${levelLabel}${tradeLabel}`;
-
-            cell.addEventListener('click', () => {
-                document.dispatchEvent(new CustomEvent('heatmap-select', {
-                    detail: { ticker, month: m, level },
-                }));
-            });
-
             row.appendChild(cell);
         }
         return row;
@@ -188,9 +167,30 @@
             container.appendChild(buildTickerRow(t, data.months, data.grid, data.trades));
         }
 
+        // Single delegated click listener on the container; survives re-renders
+        // because only cells (children) are replaced, not the container itself.
+        if (!container.dataset.listenersBound) {
+            container.addEventListener('click', onCellClick);
+            container.dataset.listenersBound = '1';
+        }
+
         section.style.display = '';
         section.dataset.mode = mode || '';
         container.dataset.columns = String(columnCount);
+    }
+
+    function onCellClick(e) {
+        const cell = e.target.closest('.heatmap-cell');
+        if (!cell) return;
+        const level = parseInt(cell.dataset.rawLevel || '0', 10);
+        if (level === 0) return;
+        document.dispatchEvent(new CustomEvent('heatmap-select', {
+            detail: {
+                ticker: cell.dataset.ticker,
+                month: cell.dataset.month,
+                level,
+            },
+        }));
     }
 
     window.MagicSplitCharts = {
