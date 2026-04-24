@@ -79,12 +79,20 @@
             card.className = 'card';
 
             const lots = info.lots || [];
+            const maxLevel = lots.length > 0 ? Math.max(...lots.map((l) => l.level || 0)) : null;
+            const levelAttr = maxLevel !== null ? Math.min(maxLevel, 5) : 0;
+            const levelBadge = maxLevel !== null
+                ? `<span class="level-badge" data-level="${levelAttr}">Lv${maxLevel}</span>`
+                : '';
+
             let lotsHtml = '';
             for (const lot of lots) {
                 const pctClass = lot.pct_change >= 0 ? 'pct-positive' : 'pct-negative';
                 const pctStr = (lot.pct_change >= 0 ? '+' : '') + lot.pct_change.toFixed(1) + '%';
+                const lvLabel = lot.level != null ? `<span class="lot-level">Lv${lot.level}</span>` : '<span class="lot-level"></span>';
                 lotsHtml += `
                     <li class="lot-item">
+                        ${lvLabel}
                         <span>${lot.buy_date} | ${lot.quantity}shares @$${lot.buy_price.toFixed(2)}</span>
                         <span class="${pctClass}">${pctStr}</span>
                     </li>`;
@@ -92,7 +100,7 @@
 
             card.innerHTML = `
                 <div class="card-header">
-                    <span class="ticker">${ticker}</span>
+                    <span class="ticker">${ticker} ${levelBadge}</span>
                     <span class="price">${info.total_qty} shares | ${info.lot_count} lots</span>
                 </div>
                 <ul class="lot-list">${lotsHtml}</ul>
