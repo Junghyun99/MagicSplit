@@ -36,6 +36,36 @@
         }
     }
 
+    async function loadHistory(mode) {
+        const url = `data/${mode}/history.json?t=${Date.now()}`;
+        try {
+            const res = await fetch(url);
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            return await res.json();
+        } catch (e) {
+            console.error(`Failed to load history (${mode}):`, e);
+            return null;
+        }
+    }
+
+    function hideHeatmap() {
+        const section = document.getElementById('level-heatmap-section');
+        if (section) section.style.display = 'none';
+    }
+
+    async function renderHeatmapForMode(mode) {
+        if (mode !== 'backtest' || !window.MagicSplitCharts) {
+            hideHeatmap();
+            return;
+        }
+        const history = await loadHistory(mode);
+        if (!history) {
+            hideHeatmap();
+            return;
+        }
+        window.MagicSplitCharts.renderLevelHeatmap(history, mode);
+    }
+
     function getRelativeTime(timestamp) {
         if (!timestamp) return '';
         const seconds = Math.floor((Date.now() - timestamp) / 1000);
@@ -248,6 +278,7 @@
             updateRefreshAge();
         }
         initRefreshControls();
+        await renderHeatmapForMode(currentMode);
     }
 
     init();
