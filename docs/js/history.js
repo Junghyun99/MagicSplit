@@ -48,7 +48,7 @@ window.MagicSplitHistory = (function () {
         if (!container) return;
 
         const tickerOptions = ['<option value="">전체 종목</option>']
-            .concat(tickers.map((t) => `<option value="${t}">${t}</option>`))
+            .concat(tickers.map((t) => `<option value="${escapeHtml(t)}">${escapeHtml(t)}</option>`))
             .join('');
 
         container.innerHTML = `
@@ -93,6 +93,24 @@ window.MagicSplitHistory = (function () {
         return value.toFixed(2);
     }
 
+    function buildRowHtml(row) {
+        const actionClass = row.action === 'SELL' ? 'sell' : 'buy';
+        const lvDisplay = row.level !== ''
+            ? `<span class="level-badge" data-level="${Math.min(Number(row.level), 5)}">Lv${escapeHtml(row.level)}</span>`
+            : '-';
+        return `
+            <tr class="history-row ${actionClass}" title="${escapeHtml(row.txReason)}">
+                <td>${escapeHtml(row.date)}</td>
+                <td><strong>${escapeHtml(row.ticker)}</strong></td>
+                <td><span class="history-action ${actionClass}">${escapeHtml(row.action)}</span></td>
+                <td>${lvDisplay}</td>
+                <td>${escapeHtml(row.quantity)}</td>
+                <td>${formatAmount(row.price)}</td>
+                <td>${formatAmount(row.fee)}</td>
+                <td>${formatAmount(row.amount)}</td>
+            </tr>`;
+    }
+
     function renderPage() {
         const listEl = document.getElementById('history-list');
         const moreBtn = document.getElementById('load-more-btn');
@@ -104,44 +122,35 @@ window.MagicSplitHistory = (function () {
             return;
         }
 
-        const nextCount = visibleCount + PAGE_SIZE;
-        const pageRows = filteredRows.slice(0, nextCount);
-        visibleCount = nextCount;
+        const newRows = filteredRows.slice(visibleCount, visibleCount + PAGE_SIZE);
+        visibleCount += newRows.length;
 
-        const rowsHtml = pageRows.map((row) => {
-            const actionClass = row.action === 'SELL' ? 'sell' : 'buy';
-            const lvDisplay = row.level !== '' ? `<span class="level-badge" data-level="${Math.min(row.level, 5)}">Lv${row.level}</span>` : '-';
-            return `
-                <tr class="history-row ${actionClass}" title="${escapeHtml(row.txReason)}">
-                    <td>${escapeHtml(row.date)}</td>
-                    <td><strong>${escapeHtml(row.ticker)}</strong></td>
-                    <td><span class="history-action ${actionClass}">${escapeHtml(row.action)}</span></td>
-                    <td>${lvDisplay}</td>
-                    <td>${row.quantity}</td>
-                    <td>${formatAmount(row.price)}</td>
-                    <td>${formatAmount(row.fee)}</td>
-                    <td>${formatAmount(row.amount)}</td>
-                </tr>`;
-        }).join('');
+        if (visibleCount <= PAGE_SIZE) {
+            // First render: build full table structure
+            listEl.innerHTML = `
+                <div class="card" style="padding:0;overflow:hidden">
+                    <table class="history-table">
+                        <thead>
+                            <tr>
+                                <th>날짜</th>
+                                <th>종목</th>
+                                <th>구분</th>
+                                <th>차수</th>
+                                <th>수량</th>
+                                <th>가격</th>
+                                <th>수수료</th>
+                                <th>금액</th>
+                            </tr>
+                        </thead>
+                        <tbody id="history-tbody"></tbody>
+                    </table>
+                </div>`;
+        }
 
-        listEl.innerHTML = `
-            <div class="card" style="padding:0;overflow:hidden">
-                <table class="history-table">
-                    <thead>
-                        <tr>
-                            <th>날짜</th>
-                            <th>종목</th>
-                            <th>구분</th>
-                            <th>차수</th>
-                            <th>수량</th>
-                            <th>가격</th>
-                            <th>수수료</th>
-                            <th>금액</th>
-                        </tr>
-                    </thead>
-                    <tbody>${rowsHtml}</tbody>
-                </table>
-            </div>`;
+        const tbody = document.getElementById('history-tbody');
+        if (tbody) {
+            tbody.insertAdjacentHTML('beforeend', newRows.map(buildRowHtml).join(''));
+        }
 
         if (moreBtn) {
             moreBtn.style.display = visibleCount < filteredRows.length ? '' : 'none';
@@ -157,7 +166,8 @@ window.MagicSplitHistory = (function () {
             .replace(/&/g, '&amp;')
             .replace(/</g, '&lt;')
             .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;');
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
     }
 
     function renderHistory(historyData, mode, formatFn) {
