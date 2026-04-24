@@ -5,10 +5,20 @@
     const VALID_MODES = ['domestic', 'overseas', 'backtest'];
     const DEFAULT_MODE = 'domestic';
 
+    let currentMode = DEFAULT_MODE;
+    let isRefreshing = false;
+    let lastRefreshTime = null;
+    let refreshTimer = null;
+
     function resolveMode() {
         const params = new URLSearchParams(window.location.search);
         const requested = (params.get('mode') || '').toLowerCase();
         return VALID_MODES.includes(requested) ? requested : DEFAULT_MODE;
+    }
+
+    function setOfflineBadge(show) {
+        const badge = document.getElementById('offline-badge');
+        if (badge) badge.style.display = show ? '' : 'none';
     }
 
     async function loadStatus(mode) {
@@ -16,10 +26,51 @@
         try {
             const res = await fetch(url);
             if (!res.ok) throw new Error(`HTTP ${res.status}`);
-            return await res.json();
+            const data = await res.json();
+            setOfflineBadge(false);
+            return data;
         } catch (e) {
             console.error(`Failed to load status (${mode}):`, e);
+            setOfflineBadge(true);
             return null;
+        }
+    }
+
+    function getRelativeTime(timestamp) {
+        if (!timestamp) return '';
+        const seconds = Math.floor((Date.now() - timestamp) / 1000);
+        if (seconds < 10) return '방금 전';
+        if (seconds < 60) return `${seconds}초 전`;
+        const minutes = Math.floor(seconds / 60);
+        if (minutes < 60) return `${minutes}분 전`;
+        return `${Math.floor(minutes / 60)}시간 전`;
+    }
+
+    function updateRefreshAge() {
+        const ageEl = document.getElementById('refresh-age');
+        if (ageEl) ageEl.textContent = getRelativeTime(lastRefreshTime);
+    }
+
+    async function doRefresh() {
+        if (isRefreshing || document.visibilityState === 'hidden') return;
+        isRefreshing = true;
+        try {
+            const data = await loadStatus(currentMode);
+            if (data) {
+                renderStatus(data, currentMode);
+                lastRefreshTime = Date.now();
+                updateRefreshAge();
+            }
+        } finally {
+            isRefreshing = false;
+        }
+    }
+
+    function setAutoRefresh(intervalMs) {
+        clearInterval(refreshTimer);
+        refreshTimer = null;
+        if (intervalMs > 0) {
+            refreshTimer = setInterval(doRefresh, intervalMs);
         }
     }
 
@@ -163,11 +214,40 @@
         }
     }
 
+    function initRefreshControls() {
+        const refreshBtn = document.getElementById('refresh-btn');
+        if (refreshBtn) {
+            refreshBtn.addEventListener('click', doRefresh);
+        }
+
+        const selectEl = document.getElementById('auto-refresh-select');
+        if (selectEl) {
+            const saved = parseInt(localStorage.getItem('autoRefreshInterval') || '0', 10);
+            const validValues = ['0', '30000', '60000', '300000'];
+            selectEl.value = validValues.includes(String(saved)) ? String(saved) : '0';
+
+            selectEl.addEventListener('change', () => {
+                const intervalMs = parseInt(selectEl.value, 10);
+                localStorage.setItem('autoRefreshInterval', intervalMs);
+                setAutoRefresh(intervalMs);
+            });
+
+            setAutoRefresh(parseInt(selectEl.value, 10));
+        }
+
+        setInterval(updateRefreshAge, 10000);
+    }
+
     async function init() {
-        const mode = resolveMode();
-        applyModeUI(mode);
-        const data = await loadStatus(mode);
-        renderStatus(data, mode);
+        currentMode = resolveMode();
+        applyModeUI(currentMode);
+        const data = await loadStatus(currentMode);
+        renderStatus(data, currentMode);
+        if (data) {
+            lastRefreshTime = Date.now();
+            updateRefreshAge();
+        }
+        initRefreshControls();
     }
 
     init();
