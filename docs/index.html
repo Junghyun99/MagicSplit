@@ -33,6 +33,11 @@
         </span>
     </div>
 
+    <nav class="view-switch" id="view-switch">
+        <button class="view-link active" data-view="positions">Positions</button>
+        <button class="view-link" data-view="history">History</button>
+    </nav>
+
     <div id="reason-banner" class="reason-banner" style="display:none"></div>
 
     <div id="loading">Loading positions...</div>
@@ -44,7 +49,14 @@
 
     <div id="positions-container"></div>
 
+    <div id="history-section" style="display:none">
+        <div id="history-filters" class="filter-bar"></div>
+        <div id="history-list"></div>
+        <button id="load-more-btn" class="load-more-btn" style="display:none">더 보기</button>
+    </div>
+
     <script src="js/charts.js"></script>
+    <script src="js/history.js"></script>
     <script src="js/main.js"></script>
 </body>
 </html>

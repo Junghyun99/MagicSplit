@@ -278,3 +278,110 @@ h2 { font-size: 1.1rem; margin-bottom: 8px; color: var(--text-muted); }
     font-weight: 600;
     white-space: nowrap;
 }
+
+/* View switch (Positions / History) */
+.view-switch {
+    display: inline-flex;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    width: 100%;
+    margin-bottom: 12px;
+}
+.view-link {
+    flex: 1;
+    padding: 8px;
+    font-size: 0.85rem;
+    background: var(--card-bg);
+    border: none;
+    cursor: pointer;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+.view-link + .view-link { border-left: 1px solid var(--border); }
+.view-link.active {
+    background: var(--primary);
+    color: white;
+    font-weight: 600;
+}
+
+/* History table */
+.history-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+}
+.history-table th {
+    text-align: left;
+    padding: 8px 10px;
+    border-bottom: 2px solid var(--border);
+    color: var(--text-muted);
+    font-size: 0.78rem;
+    white-space: nowrap;
+    background: var(--bg);
+}
+.history-row td {
+    padding: 7px 10px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+    white-space: nowrap;
+}
+.history-row:last-child td { border-bottom: none; }
+.history-row.buy { background: #fff5f5; }
+.history-row.sell { background: #f0fdf4; }
+.history-action { font-weight: 700; font-size: 0.82rem; }
+.history-action.buy { color: var(--danger); }
+.history-action.sell { color: var(--success); }
+
+/* Filter bar */
+.filter-bar {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+}
+.filter-select {
+    font-size: 0.82rem;
+    padding: 4px 8px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--card-bg);
+    color: var(--text);
+}
+.filter-chips {
+    display: inline-flex;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+}
+.filter-chip {
+    padding: 4px 12px;
+    font-size: 0.8rem;
+    background: var(--card-bg);
+    border: none;
+    cursor: pointer;
+    color: var(--text-muted);
+}
+.filter-chip + .filter-chip { border-left: 1px solid var(--border); }
+.filter-chip.active {
+    background: var(--primary);
+    color: white;
+    font-weight: 600;
+}
+
+/* Load more button */
+.load-more-btn {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--card-bg);
+    cursor: pointer;
+    color: var(--primary);
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+.load-more-btn:hover { background: #eff6ff; }

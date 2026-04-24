@@ -6,6 +6,8 @@
     const DEFAULT_MODE = 'domestic';
 
     let currentMode = DEFAULT_MODE;
+    let currentView = 'positions';
+    let historyLoaded = false;
     let isRefreshing = false;
     let lastRefreshTime = null;
     let refreshTimer = null;
@@ -244,6 +246,47 @@
         }
     }
 
+    function showView(view) {
+        currentView = view;
+        const posEls = ['positions-container', 'level-heatmap-section', 'reason-banner'];
+        const histEls = ['history-section'];
+
+        const isPositions = view === 'positions';
+        posEls.forEach((id) => {
+            const el = document.getElementById(id);
+            if (el) el.style.display = isPositions ? '' : 'none';
+        });
+        histEls.forEach((id) => {
+            const el = document.getElementById(id);
+            if (el) el.style.display = isPositions ? 'none' : '';
+        });
+
+        document.querySelectorAll('.view-link').forEach((btn) => {
+            btn.classList.toggle('active', btn.dataset.view === view);
+        });
+    }
+
+    async function loadHistoryView(mode) {
+        if (!window.MagicSplitHistory) return;
+        if (!historyLoaded) {
+            const data = await loadHistory(mode);
+            window.MagicSplitHistory.renderHistory(data || [], mode, formatCurrency);
+            historyLoaded = true;
+        }
+    }
+
+    function initViewSwitch() {
+        document.querySelectorAll('.view-link').forEach((btn) => {
+            btn.addEventListener('click', async () => {
+                const view = btn.dataset.view;
+                showView(view);
+                if (view === 'history') {
+                    await loadHistoryView(currentMode);
+                }
+            });
+        });
+    }
+
     function initRefreshControls() {
         const refreshBtn = document.getElementById('refresh-btn');
         if (refreshBtn) {
@@ -270,6 +313,7 @@
 
     async function init() {
         currentMode = resolveMode();
+        historyLoaded = false;
         applyModeUI(currentMode);
         const data = await loadStatus(currentMode);
         renderStatus(data, currentMode);
@@ -278,6 +322,7 @@
             updateRefreshAge();
         }
         initRefreshControls();
+        initViewSwitch();
         await renderHeatmapForMode(currentMode);
     }
 
