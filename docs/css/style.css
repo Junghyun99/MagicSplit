@@ -101,6 +101,58 @@ h2 { font-size: 1.1rem; margin-bottom: 8px; color: var(--text-muted); }
 .level-badge[data-level="4"] { background: #ef4444; }
 .level-badge[data-level="5"] { background: #991b1b; }
 
+.heatmap-section { margin-bottom: 16px; }
+.heatmap-container {
+    display: grid;
+    gap: 2px;
+    overflow-x: auto;
+    padding: 4px;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+}
+.heatmap-row { display: contents; }
+.heatmap-label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    padding: 4px 8px;
+    background: var(--bg);
+    position: sticky;
+    left: 0;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+}
+.heatmap-cell {
+    min-width: 28px;
+    height: 24px;
+    border-radius: 4px;
+    cursor: pointer;
+    background: #e2e8f0;
+    transition: transform 0.1s;
+}
+.heatmap-cell:hover { transform: scale(1.15); }
+.heatmap-cell[data-level="1"] { background: #4ade80; }
+.heatmap-cell[data-level="2"] { background: #facc15; }
+.heatmap-cell[data-level="3"] { background: #fb923c; }
+.heatmap-cell[data-level="4"] { background: #ef4444; }
+.heatmap-cell[data-level="5"] { background: #991b1b; }
+.heatmap-cell[data-level="0"] {
+    background: transparent;
+    border: 1px dashed var(--border);
+    cursor: default;
+}
+.heatmap-cell[data-level="0"]:hover { transform: none; }
+.heatmap-axis {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    padding: 2px 4px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .lot-level {
     display: inline-block;
     width: 2.8em;
