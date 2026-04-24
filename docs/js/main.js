@@ -24,16 +24,13 @@
     }
 
     function formatCurrency(value, mode) {
-        if (mode === 'domestic') {
-            return '₩' + Number(value).toLocaleString('ko-KR', {
-                minimumFractionDigits: 0,
-                maximumFractionDigits: 0,
-            });
-        }
-        return '$' + Number(value).toLocaleString('en-US', {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2,
-        });
+        const isDomestic = mode === 'domestic';
+        return new Intl.NumberFormat(isDomestic ? 'ko-KR' : 'en-US', {
+            style: 'currency',
+            currency: isDomestic ? 'KRW' : 'USD',
+            minimumFractionDigits: isDomestic ? 0 : 2,
+            maximumFractionDigits: isDomestic ? 0 : 2,
+        }).format(Number(value));
     }
 
     function applyModeUI(mode) {
