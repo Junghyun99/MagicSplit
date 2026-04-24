@@ -20,6 +20,17 @@
         <span id="mode-badge" class="mode-badge">-</span>
         <span id="last-updated">Loading...</span>
         <span id="total-value">-</span>
+        <span id="offline-badge" class="offline-badge" style="display:none">⚠️ 실패</span>
+        <span class="refresh-controls">
+            <span id="refresh-age" class="refresh-age"></span>
+            <button id="refresh-btn" class="refresh-btn" title="새로고침">🔄</button>
+            <select id="auto-refresh-select" class="auto-refresh-select" title="자동 새로고침">
+                <option value="0">Off</option>
+                <option value="30000">30초</option>
+                <option value="60000">1분</option>
+                <option value="300000">5분</option>
+            </select>
+        </span>
     </div>
 
     <div id="reason-banner" class="reason-banner" style="display:none"></div>
