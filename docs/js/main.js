@@ -6,7 +6,7 @@
     const DEFAULT_MODE = 'domestic';
 
     let currentMode = DEFAULT_MODE;
-    let lastData = null;
+    let isRefreshing = false;
     let lastRefreshTime = null;
     let refreshTimer = null;
 
@@ -28,12 +28,11 @@
             if (!res.ok) throw new Error(`HTTP ${res.status}`);
             const data = await res.json();
             setOfflineBadge(false);
-            lastData = data;
             return data;
         } catch (e) {
             console.error(`Failed to load status (${mode}):`, e);
             setOfflineBadge(true);
-            return lastData;
+            return null;
         }
     }
 
@@ -53,11 +52,18 @@
     }
 
     async function doRefresh() {
-        if (document.visibilityState === 'hidden') return;
-        const data = await loadStatus(currentMode);
-        renderStatus(data, currentMode);
-        lastRefreshTime = Date.now();
-        updateRefreshAge();
+        if (isRefreshing || document.visibilityState === 'hidden') return;
+        isRefreshing = true;
+        try {
+            const data = await loadStatus(currentMode);
+            if (data) {
+                renderStatus(data, currentMode);
+                lastRefreshTime = Date.now();
+                updateRefreshAge();
+            }
+        } finally {
+            isRefreshing = false;
+        }
     }
 
     function setAutoRefresh(intervalMs) {
@@ -237,8 +243,10 @@
         applyModeUI(currentMode);
         const data = await loadStatus(currentMode);
         renderStatus(data, currentMode);
-        lastRefreshTime = Date.now();
-        updateRefreshAge();
+        if (data) {
+            lastRefreshTime = Date.now();
+            updateRefreshAge();
+        }
         initRefreshControls();
     }
 
