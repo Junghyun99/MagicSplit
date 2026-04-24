@@ -44,6 +44,33 @@
         });
     }
 
+    function classifyReason(reason) {
+        if (!reason) return 'info';
+        const lower = reason.toLowerCase();
+        if (lower.includes('에러') || lower.includes('오류') || lower.includes('error')) return 'danger';
+        if (reason.includes('매도')) return 'success';
+        if (reason.includes('매수')) return 'primary';
+        return 'info';
+    }
+
+    function renderReasonBanner(data) {
+        const banner = document.getElementById('reason-banner');
+        if (!banner) return;
+        const reason = data && data.reason;
+        if (!reason) {
+            banner.style.display = 'none';
+            return;
+        }
+        const type = classifyReason(reason);
+        const icons = { info: 'ℹ️', primary: '🔵', success: '✅', danger: '🔴' };
+        const dateStr = data.last_run_date
+            ? `<span class="reason-date">(${data.last_run_date})</span>`
+            : '';
+        banner.className = `reason-banner ${type}`;
+        banner.innerHTML = `<span>${icons[type]}</span><span>최근 실행: ${reason}</span>${dateStr}`;
+        banner.style.display = '';
+    }
+
     function renderStatus(data, mode) {
         const loading = document.getElementById('loading');
         const container = document.getElementById('positions-container');
@@ -52,6 +79,7 @@
         if (!data) {
             loading.textContent = `No ${mode} data available.`;
             loading.style.display = '';
+            renderReasonBanner(null);
             return;
         }
 
@@ -62,17 +90,13 @@
         document.getElementById('total-value').textContent =
             formatCurrency(data.portfolio?.total_value || 0, mode);
 
+        renderReasonBanner(data);
+
         const positions = data.positions || {};
         if (Object.keys(positions).length === 0) {
             const emptyCard = document.createElement('div');
             emptyCard.className = 'card';
             emptyCard.textContent = `No ${mode} positions yet.`;
-            if (data.reason) {
-                const reasonNode = document.createElement('span');
-                reasonNode.className = 'empty-reason';
-                reasonNode.textContent = ` (${data.reason})`;
-                emptyCard.appendChild(reasonNode);
-            }
             container.appendChild(emptyCard);
             return;
         }
