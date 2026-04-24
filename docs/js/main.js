@@ -23,11 +23,14 @@
         }
     }
 
-    function formatCurrency(value) {
-        return '$' + Number(value).toLocaleString('en-US', {
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 0,
-        });
+    function formatCurrency(value, mode) {
+        const isDomestic = mode === 'domestic';
+        return new Intl.NumberFormat(isDomestic ? 'ko-KR' : 'en-US', {
+            style: 'currency',
+            currency: isDomestic ? 'KRW' : 'USD',
+            minimumFractionDigits: isDomestic ? 0 : 2,
+            maximumFractionDigits: isDomestic ? 0 : 2,
+        }).format(Number(value));
     }
 
     function applyModeUI(mode) {
@@ -57,7 +60,7 @@
         document.getElementById('last-updated').textContent =
             'Updated: ' + (data.last_updated || '-');
         document.getElementById('total-value').textContent =
-            formatCurrency(data.portfolio?.total_value || 0);
+            formatCurrency(data.portfolio?.total_value || 0, mode);
 
         const positions = data.positions || {};
         if (Object.keys(positions).length === 0) {
@@ -98,11 +101,25 @@
                     </li>`;
             }
 
+            const hasPnl = info.unrealized_pnl != null;
+            const pnlClass = hasPnl && info.unrealized_pnl >= 0 ? 'pct-positive' : 'pct-negative';
+            const pnlSign = hasPnl && info.unrealized_pnl >= 0 ? '+' : '';
+            const summaryHtml = hasPnl ? `
+                <div class="card-summary">
+                    <span class="summary-label">평가:</span>
+                    <span>${formatCurrency(info.current_value, mode)}</span>
+                    <span class="summary-muted">(투자 ${formatCurrency(info.total_invested, mode)})</span>
+                    <span class="summary-sep">|</span>
+                    <span class="summary-label">손익:</span>
+                    <span class="${pnlClass}">${pnlSign}${formatCurrency(info.unrealized_pnl, mode)} (${pnlSign}${Number(info.unrealized_pnl_pct).toFixed(2)}%)</span>
+                </div>` : '';
+
             card.innerHTML = `
                 <div class="card-header">
                     <span class="ticker">${ticker} ${levelBadge}</span>
                     <span class="price">${info.total_qty} shares | ${info.lot_count} lots</span>
                 </div>
+                ${summaryHtml}
                 <ul class="lot-list">${lotsHtml}</ul>
             `;
             container.appendChild(card);
