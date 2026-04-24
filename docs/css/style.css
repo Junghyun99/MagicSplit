@@ -85,9 +85,38 @@ h2 { font-size: 1.1rem; margin-bottom: 8px; color: var(--text-muted); }
 .pct-positive { color: var(--success); font-weight: 600; }
 .pct-negative { color: var(--danger); font-weight: 600; }
 
+.level-badge {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 10px;
+    vertical-align: middle;
+    color: white;
+    background: #94a3b8;
+}
+.level-badge[data-level="1"] { background: #4ade80; color: #14532d; }
+.level-badge[data-level="2"] { background: #facc15; color: #713f12; }
+.level-badge[data-level="3"] { background: #fb923c; color: #431407; }
+.level-badge[data-level="4"] { background: #ef4444; }
+.level-badge[data-level="5"] { background: #991b1b; }
+
+.lot-level {
+    display: inline-block;
+    width: 2.8em;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    flex-shrink: 0;
+}
+
+.lot-detail { flex-grow: 1; }
+
 .lot-list { list-style: none; padding: 0; }
 .lot-item {
     display: flex;
+    align-items: center;
+    gap: 6px;
     justify-content: space-between;
     padding: 6px 0;
     border-bottom: 1px solid var(--border);
