@@ -63,11 +63,24 @@
         }
         const type = classifyReason(reason);
         const icons = { info: 'ℹ️', primary: '🔵', success: '✅', danger: '🔴' };
-        const dateStr = data.last_run_date
-            ? `<span class="reason-date">(${data.last_run_date})</span>`
-            : '';
         banner.className = `reason-banner ${type}`;
-        banner.innerHTML = `<span>${icons[type]}</span><span>최근 실행: ${reason}</span>${dateStr}`;
+        banner.textContent = '';
+
+        const iconSpan = document.createElement('span');
+        iconSpan.textContent = icons[type];
+        banner.appendChild(iconSpan);
+
+        const textSpan = document.createElement('span');
+        textSpan.textContent = '최근 실행: ' + reason;
+        banner.appendChild(textSpan);
+
+        if (data.last_run_date) {
+            const dateSpan = document.createElement('span');
+            dateSpan.className = 'reason-date';
+            dateSpan.textContent = '(' + data.last_run_date + ')';
+            banner.appendChild(dateSpan);
+        }
+
         banner.style.display = '';
     }
 
