@@ -20,15 +20,25 @@ window.MagicSplitHistory = (function () {
             const txReason = tx.reason || '';
             const executions = Array.isArray(tx.executions) ? tx.executions : [];
             for (const ex of executions) {
+                const action = (ex.action || '').toUpperCase();
+                const price = ex.price || 0;
+                const buyPrice = ex.buy_price != null ? ex.buy_price : null;
+                const realizedPnl = ex.realized_pnl != null ? ex.realized_pnl : null;
+                const profitRate = (action === 'SELL' && buyPrice != null && buyPrice > 0 && realizedPnl != null && (ex.quantity || 0) > 0)
+                    ? (realizedPnl / (buyPrice * ex.quantity)) * 100
+                    : null;
                 rows.push({
                     date: ex.date || txDate,
                     ticker: ex.ticker || '',
-                    action: (ex.action || '').toUpperCase(),
+                    action,
                     level: ex.level != null ? ex.level : '',
                     quantity: ex.quantity || 0,
-                    price: ex.price || 0,
+                    price,
                     fee: ex.fee || 0,
-                    amount: (ex.quantity || 0) * (ex.price || 0),
+                    amount: (ex.quantity || 0) * price,
+                    buyPrice,
+                    realizedPnl,
+                    profitRate,
                     txReason: txReason,
                 });
             }
@@ -98,6 +108,24 @@ window.MagicSplitHistory = (function () {
         const lvDisplay = row.level !== ''
             ? `<span class="level-badge" data-level="${Math.min(Number(row.level), 5)}">Lv${escapeHtml(row.level)}</span>`
             : '-';
+
+        let buyPriceCell = '-';
+        let pnlCell = '-';
+        let rateCell = '-';
+        if (row.action === 'SELL' && row.buyPrice != null) {
+            buyPriceCell = formatAmount(row.buyPrice);
+        }
+        if (row.action === 'SELL' && row.realizedPnl != null) {
+            const sign = row.realizedPnl > 0 ? '+' : '';
+            const cls = row.realizedPnl > 0 ? 'pct-positive' : (row.realizedPnl < 0 ? 'pct-negative' : '');
+            pnlCell = `<span class="${cls}">${sign}${formatAmount(row.realizedPnl)}</span>`;
+        }
+        if (row.action === 'SELL' && row.profitRate != null) {
+            const sign = row.profitRate > 0 ? '+' : '';
+            const cls = row.profitRate > 0 ? 'pct-positive' : (row.profitRate < 0 ? 'pct-negative' : '');
+            rateCell = `<span class="${cls}">${sign}${row.profitRate.toFixed(2)}%</span>`;
+        }
+
         return `
             <tr class="history-row ${actionClass}" title="${escapeHtml(row.txReason)}">
                 <td>${escapeHtml(row.date)}</td>
@@ -106,8 +134,11 @@ window.MagicSplitHistory = (function () {
                 <td>${lvDisplay}</td>
                 <td>${escapeHtml(row.quantity)}</td>
                 <td>${formatAmount(row.price)}</td>
+                <td>${buyPriceCell}</td>
                 <td>${formatAmount(row.fee)}</td>
                 <td>${formatAmount(row.amount)}</td>
+                <td>${pnlCell}</td>
+                <td>${rateCell}</td>
             </tr>`;
     }
 
@@ -138,8 +169,11 @@ window.MagicSplitHistory = (function () {
                                 <th>차수</th>
                                 <th>수량</th>
                                 <th>가격</th>
+                                <th>매수가</th>
                                 <th>수수료</th>
                                 <th>금액</th>
+                                <th>수익금</th>
+                                <th>수익률</th>
                             </tr>
                         </thead>
                         <tbody id="history-tbody"></tbody>
