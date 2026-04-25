@@ -141,6 +141,7 @@
             const levelLabel = level > 0 ? `Lv${level}` : '보유 없음';
             const tradeLabel = count > 0 ? ` (거래 ${count}건)` : '';
             cell.title = `${ticker} | ${m} | ${levelLabel}${tradeLabel}`;
+            if (level > 0) cell.textContent = String(level);
             row.appendChild(cell);
         }
         return row;
