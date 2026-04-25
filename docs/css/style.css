@@ -130,13 +130,18 @@ h2 { font-size: 1.1rem; margin-bottom: 8px; color: var(--text-muted); }
     cursor: pointer;
     background: #e2e8f0;
     transition: transform 0.1s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.65rem;
+    font-weight: 700;
 }
 .heatmap-cell:hover { transform: scale(1.15); }
-.heatmap-cell[data-level="1"] { background: #4ade80; }
-.heatmap-cell[data-level="2"] { background: #facc15; }
-.heatmap-cell[data-level="3"] { background: #fb923c; }
-.heatmap-cell[data-level="4"] { background: #ef4444; }
-.heatmap-cell[data-level="5"] { background: #991b1b; }
+.heatmap-cell[data-level="1"] { background: #4ade80; color: #14532d; }
+.heatmap-cell[data-level="2"] { background: #facc15; color: #713f12; }
+.heatmap-cell[data-level="3"] { background: #fb923c; color: #431407; }
+.heatmap-cell[data-level="4"] { background: #ef4444; color: #fff; }
+.heatmap-cell[data-level="5"] { background: #991b1b; color: #fff; }
 .heatmap-cell[data-level="0"] {
     background: transparent;
     border: 1px dashed var(--border);
