@@ -24,8 +24,8 @@ window.MagicSplitHistory = (function () {
                 const price = ex.price || 0;
                 const buyPrice = ex.buy_price != null ? ex.buy_price : null;
                 const realizedPnl = ex.realized_pnl != null ? ex.realized_pnl : null;
-                const profitRate = (action === 'SELL' && buyPrice != null && buyPrice > 0)
-                    ? ((price - buyPrice) / buyPrice) * 100
+                const profitRate = (action === 'SELL' && buyPrice != null && buyPrice > 0 && realizedPnl != null && (ex.quantity || 0) > 0)
+                    ? (realizedPnl / (buyPrice * ex.quantity)) * 100
                     : null;
                 rows.push({
                     date: ex.date || txDate,
@@ -116,13 +116,13 @@ window.MagicSplitHistory = (function () {
             buyPriceCell = formatAmount(row.buyPrice);
         }
         if (row.action === 'SELL' && row.realizedPnl != null) {
-            const sign = row.realizedPnl >= 0 ? '+' : '';
-            const cls = row.realizedPnl >= 0 ? 'pct-positive' : 'pct-negative';
+            const sign = row.realizedPnl > 0 ? '+' : '';
+            const cls = row.realizedPnl > 0 ? 'pct-positive' : (row.realizedPnl < 0 ? 'pct-negative' : '');
             pnlCell = `<span class="${cls}">${sign}${formatAmount(row.realizedPnl)}</span>`;
         }
         if (row.action === 'SELL' && row.profitRate != null) {
-            const sign = row.profitRate >= 0 ? '+' : '';
-            const cls = row.profitRate >= 0 ? 'pct-positive' : 'pct-negative';
+            const sign = row.profitRate > 0 ? '+' : '';
+            const cls = row.profitRate > 0 ? 'pct-positive' : (row.profitRate < 0 ? 'pct-negative' : '');
             rateCell = `<span class="${cls}">${sign}${row.profitRate.toFixed(2)}%</span>`;
         }
 
