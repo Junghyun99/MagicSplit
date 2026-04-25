@@ -197,6 +197,31 @@
             return;
         }
 
+        let totalRealizedPnl = 0;
+        let totalUnrealizedPnl = 0;
+        for (const info of Object.values(positions)) {
+            if (info.realized_pnl != null) totalRealizedPnl += Number(info.realized_pnl);
+            if (info.unrealized_pnl != null) totalUnrealizedPnl += Number(info.unrealized_pnl);
+        }
+
+        const portRSign = totalRealizedPnl >= 0 ? '+' : '';
+        const portRClass = totalRealizedPnl >= 0 ? 'pct-positive' : 'pct-negative';
+        const portUSign = totalUnrealizedPnl >= 0 ? '+' : '';
+        const portUClass = totalUnrealizedPnl >= 0 ? 'pct-positive' : 'pct-negative';
+        const portfolioCard = document.createElement('div');
+        portfolioCard.className = 'card portfolio-summary';
+        portfolioCard.innerHTML = `
+            <div class="portfolio-summary-title">Portfolio</div>
+            <div class="portfolio-summary-row">
+                <span class="summary-label">총 실현손익:</span>
+                <span class="${portRClass}">${portRSign}${formatCurrency(totalRealizedPnl, mode)}</span>
+                <span class="summary-sep">|</span>
+                <span class="summary-label">총 평가손익:</span>
+                <span class="${portUClass}">${portUSign}${formatCurrency(totalUnrealizedPnl, mode)}</span>
+            </div>
+        `;
+        container.appendChild(portfolioCard);
+
         for (const [ticker, info] of Object.entries(positions)) {
             const card = document.createElement('div');
             card.className = 'card';
@@ -234,12 +259,36 @@
                     <span class="${pnlClass}">${pnlSign}${formatCurrency(info.unrealized_pnl, mode)} (${pnlSign}${Number(info.unrealized_pnl_pct).toFixed(2)}%)</span>
                 </div>` : '';
 
+            let realizedHtml = '';
+            if (info.realized_pnl != null) {
+                const rPnl = Number(info.realized_pnl);
+                const rClass = rPnl >= 0 ? 'pct-positive' : 'pct-negative';
+                const rSign = rPnl >= 0 ? '+' : '';
+                let totalPnlHtml = '';
+                if (info.total_pnl != null) {
+                    const tPnl = Number(info.total_pnl);
+                    const tClass = tPnl >= 0 ? 'pct-positive' : 'pct-negative';
+                    const tSign = tPnl >= 0 ? '+' : '';
+                    totalPnlHtml = `
+                        <span class="summary-sep">|</span>
+                        <span class="summary-label">총손익:</span>
+                        <span class="${tClass}">${tSign}${formatCurrency(tPnl, mode)}</span>`;
+                }
+                realizedHtml = `
+                    <div class="card-realized-pnl">
+                        <span class="summary-label">실현손익:</span>
+                        <span class="${rClass}">${rSign}${formatCurrency(rPnl, mode)}</span>
+                        ${totalPnlHtml}
+                    </div>`;
+            }
+
             card.innerHTML = `
                 <div class="card-header">
                     <span class="ticker">${ticker} ${levelBadge}</span>
                     <span class="price">${info.total_qty} shares | ${info.lot_count} lots</span>
                 </div>
                 ${summaryHtml}
+                ${realizedHtml}
                 <ul class="lot-list">${lotsHtml}</ul>
             `;
             container.appendChild(card);
