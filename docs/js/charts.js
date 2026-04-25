@@ -274,19 +274,21 @@
             return `<text x="${PAD.left - 5}" y="${y}" text-anchor="end" dominant-baseline="middle" class="ec-axis">${esc(label)}</text>`;
         }).join('');
 
-        const dotsHtml = pts.map((p, i) => {
+        const MARKER_CAP = 60;
+        const dotsHtml = pts.length <= MARKER_CAP ? pts.map((p, i) => {
             const x = xScale(i).toFixed(1);
             const y = yScale(p.value).toFixed(1);
             return `<circle cx="${x}" cy="${y}" r="3.5" fill="white" stroke="${lineColor}" stroke-width="1.8"><title>${esc(p.date)}: ${p.value.toFixed(2)}</title></circle>`;
-        }).join('');
+        }).join('') : '';
 
         const isDomestic = mode === 'domestic';
-        const fmtVal = (v) => new Intl.NumberFormat(isDomestic ? 'ko-KR' : 'en-US', {
+        const formatter = new Intl.NumberFormat(isDomestic ? 'ko-KR' : 'en-US', {
             style: 'currency',
             currency: isDomestic ? 'KRW' : 'USD',
             minimumFractionDigits: isDomestic ? 0 : 2,
             maximumFractionDigits: isDomestic ? 0 : 2,
-        }).format(v);
+        });
+        const fmtVal = (v) => formatter.format(v);
 
         container.innerHTML = `
             <div class="ec-summary">
