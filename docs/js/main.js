@@ -271,6 +271,9 @@
         if (!historyLoaded) {
             const data = await loadHistory(mode);
             window.MagicSplitHistory.renderHistory(data || [], mode, formatCurrency);
+            if (window.MagicSplitCharts && window.MagicSplitCharts.renderEquityCurve) {
+                window.MagicSplitCharts.renderEquityCurve(data || [], mode);
+            }
             historyLoaded = true;
         }
     }
