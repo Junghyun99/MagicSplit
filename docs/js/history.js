@@ -159,7 +159,7 @@ window.MagicSplitHistory = (function () {
         if (visibleCount <= PAGE_SIZE) {
             // First render: build full table structure
             listEl.innerHTML = `
-                <div class="card" style="padding:0;overflow:hidden">
+                <div class="card" style="padding:0;overflow-x:auto">
                     <table class="history-table">
                         <thead>
                             <tr>
