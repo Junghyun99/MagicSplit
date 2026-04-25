@@ -159,7 +159,7 @@ window.MagicSplitHistory = (function () {
         if (visibleCount <= PAGE_SIZE) {
             // First render: build full table structure
             listEl.innerHTML = `
-                <div class="card" style="padding:0;overflow:hidden">
+                <div class="card" style="padding:0;overflow-x:auto" tabindex="0" role="region" aria-label="거래 내역 테이블">
                     <table class="history-table">
                         <thead>
                             <tr>
