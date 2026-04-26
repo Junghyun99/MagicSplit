@@ -473,6 +473,9 @@ h2 { font-size: 1.1rem; margin-bottom: 8px; color: var(--text-muted); }
     color: var(--text-muted);
 }
 
+.ps-pct.pct-positive { color: var(--success); }
+.ps-pct.pct-negative { color: var(--danger); }
+
 .card-realized-pnl {
     display: flex;
     flex-wrap: wrap;

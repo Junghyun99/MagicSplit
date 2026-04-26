@@ -210,8 +210,8 @@
         const totalValue = Number(portfolio.total_value || 0);
         const cashBalance = portfolio.cash_balance != null ? Number(portfolio.cash_balance) : null;
         const stockValue = cashBalance != null ? totalValue - cashBalance : null;
-        const cashPct = totalValue > 0 && cashBalance != null ? cashBalance / totalValue * 100 : null;
-        const stockPct = cashPct != null ? 100 - cashPct : null;
+        const cashPct = (totalValue > 0 && cashBalance != null) ? cashBalance / totalValue * 100 : 0;
+        const stockPct = (totalValue > 0 && cashBalance != null) ? 100 - cashPct : 0;
         const unrealizedPct = totalInvested > 0 ? totalUnrealizedPnl / totalInvested * 100 : null;
 
         const portRSign = totalRealizedPnl >= 0 ? '+' : '';
