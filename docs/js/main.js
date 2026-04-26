@@ -199,25 +199,63 @@
 
         let totalRealizedPnl = 0;
         let totalUnrealizedPnl = 0;
+        let totalInvested = 0;
         for (const info of Object.values(positions)) {
             if (info.realized_pnl != null) totalRealizedPnl += Number(info.realized_pnl);
             if (info.unrealized_pnl != null) totalUnrealizedPnl += Number(info.unrealized_pnl);
+            if (info.total_invested != null) totalInvested += Number(info.total_invested);
         }
+
+        const portfolio = data.portfolio || {};
+        const totalValue = Number(portfolio.total_value || 0);
+        const cashBalance = portfolio.cash_balance != null ? Number(portfolio.cash_balance) : null;
+        const stockValue = cashBalance != null ? totalValue - cashBalance : null;
+        const cashPct = (totalValue > 0 && cashBalance != null) ? cashBalance / totalValue * 100 : 0;
+        const stockPct = (totalValue > 0 && cashBalance != null) ? 100 - cashPct : 0;
+        const unrealizedPct = totalInvested > 0 ? totalUnrealizedPnl / totalInvested * 100 : null;
 
         const portRSign = totalRealizedPnl >= 0 ? '+' : '';
         const portRClass = totalRealizedPnl >= 0 ? 'pct-positive' : 'pct-negative';
         const portUSign = totalUnrealizedPnl >= 0 ? '+' : '';
         const portUClass = totalUnrealizedPnl >= 0 ? 'pct-positive' : 'pct-negative';
+        const portUPctSign = unrealizedPct != null && unrealizedPct >= 0 ? '+' : '';
+        const portUPctClass = unrealizedPct != null ? (unrealizedPct >= 0 ? 'pct-positive' : 'pct-negative') : '';
+
+        const cashBalanceRows = cashBalance != null ? `
+            <div class="ps-row">
+                <span class="ps-label">예수금</span>
+                <span class="ps-value">${formatCurrency(cashBalance, mode)}</span>
+                <span class="ps-pct">(${cashPct.toFixed(1)}%)</span>
+            </div>
+            <div class="ps-row">
+                <span class="ps-label">주식평가</span>
+                <span class="ps-value">${formatCurrency(stockValue, mode)}</span>
+                <span class="ps-pct">(${stockPct.toFixed(1)}%)</span>
+            </div>` : '';
+
+        const unrealizedPctHtml = unrealizedPct != null
+            ? `<span class="ps-pct ${portUPctClass}">(${portUPctSign}${unrealizedPct.toFixed(2)}%)</span>`
+            : '';
+
         const portfolioCard = document.createElement('div');
         portfolioCard.className = 'card portfolio-summary';
         portfolioCard.innerHTML = `
-            <div class="portfolio-summary-title">Portfolio</div>
-            <div class="portfolio-summary-row">
-                <span class="summary-label">총 실현손익:</span>
-                <span class="${portRClass}">${portRSign}${formatCurrency(totalRealizedPnl, mode)}</span>
-                <span class="summary-sep">|</span>
-                <span class="summary-label">총 평가손익:</span>
-                <span class="${portUClass}">${portUSign}${formatCurrency(totalUnrealizedPnl, mode)}</span>
+            <div class="portfolio-summary-title">Portfolio Summary</div>
+            <div class="ps-rows">
+                <div class="ps-row">
+                    <span class="ps-label">총평가액</span>
+                    <span class="ps-value">${formatCurrency(totalValue, mode)}</span>
+                </div>
+                ${cashBalanceRows}
+                <div class="ps-row">
+                    <span class="ps-label">실현손익</span>
+                    <span class="ps-value ${portRClass}">${portRSign}${formatCurrency(totalRealizedPnl, mode)}</span>
+                </div>
+                <div class="ps-row">
+                    <span class="ps-label">평가손익</span>
+                    <span class="ps-value ${portUClass}">${portUSign}${formatCurrency(totalUnrealizedPnl, mode)}</span>
+                    ${unrealizedPctHtml}
+                </div>
             </div>
         `;
         container.appendChild(portfolioCard);
