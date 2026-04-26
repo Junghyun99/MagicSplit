@@ -60,7 +60,7 @@ class KisBrokerCommon(IBrokerAdapter):
             "appsecret": self.app_secret,
         }
         try:
-            res = _pkg.requests.post(url, json=payload)
+            res = _pkg.requests.post(url, json=payload, timeout=10)
             res.raise_for_status()
             data = res.json()
             if 'access_token' not in data:

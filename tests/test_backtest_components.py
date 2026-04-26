@@ -1,7 +1,7 @@
 # tests/test_backtest_components.py
 import pandas as pd
 import pytest
-from src.core.models import Order, OrderAction, ExecutionStatus
+from src.core.models import Order, OrderAction
 from src.backtest.components import BacktestBroker
 
 
