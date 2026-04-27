@@ -85,7 +85,6 @@ class JsonRepository(IRepository):
 
     def save_trade_history(self, executions: List[TradeExecution],
                            portfolio: Portfolio, reason: str,
-                           signals: Optional[List[SplitSignal]] = None,
                            sim_date: Optional[str] = None) -> None:
         """매매 내역 저장 (Append 방식)"""
         if not executions:
@@ -100,25 +99,23 @@ class JsonRepository(IRepository):
             date_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             tx_id = f"tx_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
 
-        # 신호 매핑: (ticker, action) → signal (손익 정보 enrichment용)
-        signal_map: dict = {}
-        if signals:
-            for sig in signals:
-                signal_map[(sig.ticker, sig.action)] = sig
-
         enriched_execs = []
         recent_pnl = getattr(self, '_recent_realized_pnl', {})
         for e in executions:
             rec = asdict(e)
-            sig = signal_map.get((e.ticker, OrderAction(e.action)))
-            if sig:
-                rec["lot_id"] = sig.lot_id
-                rec["level"] = sig.level
-                if sig.action == OrderAction.SELL and sig.buy_price > 0:
-                    rec["buy_price"] = sig.buy_price
-                    pnl = round((e.price - sig.buy_price) * e.quantity - e.fee, 2)
-                    rec["realized_pnl"] = pnl
-                    recent_pnl[e.ticker] = recent_pnl.get(e.ticker, 0.0) + pnl
+            if e.realized_pnl != 0.0:
+                recent_pnl[e.ticker] = recent_pnl.get(e.ticker, 0.0) + e.realized_pnl
+            
+            # JSON 깔끔함을 위해 불필요한 빈 필드 제거
+            if rec.get("lot_id") is None:
+                rec.pop("lot_id", None)
+            if rec.get("level") == 0:
+                rec.pop("level", None)
+            if rec.get("buy_price") == 0.0:
+                rec.pop("buy_price", None)
+            if rec.get("realized_pnl") == 0.0:
+                rec.pop("realized_pnl", None)
+
             enriched_execs.append(rec)
         self._recent_realized_pnl = recent_pnl
 

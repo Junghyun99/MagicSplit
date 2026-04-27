@@ -119,6 +119,7 @@ class MagicSplitEngine:
                     # 3b. 주문 실행
                     orders = self._signals_to_orders(signals)
                     executions = self._execute_stock_orders(orders)
+                    self._enrich_executions(executions, signals)
                     all_executions.extend(executions)
 
                     # 3c. 포지션 즉시 반영 (다음 종목 판단에 영향)
@@ -362,6 +363,22 @@ class MagicSplitEngine:
 
         return updated
 
+    def _enrich_executions(self, executions: List[TradeExecution], signals: List[SplitSignal]) -> None:
+        """체결 내역에 신호의 비즈니스 컨텍스트(차수, 손익 등)를 주입한다."""
+        signal_map = {(sig.ticker, sig.action): sig for sig in signals}
+        for exe in executions:
+            if exe.status == ExecutionStatus.REJECTED:
+                continue
+            sig = signal_map.get((exe.ticker, OrderAction(exe.action)))
+            if sig:
+                exe.lot_id = sig.lot_id
+                exe.level = sig.level
+                if exe.action == OrderAction.SELL and sig.buy_price > 0:
+                    exe.buy_price = sig.buy_price
+                    exe.realized_pnl = round(
+                        (exe.price - sig.buy_price) * exe.quantity - exe.fee, 2
+                    )
+
     def _persist(
         self,
         portfolio: Portfolio,
@@ -374,8 +391,7 @@ class MagicSplitEngine:
         reason = self._build_reason(signals)
 
         self.repo.save_positions(positions)
-        self.repo.save_trade_history(executions, portfolio, reason,
-                                        signals=signals, sim_date=sim_date)
+        self.repo.save_trade_history(executions, portfolio, reason, sim_date=sim_date)
         self.repo.update_status(portfolio, positions, reason, sim_date=sim_date)
 
     # ── Private helpers ──────────────────────────────────────────

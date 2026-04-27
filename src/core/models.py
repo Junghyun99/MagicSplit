@@ -132,6 +132,11 @@ class TradeExecution:
     date: str        # 체결 시간
     status: ExecutionStatus
     reason: str = ""  # 거부 사유 등
+    # --- 코어 엔진에서 신호와 매칭하여 추가하는 비즈니스 컨텍스트 ---
+    lot_id: Optional[str] = None
+    level: int = 0
+    buy_price: float = 0.0
+    realized_pnl: float = 0.0
 
 
 @dataclass

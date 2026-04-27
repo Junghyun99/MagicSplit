@@ -43,7 +43,6 @@ class IRepository(ABC):
     @abstractmethod
     def save_trade_history(self, executions: List[TradeExecution],
                            portfolio: Portfolio, reason: str,
-                           signals: Optional[List[SplitSignal]] = None,
                            sim_date: Optional[str] = None) -> None:
         """매매 내역을 저장한다."""
         ...
