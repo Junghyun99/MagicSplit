@@ -5,7 +5,7 @@
     let originalConfigObj = null;
     let configSha = null;
     let githubApi = null;
-    const CONFIG_PATH = 'config.json';
+    let currentConfigPath = null;
 
     function showBanner(msg, type = 'info') {
         const banner = document.getElementById('message-banner');
@@ -18,26 +18,31 @@
         const tokenInput = document.getElementById('github-token');
         const ownerInput = document.getElementById('github-owner');
         const repoInput = document.getElementById('github-repo');
+        const pathInput = document.getElementById('config-path');
 
         tokenInput.value = localStorage.getItem('githubToken') || '';
         ownerInput.value = localStorage.getItem('githubOwner') || 'Junghyun99';
         repoInput.value = localStorage.getItem('githubRepo') || 'MagicSplit';
+        pathInput.value = localStorage.getItem('githubConfigPath') || 'config.json';
 
         document.getElementById('load-config-btn').addEventListener('click', async () => {
             const token = tokenInput.value.trim();
             const owner = ownerInput.value.trim();
             const repo = repoInput.value.trim();
+            const path = pathInput.value.trim();
 
-            if (!token || !owner || !repo) {
-                showBanner('토큰, Owner, Repo를 모두 입력해주세요.', 'danger');
+            if (!token || !owner || !repo || !path) {
+                showBanner('토큰, Owner, Repo, File Path를 모두 입력해주세요.', 'danger');
                 return;
             }
 
             localStorage.setItem('githubToken', token);
             localStorage.setItem('githubOwner', owner);
             localStorage.setItem('githubRepo', repo);
+            localStorage.setItem('githubConfigPath', path);
 
             githubApi = new GitHubAPI(token, owner, repo);
+            currentConfigPath = path;
             await loadConfig();
         });
     }
@@ -45,7 +50,7 @@
     async function loadConfig() {
         showBanner('설정을 불러오는 중...', 'info');
         try {
-            const { content, sha } = await githubApi.getFile(CONFIG_PATH);
+            const { content, sha } = await githubApi.getFile(currentConfigPath);
             originalConfigObj = JSON.parse(content);
             configSha = sha;
             
@@ -209,7 +214,7 @@
             
             const msg = `chore(config): update rules via web editor`;
 
-            await githubApi.updateFile(CONFIG_PATH, contentStr, msg, configSha);
+            await githubApi.updateFile(currentConfigPath, contentStr, msg, configSha);
             
             showBanner('성공적으로 저장되었습니다! GitHub Actions가 스케줄에 따라 실행될 때 적용됩니다.', 'success');
             
