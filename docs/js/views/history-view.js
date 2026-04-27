@@ -1,59 +1,17 @@
-// MagicSplit Dashboard - history.js
-window.MagicSplitHistory = (function () {
+// docs/js/views/history-view.js
+window.HistoryView = (function () {
     'use strict';
 
-    const PAGE_SIZE = 30;
-
-    let allRows = [];
-    let filteredRows = [];
-    let visibleCount = 0;
-    let currentMode = 'domestic';
-    let formatCurrencyFn = null;
-    let activeFilters = { ticker: '', action: '' };
-
-    function buildRows(historyData) {
-        const rows = [];
-        if (!Array.isArray(historyData)) return rows;
-
-        for (const tx of historyData) {
-            const txDate = tx.date || '';
-            const txReason = tx.reason || '';
-            const executions = Array.isArray(tx.executions) ? tx.executions : [];
-            for (const ex of executions) {
-                const action = (ex.action || '').toUpperCase();
-                const price = ex.price || 0;
-                const buyPrice = ex.buy_price != null ? ex.buy_price : null;
-                const realizedPnl = ex.realized_pnl != null ? ex.realized_pnl : null;
-                const profitRate = (action === 'SELL' && buyPrice != null && buyPrice > 0 && realizedPnl != null && (ex.quantity || 0) > 0)
-                    ? (realizedPnl / (buyPrice * ex.quantity)) * 100
-                    : null;
-                rows.push({
-                    date: ex.date || txDate,
-                    ticker: ex.ticker || '',
-                    action,
-                    level: ex.level != null ? ex.level : '',
-                    quantity: ex.quantity || 0,
-                    price,
-                    fee: ex.fee || 0,
-                    amount: (ex.quantity || 0) * price,
-                    buyPrice,
-                    realizedPnl,
-                    profitRate,
-                    txReason: txReason,
-                });
-            }
-        }
-
-        rows.sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0));
-        return rows;
+    function escapeHtml(str) {
+        return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
     }
 
-    function getUniqueTickers(rows) {
-        const set = new Set(rows.map((r) => r.ticker).filter(Boolean));
-        return Array.from(set).sort();
-    }
-
-    function renderFilters(tickers) {
+    function renderFilters(tickers, onFilterChange) {
         const container = document.getElementById('history-filters');
         if (!container) return;
 
@@ -74,36 +32,24 @@ window.MagicSplitHistory = (function () {
 
         const tickerSelect = container.querySelector('#history-ticker-filter');
         tickerSelect.addEventListener('change', () => {
-            activeFilters.ticker = tickerSelect.value;
-            applyFilters();
+            onFilterChange('ticker', tickerSelect.value);
         });
 
         container.querySelectorAll('.filter-chip').forEach((btn) => {
             btn.addEventListener('click', () => {
                 container.querySelectorAll('.filter-chip').forEach((b) => b.classList.remove('active'));
                 btn.classList.add('active');
-                activeFilters.action = btn.dataset.action;
-                applyFilters();
+                onFilterChange('action', btn.dataset.action);
             });
         });
     }
 
-    function applyFilters() {
-        filteredRows = allRows.filter((row) => {
-            if (activeFilters.ticker && row.ticker !== activeFilters.ticker) return false;
-            if (activeFilters.action && row.action !== activeFilters.action) return false;
-            return true;
-        });
-        visibleCount = 0;
-        renderPage();
-    }
+    function buildRowHtml(row, formatCurrencyFn, currentMode) {
+        function formatAmount(value) {
+            if (formatCurrencyFn) return formatCurrencyFn(value, currentMode);
+            return value.toFixed(2);
+        }
 
-    function formatAmount(value) {
-        if (formatCurrencyFn) return formatCurrencyFn(value, currentMode);
-        return value.toFixed(2);
-    }
-
-    function buildRowHtml(row) {
         const actionClass = row.action === 'SELL' ? 'sell' : 'buy';
         const lvDisplay = row.level !== ''
             ? `<span class="level-badge" data-level="${Math.min(Number(row.level), 5)}">Lv${escapeHtml(row.level)}</span>`
@@ -142,22 +88,18 @@ window.MagicSplitHistory = (function () {
             </tr>`;
     }
 
-    function renderPage() {
+    function renderPage(newRows, isFirstPage, hasMore, formatCurrencyFn, currentMode) {
         const listEl = document.getElementById('history-list');
         const moreBtn = document.getElementById('load-more-btn');
         if (!listEl) return;
 
-        if (filteredRows.length === 0) {
-            listEl.innerHTML = '<div class="card" style="text-align:center;color:var(--text-muted)">거래 내역이 없습니다.</div>';
-            if (moreBtn) moreBtn.style.display = 'none';
-            return;
-        }
+        if (isFirstPage) {
+            if (newRows.length === 0) {
+                listEl.innerHTML = '<div class="card" style="text-align:center;color:var(--text-muted)">거래 내역이 없습니다.</div>';
+                if (moreBtn) moreBtn.style.display = 'none';
+                return;
+            }
 
-        const newRows = filteredRows.slice(visibleCount, visibleCount + PAGE_SIZE);
-        visibleCount += newRows.length;
-
-        if (visibleCount <= PAGE_SIZE) {
-            // First render: build full table structure
             listEl.innerHTML = `
                 <div class="card" style="padding:0;overflow-x:auto" tabindex="0" role="region" aria-label="거래 내역 테이블">
                     <table class="history-table">
@@ -183,45 +125,16 @@ window.MagicSplitHistory = (function () {
 
         const tbody = document.getElementById('history-tbody');
         if (tbody) {
-            tbody.insertAdjacentHTML('beforeend', newRows.map(buildRowHtml).join(''));
+            tbody.insertAdjacentHTML('beforeend', newRows.map(row => buildRowHtml(row, formatCurrencyFn, currentMode)).join(''));
         }
 
         if (moreBtn) {
-            moreBtn.style.display = visibleCount < filteredRows.length ? '' : 'none';
+            moreBtn.style.display = hasMore ? '' : 'none';
         }
     }
 
-    function loadMore() {
-        renderPage();
-    }
-
-    function escapeHtml(str) {
-        return String(str)
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#39;');
-    }
-
-    function renderHistory(historyData, mode, formatFn) {
-        currentMode = mode || 'domestic';
-        formatCurrencyFn = formatFn || null;
-        activeFilters = { ticker: '', action: '' };
-
-        allRows = buildRows(historyData);
-        filteredRows = allRows.slice();
-        visibleCount = 0;
-
-        const tickers = getUniqueTickers(allRows);
-        renderFilters(tickers);
-        renderPage();
-
-        const moreBtn = document.getElementById('load-more-btn');
-        if (moreBtn) {
-            moreBtn.onclick = loadMore;
-        }
-    }
-
-    return { renderHistory };
+    return {
+        renderFilters,
+        renderPage
+    };
 })();
