@@ -1,0 +1,82 @@
+name: Manual Trade via Actions
+
+on:
+  workflow_dispatch:
+    inputs:
+      market_type:
+        description: 'Market Type'
+        required: true
+        type: choice
+        options:
+          - domestic
+          - overseas
+      ticker:
+        description: 'Ticker Symbol (e.g. 005930, TSLA)'
+        required: true
+        type: string
+      action:
+        description: 'Order Action'
+        required: true
+        type: choice
+        options:
+          - buy
+          - sell
+      quantity:
+        description: 'Quantity'
+        required: true
+        type: string
+      price:
+        description: 'Price (0 for Market Order)'
+        required: true
+        default: '0'
+        type: string
+      level:
+        description: 'Level (Optional. Auto-calculated if left blank)'
+        required: false
+        type: string
+
+jobs:
+  trade:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v3
+      with:
+        python-version: "3.10"
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Execute Manual Trade
+      env:
+        CONFIG_JSON_PATH: config_${{ github.event.inputs.market_type }}.json
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        KIS_APP_KEY: ${{ secrets.KIS_APP_KEY }}
+        KIS_APP_SECRET: ${{ secrets.KIS_APP_SECRET }}
+        KIS_ACC_NO: ${{ secrets.KIS_ACC_NO }}
+        IS_LIVE: ${{ secrets.IS_LIVE }}
+      run: |
+        LEVEL_ARG=""
+        if [ -n "${{ github.event.inputs.level }}" ]; then
+          LEVEL_ARG="--level ${{ github.event.inputs.level }}"
+        fi
+        
+        python scripts/manual_trade.py \
+          --ticker "${{ github.event.inputs.ticker }}" \
+          --action "${{ github.event.inputs.action }}" \
+          --qty "${{ github.event.inputs.quantity }}" \
+          --price "${{ github.event.inputs.price }}" \
+          $LEVEL_ARG
+
+    - name: Commit updated data files
+      run: |
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+        git add docs/data/ || true
+        git diff --staged --quiet || git commit -m "Auto-update manual trading data [skip ci]"
+        git push || true
