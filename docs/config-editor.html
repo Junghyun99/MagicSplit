@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MagicSplit Config Editor</title>
+    <link rel="stylesheet" href="css/style.css?v=20260427-1">
+</head>
+<body>
+    <header class="page-header">
+        <h1>Config Editor</h1>
+        <nav class="mode-switch" aria-label="data mode">
+            <a href="index.html?mode=domestic" class="mode-link">Domestic</a>
+            <a href="index.html?mode=overseas" class="mode-link">Overseas</a>
+            <a href="index.html?mode=backtest" class="mode-link">Backtest</a>
+            <a href="config-editor.html" class="mode-link active">Config</a>
+        </nav>
+    </header>
+
+    <div id="message-banner" class="reason-banner" style="display:none"></div>
+
+    <div class="card" id="auth-card">
+        <h2>GitHub Settings</h2>
+        <div class="form-group">
+            <label>Personal Access Token (PAT)</label>
+            <input type="password" id="github-token" placeholder="ghp_..." class="form-control">
+            <small class="form-text">repo 스코프 권한이 필요합니다. 브라우저 로컬 스토리지에만 저장됩니다.</small>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>Repository Owner</label>
+                <input type="text" id="github-owner" placeholder="Owner" class="form-control">
+            </div>
+            <div class="form-group">
+                <label>Repository Name</label>
+                <input type="text" id="github-repo" placeholder="Repo" class="form-control">
+            </div>
+        </div>
+        <button id="load-config-btn" class="btn btn-primary" style="width: 100%;">설정 불러오기</button>
+    </div>
+
+    <div id="config-editor-section" style="display:none">
+        <div class="card">
+            <div class="card-header">
+                <h2>Global Settings</h2>
+            </div>
+            <div class="form-group">
+                <label>Check Interval (Minutes)</label>
+                <input type="number" id="global-interval" class="form-control">
+            </div>
+        </div>
+
+        <div id="stocks-container"></div>
+        <button id="add-stock-btn" class="btn" style="margin-bottom: 16px; border: 1px dashed var(--border); background: var(--bg); width: 100%; padding: 12px;">+ 종목 추가</button>
+
+        <div class="card">
+            <h2>변경 사항 (Diff)</h2>
+            <pre id="diff-preview" class="diff-preview">변경 사항 없음</pre>
+            <button id="save-config-btn" class="btn btn-primary" style="width: 100%; margin-top: 10px; background: var(--success);">저장 및 GitHub 반영 (Commit)</button>
+        </div>
+    </div>
+
+    <script src="js/github-api.js?v=20260427-1"></script>
+    <script src="js/config-editor.js?v=20260427-1"></script>
+</body>
+</html>
