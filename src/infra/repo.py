@@ -27,6 +27,7 @@ class JsonRepository(IRepository):
         self.positions_file = os.path.join(self.root, "positions.json")
         self.history_file = os.path.join(self.root, "history.json")
         self.status_file = os.path.join(self.root, "status.json")
+        self._recent_realized_pnl = {}
 
     # === Positions ===
 
@@ -106,6 +107,7 @@ class JsonRepository(IRepository):
                 signal_map[(sig.ticker, sig.action)] = sig
 
         enriched_execs = []
+        recent_pnl = getattr(self, '_recent_realized_pnl', {})
         for e in executions:
             rec = asdict(e)
             sig = signal_map.get((e.ticker, OrderAction(e.action)))
@@ -114,10 +116,11 @@ class JsonRepository(IRepository):
                 rec["level"] = sig.level
                 if sig.action == OrderAction.SELL and sig.buy_price > 0:
                     rec["buy_price"] = sig.buy_price
-                    rec["realized_pnl"] = round(
-                        (e.price - sig.buy_price) * e.quantity - e.fee, 2
-                    )
+                    pnl = round((e.price - sig.buy_price) * e.quantity - e.fee, 2)
+                    rec["realized_pnl"] = pnl
+                    recent_pnl[e.ticker] = recent_pnl.get(e.ticker, 0.0) + pnl
             enriched_execs.append(rec)
+        self._recent_realized_pnl = recent_pnl
 
         record = {
             "id": tx_id,
@@ -145,8 +148,20 @@ class JsonRepository(IRepository):
         """최신 상태를 저장한다 (대시보드용)."""
         last_updated = sim_date or datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-        # history.json에서 종목별 실현 손익 집계
-        realized_by_ticker = self._calc_realized_pnl_by_ticker()
+        # 기존 상태 파일에서 누적 손익 로드 (없으면 history에서 계산하여 마이그레이션)
+        old_status = self._load_json(self.status_file, default={})
+        if "realized_pnl_by_ticker" in old_status:
+            realized_by_ticker = old_status["realized_pnl_by_ticker"]
+        else:
+            realized_by_ticker = self._calc_realized_pnl_by_ticker()
+
+        # 최근 매매로 발생한 실현 손익 합산
+        recent_pnl = getattr(self, '_recent_realized_pnl', {})
+        for ticker, pnl in recent_pnl.items():
+            realized_by_ticker[ticker] = realized_by_ticker.get(ticker, 0.0) + pnl
+        
+        # 합산 완료 후 초기화
+        self._recent_realized_pnl = {}
 
         # 종목별 포지션 요약
         ticker_summary = {}
@@ -212,6 +227,7 @@ class JsonRepository(IRepository):
                 ],
             },
             "positions": ticker_summary,
+            "realized_pnl_by_ticker": realized_by_ticker,
         }
 
         self._save_json(self.status_file, status)
