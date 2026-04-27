@@ -48,11 +48,13 @@ class IRepository(ABC):
         ...
 
     @abstractmethod
-    def update_status(self, portfolio: Portfolio,
-                      positions: List[PositionLot],
-                      reason: str,
-                      sim_date: Optional[str] = None) -> None:
-        """최신 상태를 저장한다."""
+    def get_realized_pnl_by_ticker(self) -> Dict[str, float]:
+        """과거 누적 실현 손익을 종목별로 반환한다."""
+        ...
+
+    @abstractmethod
+    def save_status(self, status_data: dict) -> None:
+        """최신 상태 딕셔너리를 저장한다."""
         ...
 
     @abstractmethod

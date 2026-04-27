@@ -86,12 +86,10 @@ class TestTradeHistory:
 
 
 class TestStatus:
-    def test_update_and_get_status(self, repo):
+    def test_save_and_get_status(self, repo):
         """상태 저장 및 마지막 실행일 조회"""
-        portfolio = Portfolio(10000.0, {"AAPL": 5}, {"AAPL": 150.0})
-        positions = [PositionLot("lot_001", "AAPL", 140.0, 5, "2026-04-01", level=1)]
-
-        repo.update_status(portfolio, positions, "모니터링", sim_date="2026-04-10")
+        status_data = {"last_run_date": "2026-04-10", "positions": {"AAPL": {}}}
+        repo.save_status(status_data)
 
         last_run = repo.get_last_run_date()
         assert last_run == "2026-04-10"
@@ -100,22 +98,13 @@ class TestStatus:
         """status 파일이 없으면 None"""
         assert repo.get_last_run_date() is None
 
-    def test_status_contains_position_details(self, repo):
-        """상태에 포지션 상세 정보 포함 (level 포함)"""
-        portfolio = Portfolio(10000.0, {"AAPL": 5}, {"AAPL": 160.0})
-        positions = [PositionLot("lot_001", "AAPL", 150.0, 5, "2026-04-01", level=1)]
-
-        repo.update_status(portfolio, positions, "test")
-
-        with open(repo.status_file, 'r', encoding='utf-8') as f:
-            data = json.load(f)
-        assert "positions" in data
-        assert "AAPL" in data["positions"]
-        assert data["positions"]["AAPL"]["lot_count"] == 1
-        # pct_change: (160-150)/150*100 = 6.67%
-        lot_detail = data["positions"]["AAPL"]["lots"][0]
-        assert lot_detail["pct_change"] == pytest.approx(6.67, abs=0.01)
-        assert lot_detail["level"] == 1
+    def test_get_realized_pnl_by_ticker(self, repo):
+        """누적 손익 조회"""
+        status_data = {"realized_pnl_by_ticker": {"AAPL": 100.0}}
+        repo.save_status(status_data)
+        
+        pnl = repo.get_realized_pnl_by_ticker()
+        assert pnl == {"AAPL": 100.0}
 
     def test_load_legacy_positions_without_level(self, repo):
         """레거시 positions.json (level 필드 없음) 정상 로드 및 마이그레이션"""

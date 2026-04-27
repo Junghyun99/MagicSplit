@@ -15,7 +15,7 @@ from src.core.models import (
     SplitSignal,
     DayResult,
 )
-from src.core.logic import SplitEvaluator, detect_mismatches
+from src.core.logic import SplitEvaluator, detect_mismatches, build_dashboard_status
 from src.core.engine.registry import register_engine
 
 
@@ -392,7 +392,13 @@ class MagicSplitEngine:
 
         self.repo.save_positions(positions)
         self.repo.save_trade_history(executions, portfolio, reason, sim_date=sim_date)
-        self.repo.update_status(portfolio, positions, reason, sim_date=sim_date)
+        
+        # 상태 조립 및 저장 (코어 계층 비즈니스 로직)
+        old_realized_pnl = self.repo.get_realized_pnl_by_ticker()
+        status_data = build_dashboard_status(
+            portfolio, positions, reason, old_realized_pnl, executions, sim_date
+        )
+        self.repo.save_status(status_data)
 
     # ── Private helpers ──────────────────────────────────────────
 

@@ -168,7 +168,7 @@ class TestRunOneCycle:
 
         assert result.date == "2026-04-10"
         mock_repo.save_positions.assert_called_once()
-        mock_repo.update_status.assert_called_once()
+        mock_repo.save_status.assert_called_once()
 
     def test_full_cycle_with_buy(self, engine, mock_broker, mock_repo):
         """초기 매수 시 전체 사이클"""

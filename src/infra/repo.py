@@ -2,7 +2,7 @@
 import json
 import math
 import os
-from typing import List, Optional
+from typing import List, Optional, Dict
 from dataclasses import asdict
 from datetime import datetime
 
@@ -27,7 +27,6 @@ class JsonRepository(IRepository):
         self.positions_file = os.path.join(self.root, "positions.json")
         self.history_file = os.path.join(self.root, "history.json")
         self.status_file = os.path.join(self.root, "status.json")
-        self._recent_realized_pnl = {}
 
     # === Positions ===
 
@@ -100,11 +99,8 @@ class JsonRepository(IRepository):
             tx_id = f"tx_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
 
         enriched_execs = []
-        recent_pnl = getattr(self, '_recent_realized_pnl', {})
         for e in executions:
             rec = asdict(e)
-            if e.realized_pnl != 0.0:
-                recent_pnl[e.ticker] = recent_pnl.get(e.ticker, 0.0) + e.realized_pnl
             
             # JSON 깔끔함을 위해 불필요한 빈 필드 제거
             if rec.get("lot_id") is None:
@@ -117,7 +113,6 @@ class JsonRepository(IRepository):
                 rec.pop("realized_pnl", None)
 
             enriched_execs.append(rec)
-        self._recent_realized_pnl = recent_pnl
 
         record = {
             "id": tx_id,
@@ -138,96 +133,16 @@ class JsonRepository(IRepository):
 
     # === Status ===
 
-    def update_status(self, portfolio: Portfolio,
-                      positions: List[PositionLot],
-                      reason: str,
-                      sim_date: Optional[str] = None) -> None:
-        """최신 상태를 저장한다 (대시보드용)."""
-        last_updated = sim_date or datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    def get_realized_pnl_by_ticker(self) -> Dict[str, float]:
+        """과거 누적 실현 손익을 종목별로 반환한다. (마이그레이션 대비)"""
+        status = self._load_json(self.status_file, default={})
+        if "realized_pnl_by_ticker" in status:
+            return status["realized_pnl_by_ticker"]
+        return self._calc_realized_pnl_by_ticker()
 
-        # 기존 상태 파일에서 누적 손익 로드 (없으면 history에서 계산하여 마이그레이션)
-        old_status = self._load_json(self.status_file, default={})
-        if "realized_pnl_by_ticker" in old_status:
-            realized_by_ticker = old_status["realized_pnl_by_ticker"]
-        else:
-            realized_by_ticker = self._calc_realized_pnl_by_ticker()
-
-        # 최근 매매로 발생한 실현 손익 합산
-        recent_pnl = getattr(self, '_recent_realized_pnl', {})
-        for ticker, pnl in recent_pnl.items():
-            realized_by_ticker[ticker] = realized_by_ticker.get(ticker, 0.0) + pnl
-        
-        # 합산 완료 후 초기화
-        self._recent_realized_pnl = {}
-
-        # 종목별 포지션 요약
-        ticker_summary = {}
-        for lot in positions:
-            if lot.ticker not in ticker_summary:
-                ticker_summary[lot.ticker] = {
-                    "total_qty": 0,
-                    "lot_count": 0,
-                    "total_invested": 0.0,
-                    "current_value": 0.0,
-                    "lots": [],
-                }
-            ts = ticker_summary[lot.ticker]
-            ts["total_qty"] += lot.quantity
-            ts["lot_count"] += 1
-            current_price = portfolio.current_prices.get(lot.ticker, 0)
-            invested = lot.buy_price * lot.quantity
-            ts["total_invested"] += invested
-            ts["current_value"] += current_price * lot.quantity
-            pct = ((current_price - lot.buy_price) / lot.buy_price * 100) if lot.buy_price > 0 else 0
-            ts["lots"].append({
-                "lot_id": lot.lot_id,
-                "buy_price": lot.buy_price,
-                "quantity": lot.quantity,
-                "buy_date": lot.buy_date,
-                "level": lot.level,
-                "current_price": current_price,
-                "pct_change": round(pct, 2),
-            })
-
-        # 종목별 손익 집계 필드 추가
-        for ticker, ts in ticker_summary.items():
-            total_invested = ts["total_invested"]
-            current_value = ts["current_value"]
-            unrealized_pnl = current_value - total_invested
-            realized_pnl = realized_by_ticker.get(ticker, 0.0)
-
-            ts["avg_buy_price"] = round(total_invested / ts["total_qty"], 4) if ts["total_qty"] > 0 else 0.0
-            ts["total_invested"] = round(total_invested, 2)
-            ts["current_value"] = round(current_value, 2)
-            ts["unrealized_pnl"] = round(unrealized_pnl, 2)
-            ts["unrealized_pnl_pct"] = round(
-                (unrealized_pnl / total_invested * 100) if total_invested > 0 else 0.0, 2
-            )
-            ts["realized_pnl"] = round(realized_pnl, 2)
-            ts["total_pnl"] = round(realized_pnl + unrealized_pnl, 2)
-
-        status = {
-            "last_updated": last_updated,
-            "last_run_date": (sim_date or datetime.now().strftime("%Y-%m-%d")),
-            "reason": reason,
-            "portfolio": {
-                "total_value": portfolio.total_value,
-                "cash_balance": portfolio.total_cash,
-                "holdings": [
-                    {
-                        "ticker": t,
-                        "qty": q,
-                        "price": portfolio.current_prices.get(t, 0),
-                        "value": q * portfolio.current_prices.get(t, 0),
-                    }
-                    for t, q in portfolio.holdings.items() if q > 0
-                ],
-            },
-            "positions": ticker_summary,
-            "realized_pnl_by_ticker": realized_by_ticker,
-        }
-
-        self._save_json(self.status_file, status)
+    def save_status(self, status_data: dict) -> None:
+        """최신 상태 딕셔너리를 저장한다 (대시보드용)."""
+        self._save_json(self.status_file, status_data)
 
     def _calc_realized_pnl_by_ticker(self) -> dict:
         """history.json에서 종목별 실현 손익 합계를 계산한다."""
