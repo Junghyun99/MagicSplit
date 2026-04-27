@@ -11,7 +11,7 @@ on:
           - domestic
           - overseas
       ticker:
-        description: 'Ticker Symbol (e.g. 005930, TSLA)'
+        description: 'Ticker Symbol (e.g. 005930 or TSLA)'
         required: true
         type: string
       action:
@@ -24,15 +24,6 @@ on:
       quantity:
         description: 'Quantity'
         required: true
-        type: string
-      price:
-        description: 'Price (0 for Market Order)'
-        required: true
-        default: '0'
-        type: string
-      level:
-        description: 'Level (Optional. Auto-calculated if left blank)'
-        required: false
         type: string
 
 jobs:
@@ -61,17 +52,10 @@ jobs:
         KIS_ACC_NO: ${{ secrets.KIS_ACC_NO }}
         IS_LIVE: ${{ secrets.IS_LIVE }}
       run: |
-        LEVEL_ARG=""
-        if [ -n "${{ github.event.inputs.level }}" ]; then
-          LEVEL_ARG="--level ${{ github.event.inputs.level }}"
-        fi
-        
         python scripts/manual_trade.py \
           --ticker "${{ github.event.inputs.ticker }}" \
           --action "${{ github.event.inputs.action }}" \
-          --qty "${{ github.event.inputs.quantity }}" \
-          --price "${{ github.event.inputs.price }}" \
-          $LEVEL_ARG
+          --qty "${{ github.event.inputs.quantity }}"
 
     - name: Commit updated data files
       run: |

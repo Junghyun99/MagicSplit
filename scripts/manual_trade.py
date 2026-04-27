@@ -28,8 +28,6 @@ def parse_args():
     parser.add_argument("--ticker", required=True, help="종목 코드 (예: 005930, TSLA)")
     parser.add_argument("--action", required=True, choices=["buy", "sell"], help="매수(buy) 또는 매도(sell)")
     parser.add_argument("--qty", required=True, type=int, help="주문 수량")
-    parser.add_argument("--price", type=float, default=0.0, help="주문 가격 (0 입력 시 시장가 주문)")
-    parser.add_argument("--level", type=int, help="할당할 차수. 미입력 시 매수=기존 최고차수+1, 매도=가장 높은 차수로 자동 처리")
     parser.add_argument("--dry-run", action="store_true", help="실제 주문을 넣지 않고 시뮬레이션만 수행")
     return parser.parse_args()
 
@@ -42,7 +40,14 @@ def main():
     strategy = StrategyConfig(config.CONFIG_JSON_PATH)
     
     # 1. 룰에서 티커 검색 (마켓 타입 및 exchange_map을 얻기 위함)
-    target_rule = next((r for r in strategy.rules if r.ticker == args.ticker), None)
+    # 사용자가 '005930'처럼 숫자만 입력해도 '005930.KS' 등을 찾을 수 있도록 유연하게 매칭
+    target_rule = None
+    for r in strategy.rules:
+        if r.ticker == args.ticker or r.ticker.startswith(f"{args.ticker}."):
+            target_rule = r
+            args.ticker = r.ticker  # 이후 로직(포지션 업데이트 등)을 위해 풀네임으로 덮어씌움
+            break
+            
     if not target_rule:
         logger.error(f"설정 파일({config.CONFIG_JSON_PATH})에 '{args.ticker}' 종목이 없습니다.")
         sys.exit(1)
@@ -72,23 +77,29 @@ def main():
     current_highest_level = max([lot.level for lot in ticker_lots]) if ticker_lots else 0
 
     # 4. 차수(Level) 자동 할당
-    level = args.level
-    if level is None:
-        if args.action == "buy":
-            level = current_highest_level + 1
-        else: # sell
-            level = current_highest_level
-            if level == 0:
-                logger.error("매도할 포지션이 존재하지 않습니다.")
-                sys.exit(1)
+    if args.action == "buy":
+        level = current_highest_level + 1
+    else: # sell
+        level = current_highest_level
+        if level == 0:
+            logger.error("매도할 포지션이 존재하지 않습니다.")
+            sys.exit(1)
 
-    # 5. 주문 객체 생성
+    # 5. 매도 전 수량 사전 검증 (안전 장치)
+    if args.action == "sell":
+        available_qty = sum([lot.quantity for lot in ticker_lots])
+            
+        if args.qty > available_qty:
+            logger.error(f"입력하신 매도 수량({args.qty}주)이 봇 장부상의 보유 수량({available_qty}주)보다 많습니다. 팻핑거(오타) 방지를 위해 주문을 취소합니다.")
+            sys.exit(1)
+
+    # 6. 주문 객체 생성
     action_enum = OrderAction.BUY if args.action == "buy" else OrderAction.SELL
     order = Order(
         ticker=args.ticker,
         action=action_enum,
         quantity=args.qty,
-        price=args.price,
+        price=0.0,
     )
 
     if args.dry_run:
@@ -106,7 +117,13 @@ def main():
 
     execution = executions[0]
     if execution.status == ExecutionStatus.REJECTED:
-        logger.error("주문 거절됨.")
+        logger.error("브로커에서 주문이 거절(REJECTED)되었습니다.")
+        sys.exit(1)
+    elif execution.status == ExecutionStatus.ORDERED:
+        logger.warning("주문이 접수(ORDERED)되었으나 지정된 대기 시간 내에 체결되지 않았습니다. 포지션 장부를 업데이트하지 않고 종료합니다.")
+        sys.exit(0)
+    elif execution.status not in [ExecutionStatus.FILLED, ExecutionStatus.PARTIAL]:
+        logger.error(f"알 수 없는 주문 상태({execution.status})입니다. 안전을 위해 장부를 업데이트하지 않습니다.")
         sys.exit(1)
 
     logger.info(f"주문 체결 완료! (가격: {execution.price}, 수량: {execution.quantity})")
@@ -128,12 +145,12 @@ def main():
         updated_positions.append(new_lot)
         logger.info(f"[Position] New lot 추가됨: Lv{level} / {execution.quantity}주 @ {execution.price}")
     else:
-        # 매도 처리 로직: 지정된 level의 lot을 찾아 수량 차감 또는 제거
-        # 동일한 level의 lot이 여러 개일 수 있으므로 (보통은 1개), 수량 합계를 비교하며 차감
-        target_lots = sorted([lot for lot in updated_positions if lot.ticker == args.ticker and lot.level == level], key=lambda x: x.buy_date)
-        if not target_lots:
-            # 지정된 level이 없으면 그냥 가장 높은 level부터 차감 (fallback)
-            target_lots = sorted([lot for lot in updated_positions if lot.ticker == args.ticker], key=lambda x: x.level, reverse=True)
+        # 매도 처리 로직: 높은 차수(가장 최근에 물타기한 것)부터 우선적으로 팔도록 레벨 역순 정렬
+        target_lots = sorted(
+            [lot for lot in updated_positions if lot.ticker == args.ticker], 
+            key=lambda x: x.level, 
+            reverse=True
+        )
             
         remaining_qty = execution.quantity
         for target_lot in target_lots:
