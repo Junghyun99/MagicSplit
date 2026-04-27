@@ -461,3 +461,110 @@ class TestUpdatePositions:
         new_lot = [l for l in updated if l.level == 2][0]
         assert new_lot.buy_price == 94.0
         assert new_lot.level == 2
+
+
+class TestUpdatePositionsPartialAndOrdered:
+    """엔진의 PARTIAL/ORDERED 분기 처리."""
+
+    def test_buy_partial_uses_executed_quantity(self, engine):
+        """BUY PARTIAL → 새 lot 의 quantity 가 체결분(exe.quantity) 으로 추가."""
+        positions = []
+        signals = [
+            SplitSignal("AAPL", None, OrderAction.BUY, 5, 100.0,
+                        "Lv1 매수", 0.0, level=1),
+        ]
+        executions = [
+            TradeExecution("AAPL", OrderAction.BUY, 3, 100.0, 0.5,
+                           "2026-04-10", ExecutionStatus.PARTIAL,
+                           reason="ODNO=X partial_after_cancel(3/5)"),
+        ]
+
+        updated = engine._update_positions(positions, signals, executions, "2026-04-10")
+        assert len(updated) == 1
+        assert updated[0].quantity == 3
+        assert updated[0].level == 1
+
+    def test_sell_partial_decrements_lot_quantity(self, engine):
+        """SELL PARTIAL → 대상 lot quantity 차감, lot_id 유지."""
+        positions = [
+            PositionLot("lot_001", "AAPL", 90.0, 5, "2026-04-01", level=2),
+        ]
+        signals = [
+            SplitSignal("AAPL", "lot_001", OrderAction.SELL, 5, 100.0,
+                        "Lv2 익절", 11.1, level=2),
+        ]
+        executions = [
+            TradeExecution("AAPL", OrderAction.SELL, 2, 100.0, 0.3,
+                           "2026-04-10", ExecutionStatus.PARTIAL),
+        ]
+
+        updated = engine._update_positions(positions, signals, executions, "2026-04-10")
+        assert len(updated) == 1
+        assert updated[0].lot_id == "lot_001"
+        assert updated[0].quantity == 3
+        assert updated[0].level == 2
+        assert updated[0].buy_price == 90.0  # 평균가 보존
+
+    def test_sell_partial_full_quantity_removes_lot(self, engine):
+        """SELL PARTIAL 인데 fill_qty == lot.quantity 면 전량 제거."""
+        positions = [
+            PositionLot("lot_001", "AAPL", 90.0, 5, "2026-04-01", level=1),
+        ]
+        signals = [
+            SplitSignal("AAPL", "lot_001", OrderAction.SELL, 5, 100.0,
+                        "Lv1 익절", 11.1, level=1),
+        ]
+        executions = [
+            TradeExecution("AAPL", OrderAction.SELL, 5, 100.0, 0.5,
+                           "2026-04-10", ExecutionStatus.PARTIAL),
+        ]
+        updated = engine._update_positions(positions, signals, executions, "2026-04-10")
+        assert len(updated) == 0
+
+    def test_ordered_skips_position_update_and_alerts(self, mock_broker, mock_repo, mock_logger):
+        """ORDERED → 포지션 미반영 + notifier.send_alert 호출."""
+        notifier = MagicMock()
+        engine = MagicSplitEngine(
+            broker=mock_broker, repo=mock_repo, logger=mock_logger,
+            stock_rules=[StockRule("AAPL", -5.0, 10.0, 500, 10)],
+            notifier=notifier,
+        )
+        positions = [
+            PositionLot("lot_001", "AAPL", 90.0, 5, "2026-04-01", level=1),
+        ]
+        signals = [
+            SplitSignal("AAPL", "lot_001", OrderAction.SELL, 5, 100.0,
+                        "Lv1 익절", 11.1, level=1),
+        ]
+        executions = [
+            TradeExecution("AAPL", OrderAction.SELL, 0, 100.0, 0.0,
+                           "2026-04-10", ExecutionStatus.ORDERED,
+                           reason="ODNO=Z PARTIAL_FILL=2 manual_check_required"),
+        ]
+
+        updated = engine._update_positions(positions, signals, executions, "2026-04-10")
+        # 포지션 그대로 유지
+        assert len(updated) == 1
+        assert updated[0].quantity == 5
+        # 알림 호출
+        notifier.send_alert.assert_called_once()
+        msg = notifier.send_alert.call_args[0][0]
+        assert "AAPL" in msg
+        assert "미체결 잔존" in msg
+
+    def test_zero_qty_partial_skipped(self, engine):
+        """status가 PARTIAL/FILLED 인데 quantity=0 인 비정상 경우 → 미반영."""
+        positions = [
+            PositionLot("lot_001", "AAPL", 90.0, 5, "2026-04-01", level=1),
+        ]
+        signals = [
+            SplitSignal("AAPL", "lot_001", OrderAction.SELL, 5, 100.0,
+                        "Lv1 익절", 11.1, level=1),
+        ]
+        executions = [
+            TradeExecution("AAPL", OrderAction.SELL, 0, 100.0, 0.0,
+                           "2026-04-10", ExecutionStatus.PARTIAL),
+        ]
+        updated = engine._update_positions(positions, signals, executions, "2026-04-10")
+        assert len(updated) == 1
+        assert updated[0].quantity == 5
