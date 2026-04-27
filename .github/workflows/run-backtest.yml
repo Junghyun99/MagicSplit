@@ -16,16 +16,14 @@ on:
         required: false
         type: string
         default: '10000'
-      config_path:
-        description: 'config.json 경로 (기본값: config_overseas.json)'
-        required: false
-        type: string
-        default: 'config_overseas.json'
       market_type:
-        description: '마켓 타입 (overseas 또는 domestic)'
-        required: false
-        type: string
-        default: 'overseas'
+        description: '마켓 타입 선택'
+        required: true
+        type: choice
+        options:
+          - '국내'
+          - '해외'
+        default: '해외'
 
 permissions:
   contents: write
@@ -47,16 +45,28 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
+    - name: Set Environment Variables
+      run: |
+        if [ "${{ inputs.market_type }}" == "국내" ]; then
+          echo "CONFIG_PATH=config_domestic.json" >> $GITHUB_ENV
+          echo "MARKET_VAL=domestic" >> $GITHUB_ENV
+        else
+          echo "CONFIG_PATH=config_overseas.json" >> $GITHUB_ENV
+          echo "MARKET_VAL=overseas" >> $GITHUB_ENV
+        fi
+      shell: bash
+
     - name: Run backtest
       run: |
         python -c "
+        import os
         from src.backtest.runner import run_backtest
         result = run_backtest(
-            config_path='${{ inputs.config_path }}',
+            config_path=os.environ.get('CONFIG_PATH'),
             start_date='${{ inputs.start }}',
             end_date='${{ inputs.end }}',
             initial_cash=float('${{ inputs.initial_cash }}'),
-            market_type='${{ inputs.market_type }}',
+            market_type=os.environ.get('MARKET_VAL'),
         )
         if result:
             pf = result.final_portfolio
