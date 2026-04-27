@@ -38,24 +38,120 @@
         </div>
         <div class="form-group">
             <label>Config File Path</label>
-            <input type="text" id="config-path" placeholder="config.json (또는 config_domestic.json 등)" class="form-control" value="config.json">
+            <select id="config-path" class="form-control">
+                <option value="config_overseas.json">config_overseas.json</option>
+                <option value="config_domestic.json">config_domestic.json</option>
+                <option value="presets.json">presets.json</option>
+            </select>
         </div>
         <button id="load-config-btn" class="btn btn-primary" style="width: 100%;">설정 불러오기</button>
     </div>
 
     <div id="config-editor-section" style="display:none">
-        <div class="card">
+        <div class="card" id="global-settings-card">
             <div class="card-header">
                 <h2>Global Settings</h2>
             </div>
-            <div class="form-group">
-                <label>Check Interval (Minutes)</label>
-                <input type="number" id="global-interval" class="form-control">
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Check Interval (Minutes)</label>
+                    <input type="number" id="global-interval" class="form-control">
+                </div>
+                <div class="form-group" style="display:flex; flex-direction:column; justify-content:center; align-items:center;">
+                    <label>Notification Enabled</label>
+                    <input type="checkbox" id="global-notification" style="width:20px; height:20px;" checked>
+                </div>
             </div>
         </div>
 
-        <div id="stocks-container"></div>
-        <button id="add-stock-btn" class="btn" style="margin-bottom: 16px; border: 1px dashed var(--border); background: var(--bg); width: 100%; padding: 12px;">+ 종목 추가</button>
+        <div class="editor-layout">
+            <div class="ticker-list-pane">
+                <h3>종목 목록</h3>
+                <ul id="ticker-list"></ul>
+                <button id="add-stock-btn" class="btn" style="width: 100%; border: 1px dashed var(--border); background: var(--bg);">+ 종목 추가</button>
+            </div>
+            
+            <div class="ticker-editor-pane" id="ticker-editor-pane" style="display:none">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                    <h2 id="current-ticker-title" style="margin: 0;">Ticker Editor</h2>
+                    <button id="delete-stock-btn" class="btn" style="background: var(--danger); color: white; padding: 4px 8px; font-size: 0.8rem;">삭제</button>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label id="edit-ticker-label">Ticker</label>
+                        <input type="text" id="edit-ticker" class="form-control">
+                    </div>
+                    <div class="form-group" id="group-exchange">
+                        <label>Exchange</label>
+                        <input type="text" id="edit-exchange" class="form-control" placeholder="NAS">
+                    </div>
+                    <div class="form-group" id="group-market">
+                        <label>Market Type</label>
+                        <select id="edit-market" class="form-control">
+                            <option value="overseas">Overseas</option>
+                            <option value="domestic">Domestic</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group" id="group-preset">
+                        <label>Preset <small>(optional)</small></label>
+                        <input type="text" id="edit-preset" class="form-control" placeholder="large_cap_us">
+                    </div>
+                    <div class="form-group">
+                        <label>재진입 보호 (%)</label>
+                        <input type="number" step="0.1" id="edit-reentry" class="form-control" placeholder="-0.1">
+                    </div>
+                    <div class="form-group">
+                        <label>최대 차수</label>
+                        <input type="number" id="edit-max-lots" class="form-control" value="10">
+                    </div>
+                    <div class="form-group" id="group-enabled" style="display:flex; flex-direction:column; justify-content:center; align-items:center;">
+                        <label>활성화</label>
+                        <input type="checkbox" id="edit-enabled" style="width:20px; height:20px;" checked>
+                    </div>
+                </div>
+                
+                <h3 style="margin-top: 16px; margin-bottom: 8px;">기본 매매 설정 (전체 차수 공통)</h3>
+                <div class="form-row" style="background: #f8fafc; padding: 12px; border: 1px solid var(--border); border-radius: 6px; margin-bottom: 16px;">
+                    <div class="form-group">
+                        <label>기본 매수 트리거 (%)</label>
+                        <input type="number" step="0.1" id="edit-buy-pct" class="form-control" placeholder="-5.0">
+                    </div>
+                    <div class="form-group">
+                        <label>기본 매도 트리거 (%)</label>
+                        <input type="number" step="0.1" id="edit-sell-pct" class="form-control" placeholder="10.0">
+                    </div>
+                    <div class="form-group">
+                        <label>기본 매수 금액/수량</label>
+                        <input type="number" id="edit-buy-amt" class="form-control" placeholder="500">
+                    </div>
+                </div>
+                
+                <div style="display: flex; justify-content: space-between; align-items: baseline; margin-top: 16px; margin-bottom: 8px;">
+                    <h3 style="margin: 0;">차수별 개별 설정 (Levels)</h3>
+                    <small style="color: var(--text-muted);">입력하지 않은 칸은 '기본 매매 설정'을 따릅니다.</small>
+                </div>
+                <div style="overflow-x: auto;">
+                    <table class="history-table" style="margin-bottom: 12px; min-width: 400px;">
+                        <thead>
+                            <tr>
+                                <th>차수 (Lv)</th>
+                                <th>매수 트리거 (%)</th>
+                                <th>매수 금액/수량</th>
+                                <th>매도 트리거 (%)</th>
+                                <th style="width: 40px;"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="levels-tbody">
+                        </tbody>
+                    </table>
+                </div>
+                <button id="add-level-btn" class="btn" style="border: 1px dashed var(--border); background: var(--bg); width: 100%;">+ 차수 추가</button>
+            </div>
+        </div>
 
         <div class="card">
             <h2>변경 사항 (Diff)</h2>
@@ -64,7 +160,7 @@
         </div>
     </div>
 
-    <script src="js/github-api.js?v=20260427-1"></script>
-    <script src="js/config-editor.js?v=20260427-1"></script>
+    <script src="js/github-api.js?v=20260427-6"></script>
+    <script src="js/config-editor.js?v=20260427-8"></script>
 </body>
 </html>

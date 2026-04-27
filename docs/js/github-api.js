@@ -9,7 +9,7 @@ class GitHubAPI {
 
     get headers() {
         return {
-            'Authorization': `token ${this.token}`,
+            'Authorization': `Bearer ${this.token}`,
             'Accept': 'application/vnd.github.v3+json',
             'Content-Type': 'application/json'
         };
@@ -17,7 +17,14 @@ class GitHubAPI {
 
     async getFile(path) {
         const res = await fetch(`${this.baseUrl}/contents/${path}`, { headers: this.headers });
-        if (!res.ok) throw new Error(`Failed to fetch file ${path}: ${res.statusText}`);
+        if (!res.ok) {
+            let errMsg = res.statusText;
+            try {
+                const errData = await res.json();
+                if (errData.message) errMsg = errData.message;
+            } catch(e) {}
+            throw new Error(`[${res.status}] ${errMsg}`);
+        }
         const data = await res.json();
         // Base64 decode utf-8
         const content = decodeURIComponent(escape(atob(data.content.replace(/\n/g, ''))));
