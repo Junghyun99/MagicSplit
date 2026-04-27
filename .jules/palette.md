@@ -1,0 +1,2 @@
+- The site uses Korean market color conventions (Red = Up/Profit, Blue = Down/Loss).
+- Accessibility (ARIA labels) is crucial for financial data.

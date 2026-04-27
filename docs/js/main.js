@@ -56,10 +56,17 @@
             for (const lot of lots) {
                 const pctClass = lot.pct_change >= 0 ? 'pct-positive' : 'pct-negative';
                 const pctStr = (lot.pct_change >= 0 ? '+' : '') + lot.pct_change.toFixed(1) + '%';
+                const ariaLabel = lot.pct_change >= 0
+                    ? `Profit of ${lot.pct_change.toFixed(1)}%`
+                    : `Loss of ${Math.abs(lot.pct_change).toFixed(1)}%`;
+                const arrowIcon = lot.pct_change >= 0
+                    ? '<span aria-hidden="true">▲</span>'
+                    : '<span aria-hidden="true">▼</span>';
+
                 lotsHtml += `
                     <li class="lot-item">
                         <span>${lot.buy_date} | ${lot.quantity}shares @$${lot.buy_price.toFixed(2)}</span>
-                        <span class="${pctClass}">${pctStr}</span>
+                        <span class="${pctClass}" aria-label="${ariaLabel}">${pctStr} ${arrowIcon}</span>
                     </li>`;
             }
 
