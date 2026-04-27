@@ -385,6 +385,15 @@ class MagicSplitEngine:
                         f"잔량 {new_qty})"
                     )
                 else:
+                    if exe.quantity > target_lot.quantity:
+                        # 수동 매도 등으로 lot 보유분보다 더 체결된 비정상 상태.
+                        # lot 은 제거하되 reconcile 단계에서 잡히도록 경고.
+                        self.logger.warning(
+                            f"[Position] Over-fill detected: {exe.ticker} sold "
+                            f"{exe.quantity}주 but lot {target_lot.lot_id} held "
+                            f"{target_lot.quantity}주 — removing lot. "
+                            f"scripts/reconcile_positions.py 로 정합성 확인 권장."
+                        )
                     updated.remove(target_lot)
                     self.logger.info(
                         f"[Position] Remove lot: {target_lot.lot_id} "

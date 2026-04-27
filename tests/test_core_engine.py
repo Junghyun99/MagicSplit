@@ -568,3 +568,44 @@ class TestUpdatePositionsPartialAndOrdered:
         updated = engine._update_positions(positions, signals, executions, "2026-04-10")
         assert len(updated) == 1
         assert updated[0].quantity == 5
+
+
+class TestUpdatePositionsOverFill:
+    def test_over_fill_warns_and_removes_lot(self, engine, mock_logger):
+        """exe.quantity > target_lot.quantity 시 warning 로그 후 lot 제거."""
+        positions = [
+            PositionLot("lot_001", "AAPL", 90.0, 3, "2026-04-01", level=1),
+        ]
+        signals = [
+            SplitSignal("AAPL", "lot_001", OrderAction.SELL, 3, 100.0,
+                        "Lv1 익절", 11.1, level=1),
+        ]
+        # 보유 3주인데 5주 체결된 비정상 시나리오 (수동 매도 등)
+        executions = [
+            TradeExecution("AAPL", OrderAction.SELL, 5, 100.0, 0.5,
+                           "2026-04-10", ExecutionStatus.PARTIAL),
+        ]
+
+        updated = engine._update_positions(positions, signals, executions, "2026-04-10")
+        assert len(updated) == 0
+        # over-fill warning 호출 확인
+        warns = [c.args[0] for c in mock_logger.warning.call_args_list]
+        assert any("Over-fill" in w for w in warns)
+
+    def test_normal_full_sell_no_over_fill_warning(self, engine, mock_logger):
+        """exe.quantity == lot.quantity 인 정상 전량 매도는 warning 없음."""
+        positions = [
+            PositionLot("lot_001", "AAPL", 90.0, 5, "2026-04-01", level=1),
+        ]
+        signals = [
+            SplitSignal("AAPL", "lot_001", OrderAction.SELL, 5, 100.0,
+                        "Lv1 익절", 11.1, level=1),
+        ]
+        executions = [
+            TradeExecution("AAPL", OrderAction.SELL, 5, 100.0, 0.5,
+                           "2026-04-10", ExecutionStatus.FILLED),
+        ]
+        updated = engine._update_positions(positions, signals, executions, "2026-04-10")
+        assert len(updated) == 0
+        warns = [c.args[0] for c in mock_logger.warning.call_args_list]
+        assert not any("Over-fill" in w for w in warns)

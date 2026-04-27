@@ -58,6 +58,23 @@ def resolve_timeout_outcome(
       - fill_qty == 0, !still_pending           → REJECTED
       - still_pending                           → ORDERED
     """
+    # 0) order_qty 검증. 0 이하면 정상 주문이 아니므로 즉시 REJECTED 로 종료해
+    #    이후 분류 로직(fill_qty>=order_qty 등)이 잘못 매칭되는 일을 방지.
+    if order_qty <= 0:
+        logger.warning(
+            f"{log_prefix} resolve_timeout_outcome called with order_qty={order_qty} "
+            f"(ODNO={odno}) — returning REJECTED without API calls"
+        )
+        return TimeoutOutcome(
+            classification="REJECTED",
+            fill_qty=0,
+            fill_price=0.0,
+            fill_fee=0.0,
+            cancel_ok=False,
+            still_pending=False,
+            detail="invalid_order_qty",
+        )
+
     # 1) 취소 시도. 예외/실패 시에도 체결/미체결 측정으로 분류는 가능하므로 진행
     cancel_ok = False
     try:

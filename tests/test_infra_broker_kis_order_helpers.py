@@ -297,3 +297,44 @@ class TestResolveTimeoutOutcome:
         assert outcome.fill_qty == 0
         warns = [c.args[0] for c in logger.warning.call_args_list]
         assert any("fill re-query error" in w for w in warns)
+
+
+class TestResolveTimeoutOutcomeDefensive:
+    """방어 코드: 비정상 입력 처리."""
+
+    def test_zero_order_qty_returns_rejected_without_calls(self):
+        """order_qty=0 이면 API 호출 없이 즉시 REJECTED 반환."""
+        cancel_fn = MagicMock()
+        pending_ids_fn = MagicMock()
+        fill_query_fn = MagicMock()
+        logger = MagicMock()
+
+        outcome = resolve_timeout_outcome(
+            odno="ZQ", order_qty=0,
+            cancel_fn=cancel_fn,
+            pending_ids_fn=pending_ids_fn,
+            fill_query_fn=fill_query_fn,
+            logger=logger,
+        )
+
+        assert outcome.classification == "REJECTED"
+        assert outcome.detail == "invalid_order_qty"
+        assert outcome.cancel_ok is False
+        # 어느 하나도 호출되어선 안 됨
+        cancel_fn.assert_not_called()
+        pending_ids_fn.assert_not_called()
+        fill_query_fn.assert_not_called()
+        # warning 로그 1회
+        assert any("invalid" in str(c) or "order_qty=0" in str(c)
+                   for c in logger.warning.call_args_list)
+
+    def test_negative_order_qty_also_rejected(self):
+        outcome = resolve_timeout_outcome(
+            odno="NQ", order_qty=-1,
+            cancel_fn=MagicMock(),
+            pending_ids_fn=MagicMock(),
+            fill_query_fn=MagicMock(),
+            logger=MagicMock(),
+        )
+        assert outcome.classification == "REJECTED"
+        assert outcome.detail == "invalid_order_qty"
