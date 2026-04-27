@@ -138,7 +138,7 @@ class TestRunBacktest:
             )
 
         # history.json에 매수 내역이 있어야 함
-        with open(os.path.join(output_dir, "history.json")) as f:
+        with open(os.path.join(output_dir, "history.json"), encoding='utf-8') as f:
             history = json.load(f)
         assert len(history) > 0
         first_exec = history[0]["executions"][0]
@@ -163,8 +163,8 @@ class TestRunBacktest:
             "global": {},
         }
         config_path = str(tmp_path / "config.json")
-        with open(config_path, "w") as f:
-            json.dump(config, f)
+        with open(config_path, "w", encoding='utf-8') as f:
+            json.dump(config, f, ensure_ascii=False)
 
         result = run_backtest(
             config_path=config_path,
@@ -193,7 +193,7 @@ class TestRunBacktest:
 
         assert result is not None
         # status.json에 포트폴리오 정보 존재
-        with open(os.path.join(output_dir, "status.json")) as f:
+        with open(os.path.join(output_dir, "status.json"), encoding='utf-8') as f:
             status = json.load(f)
         assert "portfolio" in status
 

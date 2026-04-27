@@ -57,7 +57,8 @@ class TestTradeHistory:
         repo.save_trade_history(executions, portfolio, "초기 매수")
 
         # 파일 확인
-        data = json.loads(open(repo.history_file, 'r').read())
+        with open(repo.history_file, 'r', encoding='utf-8') as f:
+            data = json.load(f)
         assert len(data) == 1
         assert data[0]["reason"] == "초기 매수"
         assert len(data[0]["executions"]) == 1
@@ -79,7 +80,8 @@ class TestTradeHistory:
         repo.save_trade_history(exe1, pf, "매수")
         repo.save_trade_history(exe2, pf, "매도")
 
-        data = json.loads(open(repo.history_file, 'r').read())
+        with open(repo.history_file, 'r', encoding='utf-8') as f:
+            data = json.load(f)
         assert len(data) == 2
 
 
@@ -105,7 +107,8 @@ class TestStatus:
 
         repo.update_status(portfolio, positions, "test")
 
-        data = json.loads(open(repo.status_file, 'r').read())
+        with open(repo.status_file, 'r', encoding='utf-8') as f:
+            data = json.load(f)
         assert "positions" in data
         assert "AAPL" in data["positions"]
         assert data["positions"]["AAPL"]["lot_count"] == 1
@@ -122,8 +125,8 @@ class TestStatus:
             {"lot_id": "lot_002", "ticker": "AAPL", "buy_price": 95.0,
              "quantity": 5, "buy_date": "2026-04-05"},
         ]
-        with open(repo.positions_file, 'w') as f:
-            json.dump(legacy_data, f)
+        with open(repo.positions_file, 'w', encoding='utf-8') as f:
+            json.dump(legacy_data, f, ensure_ascii=False)
 
         loaded = repo.load_positions()
         assert len(loaded) == 2

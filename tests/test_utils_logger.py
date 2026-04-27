@@ -34,21 +34,21 @@ class TestTradeLogger:
     def test_info(self, tmp_path):
         logger = TradeLogger(log_dir=str(tmp_path))
         logger.info("info message")
-        with open(logger.log_file, 'r') as f:
+        with open(logger.log_file, 'r', encoding='utf-8') as f:
             content = f.read()
         assert "info message" in content
 
     def test_warning(self, tmp_path):
         logger = TradeLogger(log_dir=str(tmp_path))
         logger.warning("warn message")
-        with open(logger.log_file, 'r') as f:
+        with open(logger.log_file, 'r', encoding='utf-8') as f:
             content = f.read()
         assert "warn message" in content
 
     def test_error(self, tmp_path):
         logger = TradeLogger(log_dir=str(tmp_path))
         logger.error("error message")
-        with open(logger.log_file, 'r') as f:
+        with open(logger.log_file, 'r', encoding='utf-8') as f:
             content = f.read()
         assert "error message" in content
 
