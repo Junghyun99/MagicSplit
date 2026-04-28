@@ -113,7 +113,9 @@ class MagicSplitEngine:
                     all_signals.extend(signals)
 
                     if not signals:
-                        self.logger.info(f"  [{rule.ticker}] 신호 없음. 스킵.")
+                        self._log_no_signal_status(
+                            rule, positions, portfolio, last_sell_prices,
+                        )
                         continue
 
                     # 3b. 주문 실행
@@ -284,6 +286,57 @@ class MagicSplitEngine:
         )
         self.logger.warning(msg)
         self._notify_alert(msg)
+
+    def _log_no_signal_status(
+        self,
+        rule: StockRule,
+        positions: List[PositionLot],
+        portfolio: Portfolio,
+        last_sell_prices: Optional[dict] = None,
+    ) -> None:
+        """신호 없음일 때 마지막 차수 현황을 한 줄로 요약 로깅한다.
+
+        매수가 대비 현재가/수익률과 매수·매도 임계치를 함께 보여주어
+        신호까지 얼마나 남았는지 직관적으로 파악할 수 있도록 한다.
+        """
+        ticker = rule.ticker
+        current_price = portfolio.current_prices.get(ticker, 0)
+        ticker_lots = [p for p in positions if p.ticker == ticker]
+
+        if current_price <= 0:
+            self.logger.info(f"  [{ticker}] 신호 없음 | 현재가 조회 실패")
+            return
+
+        if not ticker_lots:
+            msg = (
+                f"  [{ticker}] 신호 없음 | 보유 없음, "
+                f"현재 ${current_price:,.2f} (1차 진입 대기)"
+            )
+            last_sell = last_sell_prices.get(ticker) if last_sell_prices else None
+            if last_sell and last_sell > 0 and rule.reentry_guard_pct is not None:
+                pct_from_sell = (current_price - last_sell) / last_sell * 100
+                msg += (
+                    f" | 직전 매도가 ${last_sell:,.2f} 대비 {pct_from_sell:+.2f}% "
+                    f"(가드 {rule.reentry_guard_pct:+.2f}%)"
+                )
+            self.logger.info(msg)
+            return
+
+        last_lot = max(ticker_lots, key=lambda l: l.level)
+        profit_pct = (current_price - last_lot.buy_price) / last_lot.buy_price * 100
+        sell_threshold = rule.sell_threshold_at(last_lot.level)
+        buy_threshold = rule.buy_threshold_at(last_lot.level)
+        next_level = last_lot.level + 1
+
+        msg = (
+            f"  [{ticker}] 신호 없음 | Lv{last_lot.level} "
+            f"매수 ${last_lot.buy_price:,.2f} → 현재 ${current_price:,.2f} "
+            f"({profit_pct:+.2f}%) | 익절 +{sell_threshold:.1f}% / "
+            f"추매 {buy_threshold:.1f}%"
+        )
+        if next_level > rule.max_lots:
+            msg += f" (max_lots {rule.max_lots} 도달, 추매 불가)"
+        self.logger.info(msg)
 
     def _refresh_portfolio(self, old_portfolio: Portfolio) -> Portfolio:
         """종목 처리 후 포트폴리오(현금 잔고) 갱신."""

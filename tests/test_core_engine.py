@@ -609,3 +609,113 @@ class TestUpdatePositionsOverFill:
         assert len(updated) == 0
         warns = [c.args[0] for c in mock_logger.warning.call_args_list]
         assert not any("Over-fill" in w for w in warns)
+
+
+class TestNoSignalLog:
+    """신호 없음 로그가 마지막 차수/매수가/현재가/수익률/임계치를 보여주는지 확인."""
+
+    def test_logs_last_level_status_with_thresholds(self, engine, mock_logger):
+        """보유 lot이 있을 때: Lv, 매수가, 현재가, 수익률, 익절·추매 임계치 표시."""
+        rule = StockRule("AAPL", -5.0, 10.0, 500, 10)
+        positions = [
+            PositionLot("lot_001", "AAPL", 100.0, 5, "2026-04-01", level=1),
+            PositionLot("lot_002", "AAPL", 95.0, 5, "2026-04-05", level=2),
+        ]
+        portfolio = Portfolio(
+            total_cash=1000.0, holdings={"AAPL": 10},
+            current_prices={"AAPL": 97.0},
+        )
+        engine._log_no_signal_status(rule, positions, portfolio)
+        msgs = [c.args[0] for c in mock_logger.info.call_args_list]
+        assert len(msgs) == 1
+        msg = msgs[0]
+        assert "[AAPL]" in msg
+        assert "신호 없음" in msg
+        assert "Lv2" in msg
+        assert "$95.00" in msg
+        assert "$97.00" in msg
+        assert "+2.11%" in msg
+        assert "익절 +10.0%" in msg
+        assert "추매 -5.0%" in msg
+
+    def test_logs_no_position_waiting_initial(self, engine, mock_logger):
+        """보유 lot이 없을 때: 보유 없음 + 현재가 + 1차 진입 대기 표시."""
+        rule = StockRule("AAPL", -5.0, 10.0, 500, 10)
+        positions = []
+        portfolio = Portfolio(
+            total_cash=1000.0, holdings={},
+            current_prices={"AAPL": 100.0},
+        )
+        engine._log_no_signal_status(rule, positions, portfolio)
+        msgs = [c.args[0] for c in mock_logger.info.call_args_list]
+        assert len(msgs) == 1
+        assert "보유 없음" in msgs[0]
+        assert "$100.00" in msgs[0]
+        assert "1차 진입 대기" in msgs[0]
+
+    def test_logs_reentry_guard_distance_when_active(self, engine, mock_logger):
+        """재진입 가드가 설정된 경우 직전 매도가 대비 거리도 함께 표시."""
+        rule = StockRule(
+            "AAPL", -5.0, 10.0, 500, 10, reentry_guard_pct=-1.0,
+        )
+        portfolio = Portfolio(
+            total_cash=1000.0, holdings={},
+            current_prices={"AAPL": 99.5},
+        )
+        last_sell_prices = {"AAPL": 100.0}
+        engine._log_no_signal_status(rule, [], portfolio, last_sell_prices)
+        msg = mock_logger.info.call_args_list[0].args[0]
+        assert "직전 매도가 $100.00" in msg
+        assert "-0.50%" in msg
+        assert "가드 -1.00%" in msg
+
+    def test_logs_max_lots_reached_hint(self, engine, mock_logger):
+        """max_lots 도달 시 추매 불가 힌트 추가."""
+        rule = StockRule("AAPL", -5.0, 10.0, 500, max_lots=2)
+        positions = [
+            PositionLot("lot_001", "AAPL", 100.0, 5, "2026-04-01", level=1),
+            PositionLot("lot_002", "AAPL", 95.0, 5, "2026-04-05", level=2),
+        ]
+        portfolio = Portfolio(
+            total_cash=1000.0, holdings={"AAPL": 10},
+            current_prices={"AAPL": 96.0},
+        )
+        engine._log_no_signal_status(rule, positions, portfolio)
+        msg = mock_logger.info.call_args_list[0].args[0]
+        assert "max_lots 2 도달" in msg
+
+    def test_logs_price_unavailable(self, engine, mock_logger):
+        """현재가 조회 실패(0) 시 짧은 메시지."""
+        rule = StockRule("AAPL", -5.0, 10.0, 500, 10)
+        portfolio = Portfolio(
+            total_cash=1000.0, holdings={}, current_prices={"AAPL": 0.0},
+        )
+        engine._log_no_signal_status(rule, [], portfolio)
+        msg = mock_logger.info.call_args_list[0].args[0]
+        assert "현재가 조회 실패" in msg
+
+    def test_run_one_cycle_emits_enriched_no_signal_log(
+        self, mock_broker, mock_repo, mock_logger,
+    ):
+        """run_one_cycle 통합: 신호 없음일 때 enriched 로그가 호출된다."""
+        rules = [StockRule("AAPL", -5.0, 10.0, 500, 10)]
+        mock_broker.get_portfolio.return_value = Portfolio(
+            total_cash=10000.0, holdings={"AAPL": 5},
+            current_prices={"AAPL": 100.0},
+        )
+        mock_broker.fetch_current_prices.return_value = {"AAPL": 100.0}
+        mock_repo.load_positions.return_value = [
+            PositionLot("lot_001", "AAPL", 99.0, 5, "2026-04-01", level=1),
+        ]
+        mock_repo.load_last_sell_prices.return_value = {}
+        eng = MagicSplitEngine(
+            broker=mock_broker, repo=mock_repo,
+            logger=mock_logger, stock_rules=rules,
+        )
+        eng.run_one_cycle(sim_date="2026-04-10")
+        msgs = [c.args[0] for c in mock_logger.info.call_args_list]
+        assert any(
+            "[AAPL]" in m and "신호 없음" in m and "Lv1" in m
+            and "$99.00" in m and "$100.00" in m
+            for m in msgs
+        )
