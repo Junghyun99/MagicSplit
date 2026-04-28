@@ -126,26 +126,62 @@ class SplitEvaluator:
 
         if trailing_drop is not None:
             # 트레일링 스톱 로직
-            # 1. 활성화 조건 충족 (+10% 도달) 또는 이미 활성화된 상태
+            # 1. 활성화 조건 충족 (매도 임계치 도달) 또는 이미 활성화된 상태
             if pct_change >= sell_threshold or last_lot.trailing_highest_price is not None:
+                was_inactive = last_lot.trailing_highest_price is None
+
                 # 2. 최고가 갱신
-                if last_lot.trailing_highest_price is None or current_price > last_lot.trailing_highest_price:
+                if was_inactive or current_price > last_lot.trailing_highest_price:
+                    old_highest = last_lot.trailing_highest_price
                     last_lot.trailing_highest_price = current_price
+                    stop_price = current_price * (1 - trailing_drop / 100)
+                    if self._logger:
+                        if was_inactive:
+                            self._logger.info(
+                                f"[{rule.ticker}] Lv{last_lot.level}: "
+                                f"🔔 트레일링 스톱 활성화 "
+                                f"(매도조건 +{sell_threshold:.0f}% 도달, "
+                                f"현재가 ${current_price:,.0f}, "
+                                f"스톱가 ${stop_price:,.0f}, "
+                                f"하락허용 {trailing_drop}%)"
+                            )
+                        else:
+                            self._logger.info(
+                                f"[{rule.ticker}] Lv{last_lot.level}: "
+                                f"📈 트레일링 고점 갱신 "
+                                f"${old_highest:,.0f} → ${current_price:,.0f} "
+                                f"(매수가 대비 {pct_change:+.1f}%, "
+                                f"스톱가 ${stop_price:,.0f})"
+                            )
+                else:
+                    # 고점 미갱신: 보합 또는 소폭 하락 중 (추적 상태 로그)
+                    drop_pct_now = (last_lot.trailing_highest_price - current_price) / last_lot.trailing_highest_price * 100
+                    stop_price = last_lot.trailing_highest_price * (1 - trailing_drop / 100)
                     if self._logger:
                         self._logger.info(
-                            f"[{rule.ticker}] Lv{last_lot.level}: 트레일링 스톱 활성/갱신 "
-                            f"(최고가 ${current_price:.2f}, 하락 허용치 {trailing_drop}%)"
+                            f"[{rule.ticker}] Lv{last_lot.level}: "
+                            f"⏳ 트레일링 추적 중 "
+                            f"(현재가 ${current_price:,.0f}, "
+                            f"고점 ${last_lot.trailing_highest_price:,.0f}, "
+                            f"고점대비 -{drop_pct_now:.1f}%, "
+                            f"스톱가 ${stop_price:,.0f})"
                         )
-                
+
                 # 3. 고점 대비 하락폭 계산
                 drop_pct = (last_lot.trailing_highest_price - current_price) / last_lot.trailing_highest_price * 100
-                
+
                 # 4. 하락 허용치 도달 시 매도
                 if drop_pct >= trailing_drop:
+                    profit_pct = (current_price - last_lot.buy_price) / last_lot.buy_price * 100
                     if self._logger:
                         self._logger.info(
-                            f"[{rule.ticker}] Lv{last_lot.level}: 매수가 ${last_lot.buy_price:.2f} → "
-                            f"현재가 ${current_price:.2f} (고점 대비 -{drop_pct:.2f}%) → 트레일링 스톱 매도"
+                            f"[{rule.ticker}] Lv{last_lot.level}: "
+                            f"🔻 트레일링 스톱 매도 "
+                            f"(매수가 ${last_lot.buy_price:,.0f} → "
+                            f"고점 ${last_lot.trailing_highest_price:,.0f} → "
+                            f"현재가 ${current_price:,.0f}, "
+                            f"고점대비 -{drop_pct:.1f}%, "
+                            f"수익률 {profit_pct:+.1f}%)"
                         )
                     return SplitSignal(
                         ticker=rule.ticker,
