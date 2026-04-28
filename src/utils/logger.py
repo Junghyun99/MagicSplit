@@ -9,12 +9,12 @@ from src.core.interfaces import ILogger
 class TradeLogger(ILogger):
     def __init__(self, log_dir: str = "logs", run_number: str | None = None):
         os.makedirs(log_dir, exist_ok=True)
-        suffix = f"_run{run_number}" if run_number else ""
+        suffix = f"_{run_number}" if run_number else ""
         self.log_file = os.path.join(
             log_dir, f"{datetime.now().strftime('%Y-%m-%d')}{suffix}.log"
         )
 
-        self.logger = logging.getLogger("MagicSplit")
+        self.logger = logging.getLogger(f"MagicSplit_{run_number}" if run_number else "MagicSplit")
         self.logger.setLevel(logging.INFO)
 
         # 중복 핸들러 방지

@@ -67,6 +67,7 @@ jobs:
             end_date='${{ inputs.end }}',
             initial_cash=float('${{ inputs.initial_cash }}'),
             market_type=os.environ.get('MARKET_VAL'),
+            run_number='${{ github.run_number }}_' + os.environ.get('MARKET_VAL'),
         )
         if result:
             pf = result.final_portfolio

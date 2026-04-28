@@ -1,6 +1,7 @@
 # src/backtest/runner.py
 import shutil
 import pandas as pd
+from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Optional
 
@@ -47,6 +48,9 @@ def run_backtest(
     Returns:
         마지막 거래일의 DayResult, 또는 데이터가 없으면 None
     """
+    if run_number is None:
+        run_number = f"{datetime.now().strftime('%H%M%S')}_{market_type}"
+
     logger = TradeLogger(log_dir="logs/backtest", run_number=run_number)
 
     # 1. 설정 로드
