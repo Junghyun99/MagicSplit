@@ -2,27 +2,31 @@
 
 ## 프로젝트 개요
 종목별 매수가 대비 %에 따라 분할 매수(물타기) 또는 매도(익절)를 자동 실행하는 Python 트레이딩 봇.
-차수(Level) 시스템으로 매수/매도를 계단식으로 관리한다.
+차수(Level) 시스템으로 매수/매도를 계단식으로 관리하며, 트레일링 스톱과 동적 재매수 기준으로 변동성에 대응한다.
 
 ## 기술 스택
 - Python 3.10
 - pandas, requests, python-dotenv, PyYAML
+- yfinance, pyarrow (백테스트 시세 캐시)
 - pytest + pytest-cov (테스트)
 
 ## 주요 명령어
-- 테스트: `pytest --cov=src --cov-report=term-missing --cov-fail-under=80 tests/`
-- 봇 실행: `python -m src.main`
+운영성 작업(봇 실행/백테스트/수동매매/시세 다운로드)은 GitHub Actions 워크플로우로 실행한다 (CI/CD 섹션 참조).
+로컬에서 자주 쓰는 명령어:
 - 의존성 설치: `pip install -r requirements.txt`
+- 테스트: `pytest` (커버리지 게이트 포함 풀 실행은 `python-test.yml` 참조)
+- 봇 1회 실행: `python -m src.main` (`CONFIG_JSON_PATH`로 국내/해외 선택)
+- 포지션 정합: `python scripts/reconcile_positions.py`
 
 ## 프로젝트 구조
 ```
 src/
-├── main.py              # MagicSplitBot 진입점 (단일 계좌, 국내/해외 독립 운용)
+├── main.py              # MagicSplitBot 진입점 (단일 계좌, CONFIG_JSON_PATH로 국내/해외 선택)
 ├── config.py            # 티커-거래소 매핑, 인프라 설정, KIS 인증
-├── strategy_config.py   # config.json 로더 → StockRule 리스트
+├── strategy_config.py   # config_*.json + presets.json 로더 → StockRule 리스트
 ├── core/
 │   ├── engine/          # base (MagicSplitEngine), registry
-│   ├── logic/           # split_evaluator (분할 매수/매도 판단)
+│   ├── logic/           # split_evaluator (분할 매수/매도, 트레일링 스톱, 동적 재매수)
 │   ├── interfaces.py    # 추상 인터페이스 정의
 │   └── models.py        # 도메인 모델 (PositionLot, StockRule, SplitSignal 등)
 ├── infra/
@@ -30,10 +34,16 @@ src/
 │   ├── data.py          # YFinanceLoader (선택적)
 │   ├── repo.py          # JsonRepository (positions.json, status.json, history.json)
 │   └── notifier.py      # SlackNotifier, TelegramNotifier
+├── backtest/            # runner, cache (parquet), fetcher (yfinance), components
 ├── utils/               # TradeLogger
+scripts/
+├── manual_trade.py      # Actions/CLI에서 수동 매수·매도 주문
+└── reconcile_positions.py  # 실계좌 잔고와 positions.json 정합
 tests/                   # 테스트 (80% 커버리지 요구)
-docs/                    # 웹 대시보드 및 데이터 저장
-config.json              # 종목별 매매 규칙 (GitHub Pages UI에서 수정)
+docs/                    # 웹 대시보드(GitHub Pages) + config-editor + data 저장
+config_domestic.json     # 국내 종목 매매 규칙
+config_overseas.json     # 해외 종목 매매 규칙
+presets.json             # 차수별 배열 공유 프리셋 (선택)
 ```
 
 ## 아키텍처 규칙
@@ -41,15 +51,29 @@ config.json              # 종목별 매매 규칙 (GitHub Pages UI에서 수정
 - core/interfaces.py에 정의된 추상 인터페이스를 통해 의존성 주입
 - 엔진 레지스트리 패턴: `@register_engine` 데코레이터로 엔진 등록
 - 단일 계좌: .env의 KIS 인증으로 국내/해외 브로커 각각 생성
-- 국내/해외 독립 운용: 별도 브로커, 저장소, 엔진 인스턴스로 완전 분리
+- 국내/해외 독립 운용: `CONFIG_JSON_PATH`로 어느 마켓을 돌릴지 선택, 별도 브로커·저장소·엔진 인스턴스로 완전 분리
 - 종목별 순차 실행: 평가 → 주문 → 포지션 반영 → 다음 종목
 
 ## 핵심 알고리즘 (MagicSplit)
-- 종목별 `config.json`에 정의된 매매 규칙(StockRule)에 따라 동작
-- 차수(Level) 시스템: 각 매수 건(PositionLot)에 level(1~100)을 부여하여 추적
+- 종목별 `config_domestic.json` / `config_overseas.json`에 정의된 매매 규칙(StockRule)에 따라 동작
+- 차수(Level) 시스템: 각 매수 건(PositionLot)에 level(1~max_lots)을 부여하여 추적
 - **마지막 차수만 평가**: 가장 높은 level의 매수가 대비 현재가 %로 판단
   - 상승 M% 이상 → 마지막 차수 매도 (차수 감소, 예: Lv3→Lv2가 마지막)
   - 하락 N% 이하 → 다음 차수 매수 (차수 증가, 예: Lv3→Lv4 추가)
+- **트레일링 스톱** (`trailing_drop_pct` 설정 시):
+  - 매도 임계치(`sell_threshold_pct`) 도달 시 활성화 → `trailing_highest_price` 추적 시작
+  - 이후 고점 갱신을 따라가며, 고점 대비 `trailing_drop_pct`% 하락하면 매도
+  - 최소 익절을 보장하면서 추가 상승분도 가져가는 구조
+- **동적 재매수 기준 (기준가 상향)**:
+  - 직전 매도가(last_sell_price)가 마지막 차수 매수가보다 높으면 매도가를 매수 기준으로 사용
+  - 트레일링 스톱으로 평소보다 높게 매도된 뒤, 원래 그리드까지 기다리지 않고 매도가 대비 하락 시 즉시 재매수
+- **재진입 가드** (`reentry_guard_pct`):
+  - 전량 청산 후 직전 매도가 대비 X% 하락해야 1차수 재진입 허용 (음수, 예: -0.1)
+  - None이면 가드 비활성 (다음 사이클 즉시 재진입 가능)
+- **차수별 배열 + presets.json**:
+  - `buy_threshold_pcts` / `sell_threshold_pcts` / `buy_amounts` / `trailing_drop_pcts` 배열로 차수마다 다른 임계치/금액 지정 가능
+  - 배열 길이가 차수보다 짧으면 마지막 값으로 clamp
+  - `presets.json`에 공통 설정을 정의하고 종목에서 `"preset": "이름"`으로 참조 (종목 필드가 preset을 override)
 - **한 사이클에 한 종목당 매도 OR 매수 중 하나만** 실행 (매도 우선)
 - 종목별 순차 실행: 한 종목 평가→주문→반영 후 다음 종목
 - 여러 종목 간 매도 신호를 먼저 실행한 후 매수 진행 (자금 부족 방지)
@@ -61,12 +85,17 @@ config.json              # 종목별 매매 규칙 (GitHub Pages UI에서 수정
 - `KIS_ACC_NO` - KIS 계좌번호
 - `IS_LIVE` - 실거래 여부 ("true" / "false", 기본값: "false")
 - `SLACK_WEBHOOK_URL` - Slack 알림
-- `CONFIG_JSON_PATH` - config.json 경로 (기본값: "config.json")
+- `CONFIG_JSON_PATH` - 매매 규칙 파일 경로 (기본값: `config_overseas.json`. 국내는 `config_domestic.json` 지정)
+- `PRESETS_JSON_PATH` - 프리셋 파일 경로 (선택, 기본은 config 파일과 같은 디렉토리의 `presets.json`)
 
 ## CI/CD
 GitHub Actions 워크플로우:
-- `python-test.yml` - main 브랜치 Push/PR 시 단위 테스트 (80% 커버리지 필수)
-- `trading-bot.yml` - 크론 스케줄: 매매 봇 자동 실행
+- `python-test.yml` - main 브랜치 Push/PR 시 단위 테스트 (80% 커버리지 필수, 실패 시 Slack 알림)
+- `trading-bot.yml` - 해외 매매 봇 (현재 스케줄 비활성, manual dispatch). `CONFIG_JSON_PATH=config_overseas.json`
+- `trading-bot-domestic.yml` - 국내 매매 봇 (현재 스케줄 비활성, manual dispatch). `CONFIG_JSON_PATH=config_domestic.json`
+- `manual-trade.yml` - Actions UI에서 수동 매수/매도 주문 (market_type, ticker, action, quantity 입력)
+- `run-backtest.yml` - 백테스트 실행 (시작/종료일, 초기 자본, 마켓 타입 선택). 결과를 `docs/data/backtest/`에 커밋
+- `download-market-data.yml` - yfinance로 종목 시세를 받아 `src/backtest/cache/`에 parquet 캐시로 커밋
 
 ## 워크플로우 규칙
 - 코드 수정 요청 시 작업 브랜치를 생성하여 커밋하고 PR 생성까지 완료한다
