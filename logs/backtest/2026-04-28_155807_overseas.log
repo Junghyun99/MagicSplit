@@ -1,0 +1,287 @@
+2026-04-28 15:58:07,926 [INFO] --- 데이터 다운로드: ['AAPL'] (2024-01-02 ~ 2024-01-15) ---
+2026-04-28 15:58:07,927 [INFO] --- 백테스트 시작 (10 거래일) ---
+2026-04-28 15:58:07,927 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-04-28 15:58:07,927 [INFO] Fetching real-time prices from Broker...
+2026-04-28 15:58:07,928 [INFO] Portfolio: Cash=$10,000, Value=$10,000
+2026-04-28 15:58:07,928 [INFO] >>> Step 2: Load Positions
+2026-04-28 15:58:07,928 [INFO] Loaded 0 position lot(s)
+2026-04-28 15:58:07,928 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-04-28 15:58:07,928 [INFO] >>> Processing AAPL
+2026-04-28 15:58:07,928 [INFO] [AAPL] 보유 lot 없음 → 초기 매수 Lv1 5주 @$100.00
+2026-04-28 15:58:07,928 [INFO] Executing 1 order(s)...
+2026-04-28 15:58:07,928 [INFO] [FILLED] BUY AAPL: 5 @ $100.10 (Fee: $1.25)
+2026-04-28 15:58:07,928 [INFO] [Position] New lot: lot_20260428_155807_AAPL_001 Lv1 AAPL 5주 @$100.10
+2026-04-28 15:58:07,928 [INFO] >>> Step 6: Persist
+2026-04-28 15:58:07,930 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-04-28 15:58:07,931 [INFO] Fetching real-time prices from Broker...
+2026-04-28 15:58:07,931 [INFO] Portfolio: Cash=$9,498, Value=$9,988
+2026-04-28 15:58:07,931 [INFO] >>> Step 2: Load Positions
+2026-04-28 15:58:07,931 [INFO] Loaded 1 position lot(s)
+2026-04-28 15:58:07,931 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-04-28 15:58:07,931 [INFO] >>> Processing AAPL
+2026-04-28 15:58:07,931 [INFO]   [AAPL] 신호 없음 | Lv1 매수 $100.10 → 현재 $98.00 (-2.10%) | 익절 +10.0% / 추매 -5.0%
+2026-04-28 15:58:07,931 [INFO] >>> Step 6: Persist
+2026-04-28 15:58:07,932 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-04-28 15:58:07,933 [INFO] Fetching real-time prices from Broker...
+2026-04-28 15:58:07,933 [INFO] Portfolio: Cash=$9,498, Value=$9,978
+2026-04-28 15:58:07,933 [INFO] >>> Step 2: Load Positions
+2026-04-28 15:58:07,933 [INFO] Loaded 1 position lot(s)
+2026-04-28 15:58:07,933 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-04-28 15:58:07,933 [INFO] >>> Processing AAPL
+2026-04-28 15:58:07,933 [INFO]   [AAPL] 신호 없음 | Lv1 매수 $100.10 → 현재 $96.00 (-4.10%) | 익절 +10.0% / 추매 -5.0%
+2026-04-28 15:58:07,933 [INFO] >>> Step 6: Persist
+2026-04-28 15:58:07,934 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-04-28 15:58:07,934 [INFO] Fetching real-time prices from Broker...
+2026-04-28 15:58:07,934 [INFO] Portfolio: Cash=$9,498, Value=$9,968
+2026-04-28 15:58:07,935 [INFO] >>> Step 2: Load Positions
+2026-04-28 15:58:07,935 [INFO] Loaded 1 position lot(s)
+2026-04-28 15:58:07,935 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-04-28 15:58:07,935 [INFO] >>> Processing AAPL
+2026-04-28 15:58:07,935 [INFO] [AAPL] Lv1 매수가 $100.10 대비 -6.1% → 추가 매수 Lv2 5주 @$94.00
+2026-04-28 15:58:07,935 [INFO] Executing 1 order(s)...
+2026-04-28 15:58:07,935 [INFO] [FILLED] BUY AAPL: 5 @ $94.09 (Fee: $1.18)
+2026-04-28 15:58:07,935 [INFO] [Position] New lot: lot_20260428_155807_AAPL_002 Lv2 AAPL 5주 @$94.09
+2026-04-28 15:58:07,935 [INFO] >>> Step 6: Persist
+2026-04-28 15:58:07,937 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-04-28 15:58:07,937 [INFO] Fetching real-time prices from Broker...
+2026-04-28 15:58:07,937 [INFO] Portfolio: Cash=$9,027, Value=$9,947
+2026-04-28 15:58:07,937 [INFO] >>> Step 2: Load Positions
+2026-04-28 15:58:07,937 [INFO] Loaded 2 position lot(s)
+2026-04-28 15:58:07,937 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-04-28 15:58:07,937 [INFO] >>> Processing AAPL
+2026-04-28 15:58:07,937 [INFO]   [AAPL] 신호 없음 | Lv2 매수 $94.09 → 현재 $92.00 (-2.22%) | 익절 +10.0% / 추매 -5.0%
+2026-04-28 15:58:07,937 [INFO] >>> Step 6: Persist
+2026-04-28 15:58:07,939 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-04-28 15:58:07,939 [INFO] Fetching real-time prices from Broker...
+2026-04-28 15:58:07,939 [INFO] Portfolio: Cash=$9,027, Value=$9,927
+2026-04-28 15:58:07,939 [INFO] >>> Step 2: Load Positions
+2026-04-28 15:58:07,939 [INFO] Loaded 2 position lot(s)
+2026-04-28 15:58:07,939 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-04-28 15:58:07,939 [INFO] >>> Processing AAPL
+2026-04-28 15:58:07,939 [INFO]   [AAPL] 신호 없음 | Lv2 매수 $94.09 → 현재 $90.00 (-4.35%) | 익절 +10.0% / 추매 -5.0%
+2026-04-28 15:58:07,939 [INFO] >>> Step 6: Persist
+2026-04-28 15:58:07,940 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-04-28 15:58:07,941 [INFO] Fetching real-time prices from Broker...
+2026-04-28 15:58:07,941 [INFO] Portfolio: Cash=$9,027, Value=$9,907
+2026-04-28 15:58:07,941 [INFO] >>> Step 2: Load Positions
+2026-04-28 15:58:07,941 [INFO] Loaded 2 position lot(s)
+2026-04-28 15:58:07,941 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-04-28 15:58:07,941 [INFO] >>> Processing AAPL
+2026-04-28 15:58:07,941 [INFO] [AAPL] Lv2 매수가 $94.09 대비 -6.5% → 추가 매수 Lv3 5주 @$88.00
+2026-04-28 15:58:07,941 [INFO] Executing 1 order(s)...
+2026-04-28 15:58:07,941 [INFO] [FILLED] BUY AAPL: 5 @ $88.09 (Fee: $1.10)
+2026-04-28 15:58:07,941 [INFO] [Position] New lot: lot_20260428_155807_AAPL_003 Lv3 AAPL 5주 @$88.09
+2026-04-28 15:58:07,942 [INFO] >>> Step 6: Persist
+2026-04-28 15:58:07,943 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-04-28 15:58:07,943 [INFO] Fetching real-time prices from Broker...
+2026-04-28 15:58:07,943 [INFO] Portfolio: Cash=$8,585, Value=$9,875
+2026-04-28 15:58:07,944 [INFO] >>> Step 2: Load Positions
+2026-04-28 15:58:07,944 [INFO] Loaded 3 position lot(s)
+2026-04-28 15:58:07,944 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-04-28 15:58:07,944 [INFO] >>> Processing AAPL
+2026-04-28 15:58:07,944 [INFO]   [AAPL] 신호 없음 | Lv3 매수 $88.09 → 현재 $86.00 (-2.37%) | 익절 +10.0% / 추매 -5.0%
+2026-04-28 15:58:07,944 [INFO] >>> Step 6: Persist
+2026-04-28 15:58:07,945 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-04-28 15:58:07,945 [INFO] Fetching real-time prices from Broker...
+2026-04-28 15:58:07,945 [INFO] Portfolio: Cash=$8,585, Value=$9,845
+2026-04-28 15:58:07,945 [INFO] >>> Step 2: Load Positions
+2026-04-28 15:58:07,946 [INFO] Loaded 3 position lot(s)
+2026-04-28 15:58:07,946 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-04-28 15:58:07,946 [INFO] >>> Processing AAPL
+2026-04-28 15:58:07,946 [INFO]   [AAPL] 신호 없음 | Lv3 매수 $88.09 → 현재 $84.00 (-4.64%) | 익절 +10.0% / 추매 -5.0%
+2026-04-28 15:58:07,946 [INFO] >>> Step 6: Persist
+2026-04-28 15:58:07,947 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-04-28 15:58:07,947 [INFO] Fetching real-time prices from Broker...
+2026-04-28 15:58:07,947 [INFO] Portfolio: Cash=$8,585, Value=$9,815
+2026-04-28 15:58:07,947 [INFO] >>> Step 2: Load Positions
+2026-04-28 15:58:07,947 [INFO] Loaded 3 position lot(s)
+2026-04-28 15:58:07,948 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-04-28 15:58:07,948 [INFO] >>> Processing AAPL
+2026-04-28 15:58:07,948 [INFO] [AAPL] Lv3 매수가 $88.09 대비 -6.9% → 추가 매수 Lv4 6주 @$82.00
+2026-04-28 15:58:07,948 [INFO] Executing 1 order(s)...
+2026-04-28 15:58:07,948 [INFO] [FILLED] BUY AAPL: 6 @ $82.08 (Fee: $1.23)
+2026-04-28 15:58:07,948 [INFO] [Position] New lot: lot_20260428_155807_AAPL_004 Lv4 AAPL 6주 @$82.08
+2026-04-28 15:58:07,948 [INFO] >>> Step 6: Persist
+2026-04-28 15:58:07,950 [INFO] --- 백테스트 완료 ---
+2026-04-28 15:58:07,950 [INFO] 최종: Cash=$8,091, Value=$9,813
+2026-04-28 15:58:07,953 [INFO] --- 데이터 다운로드: ['AAPL'] (2024-01-02 ~ 2024-01-08) ---
+2026-04-28 15:58:07,954 [INFO] --- 백테스트 시작 (5 거래일) ---
+2026-04-28 15:58:07,954 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-04-28 15:58:07,954 [INFO] Fetching real-time prices from Broker...
+2026-04-28 15:58:07,954 [INFO] Portfolio: Cash=$10,000, Value=$10,000
+2026-04-28 15:58:07,955 [INFO] >>> Step 2: Load Positions
+2026-04-28 15:58:07,955 [INFO] Loaded 0 position lot(s)
+2026-04-28 15:58:07,955 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-04-28 15:58:07,955 [INFO] >>> Processing AAPL
+2026-04-28 15:58:07,955 [INFO] [AAPL] 보유 lot 없음 → 초기 매수 Lv1 5주 @$100.00
+2026-04-28 15:58:07,955 [INFO] Executing 1 order(s)...
+2026-04-28 15:58:07,955 [INFO] [FILLED] BUY AAPL: 5 @ $100.10 (Fee: $1.25)
+2026-04-28 15:58:07,955 [INFO] [Position] New lot: lot_20260428_155807_AAPL_001 Lv1 AAPL 5주 @$100.10
+2026-04-28 15:58:07,955 [INFO] >>> Step 6: Persist
+2026-04-28 15:58:07,956 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-04-28 15:58:07,956 [INFO] Fetching real-time prices from Broker...
+2026-04-28 15:58:07,957 [INFO] Portfolio: Cash=$9,498, Value=$9,998
+2026-04-28 15:58:07,957 [INFO] >>> Step 2: Load Positions
+2026-04-28 15:58:07,957 [INFO] Loaded 1 position lot(s)
+2026-04-28 15:58:07,957 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-04-28 15:58:07,957 [INFO] >>> Processing AAPL
+2026-04-28 15:58:07,957 [INFO]   [AAPL] 신호 없음 | Lv1 매수 $100.10 → 현재 $100.00 (-0.10%) | 익절 +10.0% / 추매 -5.0%
+2026-04-28 15:58:07,957 [INFO] >>> Step 6: Persist
+2026-04-28 15:58:07,958 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-04-28 15:58:07,958 [INFO] Fetching real-time prices from Broker...
+2026-04-28 15:58:07,958 [INFO] Portfolio: Cash=$9,498, Value=$9,998
+2026-04-28 15:58:07,958 [INFO] >>> Step 2: Load Positions
+2026-04-28 15:58:07,958 [INFO] Loaded 1 position lot(s)
+2026-04-28 15:58:07,959 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-04-28 15:58:07,959 [INFO] >>> Processing AAPL
+2026-04-28 15:58:07,959 [INFO]   [AAPL] 신호 없음 | Lv1 매수 $100.10 → 현재 $100.00 (-0.10%) | 익절 +10.0% / 추매 -5.0%
+2026-04-28 15:58:07,959 [INFO] >>> Step 6: Persist
+2026-04-28 15:58:07,960 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-04-28 15:58:07,960 [INFO] Fetching real-time prices from Broker...
+2026-04-28 15:58:07,960 [INFO] Portfolio: Cash=$9,498, Value=$9,998
+2026-04-28 15:58:07,960 [INFO] >>> Step 2: Load Positions
+2026-04-28 15:58:07,960 [INFO] Loaded 1 position lot(s)
+2026-04-28 15:58:07,960 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-04-28 15:58:07,961 [INFO] >>> Processing AAPL
+2026-04-28 15:58:07,961 [INFO]   [AAPL] 신호 없음 | Lv1 매수 $100.10 → 현재 $100.00 (-0.10%) | 익절 +10.0% / 추매 -5.0%
+2026-04-28 15:58:07,961 [INFO] >>> Step 6: Persist
+2026-04-28 15:58:07,962 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-04-28 15:58:07,962 [INFO] Fetching real-time prices from Broker...
+2026-04-28 15:58:07,962 [INFO] Portfolio: Cash=$9,498, Value=$9,998
+2026-04-28 15:58:07,962 [INFO] >>> Step 2: Load Positions
+2026-04-28 15:58:07,962 [INFO] Loaded 1 position lot(s)
+2026-04-28 15:58:07,962 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-04-28 15:58:07,962 [INFO] >>> Processing AAPL
+2026-04-28 15:58:07,962 [INFO]   [AAPL] 신호 없음 | Lv1 매수 $100.10 → 현재 $100.00 (-0.10%) | 익절 +10.0% / 추매 -5.0%
+2026-04-28 15:58:07,963 [INFO] >>> Step 6: Persist
+2026-04-28 15:58:07,963 [INFO] --- 백테스트 완료 ---
+2026-04-28 15:58:07,963 [INFO] 최종: Cash=$9,498, Value=$9,998
+2026-04-28 15:58:07,966 [WARNING] 'overseas' 마켓에 해당하는 종목이 없습니다.
+2026-04-28 15:58:07,969 [INFO] --- 데이터 다운로드: ['AAPL', 'MSFT'] (2024-01-02 ~ 2024-01-15) ---
+2026-04-28 15:58:07,970 [INFO] --- 백테스트 시작 (10 거래일) ---
+2026-04-28 15:58:07,970 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-04-28 15:58:07,970 [INFO] Fetching real-time prices from Broker...
+2026-04-28 15:58:07,970 [INFO] Portfolio: Cash=$10,000, Value=$10,000
+2026-04-28 15:58:07,970 [INFO] >>> Step 2: Load Positions
+2026-04-28 15:58:07,970 [INFO] Loaded 0 position lot(s)
+2026-04-28 15:58:07,970 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-04-28 15:58:07,970 [INFO] >>> Processing AAPL
+2026-04-28 15:58:07,971 [INFO] [AAPL] 보유 lot 없음 → 초기 매수 Lv1 3주 @$100.00
+2026-04-28 15:58:07,971 [INFO] Executing 1 order(s)...
+2026-04-28 15:58:07,971 [INFO] [FILLED] BUY AAPL: 3 @ $100.10 (Fee: $0.75)
+2026-04-28 15:58:07,971 [INFO] [Position] New lot: lot_20260428_155807_AAPL_001 Lv1 AAPL 3주 @$100.10
+2026-04-28 15:58:07,971 [INFO] >>> Processing MSFT
+2026-04-28 15:58:07,971 [INFO] [MSFT] 보유 lot 없음 → 초기 매수 Lv1 3주 @$100.00
+2026-04-28 15:58:07,971 [INFO] Executing 1 order(s)...
+2026-04-28 15:58:07,971 [INFO] [FILLED] BUY MSFT: 3 @ $100.10 (Fee: $0.75)
+2026-04-28 15:58:07,971 [INFO] [Position] New lot: lot_20260428_155807_MSFT_001 Lv1 MSFT 3주 @$100.10
+2026-04-28 15:58:07,971 [INFO] >>> Step 6: Persist
+2026-04-28 15:58:07,973 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-04-28 15:58:07,973 [INFO] Fetching real-time prices from Broker...
+2026-04-28 15:58:07,973 [INFO] Portfolio: Cash=$9,398, Value=$9,992
+2026-04-28 15:58:07,973 [INFO] >>> Step 2: Load Positions
+2026-04-28 15:58:07,973 [INFO] Loaded 2 position lot(s)
+2026-04-28 15:58:07,973 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-04-28 15:58:07,973 [INFO] >>> Processing AAPL
+2026-04-28 15:58:07,973 [INFO]   [AAPL] 신호 없음 | Lv1 매수 $100.10 → 현재 $99.00 (-1.10%) | 익절 +10.0% / 추매 -5.0%
+2026-04-28 15:58:07,974 [INFO] >>> Processing MSFT
+2026-04-28 15:58:07,974 [INFO]   [MSFT] 신호 없음 | Lv1 매수 $100.10 → 현재 $99.00 (-1.10%) | 익절 +10.0% / 추매 -5.0%
+2026-04-28 15:58:07,974 [INFO] >>> Step 6: Persist
+2026-04-28 15:58:07,975 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-04-28 15:58:07,975 [INFO] Fetching real-time prices from Broker...
+2026-04-28 15:58:07,975 [INFO] Portfolio: Cash=$9,398, Value=$9,986
+2026-04-28 15:58:07,975 [INFO] >>> Step 2: Load Positions
+2026-04-28 15:58:07,975 [INFO] Loaded 2 position lot(s)
+2026-04-28 15:58:07,976 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-04-28 15:58:07,976 [INFO] >>> Processing AAPL
+2026-04-28 15:58:07,976 [INFO]   [AAPL] 신호 없음 | Lv1 매수 $100.10 → 현재 $98.00 (-2.10%) | 익절 +10.0% / 추매 -5.0%
+2026-04-28 15:58:07,976 [INFO] >>> Processing MSFT
+2026-04-28 15:58:07,976 [INFO]   [MSFT] 신호 없음 | Lv1 매수 $100.10 → 현재 $98.00 (-2.10%) | 익절 +10.0% / 추매 -5.0%
+2026-04-28 15:58:07,976 [INFO] >>> Step 6: Persist
+2026-04-28 15:58:07,977 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-04-28 15:58:07,977 [INFO] Fetching real-time prices from Broker...
+2026-04-28 15:58:07,977 [INFO] Portfolio: Cash=$9,398, Value=$9,980
+2026-04-28 15:58:07,978 [INFO] >>> Step 2: Load Positions
+2026-04-28 15:58:07,978 [INFO] Loaded 2 position lot(s)
+2026-04-28 15:58:07,978 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-04-28 15:58:07,978 [INFO] >>> Processing AAPL
+2026-04-28 15:58:07,978 [INFO]   [AAPL] 신호 없음 | Lv1 매수 $100.10 → 현재 $97.00 (-3.10%) | 익절 +10.0% / 추매 -5.0%
+2026-04-28 15:58:07,978 [INFO] >>> Processing MSFT
+2026-04-28 15:58:07,978 [INFO]   [MSFT] 신호 없음 | Lv1 매수 $100.10 → 현재 $97.00 (-3.10%) | 익절 +10.0% / 추매 -5.0%
+2026-04-28 15:58:07,978 [INFO] >>> Step 6: Persist
+2026-04-28 15:58:07,979 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-04-28 15:58:07,979 [INFO] Fetching real-time prices from Broker...
+2026-04-28 15:58:07,980 [INFO] Portfolio: Cash=$9,398, Value=$9,974
+2026-04-28 15:58:07,980 [INFO] >>> Step 2: Load Positions
+2026-04-28 15:58:07,980 [INFO] Loaded 2 position lot(s)
+2026-04-28 15:58:07,980 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-04-28 15:58:07,980 [INFO] >>> Processing AAPL
+2026-04-28 15:58:07,980 [INFO]   [AAPL] 신호 없음 | Lv1 매수 $100.10 → 현재 $96.00 (-4.10%) | 익절 +10.0% / 추매 -5.0%
+2026-04-28 15:58:07,980 [INFO] >>> Processing MSFT
+2026-04-28 15:58:07,980 [INFO]   [MSFT] 신호 없음 | Lv1 매수 $100.10 → 현재 $96.00 (-4.10%) | 익절 +10.0% / 추매 -5.0%
+2026-04-28 15:58:07,980 [INFO] >>> Step 6: Persist
+2026-04-28 15:58:07,981 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-04-28 15:58:07,981 [INFO] Fetching real-time prices from Broker...
+2026-04-28 15:58:07,982 [INFO] Portfolio: Cash=$9,398, Value=$9,968
+2026-04-28 15:58:07,982 [INFO] >>> Step 2: Load Positions
+2026-04-28 15:58:07,982 [INFO] Loaded 2 position lot(s)
+2026-04-28 15:58:07,982 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-04-28 15:58:07,982 [INFO] >>> Processing AAPL
+2026-04-28 15:58:07,982 [INFO] [AAPL] Lv1 매수가 $100.10 대비 -5.1% → 추가 매수 Lv2 3주 @$95.00
+2026-04-28 15:58:07,982 [INFO] Executing 1 order(s)...
+2026-04-28 15:58:07,982 [INFO] [FILLED] BUY AAPL: 3 @ $95.09 (Fee: $0.71)
+2026-04-28 15:58:07,982 [INFO] [Position] New lot: lot_20260428_155807_AAPL_002 Lv2 AAPL 3주 @$95.09
+2026-04-28 15:58:07,983 [INFO] >>> Processing MSFT
+2026-04-28 15:58:07,983 [INFO] [MSFT] Lv1 매수가 $100.10 대비 -5.1% → 추가 매수 Lv2 3주 @$95.00
+2026-04-28 15:58:07,983 [INFO] Executing 1 order(s)...
+2026-04-28 15:58:07,983 [INFO] [FILLED] BUY MSFT: 3 @ $95.09 (Fee: $0.71)
+2026-04-28 15:58:07,983 [INFO] [Position] New lot: lot_20260428_155807_MSFT_002 Lv2 MSFT 3주 @$95.09
+2026-04-28 15:58:07,983 [INFO] >>> Step 6: Persist
+2026-04-28 15:58:07,985 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-04-28 15:58:07,985 [INFO] Fetching real-time prices from Broker...
+2026-04-28 15:58:07,985 [INFO] Portfolio: Cash=$8,826, Value=$9,954
+2026-04-28 15:58:07,985 [INFO] >>> Step 2: Load Positions
+2026-04-28 15:58:07,985 [INFO] Loaded 4 position lot(s)
+2026-04-28 15:58:07,985 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-04-28 15:58:07,985 [INFO] >>> Processing AAPL
+2026-04-28 15:58:07,986 [INFO]   [AAPL] 신호 없음 | Lv2 매수 $95.09 → 현재 $94.00 (-1.15%) | 익절 +10.0% / 추매 -5.0%
+2026-04-28 15:58:07,986 [INFO] >>> Processing MSFT
+2026-04-28 15:58:07,986 [INFO]   [MSFT] 신호 없음 | Lv2 매수 $95.09 → 현재 $94.00 (-1.15%) | 익절 +10.0% / 추매 -5.0%
+2026-04-28 15:58:07,986 [INFO] >>> Step 6: Persist
+2026-04-28 15:58:07,987 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-04-28 15:58:07,987 [INFO] Fetching real-time prices from Broker...
+2026-04-28 15:58:07,987 [INFO] Portfolio: Cash=$8,826, Value=$9,942
+2026-04-28 15:58:07,987 [INFO] >>> Step 2: Load Positions
+2026-04-28 15:58:07,988 [INFO] Loaded 4 position lot(s)
+2026-04-28 15:58:07,988 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-04-28 15:58:07,988 [INFO] >>> Processing AAPL
+2026-04-28 15:58:07,988 [INFO]   [AAPL] 신호 없음 | Lv2 매수 $95.09 → 현재 $93.00 (-2.20%) | 익절 +10.0% / 추매 -5.0%
+2026-04-28 15:58:07,988 [INFO] >>> Processing MSFT
+2026-04-28 15:58:07,988 [INFO]   [MSFT] 신호 없음 | Lv2 매수 $95.09 → 현재 $93.00 (-2.20%) | 익절 +10.0% / 추매 -5.0%
+2026-04-28 15:58:07,988 [INFO] >>> Step 6: Persist
+2026-04-28 15:58:07,989 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-04-28 15:58:07,990 [INFO] Fetching real-time prices from Broker...
+2026-04-28 15:58:07,990 [INFO] Portfolio: Cash=$8,826, Value=$9,930
+2026-04-28 15:58:07,990 [INFO] >>> Step 2: Load Positions
+2026-04-28 15:58:07,990 [INFO] Loaded 4 position lot(s)
+2026-04-28 15:58:07,990 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-04-28 15:58:07,990 [INFO] >>> Processing AAPL
+2026-04-28 15:58:07,990 [INFO]   [AAPL] 신호 없음 | Lv2 매수 $95.09 → 현재 $92.00 (-3.25%) | 익절 +10.0% / 추매 -5.0%
+2026-04-28 15:58:07,990 [INFO] >>> Processing MSFT
+2026-04-28 15:58:07,991 [INFO]   [MSFT] 신호 없음 | Lv2 매수 $95.09 → 현재 $92.00 (-3.25%) | 익절 +10.0% / 추매 -5.0%
+2026-04-28 15:58:07,991 [INFO] >>> Step 6: Persist
+2026-04-28 15:58:07,992 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-04-28 15:58:07,992 [INFO] Fetching real-time prices from Broker...
+2026-04-28 15:58:07,992 [INFO] Portfolio: Cash=$8,826, Value=$9,918
+2026-04-28 15:58:07,992 [INFO] >>> Step 2: Load Positions
+2026-04-28 15:58:07,992 [INFO] Loaded 4 position lot(s)
+2026-04-28 15:58:07,993 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-04-28 15:58:07,993 [INFO] >>> Processing AAPL
+2026-04-28 15:58:07,993 [INFO]   [AAPL] 신호 없음 | Lv2 매수 $95.09 → 현재 $91.00 (-4.30%) | 익절 +10.0% / 추매 -5.0%
+2026-04-28 15:58:07,993 [INFO] >>> Processing MSFT
+2026-04-28 15:58:07,993 [INFO]   [MSFT] 신호 없음 | Lv2 매수 $95.09 → 현재 $91.00 (-4.30%) | 익절 +10.0% / 추매 -5.0%
+2026-04-28 15:58:07,993 [INFO] >>> Step 6: Persist
+2026-04-28 15:58:07,995 [INFO] --- 백테스트 완료 ---
+2026-04-28 15:58:07,995 [INFO] 최종: Cash=$8,826, Value=$9,918
+2026-04-28 15:58:07,999 [INFO] --- 데이터 다운로드: ['AAPL'] (2024-01-02 ~ 2024-01-08) ---
+2026-04-28 15:58:07,999 [WARNING] 데이터 미수신 티커 ['AAPL'] — 백테스트를 중단합니다.
