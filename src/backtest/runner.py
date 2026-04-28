@@ -96,21 +96,21 @@ def run_backtest(
     # 5. 시뮬레이션 루프
     logger.info(f"--- 백테스트 시작 ({len(sim_days)} 거래일) ---")
 
-    prev_prices: Dict[str, float] = {}
     last_result: Optional[DayResult] = None
+
+    # ⚡ [Bolt Optimization]: Vectorized forward-fill for all tickers over the entire period
+    # This prevents iterating and checking `pd.isna` on a per-ticker, per-day basis, which is extremely slow.
+    close_df_filled = close_df.ffill()
+    # Pre-compute records as a dictionary to avoid slow `.loc` access inside the loop
+    prices_records = close_df_filled.to_dict(orient='index')
 
     for today in sim_days:
         # 종가 추출
         try:
-            row = close_df.loc[today]
-            current_prices = row.to_dict()
-            # NaN → 전일 가격으로 대체 (forward-fill)
+            # Drop remaining NaNs (e.g. leading NaNs before the first valid price)
             current_prices = {
-                t: (p if not pd.isna(p) else prev_prices.get(t))
-                for t, p in current_prices.items()
-                if not pd.isna(p) or prev_prices.get(t) is not None
+                t: p for t, p in prices_records[today].items() if not pd.isna(p)
             }
-            prev_prices = current_prices
         except Exception as e:
             logger.warning(f"[{today.date()}] 종가 추출 실패, 건너뜀: {e}")
             continue
