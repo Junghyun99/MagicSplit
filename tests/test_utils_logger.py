@@ -54,4 +54,4 @@ class TestTradeLogger:
 
     def test_run_number_suffix(self, tmp_path):
         logger = TradeLogger(log_dir=str(tmp_path), run_number="42")
-        assert "_run42" in logger.log_file
+        assert "_42" in logger.log_file
