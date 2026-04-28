@@ -3,80 +3,80 @@
     "last_run_date": "2025-12-30",
     "reason": "모니터링 - 신호 없음",
     "portfolio": {
-        "total_value": 10041459.744112136,
-        "cash_balance": 10027555.264131667,
+        "total_value": 16275082.238100009,
+        "cash_balance": 14890982.238100009,
         "holdings": [
             {
-                "ticker": "AAPL",
-                "qty": 17,
-                "price": 273.0799865722656,
-                "value": 4642.359771728516
+                "ticker": "005930.KS",
+                "qty": 4,
+                "price": 119900.0,
+                "value": 479600.0
             },
             {
-                "ticker": "MSFT",
-                "qty": 19,
-                "price": 487.4800109863281,
-                "value": 9262.120208740234
+                "ticker": "058470.KQ",
+                "qty": 15,
+                "price": 60300.0,
+                "value": 904500.0
             }
         ]
     },
     "positions": {
-        "MSFT": {
-            "total_qty": 19,
-            "lot_count": 2,
-            "total_invested": 9384.14,
-            "current_value": 9262.12,
+        "005930.KS": {
+            "total_qty": 4,
+            "lot_count": 1,
+            "total_invested": 402802.4,
+            "current_value": 479600.0,
             "lots": [
                 {
-                    "lot_id": "lot_20260428_021811_MSFT_001",
-                    "buy_price": 510.56,
-                    "quantity": 9,
-                    "buy_date": "2025-07-18",
+                    "lot_id": "lot_20260428_041519_005930.KS_001",
+                    "buy_price": 100700.6,
+                    "quantity": 4,
+                    "buy_date": "2025-11-05",
                     "level": 1,
-                    "current_price": 487.4800109863281,
-                    "pct_change": -4.52
+                    "current_price": 119900.0,
+                    "pct_change": 19.07
+                }
+            ],
+            "avg_buy_price": 100700.6,
+            "unrealized_pnl": 76797.6,
+            "unrealized_pnl_pct": 19.07,
+            "realized_pnl": 2032008.74,
+            "total_pnl": 2108806.34
+        },
+        "058470.KQ": {
+            "total_qty": 15,
+            "lot_count": 2,
+            "total_invested": 952952.0,
+            "current_value": 904500.0,
+            "lots": [
+                {
+                    "lot_id": "lot_20260428_041519_058470.KQ_001",
+                    "buy_price": 65665.6,
+                    "quantity": 7,
+                    "buy_date": "2025-12-02",
+                    "level": 1,
+                    "current_price": 60300.0,
+                    "pct_change": -8.17
                 },
                 {
-                    "lot_id": "lot_20260428_021812_MSFT_002",
-                    "buy_price": 478.91,
-                    "quantity": 10,
-                    "buy_date": "2025-11-20",
+                    "lot_id": "lot_20260428_041519_058470.KQ_002",
+                    "buy_price": 61661.6,
+                    "quantity": 8,
+                    "buy_date": "2025-12-15",
                     "level": 2,
-                    "current_price": 487.4800109863281,
-                    "pct_change": 1.79
+                    "current_price": 60300.0,
+                    "pct_change": -2.21
                 }
             ],
-            "avg_buy_price": 493.9021,
-            "unrealized_pnl": -122.02,
-            "unrealized_pnl_pct": -1.3,
-            "realized_pnl": 20100.25,
-            "total_pnl": 19978.23
-        },
-        "AAPL": {
-            "total_qty": 17,
-            "lot_count": 1,
-            "total_invested": 4728.89,
-            "current_value": 4642.36,
-            "lots": [
-                {
-                    "lot_id": "lot_20260428_021812_AAPL_001",
-                    "buy_price": 278.17,
-                    "quantity": 17,
-                    "buy_date": "2025-12-08",
-                    "level": 1,
-                    "current_price": 273.0799865722656,
-                    "pct_change": -1.83
-                }
-            ],
-            "avg_buy_price": 278.17,
-            "unrealized_pnl": -86.53,
-            "unrealized_pnl_pct": -1.83,
-            "realized_pnl": 22608.71,
-            "total_pnl": 22522.18
+            "avg_buy_price": 63530.1333,
+            "unrealized_pnl": -48452.0,
+            "unrealized_pnl_pct": -5.08,
+            "realized_pnl": 4339804.15,
+            "total_pnl": 4291352.15
         }
     },
     "realized_pnl_by_ticker": {
-        "MSFT": 20100.249999999996,
-        "AAPL": 22608.71
+        "005930.KS": 2032008.74,
+        "058470.KQ": 4339804.15
     }
 }
