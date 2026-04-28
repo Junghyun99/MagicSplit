@@ -228,3 +228,107 @@ class TestKisOverseasSendOrderRemoved:
         """_send_order는 dead code로 제거됨 — _send_order_and_wait만 존재해야 함."""
         assert not hasattr(KisOverseasBrokerBase, '_send_order')
         assert hasattr(KisOverseasBrokerBase, '_send_order_and_wait')
+
+
+class TestKisOverseasQueryFillDetails:
+    """해외 _query_fill_details 다중 row 합산 검증."""
+
+    def _make_broker(self):
+        from datetime import datetime, timedelta
+        b = KisOverseasBrokerBase.__new__(KisOverseasBrokerBase)
+        b.logger = MagicMock()
+        b.base_url = "https://fake"
+        b.cano = "12345678"
+        b.acnt_prdt_cd = "01"
+        b.FILL_TR_ID = "VTTS3035R"
+        b.app_key = "k"; b.app_secret = "s"; b.access_token = "t"
+        b.token_expires_at = datetime.now() + timedelta(hours=1)
+        return b
+
+    @patch("src.infra.broker.kis_overseas._pkg.requests.get")
+    def test_multi_row_sum(self, mock_get):
+        broker = self._make_broker()
+        mock_resp = MagicMock()
+        mock_resp.raise_for_status.return_value = None
+        mock_resp.json.return_value = {
+            "rt_cd": "0",
+            "output": [
+                {"odno": "X", "ft_ccld_qty": "2", "ft_ccld_unpr3": "100.0",
+                 "ovrs_stck_ccld_fee": "0.10"},
+                {"odno": "X", "ft_ccld_qty": "3", "ft_ccld_unpr3": "110.0",
+                 "ovrs_stck_ccld_fee": "0.15"},
+                # 다른 ODNO 무시되어야 함
+                {"odno": "Y", "ft_ccld_qty": "10", "ft_ccld_unpr3": "999.0",
+                 "ovrs_stck_ccld_fee": "5.0"},
+            ]
+        }
+        mock_get.return_value = mock_resp
+
+        price, qty, fee = broker._query_fill_details("X", "AAPL", "NASD")
+        # 가중평균: (2*100 + 3*110)/5 = 530/5 = 106
+        assert qty == 5
+        assert price == pytest.approx(106.0)
+        assert fee == pytest.approx(0.25)
+
+    @patch("src.infra.broker.kis_overseas._pkg.requests.get")
+    def test_single_row_regression(self, mock_get):
+        """단일 row 응답 시 합산 결과 == 단일 row 값 (회귀 방지)."""
+        broker = self._make_broker()
+        mock_resp = MagicMock()
+        mock_resp.raise_for_status.return_value = None
+        mock_resp.json.return_value = {
+            "rt_cd": "0",
+            "output": [
+                {"odno": "X", "ft_ccld_qty": "5", "ft_ccld_unpr3": "100.0",
+                 "ovrs_stck_ccld_fee": "0.5"},
+            ]
+        }
+        mock_get.return_value = mock_resp
+        price, qty, fee = broker._query_fill_details("X", "AAPL", "NASD")
+        assert qty == 5
+        assert price == 100.0
+        assert fee == 0.5
+
+    @patch("src.infra.broker.kis_overseas._pkg.requests.get")
+    def test_no_match_returns_zero(self, mock_get):
+        broker = self._make_broker()
+        mock_resp = MagicMock()
+        mock_resp.raise_for_status.return_value = None
+        mock_resp.json.return_value = {
+            "rt_cd": "0",
+            "output": [
+                {"odno": "Y", "ft_ccld_qty": "5", "ft_ccld_unpr3": "100.0",
+                 "ovrs_stck_ccld_fee": "0.5"},
+            ]
+        }
+        mock_get.return_value = mock_resp
+        price, qty, fee = broker._query_fill_details("X", "AAPL", "NASD")
+        assert (price, qty, fee) == (0.0, 0, 0.0)
+
+
+class TestKisOverseasOutcomeToExecution:
+    def _make_broker(self):
+        from datetime import datetime, timedelta
+        b = KisOverseasBrokerBase.__new__(KisOverseasBrokerBase)
+        b.logger = MagicMock()
+        b.base_url = "https://fake"
+        b.cano = "12345678"; b.acnt_prdt_cd = "01"
+        b.app_key = "k"; b.app_secret = "s"; b.access_token = "t"
+        b.token_expires_at = datetime.now() + __import__("datetime").timedelta(hours=1)
+        return b
+
+    def test_partial_outcome(self):
+        from src.infra.broker.kis_order_helpers import TimeoutOutcome
+        from src.core.models import Order, OrderAction, ExecutionStatus
+        broker = self._make_broker()
+        outcome = TimeoutOutcome(
+            classification="PARTIAL", fill_qty=2, fill_price=100.5,
+            fill_fee=0.1, cancel_ok=True, still_pending=False,
+            detail="partial_after_cancel",
+        )
+        order = Order(ticker="AAPL", action=OrderAction.SELL, quantity=5, price=100.0)
+        exe = broker._outcome_to_execution(outcome, order, "ODNO_O", 99.0)
+        assert exe.status == ExecutionStatus.PARTIAL
+        assert exe.quantity == 2
+        assert exe.price == 100.5
+        assert "partial_after_cancel(2/5)" in exe.reason

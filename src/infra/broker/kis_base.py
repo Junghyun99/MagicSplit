@@ -145,7 +145,10 @@ class KisBrokerCommon(IBrokerAdapter):
             if e.action == OrderAction.SELL
         )
         if sell_timed_out:
-            self.logger.error("[KisBroker] 매도 미체결 주문 존재 — 매수 중단 (#227)")
+            self.logger.error(
+                "[KisBroker] 매도 ORDERED(미체결 잔존) 감지 — 자금 미확정으로 "
+                "매수 중단 (#227). PARTIAL/REJECTED는 차단 대상 아님."
+            )
             return executions
 
         if buy_orders:

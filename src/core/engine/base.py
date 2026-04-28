@@ -1,5 +1,6 @@
 # src/core/engine/base.py
 import time
+from dataclasses import replace
 from datetime import datetime
 from typing import List, Optional, Set
 
@@ -320,6 +321,26 @@ class MagicSplitEngine:
                     f"[Position] Skip: {exe.ticker} {exe.action} rejected"
                 )
                 continue
+            if exe.status == ExecutionStatus.ORDERED:
+                # 미체결 잔존 → 잔고 미확정. 포지션 미반영. 알림.
+                self.logger.error(
+                    f"[Position] ORDERED — 수동 확인 필요: "
+                    f"{exe.ticker} {exe.action} reason={exe.reason}"
+                )
+                self._notify_alert(
+                    f"[{exe.ticker}] {exe.action} 미체결 잔존 — "
+                    f"KIS에서 직접 확인 후 scripts/reconcile_positions.py 실행 권장. "
+                    f"{exe.reason}"
+                )
+                continue
+            if exe.quantity <= 0:
+                # PARTIAL/FILLED 인데 체결 수량이 0 — 비정상. 안전상 미반영.
+                self.logger.warning(
+                    f"[Position] Skip zero-qty execution: "
+                    f"{exe.ticker} {exe.action} status={exe.status}"
+                )
+                continue
+
             if exe.action == OrderAction.BUY:
                 sig = signal_map.get((exe.ticker, OrderAction.BUY))
                 level = sig.level if sig else 1
@@ -334,32 +355,51 @@ class MagicSplitEngine:
                     level=level,
                 )
                 updated.append(new_lot)
+                tag = " (PARTIAL)" if exe.status == ExecutionStatus.PARTIAL else ""
                 self.logger.info(
-                    f"[Position] New lot: {lot_id} Lv{level} "
+                    f"[Position] New lot{tag}: {lot_id} Lv{level} "
                     f"{exe.ticker} {exe.quantity}주 @${exe.price:.2f}"
                 )
 
             elif exe.action == OrderAction.SELL:
                 sig = signal_map.get((exe.ticker, OrderAction.SELL))
+                target_lot = None
                 if sig and sig.lot_id:
-                    # 신호에 지정된 lot_id로 제거
-                    target = [l for l in updated if l.lot_id == sig.lot_id]
-                    if target:
-                        updated.remove(target[0])
-                        self.logger.info(
-                            f"[Position] Remove lot: {sig.lot_id} Lv{sig.level} "
-                            f"({target[0].quantity}주 전량 매도)"
-                        )
+                    candidates = [l for l in updated if l.lot_id == sig.lot_id]
+                    target_lot = candidates[0] if candidates else None
                 else:
-                    # 폴백: 가장 높은 level lot 제거
+                    # 폴백: 가장 높은 level lot 선택
                     ticker_lots = [l for l in updated if l.ticker == exe.ticker]
-                    if ticker_lots:
-                        highest = max(ticker_lots, key=lambda l: l.level)
-                        updated.remove(highest)
-                        self.logger.info(
-                            f"[Position] Remove lot: {highest.lot_id} Lv{highest.level} "
-                            f"({highest.quantity}주 전량 매도)"
+                    target_lot = max(ticker_lots, key=lambda l: l.level) if ticker_lots else None
+
+                if target_lot is None:
+                    continue
+
+                if (exe.status == ExecutionStatus.PARTIAL
+                        and exe.quantity < target_lot.quantity):
+                    new_qty = target_lot.quantity - exe.quantity
+                    idx = updated.index(target_lot)
+                    updated[idx] = replace(target_lot, quantity=new_qty)
+                    self.logger.info(
+                        f"[Position] Partial sell: {target_lot.lot_id} "
+                        f"Lv{target_lot.level} ({exe.quantity}/{target_lot.quantity}주, "
+                        f"잔량 {new_qty})"
+                    )
+                else:
+                    if exe.quantity > target_lot.quantity:
+                        # 수동 매도 등으로 lot 보유분보다 더 체결된 비정상 상태.
+                        # lot 은 제거하되 reconcile 단계에서 잡히도록 경고.
+                        self.logger.warning(
+                            f"[Position] Over-fill detected: {exe.ticker} sold "
+                            f"{exe.quantity}주 but lot {target_lot.lot_id} held "
+                            f"{target_lot.quantity}주 — removing lot. "
+                            f"scripts/reconcile_positions.py 로 정합성 확인 권장."
                         )
+                    updated.remove(target_lot)
+                    self.logger.info(
+                        f"[Position] Remove lot: {target_lot.lot_id} "
+                        f"Lv{target_lot.level} ({target_lot.quantity}주 전량 매도)"
+                    )
 
         return updated
 
