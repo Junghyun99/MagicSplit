@@ -49,6 +49,7 @@ jobs:
         tickers = ['AAPL', 'MSFT', '005930.KS', '058470.KQ']
 
         cache = BacktestDataCache(logger=TradeLogger())
+        cache.clear()
         close_df = cache.get_data(tickers, real_start_str, end_date)
 
         print(f'Close shape: {close_df.shape}')
