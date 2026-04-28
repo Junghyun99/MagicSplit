@@ -65,7 +65,17 @@ class KisDomesticBrokerBase(KisBrokerCommon):
                 data = res.json()
 
                 if data['rt_cd'] == '0':
-                    price = float(data['output']['stck_prpr'])
+                    output = data.get('output', {})
+                    price = float(output.get('stck_prpr', 0) or 0)
+                    if price <= 0:
+                        # 장외 시간 등 현재가가 0인 경우 전일종가(stck_sdpr) fallback
+                        price = float(output.get('stck_sdpr', 0) or 0)
+                    
+                    if price <= 0:
+                        self.logger.warning(
+                            f"[KisDomestic] Price is 0 for {ticker}. "
+                            f"Response output: {output}"
+                        )
                     prices[ticker] = price
                 else:
                     self.logger.warning(f"[KisDomestic] Price fetch failed for {ticker}: {data.get('msg1')}")

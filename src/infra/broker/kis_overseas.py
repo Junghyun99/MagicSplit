@@ -37,7 +37,17 @@ class KisOverseasBrokerBase(KisBrokerCommon):
                 data = res.json()
 
                 if data['rt_cd'] == '0':
-                    price = float(data['output']['last'])
+                    output = data.get('output', {})
+                    price = float(output.get('last', 0) or 0)
+                    if price <= 0:
+                        # 장외 시간 등 last가 0인 경우 전일종가(base) fallback
+                        price = float(output.get('base', 0) or 0)
+                    
+                    if price <= 0:
+                        self.logger.warning(
+                            f"[KisBroker] Price is 0 for {ticker}. "
+                            f"Response output: {output}"
+                        )
                     prices[ticker] = price
                 else:
                     self.logger.warning(f"[KisBroker] Price fetch failed for {ticker}: {data.get('msg1')}")

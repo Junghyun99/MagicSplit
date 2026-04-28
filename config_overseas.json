@@ -4,6 +4,8 @@
             "ticker": "AAPL",
             "exchange": "NAS",
             "market_type": "overseas",
+            "buy_threshold_pct": -5,
+            "sell_threshold_pct": 10,
             "buy_amount": 5000,
             "max_lots": 100,
             "reentry_guard_pct": -0.1,

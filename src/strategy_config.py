@@ -159,6 +159,8 @@ class StrategyConfig:
             buy_pct = merged.get("buy_threshold_pct")
             sell_pct = merged.get("sell_threshold_pct")
             buy_amount = merged.get("buy_amount")
+            trailing_drop = merged.get("trailing_drop_pct")
+            trailing_drops = merged.get("trailing_drop_pcts")
 
             # 배열/단일값 모두 미제공이면 레거시 기본값(-5/10/500) 적용 → 하위 호환
             if buy_pct is None and not buy_pcts:
@@ -181,6 +183,8 @@ class StrategyConfig:
                 buy_threshold_pcts=[float(x) for x in buy_pcts] if buy_pcts else None,
                 sell_threshold_pcts=[float(x) for x in sell_pcts] if sell_pcts else None,
                 buy_amounts=[float(x) for x in buy_amounts] if buy_amounts else None,
+                trailing_drop_pct=float(trailing_drop) if trailing_drop is not None else None,
+                trailing_drop_pcts=[float(x) for x in trailing_drops] if trailing_drops else None,
             )
             self.rules.append(rule)
             self.market_types.add(market_type)
