@@ -11,13 +11,12 @@
 - pytest + pytest-cov (테스트)
 
 ## 주요 명령어
-- 테스트: `pytest --cov=src --cov-report=term-missing --cov-fail-under=80 tests/`
-- 봇 실행 (해외): `CONFIG_JSON_PATH=config_overseas.json python -m src.main`
-- 봇 실행 (국내): `CONFIG_JSON_PATH=config_domestic.json python -m src.main`
-- 백테스트: `python -c "from src.backtest.runner import run_backtest; run_backtest(config_path='config_overseas.json', start_date='2023-01-01', end_date='2024-12-31', initial_cash=10000, market_type='overseas')"`
-- 수동 매매: `python scripts/manual_trade.py --ticker AAPL --action buy --qty 1`
-- 포지션 정합: `python scripts/reconcile_positions.py`
+운영성 작업(봇 실행/백테스트/수동매매/시세 다운로드)은 GitHub Actions 워크플로우로 실행한다 (CI/CD 섹션 참조).
+로컬에서 자주 쓰는 명령어:
 - 의존성 설치: `pip install -r requirements.txt`
+- 테스트: `pytest` (커버리지 게이트 포함 풀 실행은 `python-test.yml` 참조)
+- 봇 1회 실행: `python -m src.main` (`CONFIG_JSON_PATH`로 국내/해외 선택)
+- 포지션 정합: `python scripts/reconcile_positions.py`
 
 ## 프로젝트 구조
 ```
