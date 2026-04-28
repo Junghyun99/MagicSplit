@@ -10,7 +10,8 @@
             "max_lots": 100,
             "reentry_guard_pct": -0.1,
             "enabled": true,
-            "buy_amounts": [500, 1000]
+            "buy_amounts": [500, 1000],
+            "trailing_drop_pct": 2.0
         },
         {
             "ticker": "MSFT",

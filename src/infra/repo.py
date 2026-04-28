@@ -2,6 +2,7 @@
 import json
 import math
 import os
+import re
 from typing import List, Optional, Dict
 from dataclasses import asdict
 from datetime import datetime
@@ -42,6 +43,7 @@ class JsonRepository(IRepository):
                 quantity=item["quantity"],
                 buy_date=item["buy_date"],
                 level=item.get("level", 0),
+                trailing_highest_price=item.get("trailing_highest_price"),
             ))
 
         # 레거시 마이그레이션: level=0인 lot에 순차 level 부여
@@ -70,6 +72,7 @@ class JsonRepository(IRepository):
                         quantity=lot.quantity,
                         buy_date=lot.buy_date,
                         level=i,
+                        trailing_highest_price=lot.trailing_highest_price,
                     ))
             else:
                 result.extend(ticker_lots)
@@ -185,5 +188,18 @@ class JsonRepository(IRepository):
 
     def _save_json(self, path: str, data):
         sanitized = self._sanitize_for_json(data)
+        # 기본적으로 4칸 들여쓰기로 변환
+        content = json.dumps(sanitized, indent=4, ensure_ascii=False)
+        
+        # 숫자나 문자열로만 구성된 단순 배열을 한 줄로 압축 (정규식 사용)
+        # 1단계: 숫자 배열 압축 [ 1, 2, 3 ]
+        content = re.sub(r'\[\s+((?:-?\d+(?:\.\d+)?(?:,\s+)?)+)\s+\]', 
+                         lambda m: "[" + re.sub(r'\s+', ' ', m.group(1)) + "]", 
+                         content)
+        # 2단계: 문자열 배열 압축 [ "A", "B" ]
+        content = re.sub(r'\[\s+((?:"[^"]*"(?:,\s+)?)+)\s+\]', 
+                         lambda m: "[" + re.sub(r'\s+', ' ', m.group(1)) + "]", 
+                         content)
+        
         with open(path, 'w', encoding='utf-8') as f:
-            json.dump(sanitized, f, indent=4, ensure_ascii=False)
+            f.write(content)

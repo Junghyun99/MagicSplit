@@ -45,6 +45,9 @@ class StockRule:
     buy_threshold_pcts: Optional[List[float]] = None
     sell_threshold_pcts: Optional[List[float]] = None
     buy_amounts: Optional[List[float]] = None
+    # 트레일링 스톱용 하락 허용치 (예: 2.0 = 고점 대비 2% 하락 시 매도)
+    trailing_drop_pct: Optional[float] = None
+    trailing_drop_pcts: Optional[List[float]] = None
 
     def __post_init__(self):
         if self.buy_threshold_pct is None and not self.buy_threshold_pcts:
@@ -63,6 +66,7 @@ class StockRule:
             ("buy_threshold_pcts", self.buy_threshold_pcts),
             ("sell_threshold_pcts", self.sell_threshold_pcts),
             ("buy_amounts", self.buy_amounts),
+            ("trailing_drop_pcts", self.trailing_drop_pcts),
         ):
             if arr is not None and len(arr) == 0:
                 raise ValueError(f"StockRule({self.ticker}): {name}는 비어 있으면 안 됩니다.")
@@ -88,6 +92,15 @@ class StockRule:
         """주어진 차수(1-based)의 1회 매수 금액을 반환한다."""
         return self._at(self.buy_amounts, self.buy_amount, level)
 
+    def trailing_drop_at(self, level: int) -> Optional[float]:
+        """주어진 차수(1-based)의 트레일링 스톱 하락 허용치(%)를 반환한다."""
+        if self.trailing_drop_pcts:
+            idx = max(0, min(level - 1, len(self.trailing_drop_pcts) - 1))
+            return float(self.trailing_drop_pcts[idx])
+        if self.trailing_drop_pct is not None:
+            return float(self.trailing_drop_pct)
+        return None
+
 
 @dataclass
 class PositionLot:
@@ -98,6 +111,7 @@ class PositionLot:
     quantity: int        # 매수 수량
     buy_date: str        # 매수 일자
     level: int = 0       # 차수 (1차, 2차, ..., 100차). 0 = 레거시 데이터
+    trailing_highest_price: Optional[float] = None  # 트레일링 스톱 활성화 이후 최고가
 
 
 @dataclass

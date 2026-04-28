@@ -118,28 +118,67 @@ class SplitEvaluator:
         last_lot: PositionLot,
         current_price: float,
     ) -> Optional[SplitSignal]:
-        """마지막 차수 lot의 매도 여부를 평가한다."""
+        """마지막 차수 lot의 매도 여부를 평가한다.
+        트레일링 스톱이 설정되어 있다면 활성화 후 하락을 추적하며 매도한다."""
         pct_change = (current_price - last_lot.buy_price) / last_lot.buy_price * 100
         sell_threshold = rule.sell_threshold_at(last_lot.level)
+        trailing_drop = rule.trailing_drop_at(last_lot.level)
 
-        if pct_change >= sell_threshold:
-            if self._logger:
-                self._logger.info(
-                    f"[{rule.ticker}] Lv{last_lot.level}: 매수가 ${last_lot.buy_price:.2f} → "
-                    f"현재가 ${current_price:.2f} ({pct_change:+.1f}%) → 익절 매도"
+        if trailing_drop is not None:
+            # 트레일링 스톱 로직
+            # 1. 활성화 조건 충족 (+10% 도달) 또는 이미 활성화된 상태
+            if pct_change >= sell_threshold or last_lot.trailing_highest_price is not None:
+                # 2. 최고가 갱신
+                if last_lot.trailing_highest_price is None or current_price > last_lot.trailing_highest_price:
+                    last_lot.trailing_highest_price = current_price
+                    if self._logger:
+                        self._logger.info(
+                            f"[{rule.ticker}] Lv{last_lot.level}: 트레일링 스톱 활성/갱신 "
+                            f"(최고가 ${current_price:.2f}, 하락 허용치 {trailing_drop}%)"
+                        )
+                
+                # 3. 고점 대비 하락폭 계산
+                drop_pct = (last_lot.trailing_highest_price - current_price) / last_lot.trailing_highest_price * 100
+                
+                # 4. 하락 허용치 도달 시 매도
+                if drop_pct >= trailing_drop:
+                    if self._logger:
+                        self._logger.info(
+                            f"[{rule.ticker}] Lv{last_lot.level}: 매수가 ${last_lot.buy_price:.2f} → "
+                            f"현재가 ${current_price:.2f} (고점 대비 -{drop_pct:.2f}%) → 트레일링 스톱 매도"
+                        )
+                    return SplitSignal(
+                        ticker=rule.ticker,
+                        lot_id=last_lot.lot_id,
+                        action=OrderAction.SELL,
+                        quantity=last_lot.quantity,
+                        price=current_price,
+                        reason=f"Lv{last_lot.level} 트레일링 스톱 매도 (고점 대비 -{drop_pct:.2f}%)",
+                        pct_change=pct_change,
+                        level=last_lot.level,
+                        buy_price=last_lot.buy_price,
+                    )
+            return None
+        else:
+            # 일반 고정 익절 로직 (기존)
+            if pct_change >= sell_threshold:
+                if self._logger:
+                    self._logger.info(
+                        f"[{rule.ticker}] Lv{last_lot.level}: 매수가 ${last_lot.buy_price:.2f} → "
+                        f"현재가 ${current_price:.2f} ({pct_change:+.1f}%) → 익절 매도"
+                    )
+                return SplitSignal(
+                    ticker=rule.ticker,
+                    lot_id=last_lot.lot_id,
+                    action=OrderAction.SELL,
+                    quantity=last_lot.quantity,
+                    price=current_price,
+                    reason=f"Lv{last_lot.level} {pct_change:+.1f}% → 익절",
+                    pct_change=pct_change,
+                    level=last_lot.level,
+                    buy_price=last_lot.buy_price,
                 )
-            return SplitSignal(
-                ticker=rule.ticker,
-                lot_id=last_lot.lot_id,
-                action=OrderAction.SELL,
-                quantity=last_lot.quantity,
-                price=current_price,
-                reason=f"Lv{last_lot.level} {pct_change:+.1f}% → 익절",
-                pct_change=pct_change,
-                level=last_lot.level,
-                buy_price=last_lot.buy_price,
-            )
-        return None
+            return None
 
     def _evaluate_initial_buy(
         self,
