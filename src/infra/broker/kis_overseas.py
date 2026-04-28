@@ -9,7 +9,7 @@ from src.core.models import Portfolio, Order, TradeExecution, OrderAction, Execu
 from src.config import TICKER_EXCHANGE_MAP, EXCHANGE_CODE_SHORT_TO_FULL, DEFAULT_HTTP_TIMEOUT
 
 from .kis_base import KisBrokerCommon
-from .kis_order_helpers import poll_order_fill
+from .kis_order_helpers import poll_order_fill, resolve_timeout_outcome
 
 
 class KisOverseasBrokerBase(KisBrokerCommon):
@@ -190,13 +190,18 @@ class KisOverseasBrokerBase(KisBrokerCommon):
                 else:
                     self.logger.warning(
                         f"[KisBroker] Order NOT confirmed within {timeout}s: "
-                        f"{order.ticker} ODNO={odno} — 미체결 주문 취소 시도"
+                        f"{order.ticker} ODNO={odno} — 취소 시도 후 재폴링·체결조회"
                     )
-                    cancelled = self._cancel_order(odno, exch, order.ticker, order.quantity)
-                    if not cancelled:
-                        self.logger.error(
-                            f"[KisBroker] 주문 취소 실패: {order.ticker} ODNO={odno} — 수동 확인 필요"
-                        )
+                    outcome = resolve_timeout_outcome(
+                        odno=odno,
+                        order_qty=order.quantity,
+                        cancel_fn=lambda: self._cancel_order(odno, exch, order.ticker, order.quantity),
+                        pending_ids_fn=lambda: self._get_pending_order_ids(exch),
+                        fill_query_fn=lambda: self._query_fill_details(odno, order.ticker, exch),
+                        logger=self.logger,
+                        log_prefix="[KisBroker]",
+                    )
+                    return self._outcome_to_execution(outcome, order, odno, order_price)
 
             return TradeExecution(
                 ticker=order.ticker,
@@ -212,6 +217,50 @@ class KisOverseasBrokerBase(KisBrokerCommon):
         except Exception as e:
             self.logger.error(f"[KisBroker] Order Error: {e}")
             return None
+
+    def _outcome_to_execution(self, outcome, order: Order, odno: str,
+                              fallback_price: float) -> TradeExecution:
+        """resolve_timeout_outcome 결과를 TradeExecution 으로 변환."""
+        status_map = {
+            "FILLED":   ExecutionStatus.FILLED,
+            "PARTIAL":  ExecutionStatus.PARTIAL,
+            "REJECTED": ExecutionStatus.REJECTED,
+            "ORDERED":  ExecutionStatus.ORDERED,
+        }
+        if outcome.classification == "REJECTED":
+            final_qty = 0
+            final_price = fallback_price
+            final_fee = 0.0
+        else:
+            final_qty = outcome.fill_qty
+            final_price = outcome.fill_price if outcome.fill_price > 0 else fallback_price
+            final_fee = outcome.fill_fee
+        reason = f"ODNO={odno}"
+        if outcome.classification == "PARTIAL":
+            reason += f" partial_after_cancel({outcome.fill_qty}/{order.quantity})"
+        elif outcome.classification == "ORDERED" and outcome.fill_qty > 0:
+            reason += f" PARTIAL_FILL={outcome.fill_qty} manual_check_required"
+        elif outcome.classification == "ORDERED":
+            reason += " manual_check_required"
+        elif outcome.classification == "FILLED":
+            reason += " race_full_fill"
+        if not outcome.cancel_ok:
+            reason += " cancel_unconfirmed"
+        self.logger.info(
+            f"[KisBroker] Timeout outcome: {order.ticker} ODNO={odno} "
+            f"{outcome.classification} qty={outcome.fill_qty}/{order.quantity} "
+            f"detail={outcome.detail}"
+        )
+        return TradeExecution(
+            ticker=order.ticker,
+            action=order.action,
+            quantity=final_qty,
+            price=final_price,
+            fee=final_fee,
+            date=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            status=status_map[outcome.classification],
+            reason=reason,
+        )
 
     def _poll_order_fill(self, odno: str, exch: str, timeout: int = 30) -> bool:
         """공용 poll helper 호출 래퍼."""
@@ -270,13 +319,23 @@ class KisOverseasBrokerBase(KisBrokerCommon):
             if data['rt_cd'] != '0':
                 return 0.0, 0, 0.0
 
+            # 같은 ODNO에 여러 row가 있을 수 있어 모두 합산.
+            # ft_ccld_qty 는 해당 row 의 개별 체결 수량이므로 단순 합산이 안전.
+            total_qty = 0
+            total_amt = 0.0
+            total_fee = 0.0
             for item in data.get('output', []):
                 if item.get('odno') != odno:
                     continue
-                fill_price = float(item.get('ft_ccld_unpr3', 0) or 0)
-                fill_qty = int(item.get('ft_ccld_qty', 0) or 0)
-                fill_fee = float(item.get('ovrs_stck_ccld_fee', 0) or 0)
-                return fill_price, fill_qty, fill_fee
+                q = int(item.get('ft_ccld_qty', 0) or 0)
+                p = float(item.get('ft_ccld_unpr3', 0) or 0)
+                f = float(item.get('ovrs_stck_ccld_fee', 0) or 0)
+                total_qty += q
+                total_amt += q * p
+                total_fee += f
+            if total_qty == 0:
+                return 0.0, 0, 0.0
+            return total_amt / total_qty, total_qty, total_fee
         except Exception as e:
             self.logger.warning(f"[KisBroker] Fill detail query error (ODNO={odno}): {e}")
         return 0.0, 0, 0.0
