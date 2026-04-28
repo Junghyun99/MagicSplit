@@ -141,11 +141,11 @@ class TestRunOneCycle:
         # Original _update_positions method
         original_update_positions = engine._update_positions
 
-        def mock_update_positions(positions, signals, executions, today):
+        def mock_update_positions(positions, signals, executions, today, last_sell_prices=None):
             # Check if this is the AAPL update
             if any(e.ticker == "AAPL" for e in executions):
                 raise Exception("Mock position update error")
-            return original_update_positions(positions, signals, executions, today)
+            return original_update_positions(positions, signals, executions, today, last_sell_prices=last_sell_prices)
 
         engine._update_positions = MagicMock(side_effect=mock_update_positions)
 

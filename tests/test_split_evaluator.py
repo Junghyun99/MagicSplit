@@ -412,3 +412,112 @@ class TestPerLevelThresholds:
         assert len(signals) == 1
         assert signals[0].level == 1
         assert signals[0].quantity == 3  # 300 / 100
+
+
+class TestDynamicReentry:
+    """동적 재매수 기준(매도가 기반) 테스트"""
+
+    def test_dynamic_reentry_uses_sell_price_when_higher(
+        self, evaluator, create_rule, create_lot, create_portfolio
+    ):
+        """직전 매도가가 마지막 차수 매수가보다 높으면, 매도가를 기준으로 매수 판단."""
+        # Lv1(100), Lv2(95) 보유. Lv3가 매도된 상태.
+        # 직전 매도가 = 110 (트레일링 스톱으로 높게 매도)
+        # 기존 기준: 95 * 0.95 = 90.25 → 현재가 104 > 90.25 → 매수 안 됨
+        # 동적 기준: 110 * 0.95 = 104.5 → 현재가 104 ≤ 104.5 → 매수!
+        # Lv2 매수가 95에서 현재가 104 → +9.47% < 10% → 매도 조건 미달
+        rules = [create_rule(ticker="AAPL", buy_pct=-5.0, buy_amount=500, max_lots=10)]
+        lots = [
+            create_lot(lot_id="lot_001", ticker="AAPL", buy_price=100.0, level=1),
+            create_lot(lot_id="lot_002", ticker="AAPL", buy_price=95.0, level=2),
+        ]
+        portfolio = create_portfolio(
+            cash=10000.0, prices={"AAPL": 104.0}, holdings={"AAPL": 10}
+        )
+        last_sell_prices = {"AAPL": 110.0}
+
+        signals = evaluator.evaluate_stock(rules[0], lots, portfolio, last_sell_prices)
+
+        assert len(signals) == 1
+        assert signals[0].action == OrderAction.BUY
+        assert signals[0].level == 3
+        assert "동적 재매수" in signals[0].reason
+
+    def test_dynamic_reentry_not_triggered_when_price_above(
+        self, evaluator, create_rule, create_lot, create_portfolio
+    ):
+        """현재가가 동적 기준가보다 높으면 매수 안 됨."""
+        rules = [create_rule(ticker="AAPL", buy_pct=-5.0, sell_pct=15.0, buy_amount=500, max_lots=10)]
+        lots = [
+            create_lot(lot_id="lot_001", ticker="AAPL", buy_price=100.0, level=1),
+            create_lot(lot_id="lot_002", ticker="AAPL", buy_price=95.0, level=2),
+        ]
+        # 매도가 110 * 0.95 = 104.5 → 현재가 105 > 104.5 → 매수 안 됨
+        # Lv2 매수가 95에서 현재가 105 → +10.5% < 15% → 매도 조건 미달
+        portfolio = create_portfolio(
+            cash=10000.0, prices={"AAPL": 105.0}, holdings={"AAPL": 10}
+        )
+        last_sell_prices = {"AAPL": 110.0}
+
+        signals = evaluator.evaluate_stock(rules[0], lots, portfolio, last_sell_prices)
+        buy_signals = [s for s in signals if s.action == OrderAction.BUY]
+        assert len(buy_signals) == 0
+
+    def test_dynamic_reentry_falls_back_to_grid_when_sell_price_lower(
+        self, evaluator, create_rule, create_lot, create_portfolio
+    ):
+        """매도가가 마지막 차수 매수가보다 낮으면 기존 그리드 기준 사용."""
+        rules = [create_rule(ticker="AAPL", buy_pct=-5.0, buy_amount=500, max_lots=10)]
+        lots = [
+            create_lot(lot_id="lot_001", ticker="AAPL", buy_price=100.0, level=1),
+        ]
+        # 매도가 90 < Lv1 매수가 100 → 기존 기준 사용: 100 * 0.95 = 95
+        # 현재가 94 < 95 → 매수 (기존 그리드)
+        portfolio = create_portfolio(
+            cash=10000.0, prices={"AAPL": 94.0}, holdings={"AAPL": 5}
+        )
+        last_sell_prices = {"AAPL": 90.0}
+
+        signals = evaluator.evaluate_stock(rules[0], lots, portfolio, last_sell_prices)
+
+        assert len(signals) == 1
+        assert signals[0].action == OrderAction.BUY
+        assert signals[0].level == 2
+        assert "추가 매수" in signals[0].reason  # 일반 매수 reason
+        assert "동적" not in signals[0].reason
+
+    def test_dynamic_reentry_no_sell_price_uses_grid(
+        self, evaluator, create_rule, create_lot, create_portfolio
+    ):
+        """last_sell_prices가 None이면 기존 그리드 기준 사용."""
+        rules = [create_rule(ticker="AAPL", buy_pct=-5.0, buy_amount=500, max_lots=10)]
+        lots = [
+            create_lot(lot_id="lot_001", ticker="AAPL", buy_price=100.0, level=1),
+        ]
+        # 기존 기준: 100 * 0.95 = 95 → 현재가 94 < 95 → 매수
+        portfolio = create_portfolio(
+            cash=10000.0, prices={"AAPL": 94.0}, holdings={"AAPL": 5}
+        )
+
+        signals = evaluator.evaluate_stock(rules[0], lots, portfolio, None)
+
+        assert len(signals) == 1
+        assert signals[0].action == OrderAction.BUY
+        assert signals[0].level == 2
+
+    def test_dynamic_reentry_does_not_affect_sell(
+        self, evaluator, create_rule, create_lot, create_portfolio
+    ):
+        """동적 재매수 기준은 매도 로직에 영향 없음."""
+        rules = [create_rule(ticker="AAPL", sell_pct=10.0, buy_pct=-5.0)]
+        lots = [
+            create_lot(lot_id="lot_001", ticker="AAPL", buy_price=90.0, level=1),
+        ]
+        # 현재가 100 → +11.1% > 10% → 매도
+        portfolio = create_portfolio(prices={"AAPL": 100.0}, holdings={"AAPL": 5})
+        last_sell_prices = {"AAPL": 200.0}  # 매도가가 높아도 매도 로직에 영향 없음
+
+        signals = evaluator.evaluate_stock(rules[0], lots, portfolio, last_sell_prices)
+
+        assert len(signals) == 1
+        assert signals[0].action == OrderAction.SELL

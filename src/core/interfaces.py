@@ -61,3 +61,13 @@ class IRepository(ABC):
     def get_last_run_date(self) -> Optional[str]:
         """마지막 실행 날짜를 반환한다."""
         ...
+
+    @abstractmethod
+    def load_last_sell_prices(self) -> Dict[str, float]:
+        """티커별 직전 매도가를 로드한다 (동적 재매수 기준용)."""
+        ...
+
+    @abstractmethod
+    def save_last_sell_prices(self, prices: Dict[str, float]) -> None:
+        """티커별 직전 매도가를 저장한다."""
+        ...

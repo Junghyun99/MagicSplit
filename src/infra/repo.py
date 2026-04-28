@@ -28,6 +28,7 @@ class JsonRepository(IRepository):
         self.positions_file = os.path.join(self.root, "positions.json")
         self.history_file = os.path.join(self.root, "history.json")
         self.status_file = os.path.join(self.root, "status.json")
+        self.last_sell_prices_file = os.path.join(self.root, "last_sell_prices.json")
 
     # === Positions ===
 
@@ -164,7 +165,15 @@ class JsonRepository(IRepository):
         data = self._load_json(self.status_file, default={})
         return data.get("last_run_date")
 
-    # === Internal helpers ===
+    # === Last Sell Prices (동적 재매수 기준) ===
+
+    def load_last_sell_prices(self) -> Dict[str, float]:
+        """티커별 직전 매도가를 로드한다."""
+        return self._load_json(self.last_sell_prices_file, default={})
+
+    def save_last_sell_prices(self, prices: Dict[str, float]) -> None:
+        """티커별 직전 매도가를 저장한다."""
+        self._save_json(self.last_sell_prices_file, prices)
 
     def _load_json(self, path: str, default=None):
         if not os.path.exists(path):

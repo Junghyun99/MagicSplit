@@ -68,7 +68,8 @@ class SplitEvaluator:
         마지막 차수만 기준으로 판단하며, 매도 OR 매수 중 하나만 반환한다.
 
         Args:
-            last_sell_prices: 티커별 직전 매도 단가 (재진입 가드용).
+            last_sell_prices: 티커별 직전 매도 단가.
+                재진입 가드 및 동적 재매수 기준에 사용.
                 상위 호출부(엔진)에서 history/repo로부터 조회해 전달한다.
 
         Returns:
@@ -105,8 +106,14 @@ class SplitEvaluator:
         if sell_signal is not None:
             return [sell_signal]
 
-        # 매수 확인
-        buy_signal = self._evaluate_buy(rule, ticker_lots, last_lot, current_price)
+        # 매수 확인 (동적 재매수 기준 적용)
+        last_sell_price = (
+            last_sell_prices.get(rule.ticker) if last_sell_prices else None
+        )
+        buy_signal = self._evaluate_buy(
+            rule, ticker_lots, last_lot, current_price,
+            last_sell_price=last_sell_price,
+        )
         if buy_signal is not None:
             return [buy_signal]
 
@@ -293,8 +300,15 @@ class SplitEvaluator:
         lots: List[PositionLot],
         last_lot: PositionLot,
         current_price: float,
+        last_sell_price: Optional[float] = None,
     ) -> Optional[SplitSignal]:
-        """마지막 차수 대비 추가 매수 여부를 평가한다."""
+        """마지막 차수 대비 추가 매수 여부를 평가한다.
+
+        동적 재매수 기준(Dynamic Re-entry):
+        직전 매도가(last_sell_price)가 마지막 차수 매수가보다 높으면
+        매도가를 기준으로 사용한다. 트레일링 스톱으로 높게 매도한 뒤
+        원래 그리드까지 기다리지 않고, 매도가 대비 하락 시 재매수.
+        """
         next_level = last_lot.level + 1
 
         # max_lots 도달 시 추가 매수 불가
@@ -316,24 +330,42 @@ class SplitEvaluator:
                 )
             return None
 
-        # 마지막 차수 매수가 대비 현재가 비교 (임계치는 마지막 차수 기준)
-        pct_from_last = (current_price - last_lot.buy_price) / last_lot.buy_price * 100
+        # 동적 재매수 기준: max(마지막 차수 매수가, 직전 매도가)
+        reference_price = last_lot.buy_price
+        is_dynamic = False
+        if last_sell_price and last_sell_price > reference_price:
+            reference_price = last_sell_price
+            is_dynamic = True
+
+        pct_from_ref = (current_price - reference_price) / reference_price * 100
         buy_threshold = rule.buy_threshold_at(last_lot.level)
 
-        if pct_from_last <= buy_threshold:
+        if pct_from_ref <= buy_threshold:
             if self._logger:
-                self._logger.info(
-                    f"[{rule.ticker}] Lv{last_lot.level} 매수가 ${last_lot.buy_price:.2f} 대비 "
-                    f"{pct_from_last:+.1f}% → 추가 매수 Lv{next_level} {buy_qty}주 @${current_price:.2f}"
-                )
+                if is_dynamic:
+                    self._logger.info(
+                        f"[{rule.ticker}] 🔄 동적 재매수: 매도가 ${last_sell_price:.2f} 대비 "
+                        f"{pct_from_ref:+.1f}% → 추가 매수 Lv{next_level} {buy_qty}주 @${current_price:.2f} "
+                        f"(원래 기준 Lv{last_lot.level} ${last_lot.buy_price:.2f})"
+                    )
+                else:
+                    self._logger.info(
+                        f"[{rule.ticker}] Lv{last_lot.level} 매수가 ${last_lot.buy_price:.2f} 대비 "
+                        f"{pct_from_ref:+.1f}% → 추가 매수 Lv{next_level} {buy_qty}주 @${current_price:.2f}"
+                    )
+            reason_detail = (
+                f"동적 재매수 Lv{next_level} (매도가 ${last_sell_price:.0f} 대비 {pct_from_ref:+.1f}%)"
+                if is_dynamic
+                else f"추가 매수 Lv{next_level} (Lv{last_lot.level} 대비 {pct_from_ref:+.1f}%)"
+            )
             return SplitSignal(
                 ticker=rule.ticker,
                 lot_id=None,
                 action=OrderAction.BUY,
                 quantity=buy_qty,
                 price=current_price,
-                reason=f"추가 매수 Lv{next_level} (Lv{last_lot.level} 대비 {pct_from_last:+.1f}%)",
-                pct_change=pct_from_last,
+                reason=reason_detail,
+                pct_change=pct_from_ref,
                 level=next_level,
             )
 

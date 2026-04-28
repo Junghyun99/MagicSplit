@@ -83,10 +83,9 @@ class MagicSplitEngine:
             positions = self.repo.load_positions()
             self.logger.info(f"Loaded {len(positions)} position lot(s)")
 
-            # 재진입 가드용 직전 매도가 조회.
-            # TODO(reentry_guard): repo/history에서 티커별 직전 (전량 청산)
-            # 매도 단가를 추출해 채운다. 현재는 비어 있어 가드 비활성.
-            last_sell_prices: dict = {}
+            # 재진입 가드 및 동적 재매수용 직전 매도가 조회.
+            # 매도 체결 시 갱신, 매수 체결 시 초기화.
+            last_sell_prices: dict = self.repo.load_last_sell_prices()
 
             # Step 2.5: 브로커 수량 ↔ positions 수량 합 불일치 검사
             # 불일치 종목은 이번 사이클에서 매매 중단 (자동 보정 미지원)
@@ -128,6 +127,7 @@ class MagicSplitEngine:
                         try:
                             positions = self._update_positions(
                                 positions, signals, executions, today,
+                                last_sell_prices=last_sell_prices,
                             )
                             portfolio = self._refresh_portfolio(portfolio)
                         except Exception as e:
@@ -153,7 +153,8 @@ class MagicSplitEngine:
             if portfolio is not None and positions is not None:
                 self.logger.info(">>> Step 6: Persist")
                 self._persist(portfolio, all_signals, all_executions, positions,
-                              sim_date=sim_date)
+                              sim_date=sim_date,
+                              last_sell_prices=last_sell_prices)
             else:
                 missing = []
                 if portfolio is None:
@@ -301,11 +302,12 @@ class MagicSplitEngine:
         signals: List[SplitSignal],
         executions: List[TradeExecution],
         today: str,
+        last_sell_prices: Optional[dict] = None,
     ) -> List[PositionLot]:
         """체결 결과를 반영하여 포지션을 업데이트한다.
 
-        - 매수 체결 → 신호의 level로 새 lot 추가
-        - 매도 체결 → 신호의 lot_id로 해당 차수 lot 제거
+        - 매수 체결 → 신호의 level로 새 lot 추가, last_sell_price 초기화
+        - 매도 체결 → 신호의 lot_id로 해당 차수 lot 제거, last_sell_price 갱신
         """
         updated = list(positions)
 
@@ -355,6 +357,13 @@ class MagicSplitEngine:
                     level=level,
                 )
                 updated.append(new_lot)
+                # 동적 재매수 소비: 매수 체결 시 직전 매도가 초기화
+                if last_sell_prices is not None and exe.ticker in last_sell_prices:
+                    self.logger.info(
+                        f"[{exe.ticker}] 동적 재매수 기준 초기화 "
+                        f"(매도가 ${last_sell_prices[exe.ticker]:.2f} → 소비됨)"
+                    )
+                    del last_sell_prices[exe.ticker]
                 tag = " (PARTIAL)" if exe.status == ExecutionStatus.PARTIAL else ""
                 self.logger.info(
                     f"[Position] New lot{tag}: {lot_id} Lv{level} "
@@ -396,6 +405,9 @@ class MagicSplitEngine:
                             f"scripts/reconcile_positions.py 로 정합성 확인 권장."
                         )
                     updated.remove(target_lot)
+                    # 동적 재매수 기준 갱신: 매도 체결가를 기록
+                    if last_sell_prices is not None:
+                        last_sell_prices[exe.ticker] = exe.price
                     self.logger.info(
                         f"[Position] Remove lot: {target_lot.lot_id} "
                         f"Lv{target_lot.level} ({target_lot.quantity}주 전량 매도)"
@@ -426,11 +438,14 @@ class MagicSplitEngine:
         executions: List[TradeExecution],
         positions: List[PositionLot],
         sim_date: Optional[str] = None,
+        last_sell_prices: Optional[dict] = None,
     ) -> None:
-        """Step 6: 저장 3종 호출."""
+        """Step 6: 저장 4종 호출."""
         reason = self._build_reason(signals)
 
         self.repo.save_positions(positions)
+        if last_sell_prices is not None:
+            self.repo.save_last_sell_prices(last_sell_prices)
         self.repo.save_trade_history(executions, portfolio, reason, sim_date=sim_date)
         
         # 상태 조립 및 저장 (코어 계층 비즈니스 로직)
