@@ -1,0 +1,1 @@
+- The site targets Korean users, so KRX color conventions (Red=Up, Blue=Down) are used for financial clarity.
