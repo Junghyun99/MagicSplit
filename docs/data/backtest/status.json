@@ -1,82 +1,118 @@
 {
-    "last_updated": "2025-12-30",
-    "last_run_date": "2025-12-30",
+    "last_updated": "2023-12-29",
+    "last_run_date": "2023-12-29",
     "reason": "모니터링 - 신호 없음",
     "portfolio": {
-        "total_value": 16275082.238100009,
-        "cash_balance": 14890982.238100009,
+        "total_value": 13408486.842424994,
+        "cash_balance": 9883986.842424994,
         "holdings": [
             {
                 "ticker": "005930.KS",
-                "qty": 4,
-                "price": 119900.0,
-                "value": 479600.0
+                "qty": 32,
+                "price": 78500.0,
+                "value": 2512000.0
             },
             {
                 "ticker": "058470.KQ",
-                "qty": 15,
-                "price": 60300.0,
-                "value": 904500.0
+                "qty": 25,
+                "price": 40500.0,
+                "value": 1012500.0
             }
         ]
     },
     "positions": {
         "005930.KS": {
-            "total_qty": 4,
-            "lot_count": 1,
-            "total_invested": 402802.4,
-            "current_value": 479600.0,
+            "total_qty": 32,
+            "lot_count": 5,
+            "total_invested": 2371969.6,
+            "current_value": 2512000.0,
             "lots": [
                 {
-                    "lot_id": "lot_20260428_041519_005930.KS_001",
-                    "buy_price": 100700.6,
-                    "quantity": 4,
-                    "buy_date": "2025-11-05",
+                    "lot_id": "lot_20260428_061052_005930.KS_001",
+                    "buy_price": 82982.9,
+                    "quantity": 6,
+                    "buy_date": "2021-01-07",
                     "level": 1,
-                    "current_price": 119900.0,
-                    "pct_change": 19.07
-                }
-            ],
-            "avg_buy_price": 100700.6,
-            "unrealized_pnl": 76797.6,
-            "unrealized_pnl_pct": 19.07,
-            "realized_pnl": 2032008.74,
-            "total_pnl": 2108806.34
-        },
-        "058470.KQ": {
-            "total_qty": 15,
-            "lot_count": 2,
-            "total_invested": 952952.0,
-            "current_value": 904500.0,
-            "lots": [
-                {
-                    "lot_id": "lot_20260428_041519_058470.KQ_001",
-                    "buy_price": 65665.6,
-                    "quantity": 7,
-                    "buy_date": "2025-12-02",
-                    "level": 1,
-                    "current_price": 60300.0,
-                    "pct_change": -8.17
+                    "current_price": 78500.0,
+                    "pct_change": -5.4
                 },
                 {
-                    "lot_id": "lot_20260428_041519_058470.KQ_002",
-                    "buy_price": 61661.6,
-                    "quantity": 8,
-                    "buy_date": "2025-12-15",
+                    "lot_id": "lot_20260428_061053_005930.KS_002",
+                    "buy_price": 78578.5,
+                    "quantity": 6,
+                    "buy_date": "2021-05-13",
                     "level": 2,
-                    "current_price": 60300.0,
-                    "pct_change": -2.21
+                    "current_price": 78500.0,
+                    "pct_change": -0.1
+                },
+                {
+                    "lot_id": "lot_20260428_061053_005930.KS_003",
+                    "buy_price": 74474.4,
+                    "quantity": 6,
+                    "buy_date": "2021-08-13",
+                    "level": 3,
+                    "current_price": 78500.0,
+                    "pct_change": 5.41
+                },
+                {
+                    "lot_id": "lot_20260428_061053_005930.KS_004",
+                    "buy_price": 70170.1,
+                    "quantity": 7,
+                    "buy_date": "2022-03-07",
+                    "level": 4,
+                    "current_price": 78500.0,
+                    "pct_change": 11.87
+                },
+                {
+                    "lot_id": "lot_20260428_061054_005930.KS_005",
+                    "buy_price": 66366.3,
+                    "quantity": 7,
+                    "buy_date": "2023-08-18",
+                    "level": 5,
+                    "current_price": 78500.0,
+                    "pct_change": 18.28
                 }
             ],
-            "avg_buy_price": 63530.1333,
-            "unrealized_pnl": -48452.0,
-            "unrealized_pnl_pct": -5.08,
-            "realized_pnl": 4339804.15,
-            "total_pnl": 4291352.15
+            "avg_buy_price": 74124.05,
+            "unrealized_pnl": 140030.4,
+            "unrealized_pnl_pct": 5.9,
+            "realized_pnl": 771040.02,
+            "total_pnl": 911070.42
+        },
+        "058470.KQ": {
+            "total_qty": 25,
+            "lot_count": 2,
+            "total_invested": 976135.16,
+            "current_value": 1012500.0,
+            "lots": [
+                {
+                    "lot_id": "lot_20260428_061053_058470.KQ_001",
+                    "buy_price": 40180.14,
+                    "quantity": 12,
+                    "buy_date": "2021-12-13",
+                    "level": 1,
+                    "current_price": 40500.0,
+                    "pct_change": 0.8
+                },
+                {
+                    "lot_id": "lot_20260428_061053_058470.KQ_002",
+                    "buy_price": 37997.96,
+                    "quantity": 13,
+                    "buy_date": "2022-01-06",
+                    "level": 2,
+                    "current_price": 40500.0,
+                    "pct_change": 6.58
+                }
+            ],
+            "avg_buy_price": 39045.4064,
+            "unrealized_pnl": 36364.84,
+            "unrealized_pnl_pct": 3.73,
+            "realized_pnl": 2534934.35,
+            "total_pnl": 2571299.19
         }
     },
     "realized_pnl_by_ticker": {
-        "005930.KS": 2032008.74,
-        "058470.KQ": 4339804.15
+        "005930.KS": 771040.0199999999,
+        "058470.KQ": 2534934.35
     }
 }
