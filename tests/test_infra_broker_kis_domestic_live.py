@@ -107,7 +107,7 @@ def broker(logger, test_ticker):
 
 
 @pytest.fixture(scope="session", autouse=True)
-def _cleanup_pending(broker, logger):
+def _cleanup_pending(broker, logger, test_ticker):
     """세션 종료 시 본 테스트가 남긴 미체결을 일괄 취소 (CI 중단·예외 대비)."""
     yield
     try:
@@ -120,7 +120,7 @@ def _cleanup_pending(broker, logger):
     logger.warning(f"[cleanup] 잔여 미체결 {len(pending)}건 — 취소 시도")
     for odno in list(pending):
         try:
-            broker._cancel_order(odno, _normalize_ticker(DEFAULT_TEST_TICKER), 1)
+            broker._cancel_order(odno, test_ticker, 1)
         except Exception as e:
             logger.warning(f"[cleanup] cancel ODNO={odno} 실패: {e}")
 
