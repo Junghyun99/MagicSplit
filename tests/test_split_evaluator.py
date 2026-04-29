@@ -521,3 +521,80 @@ class TestDynamicReentry:
 
         assert len(signals) == 1
         assert signals[0].action == OrderAction.SELL
+
+
+class TestMaxExposure:
+    """투입 비율 상한(max_exposure_pct) 테스트"""
+
+    def test_initial_buy_blocked_when_exceeds_exposure(
+        self, evaluator, create_rule, create_portfolio
+    ):
+        """보유 없음 상태에서 초기 매수 금액이 비중 상한을 초과하면 차단"""
+        # 총 자산 10,000. buy_amount=5000 → 50주 @100 → 5000/10000 = 50% > 20%
+        rules = [create_rule(
+            ticker="AAPL", buy_amount=5000, max_exposure_pct=20.0,
+        )]
+        portfolio = create_portfolio(cash=10000.0, prices={"AAPL": 100.0})
+
+        signals = evaluator.evaluate(rules, [], portfolio)
+        assert len(signals) == 0
+
+    def test_initial_buy_allowed_when_within_exposure(
+        self, evaluator, create_rule, create_portfolio
+    ):
+        """초기 매수 금액이 비중 상한 이내이면 정상 매수"""
+        # 총 자산 10,000. buy_amount=500 → 5주 @100 → 500/10000 = 5% < 20%
+        rules = [create_rule(
+            ticker="AAPL", buy_amount=500, max_exposure_pct=20.0,
+        )]
+        portfolio = create_portfolio(cash=10000.0, prices={"AAPL": 100.0})
+
+        signals = evaluator.evaluate(rules, [], portfolio)
+        assert len(signals) == 1
+        assert signals[0].action == OrderAction.BUY
+        assert signals[0].level == 1
+
+    def test_additional_buy_blocked_when_exceeds_exposure(
+        self, evaluator, create_rule, create_lot, create_portfolio
+    ):
+        """이미 보유 중인 상태에서 추가 매수하면 비중 상한 초과 → 차단"""
+        # 총 자산: cash 5000 + AAPL 5주*94 = 5470 → total 10470
+        # 현재 비중: 470/10470 = 4.5%
+        # 추가 매수: 5주*94 = 470 → 이후 비중: 940/10470 = 9.0% > 5% 상한
+        rules = [create_rule(
+            ticker="AAPL", buy_pct=-5.0, buy_amount=500,
+            max_exposure_pct=5.0,
+        )]
+        lots = [create_lot(
+            ticker="AAPL", buy_price=100.0, quantity=5,
+            buy_date="2026-04-01", level=1,
+        )]
+        portfolio = create_portfolio(
+            cash=5000.0, prices={"AAPL": 94.0}, holdings={"AAPL": 5},
+        )
+
+        signals = evaluator.evaluate(rules, lots, portfolio)
+        buy_signals = [s for s in signals if s.action == OrderAction.BUY]
+        assert len(buy_signals) == 0
+
+    def test_no_exposure_limit_when_not_set(
+        self, evaluator, create_rule, create_lot, create_portfolio
+    ):
+        """max_exposure_pct 미설정(None)이면 비중 제한 없이 매수"""
+        rules = [create_rule(
+            ticker="AAPL", buy_pct=-5.0, buy_amount=500,
+            max_exposure_pct=None,
+        )]
+        lots = [create_lot(
+            ticker="AAPL", buy_price=100.0, quantity=5,
+            buy_date="2026-04-01", level=1,
+        )]
+        portfolio = create_portfolio(
+            cash=5000.0, prices={"AAPL": 94.0}, holdings={"AAPL": 5},
+        )
+
+        signals = evaluator.evaluate(rules, lots, portfolio)
+        buy_signals = [s for s in signals if s.action == OrderAction.BUY]
+        assert len(buy_signals) == 1
+        assert buy_signals[0].level == 2
+

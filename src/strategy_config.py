@@ -121,6 +121,9 @@ class StrategyConfig:
         if not raw_stocks:
             raise ValueError(f"{self.config_path}에 'stocks' 항목이 비어 있습니다.")
 
+        # 글로벌 max_exposure_pct (종목별 설정이 없으면 이 값을 상속)
+        global_max_exposure = self.global_config.get("max_exposure_pct")
+
         needs_presets = any("preset" in s for s in raw_stocks)
         if needs_presets and not os.path.exists(self.presets_path):
             raise FileNotFoundError(
@@ -170,6 +173,12 @@ class StrategyConfig:
             if buy_amount is None and not buy_amounts:
                 buy_amount = 500
 
+            # max_exposure_pct: 개별 설정 > 글로벌 설정 > None(비활성)
+            max_exposure_raw = merged.get("max_exposure_pct", global_max_exposure)
+            max_exposure_pct = (
+                float(max_exposure_raw) if max_exposure_raw is not None else None
+            )
+
             rule = StockRule(
                 ticker=ticker,
                 buy_threshold_pct=float(buy_pct) if buy_pct is not None else None,
@@ -185,6 +194,7 @@ class StrategyConfig:
                 buy_amounts=[float(x) for x in buy_amounts] if buy_amounts else None,
                 trailing_drop_pct=float(trailing_drop) if trailing_drop is not None else None,
                 trailing_drop_pcts=[float(x) for x in trailing_drops] if trailing_drops else None,
+                max_exposure_pct=max_exposure_pct,
             )
             self.rules.append(rule)
             self.market_types.add(market_type)

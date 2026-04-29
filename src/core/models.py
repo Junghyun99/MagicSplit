@@ -48,6 +48,9 @@ class StockRule:
     # 트레일링 스톱용 하락 허용치 (예: 2.0 = 고점 대비 2% 하락 시 매도)
     trailing_drop_pct: Optional[float] = None
     trailing_drop_pcts: Optional[List[float]] = None
+    # 종목별 최대 투입 비중 (예: 20.0 = 계좌 총 자산의 20%까지만 투입)
+    # None이면 비중 제한 없음. 글로벌 설정을 strategy_config에서 상속받을 수 있음.
+    max_exposure_pct: Optional[float] = None
 
     def __post_init__(self):
         if self.buy_threshold_pct is None and not self.buy_threshold_pcts:

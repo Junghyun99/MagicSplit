@@ -95,6 +95,7 @@ class SplitEvaluator:
             )
             signal = self._evaluate_initial_buy(
                 rule, current_price, last_sell_price=last_sell_price,
+                portfolio=portfolio,
             )
             return [signal] if signal else []
 
@@ -113,6 +114,7 @@ class SplitEvaluator:
         buy_signal = self._evaluate_buy(
             rule, ticker_lots, last_lot, current_price,
             last_sell_price=last_sell_price,
+            portfolio=portfolio,
         )
         if buy_signal is not None:
             return [buy_signal]
@@ -228,6 +230,7 @@ class SplitEvaluator:
         rule: StockRule,
         current_price: float,
         last_sell_price: Optional[float] = None,
+        portfolio: Optional[Portfolio] = None,
     ) -> Optional[SplitSignal]:
         """보유 lot이 없을 때 1차수 초기 매수를 평가한다."""
         if not self._passes_reentry_guard(rule, current_price, last_sell_price):
@@ -241,6 +244,12 @@ class SplitEvaluator:
                     f"[{rule.ticker}] 매수 금액(${buy_amount:.2f})으로 "
                     f"1주도 매수 불가 (현재가 ${current_price:.2f}). 스킵."
                 )
+            return None
+
+        # 비중 상한 체크
+        if not self._passes_exposure_guard(
+            rule, [], current_price, buy_qty, portfolio
+        ):
             return None
 
         if self._logger:
@@ -294,6 +303,60 @@ class SplitEvaluator:
             )
         return False
 
+    def _passes_exposure_guard(
+        self,
+        rule: StockRule,
+        ticker_lots: List[PositionLot],
+        current_price: float,
+        buy_qty: int,
+        portfolio: Optional[Portfolio],
+    ) -> bool:
+        """종목별 투입 비중 상한 가드: 매수 후 비중이 상한을 넘는지 확인한다.
+
+        (현재 보유 평가액 + 매수 예정 금액) / 계좌 총 자산 > max_exposure_pct
+        이면 매수를 차단한다.
+
+        Args:
+            rule: 종목 규칙 (max_exposure_pct 포함)
+            ticker_lots: 해당 종목의 현재 보유 lot 목록
+            current_price: 현재가
+            buy_qty: 매수 예정 수량
+            portfolio: 현재 포트폴리오 (비중 계산용)
+
+        Returns:
+            True: 매수 허용 (가드 통과 또는 미설정).
+            False: 매수 차단.
+        """
+        if rule.max_exposure_pct is None:
+            return True
+        if portfolio is None:
+            return True
+
+        total_value = portfolio.total_value
+        if total_value <= 0:
+            return True
+
+        # 현재 보유 평가액
+        current_holding_value = sum(
+            lot.quantity * current_price for lot in ticker_lots
+        )
+        # 매수 후 예상 평가액
+        buy_value = buy_qty * current_price
+        after_exposure = current_holding_value + buy_value
+        after_pct = after_exposure / total_value * 100
+
+        if after_pct > rule.max_exposure_pct:
+            current_pct = current_holding_value / total_value * 100
+            if self._logger:
+                self._logger.info(
+                    f"[{rule.ticker}] 비중 상한 초과: "
+                    f"현재 {current_pct:.1f}% + 매수 예정 {buy_value:,.0f} "
+                    f"= {after_pct:.1f}% > 상한 {rule.max_exposure_pct:.1f}% → 매수 보류"
+                )
+            return False
+
+        return True
+
     def _evaluate_buy(
         self,
         rule: StockRule,
@@ -301,6 +364,7 @@ class SplitEvaluator:
         last_lot: PositionLot,
         current_price: float,
         last_sell_price: Optional[float] = None,
+        portfolio: Optional[Portfolio] = None,
     ) -> Optional[SplitSignal]:
         """마지막 차수 대비 추가 매수 여부를 평가한다.
 
@@ -341,6 +405,12 @@ class SplitEvaluator:
         buy_threshold = rule.buy_threshold_at(last_lot.level)
 
         if pct_from_ref <= buy_threshold:
+            # 비중 상한 체크
+            if not self._passes_exposure_guard(
+                rule, lots, current_price, buy_qty, portfolio
+            ):
+                return None
+
             if self._logger:
                 if is_dynamic:
                     self._logger.info(
