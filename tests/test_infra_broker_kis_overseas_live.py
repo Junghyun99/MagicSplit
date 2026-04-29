@@ -26,6 +26,8 @@ from typing import List
 
 import pytest
 
+import src.infra.broker as _pkg
+from src.config import DEFAULT_HTTP_TIMEOUT
 from src.core.models import Order, OrderAction, ExecutionStatus, Portfolio
 from src.infra.broker.kis_overseas import KisOverseasLiveBroker
 from src.infra.broker.kis_token_cache import (
@@ -46,6 +48,7 @@ DEFAULT_TEST_TICKER = "AAPL"                  # NAS, 약 $170, 유동성 최상
 READONLY_PRICE_TICKERS = ["AAPL", "SPY"]      # NAS + AMS 동시 자극 (거래소 매핑 검증)
 LIMIT_DROP_PCT = 0.95                         # 현재가 대비 -5% 지정가 (체결 안 되도록)
 ORDER_TIMEOUT_SHORT = 5                       # S8 타임아웃 시나리오용
+TEST_ORDER_QTY = 1                            # S6~S8 / cleanup 공통 주문 수량
 
 
 def _normalize_ticker(raw: str) -> str:
@@ -113,7 +116,7 @@ def _cleanup_pending(broker, logger, test_ticker, test_exch):
     logger.warning(f"[cleanup] 잔여 미체결 {len(pending)}건 - 취소 시도")
     for odno in list(pending):
         try:
-            broker._cancel_order(odno, test_exch, test_ticker, 1)
+            broker._cancel_order(odno, test_exch, test_ticker, TEST_ORDER_QTY)
         except Exception as e:
             logger.warning(f"[cleanup] cancel ODNO={odno} 실패: {e}")
 
@@ -222,9 +225,6 @@ class TestFull:
 
         주의: BUY 주문의 SLL_TYPE 은 빈 문자열(""), SELL 만 "00".
         """
-        import src.infra.broker as _pkg
-        from src.config import DEFAULT_HTTP_TIMEOUT
-
         exch = broker._get_exchange_code(ticker, api_type="order")
         url = f"{broker.base_url}/uapi/overseas-stock/v1/trading/order"
         data = {
@@ -254,7 +254,7 @@ class TestFull:
         price = self._make_unfillable_buy_price(broker, test_ticker)
         print(f"  주문가(현재가 -5%): ${price:.2f}")
 
-        odno, exch = self._send_raw_buy(broker, test_ticker, qty=1, price=price)
+        odno, exch = self._send_raw_buy(broker, test_ticker, qty=TEST_ORDER_QTY, price=price)
         print(f"  ODNO={odno} EXCH={exch}")
 
         try:
@@ -266,7 +266,7 @@ class TestFull:
             assert broker._get_pending_orders_count() >= 1
             print(f"  미체결 등록 확인 ({exch} {len(pending)}건)")
         finally:
-            cancelled = broker._cancel_order(odno, exch, test_ticker, 1)
+            cancelled = broker._cancel_order(odno, exch, test_ticker, TEST_ORDER_QTY)
             assert cancelled, f"_cancel_order 실패: ODNO={odno}"
 
         # 취소 반영 대기 후 검증
@@ -282,12 +282,12 @@ class TestFull:
     def test_s7_query_fill_details_for_cancelled(self, broker, test_ticker):
         """S7. 체결조회 (TTTS3035R) - 취소된 ODNO로 호출해도 파싱 깨지지 않아야 함."""
         price = self._make_unfillable_buy_price(broker, test_ticker)
-        odno, exch = self._send_raw_buy(broker, test_ticker, qty=1, price=price)
+        odno, exch = self._send_raw_buy(broker, test_ticker, qty=TEST_ORDER_QTY, price=price)
         print(f"  ODNO={odno} EXCH={exch}")
 
         try:
             time.sleep(1.5)
-            broker._cancel_order(odno, exch, test_ticker, 1)
+            broker._cancel_order(odno, exch, test_ticker, TEST_ORDER_QTY)
             time.sleep(2.0)  # 체결조회 응답에 취소건이 반영될 시간
 
             fill_price, fill_qty, fill_fee = broker._query_fill_details(odno, test_ticker, exch)
@@ -299,7 +299,7 @@ class TestFull:
         finally:
             # 혹시 cancel 실패했을 가능성 대비
             if odno in broker._get_pending_order_ids(exch):
-                broker._cancel_order(odno, exch, test_ticker, 1)
+                broker._cancel_order(odno, exch, test_ticker, TEST_ORDER_QTY)
 
     def test_s8_send_order_timeout(self, broker, test_ticker):
         """S8. 타임아웃 시나리오 - _send_order_and_wait + resolve_timeout_outcome E2E.
@@ -315,7 +315,7 @@ class TestFull:
         order = Order(
             ticker=test_ticker,
             action=OrderAction.BUY,
-            quantity=1,
+            quantity=TEST_ORDER_QTY,
             price=float(unfillable),
         )
         execution = broker._send_order_and_wait(order, timeout=ORDER_TIMEOUT_SHORT)
