@@ -19,7 +19,7 @@ window.ConfigController = (function () {
         tokenInput.value = localStorage.getItem('githubToken') || '';
         ownerInput.value = localStorage.getItem('githubOwner') || 'Junghyun99';
         repoInput.value = localStorage.getItem('githubRepo') || 'MagicSplit';
-        
+
         const savedPath = localStorage.getItem('githubConfigPath') || 'config_overseas.json';
         if (Array.from(pathInput.options).some(o => o.value === savedPath)) {
             pathInput.value = savedPath;
@@ -53,18 +53,18 @@ window.ConfigController = (function () {
         try {
             const { content, sha } = await githubApi.getFile(path);
             ConfigModel.setConfigData(path, content, sha);
-            
+
             ConfigView.showConfigSection(ConfigModel.isPresetMode());
             ConfigView.renderGlobalConfig(ConfigModel.getConfig().global);
-            
+
             ConfigView.renderTickerList(ConfigModel.getConfig().stocks, null, onSelectTicker);
-            
+
             if (ConfigModel.getConfig().stocks.length > 0) {
                 onSelectTicker(0);
             } else {
                 ConfigView.hideTickerEditor();
             }
-            
+
             ConfigView.showBanner('설정을 성공적으로 불러왔습니다.', 'success');
             ConfigView.updateDiffPreview(ConfigModel.getDiff());
         } catch (e) {
@@ -76,9 +76,9 @@ window.ConfigController = (function () {
     function onSelectTicker(index) {
         saveCurrentTickerToModel();
         ConfigModel.setActiveStockIndex(index);
-        
+
         ConfigView.renderTickerList(ConfigModel.getConfig().stocks, index, onSelectTicker);
-        
+
         const stock = ConfigModel.getActiveStock();
         if (stock) {
             ConfigView.showTickerEditor(stock, ConfigModel.isPresetMode());
@@ -87,9 +87,8 @@ window.ConfigController = (function () {
     }
 
     function bindGlobalEvents() {
-        document.getElementById('global-interval').addEventListener('input', saveGlobalConfigToModel);
         document.getElementById('global-notification').addEventListener('change', saveGlobalConfigToModel);
-        
+
         document.getElementById('add-stock-btn').addEventListener('click', () => {
             if (!ConfigModel.getConfig()) return;
             saveCurrentTickerToModel();
@@ -97,12 +96,12 @@ window.ConfigController = (function () {
             ConfigView.renderTickerList(ConfigModel.getConfig().stocks, ConfigModel.getActiveStockIndex(), onSelectTicker);
             onSelectTicker(newIndex);
         });
-        
+
         document.getElementById('delete-stock-btn').addEventListener('click', () => {
             if (confirm('이 종목 설정을 삭제하시겠습니까?')) {
                 ConfigModel.deleteActiveStock();
                 ConfigView.renderTickerList(ConfigModel.getConfig().stocks, ConfigModel.getActiveStockIndex(), onSelectTicker);
-                
+
                 if (ConfigModel.getConfig().stocks.length > 0) {
                     onSelectTicker(0);
                 } else {
@@ -111,13 +110,13 @@ window.ConfigController = (function () {
                 ConfigView.updateDiffPreview(ConfigModel.getDiff());
             }
         });
-        
+
         document.getElementById('add-level-btn').addEventListener('click', () => {
             ConfigView.addLevelRow();
             bindLevelEvents();
             saveCurrentTickerToModel();
         });
-        
+
         document.getElementById('save-config-btn').addEventListener('click', saveConfigToGithub);
     }
 
@@ -153,10 +152,9 @@ window.ConfigController = (function () {
         const config = ConfigModel.getConfig();
         if (!config) return;
         if (!config.global) config.global = {};
-        
+
         const vals = ConfigView.getGlobalValues();
         if (vals) {
-            config.global.check_interval_minutes = parseInt(vals.check_interval_minutes || '60', 10);
             config.global.notification_enabled = vals.notification_enabled;
             ConfigView.updateDiffPreview(ConfigModel.getDiff());
         }
@@ -165,9 +163,9 @@ window.ConfigController = (function () {
     function saveCurrentTickerToModel() {
         const stock = ConfigModel.getActiveStock();
         if (!stock) return;
-        
+
         const vals = ConfigView.getEditorValues();
-        
+
         stock.ticker = vals.ticker;
         if (vals.exchange) stock.exchange = vals.exchange; else delete stock.exchange;
         stock.market_type = vals.market_type;
@@ -178,7 +176,7 @@ window.ConfigController = (function () {
         if (vals.sell_threshold_pct) stock.sell_threshold_pct = parseFloat(vals.sell_threshold_pct); else delete stock.sell_threshold_pct;
         if (vals.buy_amount) stock.buy_amount = parseFloat(vals.buy_amount); else delete stock.buy_amount;
         stock.enabled = vals.enabled;
-        
+
         const filterNaNs = (arr) => {
             let lastValid = -1;
             for (let i = 0; i < arr.length; i++) {
@@ -187,22 +185,22 @@ window.ConfigController = (function () {
             if (lastValid === -1) return undefined;
             return arr.slice(0, lastValid + 1).map(x => isNaN(x) ? 0 : x);
         };
-        
+
         const cleanBuyPcts = filterNaNs(vals.buyPcts);
         const cleanBuyAmts = filterNaNs(vals.buyAmts);
         const cleanSellPcts = filterNaNs(vals.sellPcts);
-        
+
         if (cleanBuyPcts !== undefined) stock.buy_threshold_pcts = cleanBuyPcts; else delete stock.buy_threshold_pcts;
         if (cleanBuyAmts !== undefined) stock.buy_amounts = cleanBuyAmts; else delete stock.buy_amounts;
         if (cleanSellPcts !== undefined) stock.sell_threshold_pcts = cleanSellPcts; else delete stock.sell_threshold_pcts;
-        
+
         const activeIdx = ConfigModel.getActiveStockIndex();
         const lis = document.getElementById('ticker-list').querySelectorAll('li');
         if (lis[activeIdx]) {
             lis[activeIdx].textContent = stock.ticker || '(New Ticker)';
         }
         document.getElementById('current-ticker-title').textContent = stock.ticker ? (ConfigModel.isPresetMode() ? `${stock.ticker} 프리셋` : `${stock.ticker} 설정`) : (ConfigModel.isPresetMode() ? '새 프리셋' : '새 종목 설정');
-        
+
         ConfigView.updateDiffPreview(ConfigModel.getDiff());
     }
 
@@ -217,9 +215,9 @@ window.ConfigController = (function () {
             const msg = `chore(config): update rules via web editor`;
 
             await githubApi.updateFile(ConfigModel.getPath(), contentStr, msg, ConfigModel.getSha());
-            
+
             ConfigView.showBanner('성공적으로 저장되었습니다! GitHub Actions가 스케줄에 따라 실행될 때 적용됩니다.', 'success');
-            
+
             setTimeout(() => {
                 ConfigView.setSaveButtonState(false);
                 loadConfig(ConfigModel.getPath());

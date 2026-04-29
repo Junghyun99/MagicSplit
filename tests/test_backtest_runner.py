@@ -26,7 +26,6 @@ def backtest_config(tmp_path):
             }
         ],
         "global": {
-            "check_interval_minutes": 60,
             "notification_enabled": False,
         },
     }

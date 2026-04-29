@@ -15,7 +15,7 @@ config.json 구조 (단일값 단순 형태):
             "enabled": true
         }
     ],
-    "global": { "check_interval_minutes": 60 }
+    "global": { }
 }
 
 차수별 배열 및 프리셋(공유 파일) 사용 예:

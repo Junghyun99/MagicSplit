@@ -19,7 +19,7 @@ class TestStrategyConfig:
                     "enabled": True,
                 }
             ],
-            "global": {"check_interval_minutes": 60},
+            "global": { },
         }
         config_file = tmp_path / "config.json"
         config_file.write_text(json.dumps(config))

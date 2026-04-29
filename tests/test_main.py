@@ -66,7 +66,7 @@ class TestMagicSplitBot:
                     "enabled": True,
                 },
             ],
-            "global": {"check_interval_minutes": 60},
+            "global": { },
         }))
 
         monkeypatch.chdir(tmp_path)

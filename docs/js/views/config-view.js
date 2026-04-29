@@ -10,9 +10,6 @@ window.ConfigView = (function () {
     }
 
     function renderGlobalConfig(globalConfig) {
-        const globalInterval = document.getElementById('global-interval');
-        globalInterval.value = globalConfig?.check_interval_minutes || 60;
-        
         const globalNotif = document.getElementById('global-notification');
         globalNotif.checked = globalConfig?.notification_enabled !== false;
     }
@@ -32,7 +29,7 @@ window.ConfigView = (function () {
     function showTickerEditor(stock, isPresetMode) {
         document.getElementById('ticker-editor-pane').style.display = '';
         document.getElementById('current-ticker-title').textContent = stock.ticker ? (isPresetMode ? `${stock.ticker} 프리셋` : `${stock.ticker} 설정`) : (isPresetMode ? '새 프리셋' : '새 종목 설정');
-        
+
         document.getElementById('edit-ticker-label').textContent = isPresetMode ? 'Preset Name' : 'Ticker';
         document.getElementById('group-exchange').style.display = isPresetMode ? 'none' : '';
         document.getElementById('group-market').style.display = isPresetMode ? 'none' : '';
@@ -46,11 +43,11 @@ window.ConfigView = (function () {
         document.getElementById('edit-max-lots').value = stock.max_lots !== undefined ? stock.max_lots : 10;
         document.getElementById('edit-reentry').value = stock.reentry_guard_pct !== undefined ? stock.reentry_guard_pct : '';
         document.getElementById('edit-enabled').checked = stock.enabled !== false;
-        
+
         document.getElementById('edit-buy-pct').value = stock.buy_threshold_pct !== undefined ? stock.buy_threshold_pct : '';
         document.getElementById('edit-sell-pct').value = stock.sell_threshold_pct !== undefined ? stock.sell_threshold_pct : '';
         document.getElementById('edit-buy-amt').value = stock.buy_amount !== undefined ? stock.buy_amount : '';
-        
+
         renderLevelsTable(stock);
     }
 
@@ -61,14 +58,14 @@ window.ConfigView = (function () {
     function renderLevelsTable(stock) {
         const tbody = document.getElementById('levels-tbody');
         tbody.innerHTML = '';
-        
+
         const buyPcts = stock.buy_threshold_pcts || [];
         const sellPcts = stock.sell_threshold_pcts || [];
         const buyAmts = stock.buy_amounts || [];
-        
+
         const maxLen = Math.max(buyPcts.length, sellPcts.length, buyAmts.length);
         const rowCount = Math.max(maxLen, 1);
-        
+
         for (let i = 0; i < rowCount; i++) {
             addLevelRow(i + 1, buyPcts[i], buyAmts[i], sellPcts[i]);
         }
@@ -77,9 +74,9 @@ window.ConfigView = (function () {
     function addLevelRow(levelNum, buyPct, buyAmt, sellPct) {
         const tbody = document.getElementById('levels-tbody');
         const tr = document.createElement('tr');
-        
+
         const lvStr = levelNum || (tbody.children.length + 1);
-        
+
         tr.innerHTML = `
             <td class="level-num" style="font-weight:bold; color:var(--text-muted); text-align:center;">${lvStr}</td>
             <td><input type="number" step="0.1" class="level-table-input l-buy-pct" value="${buyPct !== undefined ? buyPct : ''}"></td>
@@ -87,7 +84,7 @@ window.ConfigView = (function () {
             <td><input type="number" step="0.1" class="level-table-input l-sell-pct" value="${sellPct !== undefined ? sellPct : ''}"></td>
             <td style="text-align:right;"><button type="button" class="btn remove-level-btn" style="background: var(--danger); color: white; padding: 2px 8px;">X</button></td>
         `;
-        
+
         tbody.appendChild(tr);
     }
 
@@ -136,12 +133,12 @@ window.ConfigView = (function () {
         const buyPcts = [];
         const buyAmts = [];
         const sellPcts = [];
-        
+
         rows.forEach(row => {
             const rowBuyPct = row.querySelector('.l-buy-pct').value;
             const rowBuyAmt = row.querySelector('.l-buy-amt').value;
             const rowSellPct = row.querySelector('.l-sell-pct').value;
-            
+
             buyPcts.push(rowBuyPct !== '' ? parseFloat(rowBuyPct) : NaN);
             buyAmts.push(rowBuyAmt !== '' ? parseFloat(rowBuyAmt) : NaN);
             sellPcts.push(rowSellPct !== '' ? parseFloat(rowSellPct) : NaN);
@@ -165,11 +162,9 @@ window.ConfigView = (function () {
     }
 
     function getGlobalValues() {
-        const intv = document.getElementById('global-interval');
         const notif = document.getElementById('global-notification');
-        if (!intv || !notif) return null;
+        if (!notif) return null;
         return {
-            check_interval_minutes: intv.value,
             notification_enabled: notif.checked
         };
     }
