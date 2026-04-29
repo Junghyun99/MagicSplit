@@ -1,15 +1,15 @@
-name: MagicSplit Trading Bot (Domestic)
+name: MagicSplit Trading Bot (Overseas)
 
 on:
   # [임시 비활성화] 개발 중이므로 스케줄 실행을 중지합니다.
   # schedule:
-  #   # 한국 장 운영시간: 09:00~15:30 KST = UTC 00:00~06:30
-  #   # 매시 정각 및 일부 주요 시간대 실행 (필요에 따라 조정 가능)
-  #   - cron: '0 0-6 * * 1-5'  # UTC 00:00~06:00 = KST 09:00~15:00 (월~금)
+  #   # 미국 장 운영시간: 한국시간 23:30~06:00 (서머타임 22:30~05:00)
+  #   # UTC 기준 14:00~21:00 (월~금) -> KST 23:00~06:00
+  #   - cron: '0 14-21 * * 1-5'
   workflow_dispatch:
     inputs:
       skip_holiday_check:
-        description: '한국 공휴일 체크를 건너뛰고 강제 실행(수동 디버그용)'
+        description: '미국 공휴일 체크를 건너뛰고 강제 실행(수동 디버그용)'
         required: false
         default: false
         type: boolean
@@ -18,11 +18,11 @@ permissions:
   contents: write
 
 jobs:
-  trade-domestic:
+  trade-overseas:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     concurrency:
-      group: trading-domestic
+      group: trading-overseas
       cancel-in-progress: false
 
     steps:
@@ -45,27 +45,27 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-    - name: Check Korean holiday
+    - name: Check US holiday
       id: holiday
       if: ${{ github.event_name == 'schedule' || inputs.skip_holiday_check != true }}
       run: |
         python - <<'PY'
         import os, datetime, zoneinfo, holidays
-        kr = holidays.country_holidays('KR')
-        kst_tz = zoneinfo.ZoneInfo('Asia/Seoul')
-        today_kst = datetime.datetime.now(datetime.timezone.utc).astimezone(kst_tz).date()
-        is_holiday = today_kst in kr
-        name = kr.get(today_kst, "")
-        print(f"KST today={today_kst}, holiday={is_holiday}, name={name}")
+        us = holidays.country_holidays('US')
+        ny_tz = zoneinfo.ZoneInfo('America/New_York')
+        today_ny = datetime.datetime.now(datetime.timezone.utc).astimezone(ny_tz).date()
+        is_holiday = today_ny in us
+        name = us.get(today_ny, "")
+        print(f"NY today={today_ny}, holiday={is_holiday}, name={name}")
         with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
             f.write(f"is_holiday={'true' if is_holiday else 'false'}\n")
-            f.write(f"kst_date={today_kst.isoformat()}\n")
+            f.write(f"ny_date={today_ny.isoformat()}\n")
         PY
 
     - name: Skip if holiday
       if: ${{ steps.holiday.outputs.is_holiday == 'true' }}
       run: |
-        echo "::notice title=Holiday Skip::${{ steps.holiday.outputs.kst_date }} 는 한국 공휴일입니다. 실행을 건너뜁니다."
+        echo "::notice title=Holiday Skip::${{ steps.holiday.outputs.ny_date }} 는 미국 공휴일입니다. 실행을 건너뜁니다."
         exit 0
 
     - name: Restore KIS token cache
@@ -78,10 +78,10 @@ jobs:
         restore-keys: |
           kis-token-shared-
 
-    - name: Run MagicSplit Bot (Domestic)
+    - name: Run MagicSplit Bot (Overseas)
       if: ${{ steps.holiday.outputs.is_holiday != 'true' }}
       env:
-        CONFIG_JSON_PATH: config_domestic.json
+        CONFIG_JSON_PATH: config_overseas.json
         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         KIS_APP_KEY: ${{ secrets.KIS_APP_KEY }}
         KIS_APP_SECRET: ${{ secrets.KIS_APP_SECRET }}
@@ -101,8 +101,8 @@ jobs:
       if: ${{ success() && steps.holiday.outputs.is_holiday != 'true' }}
       uses: stefanzweifel/git-auto-commit-action@v5
       with:
-        commit_message: "Auto-update domestic trading data and logs [skip ci]"
-        file_pattern: "docs/data/domestic/*.json logs/domestic/*.log"
+        commit_message: "Auto-update overseas trading data and logs [skip ci]"
+        file_pattern: "docs/data/overseas/*.json logs/overseas/*.log"
         commit_user_name: "github-actions[bot]"
         commit_user_email: "github-actions[bot]@users.noreply.github.com"
         add_options: '--force'
@@ -110,7 +110,7 @@ jobs:
     - name: Notify Slack on failure
       if: ${{ failure() && steps.holiday.outputs.is_holiday != 'true' }}
       env:
-        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_LIVE }}
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
       run: |
         if [ -z "${SLACK_WEBHOOK_URL:-}" ]; then
           echo "SLACK_WEBHOOK_URL not set, skipping Slack notification"
@@ -118,5 +118,5 @@ jobs:
         fi
         RUN_URL="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
         curl -X POST -H 'Content-type: application/json' \
-          --data "{\"text\":\":rotating_light: MagicSplit (Domestic) FAILED\n<${RUN_URL}|Run #${{ github.run_id }}>\"}" \
+          --data "{\"text\":\":rotating_light: MagicSplit (Overseas) FAILED\n<${RUN_URL}|Run #${{ github.run_id }}>\"}" \
           "$SLACK_WEBHOOK_URL"

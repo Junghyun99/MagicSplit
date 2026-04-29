@@ -44,8 +44,19 @@ class MagicSplitBot:
         # 1. 공용 설정 및 인프라
         self.config = Config()
         self.strategy = StrategyConfig(self.config.CONFIG_JSON_PATH)
-        self.logger = TradeLogger(self.config.LOG_PATH)
-        self.logger.info("=== Initializing MagicSplit Bot (single account) ===")
+        
+        # 2. 매매 규칙 로드 및 마켓 타입 식별
+        rules = [r for r in self.strategy.rules if r.enabled]
+        if not rules:
+            raise ValueError(
+                "활성화된 종목이 없습니다. config.json의 stocks 항목을 확인하세요."
+            )
+        self.market_type = rules[0].market_type
+
+        # 3. 마켓별 로그 경로 설정 및 로거 초기화
+        log_dir = os.path.join(self.config.LOG_PATH, self.market_type)
+        self.logger = TradeLogger(log_dir)
+        self.logger.info(f"=== Initializing MagicSplit Bot ({self.market_type}) ===")
 
         self.notifier = SlackNotifier(self.config.SLACK_WEBHOOK_URL, self.logger)
 
@@ -53,14 +64,6 @@ class MagicSplitBot:
             f"Loaded {len(self.strategy.rules)} stock rule(s) from {self.config.CONFIG_JSON_PATH}"
         )
 
-        # 2. 엔진 생성 (config 파일의 마켓 타입으로 단일 엔진)
-        rules = [r for r in self.strategy.rules if r.enabled]
-        if not rules:
-            raise ValueError(
-                "활성화된 종목이 없습니다. config.json의 stocks 항목을 확인하세요."
-            )
-
-        self.market_type = rules[0].market_type
         self.logger.info(
             f"[{self.market_type}] {len(rules)} rule(s), "
             f"mode={'LIVE' if self.config.IS_LIVE else 'PAPER'}"
