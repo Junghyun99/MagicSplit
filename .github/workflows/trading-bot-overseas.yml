@@ -82,7 +82,7 @@ jobs:
       if: ${{ steps.holiday.outputs.is_holiday != 'true' }}
       env:
         CONFIG_JSON_PATH: config_overseas.json
-        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_LIVE }}
         KIS_APP_KEY: ${{ secrets.KIS_APP_KEY }}
         KIS_APP_SECRET: ${{ secrets.KIS_APP_SECRET }}
         KIS_ACC_NO: ${{ secrets.KIS_ACC_NO }}
@@ -110,7 +110,7 @@ jobs:
     - name: Notify Slack on failure
       if: ${{ failure() && steps.holiday.outputs.is_holiday != 'true' }}
       env:
-        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_LIVE }}
       run: |
         if [ -z "${SLACK_WEBHOOK_URL:-}" ]; then
           echo "SLACK_WEBHOOK_URL not set, skipping Slack notification"
