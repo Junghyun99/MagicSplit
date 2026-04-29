@@ -156,6 +156,8 @@ window.ConfigController = (function () {
         const vals = ConfigView.getGlobalValues();
         if (vals) {
             config.global.notification_enabled = vals.notification_enabled;
+            if (vals.max_exposure_pct) config.global.max_exposure_pct = parseFloat(vals.max_exposure_pct); else delete config.global.max_exposure_pct;
+            if (vals.trailing_drop_pct) config.global.trailing_drop_pct = parseFloat(vals.trailing_drop_pct); else delete config.global.trailing_drop_pct;
             ConfigView.updateDiffPreview(ConfigModel.getDiff());
         }
     }
@@ -175,6 +177,8 @@ window.ConfigController = (function () {
         if (vals.buy_threshold_pct) stock.buy_threshold_pct = parseFloat(vals.buy_threshold_pct); else delete stock.buy_threshold_pct;
         if (vals.sell_threshold_pct) stock.sell_threshold_pct = parseFloat(vals.sell_threshold_pct); else delete stock.sell_threshold_pct;
         if (vals.buy_amount) stock.buy_amount = parseFloat(vals.buy_amount); else delete stock.buy_amount;
+        if (vals.max_exposure_pct) stock.max_exposure_pct = parseFloat(vals.max_exposure_pct); else delete stock.max_exposure_pct;
+        if (vals.trailing_drop_pct) stock.trailing_drop_pct = parseFloat(vals.trailing_drop_pct); else delete stock.trailing_drop_pct;
         stock.enabled = vals.enabled;
 
         const filterNaNs = (arr) => {
@@ -189,10 +193,12 @@ window.ConfigController = (function () {
         const cleanBuyPcts = filterNaNs(vals.buyPcts);
         const cleanBuyAmts = filterNaNs(vals.buyAmts);
         const cleanSellPcts = filterNaNs(vals.sellPcts);
+        const cleanTrailingDrops = filterNaNs(vals.trailingDrops);
 
         if (cleanBuyPcts !== undefined) stock.buy_threshold_pcts = cleanBuyPcts; else delete stock.buy_threshold_pcts;
         if (cleanBuyAmts !== undefined) stock.buy_amounts = cleanBuyAmts; else delete stock.buy_amounts;
         if (cleanSellPcts !== undefined) stock.sell_threshold_pcts = cleanSellPcts; else delete stock.sell_threshold_pcts;
+        if (cleanTrailingDrops !== undefined) stock.trailing_drop_pcts = cleanTrailingDrops; else delete stock.trailing_drop_pcts;
 
         const activeIdx = ConfigModel.getActiveStockIndex();
         const lis = document.getElementById('ticker-list').querySelectorAll('li');

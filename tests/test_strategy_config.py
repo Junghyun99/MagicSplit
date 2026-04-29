@@ -298,3 +298,57 @@ class TestMaxExposureConfig:
         sc = StrategyConfig(str(config_file))
         assert sc.rules[0].max_exposure_pct is None
 
+
+class TestTrailingDropConfig:
+    """글로벌/개별 trailing_drop_pct 로딩 테스트"""
+
+    def test_global_trailing_drop_applied_to_all(self, tmp_path):
+        """global.trailing_drop_pct가 모든 종목에 상속됨"""
+        config = {
+            "stocks": [
+                {"ticker": "AAPL", "buy_amount": 500},
+                {"ticker": "MSFT", "buy_amount": 1000},
+            ],
+            "global": {"trailing_drop_pct": 2.5},
+        }
+        config_file = tmp_path / "config_overseas.json"
+        config_file.write_text(json.dumps(config))
+
+        sc = StrategyConfig(str(config_file))
+        assert sc.rules[0].trailing_drop_pct == 2.5
+        assert sc.rules[1].trailing_drop_pct == 2.5
+
+    def test_individual_overrides_global(self, tmp_path):
+        """종목별 trailing_drop_pct가 글로벌 설정을 오버라이드"""
+        config = {
+            "stocks": [
+                {"ticker": "AAPL", "buy_amount": 500},
+                {"ticker": "SPEC", "buy_amount": 500, "trailing_drop_pct": 5.0},
+            ],
+            "global": {"trailing_drop_pct": 2.5},
+        }
+        config_file = tmp_path / "config_overseas.json"
+        config_file.write_text(json.dumps(config))
+
+        sc = StrategyConfig(str(config_file))
+        assert sc.rules[0].trailing_drop_pct == 2.5  # 글로벌 상속
+        assert sc.rules[1].trailing_drop_pct == 5.0   # 개별 오버라이드
+
+    def test_per_level_arrays(self, tmp_path):
+        """trailing_drop_pcts 배열 로딩 확인"""
+        config = {
+            "stocks": [{
+                "ticker": "AAPL",
+                "trailing_drop_pcts": [1.0, 1.5, 2.0],
+            }]
+        }
+        config_file = tmp_path / "config_overseas.json"
+        config_file.write_text(json.dumps(config))
+
+        sc = StrategyConfig(str(config_file))
+        rule = sc.rules[0]
+        assert rule.trailing_drop_pcts == [1.0, 1.5, 2.0]
+        assert rule.trailing_drop_at(1) == 1.0
+        assert rule.trailing_drop_at(2) == 1.5
+        assert rule.trailing_drop_at(10) == 2.0  # clamp to last
+

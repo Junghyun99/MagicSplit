@@ -12,6 +12,9 @@ window.ConfigView = (function () {
     function renderGlobalConfig(globalConfig) {
         const globalNotif = document.getElementById('global-notification');
         globalNotif.checked = globalConfig?.notification_enabled !== false;
+
+        document.getElementById('global-max-exposure').value = globalConfig?.max_exposure_pct !== undefined ? globalConfig.max_exposure_pct : '';
+        document.getElementById('global-trailing-drop').value = globalConfig?.trailing_drop_pct !== undefined ? globalConfig.trailing_drop_pct : '';
     }
 
     function renderTickerList(stocks, activeIndex, onSelect) {
@@ -47,6 +50,8 @@ window.ConfigView = (function () {
         document.getElementById('edit-buy-pct').value = stock.buy_threshold_pct !== undefined ? stock.buy_threshold_pct : '';
         document.getElementById('edit-sell-pct').value = stock.sell_threshold_pct !== undefined ? stock.sell_threshold_pct : '';
         document.getElementById('edit-buy-amt').value = stock.buy_amount !== undefined ? stock.buy_amount : '';
+        document.getElementById('edit-max-exposure').value = stock.max_exposure_pct !== undefined ? stock.max_exposure_pct : '';
+        document.getElementById('edit-trailing-drop').value = stock.trailing_drop_pct !== undefined ? stock.trailing_drop_pct : '';
 
         renderLevelsTable(stock);
     }
@@ -62,16 +67,17 @@ window.ConfigView = (function () {
         const buyPcts = stock.buy_threshold_pcts || [];
         const sellPcts = stock.sell_threshold_pcts || [];
         const buyAmts = stock.buy_amounts || [];
+        const trailingDrops = stock.trailing_drop_pcts || [];
 
-        const maxLen = Math.max(buyPcts.length, sellPcts.length, buyAmts.length);
+        const maxLen = Math.max(buyPcts.length, sellPcts.length, buyAmts.length, trailingDrops.length);
         const rowCount = Math.max(maxLen, 1);
 
         for (let i = 0; i < rowCount; i++) {
-            addLevelRow(i + 1, buyPcts[i], buyAmts[i], sellPcts[i]);
+            addLevelRow(i + 1, buyPcts[i], buyAmts[i], sellPcts[i], trailingDrops[i]);
         }
     }
 
-    function addLevelRow(levelNum, buyPct, buyAmt, sellPct) {
+    function addLevelRow(levelNum, buyPct, buyAmt, sellPct, trailingDrop) {
         const tbody = document.getElementById('levels-tbody');
         const tr = document.createElement('tr');
 
@@ -82,6 +88,7 @@ window.ConfigView = (function () {
             <td><input type="number" step="0.1" class="level-table-input l-buy-pct" value="${buyPct !== undefined ? buyPct : ''}"></td>
             <td><input type="number" class="level-table-input l-buy-amt" value="${buyAmt !== undefined ? buyAmt : ''}"></td>
             <td><input type="number" step="0.1" class="level-table-input l-sell-pct" value="${sellPct !== undefined ? sellPct : ''}"></td>
+            <td><input type="number" step="0.1" class="level-table-input l-trailing-drop" value="${trailingDrop !== undefined ? trailingDrop : ''}"></td>
             <td style="text-align:right;"><button type="button" class="btn remove-level-btn" style="background: var(--danger); color: white; padding: 2px 8px;">X</button></td>
         `;
 
@@ -128,20 +135,22 @@ window.ConfigView = (function () {
         }
     }
 
-    function getEditorValues() {
         const rows = document.getElementById('levels-tbody').querySelectorAll('tr');
         const buyPcts = [];
         const buyAmts = [];
         const sellPcts = [];
+        const trailingDrops = [];
 
         rows.forEach(row => {
             const rowBuyPct = row.querySelector('.l-buy-pct').value;
             const rowBuyAmt = row.querySelector('.l-buy-amt').value;
             const rowSellPct = row.querySelector('.l-sell-pct').value;
+            const rowTrailingDrop = row.querySelector('.l-trailing-drop').value;
 
             buyPcts.push(rowBuyPct !== '' ? parseFloat(rowBuyPct) : NaN);
             buyAmts.push(rowBuyAmt !== '' ? parseFloat(rowBuyAmt) : NaN);
             sellPcts.push(rowSellPct !== '' ? parseFloat(rowSellPct) : NaN);
+            trailingDrops.push(rowTrailingDrop !== '' ? parseFloat(rowTrailingDrop) : NaN);
         });
 
         return {
@@ -154,10 +163,13 @@ window.ConfigView = (function () {
             buy_threshold_pct: document.getElementById('edit-buy-pct').value,
             sell_threshold_pct: document.getElementById('edit-sell-pct').value,
             buy_amount: document.getElementById('edit-buy-amt').value,
+            max_exposure_pct: document.getElementById('edit-max-exposure').value,
+            trailing_drop_pct: document.getElementById('edit-trailing-drop').value,
             enabled: document.getElementById('edit-enabled').checked,
             buyPcts,
             buyAmts,
-            sellPcts
+            sellPcts,
+            trailingDrops
         };
     }
 
@@ -165,7 +177,9 @@ window.ConfigView = (function () {
         const notif = document.getElementById('global-notification');
         if (!notif) return null;
         return {
-            notification_enabled: notif.checked
+            notification_enabled: notif.checked,
+            max_exposure_pct: document.getElementById('global-max-exposure').value,
+            trailing_drop_pct: document.getElementById('global-trailing-drop').value
         };
     }
 

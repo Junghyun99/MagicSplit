@@ -121,8 +121,9 @@ class StrategyConfig:
         if not raw_stocks:
             raise ValueError(f"{self.config_path}에 'stocks' 항목이 비어 있습니다.")
 
-        # 글로벌 max_exposure_pct (종목별 설정이 없으면 이 값을 상속)
+        # 글로벌 설정들 (종목별 설정이 없으면 이 값을 상속)
         global_max_exposure = self.global_config.get("max_exposure_pct")
+        global_trailing_drop = self.global_config.get("trailing_drop_pct")
 
         needs_presets = any("preset" in s for s in raw_stocks)
         if needs_presets and not os.path.exists(self.presets_path):
@@ -179,6 +180,12 @@ class StrategyConfig:
                 float(max_exposure_raw) if max_exposure_raw is not None else None
             )
 
+            # trailing_drop_pct: 개별 설정 > 글로벌 설정 > None(비활성)
+            trailing_drop_raw = merged.get("trailing_drop_pct", global_trailing_drop)
+            trailing_drop_pct = (
+                float(trailing_drop_raw) if trailing_drop_raw is not None else None
+            )
+
             rule = StockRule(
                 ticker=ticker,
                 buy_threshold_pct=float(buy_pct) if buy_pct is not None else None,
@@ -192,7 +199,7 @@ class StrategyConfig:
                 buy_threshold_pcts=[float(x) for x in buy_pcts] if buy_pcts else None,
                 sell_threshold_pcts=[float(x) for x in sell_pcts] if sell_pcts else None,
                 buy_amounts=[float(x) for x in buy_amounts] if buy_amounts else None,
-                trailing_drop_pct=float(trailing_drop) if trailing_drop is not None else None,
+                trailing_drop_pct=trailing_drop_pct,
                 trailing_drop_pcts=[float(x) for x in trailing_drops] if trailing_drops else None,
                 max_exposure_pct=max_exposure_pct,
             )
