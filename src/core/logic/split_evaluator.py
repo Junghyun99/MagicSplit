@@ -1,4 +1,4 @@
-﻿# src/core/logic/split_evaluator.py
+# src/core/logic/split_evaluator.py
 import math
 from typing import Dict, List, Optional
 
@@ -36,7 +36,7 @@ class SplitEvaluator:
         """모든 종목에 대해 매수/매도 신호를 평가한다.
 
         Args:
-            stock_rules: config.json에서 로드된 종목별 매매 규칙
+            stock_rules: 설정 파일에서 로드된 종목별 매매 규칙
             positions: 현재 보유 중인 분할 포지션 목록
             portfolio: 현재 포트폴리오 (현금, 보유 종목, 현재가)
             last_sell_prices: 티커별 직전(전량 청산) 매도 단가.

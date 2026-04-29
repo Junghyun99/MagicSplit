@@ -37,7 +37,7 @@ def run_backtest(
     """MagicSplit 전략 백테스트를 실행한다.
 
     Args:
-        config_path: config.json 경로
+        config_path: 설정 파일(config_*.json) 경로
         start_date: 시작일 'YYYY-MM-DD'
         end_date: 종료일 'YYYY-MM-DD'
         initial_cash: 초기 자금 (USD 또는 KRW)

@@ -49,7 +49,7 @@ class MagicSplitBot:
         rules = [r for r in self.strategy.rules if r.enabled]
         if not rules:
             raise ValueError(
-                "활성화된 종목이 없습니다. config.json의 stocks 항목을 확인하세요."
+                "활성화된 종목이 없습니다. 설정 파일(config_domestic.json 또는 config_overseas.json)의 stocks 항목을 확인하세요."
             )
         self.market_type = rules[0].market_type
 

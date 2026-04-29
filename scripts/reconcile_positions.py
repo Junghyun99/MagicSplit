@@ -222,7 +222,7 @@ def _build_repo_and_broker(logger):
     # 검사하므로, 여기서는 전체 rule 을 그대로 전달한다.
     rules = strategy.rules
     if not rules:
-        raise ValueError("config.json 에 종목이 없습니다.")
+        raise ValueError("설정 파일(config_*.json)에 종목이 없습니다.")
     market_type = rules[0].market_type
 
     if market_type == "domestic":

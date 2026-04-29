@@ -1,4 +1,4 @@
-﻿# src/core/models.py
+# src/core/models.py
 from dataclasses import dataclass
 from enum import Enum
 from typing import Dict, List, Optional
@@ -24,7 +24,7 @@ class ExecutionStatus(str, Enum):
 
 @dataclass
 class StockRule:
-    """종목별 매매 규칙 (config.json에서 로드).
+    """종목별 매매 규칙 (설정 파일에서 로드).
 
     차수별 차등을 위해 배열 필드(`*_pcts`, `buy_amounts`)를 제공한다.
     배열이 있으면 배열이 우선, 없으면 단일값(`*_pct`, `buy_amount`)을 사용.

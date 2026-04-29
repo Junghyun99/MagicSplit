@@ -467,7 +467,7 @@ class KisOverseasBrokerBase(KisBrokerCommon):
         if price_code is None:
             self.logger.warning(
                 f"[KisBroker] 알 수 없는 티커 '{ticker}' - 기본 거래소 코드(NAS/NASD) 사용. "
-                f"config.json의 exchange 필드를 확인하세요."
+                f"설정 파일의 exchange 필드를 확인하세요."
             )
             price_code = 'NAS'
         if api_type == "order":

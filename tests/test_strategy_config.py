@@ -6,7 +6,7 @@ from src.strategy_config import StrategyConfig
 
 class TestStrategyConfig:
     def test_load_valid_config(self, tmp_path):
-        """유효한 config.json 로드"""
+        """유효한 config_overseas.json 로드"""
         config = {
             "stocks": [
                 {
@@ -21,7 +21,7 @@ class TestStrategyConfig:
             ],
             "global": { },
         }
-        config_file = tmp_path / "config.json"
+        config_file = tmp_path / "config_overseas.json"
         config_file.write_text(json.dumps(config))
 
         sc = StrategyConfig(str(config_file))
@@ -43,7 +43,7 @@ class TestStrategyConfig:
                 {"ticker": "MSFT", "buy_amount": 1000},
             ]
         }
-        config_file = tmp_path / "config.json"
+        config_file = tmp_path / "config_overseas.json"
         config_file.write_text(json.dumps(config))
 
         sc = StrategyConfig(str(config_file))
@@ -52,12 +52,12 @@ class TestStrategyConfig:
     def test_file_not_found(self):
         """존재하지 않는 파일"""
         with pytest.raises(FileNotFoundError):
-            StrategyConfig("/nonexistent/config.json")
+            StrategyConfig("/nonexistent/config_overseas.json")
 
     def test_empty_stocks(self, tmp_path):
         """stocks가 비어있으면 ValueError"""
         config = {"stocks": []}
-        config_file = tmp_path / "config.json"
+        config_file = tmp_path / "config_overseas.json"
         config_file.write_text(json.dumps(config))
 
         with pytest.raises(ValueError, match="비어 있습니다"):
@@ -66,7 +66,7 @@ class TestStrategyConfig:
     def test_missing_ticker(self, tmp_path):
         """ticker가 없으면 ValueError"""
         config = {"stocks": [{"buy_amount": 500}]}
-        config_file = tmp_path / "config.json"
+        config_file = tmp_path / "config_overseas.json"
         config_file.write_text(json.dumps(config))
 
         with pytest.raises(ValueError, match="ticker"):
@@ -75,7 +75,7 @@ class TestStrategyConfig:
     def test_default_values(self, tmp_path):
         """기본값 적용 확인"""
         config = {"stocks": [{"ticker": "AAPL"}]}
-        config_file = tmp_path / "config.json"
+        config_file = tmp_path / "config_overseas.json"
         config_file.write_text(json.dumps(config))
 
         sc = StrategyConfig(str(config_file))
@@ -89,7 +89,7 @@ class TestStrategyConfig:
     def test_disabled_stock(self, tmp_path):
         """enabled: false인 종목도 로드됨 (필터링은 엔진에서)"""
         config = {"stocks": [{"ticker": "AAPL", "enabled": False}]}
-        config_file = tmp_path / "config.json"
+        config_file = tmp_path / "config_overseas.json"
         config_file.write_text(json.dumps(config))
 
         sc = StrategyConfig(str(config_file))
@@ -100,7 +100,7 @@ class TestStrategyConfig:
         config = {
             "stocks": [{"ticker": "NEWSTOCK", "exchange": "NYS"}]
         }
-        config_file = tmp_path / "config.json"
+        config_file = tmp_path / "config_overseas.json"
         config_file.write_text(json.dumps(config))
 
         sc = StrategyConfig(str(config_file))
@@ -123,7 +123,7 @@ class TestPerLevelArrays:
                 "max_lots": 10,
             }]
         }
-        config_file = tmp_path / "config.json"
+        config_file = tmp_path / "config_overseas.json"
         config_file.write_text(json.dumps(config))
 
         sc = StrategyConfig(str(config_file))
@@ -147,7 +147,7 @@ class TestPerLevelArrays:
                 "buy_amount": 500,
             }]
         }
-        config_file = tmp_path / "config.json"
+        config_file = tmp_path / "config_overseas.json"
         config_file.write_text(json.dumps(config))
 
         rule = StrategyConfig(str(config_file)).rules[0]
@@ -160,7 +160,7 @@ class TestPresets:
     """공유 프리셋 파일 로딩 및 병합"""
 
     def _write(self, tmp_path, cfg: dict, presets: dict | None = None):
-        cfg_file = tmp_path / "config.json"
+        cfg_file = tmp_path / "config_overseas.json"
         cfg_file.write_text(json.dumps(cfg))
         if presets is not None:
             (tmp_path / "presets.json").write_text(json.dumps(presets))
@@ -245,7 +245,7 @@ class TestPresets:
         presets_file.write_text(json.dumps({
             "p1": {"buy_threshold_pcts": [-5], "sell_threshold_pcts": [10], "buy_amounts": [500]}
         }))
-        cfg_file = tmp_path / "config.json"
+        cfg_file = tmp_path / "config_overseas.json"
         cfg_file.write_text(json.dumps({"stocks": [{"ticker": "AAPL", "preset": "p1"}]}))
 
         sc = StrategyConfig(str(cfg_file), presets_path=str(presets_file))
@@ -264,7 +264,7 @@ class TestMaxExposureConfig:
             ],
             "global": {"max_exposure_pct": 20.0},
         }
-        config_file = tmp_path / "config.json"
+        config_file = tmp_path / "config_overseas.json"
         config_file.write_text(json.dumps(config))
 
         sc = StrategyConfig(str(config_file))
@@ -280,7 +280,7 @@ class TestMaxExposureConfig:
             ],
             "global": {"max_exposure_pct": 20.0},
         }
-        config_file = tmp_path / "config.json"
+        config_file = tmp_path / "config_overseas.json"
         config_file.write_text(json.dumps(config))
 
         sc = StrategyConfig(str(config_file))
@@ -292,7 +292,7 @@ class TestMaxExposureConfig:
         config = {
             "stocks": [{"ticker": "AAPL", "buy_amount": 500}],
         }
-        config_file = tmp_path / "config.json"
+        config_file = tmp_path / "config_overseas.json"
         config_file.write_text(json.dumps(config))
 
         sc = StrategyConfig(str(config_file))

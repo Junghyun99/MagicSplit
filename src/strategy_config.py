@@ -1,7 +1,7 @@
-﻿# src/strategy_config.py
-"""config.json에서 종목별 매매 규칙(StockRule)을 로드한다.
+# src/strategy_config.py
+"""config_domestic.json 또는 config_overseas.json에서 종목별 매매 규칙(StockRule)을 로드한다.
 
-config.json 구조 (단일값 단순 형태):
+설정 파일 구조 (단일값 단순 형태):
 {
     "stocks": [
         {
@@ -43,14 +43,14 @@ from src.core.models import StockRule
 
 
 class StrategyConfig:
-    """config.json 로더.
+    """전략 설정 로더.
 
-    config.json을 읽어 종목별 StockRule 리스트를 생성한다.
+    config_domestic.json 또는 config_overseas.json을 읽어 종목별 StockRule 리스트를 생성한다.
     """
 
     def __init__(
         self,
-        config_path: str = "config.json",
+        config_path: str = "config_overseas.json",
         presets_path: Optional[str] = None,
     ):
         self.config_path = config_path
@@ -109,7 +109,7 @@ class StrategyConfig:
         if not os.path.exists(self.config_path):
             raise FileNotFoundError(
                 f"매매 규칙 설정 파일을 찾을 수 없습니다: {self.config_path}. "
-                f"config.json을 생성하세요."
+                f"config_domestic.json 또는 config_overseas.json을 생성하세요."
             )
 
         with open(self.config_path, 'r', encoding='utf-8') as f:

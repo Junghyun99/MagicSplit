@@ -11,7 +11,7 @@ from src.backtest.runner import run_backtest, _validate_tickers
 
 @pytest.fixture
 def backtest_config(tmp_path):
-    """백테스트용 config.json 생성"""
+    """백테스트용 설정 파일 생성"""
     config = {
         "stocks": [
             {
@@ -29,14 +29,14 @@ def backtest_config(tmp_path):
             "notification_enabled": False,
         },
     }
-    config_path = tmp_path / "config.json"
+    config_path = tmp_path / "config_overseas.json"
     config_path.write_text(json.dumps(config))
     return str(config_path)
 
 
 @pytest.fixture
 def multi_stock_config(tmp_path):
-    """2종목 백테스트 config.json"""
+    """2종목 백테스트 설정 파일"""
     config = {
         "stocks": [
             {
@@ -62,7 +62,7 @@ def multi_stock_config(tmp_path):
         ],
         "global": {},
     }
-    config_path = tmp_path / "config.json"
+    config_path = tmp_path / "config_overseas.json"
     config_path.write_text(json.dumps(config))
     return str(config_path)
 
@@ -161,7 +161,7 @@ class TestRunBacktest:
             ],
             "global": {},
         }
-        config_path = str(tmp_path / "config.json")
+        config_path = str(tmp_path / "config_overseas.json")
         with open(config_path, "w", encoding='utf-8') as f:
             json.dump(config, f, ensure_ascii=False)
 
