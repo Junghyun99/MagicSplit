@@ -3,80 +3,10 @@
     "last_run_date": "2025-12-30",
     "reason": "모니터링 - 신호 없음",
     "portfolio": {
-        "total_value": 16380353.559500007,
-        "cash_balance": 14996253.559500007,
-        "holdings": [
-            {
-                "ticker": "005930.KS",
-                "qty": 4,
-                "price": 119900.0,
-                "value": 479600.0
-            },
-            {
-                "ticker": "058470.KQ",
-                "qty": 15,
-                "price": 60300.0,
-                "value": 904500.0
-            }
-        ]
+        "total_value": 100.0,
+        "cash_balance": 100.0,
+        "holdings": []
     },
-    "positions": {
-        "005930.KS": {
-            "total_qty": 4,
-            "lot_count": 1,
-            "total_invested": 402802.4,
-            "current_value": 479600.0,
-            "lots": [
-                {
-                    "lot_id": "lot_20260429_002659_005930.KS_001",
-                    "buy_price": 100700.6,
-                    "quantity": 4,
-                    "buy_date": "2025-11-05",
-                    "level": 1,
-                    "current_price": 119900.0,
-                    "pct_change": 19.07
-                }
-            ],
-            "avg_buy_price": 100700.6,
-            "unrealized_pnl": 76797.6,
-            "unrealized_pnl_pct": 19.07,
-            "realized_pnl": 2058805.05,
-            "total_pnl": 2135602.65
-        },
-        "058470.KQ": {
-            "total_qty": 15,
-            "lot_count": 2,
-            "total_invested": 952952.0,
-            "current_value": 904500.0,
-            "lots": [
-                {
-                    "lot_id": "lot_20260429_002659_058470.KQ_001",
-                    "buy_price": 65665.6,
-                    "quantity": 7,
-                    "buy_date": "2025-12-02",
-                    "level": 1,
-                    "current_price": 60300.0,
-                    "pct_change": -8.17
-                },
-                {
-                    "lot_id": "lot_20260429_002659_058470.KQ_002",
-                    "buy_price": 61661.6,
-                    "quantity": 8,
-                    "buy_date": "2025-12-15",
-                    "level": 2,
-                    "current_price": 60300.0,
-                    "pct_change": -2.21
-                }
-            ],
-            "avg_buy_price": 63530.1333,
-            "unrealized_pnl": -48452.0,
-            "unrealized_pnl_pct": -5.08,
-            "realized_pnl": 4417894.11,
-            "total_pnl": 4369442.11
-        }
-    },
-    "realized_pnl_by_ticker": {
-        "005930.KS": 2058805.05,
-        "058470.KQ": 4417894.110000001
-    }
+    "positions": {},
+    "realized_pnl_by_ticker": {}
 }
