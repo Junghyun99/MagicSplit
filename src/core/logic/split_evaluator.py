@@ -304,6 +304,23 @@ class SplitEvaluator:
                 is_blocked=True,
             )
 
+        # 잔고 부족 체크
+        passed, reason = self._passes_cash_guard(rule, current_price, buy_qty, portfolio)
+        if not passed:
+            if self._logger:
+                self._logger.info(f"[{rule.ticker}] {reason} -> 매수 보류")
+            return SplitSignal(
+                ticker=rule.ticker,
+                lot_id=None,
+                action=OrderAction.BUY,
+                quantity=buy_qty,
+                price=current_price,
+                reason=reason,
+                pct_change=0.0,
+                level=1,
+                is_blocked=True,
+            )
+
         # 비중 상한 체크
         passed, reason = self._passes_exposure_guard(
             rule, [], current_price, buy_qty, portfolio
@@ -427,6 +444,30 @@ class SplitEvaluator:
 
         return True, ""
 
+    def _passes_cash_guard(
+        self,
+        rule: StockRule,
+        current_price: float,
+        buy_qty: int,
+        portfolio: Optional[Portfolio],
+    ) -> tuple[bool, str]:
+        """잔고 부족 여부를 확인한다."""
+        if portfolio is None:
+            return True, ""
+
+        # 1. 1주도 살 수 없는 경우
+        if portfolio.total_cash < current_price:
+            reason = f"현금 부족: 보유 현금 ${portfolio.total_cash:,.2f} < 현재가 ${current_price:,.2f} (1주도 매수 불가)"
+            return False, reason
+
+        # 2. 계획된 수량을 살 현금이 부족한 경우
+        required_cash = buy_qty * current_price
+        if portfolio.total_cash < required_cash:
+            reason = f"현금 부족: 보유 현금 ${portfolio.total_cash:,.2f} < 매수 예정 금액 ${required_cash:,.2f} ({buy_qty}주)"
+            return False, reason
+
+        return True, ""
+
     def _evaluate_buy(
         self,
         rule: StockRule,
@@ -502,6 +543,25 @@ class SplitEvaluator:
         buy_threshold = rule.buy_threshold_at(last_lot.level)
 
         if pct_from_ref <= buy_threshold:
+            # 잔고 부족 체크
+            passed, reason = self._passes_cash_guard(
+                rule, current_price, buy_qty, portfolio
+            )
+            if not passed:
+                if self._logger:
+                    self._logger.info(f"[{rule.ticker}] {reason} -> 매수 보류")
+                return SplitSignal(
+                    ticker=rule.ticker,
+                    lot_id=None,
+                    action=OrderAction.BUY,
+                    quantity=buy_qty,
+                    price=current_price,
+                    reason=reason,
+                    pct_change=pct_from_ref,
+                    level=next_level,
+                    is_blocked=True,
+                )
+
             # 비중 상한 체크
             passed, reason = self._passes_exposure_guard(
                 rule, lots, current_price, buy_qty, portfolio
