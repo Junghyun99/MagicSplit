@@ -96,7 +96,7 @@ presets.json             # 차수별 배열 공유 프리셋 (선택)
 ## CI/CD
 GitHub Actions 워크플로우:
 - `python-test.yml` - main 브랜치 Push/PR 시 단위 테스트 (80% 커버리지 필수, 실패 시 Slack 알림)
-- `trading-bot.yml` - 해외 매매 봇 (현재 스케줄 비활성, manual dispatch). `CONFIG_JSON_PATH=config_overseas.json`
+- `trading-bot-overseas.yml` - 해외 매매 봇 (현재 스케줄 비활성, manual dispatch). `CONFIG_JSON_PATH=config_overseas.json`
 - `trading-bot-domestic.yml` - 국내 매매 봇 (현재 스케줄 비활성, manual dispatch). `CONFIG_JSON_PATH=config_domestic.json`
 - `manual-trade.yml` - Actions UI에서 수동 매수/매도 주문 (market_type, ticker, action, quantity 입력)
 - `run-backtest.yml` - 백테스트 실행 (시작/종료일, 초기 자본, 마켓 타입 선택). 결과를 `docs/data/backtest/`에 커밋
