@@ -110,18 +110,28 @@ class MagicSplitEngine:
                     signals = self.evaluator.evaluate_stock(
                         rule, positions, portfolio, last_sell_prices,
                     )
-                    all_signals.extend(signals)
 
-                    if not signals:
-                        self._log_no_signal_status(
-                            rule, positions, portfolio, last_sell_prices,
-                        )
+                    # 차단된 신호(비중 제한 등) 처리
+                    blocked_signals = [s for s in signals if s.is_blocked]
+                    active_signals = [s for s in signals if not s.is_blocked]
+
+                    for s in blocked_signals:
+                        self._notify_alert(f"[{s.ticker}] {s.reason}")
+
+                    all_signals.extend(active_signals)
+
+                    if not active_signals:
+                        # 차단된 신호조차 없었다면 '신호 없음' 상태 로깅
+                        if not blocked_signals:
+                            self._log_no_signal_status(
+                                rule, positions, portfolio, last_sell_prices,
+                            )
                         continue
 
                     # 3b. 주문 실행
-                    orders = self._signals_to_orders(signals)
+                    orders = self._signals_to_orders(active_signals)
                     executions = self._execute_stock_orders(orders)
-                    self._enrich_executions(executions, signals)
+                    self._enrich_executions(executions, active_signals)
                     all_executions.extend(executions)
 
                     # 3c. 포지션 즉시 반영 (다음 종목 판단에 영향)

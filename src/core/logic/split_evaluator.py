@@ -247,10 +247,21 @@ class SplitEvaluator:
             return None
 
         # 비중 상한 체크
-        if not self._passes_exposure_guard(
+        passed, reason = self._passes_exposure_guard(
             rule, [], current_price, buy_qty, portfolio
-        ):
-            return None
+        )
+        if not passed:
+            return SplitSignal(
+                ticker=rule.ticker,
+                lot_id=None,
+                action=OrderAction.BUY,
+                quantity=buy_qty,
+                price=current_price,
+                reason=reason,
+                pct_change=0.0,
+                level=1,
+                is_blocked=True,
+            )
 
         if self._logger:
             self._logger.info(
@@ -324,17 +335,17 @@ class SplitEvaluator:
             portfolio: 현재 포트폴리오 (비중 계산용)
 
         Returns:
-            True: 매수 허용 (가드 통과 또는 미설정).
-            False: 매수 차단.
+            (True, ""): 매수 허용 (가드 통과 또는 미설정).
+            (False, reason): 매수 차단 및 사유.
         """
         if rule.max_exposure_pct is None:
-            return True
+            return True, ""
         if portfolio is None:
-            return True
+            return True, ""
 
         total_value = portfolio.total_value
         if total_value <= 0:
-            return True
+            return True, ""
 
         # 현재 보유 평가액
         current_holding_value = sum(
@@ -347,15 +358,15 @@ class SplitEvaluator:
 
         if after_pct > rule.max_exposure_pct:
             current_pct = current_holding_value / total_value * 100
+            reason = (
+                f"비중 상한 초과: 현재 {current_pct:.1f}% + 매수 예정 {after_pct - current_pct:.1f}% "
+                f"= {after_pct:.1f}% > 상한 {rule.max_exposure_pct:.1f}%"
+            )
             if self._logger:
-                self._logger.info(
-                    f"[{rule.ticker}] 비중 상한 초과: "
-                    f"현재 {current_pct:.1f}% + 매수 예정 {buy_value:,.0f} "
-                    f"= {after_pct:.1f}% > 상한 {rule.max_exposure_pct:.1f}% → 매수 보류"
-                )
-            return False
+                self._logger.info(f"[{rule.ticker}] {reason} → 매수 보류")
+            return False, reason
 
-        return True
+        return True, ""
 
     def _evaluate_buy(
         self,
@@ -406,10 +417,21 @@ class SplitEvaluator:
 
         if pct_from_ref <= buy_threshold:
             # 비중 상한 체크
-            if not self._passes_exposure_guard(
+            passed, reason = self._passes_exposure_guard(
                 rule, lots, current_price, buy_qty, portfolio
-            ):
-                return None
+            )
+            if not passed:
+                return SplitSignal(
+                    ticker=rule.ticker,
+                    lot_id=None,
+                    action=OrderAction.BUY,
+                    quantity=buy_qty,
+                    price=current_price,
+                    reason=reason,
+                    pct_change=pct_from_ref,
+                    level=next_level,
+                    is_blocked=True,
+                )
 
             if self._logger:
                 if is_dynamic:

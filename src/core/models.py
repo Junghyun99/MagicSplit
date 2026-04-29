@@ -168,6 +168,7 @@ class SplitSignal:
     pct_change: float       # 매수가 대비 변동률
     level: int = 0          # 대상 차수 (매도: 해당 lot 차수, 매수: 새로운 차수)
     buy_price: float = 0.0  # 매도 시 원래 매수 단가 (손익 계산용)
+    is_blocked: bool = False  # 비중 제한 등으로 인해 실행이 차단된 신호 여부
 
 
 @dataclass
