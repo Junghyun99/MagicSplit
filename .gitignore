@@ -57,7 +57,6 @@ cover/
 
 # Django stuff:
 *.log
-!logs/**/.gitkeep
 local_settings.py
 db.sqlite3
 db.sqlite3-journal
@@ -216,7 +215,12 @@ CLAUDE.local.md
 
 # KIS API 토큰 캐시 (민감 정보)
 .kis_token_cache.json
+
+# Project Data & Logs (Keep directory structure, ignore data files)
 logs/**
 !logs/**/
 !logs/**/.gitkeep
-!logs/backtest/**
+
+docs/data/**
+!docs/data/**/
+!docs/data/**/.gitkeep

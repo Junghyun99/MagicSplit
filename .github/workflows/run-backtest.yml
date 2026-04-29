@@ -81,3 +81,4 @@ jobs:
       with:
         commit_message: "backtest result update (${{ inputs.start }} ~ ${{ inputs.end }}) [skip ci]"
         file_pattern: "docs/data/backtest/** logs/backtest/*"
+        add_options: '--force'
