@@ -103,26 +103,29 @@ class MagicSplitEngine:
                 try:
                     self.logger.info(f">>> Processing {rule.ticker}")
 
-                    # 3a-pre. 자금 설정 점검 (현재가 > buy_amount → 1주도 매수 불가)
-                    self._warn_if_budget_insufficient(rule, portfolio, positions)
-
                     # 3a. 해당 종목 신호 평가
                     signals = self.evaluator.evaluate_stock(
                         rule, positions, portfolio, last_sell_prices,
                     )
 
-                    # 차단된 신호(비중 제한 등) 처리
+                    # 신호 3-way 분류: blocked(경고) / info(상태보고) / active(주문)
                     blocked_signals = [s for s in signals if s.is_blocked]
-                    active_signals = [s for s in signals if not s.is_blocked]
+                    info_signals = [s for s in signals if s.is_info]
+                    active_signals = [
+                        s for s in signals
+                        if not s.is_blocked and not s.is_info
+                    ]
 
                     for s in blocked_signals:
                         self._notify_alert(f"[{s.ticker}] {s.reason}")
+                    for s in info_signals:
+                        self._notify_message(f"[{s.ticker}] {s.reason}")
 
                     all_signals.extend(active_signals)
 
                     if not active_signals:
-                        # 차단된 신호조차 없었다면 '신호 없음' 상태 로깅
-                        if not blocked_signals:
+                        # 활성 신호가 없고, 차단/정보 신호도 없었다면 '신호 없음' 상태 로깅
+                        if not blocked_signals and not info_signals:
                             self._log_no_signal_status(
                                 rule, positions, portfolio, last_sell_prices,
                             )
@@ -173,20 +176,33 @@ class MagicSplitEngine:
                     missing.append("포트폴리오")
                 if positions is None:
                     missing.append("포지션")
-                self.logger.error(
-                    f">>> Step 6: {', '.join(missing)} 조회 실패로 저장 생략"
+                msg = (
+                    f">>> Step 6: {', '.join(missing)} 조회 실패로 저장 생략. "
+                    f"수동 데이터 복구 필요"
                 )
+                self.logger.error(msg)
+                self._notify_alert(f"데이터 저장 생략: {', '.join(missing)} 조회 실패. 수동 데이터 복구 필요")
 
         # 알림
         fail_suffix = f" (실패: {', '.join(failed_tickers)})" if failed_tickers else ""
-        if all_executions:
-            self._notify_message(f"Orders Executed. Count: {len(all_executions)}{fail_suffix}")
+        filled_execs = [
+            e for e in all_executions
+            if e.status != ExecutionStatus.REJECTED
+        ]
+        rejected_count = len(all_executions) - len(filled_execs)
+        reject_suffix = f" (거절: {rejected_count}건)" if rejected_count > 0 else ""
+        if filled_execs:
+            self._notify_message(
+                f"Orders Executed. Count: {len(filled_execs)}"
+                f"{reject_suffix}{fail_suffix}"
+            )
         elif portfolio is not None:
             self._notify_message(
-                f"모니터링 완료. 신호 없음 | ${portfolio.total_value:,.0f}{fail_suffix}"
+                f"모니터링 완료. 신호 없음 | ${portfolio.total_value:,.0f}"
+                f"{reject_suffix}{fail_suffix}"
             )
         else:
-            self._notify_message(f"사이클 실패{fail_suffix}")
+            self._notify_message(f"사이클 실패{reject_suffix}{fail_suffix}")
 
         final_pf = portfolio or Portfolio(
             total_cash=0, holdings={}, current_prices={},
@@ -266,36 +282,6 @@ class MagicSplitEngine:
         self.logger.error(summary)
         self._notify_alert(summary)
         return {m.ticker for m in mismatches}
-
-    def _warn_if_budget_insufficient(
-        self,
-        rule: StockRule,
-        portfolio: Portfolio,
-        positions: List[PositionLot],
-    ) -> None:
-        """현재가가 buy_amount를 초과해 1주도 매수 불가한 경우 사용자 경고를 보낸다.
-
-        이 상태로는 초기 진입도, 추가 매수(하락 시 분할)도 불가능하므로
-        config의 buy_amount를 상향 조정해야 한다는 알림을 발송한다.
-        단, 이미 max_lots에 도달한 종목은 어차피 추가 매수 대상이 아니므로 생략.
-        """
-        ticker_lot_count = sum(1 for p in positions if p.ticker == rule.ticker)
-        if ticker_lot_count >= rule.max_lots:
-            return
-
-        current_price = portfolio.current_prices.get(rule.ticker, 0)
-        if current_price <= 0 or rule.buy_amount <= 0:
-            return
-        if rule.buy_amount >= current_price:
-            return
-
-        msg = (
-            f"[{rule.ticker}] buy_amount({rule.buy_amount:,.2f}) < "
-            f"현재가({current_price:,.2f}) → 1주도 매수 불가. "
-            f"config.buy_amount를 상향 조정하세요."
-        )
-        self.logger.warning(msg)
-        self._notify_alert(msg)
 
     def _log_no_signal_status(
         self,
@@ -384,6 +370,10 @@ class MagicSplitEngine:
             if exe.status == ExecutionStatus.REJECTED:
                 self.logger.warning(
                     f"[Position] Skip: {exe.ticker} {exe.action} rejected"
+                )
+                self._notify_alert(
+                    f"[{exe.ticker}] {exe.action} 주문 거절 (REJECTED): "
+                    f"예수금 부족 등 브로커 사유 확인 필요. {exe.reason}"
                 )
                 continue
             if exe.status == ExecutionStatus.ORDERED:

@@ -214,12 +214,13 @@ class TestRunOneCycle:
 
 
 class TestBudgetWarning:
-    """현재가 > buy_amount 일 때 사용자 경고."""
+    """현재가 > buy_amount 일 때 evaluator가 is_blocked 신호를 반환하고
+    엔진이 _notify_alert로 전달하는지 검증."""
 
     def test_warns_when_price_exceeds_buy_amount(
         self, mock_broker, mock_repo, mock_logger,
     ):
-        """현재가가 buy_amount보다 크면 logger.warning + notifier.send_alert 발송."""
+        """현재가가 buy_amount보다 크면 notifier.send_alert 발송."""
         rules = [StockRule("BRK-A", -5.0, 10.0, 500, 10)]
         mock_broker.get_portfolio.return_value = Portfolio(
             total_cash=10000.0, holdings={},
@@ -233,19 +234,13 @@ class TestBudgetWarning:
         )
         eng.run_one_cycle(sim_date="2026-04-10")
 
-        mock_logger.warning.assert_any_call(
-            "[BRK-A] buy_amount(500.00) < 현재가(600,000.00) → 1주도 매수 불가. "
-            "config.buy_amount를 상향 조정하세요."
-        )
-        notifier.send_alert.assert_any_call(
-            "[BRK-A] buy_amount(500.00) < 현재가(600,000.00) → 1주도 매수 불가. "
-            "config.buy_amount를 상향 조정하세요."
-        )
+        alert_msgs = [c.args[0] for c in notifier.send_alert.call_args_list]
+        assert any("매수 불가" in m and "BRK-A" in m for m in alert_msgs)
 
     def test_no_warning_when_budget_sufficient(
         self, mock_broker, mock_repo, mock_logger,
     ):
-        """buy_amount >= 현재가이면 경고 미발송."""
+        """buy_amount >= 현재가이면 예산 경고 미발송."""
         rules = [StockRule("AAPL", -5.0, 10.0, 500, 10)]
         mock_broker.get_portfolio.return_value = Portfolio(
             total_cash=10000.0, holdings={},
@@ -259,16 +254,13 @@ class TestBudgetWarning:
         )
         eng.run_one_cycle(sim_date="2026-04-10")
 
-        # 예산 경고 문구는 호출되지 않아야 함
-        for call in mock_logger.warning.call_args_list:
-            assert "buy_amount" not in call.args[0]
         for call in notifier.send_alert.call_args_list:
-            assert "buy_amount" not in call.args[0]
+            assert "매수 불가" not in call.args[0]
 
     def test_no_warning_when_max_lots_reached(
         self, mock_broker, mock_repo, mock_logger,
     ):
-        """이미 max_lots에 도달한 종목은 어차피 추가 매수 불가 → 경고 생략."""
+        """이미 max_lots에 도달한 종목은 max_lots 차단 알림이 가되 예산 알림은 미발송."""
         rules = [StockRule("BRK-A", -5.0, 10.0, 500, max_lots=2)]
         mock_broker.get_portfolio.return_value = Portfolio(
             total_cash=10000.0, holdings={"BRK-A": 2},
@@ -286,13 +278,13 @@ class TestBudgetWarning:
         )
         eng.run_one_cycle(sim_date="2026-04-10")
 
-        for call in notifier.send_alert.call_args_list:
-            assert "buy_amount" not in call.args[0]
+        alert_msgs = [c.args[0] for c in notifier.send_alert.call_args_list]
+        assert not any("buy_amount" in m for m in alert_msgs)
 
     def test_no_warning_when_price_unavailable(
         self, mock_broker, mock_repo, mock_logger,
     ):
-        """현재가 조회 실패(0 이하)이면 예산 경고 미발송 (별도 warning은 존재할 수 있음)."""
+        """현재가 조회 실패(0 이하)이면 가격 조회 실패 알림이 발생하되 예산 경고는 미발송."""
         rules = [StockRule("AAPL", -5.0, 10.0, 500, 10)]
         mock_broker.get_portfolio.return_value = Portfolio(
             total_cash=10000.0, holdings={},
@@ -306,8 +298,9 @@ class TestBudgetWarning:
         )
         eng.run_one_cycle(sim_date="2026-04-10")
 
-        for call in notifier.send_alert.call_args_list:
-            assert "buy_amount" not in call.args[0]
+        alert_msgs = [c.args[0] for c in notifier.send_alert.call_args_list]
+        assert not any("buy_amount" in m for m in alert_msgs)
+
 
 
 class TestReconcileHalt:

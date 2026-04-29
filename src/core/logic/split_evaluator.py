@@ -82,11 +82,19 @@ class SplitEvaluator:
         current_price = portfolio.current_prices.get(rule.ticker, 0)
 
         if current_price <= 0:
+            reason = f"현재가 조회 실패 (price={current_price}). 종목 코드/API 상태 확인 필요"
             if self._logger:
-                self._logger.warning(
-                    f"[{rule.ticker}] 현재가 조회 실패 (price={current_price}). 스킵."
-                )
-            return []
+                self._logger.warning(f"[{rule.ticker}] {reason}")
+            return [SplitSignal(
+                ticker=rule.ticker,
+                lot_id=None,
+                action=OrderAction.BUY,
+                quantity=0,
+                price=0.0,
+                reason=reason,
+                pct_change=0.0,
+                is_blocked=True,
+            )]
 
         # 보유 lot이 없으면 → 1차수 초기 매수
         if not ticker_lots:
@@ -103,9 +111,16 @@ class SplitEvaluator:
         last_lot = max(ticker_lots, key=lambda l: l.level)
 
         # 매도 확인 (우선)
+        self._trailing_info_signal = None
         sell_signal = self._evaluate_sell(rule, last_lot, current_price)
         if sell_signal is not None:
             return [sell_signal]
+
+        # 트레일링 스톱 활성화 시 info 신호 수집
+        result: List[SplitSignal] = []
+        if self._trailing_info_signal is not None:
+            result.append(self._trailing_info_signal)
+            self._trailing_info_signal = None
 
         # 매수 확인 (동적 재매수 기준 적용)
         last_sell_price = (
@@ -117,9 +132,9 @@ class SplitEvaluator:
             portfolio=portfolio,
         )
         if buy_signal is not None:
-            return [buy_signal]
+            result.append(buy_signal)
 
-        return []
+        return result
 
     def _evaluate_sell(
         self,
@@ -148,7 +163,7 @@ class SplitEvaluator:
                         if was_inactive:
                             self._logger.info(
                                 f"[{rule.ticker}] Lv{last_lot.level}: "
-                                f"🔔 트레일링 스톱 활성화 "
+                                f"트레일링 스톱 활성화 "
                                 f"(매도조건 +{sell_threshold:.0f}% 도달, "
                                 f"현재가 ${current_price:,.0f}, "
                                 f"스톱가 ${stop_price:,.0f}, "
@@ -157,11 +172,31 @@ class SplitEvaluator:
                         else:
                             self._logger.info(
                                 f"[{rule.ticker}] Lv{last_lot.level}: "
-                                f"📈 트레일링 고점 갱신 "
+                                f"트레일링 고점 갱신 "
                                 f"${old_highest:,.0f} → ${current_price:,.0f} "
                                 f"(매수가 대비 {pct_change:+.1f}%, "
                                 f"스톱가 ${stop_price:,.0f})"
                             )
+                    # 최초 활성화 시 정보성 알림 신호 생성
+                    if was_inactive:
+                        info_reason = (
+                            f"Lv{last_lot.level}: 트레일링 스톱 활성화 — "
+                            f"현재가 ${current_price:,.0f} "
+                            f"(매수가 대비 {pct_change:+.1f}%), "
+                            f"스톱가 ${stop_price:,.0f}"
+                        )
+                        self._trailing_info_signal = SplitSignal(
+                            ticker=rule.ticker,
+                            lot_id=last_lot.lot_id,
+                            action=OrderAction.SELL,
+                            quantity=0,
+                            price=current_price,
+                            reason=info_reason,
+                            pct_change=pct_change,
+                            level=last_lot.level,
+                            buy_price=last_lot.buy_price,
+                            is_info=True,
+                        )
                 else:
                     # 고점 미갱신: 보합 또는 소폭 하락 중 (추적 상태 로그)
                     drop_pct_now = (last_lot.trailing_highest_price - current_price) / last_lot.trailing_highest_price * 100
@@ -233,18 +268,41 @@ class SplitEvaluator:
         portfolio: Optional[Portfolio] = None,
     ) -> Optional[SplitSignal]:
         """보유 lot이 없을 때 1차수 초기 매수를 평가한다."""
-        if not self._passes_reentry_guard(rule, current_price, last_sell_price):
-            return None
+        passed, reason = self._passes_reentry_guard(rule, current_price, last_sell_price)
+        if not passed:
+            return SplitSignal(
+                ticker=rule.ticker,
+                lot_id=None,
+                action=OrderAction.BUY,
+                quantity=0,
+                price=current_price,
+                reason=reason,
+                pct_change=0.0,
+                level=1,
+                is_info=True,
+            )
 
         buy_amount = rule.buy_amount_at(1)
         buy_qty = math.floor(buy_amount / current_price)
         if buy_qty <= 0:
+            reason = (
+                f"buy_amount(${buy_amount:.2f}) < "
+                f"현재가(${current_price:.2f}) → 1주도 매수 불가. "
+                f"buy_amount 상향 조정 필요"
+            )
             if self._logger:
-                self._logger.info(
-                    f"[{rule.ticker}] 매수 금액(${buy_amount:.2f})으로 "
-                    f"1주도 매수 불가 (현재가 ${current_price:.2f}). 스킵."
-                )
-            return None
+                self._logger.info(f"[{rule.ticker}] {reason}")
+            return SplitSignal(
+                ticker=rule.ticker,
+                lot_id=None,
+                action=OrderAction.BUY,
+                quantity=0,
+                price=current_price,
+                reason=reason,
+                pct_change=0.0,
+                level=1,
+                is_blocked=True,
+            )
 
         # 비중 상한 체크
         passed, reason = self._passes_exposure_guard(
@@ -299,20 +357,21 @@ class SplitEvaluator:
             False: 진입 차단.
         """
         if rule.reentry_guard_pct is None:
-            return True
+            return True, ""
         if last_sell_price is None or last_sell_price <= 0:
-            return True
+            return True, ""
 
         pct_from_sell = (current_price - last_sell_price) / last_sell_price * 100
         if pct_from_sell <= rule.reentry_guard_pct:
-            return True
+            return True, ""
 
+        reason = (
+            f"재진입 가드: 직전 매도가 ${last_sell_price:.2f} 대비 "
+            f"{pct_from_sell:+.2f}% > 임계 {rule.reentry_guard_pct:+.2f}% → 진입 대기 중"
+        )
         if self._logger:
-            self._logger.info(
-                f"[{rule.ticker}] 재진입 가드: 직전 매도가 {last_sell_price:.2f} 대비 "
-                f"{pct_from_sell:+.2f}% > 임계 {rule.reentry_guard_pct:+.2f}% → 진입 보류"
-            )
-        return False
+            self._logger.info(f"[{rule.ticker}] {reason}")
+        return False, reason
 
     def _passes_exposure_guard(
         self,
@@ -388,22 +447,49 @@ class SplitEvaluator:
 
         # max_lots 도달 시 추가 매수 불가
         if next_level > rule.max_lots:
+            pct_from_buy = (current_price - last_lot.buy_price) / last_lot.buy_price * 100
+            reason = (
+                f"max_lots({rule.max_lots}) 도달: "
+                f"현재가 ${current_price:,.2f} "
+                f"(Lv{last_lot.level} 대비 {pct_from_buy:+.1f}%) "
+                f"→ 추가 하락 대응 불가"
+            )
             if self._logger:
-                self._logger.info(
-                    f"[{rule.ticker}] max_lots({rule.max_lots}) 도달. 추가 매수 불가."
-                )
-            return None
+                self._logger.info(f"[{rule.ticker}] {reason}")
+            return SplitSignal(
+                ticker=rule.ticker,
+                lot_id=None,
+                action=OrderAction.BUY,
+                quantity=0,
+                price=current_price,
+                reason=reason,
+                pct_change=pct_from_buy,
+                level=last_lot.level,
+                is_blocked=True,
+            )
 
         # 매수 수량 계산 (다음 차수 기준 금액)
         buy_amount = rule.buy_amount_at(next_level)
         buy_qty = math.floor(buy_amount / current_price)
         if buy_qty <= 0:
+            reason = (
+                f"buy_amount(${buy_amount:.2f}) < "
+                f"현재가(${current_price:.2f}) → 1주도 매수 불가. "
+                f"buy_amount 상향 조정 필요"
+            )
             if self._logger:
-                self._logger.info(
-                    f"[{rule.ticker}] 매수 금액(${buy_amount:.2f})으로 "
-                    f"1주도 매수 불가 (현재가 ${current_price:.2f}). 스킵."
-                )
-            return None
+                self._logger.info(f"[{rule.ticker}] {reason}")
+            return SplitSignal(
+                ticker=rule.ticker,
+                lot_id=None,
+                action=OrderAction.BUY,
+                quantity=0,
+                price=current_price,
+                reason=reason,
+                pct_change=0.0,
+                level=next_level,
+                is_blocked=True,
+            )
 
         # 동적 재매수 기준: max(마지막 차수 매수가, 직전 매도가)
         reference_price = last_lot.buy_price

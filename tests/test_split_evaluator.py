@@ -29,12 +29,14 @@ class TestEvaluateInitialBuy:
         assert "Lv1" in signals[0].reason
 
     def test_initial_buy_insufficient_amount(self, evaluator, create_rule, create_portfolio):
-        """매수 금액으로 1주도 살 수 없으면 스킵"""
+        """매수 금액으로 1주도 살 수 없으면 is_blocked 신호 반환"""
         rules = [create_rule(ticker="AAPL", buy_amount=50)]
         portfolio = create_portfolio(prices={"AAPL": 100.0})
 
         signals = evaluator.evaluate(rules, [], portfolio)
-        assert len(signals) == 0
+        assert len(signals) == 1
+        assert signals[0].is_blocked is True
+        assert "매수 불가" in signals[0].reason
 
 
 class TestEvaluateSell:
@@ -130,7 +132,7 @@ class TestEvaluateAdditionalBuy:
         assert len(buy_signals) == 0
 
     def test_no_buy_when_max_lots_reached(self, evaluator, create_rule, create_lot, create_portfolio):
-        """max_lots에 도달하면 추가 매수 불가"""
+        """max_lots에 도달하면 is_blocked 신호 반환"""
         rules = [create_rule(ticker="AAPL", buy_pct=-5.0, max_lots=2)]
         lots = [
             create_lot(lot_id="lot_001", ticker="AAPL", buy_price=100.0, buy_date="2026-04-01", level=1),
@@ -141,8 +143,11 @@ class TestEvaluateAdditionalBuy:
 
         signals = evaluator.evaluate(rules, lots, portfolio)
 
-        buy_signals = [s for s in signals if s.action == OrderAction.BUY]
-        assert len(buy_signals) == 0
+        blocked = [s for s in signals if s.is_blocked]
+        active_buys = [s for s in signals if s.action == OrderAction.BUY and not s.is_blocked]
+        assert len(blocked) == 1
+        assert "max_lots" in blocked[0].reason
+        assert len(active_buys) == 0
 
 
 class TestMutualExclusivity:
@@ -225,20 +230,24 @@ class TestEvaluateEdgeCases:
         assert len(signals) == 0
 
     def test_zero_price_skipped(self, evaluator, create_rule, create_portfolio):
-        """현재가가 0이면 스킵"""
+        """현재가가 0이면 is_blocked 신호 반환"""
         rules = [create_rule(ticker="AAPL")]
         portfolio = create_portfolio(prices={"AAPL": 0.0})
 
         signals = evaluator.evaluate(rules, [], portfolio)
-        assert len(signals) == 0
+        assert len(signals) == 1
+        assert signals[0].is_blocked is True
+        assert "조회 실패" in signals[0].reason
 
     def test_missing_price_skipped(self, evaluator, create_rule, create_portfolio):
-        """현재가가 없으면 스킵"""
+        """현재가가 없으면 is_blocked 신호 반환"""
         rules = [create_rule(ticker="UNKNOWN")]
         portfolio = create_portfolio(prices={"AAPL": 100.0})
 
         signals = evaluator.evaluate(rules, [], portfolio)
-        assert len(signals) == 0
+        assert len(signals) == 1
+        assert signals[0].is_blocked is True
+        assert "조회 실패" in signals[0].reason
 
     def test_sell_before_buy_ordering(self, evaluator, create_rule, create_lot, create_portfolio):
         """여러 종목 간 매도 신호가 매수 신호보다 앞에 배치"""
@@ -529,7 +538,7 @@ class TestMaxExposure:
     def test_initial_buy_blocked_when_exceeds_exposure(
         self, evaluator, create_rule, create_portfolio
     ):
-        """보유 없음 상태에서 초기 매수 금액이 비중 상한을 초과하면 차단"""
+        """보유 없음 상태에서 초기 매수 금액이 비중 상한을 초과하면 is_blocked 신호 반환"""
         # 총 자산 10,000. buy_amount=5000 → 50주 @100 → 5000/10000 = 50% > 20%
         rules = [create_rule(
             ticker="AAPL", buy_amount=5000, max_exposure_pct=20.0,
@@ -537,7 +546,9 @@ class TestMaxExposure:
         portfolio = create_portfolio(cash=10000.0, prices={"AAPL": 100.0})
 
         signals = evaluator.evaluate(rules, [], portfolio)
-        assert len(signals) == 0
+        assert len(signals) == 1
+        assert signals[0].is_blocked is True
+        assert "비중 상한 초과" in signals[0].reason
 
     def test_initial_buy_allowed_when_within_exposure(
         self, evaluator, create_rule, create_portfolio
@@ -557,7 +568,7 @@ class TestMaxExposure:
     def test_additional_buy_blocked_when_exceeds_exposure(
         self, evaluator, create_rule, create_lot, create_portfolio
     ):
-        """이미 보유 중인 상태에서 추가 매수하면 비중 상한 초과 → 차단"""
+        """이미 보유 중인 상태에서 추가 매수하면 비중 상한 초과 → is_blocked 신호 반환"""
         # 총 자산: cash 5000 + AAPL 5주*94 = 5470 → total 10470
         # 현재 비중: 470/10470 = 4.5%
         # 추가 매수: 5주*94 = 470 → 이후 비중: 940/10470 = 9.0% > 5% 상한
@@ -574,8 +585,11 @@ class TestMaxExposure:
         )
 
         signals = evaluator.evaluate(rules, lots, portfolio)
-        buy_signals = [s for s in signals if s.action == OrderAction.BUY]
-        assert len(buy_signals) == 0
+        blocked = [s for s in signals if s.is_blocked]
+        active_buys = [s for s in signals if s.action == OrderAction.BUY and not s.is_blocked]
+        assert len(blocked) == 1
+        assert "비중 상한 초과" in blocked[0].reason
+        assert len(active_buys) == 0
 
     def test_no_exposure_limit_when_not_set(
         self, evaluator, create_rule, create_lot, create_portfolio
