@@ -1,4 +1,4 @@
-# src/infra/broker/kis_order_helpers.py
+﻿# src/infra/broker/kis_order_helpers.py
 """KIS 해외/국내 공용 주문 체결 폴링 헬퍼."""
 import time
 from dataclasses import dataclass
@@ -50,13 +50,13 @@ def resolve_timeout_outcome(
     poll_interval_sec: float = 2.0,
     log_prefix: str = "[KisBroker]",
 ) -> TimeoutOutcome:
-    """주문 타임아웃 시 취소 → 재폴링 → 체결조회를 묶어 결과를 분류한다.
+    """주문 타임아웃 시 취소 -> 재폴링 -> 체결조회를 묶어 결과를 분류한다.
 
     분류 규칙:
-      - fill_qty == order_qty                   → FILLED
-      - 0 < fill_qty < order_qty, !still_pending → PARTIAL
-      - fill_qty == 0, !still_pending           → REJECTED
-      - still_pending                           → ORDERED
+      - fill_qty == order_qty                   -> FILLED
+      - 0 < fill_qty < order_qty, !still_pending -> PARTIAL
+      - fill_qty == 0, !still_pending           -> REJECTED
+      - still_pending                           -> ORDERED
     """
     # 0) order_qty 검증. 0 이하면 정상 주문이 아니므로 즉시 REJECTED 로 종료해
     #    이후 분류 로직(fill_qty>=order_qty 등)이 잘못 매칭되는 일을 방지.
@@ -137,3 +137,4 @@ def resolve_timeout_outcome(
         still_pending=still_pending,
         detail=detail,
     )
+

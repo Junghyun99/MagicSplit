@@ -76,7 +76,7 @@ def test_paper_broker_uses_mock_pending_tr_id():
 
 
 class TestKisDomesticOutcomeToExecution:
-    """타임아웃 outcome → TradeExecution 변환 검증."""
+    """타임아웃 outcome -> TradeExecution 변환 검증."""
 
     def _make_broker(self):
         from datetime import datetime, timedelta
@@ -175,7 +175,7 @@ class TestKisDomesticQueryFillDetailsMultiRow:
             broker.token_expires_at = datetime.now() + timedelta(hours=1)
             price, qty, fee = broker._query_fill_details("X", "005930.KS")
 
-        # 첫 매칭 row 사용 → qty=3
+        # 첫 매칭 row 사용 -> qty=3
         assert qty == 3
         assert price == 100.0
         # warning 호출 확인

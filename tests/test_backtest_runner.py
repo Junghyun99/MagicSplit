@@ -71,7 +71,7 @@ def multi_stock_config(tmp_path):
 def _make_close_df(tickers, days=20, start_price=100.0, price_step=-1.0):
     """가격이 점진적으로 변하는 종가 DataFrame 생성.
 
-    기본값: 100 → 99 → 98 → ... (하락 추세, 추가 매수 유도)
+    기본값: 100 -> 99 -> 98 -> ... (하락 추세, 추가 매수 유도)
     """
     dates = pd.bdate_range("2024-01-02", periods=days)
     data = {}
@@ -103,7 +103,7 @@ class TestValidateTickers:
 
 class TestRunBacktest:
     def test_basic_backtest_flow(self, backtest_config, tmp_path):
-        """기본 백테스트 흐름: 데이터 다운 → 시뮬레이션 → 결과 파일 생성"""
+        """기본 백테스트 흐름: 데이터 다운 -> 시뮬레이션 -> 결과 파일 생성"""
         close_df = _make_close_df(["AAPL"], days=10, start_price=100.0, price_step=-2.0)
         output_dir = str(tmp_path / "output")
 

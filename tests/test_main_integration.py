@@ -69,7 +69,7 @@ class TestFullCycle:
         # 첫 사이클: 초기 매수
         engine.run_one_cycle(sim_date="2026-04-10")
 
-        # 가격 상승 (AAPL: 100 → 115, +15% > 10% 임계치)
+        # 가격 상승 (AAPL: 100 -> 115, +15% > 10% 임계치)
         broker.prices["AAPL"] = 115.0
 
         result = engine.run_one_cycle(sim_date="2026-04-11")
@@ -85,7 +85,7 @@ class TestFullCycle:
         # 첫 사이클: 초기 매수
         engine.run_one_cycle(sim_date="2026-04-10")
 
-        # 가격 하락 (AAPL: 100 → 90, -10% < -5% 임계치)
+        # 가격 하락 (AAPL: 100 -> 90, -10% < -5% 임계치)
         broker.prices["AAPL"] = 90.0
 
         result = engine.run_one_cycle(sim_date="2026-04-11")

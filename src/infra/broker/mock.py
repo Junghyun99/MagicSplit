@@ -102,7 +102,7 @@ class MockBroker(IBrokerAdapter):
             if actual_qty < order.quantity and self.logger:
                 self.logger.warning(
                     f"[QTY ADJUSTED] {order.ticker} SELL: "
-                    f"요청 {order.quantity}주 → 실제 {actual_qty}주 (보유량 부족)"
+                    f"요청 {order.quantity}주 -> 실제 {actual_qty}주 (보유량 부족)"
                 )
             amount = exec_price * actual_qty
             fee = amount * 0.0025

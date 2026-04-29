@@ -180,7 +180,7 @@ class TestSplitSignal:
             action=OrderAction.SELL,
             quantity=5,
             price=110.0,
-            reason="Lv1 +10.0% → 익절",
+            reason="Lv1 +10.0% -> 익절",
             pct_change=10.0,
             level=1,
         )

@@ -190,7 +190,7 @@ class TestRunOneCycle:
 
     def test_full_cycle_with_sell(self, engine, mock_broker, mock_repo):
         """익절 매도 시 전체 사이클"""
-        # 기존 lot: 매수가 90, 현재가 100 → +11.1% (> 10% 임계치)
+        # 기존 lot: 매수가 90, 현재가 100 -> +11.1% (> 10% 임계치)
         mock_repo.load_positions.return_value = [
             PositionLot("lot_001", "AAPL", 90.0, 5, "2026-04-01", level=1),
         ]
@@ -314,8 +314,8 @@ class TestReconcileHalt:
             StockRule("AAPL", -5.0, 10.0, 500, 10),
             StockRule("MSFT", -5.0, 10.0, 500, 10),
         ]
-        # AAPL: broker=7, positions sum=5 → 불일치
-        # MSFT: broker=0, positions=[] → 일치
+        # AAPL: broker=7, positions sum=5 -> 불일치
+        # MSFT: broker=0, positions=[] -> 일치
         mock_broker.get_portfolio.return_value = Portfolio(
             total_cash=10000.0,
             holdings={"AAPL": 7},
@@ -377,7 +377,7 @@ class TestReconcileHalt:
 
 class TestUpdatePositions:
     def test_buy_adds_new_lot_with_level(self, engine):
-        """매수 체결 → level이 설정된 새 lot 추가"""
+        """매수 체결 -> level이 설정된 새 lot 추가"""
         positions = []
         signals = [
             SplitSignal("AAPL", None, OrderAction.BUY, 5, 100.0,
@@ -397,13 +397,13 @@ class TestUpdatePositions:
         assert updated[0].level == 1
 
     def test_sell_removes_specific_lot(self, engine):
-        """매도 체결 → signal의 lot_id로 특정 lot 제거"""
+        """매도 체결 -> signal의 lot_id로 특정 lot 제거"""
         positions = [
             PositionLot("lot_001", "AAPL", 90.0, 5, "2026-04-01", level=1),
         ]
         signals = [
             SplitSignal("AAPL", "lot_001", OrderAction.SELL, 5, 100.0,
-                        "Lv1 +11.1% → 익절", 11.1, level=1),
+                        "Lv1 +11.1% -> 익절", 11.1, level=1),
         ]
         executions = [
             TradeExecution("AAPL", OrderAction.SELL, 5, 100.0, 1.0,
@@ -421,7 +421,7 @@ class TestUpdatePositions:
         ]
         signals = [
             SplitSignal("AAPL", "lot_002", OrderAction.SELL, 5, 110.0,
-                        "Lv2 +15.8% → 익절", 15.8, level=2),
+                        "Lv2 +15.8% -> 익절", 15.8, level=2),
         ]
         executions = [
             TradeExecution("AAPL", OrderAction.SELL, 5, 110.0, 1.0,
@@ -460,7 +460,7 @@ class TestUpdatePositionsPartialAndOrdered:
     """엔진의 PARTIAL/ORDERED 분기 처리."""
 
     def test_buy_partial_uses_executed_quantity(self, engine):
-        """BUY PARTIAL → 새 lot 의 quantity 가 체결분(exe.quantity) 으로 추가."""
+        """BUY PARTIAL -> 새 lot 의 quantity 가 체결분(exe.quantity) 으로 추가."""
         positions = []
         signals = [
             SplitSignal("AAPL", None, OrderAction.BUY, 5, 100.0,
@@ -478,7 +478,7 @@ class TestUpdatePositionsPartialAndOrdered:
         assert updated[0].level == 1
 
     def test_sell_partial_decrements_lot_quantity(self, engine):
-        """SELL PARTIAL → 대상 lot quantity 차감, lot_id 유지."""
+        """SELL PARTIAL -> 대상 lot quantity 차감, lot_id 유지."""
         positions = [
             PositionLot("lot_001", "AAPL", 90.0, 5, "2026-04-01", level=2),
         ]
@@ -515,7 +515,7 @@ class TestUpdatePositionsPartialAndOrdered:
         assert len(updated) == 0
 
     def test_ordered_skips_position_update_and_alerts(self, mock_broker, mock_repo, mock_logger):
-        """ORDERED → 포지션 미반영 + notifier.send_alert 호출."""
+        """ORDERED -> 포지션 미반영 + notifier.send_alert 호출."""
         notifier = MagicMock()
         engine = MagicSplitEngine(
             broker=mock_broker, repo=mock_repo, logger=mock_logger,
@@ -546,7 +546,7 @@ class TestUpdatePositionsPartialAndOrdered:
         assert "미체결 잔존" in msg
 
     def test_zero_qty_partial_skipped(self, engine):
-        """status가 PARTIAL/FILLED 인데 quantity=0 인 비정상 경우 → 미반영."""
+        """status가 PARTIAL/FILLED 인데 quantity=0 인 비정상 경우 -> 미반영."""
         positions = [
             PositionLot("lot_001", "AAPL", 90.0, 5, "2026-04-01", level=1),
         ]

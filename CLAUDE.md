@@ -14,7 +14,8 @@
 운영성 작업(봇 실행/백테스트/수동매매/시세 다운로드)은 GitHub Actions 워크플로우로 실행한다 (CI/CD 섹션 참조).
 로컬에서 자주 쓰는 명령어:
 - 의존성 설치: `pip install -r requirements.txt`
-- 테스트: `pytest` (커버리지 게이트 포함 풀 실행은 `python-test.yml` 참조)
+- 테스트: `pytest` (Windows 터미널: `$env:PYTHONUTF8=1; pytest`)
+- 커버리지 포함 테스트: `pytest --cov=src tests/` (80% 이상 준수 필수)
 - 봇 1회 실행: `python -m src.main` (`CONFIG_JSON_PATH`로 국내/해외 선택)
 - 포지션 정합: `python scripts/reconcile_positions.py`
 
@@ -23,7 +24,7 @@
 src/
 ├── main.py              # MagicSplitBot 진입점 (단일 계좌, CONFIG_JSON_PATH로 국내/해외 선택)
 ├── config.py            # 티커-거래소 매핑, 인프라 설정, KIS 인증
-├── strategy_config.py   # config_*.json + presets.json 로더 → StockRule 리스트
+├── strategy_config.py   # config_*.json + presets.json 로더 -> StockRule 리스트
 ├── core/
 │   ├── engine/          # base (MagicSplitEngine), registry
 │   ├── logic/           # split_evaluator (분할 매수/매도, 트레일링 스톱, 동적 재매수)
@@ -47,21 +48,21 @@ presets.json             # 차수별 배열 공유 프리셋 (선택)
 ```
 
 ## 아키텍처 규칙
-- Clean Architecture 패턴: core(도메인) → infra(인프라) 방향으로 의존
+- Clean Architecture 패턴: core(도메인) -> infra(인프라) 방향으로 의존
 - core/interfaces.py에 정의된 추상 인터페이스를 통해 의존성 주입
 - 엔진 레지스트리 패턴: `@register_engine` 데코레이터로 엔진 등록
 - 단일 계좌: .env의 KIS 인증으로 국내/해외 브로커 각각 생성
 - 국내/해외 독립 운용: `CONFIG_JSON_PATH`로 어느 마켓을 돌릴지 선택, 별도 브로커·저장소·엔진 인스턴스로 완전 분리
-- 종목별 순차 실행: 평가 → 주문 → 포지션 반영 → 다음 종목
+- 종목별 순차 실행: 평가 -> 주문 -> 포지션 반영 -> 다음 종목
 
 ## 핵심 알고리즘 (MagicSplit)
 - 종목별 `config_domestic.json` / `config_overseas.json`에 정의된 매매 규칙(StockRule)에 따라 동작
 - 차수(Level) 시스템: 각 매수 건(PositionLot)에 level(1~max_lots)을 부여하여 추적
 - **마지막 차수만 평가**: 가장 높은 level의 매수가 대비 현재가 %로 판단
-  - 상승 M% 이상 → 마지막 차수 매도 (차수 감소, 예: Lv3→Lv2가 마지막)
-  - 하락 N% 이하 → 다음 차수 매수 (차수 증가, 예: Lv3→Lv4 추가)
+  - 상승 M% 이상 -> 마지막 차수 매도 (차수 감소, 예: Lv3->Lv2가 마지막)
+  - 하락 N% 이하 -> 다음 차수 매수 (차수 증가, 예: Lv3->Lv4 추가)
 - **트레일링 스톱** (`trailing_drop_pct` 설정 시):
-  - 매도 임계치(`sell_threshold_pct`) 도달 시 활성화 → `trailing_highest_price` 추적 시작
+  - 매도 임계치(`sell_threshold_pct`) 도달 시 활성화 -> `trailing_highest_price` 추적 시작
   - 이후 고점 갱신을 따라가며, 고점 대비 `trailing_drop_pct`% 하락하면 매도
   - 최소 익절을 보장하면서 추가 상승분도 가져가는 구조
 - **동적 재매수 기준 (기준가 상향)**:
@@ -80,7 +81,7 @@ presets.json             # 차수별 배열 공유 프리셋 (선택)
   - **글로벌/개별 계층**: `global.max_exposure_pct`를 기본값으로, 종목별 설정이 있으면 오버라이드
   - None이면 비중 제한 없음 (하위 호환)
 - **한 사이클에 한 종목당 매도 OR 매수 중 하나만** 실행 (매도 우선)
-- 종목별 순차 실행: 한 종목 평가→주문→반영 후 다음 종목
+- 종목별 순차 실행: 한 종목 평가->주문->반영 후 다음 종목
 - 여러 종목 간 매도 신호를 먼저 실행한 후 매수 진행 (자금 부족 방지)
 - 차수 흐름 예시: 1,2,3,4,3,4,5,6,5,4,3,2,3,4,5 (오르락내리락)
 
@@ -92,6 +93,16 @@ presets.json             # 차수별 배열 공유 프리셋 (선택)
 - `SLACK_WEBHOOK_URL` - Slack 알림
 - `CONFIG_JSON_PATH` - 매매 규칙 파일 경로 (기본값: `config_overseas.json`. 국내는 `config_domestic.json` 지정)
 - `PRESETS_JSON_PATH` - 프리셋 파일 경로 (선택, 기본은 config 파일과 같은 디렉토리의 `presets.json`)
+- `PYTHONUTF8` - Windows 환경에서 한글 로그 인코딩 오류 방지용 (필수: `1` 설정)
+
+## 로컬 환경 설정
+1. `.env.example` 파일을 `.env`로 복사
+2. `.env`에 실제 KIS API 키 및 `PYTHONUTF8=1` 설정 확인
+3. VS Code 사용자: `.vscode/settings.json`에 `terminal.integrated.env.windows` 설정 권장 (자동 적용됨)
+4. 터미널별 UTF-8 모드 수동 활성화 (명령어 실행 전):
+   - **PowerShell**: `$env:PYTHONUTF8=1; python -m pytest`
+   - **CMD**: `set PYTHONUTF8=1 && python -m pytest`
+
 
 ## CI/CD
 GitHub Actions 워크플로우:
@@ -112,6 +123,7 @@ GitHub Actions 워크플로우:
 - .env 파일은 절대 커밋하지 않을 것
 - 실거래 여부는 .env의 `IS_LIVE` 필드로 설정
 - 매도 주문을 먼저 실행한 후 매수 진행 (자금 부족 방지)
+- **인코딩 호환성**: 로그, 주석, 문자열에 특수 유니코드 문자(예: `→`)를 사용하지 말고 표준 ASCII 기호(예: `->`)를 사용할 것
 - 코드 편집할때는 반드시 파일을 먼저 읽어라
 - `docs/js/*.js` 또는 `docs/css/*.css` 를 수정할 때는 반드시 `docs/index.html`의 해당 파일 `?v=` 파라미터도 함께 올릴 것 (브라우저 캐시 무효화)
   - 형식: `날짜-순번` (예: `20260425-1`, 같은 날 재수정 시 `20260425-2`로 증가)

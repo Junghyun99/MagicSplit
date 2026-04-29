@@ -1,4 +1,4 @@
-# src/core/logic/split_evaluator.py
+﻿# src/core/logic/split_evaluator.py
 import math
 from typing import Dict, List, Optional
 
@@ -17,10 +17,10 @@ class SplitEvaluator:
 
     차수(Level) 시스템:
     - 마지막 차수(가장 높은 level)의 매수가만 기준으로 판단
-    - 상승 시 → 마지막 차수 매도 (차수 감소)
-    - 하락 시 → 다음 차수 매수 (차수 증가)
+    - 상승 시 -> 마지막 차수 매도 (차수 감소)
+    - 하락 시 -> 다음 차수 매수 (차수 증가)
     - 한 종목당 한 사이클에 매도 OR 매수 중 하나만 실행
-    - 보유 lot이 없으면 → 1차수 초기 매수
+    - 보유 lot이 없으면 -> 1차수 초기 매수
     """
 
     def __init__(self, logger: Optional[ILogger] = None):
@@ -96,7 +96,7 @@ class SplitEvaluator:
                 is_blocked=True,
             )]
 
-        # 보유 lot이 없으면 → 1차수 초기 매수
+        # 보유 lot이 없으면 -> 1차수 초기 매수
         if not ticker_lots:
             last_sell_price = (
                 last_sell_prices.get(rule.ticker) if last_sell_prices else None
@@ -173,7 +173,7 @@ class SplitEvaluator:
                             self._logger.info(
                                 f"[{rule.ticker}] Lv{last_lot.level}: "
                                 f"트레일링 고점 갱신 "
-                                f"${old_highest:,.0f} → ${current_price:,.0f} "
+                                f"${old_highest:,.0f} -> ${current_price:,.0f} "
                                 f"(매수가 대비 {pct_change:+.1f}%, "
                                 f"스톱가 ${stop_price:,.0f})"
                             )
@@ -221,8 +221,8 @@ class SplitEvaluator:
                         self._logger.info(
                             f"[{rule.ticker}] Lv{last_lot.level}: "
                             f"🔻 트레일링 스톱 매도 "
-                            f"(매수가 ${last_lot.buy_price:,.0f} → "
-                            f"고점 ${last_lot.trailing_highest_price:,.0f} → "
+                            f"(매수가 ${last_lot.buy_price:,.0f} -> "
+                            f"고점 ${last_lot.trailing_highest_price:,.0f} -> "
                             f"현재가 ${current_price:,.0f}, "
                             f"고점대비 -{drop_pct:.1f}%, "
                             f"수익률 {profit_pct:+.1f}%)"
@@ -244,8 +244,8 @@ class SplitEvaluator:
             if pct_change >= sell_threshold:
                 if self._logger:
                     self._logger.info(
-                        f"[{rule.ticker}] Lv{last_lot.level}: 매수가 ${last_lot.buy_price:.2f} → "
-                        f"현재가 ${current_price:.2f} ({pct_change:+.1f}%) → 익절 매도"
+                        f"[{rule.ticker}] Lv{last_lot.level}: 매수가 ${last_lot.buy_price:.2f} -> "
+                        f"현재가 ${current_price:.2f} ({pct_change:+.1f}%) -> 익절 매도"
                     )
                 return SplitSignal(
                     ticker=rule.ticker,
@@ -253,7 +253,7 @@ class SplitEvaluator:
                     action=OrderAction.SELL,
                     quantity=last_lot.quantity,
                     price=current_price,
-                    reason=f"Lv{last_lot.level} {pct_change:+.1f}% → 익절",
+                    reason=f"Lv{last_lot.level} {pct_change:+.1f}% -> 익절",
                     pct_change=pct_change,
                     level=last_lot.level,
                     buy_price=last_lot.buy_price,
@@ -287,7 +287,7 @@ class SplitEvaluator:
         if buy_qty <= 0:
             reason = (
                 f"buy_amount(${buy_amount:.2f}) < "
-                f"현재가(${current_price:.2f}) → 1주도 매수 불가. "
+                f"현재가(${current_price:.2f}) -> 1주도 매수 불가. "
                 f"buy_amount 상향 조정 필요"
             )
             if self._logger:
@@ -323,7 +323,7 @@ class SplitEvaluator:
 
         if self._logger:
             self._logger.info(
-                f"[{rule.ticker}] 보유 lot 없음 → 초기 매수 Lv1 {buy_qty}주 @${current_price:.2f}"
+                f"[{rule.ticker}] 보유 lot 없음 -> 초기 매수 Lv1 {buy_qty}주 @${current_price:.2f}"
             )
         return SplitSignal(
             ticker=rule.ticker,
@@ -367,7 +367,7 @@ class SplitEvaluator:
 
         reason = (
             f"재진입 가드: 직전 매도가 ${last_sell_price:.2f} 대비 "
-            f"{pct_from_sell:+.2f}% > 임계 {rule.reentry_guard_pct:+.2f}% → 진입 대기 중"
+            f"{pct_from_sell:+.2f}% > 임계 {rule.reentry_guard_pct:+.2f}% -> 진입 대기 중"
         )
         if self._logger:
             self._logger.info(f"[{rule.ticker}] {reason}")
@@ -422,7 +422,7 @@ class SplitEvaluator:
                 f"= {after_pct:.1f}% > 상한 {rule.max_exposure_pct:.1f}%"
             )
             if self._logger:
-                self._logger.info(f"[{rule.ticker}] {reason} → 매수 보류")
+                self._logger.info(f"[{rule.ticker}] {reason} -> 매수 보류")
             return False, reason
 
         return True, ""
@@ -452,7 +452,7 @@ class SplitEvaluator:
                 f"max_lots({rule.max_lots}) 도달: "
                 f"현재가 ${current_price:,.2f} "
                 f"(Lv{last_lot.level} 대비 {pct_from_buy:+.1f}%) "
-                f"→ 추가 하락 대응 불가"
+                f"-> 추가 하락 대응 불가"
             )
             if self._logger:
                 self._logger.info(f"[{rule.ticker}] {reason}")
@@ -474,7 +474,7 @@ class SplitEvaluator:
         if buy_qty <= 0:
             reason = (
                 f"buy_amount(${buy_amount:.2f}) < "
-                f"현재가(${current_price:.2f}) → 1주도 매수 불가. "
+                f"현재가(${current_price:.2f}) -> 1주도 매수 불가. "
                 f"buy_amount 상향 조정 필요"
             )
             if self._logger:
@@ -523,13 +523,13 @@ class SplitEvaluator:
                 if is_dynamic:
                     self._logger.info(
                         f"[{rule.ticker}] 🔄 동적 재매수: 매도가 ${last_sell_price:.2f} 대비 "
-                        f"{pct_from_ref:+.1f}% → 추가 매수 Lv{next_level} {buy_qty}주 @${current_price:.2f} "
+                        f"{pct_from_ref:+.1f}% -> 추가 매수 Lv{next_level} {buy_qty}주 @${current_price:.2f} "
                         f"(원래 기준 Lv{last_lot.level} ${last_lot.buy_price:.2f})"
                     )
                 else:
                     self._logger.info(
                         f"[{rule.ticker}] Lv{last_lot.level} 매수가 ${last_lot.buy_price:.2f} 대비 "
-                        f"{pct_from_ref:+.1f}% → 추가 매수 Lv{next_level} {buy_qty}주 @${current_price:.2f}"
+                        f"{pct_from_ref:+.1f}% -> 추가 매수 Lv{next_level} {buy_qty}주 @${current_price:.2f}"
                     )
             reason_detail = (
                 f"동적 재매수 Lv{next_level} (매도가 ${last_sell_price:.0f} 대비 {pct_from_ref:+.1f}%)"
@@ -548,3 +548,4 @@ class SplitEvaluator:
             )
 
         return None
+

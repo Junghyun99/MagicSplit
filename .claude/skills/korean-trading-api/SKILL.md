@@ -16,7 +16,7 @@ description: Use when implementing or extending KIS broker for Korean domestic/o
 | 실전 | `https://openapi.koreainvestment.com:9443` |
 | 모의 | `https://openapivts.koreainvestment.com:29443` |
 
-**기존 구현:** `KisOverseasPaperBroker`(모의), `KisOverseasLiveBroker`(실전) → `src/infra/broker/kis_overseas.py`
+**기존 구현:** `KisOverseasPaperBroker`(모의), `KisOverseasLiveBroker`(실전) -> `src/infra/broker/kis_overseas.py`
 
 ## 공통 패턴
 
@@ -91,7 +91,7 @@ payload = {
 
 ```python
 params = {"AUTH": "", "EXCD": "NAS", "SYMB": "AAPL"}
-# Response: data['output']['last'] → 현재가
+# Response: data['output']['last'] -> 현재가
 ```
 
 **거래소 코드 (현재가 조회용):** `NAS`(나스닥), `NYS`(뉴욕), `AMS`(아멕스)
@@ -103,9 +103,9 @@ params = {"AUTH": "", "EXCD": "NAS", "SYMB": "AAPL"}
 
 ```python
 params = {"AUTH": "", "EXCD": "NAS", "SYMB": "AAPL"}
-# Response: data['output2'] → 호가 데이터
-# output2['pbid1'] → 최우선 매수호가 (best bid)
-# output2['pask1'] → 최우선 매도호가 (best ask)
+# Response: data['output2'] -> 호가 데이터
+# output2['pbid1'] -> 최우선 매수호가 (best bid)
+# output2['pask1'] -> 최우선 매도호가 (best ask)
 ```
 
 **용도:** 주문 가격 결정 시 bid/ask 기반 지정가 주문 + 스프레드 이상 감지 (임계값 0.5%)
@@ -150,12 +150,12 @@ data = {
 params = {
     "CANO": cano,
     "ACNT_PRDT_CD": acnt_prdt_cd,
-    "OVRS_EXCG_CD": "NASD",   # NASD → NYSE → AMEX 순회
+    "OVRS_EXCG_CD": "NASD",   # NASD -> NYSE -> AMEX 순회
     "SORT_SQN": "DS",
     "CTX_AREA_FK200": "",
     "CTX_AREA_NK200": ""
 }
-# Response: data['output'] → 미체결 주문 리스트
+# Response: data['output'] -> 미체결 주문 리스트
 ```
 
 ### 2.4 잔고 조회
@@ -171,7 +171,7 @@ params = {
 params = {
     "CANO": cano,
     "ACNT_PRDT_CD": acnt_prdt_cd,
-    "OVRS_EXCG_CD": "NASD",   # NASD → NYSE → AMEX 순회
+    "OVRS_EXCG_CD": "NASD",   # NASD -> NYSE -> AMEX 순회
     "TR_CRCY_CD": "USD",
     "CTX_AREA_FK200": "",
     "CTX_AREA_NK200": ""
@@ -258,7 +258,7 @@ params = {
     "CTX_AREA_NK100": ""           # 연속조회 키
 }
 # 페이지네이션: tr_cont 헤더 "M"/"F" 시 재귀 호출
-# Response: output[] → 미체결 주문 리스트
+# Response: output[] -> 미체결 주문 리스트
 ```
 
 ### 3.4 잔고 조회

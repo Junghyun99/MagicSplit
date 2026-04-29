@@ -12,7 +12,7 @@
         [p] pad   : broker 가 많을 때 새 lot 추가
         [r] ratio : 주식분할/병합 비율 적용 (모든 lot quantity/price 일괄 조정)
         [k] keep  : 그대로 두기
-    4. 변경 사항 dry-run 출력 → 최종 확인 → 저장
+    4. 변경 사항 dry-run 출력 -> 최종 확인 -> 저장
 
 사용:
     python scripts/reconcile_positions.py                 # 대화형
@@ -129,7 +129,7 @@ def _apply_split_ratio(
     num: int,
     den: int,
 ) -> List[PositionLot]:
-    """주식분할/병합 비율 적용 (num:den, 예 1:2 → 1주를 2주로)."""
+    """주식분할/병합 비율 적용 (num:den, 예 1:2 -> 1주를 2주로)."""
     if num <= 0 or den <= 0:
         raise ValueError("비율은 양수여야 합니다.")
     out: List[PositionLot] = []

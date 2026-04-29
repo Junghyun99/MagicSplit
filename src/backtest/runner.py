@@ -108,7 +108,7 @@ def run_backtest(
         try:
             row = close_df.loc[today]
             current_prices = row.to_dict()
-            # NaN → 전일 가격으로 대체 (forward-fill)
+            # NaN -> 전일 가격으로 대체 (forward-fill)
             current_prices = {
                 t: (p if not pd.isna(p) else prev_prices.get(t))
                 for t, p in current_prices.items()

@@ -37,7 +37,7 @@ class BacktestDataCache:
         종가 데이터를 반환한다. 캐시가 유효하면 재사용하고, 아니면 새로 다운로드한다.
 
         1. 캐시 파일이 존재하고 요청 기간·티커를 포함하면 캐시 반환
-        2. 캐시 미스 시 기존 캐시 삭제 → 전체 다운로드
+        2. 캐시 미스 시 기존 캐시 삭제 -> 전체 다운로드
         3. 가장 늦은 상장 티커 기준으로 시작일 조정 (로그 출력)
         4. 남은 NaN을 이전 값으로 채움 (ffill)
         5. 저장 후 반환
@@ -52,7 +52,7 @@ class BacktestDataCache:
         if cached is not None:
             return cached
 
-        # 2. 캐시 미스 → 기존 캐시 삭제 후 전체 다운로드
+        # 2. 캐시 미스 -> 기존 캐시 삭제 후 전체 다운로드
         self.clear()
         self._logger.info(f"종가 다운로드 시작: {tickers} ({start_date} ~ {end_date})")
         close_df = self._download_close(tickers, start_date, end_date)
@@ -63,7 +63,7 @@ class BacktestDataCache:
         # 3. 상장일 기준 시작일 조정
         close_df = self._trim_to_latest_ipo(close_df, tickers)
 
-        # 4. 남은 NaN → 이전 값으로 채움
+        # 4. 남은 NaN -> 이전 값으로 채움
         nan_before = int(close_df.isna().sum().sum())
         if nan_before > 0:
             close_df = close_df.ffill()
@@ -95,7 +95,7 @@ class BacktestDataCache:
         missing_tickers = [t for t in tickers if t not in cached_df.columns]
         if missing_tickers:
             self._logger.info(
-                f"캐시에 누락된 티커 {missing_tickers} → 재다운로드"
+                f"캐시에 누락된 티커 {missing_tickers} -> 재다운로드"
             )
             return None
 
@@ -109,7 +109,7 @@ class BacktestDataCache:
         if cache_start_ts > req_start_ts + slack or cache_end_ts < req_end_ts - slack:
             self._logger.info(
                 f"캐시 범위 부족 ({cache_start_ts.date()}~{cache_end_ts.date()}), "
-                f"요청 ({start_date}~{end_date}) → 재다운로드"
+                f"요청 ({start_date}~{end_date}) -> 재다운로드"
             )
             return None
 
@@ -145,7 +145,7 @@ class BacktestDataCache:
         if latest_ipo > original_start:
             self._logger.warning(
                 f"⚠️ 상장일 조정: {latest_ticker} 첫 거래일 {latest_ipo.date()} "
-                f"(요청 시작일 {original_start.date()} → 조정 후 시작일 {latest_ipo.date()})"
+                f"(요청 시작일 {original_start.date()} -> 조정 후 시작일 {latest_ipo.date()})"
             )
             close_df = close_df.loc[latest_ipo:]
         else:
@@ -167,7 +167,7 @@ class BacktestDataCache:
             if df is None or df.empty:
                 return None
 
-            # 단일 티커 + SingleIndex → 정규화
+            # 단일 티커 + SingleIndex -> 정규화
             if not isinstance(df.columns, pd.MultiIndex) and len(tickers) == 1:
                 if "Close" in df.columns:
                     close_df = df[["Close"]].copy()
@@ -180,7 +180,7 @@ class BacktestDataCache:
                 return None
             close_df = df["Close"]
 
-            # Series → DataFrame 변환 (단일 티커의 경우)
+            # Series -> DataFrame 변환 (단일 티커의 경우)
             if isinstance(close_df, pd.Series):
                 close_df = close_df.to_frame(name=tickers[0])
 

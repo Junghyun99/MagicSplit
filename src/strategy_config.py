@@ -1,4 +1,4 @@
-# src/strategy_config.py
+﻿# src/strategy_config.py
 """config.json에서 종목별 매매 규칙(StockRule)을 로드한다.
 
 config.json 구조 (단일값 단순 형태):
@@ -32,7 +32,7 @@ config.json 구조 (단일값 단순 형태):
   { "ticker": "AAPL", "exchange": "NAS", "preset": "large_cap_us",
     "sell_threshold_pcts": [7, 10, 15, 25] }  # 종목 필드가 preset을 override
 
-경로 해석 순서: 생성자 인자 → 환경변수 `PRESETS_JSON_PATH` → config 파일 디렉토리/`presets.json`.
+경로 해석 순서: 생성자 인자 -> 환경변수 `PRESETS_JSON_PATH` -> config 파일 디렉토리/`presets.json`.
 프리셋 파일이 없고 어떤 종목도 `preset` 키를 쓰지 않으면 무시된다.
 """
 import json
@@ -66,7 +66,7 @@ class StrategyConfig:
         return [r for r in self.rules if r.market_type == market_type]
 
     def get_exchange_map(self) -> Dict[str, str]:
-        """티커→거래소 단축 코드 맵을 반환한다 (exchange 미지정 종목 제외)."""
+        """티커->거래소 단축 코드 맵을 반환한다 (exchange 미지정 종목 제외)."""
         return {r.ticker: r.exchange for r in self.rules if r.exchange}
 
     @staticmethod
@@ -86,7 +86,7 @@ class StrategyConfig:
             data = json.load(f)
         if not isinstance(data, dict):
             raise ValueError(
-                f"{self.presets_path}의 최상위는 프리셋 이름→설정 객체여야 합니다."
+                f"{self.presets_path}의 최상위는 프리셋 이름->설정 객체여야 합니다."
             )
         return data
 
@@ -165,7 +165,7 @@ class StrategyConfig:
             trailing_drop = merged.get("trailing_drop_pct")
             trailing_drops = merged.get("trailing_drop_pcts")
 
-            # 배열/단일값 모두 미제공이면 레거시 기본값(-5/10/500) 적용 → 하위 호환
+            # 배열/단일값 모두 미제공이면 레거시 기본값(-5/10/500) 적용 -> 하위 호환
             if buy_pct is None and not buy_pcts:
                 buy_pct = -5.0
             if sell_pct is None and not sell_pcts:
@@ -198,3 +198,4 @@ class StrategyConfig:
             )
             self.rules.append(rule)
             self.market_types.add(market_type)
+

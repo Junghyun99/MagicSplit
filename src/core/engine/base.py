@@ -25,7 +25,7 @@ class MagicSplitEngine:
     """MagicSplit 매매 사이클 엔진.
 
     run_one_cycle()이 전체 사이클의 뼈대를 정의한다.
-    종목별로 순차 실행: 평가 → 주문 → 포지션 반영 → 다음 종목.
+    종목별로 순차 실행: 평가 -> 주문 -> 포지션 반영 -> 다음 종목.
 
     환경별 차이는 주입되는 구현체(broker, repo, notifier)가 담당하며,
     비즈니스 로직 자체는 단일 위치(이 클래스)에서만 관리된다.
@@ -52,7 +52,7 @@ class MagicSplitEngine:
     def run_one_cycle(self, sim_date: Optional[str] = None) -> DayResult:
         """하루치 매매 사이클 전체를 실행한다.
 
-        종목별 순차 실행: 각 종목을 평가 → 주문 → 포지션 반영 후 다음 종목으로.
+        종목별 순차 실행: 각 종목을 평가 -> 주문 -> 포지션 반영 후 다음 종목으로.
 
         Args:
             sim_date: 시뮬레이션 날짜 ("YYYY-MM-DD").
@@ -326,7 +326,7 @@ class MagicSplitEngine:
 
         msg = (
             f"  [{ticker}] 신호 없음 | Lv{last_lot.level} "
-            f"매수 ${last_lot.buy_price:,.2f} → 현재 ${current_price:,.2f} "
+            f"매수 ${last_lot.buy_price:,.2f} -> 현재 ${current_price:,.2f} "
             f"({profit_pct:+.2f}%) | 익절 +{sell_threshold:.1f}% / "
             f"추매 {buy_threshold:.1f}%"
         )
@@ -355,12 +355,12 @@ class MagicSplitEngine:
     ) -> List[PositionLot]:
         """체결 결과를 반영하여 포지션을 업데이트한다.
 
-        - 매수 체결 → 신호의 level로 새 lot 추가, last_sell_price 초기화
-        - 매도 체결 → 신호의 lot_id로 해당 차수 lot 제거, last_sell_price 갱신
+        - 매수 체결 -> 신호의 level로 새 lot 추가, last_sell_price 초기화
+        - 매도 체결 -> 신호의 lot_id로 해당 차수 lot 제거, last_sell_price 갱신
         """
         updated = list(positions)
 
-        # 신호 매핑: (ticker, action) → signal
+        # 신호 매핑: (ticker, action) -> signal
         # 한 종목당 한 사이클에 하나의 신호만 발생하므로 unambiguous
         signal_map = {}
         for sig in signals:
@@ -377,7 +377,7 @@ class MagicSplitEngine:
                 )
                 continue
             if exe.status == ExecutionStatus.ORDERED:
-                # 미체결 잔존 → 잔고 미확정. 포지션 미반영. 알림.
+                # 미체결 잔존 -> 잔고 미확정. 포지션 미반영. 알림.
                 self.logger.error(
                     f"[Position] ORDERED — 수동 확인 필요: "
                     f"{exe.ticker} {exe.action} reason={exe.reason}"
@@ -414,7 +414,7 @@ class MagicSplitEngine:
                 if last_sell_prices is not None and exe.ticker in last_sell_prices:
                     self.logger.info(
                         f"[{exe.ticker}] 동적 재매수 기준 초기화 "
-                        f"(매도가 ${last_sell_prices[exe.ticker]:.2f} → 소비됨)"
+                        f"(매도가 ${last_sell_prices[exe.ticker]:.2f} -> 소비됨)"
                     )
                     del last_sell_prices[exe.ticker]
                 tag = " (PARTIAL)" if exe.status == ExecutionStatus.PARTIAL else ""

@@ -12,13 +12,13 @@ from .kis_order_helpers import poll_order_fill, resolve_timeout_outcome
 
 
 def _to_kis_code(ticker: str) -> str:
-    """yfinance 티커 → KIS 종목코드. '069500.KS' → '069500'"""
+    """yfinance 티커 -> KIS 종목코드. '069500.KS' -> '069500'"""
     code = ticker.split(".")[0]
     return code.zfill(6)
 
 
 def _to_yf_ticker(code: str) -> str:
-    """KIS 종목코드 → yfinance 티커 (기본 KOSPI). '069500' → '069500.KS'"""
+    """KIS 종목코드 -> yfinance 티커 (기본 KOSPI). '069500' -> '069500.KS'"""
     if code.endswith(".KS") or code.endswith(".KQ"):
         return code
     return code + ".KS"
@@ -31,7 +31,7 @@ class KisDomesticBrokerBase(KisBrokerCommon):
     def __init__(self, app_key: str, app_secret: str, acc_no: str, logger,
                  known_tickers: list[str] | None = None):
         super().__init__(app_key, app_secret, acc_no, logger)
-        # code → full yfinance ticker (e.g. '058470' → '058470.KQ')
+        # code -> full yfinance ticker (e.g. '058470' -> '058470.KQ')
         # KOSDAQ 등 .KS 외 suffix 보유 종목의 잔고 조회 시 정확한 티커 매핑에 사용
         self._code_to_ticker: dict[str, str] = {}
         if known_tickers:

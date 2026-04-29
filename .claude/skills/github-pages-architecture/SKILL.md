@@ -17,12 +17,12 @@ description: >
 - docs/ 디렉토리 구조를 새로 설계하거나 리팩터링할 때
 - 새 탭/페이지를 추가할 때
 - JavaScript 모듈을 분리하거나 책임을 재배치할 때
-- 데이터 로딩 흐름(fetch → 렌더)을 설계할 때
+- 데이터 로딩 흐름(fetch -> 렌더)을 설계할 때
 - 차트 인스턴스 관리 전략을 결정할 때
 - Lazy loading / 탭 라우팅을 구현할 때
 
 ### 사용하지 않는 경우
-- GitHub API로 config.json을 읽고 쓰는 작업 → **github-pages-gitops** skill 사용
+- GitHub API로 config.json을 읽고 쓰는 작업 -> **github-pages-gitops** skill 사용
 - Python 백엔드 로직, GitHub Actions 워크플로 수정
 - 데이터 파일(JSON) 스키마 변경만 하는 경우
 
@@ -49,7 +49,7 @@ description: >
 ### 의존 방향 (단방향)
 
 ```
-Presentation → Application → Infrastructure
+Presentation -> Application -> Infrastructure
      ✗ 역방향 의존 금지
 ```
 
@@ -68,7 +68,7 @@ docs/
 ├── css/
 │   └── style.css           # 커스텀 스타일 (Bootstrap 보완)
 ├── js/
-│   ├── main.js             # 오케스트레이션: fetch → 렌더 호출
+│   ├── main.js             # 오케스트레이션: fetch -> 렌더 호출
 │   ├── utils.js            # 순수 함수: 계산, 포맷, 필터
 │   ├── ui.js               # DOM 업데이트: 카드, 테이블, 배지
 │   └── charts.js           # 차트 래핑: 인스턴스 생성/파괴/리사이즈
@@ -238,7 +238,7 @@ let performanceRendered = false;
 let allocationRendered = false;
 
 function renderOverviewTab(data) {
-    if (overviewRendered) return;  // 이미 렌더링됨 → 스킵
+    if (overviewRendered) return;  // 이미 렌더링됨 -> 스킵
     renderSummaryCards(data.summary);
     renderStatusBadges(data.status);
     overviewRendered = true;
@@ -288,8 +288,8 @@ if (mode === 'live') {
 }
 ```
 
-- `index.html` → 기본(live) 모드
-- `index.html?mode=backtest` → 백테스트 모드
+- `index.html` -> 기본(live) 모드
+- `index.html?mode=backtest` -> 백테스트 모드
 - 각 모드는 별도의 데이터 경로와 렌더 로직을 갖는다.
 
 ---
@@ -328,7 +328,7 @@ export function resizeAllCharts() {
 window.addEventListener('resize', () => resizeAllCharts());
 ```
 
-**새 차트 추가 시**: 모듈 스코프 변수 선언 → render 함수 작성 → `resizeAllCharts()` 배열에 추가.
+**새 차트 추가 시**: 모듈 스코프 변수 선언 -> render 함수 작성 -> `resizeAllCharts()` 배열에 추가.
 
 ---
 
@@ -382,7 +382,7 @@ window.addEventListener('resize', () => resizeAllCharts());
 | main.js에서 직접 innerHTML 조작 | 오케스트레이션 역할 초과 | ui.js의 render 함수 호출로 위임 |
 | fetch마다 별도 await (순차 실행) | 불필요한 네트워크 대기 | Promise.all로 병렬 fetch |
 | 탭 전환 시 매번 전체 재렌더링 | 성능 저하, 차트 깜빡임 | Lazy loading 플래그로 최초 1회만 렌더 |
-| JS 파일에 하드코딩된 토큰/시크릿 | 보안 위험 | → github-pages-gitops skill 참조 (localStorage + PAT) |
+| JS 파일에 하드코딩된 토큰/시크릿 | 보안 위험 | -> github-pages-gitops skill 참조 (localStorage + PAT) |
 
 ---
 

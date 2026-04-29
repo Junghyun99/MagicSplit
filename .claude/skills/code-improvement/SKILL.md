@@ -54,10 +54,10 @@ gh api "repos/{owner}/{repo}/issues?state=open&per_page=20"
 
 #### 우선순위 기준 (높은 순)
 1. **라벨 기반 우선순위**:
-   - `priority: high`, `critical` → 최우선
-   - `bug` → 높음
-   - `design`, `maintenance` → 보통
-   - `enhancement`, `clarification` → 낮음
+   - `priority: high`, `critical` -> 최우선
+   - `bug` -> 높음
+   - `design`, `maintenance` -> 보통
+   - `enhancement`, `clarification` -> 낮음
 2. **오래된 이슈 우선**: 생성일이 오래된 이슈에 가중치 부여
 3. **심각도 키워드**: 이슈 본문에 "Critical", "심각", "버그", "오류" 등의 키워드가 포함된 경우 가중치 부여
 

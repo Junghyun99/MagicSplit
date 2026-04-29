@@ -74,7 +74,7 @@ class TestMockBroker:
         assert executions[1].action == OrderAction.BUY
 
     def test_sell_more_than_holdings(self):
-        """보유량보다 많이 매도 시도 → 보유량만큼만 체결"""
+        """보유량보다 많이 매도 시도 -> 보유량만큼만 체결"""
         broker = MockBroker(holdings={"AAPL": 3}, prices={"AAPL": 100.0})
         orders = [Order("AAPL", OrderAction.SELL, 10, 100.0)]
         executions = broker.execute_orders(orders)
@@ -82,7 +82,7 @@ class TestMockBroker:
         assert executions[0].quantity == 3  # 보유량만큼만
 
     def test_sell_with_zero_holdings_returns_rejected(self):
-        """보유량 0인 종목 매도 시도 → REJECTED 반환, 상태 변경 없음"""
+        """보유량 0인 종목 매도 시도 -> REJECTED 반환, 상태 변경 없음"""
         initial_cash = 5000.0
         broker = MockBroker(initial_cash=initial_cash, holdings={"AAPL": 0}, prices={"AAPL": 100.0})
         orders = [Order("AAPL", OrderAction.SELL, 10, 100.0)]
@@ -95,7 +95,7 @@ class TestMockBroker:
         assert broker.holdings.get("AAPL", 0) == 0  # 보유량 변동 없음
 
     def test_sell_unowned_ticker_returns_rejected(self):
-        """보유하지 않은 종목 매도 시도 → REJECTED 반환"""
+        """보유하지 않은 종목 매도 시도 -> REJECTED 반환"""
         broker = MockBroker(holdings={}, prices={"AAPL": 100.0})
         orders = [Order("AAPL", OrderAction.SELL, 5, 100.0)]
         executions = broker.execute_orders(orders)
@@ -108,7 +108,7 @@ class TestMockBroker:
         orders = [Order("AAPL", OrderAction.BUY, 10, 100.0)]
         executions = broker.execute_orders(orders)
 
-        # 200 * 0.98 / (100 * 1.01) = 1.94 → 1주만 매수 가능
+        # 200 * 0.98 / (100 * 1.01) = 1.94 -> 1주만 매수 가능
         assert executions[0].quantity <= 2
 
     def test_multiple_orders(self):
@@ -204,7 +204,7 @@ class TestKisOverseasGetPortfolio:
 
     @patch("src.infra.broker.kis_overseas._pkg.requests.get")
     def test_first_exchange_fails_second_succeeds(self, mock_get, broker):
-        """첫 번째 거래소 실패 → 두 번째 성공 시 total_cash 정상 반환"""
+        """첫 번째 거래소 실패 -> 두 번째 성공 시 total_cash 정상 반환"""
         fail_resp = MagicMock()
         fail_resp.json.return_value = {"rt_cd": "1", "msg1": "error"}
         fail_resp.raise_for_status.return_value = None

@@ -18,7 +18,7 @@ TICKER_EXCHANGE_MAP: dict[str, str] = {
     'META': 'NAS',
 }
 
-# 단축 코드 → 주문/잔고/미체결 API용 전체 코드 변환
+# 단축 코드 -> 주문/잔고/미체결 API용 전체 코드 변환
 EXCHANGE_CODE_SHORT_TO_FULL: dict[str, str] = {
     'NAS': 'NASD',
     'NYS': 'NYSE',

@@ -46,7 +46,7 @@ class TestEvaluateSell:
         """마지막 차수 매수가 대비 sell_threshold_pct 이상 상승 시 매도"""
         rules = [create_rule(ticker="AAPL", sell_pct=10.0)]
         lots = [create_lot(ticker="AAPL", buy_price=100.0, quantity=5, level=1)]
-        # 현재가 111.0 → +11% (> 10% 임계치)
+        # 현재가 111.0 -> +11% (> 10% 임계치)
         portfolio = create_portfolio(prices={"AAPL": 111.0}, holdings={"AAPL": 5})
 
         signals = evaluator.evaluate(rules, lots, portfolio)
@@ -61,7 +61,7 @@ class TestEvaluateSell:
         """임계치 미만이면 매도 신호 없음"""
         rules = [create_rule(ticker="AAPL", sell_pct=10.0)]
         lots = [create_lot(ticker="AAPL", buy_price=100.0, quantity=5, level=1)]
-        # 현재가 105.0 → +5% (< 10%)
+        # 현재가 105.0 -> +5% (< 10%)
         portfolio = create_portfolio(prices={"AAPL": 105.0}, holdings={"AAPL": 5})
 
         signals = evaluator.evaluate(rules, lots, portfolio)
@@ -76,7 +76,7 @@ class TestEvaluateSell:
             create_lot(lot_id="lot_001", ticker="AAPL", buy_price=90.0, quantity=3, level=1),
             create_lot(lot_id="lot_002", ticker="AAPL", buy_price=95.0, quantity=2, level=2),
         ]
-        # 현재가 110.0 → lot_001: +22.2%, lot_002: +15.8% (둘 다 > 10%)
+        # 현재가 110.0 -> lot_001: +22.2%, lot_002: +15.8% (둘 다 > 10%)
         # 하지만 마지막 차수(lot_002)만 매도
         portfolio = create_portfolio(prices={"AAPL": 110.0}, holdings={"AAPL": 5})
 
@@ -109,7 +109,7 @@ class TestEvaluateAdditionalBuy:
         """마지막 차수 대비 buy_threshold_pct 이하 하락 시 추가 매수"""
         rules = [create_rule(ticker="AAPL", buy_pct=-5.0, buy_amount=500)]
         lots = [create_lot(ticker="AAPL", buy_price=100.0, quantity=5, buy_date="2026-04-01", level=1)]
-        # 현재가 94.0 → -6% (< -5% 임계치)
+        # 현재가 94.0 -> -6% (< -5% 임계치)
         portfolio = create_portfolio(cash=10000.0, prices={"AAPL": 94.0}, holdings={"AAPL": 5})
 
         signals = evaluator.evaluate(rules, lots, portfolio)
@@ -123,7 +123,7 @@ class TestEvaluateAdditionalBuy:
         """임계치 이상이면 추가 매수 안 함"""
         rules = [create_rule(ticker="AAPL", buy_pct=-5.0)]
         lots = [create_lot(ticker="AAPL", buy_price=100.0, level=1)]
-        # 현재가 97.0 → -3% (> -5%)
+        # 현재가 97.0 -> -3% (> -5%)
         portfolio = create_portfolio(prices={"AAPL": 97.0}, holdings={"AAPL": 5})
 
         signals = evaluator.evaluate(rules, lots, portfolio)
@@ -138,7 +138,7 @@ class TestEvaluateAdditionalBuy:
             create_lot(lot_id="lot_001", ticker="AAPL", buy_price=100.0, buy_date="2026-04-01", level=1),
             create_lot(lot_id="lot_002", ticker="AAPL", buy_price=95.0, buy_date="2026-04-05", level=2),
         ]
-        # 현재가 80.0 → 큰 하락이지만 max_lots=2 도달 (next_level=3 > max_lots=2)
+        # 현재가 80.0 -> 큰 하락이지만 max_lots=2 도달 (next_level=3 > max_lots=2)
         portfolio = create_portfolio(cash=10000.0, prices={"AAPL": 80.0}, holdings={"AAPL": 10})
 
         signals = evaluator.evaluate(rules, lots, portfolio)
@@ -159,7 +159,7 @@ class TestMutualExclusivity:
         lots = [
             create_lot(lot_id="lot_001", ticker="AAPL", buy_price=90.0, quantity=3, level=1),
         ]
-        # 현재가 100 → +11.1% → 매도 조건 충족
+        # 현재가 100 -> +11.1% -> 매도 조건 충족
         portfolio = create_portfolio(prices={"AAPL": 100.0}, holdings={"AAPL": 3})
 
         signals = evaluator.evaluate_stock(rules[0], lots, portfolio)
@@ -173,7 +173,7 @@ class TestMutualExclusivity:
         lots = [
             create_lot(lot_id="lot_001", ticker="AAPL", buy_price=90.0, quantity=3, level=1),
         ]
-        # +11.1% → 매도 조건 충족
+        # +11.1% -> 매도 조건 충족
         portfolio = create_portfolio(prices={"AAPL": 100.0}, holdings={"AAPL": 3})
 
         signals = evaluator.evaluate_stock(rules[0], lots, portfolio)
@@ -188,12 +188,12 @@ class TestLevelStaircase:
     def test_level_staircase_pattern(self, evaluator, create_rule, create_lot, create_portfolio):
         """매도 후 이전 차수로 돌아가서 다음 평가에 활용"""
         rules = [create_rule(ticker="AAPL", sell_pct=10.0, buy_pct=-5.0, buy_amount=500)]
-        # 1차, 2차가 있는 상태에서 하락 → 3차 매수
+        # 1차, 2차가 있는 상태에서 하락 -> 3차 매수
         lots = [
             create_lot(lot_id="lot_001", ticker="AAPL", buy_price=100.0, quantity=5, level=1),
             create_lot(lot_id="lot_002", ticker="AAPL", buy_price=95.0, quantity=5, level=2),
         ]
-        # 2차 대비 -6.3% → 추가 매수 조건 충족
+        # 2차 대비 -6.3% -> 추가 매수 조건 충족
         portfolio = create_portfolio(prices={"AAPL": 89.0}, holdings={"AAPL": 10})
 
         signals = evaluator.evaluate_stock(rules[0], lots, portfolio)
@@ -209,7 +209,7 @@ class TestLevelStaircase:
             create_lot(lot_id="lot_001", ticker="AAPL", buy_price=100.0, level=1),
             create_lot(lot_id="lot_003", ticker="AAPL", buy_price=85.0, level=3),
         ]
-        # Lv3 대비 -6% → 추가 매수
+        # Lv3 대비 -6% -> 추가 매수
         portfolio = create_portfolio(prices={"AAPL": 79.9}, holdings={"AAPL": 10})
 
         signals = evaluator.evaluate_stock(rules[0], lots, portfolio)
@@ -317,13 +317,13 @@ class TestPerLevelThresholds:
     def test_buy_uses_level_specific_threshold(
         self, evaluator, create_lot, create_portfolio
     ):
-        """Lv1 → Lv2 매수 판단은 buy_threshold_pcts[0] 기준, Lv2→Lv3는 [1]."""
+        """Lv1 -> Lv2 매수 판단은 buy_threshold_pcts[0] 기준, Lv2->Lv3는 [1]."""
         rule = self._rule_with_arrays(
             buy_pcts=[-3.0, -5.0, -7.0],
             buy_amounts=[100.0, 200.0, 300.0],
             max_lots=5,
         )
-        # Lv1 매수가 100, 현재가 96 → -4% ≤ -3% → Lv2 매수 트리거
+        # Lv1 매수가 100, 현재가 96 -> -4% ≤ -3% -> Lv2 매수 트리거
         lots = [create_lot(ticker="AAPL", buy_price=100.0, quantity=1, level=1)]
         portfolio = create_portfolio(prices={"AAPL": 96.0}, holdings={"AAPL": 1})
 
@@ -335,7 +335,7 @@ class TestPerLevelThresholds:
     def test_lv2_to_lv3_requires_stricter_drop(
         self, evaluator, create_lot, create_portfolio
     ):
-        """Lv2→Lv3 평가는 buy_threshold_pcts[1]=-5% 기준: -4%로는 부족."""
+        """Lv2->Lv3 평가는 buy_threshold_pcts[1]=-5% 기준: -4%로는 부족."""
         rule = self._rule_with_arrays(
             buy_pcts=[-3.0, -5.0, -7.0],
             buy_amounts=[100.0, 200.0, 300.0],
@@ -345,7 +345,7 @@ class TestPerLevelThresholds:
             create_lot(lot_id="l1", ticker="AAPL", buy_price=100.0, level=1),
             create_lot(lot_id="l2", ticker="AAPL", buy_price=95.0, level=2),
         ]
-        # Lv2 매수가 95, 현재가 91.2 → -4% (> -5%) → 매수 안 됨
+        # Lv2 매수가 95, 현재가 91.2 -> -4% (> -5%) -> 매수 안 됨
         portfolio = create_portfolio(prices={"AAPL": 91.2}, holdings={"AAPL": 2})
 
         buy_signals = [
@@ -367,7 +367,7 @@ class TestPerLevelThresholds:
         portfolio = create_portfolio(prices={"AAPL": 96.0}, holdings={"AAPL": 1})
 
         signals = evaluator.evaluate_stock(rule, lots, portfolio)
-        # Lv2 신규 lot → buy_amounts[1] = 200, 200/96 = 2주
+        # Lv2 신규 lot -> buy_amounts[1] = 200, 200/96 = 2주
         assert signals[0].level == 2
         assert signals[0].quantity == 2
 
@@ -384,7 +384,7 @@ class TestPerLevelThresholds:
             create_lot(lot_id="l1", ticker="AAPL", buy_price=100.0, level=1),
             create_lot(lot_id="l2", ticker="AAPL", buy_price=100.0, level=2),
         ]
-        # Lv2 매수가 100, 현재가 109 → +9% ≥ 8% → 매도
+        # Lv2 매수가 100, 현재가 109 -> +9% ≥ 8% -> 매도
         portfolio = create_portfolio(prices={"AAPL": 109.0}, holdings={"AAPL": 2})
 
         signals = evaluator.evaluate_stock(rule, lots, portfolio)
@@ -401,7 +401,7 @@ class TestPerLevelThresholds:
             max_lots=10,
         )
         lots = [create_lot(ticker="AAPL", buy_price=100.0, level=4)]
-        # Lv4에서도 sell threshold는 배열의 마지막 값 5% 사용 → +6% → 매도
+        # Lv4에서도 sell threshold는 배열의 마지막 값 5% 사용 -> +6% -> 매도
         portfolio = create_portfolio(prices={"AAPL": 106.0}, holdings={"AAPL": 5})
 
         signals = evaluator.evaluate_stock(rule, lots, portfolio)
@@ -432,9 +432,9 @@ class TestDynamicReentry:
         """직전 매도가가 마지막 차수 매수가보다 높으면, 매도가를 기준으로 매수 판단."""
         # Lv1(100), Lv2(95) 보유. Lv3가 매도된 상태.
         # 직전 매도가 = 110 (트레일링 스톱으로 높게 매도)
-        # 기존 기준: 95 * 0.95 = 90.25 → 현재가 104 > 90.25 → 매수 안 됨
-        # 동적 기준: 110 * 0.95 = 104.5 → 현재가 104 ≤ 104.5 → 매수!
-        # Lv2 매수가 95에서 현재가 104 → +9.47% < 10% → 매도 조건 미달
+        # 기존 기준: 95 * 0.95 = 90.25 -> 현재가 104 > 90.25 -> 매수 안 됨
+        # 동적 기준: 110 * 0.95 = 104.5 -> 현재가 104 ≤ 104.5 -> 매수!
+        # Lv2 매수가 95에서 현재가 104 -> +9.47% < 10% -> 매도 조건 미달
         rules = [create_rule(ticker="AAPL", buy_pct=-5.0, buy_amount=500, max_lots=10)]
         lots = [
             create_lot(lot_id="lot_001", ticker="AAPL", buy_price=100.0, level=1),
@@ -461,8 +461,8 @@ class TestDynamicReentry:
             create_lot(lot_id="lot_001", ticker="AAPL", buy_price=100.0, level=1),
             create_lot(lot_id="lot_002", ticker="AAPL", buy_price=95.0, level=2),
         ]
-        # 매도가 110 * 0.95 = 104.5 → 현재가 105 > 104.5 → 매수 안 됨
-        # Lv2 매수가 95에서 현재가 105 → +10.5% < 15% → 매도 조건 미달
+        # 매도가 110 * 0.95 = 104.5 -> 현재가 105 > 104.5 -> 매수 안 됨
+        # Lv2 매수가 95에서 현재가 105 -> +10.5% < 15% -> 매도 조건 미달
         portfolio = create_portfolio(
             cash=10000.0, prices={"AAPL": 105.0}, holdings={"AAPL": 10}
         )
@@ -480,8 +480,8 @@ class TestDynamicReentry:
         lots = [
             create_lot(lot_id="lot_001", ticker="AAPL", buy_price=100.0, level=1),
         ]
-        # 매도가 90 < Lv1 매수가 100 → 기존 기준 사용: 100 * 0.95 = 95
-        # 현재가 94 < 95 → 매수 (기존 그리드)
+        # 매도가 90 < Lv1 매수가 100 -> 기존 기준 사용: 100 * 0.95 = 95
+        # 현재가 94 < 95 -> 매수 (기존 그리드)
         portfolio = create_portfolio(
             cash=10000.0, prices={"AAPL": 94.0}, holdings={"AAPL": 5}
         )
@@ -503,7 +503,7 @@ class TestDynamicReentry:
         lots = [
             create_lot(lot_id="lot_001", ticker="AAPL", buy_price=100.0, level=1),
         ]
-        # 기존 기준: 100 * 0.95 = 95 → 현재가 94 < 95 → 매수
+        # 기존 기준: 100 * 0.95 = 95 -> 현재가 94 < 95 -> 매수
         portfolio = create_portfolio(
             cash=10000.0, prices={"AAPL": 94.0}, holdings={"AAPL": 5}
         )
@@ -522,7 +522,7 @@ class TestDynamicReentry:
         lots = [
             create_lot(lot_id="lot_001", ticker="AAPL", buy_price=90.0, level=1),
         ]
-        # 현재가 100 → +11.1% > 10% → 매도
+        # 현재가 100 -> +11.1% > 10% -> 매도
         portfolio = create_portfolio(prices={"AAPL": 100.0}, holdings={"AAPL": 5})
         last_sell_prices = {"AAPL": 200.0}  # 매도가가 높아도 매도 로직에 영향 없음
 
@@ -539,7 +539,7 @@ class TestMaxExposure:
         self, evaluator, create_rule, create_portfolio
     ):
         """보유 없음 상태에서 초기 매수 금액이 비중 상한을 초과하면 is_blocked 신호 반환"""
-        # 총 자산 10,000. buy_amount=5000 → 50주 @100 → 5000/10000 = 50% > 20%
+        # 총 자산 10,000. buy_amount=5000 -> 50주 @100 -> 5000/10000 = 50% > 20%
         rules = [create_rule(
             ticker="AAPL", buy_amount=5000, max_exposure_pct=20.0,
         )]
@@ -554,7 +554,7 @@ class TestMaxExposure:
         self, evaluator, create_rule, create_portfolio
     ):
         """초기 매수 금액이 비중 상한 이내이면 정상 매수"""
-        # 총 자산 10,000. buy_amount=500 → 5주 @100 → 500/10000 = 5% < 20%
+        # 총 자산 10,000. buy_amount=500 -> 5주 @100 -> 500/10000 = 5% < 20%
         rules = [create_rule(
             ticker="AAPL", buy_amount=500, max_exposure_pct=20.0,
         )]
@@ -568,10 +568,10 @@ class TestMaxExposure:
     def test_additional_buy_blocked_when_exceeds_exposure(
         self, evaluator, create_rule, create_lot, create_portfolio
     ):
-        """이미 보유 중인 상태에서 추가 매수하면 비중 상한 초과 → is_blocked 신호 반환"""
-        # 총 자산: cash 5000 + AAPL 5주*94 = 5470 → total 10470
+        """이미 보유 중인 상태에서 추가 매수하면 비중 상한 초과 -> is_blocked 신호 반환"""
+        # 총 자산: cash 5000 + AAPL 5주*94 = 5470 -> total 10470
         # 현재 비중: 470/10470 = 4.5%
-        # 추가 매수: 5주*94 = 470 → 이후 비중: 940/10470 = 9.0% > 5% 상한
+        # 추가 매수: 5주*94 = 470 -> 이후 비중: 940/10470 = 9.0% > 5% 상한
         rules = [create_rule(
             ticker="AAPL", buy_pct=-5.0, buy_amount=500,
             max_exposure_pct=5.0,
