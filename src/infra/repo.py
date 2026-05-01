@@ -28,6 +28,9 @@ class JsonRepository(IRepository):
         self.history_file = os.path.join(self.root, "history.json")
         self.status_file = os.path.join(self.root, "status.json")
 
+        self._history_cache: Optional[List[dict]] = None
+        self._realized_pnl_cache: Optional[dict] = None
+
     # === Positions ===
 
     def load_positions(self) -> List[PositionLot]:
@@ -128,13 +131,24 @@ class JsonRepository(IRepository):
             "executions": enriched_execs,
         }
 
-        data = self._load_json(self.history_file, default=[])
-        data.append(record)
+        if self._history_cache is None:
+            self._history_cache = self._load_json(self.history_file, default=[])
 
-        if self.max_history_records > 0:
-            data = data[-self.max_history_records:]
+        self._history_cache.append(record)
 
-        self._save_json(self.history_file, data)
+        if self.max_history_records > 0 and len(self._history_cache) > self.max_history_records:
+            self._history_cache = self._history_cache[-self.max_history_records:]
+            # Truncation happened, invalidate PnL cache so it recomputes accurately
+            self._realized_pnl_cache = None
+        else:
+            if self._realized_pnl_cache is not None:
+                for exe in enriched_execs:
+                    pnl = exe.get("realized_pnl")
+                    if pnl is not None:
+                        ticker = exe.get("ticker", "")
+                        self._realized_pnl_cache[ticker] = self._realized_pnl_cache.get(ticker, 0.0) + pnl
+
+        self._save_json(self.history_file, self._history_cache)
 
     # === Status ===
 
@@ -218,14 +232,21 @@ class JsonRepository(IRepository):
 
     def _calc_realized_pnl_by_ticker(self) -> dict:
         """history.json에서 종목별 실현 손익 합계를 계산한다."""
-        history = self._load_json(self.history_file, default=[])
+        if self._realized_pnl_cache is not None:
+            return self._realized_pnl_cache
+
+        if self._history_cache is None:
+            self._history_cache = self._load_json(self.history_file, default=[])
+
         result: dict = {}
-        for record in history:
+        for record in self._history_cache:
             for exe in record.get("executions", []):
                 pnl = exe.get("realized_pnl")
                 if pnl is not None:
                     ticker = exe.get("ticker", "")
                     result[ticker] = result.get(ticker, 0.0) + pnl
+
+        self._realized_pnl_cache = result
         return result
 
     def get_last_run_date(self) -> Optional[str]:
