@@ -43,6 +43,7 @@ def test_load_token_cache_file_not_exists(mock_logger):
         result = load_token_from_cache(TEST_APP_KEY, mock_logger)
         assert result is None
         mock_logger.info.assert_not_called()
+        mock_logger.debug.assert_not_called()
         mock_logger.warning.assert_not_called()
 
 def test_load_token_app_key_not_in_cache(mock_logger):
@@ -87,7 +88,7 @@ def test_load_token_expired_token(mock_logger):
          patch("src.infra.broker.kis_token_cache.open", mock_open(read_data=json.dumps(mock_cache_data))):
         result = load_token_from_cache(TEST_APP_KEY, mock_logger)
         assert result is None
-        mock_logger.info.assert_called_once_with("[KisBroker] 캐시 토큰 만료됨, 재발급 필요")
+        mock_logger.debug.assert_called_once_with("[KisBroker] 캐시 토큰 만료됨, 재발급 필요")
 
 def test_load_token_exception_handling(mock_logger):
     """Test exception handling during file reading/JSON parsing."""
@@ -133,8 +134,8 @@ def test_save_token_to_cache_file_not_exists(mock_logger, mock_datetime):
         assert kwargs.get("ensure_ascii") is False
         assert kwargs.get("indent") == 2
 
-        # Verify logger.info was called
-        mock_logger.info.assert_called_once()
+        # Verify logger.debug was called
+        mock_logger.debug.assert_called_once()
 
 
 def test_save_token_to_cache_file_exists(mock_logger, mock_datetime):
@@ -176,8 +177,8 @@ def test_save_token_to_cache_file_exists(mock_logger, mock_datetime):
         args, kwargs = mock_json_dump.call_args
         assert args[0] == expected_cache
 
-        # Verify logger.info was called
-        mock_logger.info.assert_called_once()
+        # Verify logger.debug was called
+        mock_logger.debug.assert_called_once()
 
 
 def test_save_token_to_cache_exception_handling(mock_logger, mock_datetime):

@@ -47,9 +47,9 @@ jobs:
       uses: actions/cache/restore@v4
       with:
         path: .kis_token_cache.json
-        key: kis-token-${{ github.run_id }}
+        key: kis-token-shared-${{ github.run_id }}
         restore-keys: |
-          kis-token-
+          kis-token-shared-
 
     - name: Run broker live tests
       env:
@@ -75,4 +75,4 @@ jobs:
       uses: actions/cache/save@v4
       with:
         path: .kis_token_cache.json
-        key: kis-token-${{ github.run_id }}
+        key: kis-token-shared-${{ github.run_id }}

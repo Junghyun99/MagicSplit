@@ -43,6 +43,15 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
+    - name: Restore KIS token cache
+      id: token-cache-restore
+      uses: actions/cache/restore@v4
+      with:
+        path: .kis_token_cache.json
+        key: kis-token-shared-${{ github.run_id }}
+        restore-keys: |
+          kis-token-shared-
+
     - name: Execute Manual Trade
       env:
         CONFIG_JSON_PATH: config_${{ github.event.inputs.market_type }}.json
@@ -56,6 +65,13 @@ jobs:
           --ticker "${{ github.event.inputs.ticker }}" \
           --action "${{ github.event.inputs.action }}" \
           --qty "${{ github.event.inputs.quantity }}"
+
+    - name: Save KIS token cache
+      if: always()
+      uses: actions/cache/save@v4
+      with:
+        path: .kis_token_cache.json
+        key: kis-token-shared-${{ github.run_id }}
 
     - name: Commit updated data files
       run: |
