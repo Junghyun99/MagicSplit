@@ -27,6 +27,7 @@ class JsonRepository(IRepository):
         self.positions_file = os.path.join(self.root, "positions.json")
         self.history_file = os.path.join(self.root, "history.json")
         self.status_file = os.path.join(self.root, "status.json")
+        self._realized_pnl_cache: Optional[dict] = None
 
     # === Positions ===
 
@@ -136,6 +137,9 @@ class JsonRepository(IRepository):
 
         self._save_json(self.history_file, data)
 
+        # Cache invalidation (to handle max_history_records safely)
+        self._realized_pnl_cache = None
+
     # === Status ===
 
     def update_status(self, portfolio: Portfolio,
@@ -217,7 +221,10 @@ class JsonRepository(IRepository):
         self._save_json(self.status_file, status)
 
     def _calc_realized_pnl_by_ticker(self) -> dict:
-        """history.json에서 종목별 실현 손익 합계를 계산한다."""
+        """history.json에서 종목별 실현 손익 합계를 계산한다 (캐싱 적용)."""
+        if self._realized_pnl_cache is not None:
+            return self._realized_pnl_cache.copy()
+
         history = self._load_json(self.history_file, default=[])
         result: dict = {}
         for record in history:
@@ -226,7 +233,9 @@ class JsonRepository(IRepository):
                 if pnl is not None:
                     ticker = exe.get("ticker", "")
                     result[ticker] = result.get(ticker, 0.0) + pnl
-        return result
+
+        self._realized_pnl_cache = result
+        return result.copy()
 
     def get_last_run_date(self) -> Optional[str]:
         """마지막 실행 날짜를 반환한다."""
