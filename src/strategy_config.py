@@ -6,7 +6,6 @@
     "stocks": [
         {
             "ticker": "AAPL",
-            "exchange": "NAS",
             "market_type": "overseas",
             "buy_threshold_pct": -5.0,
             "sell_threshold_pct": 10.0,
@@ -17,6 +16,11 @@
     ],
     "global": { }
 }
+
+티커 표기 규칙: MagicSplit 표준은 접미사 없는 형태이다.
+- 국내: "005930" (KOSPI), "058470" (KOSDAQ) — `.KS`/`.KQ` 미사용
+- 해외: "AAPL" (그대로)
+거래소 코드는 `src/utils/ticker_reader.get_exchange(ticker)`로 자동 조회한다.
 
 차수별 배열 및 프리셋(공유 파일) 사용 예:
 - `presets.json` (repo 루트, 국내/해외 config와 동일 디렉토리에 위치):
@@ -29,7 +33,7 @@
       }
   }
 - `config_overseas.json`의 stock 항목:
-  { "ticker": "AAPL", "exchange": "NAS", "preset": "large_cap_us",
+  { "ticker": "AAPL", "preset": "large_cap_us",
     "sell_threshold_pcts": [7, 10, 15, 25] }  # 종목 필드가 preset을 override
 
 경로 해석 순서: 생성자 인자 -> 환경변수 `PRESETS_JSON_PATH` -> config 파일 디렉토리/`presets.json`.
@@ -40,6 +44,7 @@ import os
 from typing import Dict, List, Optional, Set
 
 from src.core.models import StockRule
+from src.utils.ticker_reader import get_ticker_info
 
 
 class StrategyConfig:
@@ -64,10 +69,6 @@ class StrategyConfig:
     def get_rules_by_market(self, market_type: str) -> List[StockRule]:
         """지정된 market_type에 해당하는 규칙만 반환한다."""
         return [r for r in self.rules if r.market_type == market_type]
-
-    def get_exchange_map(self) -> Dict[str, str]:
-        """티커->거래소 단축 코드 맵을 반환한다 (exchange 미지정 종목 제외)."""
-        return {r.ticker: r.exchange for r in self.rules if r.exchange}
 
     @staticmethod
     def _resolve_presets_path(config_path: str, explicit: Optional[str]) -> str:
@@ -142,7 +143,11 @@ class StrategyConfig:
             if not ticker:
                 raise ValueError(f"{self.config_path}[{idx}]: 'ticker' 필드가 필요합니다.")
 
-            exchange = merged.get("exchange") or ""
+            if get_ticker_info(ticker) is None:
+                raise ValueError(
+                    f"{self.config_path}[{idx}]: 티커 '{ticker}' 가 tickers.db에 등록되어 있지 않습니다. "
+                    f"국내는 접미사 없는 6자리 코드(예: '005930'), 해외는 심볼 그대로(예: 'AAPL')를 사용하세요."
+                )
 
             market_type = merged.get("market_type", "overseas")
             if market_type not in ("overseas", "domestic"):
@@ -194,7 +199,6 @@ class StrategyConfig:
                 max_lots=int(merged.get("max_lots", 10)),
                 market_type=market_type,
                 enabled=bool(merged.get("enabled", True)),
-                exchange=exchange,
                 reentry_guard_pct=reentry_guard_pct,
                 buy_threshold_pcts=[float(x) for x in buy_pcts] if buy_pcts else None,
                 sell_threshold_pcts=[float(x) for x in sell_pcts] if sell_pcts else None,

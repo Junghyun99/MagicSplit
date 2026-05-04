@@ -38,16 +38,10 @@ def main():
     logger.info(f"=== 수동 매매(Manual Trade) 시작: {args.ticker} {args.action.upper()} {args.qty}주 ===")
 
     strategy = StrategyConfig(config.CONFIG_JSON_PATH)
-    
-    # 1. 룰에서 티커 검색 (마켓 타입 및 exchange_map을 얻기 위함)
-    # 사용자가 '005930'처럼 숫자만 입력해도 '005930.KS' 등을 찾을 수 있도록 유연하게 매칭
-    target_rule = None
-    for r in strategy.rules:
-        if r.ticker == args.ticker or r.ticker.startswith(f"{args.ticker}."):
-            target_rule = r
-            args.ticker = r.ticker  # 이후 로직(포지션 업데이트 등)을 위해 풀네임으로 덮어씌움
-            break
-            
+
+    # 1. 룰에서 티커 검색 (마켓 타입을 얻기 위함). 티커 표기는 정확히 일치해야 한다.
+    target_rule = next((r for r in strategy.rules if r.ticker == args.ticker), None)
+
     if not target_rule:
         logger.error(f"설정 파일({config.CONFIG_JSON_PATH})에 '{args.ticker}' 종목이 없습니다.")
         sys.exit(1)
@@ -63,8 +57,6 @@ def main():
         app_secret=config.KIS_APP_SECRET,
         acc_no=config.KIS_ACC_NO,
         logger=logger,
-        exchange_map=strategy.get_exchange_map(),
-        known_tickers=[r.ticker for r in strategy.rules],
     )
     repo = JsonRepository(
         os.path.join(config.DATA_PATH, market_type),

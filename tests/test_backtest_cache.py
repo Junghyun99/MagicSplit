@@ -146,29 +146,29 @@ class TestIpoTrim:
         """한 티커의 데이터가 늦게 시작하면 해당 날짜부터 잘라낸다"""
         ipo_date = pd.Timestamp("2023-01-02")
         yf_response = self._make_mixed_ipo_response(
-            "SPY", "NEW", ipo_date, "2022-01-01", "2023-06-30"
+            "SPY", "IEF", ipo_date, "2022-01-01", "2023-06-30"
         )
 
         with patch("src.backtest.cache.yf.download", return_value=yf_response):
-            result = cache.get_data(["SPY", "NEW"], "2022-01-01", "2023-06-30")
+            result = cache.get_data(["SPY", "IEF"], "2022-01-01", "2023-06-30")
 
         assert result.index.min() >= ipo_date
         assert "SPY" in result.columns
-        assert "NEW" in result.columns
+        assert "IEF" in result.columns
         # ffill 후 NaN 없어야 함
-        assert not result["NEW"].isna().any()
+        assert not result["IEF"].isna().any()
 
     def test_trim_logs_warning(self, tmp_cache_dir):
         """시작일 조정 시 logger.warning 호출"""
         ipo_date = pd.Timestamp("2023-01-02")
         yf_response = TestIpoTrim._make_mixed_ipo_response(
-            self, "SPY", "NEW", ipo_date, "2022-01-01", "2023-06-30"
+            self, "SPY", "IEF", ipo_date, "2022-01-01", "2023-06-30"
         )
 
         logger = MagicMock()
         cache = BacktestDataCache(cache_dir=tmp_cache_dir, logger=logger)
         with patch("src.backtest.cache.yf.download", return_value=yf_response):
-            cache.get_data(["SPY", "NEW"], "2022-01-01", "2023-06-30")
+            cache.get_data(["SPY", "IEF"], "2022-01-01", "2023-06-30")
 
         warning_msgs = [c.args[0] for c in logger.warning.call_args_list]
         assert any("조정" in m for m in warning_msgs)

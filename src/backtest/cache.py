@@ -4,6 +4,7 @@ import yfinance as yf
 from pathlib import Path
 from typing import List, Optional
 from src.core.interfaces import ILogger
+from src.utils.ticker_reader import to_yfinance_ticker
 
 CACHE_DIR = Path(__file__).parent / "cache"
 
@@ -158,20 +159,27 @@ class BacktestDataCache:
     def _download_close(
         self, tickers: List[str], start_date: str, end_date: str
     ) -> Optional[pd.DataFrame]:
-        """yfinance로 종가를 다운로드한다."""
+        """yfinance로 종가를 다운로드한다.
+
+        MagicSplit 표준 티커(접미사 없음)를 yfinance용 (.KS/.KQ 부여) 으로 변환한 뒤
+        호출하고, 반환되는 DataFrame의 컬럼은 다시 MagicSplit 표준 티커로 환원한다.
+        """
+        yf_to_std = {to_yfinance_ticker(t): t for t in tickers}
+        yf_tickers = list(yf_to_std.keys())
         try:
             df = yf.download(
-                tickers, start=start_date, end=end_date,
+                yf_tickers, start=start_date, end=end_date,
                 auto_adjust=False, progress=False,
             )
             if df is None or df.empty:
                 return None
 
-            # 단일 티커 + SingleIndex -> 정규화
-            if not isinstance(df.columns, pd.MultiIndex) and len(tickers) == 1:
+            # 단일 티커 + SingleIndex -> 정규화 (입력 tickers에 중복이 있어도
+            # yf_tickers 길이를 기준으로 컬럼명을 맞춰 ValueError를 회피)
+            if not isinstance(df.columns, pd.MultiIndex) and len(yf_tickers) == 1:
                 if "Close" in df.columns:
                     close_df = df[["Close"]].copy()
-                    close_df.columns = tickers
+                    close_df.columns = [yf_to_std[t] for t in yf_tickers]
                     return close_df
                 return None
 
@@ -182,8 +190,9 @@ class BacktestDataCache:
 
             # Series -> DataFrame 변환 (단일 티커의 경우)
             if isinstance(close_df, pd.Series):
-                close_df = close_df.to_frame(name=tickers[0])
+                close_df = close_df.to_frame(name=yf_tickers[0])
 
+            close_df = close_df.rename(columns=yf_to_std)
             return close_df
         except Exception as e:
             self._logger.warning(f"종가 다운로드 실패: {e}")

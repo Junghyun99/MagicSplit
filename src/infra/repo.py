@@ -9,6 +9,7 @@ from datetime import datetime
 
 from src.core.models import PositionLot, Portfolio, TradeExecution, SplitSignal, OrderAction
 from src.core.interfaces import IRepository
+from src.utils.ticker_reader import get_alias
 
 
 class JsonRepository(IRepository):
@@ -90,8 +91,14 @@ class JsonRepository(IRepository):
         return result
 
     def save_positions(self, lots: List[PositionLot]) -> None:
-        """분할 포지션 목록을 저장한다."""
-        data = [asdict(lot) for lot in lots]
+        """분할 포지션 목록을 저장한다 (alias 필드 포함)."""
+        # 동일 ticker의 lot이 여러 개일 수 있어 unique ticker로만 alias 조회
+        alias_by_ticker = {l.ticker: get_alias(l.ticker) or l.ticker for l in lots}
+        data = []
+        for lot in lots:
+            rec = asdict(lot)
+            rec["alias"] = alias_by_ticker[lot.ticker]
+            data.append(rec)
         self._save_json(self.positions_file, data)
 
     # === Trade History ===
@@ -112,10 +119,13 @@ class JsonRepository(IRepository):
             date_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             tx_id = f"tx_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
 
+        # 동일 ticker의 체결이 여러 건일 수 있어 unique ticker로만 alias 조회
+        alias_by_ticker = {e.ticker: get_alias(e.ticker) or e.ticker for e in executions}
         enriched_execs = []
         for e in executions:
             rec = asdict(e)
-            
+            rec["alias"] = alias_by_ticker[e.ticker]
+
             # JSON 깔끔함을 위해 불필요한 빈 필드 제거
             if rec.get("lot_id") is None:
                 rec.pop("lot_id", None)
