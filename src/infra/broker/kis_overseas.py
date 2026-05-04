@@ -356,14 +356,13 @@ class KisOverseasBrokerBase(KisBrokerCommon):
             self.logger.warning("[KisBroker] CANCEL_TR_ID 미설정 — 주문 취소 불가")
             return False
 
-        url = f"{self.base_url}/uapi/overseas-stock/v1/trading/order"
+        url = f"{self.base_url}/uapi/overseas-stock/v1/trading/order-rvsecncl"
         data = {
             "CANO": self.cano,
             "ACNT_PRDT_CD": self.acnt_prdt_cd,
             "OVRS_EXCG_CD": exch,
             "PDNO": ticker,
             "ORGN_ODNO": odno,
-            "ORD_DVSN": "00",
             "ORD_QTY": str(quantity),
             "OVRS_ORD_UNPR": "0",
             "RVSE_CNCL_DVSN_CD": "02",
