@@ -134,7 +134,7 @@ window.ConfigView = (function () {
             document.getElementById('add-stock-btn').textContent = '+ 종목 추가';
         }
     }
-
+    function getEditorValues() {
         const rows = document.getElementById('levels-tbody').querySelectorAll('tr');
         const buyPcts = [];
         const buyAmts = [];
