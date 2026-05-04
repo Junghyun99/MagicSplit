@@ -174,11 +174,12 @@ class BacktestDataCache:
             if df is None or df.empty:
                 return None
 
-            # 단일 티커 + SingleIndex -> 정규화
+            # 단일 티커 + SingleIndex -> 정규화 (입력 tickers에 중복이 있어도
+            # yf_tickers 길이를 기준으로 컬럼명을 맞춰 ValueError를 회피)
             if not isinstance(df.columns, pd.MultiIndex) and len(yf_tickers) == 1:
                 if "Close" in df.columns:
                     close_df = df[["Close"]].copy()
-                    close_df.columns = tickers
+                    close_df.columns = [yf_to_std[t] for t in yf_tickers]
                     return close_df
                 return None
 

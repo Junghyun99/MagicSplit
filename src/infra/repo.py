@@ -92,10 +92,12 @@ class JsonRepository(IRepository):
 
     def save_positions(self, lots: List[PositionLot]) -> None:
         """분할 포지션 목록을 저장한다 (alias 필드 포함)."""
+        # 동일 ticker의 lot이 여러 개일 수 있어 unique ticker로만 alias 조회
+        alias_by_ticker = {l.ticker: get_alias(l.ticker) or l.ticker for l in lots}
         data = []
         for lot in lots:
             rec = asdict(lot)
-            rec["alias"] = get_alias(lot.ticker) or lot.ticker
+            rec["alias"] = alias_by_ticker[lot.ticker]
             data.append(rec)
         self._save_json(self.positions_file, data)
 
@@ -117,10 +119,12 @@ class JsonRepository(IRepository):
             date_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             tx_id = f"tx_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
 
+        # 동일 ticker의 체결이 여러 건일 수 있어 unique ticker로만 alias 조회
+        alias_by_ticker = {e.ticker: get_alias(e.ticker) or e.ticker for e in executions}
         enriched_execs = []
         for e in executions:
             rec = asdict(e)
-            rec["alias"] = get_alias(e.ticker) or e.ticker
+            rec["alias"] = alias_by_ticker[e.ticker]
 
             # JSON 깔끔함을 위해 불필요한 빈 필드 제거
             if rec.get("lot_id") is None:

@@ -93,7 +93,7 @@ def main():
                 if migrate_file(p):
                     changed += 1
     print(f"\n총 {changed}개 파일 변환 완료.")
-    return 0 if changed >= 0 else 1
+    return 0
 
 
 if __name__ == "__main__":
