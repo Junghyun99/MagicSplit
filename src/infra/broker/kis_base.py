@@ -68,7 +68,9 @@ class KisBrokerCommon(IBrokerAdapter):
                 raise Exception(f"Auth Failed: {data}")
             expires_in = int(data.get('expires_in', 86400))
             self.token_expires_at = datetime.now() + timedelta(seconds=expires_in)
-            token = data['access_token']
+            token = data.get('access_token')
+            if not token:
+                raise Exception(f"Access token missing in response: {data}")
             self._save_token_to_cache(token, self.token_expires_at)
             return token
         except Exception as e:

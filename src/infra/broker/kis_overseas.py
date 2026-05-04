@@ -36,7 +36,7 @@ class KisOverseasBrokerBase(KisBrokerCommon):
                 res.raise_for_status()
                 data = res.json()
 
-                if data['rt_cd'] == '0':
+                if data.get('rt_cd') == '0':
                     output = data.get('output', {})
                     price = float(output.get('last', 0) or 0)
                     if price <= 0:
@@ -62,7 +62,7 @@ class KisOverseasBrokerBase(KisBrokerCommon):
         """
         해외주식 잔고 및 예수금 조회 (NASD/NYSE/AMEX 전 거래소 통합).
 
-        total_cash는 output2['ovrs_ord_psbl_amt'] (해외주문가능금액) 사용.
+        total_cash는 output2.get('ovrs_ord_psbl_amt') (해외주문가능금액) 사용.
         pending 주문 예약금이 이미 차감된 실제 가용 금액 (#225).
         """
         tr_id = self.PORTFOLIO_TR_ID
@@ -91,20 +91,39 @@ class KisOverseasBrokerBase(KisBrokerCommon):
                 res.raise_for_status()
                 data = res.json()
 
-                if data['rt_cd'] != '0':
+                if data.get('rt_cd') != '0':
                     self.logger.warning(f"[KisBroker] Get Portfolio Failed ({exch}): {data.get('msg1')}")
                     continue
 
-                if not cash_fetched:
-                    total_cash = float(data['output2']['ovrs_ord_psbl_amt'])
-                    cash_fetched = True
+                # output2 파싱 (예수금/주문가능금액)
+                output2 = data.get('output2')
+                if not cash_fetched and output2:
+                    if isinstance(output2, list):
+                        output2 = output2[0] if output2 else {}
+                    
+                    if isinstance(output2, dict):
+                        # 'ovrs_ord_psbl_amt' (해외주문가능금액) 사용.
+                        # 키가 없는 경우 원인 파악을 위해 output2 전체 구조를 로그에 남깁니다.
+                        val = output2.get('ovrs_ord_psbl_amt')
+                        if val is not None:
+                            total_cash = float(val)
+                            cash_fetched = True
+                        else:
+                            self.logger.warning(
+                                f"[KisBroker] 'ovrs_ord_psbl_amt' missing in output2 for {exch}. "
+                                f"Full output2: {output2}"
+                            )
+                    else:
+                        self.logger.warning(f"[KisBroker] Unexpected output2 type for {exch}: {type(output2)}")
 
-                for item in data['output1']:
-                    qty = int(item['ovrs_cblc_qty'])
+                for item in data.get('output1', []):
+                    qty = int(item.get('ovrs_cblc_qty', 0) or 0)
                     if qty > 0:
-                        ticker = item['ovrs_pdno']
+                        ticker = item.get('ovrs_pdno', '')
+                        if not ticker:
+                            continue
                         all_holdings[ticker] = qty
-                        all_prices[ticker] = float(item['now_pric2'])
+                        all_prices[ticker] = float(item.get('now_pric2', 0) or 0)
 
             except Exception as e:
                 self.logger.error(f"[KisBroker] Error getting portfolio ({exch}): {e}")
@@ -167,7 +186,7 @@ class KisOverseasBrokerBase(KisBrokerCommon):
             res.raise_for_status()
             resp_data = res.json()
 
-            if resp_data['rt_cd'] != '0':
+            if resp_data.get('rt_cd') != '0':
                 self.logger.error(f"[KisBroker] Order Failed: {resp_data.get('msg1')}")
                 return None
 
@@ -298,7 +317,7 @@ class KisOverseasBrokerBase(KisBrokerCommon):
         res = _pkg.requests.get(url, headers=headers, params=params, timeout=DEFAULT_HTTP_TIMEOUT)
         res.raise_for_status()
         data = res.json()
-        if data['rt_cd'] == '0':
+        if data.get('rt_cd') == '0':
             return {item.get('odno', '') for item in data.get('output', [])}
         return set()
 
@@ -326,7 +345,7 @@ class KisOverseasBrokerBase(KisBrokerCommon):
             res = _pkg.requests.get(url, headers=headers, params=params, timeout=DEFAULT_HTTP_TIMEOUT)
             res.raise_for_status()
             data = res.json()
-            if data['rt_cd'] != '0':
+            if data.get('rt_cd') != '0':
                 return 0.0, 0, 0.0
 
             # 같은 ODNO에 여러 row가 있을 수 있어 모두 합산.
@@ -376,7 +395,7 @@ class KisOverseasBrokerBase(KisBrokerCommon):
             res = _pkg.requests.post(url, headers=headers, json=data, timeout=DEFAULT_HTTP_TIMEOUT)
             res.raise_for_status()
             resp_data = res.json()
-            if resp_data['rt_cd'] == '0':
+            if resp_data.get('rt_cd') == '0':
                 self.logger.info(f"[KisBroker] Order Cancelled: {ticker} ODNO={odno}")
                 return True
             else:
@@ -416,7 +435,7 @@ class KisOverseasBrokerBase(KisBrokerCommon):
                 res.raise_for_status()
                 data = res.json()
 
-                if data['rt_cd'] == '0':
+                if data.get('rt_cd') == '0':
                     count = len(data.get('output', []))
                     if count > 0:
                         self.logger.info(f"[KisBroker] Found {count} pending orders in {exch}. Waiting...")
@@ -442,7 +461,7 @@ class KisOverseasBrokerBase(KisBrokerCommon):
             res.raise_for_status()
             data = res.json()
 
-            if data['rt_cd'] != '0':
+            if data.get('rt_cd') != '0':
                 self.logger.warning(f"[KisBroker] 호가 조회 실패 {ticker}: {data.get('msg1')}")
                 return (0.0, 0.0)
 
