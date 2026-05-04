@@ -45,7 +45,7 @@ class KisDomesticBrokerBase(KisBrokerCommon):
                 res.raise_for_status()
                 data = res.json()
 
-                if data['rt_cd'] == '0':
+                if data.get('rt_cd') == '0':
                     output = data.get('output', {})
                     price = float(output.get('stck_prpr', 0) or 0)
                     if price <= 0:
@@ -97,7 +97,7 @@ class KisDomesticBrokerBase(KisBrokerCommon):
             res.raise_for_status()
             data = res.json()
 
-            if data['rt_cd'] != '0':
+            if data.get('rt_cd') != '0':
                 self.logger.warning(f"[KisDomestic] Get Portfolio Failed: {data.get('msg1')}")
                 return Portfolio(total_cash=0.0, holdings={}, current_prices={})
 
@@ -109,7 +109,7 @@ class KisDomesticBrokerBase(KisBrokerCommon):
             for item in data.get('output1', []):
                 qty = int(item.get('hldg_qty', 0) or 0)
                 if qty > 0:
-                    ticker = item['pdno'].zfill(6)
+                    ticker = item.get('pdno', '').zfill(6)
                     all_holdings[ticker] = qty
                     all_prices[ticker] = float(item.get('prpr', 0) or 0)
 
@@ -163,7 +163,7 @@ class KisDomesticBrokerBase(KisBrokerCommon):
             res.raise_for_status()
             resp_data = res.json()
 
-            if resp_data['rt_cd'] != '0':
+            if resp_data.get('rt_cd') != '0':
                 self.logger.error(f"[KisDomestic] Order Failed: {resp_data.get('msg1')}")
                 return None
 
@@ -295,7 +295,7 @@ class KisDomesticBrokerBase(KisBrokerCommon):
             res = _pkg.requests.get(url, headers=headers, params=params, timeout=DEFAULT_HTTP_TIMEOUT)
             res.raise_for_status()
             data = res.json()
-            if data['rt_cd'] == '0':
+            if data.get('rt_cd') == '0':
                 return {item.get('odno', '') for item in data.get('output', [])}
             return set()
         except Exception as e:
@@ -342,7 +342,7 @@ class KisDomesticBrokerBase(KisBrokerCommon):
             res = _pkg.requests.get(url, headers=headers, params=params, timeout=DEFAULT_HTTP_TIMEOUT)
             res.raise_for_status()
             data = res.json()
-            if data['rt_cd'] != '0':
+            if data.get('rt_cd') != '0':
                 return 0.0, 0, 0.0
 
             # tot_ccld_qty 는 ODNO 누적 체결량이라 단일 row 만 사용해도 정상.
@@ -385,7 +385,7 @@ class KisDomesticBrokerBase(KisBrokerCommon):
             res = _pkg.requests.post(url, headers=headers, json=data, timeout=DEFAULT_HTTP_TIMEOUT)
             res.raise_for_status()
             resp_data = res.json()
-            if resp_data['rt_cd'] == '0':
+            if resp_data.get('rt_cd') == '0':
                 self.logger.info(f"[KisDomestic] Order Cancelled: {display_ticker(ticker)} ODNO={odno}")
                 return True
             else:
@@ -412,7 +412,7 @@ class KisDomesticBrokerBase(KisBrokerCommon):
             res.raise_for_status()
             data = res.json()
 
-            if data['rt_cd'] != '0':
+            if data.get('rt_cd') != '0':
                 self.logger.warning(f"[KisDomestic] 호가 조회 실패 {display_ticker(ticker)}: {data.get('msg1')}")
                 return (0.0, 0.0)
 
