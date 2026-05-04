@@ -2,6 +2,7 @@
 from typing import List, Dict, Optional
 from datetime import datetime
 from src.core.models import Portfolio, PositionLot, TradeExecution
+from src.utils.ticker_reader import get_alias
 
 def build_dashboard_status(
     portfolio: Portfolio,
@@ -60,6 +61,7 @@ def build_dashboard_status(
         unrealized_pnl = current_value - total_invested
         realized_pnl = realized_by_ticker.get(ticker, 0.0)
 
+        ts["alias"] = get_alias(ticker) or ticker
         ts["avg_buy_price"] = round(total_invested / ts["total_qty"], 4) if ts["total_qty"] > 0 else 0.0
         ts["total_invested"] = round(total_invested, 2)
         ts["current_value"] = round(current_value, 2)
@@ -81,6 +83,7 @@ def build_dashboard_status(
             "holdings": [
                 {
                     "ticker": t,
+                    "alias": get_alias(t) or t,
                     "qty": q,
                     "price": portfolio.current_prices.get(t, 0),
                     "value": q * portfolio.current_prices.get(t, 0),

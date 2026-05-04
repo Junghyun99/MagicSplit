@@ -6,7 +6,8 @@ import src.infra.broker as _pkg  # test patch 타깃: src.infra.broker.requests
 from datetime import datetime
 
 from src.core.models import Portfolio, Order, TradeExecution, OrderAction, ExecutionStatus
-from src.config import TICKER_EXCHANGE_MAP, EXCHANGE_CODE_SHORT_TO_FULL, DEFAULT_HTTP_TIMEOUT
+from src.config import EXCHANGE_CODE_SHORT_TO_FULL, DEFAULT_HTTP_TIMEOUT
+from src.utils.ticker_reader import get_exchange, display_ticker
 
 from .kis_base import KisBrokerCommon
 from .kis_order_helpers import poll_order_fill, resolve_timeout_outcome
@@ -16,10 +17,8 @@ class KisOverseasBrokerBase(KisBrokerCommon):
     """해외주식(미국) 전용 브로커 베이스 클래스."""
     ASKING_PRICE_TR_ID: str = "HHDFS76200100"  # 해외주식 호가 조회 (실전/모의 동일)
 
-    def __init__(self, app_key: str, app_secret: str, acc_no: str, logger,
-                 exchange_map: dict | None = None):
+    def __init__(self, app_key: str, app_secret: str, acc_no: str, logger):
         super().__init__(app_key, app_secret, acc_no, logger)
-        self._exchange_map: dict[str, str] = exchange_map or {}
 
     def fetch_current_prices(self, tickers: List[str]) -> Dict[str, float]:
         """해외주식 현재가 조회 (반복 호출)"""
@@ -45,15 +44,15 @@ class KisOverseasBrokerBase(KisBrokerCommon):
                     
                     if price <= 0:
                         self.logger.warning(
-                            f"[KisBroker] Price is 0 for {ticker}. "
+                            f"[KisBroker] Price is 0 for {display_ticker(ticker)}. "
                             f"Response output: {output}"
                         )
                     prices[ticker] = price
                 else:
-                    self.logger.warning(f"[KisBroker] Price fetch failed for {ticker}: {data.get('msg1')}")
+                    self.logger.warning(f"[KisBroker] Price fetch failed for {display_ticker(ticker)}: {data.get('msg1')}")
                     prices[ticker] = 0.0
             except Exception as e:
-                self.logger.error(f"[KisBroker] Price fetch error {ticker}: {e}")
+                self.logger.error(f"[KisBroker] Price fetch error {display_ticker(ticker)}: {e}")
                 prices[ticker] = 0.0
 
         return prices
@@ -132,7 +131,7 @@ class KisOverseasBrokerBase(KisBrokerCommon):
             mid = (bid + ask) / 2
             spread_pct = (ask - bid) / mid * 100
             self.logger.warning(
-                f"[KisBroker] 스프레드 비정상 — {order.ticker} "
+                f"[KisBroker] 스프레드 비정상 — {display_ticker(order.ticker)} "
                 f"bid={bid} ask={ask} spread={spread_pct:.2f}% > {self.SPREAD_THRESHOLD_PCT}% — 주문 보류"
             )
             return TradeExecution(
@@ -173,7 +172,7 @@ class KisOverseasBrokerBase(KisBrokerCommon):
 
             odno = resp_data.get('output', {}).get('ODNO', '')
             self.logger.info(
-                f"[KisBroker] Order Sent: {order.action} {order.ticker} "
+                f"[KisBroker] Order Sent: {order.action} {display_ticker(order.ticker)} "
                 f"{order.quantity} @ {order_price} (ODNO={odno})"
             )
 
@@ -184,7 +183,7 @@ class KisOverseasBrokerBase(KisBrokerCommon):
                     actual_price = fill_price if fill_price > 0 else order_price
                     actual_qty = fill_qty if fill_qty > 0 else order.quantity
                     self.logger.info(
-                        f"[KisBroker] Order FILLED: {order.ticker} ODNO={odno} "
+                        f"[KisBroker] Order FILLED: {display_ticker(order.ticker)} ODNO={odno} "
                         f"price={actual_price} qty={actual_qty} fee={fill_fee}"
                     )
                     return TradeExecution(
@@ -200,7 +199,7 @@ class KisOverseasBrokerBase(KisBrokerCommon):
                 else:
                     self.logger.warning(
                         f"[KisBroker] Order NOT confirmed within {timeout}s: "
-                        f"{order.ticker} ODNO={odno} — 취소 시도 후 재폴링·체결조회"
+                        f"{display_ticker(order.ticker)} ODNO={odno} — 취소 시도 후 재폴링·체결조회"
                     )
                     outcome = resolve_timeout_outcome(
                         odno=odno,
@@ -257,7 +256,7 @@ class KisOverseasBrokerBase(KisBrokerCommon):
         if not outcome.cancel_ok:
             reason += " cancel_unconfirmed"
         self.logger.info(
-            f"[KisBroker] Timeout outcome: {order.ticker} ODNO={odno} "
+            f"[KisBroker] Timeout outcome: {display_ticker(order.ticker)} ODNO={odno} "
             f"{outcome.classification} qty={outcome.fill_qty}/{order.quantity} "
             f"detail={outcome.detail}"
         )
@@ -377,15 +376,15 @@ class KisOverseasBrokerBase(KisBrokerCommon):
             res.raise_for_status()
             resp_data = res.json()
             if resp_data['rt_cd'] == '0':
-                self.logger.info(f"[KisBroker] Order Cancelled: {ticker} ODNO={odno}")
+                self.logger.info(f"[KisBroker] Order Cancelled: {display_ticker(ticker)} ODNO={odno}")
                 return True
             else:
                 self.logger.error(
-                    f"[KisBroker] Cancel Failed: {ticker} ODNO={odno} — {resp_data.get('msg1')}"
+                    f"[KisBroker] Cancel Failed: {display_ticker(ticker)} ODNO={odno} — {resp_data.get('msg1')}"
                 )
                 return False
         except Exception as e:
-            self.logger.error(f"[KisBroker] Cancel Error: {ticker} ODNO={odno} — {e}")
+            self.logger.error(f"[KisBroker] Cancel Error: {display_ticker(ticker)} ODNO={odno} — {e}")
             return False
 
     def _get_pending_orders_count(self) -> int:
@@ -443,17 +442,17 @@ class KisOverseasBrokerBase(KisBrokerCommon):
             data = res.json()
 
             if data['rt_cd'] != '0':
-                self.logger.warning(f"[KisBroker] 호가 조회 실패 {ticker}: {data.get('msg1')}")
+                self.logger.warning(f"[KisBroker] 호가 조회 실패 {display_ticker(ticker)}: {data.get('msg1')}")
                 return (0.0, 0.0)
 
             output2 = data.get('output2', {})
-            self.logger.debug(f"[KisBroker] 호가 응답 {ticker}: {output2}")
+            self.logger.debug(f"[KisBroker] 호가 응답 {display_ticker(ticker)}: {output2}")
             bid = float(output2.get('pbid1', 0) or 0)
             ask = float(output2.get('pask1', 0) or 0)
             return (bid, ask)
 
         except Exception as e:
-            self.logger.warning(f"[KisBroker] 호가 조회 에러 {ticker}: {e}")
+            self.logger.warning(f"[KisBroker] 호가 조회 에러 {display_ticker(ticker)}: {e}")
             return (0.0, 0.0)
 
     def _get_exchange_code(self, ticker: str, api_type: str = "price") -> str:
@@ -461,15 +460,13 @@ class KisOverseasBrokerBase(KisBrokerCommon):
         티커별 거래소 코드 반환.
         - api_type="price"  : 현재가 조회 API용 단축 코드 (NAS, NYS, AMS)
         - api_type="order"  : 주문/잔고/미체결 API용 전체 코드 (NASD, NYSE, AMEX)
-        주입된 exchange_map 우선, 없으면 전역 기본값 fallback.
+        tickers.db에서 거래소 코드를 조회한다. 미등록 티커는 ValueError.
         """
-        price_code = self._exchange_map.get(ticker) or TICKER_EXCHANGE_MAP.get(ticker)
+        price_code = get_exchange(ticker)
         if price_code is None:
-            self.logger.warning(
-                f"[KisBroker] 알 수 없는 티커 '{ticker}' - 기본 거래소 코드(NAS/NASD) 사용. "
-                f"설정 파일의 exchange 필드를 확인하세요."
+            raise ValueError(
+                f"[KisOverseas] 티커 '{display_ticker(ticker)}' 가 tickers.db에 등록되어 있지 않습니다."
             )
-            price_code = 'NAS'
         if api_type == "order":
             return EXCHANGE_CODE_SHORT_TO_FULL.get(price_code, 'NASD')
         return price_code
@@ -486,9 +483,8 @@ class KisOverseasPaperBroker(KisOverseasBrokerBase):
     FILL_TR_ID = "VTTS3035R"
     CANCEL_TR_ID = "VTTT1004U"
 
-    def __init__(self, app_key: str, app_secret: str, acc_no: str, logger,
-                 exchange_map: dict | None = None):
-        super().__init__(app_key, app_secret, acc_no, logger, exchange_map)
+    def __init__(self, app_key: str, app_secret: str, acc_no: str, logger):
+        super().__init__(app_key, app_secret, acc_no, logger)
         self.logger.info("[KisOverseasPaperBroker] Mode: PAPER TRADING (Virtual)")
 
 
@@ -503,7 +499,6 @@ class KisOverseasLiveBroker(KisOverseasBrokerBase):
     FILL_TR_ID = "TTTS3035R"
     CANCEL_TR_ID = "TTTT1004U"
 
-    def __init__(self, app_key: str, app_secret: str, acc_no: str, logger,
-                 exchange_map: dict | None = None):
-        super().__init__(app_key, app_secret, acc_no, logger, exchange_map)
+    def __init__(self, app_key: str, app_secret: str, acc_no: str, logger):
+        super().__init__(app_key, app_secret, acc_no, logger)
         self.logger.info("[KisOverseasLiveBroker] Mode: LIVE TRADING")

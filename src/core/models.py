@@ -37,7 +37,6 @@ class StockRule:
     max_lots: int = 10                           # 최대 분할 횟수
     market_type: str = "overseas"  # "overseas" | "domestic"
     enabled: bool = True
-    exchange: str = ""  # 거래소 단축 코드 (NAS, NYS, AMS 등; 해외주식 전용)
     # 재진입 가드: 직전 매도가 대비 X% 하락해야 1차수 재매수 허용 (음수, 예: -0.1)
     # None이면 가드 비활성 (전량 청산 직후에도 다음 사이클 즉시 재진입)
     reentry_guard_pct: Optional[float] = None

@@ -11,7 +11,6 @@ class TestStrategyConfig:
             "stocks": [
                 {
                     "ticker": "AAPL",
-                    "exchange": "NAS",
                     "buy_threshold_pct": -5.0,
                     "sell_threshold_pct": 10.0,
                     "buy_amount": 500,
@@ -33,7 +32,6 @@ class TestStrategyConfig:
         assert sc.rules[0].buy_amount == 500
         assert sc.rules[0].max_lots == 10
         assert sc.rules[0].enabled is True
-        assert sc.rules[0].exchange == "NAS"
 
     def test_load_multiple_stocks(self, tmp_path):
         """여러 종목 로드"""
@@ -95,19 +93,14 @@ class TestStrategyConfig:
         sc = StrategyConfig(str(config_file))
         assert sc.rules[0].enabled is False
 
-    def test_exchange_registered(self, tmp_path):
-        """exchange 필드가 StockRule.exchange에 저장되고, TICKER_EXCHANGE_MAP은 변경되지 않음"""
-        config = {
-            "stocks": [{"ticker": "NEWSTOCK", "exchange": "NYS"}]
-        }
+    def test_unknown_ticker_raises(self, tmp_path):
+        """tickers.db에 등록되지 않은 티커는 ValueError로 거부."""
+        config = {"stocks": [{"ticker": "NEWSTOCK"}]}
         config_file = tmp_path / "config_overseas.json"
         config_file.write_text(json.dumps(config))
 
-        sc = StrategyConfig(str(config_file))
-
-        assert sc.rules[0].exchange == "NYS"
-        from src.config import TICKER_EXCHANGE_MAP
-        assert "NEWSTOCK" not in TICKER_EXCHANGE_MAP
+        with pytest.raises(ValueError, match="NEWSTOCK"):
+            StrategyConfig(str(config_file))
 
 
 class TestPerLevelArrays:
@@ -175,13 +168,12 @@ class TestPresets:
                 "max_lots": 10,
             }
         }
-        cfg = {"stocks": [{"ticker": "AAPL", "exchange": "NAS", "preset": "large_cap_us"}]}
+        cfg = {"stocks": [{"ticker": "AAPL", "preset": "large_cap_us"}]}
         cfg_path = self._write(tmp_path, cfg, presets)
 
         sc = StrategyConfig(cfg_path)
         rule = sc.rules[0]
         assert rule.ticker == "AAPL"
-        assert rule.exchange == "NAS"
         assert rule.buy_threshold_pcts == [-3.0, -5.0, -7.0, -10.0]
         assert rule.buy_amounts == [1000.0, 1500.0, 2000.0, 3000.0]
         assert rule.max_lots == 10
@@ -276,7 +268,7 @@ class TestMaxExposureConfig:
         config = {
             "stocks": [
                 {"ticker": "AAPL", "buy_amount": 500},
-                {"ticker": "RISKY", "buy_amount": 500, "max_exposure_pct": 5.0},
+                {"ticker": "TSLA", "buy_amount": 500, "max_exposure_pct": 5.0},
             ],
             "global": {"max_exposure_pct": 20.0},
         }
@@ -323,7 +315,7 @@ class TestTrailingDropConfig:
         config = {
             "stocks": [
                 {"ticker": "AAPL", "buy_amount": 500},
-                {"ticker": "SPEC", "buy_amount": 500, "trailing_drop_pct": 5.0},
+                {"ticker": "TSLA", "buy_amount": 500, "trailing_drop_pct": 5.0},
             ],
             "global": {"trailing_drop_pct": 2.5},
         }

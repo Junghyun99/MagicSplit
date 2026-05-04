@@ -9,6 +9,7 @@ from datetime import datetime
 
 from src.core.models import PositionLot, Portfolio, TradeExecution, SplitSignal, OrderAction
 from src.core.interfaces import IRepository
+from src.utils.ticker_reader import get_alias
 
 
 class JsonRepository(IRepository):
@@ -90,8 +91,12 @@ class JsonRepository(IRepository):
         return result
 
     def save_positions(self, lots: List[PositionLot]) -> None:
-        """분할 포지션 목록을 저장한다."""
-        data = [asdict(lot) for lot in lots]
+        """분할 포지션 목록을 저장한다 (alias 필드 포함)."""
+        data = []
+        for lot in lots:
+            rec = asdict(lot)
+            rec["alias"] = get_alias(lot.ticker) or lot.ticker
+            data.append(rec)
         self._save_json(self.positions_file, data)
 
     # === Trade History ===
@@ -115,7 +120,8 @@ class JsonRepository(IRepository):
         enriched_execs = []
         for e in executions:
             rec = asdict(e)
-            
+            rec["alias"] = get_alias(e.ticker) or e.ticker
+
             # JSON 깔끔함을 위해 불필요한 빈 필드 제거
             if rec.get("lot_id") is None:
                 rec.pop("lot_id", None)

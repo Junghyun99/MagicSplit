@@ -10,6 +10,7 @@ from src.core.models import (
     SplitSignal,
     OrderAction,
 )
+from src.utils.ticker_reader import display_ticker
 
 
 class SplitEvaluator:
@@ -84,7 +85,7 @@ class SplitEvaluator:
         if current_price <= 0:
             reason = f"현재가 조회 실패 (price={current_price}). 종목 코드/API 상태 확인 필요"
             if self._logger:
-                self._logger.warning(f"[{rule.ticker}] {reason}")
+                self._logger.warning(f"[{display_ticker(rule.ticker)}] {reason}")
             return [SplitSignal(
                 ticker=rule.ticker,
                 lot_id=None,
@@ -162,7 +163,7 @@ class SplitEvaluator:
                     if self._logger:
                         if was_inactive:
                             self._logger.info(
-                                f"[{rule.ticker}] Lv{last_lot.level}: "
+                                f"[{display_ticker(rule.ticker)}] Lv{last_lot.level}: "
                                 f"트레일링 스톱 활성화 "
                                 f"(매도조건 +{sell_threshold:.0f}% 도달, "
                                 f"현재가 ${current_price:,.0f}, "
@@ -171,7 +172,7 @@ class SplitEvaluator:
                             )
                         else:
                             self._logger.info(
-                                f"[{rule.ticker}] Lv{last_lot.level}: "
+                                f"[{display_ticker(rule.ticker)}] Lv{last_lot.level}: "
                                 f"트레일링 고점 갱신 "
                                 f"${old_highest:,.0f} -> ${current_price:,.0f} "
                                 f"(매수가 대비 {pct_change:+.1f}%, "
@@ -203,7 +204,7 @@ class SplitEvaluator:
                     stop_price = last_lot.trailing_highest_price * (1 - trailing_drop / 100)
                     if self._logger:
                         self._logger.info(
-                            f"[{rule.ticker}] Lv{last_lot.level}: "
+                            f"[{display_ticker(rule.ticker)}] Lv{last_lot.level}: "
                             f"⏳ 트레일링 추적 중 "
                             f"(현재가 ${current_price:,.0f}, "
                             f"고점 ${last_lot.trailing_highest_price:,.0f}, "
@@ -219,7 +220,7 @@ class SplitEvaluator:
                     profit_pct = (current_price - last_lot.buy_price) / last_lot.buy_price * 100
                     if self._logger:
                         self._logger.info(
-                            f"[{rule.ticker}] Lv{last_lot.level}: "
+                            f"[{display_ticker(rule.ticker)}] Lv{last_lot.level}: "
                             f"🔻 트레일링 스톱 매도 "
                             f"(매수가 ${last_lot.buy_price:,.0f} -> "
                             f"고점 ${last_lot.trailing_highest_price:,.0f} -> "
@@ -244,7 +245,7 @@ class SplitEvaluator:
             if pct_change >= sell_threshold:
                 if self._logger:
                     self._logger.info(
-                        f"[{rule.ticker}] Lv{last_lot.level}: 매수가 ${last_lot.buy_price:.2f} -> "
+                        f"[{display_ticker(rule.ticker)}] Lv{last_lot.level}: 매수가 ${last_lot.buy_price:.2f} -> "
                         f"현재가 ${current_price:.2f} ({pct_change:+.1f}%) -> 익절 매도"
                     )
                 return SplitSignal(
@@ -291,7 +292,7 @@ class SplitEvaluator:
                 f"buy_amount 상향 조정 필요"
             )
             if self._logger:
-                self._logger.info(f"[{rule.ticker}] {reason}")
+                self._logger.info(f"[{display_ticker(rule.ticker)}] {reason}")
             return SplitSignal(
                 ticker=rule.ticker,
                 lot_id=None,
@@ -308,7 +309,7 @@ class SplitEvaluator:
         passed, reason = self._passes_cash_guard(rule, current_price, buy_qty, portfolio)
         if not passed:
             if self._logger:
-                self._logger.info(f"[{rule.ticker}] {reason} -> 매수 보류")
+                self._logger.info(f"[{display_ticker(rule.ticker)}] {reason} -> 매수 보류")
             return SplitSignal(
                 ticker=rule.ticker,
                 lot_id=None,
@@ -340,7 +341,7 @@ class SplitEvaluator:
 
         if self._logger:
             self._logger.info(
-                f"[{rule.ticker}] 보유 lot 없음 -> 초기 매수 Lv1 {buy_qty}주 @${current_price:.2f}"
+                f"[{display_ticker(rule.ticker)}] 보유 lot 없음 -> 초기 매수 Lv1 {buy_qty}주 @${current_price:.2f}"
             )
         return SplitSignal(
             ticker=rule.ticker,
@@ -387,7 +388,7 @@ class SplitEvaluator:
             f"{pct_from_sell:+.2f}% > 임계 {rule.reentry_guard_pct:+.2f}% -> 진입 대기 중"
         )
         if self._logger:
-            self._logger.info(f"[{rule.ticker}] {reason}")
+            self._logger.info(f"[{display_ticker(rule.ticker)}] {reason}")
         return False, reason
 
     def _passes_exposure_guard(
@@ -439,7 +440,7 @@ class SplitEvaluator:
                 f"= {after_pct:.1f}% > 상한 {rule.max_exposure_pct:.1f}%"
             )
             if self._logger:
-                self._logger.info(f"[{rule.ticker}] {reason} -> 매수 보류")
+                self._logger.info(f"[{display_ticker(rule.ticker)}] {reason} -> 매수 보류")
             return False, reason
 
         return True, ""
@@ -496,7 +497,7 @@ class SplitEvaluator:
                 f"-> 추가 하락 대응 불가"
             )
             if self._logger:
-                self._logger.info(f"[{rule.ticker}] {reason}")
+                self._logger.info(f"[{display_ticker(rule.ticker)}] {reason}")
             return SplitSignal(
                 ticker=rule.ticker,
                 lot_id=None,
@@ -519,7 +520,7 @@ class SplitEvaluator:
                 f"buy_amount 상향 조정 필요"
             )
             if self._logger:
-                self._logger.info(f"[{rule.ticker}] {reason}")
+                self._logger.info(f"[{display_ticker(rule.ticker)}] {reason}")
             return SplitSignal(
                 ticker=rule.ticker,
                 lot_id=None,
@@ -549,7 +550,7 @@ class SplitEvaluator:
             )
             if not passed:
                 if self._logger:
-                    self._logger.info(f"[{rule.ticker}] {reason} -> 매수 보류")
+                    self._logger.info(f"[{display_ticker(rule.ticker)}] {reason} -> 매수 보류")
                 return SplitSignal(
                     ticker=rule.ticker,
                     lot_id=None,
@@ -582,13 +583,13 @@ class SplitEvaluator:
             if self._logger:
                 if is_dynamic:
                     self._logger.info(
-                        f"[{rule.ticker}] 🔄 동적 재매수: 매도가 ${last_sell_price:.2f} 대비 "
+                        f"[{display_ticker(rule.ticker)}] 🔄 동적 재매수: 매도가 ${last_sell_price:.2f} 대비 "
                         f"{pct_from_ref:+.1f}% -> 추가 매수 Lv{next_level} {buy_qty}주 @${current_price:.2f} "
                         f"(원래 기준 Lv{last_lot.level} ${last_lot.buy_price:.2f})"
                     )
                 else:
                     self._logger.info(
-                        f"[{rule.ticker}] Lv{last_lot.level} 매수가 ${last_lot.buy_price:.2f} 대비 "
+                        f"[{display_ticker(rule.ticker)}] Lv{last_lot.level} 매수가 ${last_lot.buy_price:.2f} 대비 "
                         f"{pct_from_ref:+.1f}% -> 추가 매수 Lv{next_level} {buy_qty}주 @${current_price:.2f}"
                     )
             reason_detail = (

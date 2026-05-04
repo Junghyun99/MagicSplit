@@ -8,6 +8,7 @@ from datetime import datetime, timedelta
 from src.config import DEFAULT_HTTP_TIMEOUT
 from src.core.interfaces import IBrokerAdapter
 from src.core.models import Portfolio, Order, TradeExecution, OrderAction, ExecutionStatus
+from src.utils.ticker_reader import display_ticker
 
 from . import kis_http
 from . import kis_token_cache
@@ -168,8 +169,9 @@ class KisBrokerCommon(IBrokerAdapter):
 
                 # 호가 기반 매수가 추정 (ask 가격 사용, 실패 시 2% 버퍼)
                 bid, ask = self._fetch_asking_price(order.ticker)
+                disp = display_ticker(order.ticker)
                 if not self._check_spread(bid, ask):
-                    self.logger.warning(f"[KisBroker] 스프레드 비정상 — {order.ticker} 매수 건너뜀")
+                    self.logger.warning(f"[KisBroker] 스프레드 비정상 — {disp} 매수 건너뜀")
                     continue
                 estimated_price = ask if ask > 0 else order.price * 1.02
                 if estimated_price <= 0: continue
@@ -179,7 +181,7 @@ class KisBrokerCommon(IBrokerAdapter):
                 actual_qty = min(order.quantity, max_qty)
 
                 if max_qty < order.quantity:
-                    self.logger.warning(f"⚠️ Qty Adjusted: {order.ticker} {order.quantity} -> {actual_qty}")
+                    self.logger.warning(f"Qty Adjusted: {disp} {order.quantity} -> {actual_qty}")
 
                 if actual_qty > 0:
                     adjusted_order = Order(ticker=order.ticker, action=order.action, quantity=actual_qty, price=order.price)

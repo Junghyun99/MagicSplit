@@ -18,6 +18,7 @@ from src.core.models import (
 )
 from src.core.logic import SplitEvaluator, detect_mismatches, build_dashboard_status
 from src.core.engine.registry import register_engine
+from src.utils.ticker_reader import display_ticker
 
 
 @register_engine(color="#1f77b4")
@@ -95,13 +96,13 @@ class MagicSplitEngine:
             for rule in self.stock_rules:
                 if rule.ticker in halted_tickers:
                     self.logger.warning(
-                        f"[{rule.ticker}] 수량 불일치로 매매 중단. "
+                        f"[{display_ticker(rule.ticker)}] 수량 불일치로 매매 중단. "
                         f"scripts/reconcile_positions.py 로 보정 후 재실행."
                     )
                     failed_tickers.append(rule.ticker)
                     continue
                 try:
-                    self.logger.info(f">>> Processing {rule.ticker}")
+                    self.logger.info(f">>> Processing {display_ticker(rule.ticker)}")
 
                     # 3a. 해당 종목 신호 평가
                     signals = self.evaluator.evaluate_stock(
@@ -117,9 +118,9 @@ class MagicSplitEngine:
                     ]
 
                     for s in blocked_signals:
-                        self._notify_alert(f"[{s.ticker}] {s.reason}")
+                        self._notify_alert(f"[{display_ticker(s.ticker)}] {s.reason}")
                     for s in info_signals:
-                        self._notify_message(f"[{s.ticker}] {s.reason}")
+                        self._notify_message(f"[{display_ticker(s.ticker)}] {s.reason}")
 
                     all_signals.extend(active_signals)
                     all_signals.extend(blocked_signals)
@@ -148,18 +149,20 @@ class MagicSplitEngine:
                             )
                             portfolio = self._refresh_portfolio(portfolio)
                         except Exception as e:
+                            disp = display_ticker(rule.ticker)
                             self.logger.error(
-                                f"[{rule.ticker}] 포지션 반영 실패 "
+                                f"[{disp}] 포지션 반영 실패 "
                                 f"(체결은 완료됨): {e}"
                             )
                             self._notify_alert(
-                                f"[{rule.ticker}] 포지션 반영 실패 "
+                                f"[{disp}] 포지션 반영 실패 "
                                 f"(체결 {len(executions)}건 완료됨): {e}"
                             )
                             failed_tickers.append(rule.ticker)
                 except Exception as e:
-                    self.logger.error(f"[{rule.ticker}] 처리 실패: {e}")
-                    self._notify_alert(f"[{rule.ticker}] Error: {e}")
+                    disp = display_ticker(rule.ticker)
+                    self.logger.error(f"[{disp}] 처리 실패: {e}")
+                    self._notify_alert(f"[{disp}] Error: {e}")
                     failed_tickers.append(rule.ticker)
 
         except Exception as e:
@@ -271,7 +274,7 @@ class MagicSplitEngine:
         # 불일치 N건을 한 통의 알림으로 묶어 전송 — 대규모 코퍼릿 액션 등으로
         # 다수 종목이 동시에 불일치할 때 Slack 스팸을 방지한다.
         detail_lines = [
-            f"[{m.ticker}] Qty Mismatch: broker={m.broker_qty}, "
+            f"[{display_ticker(m.ticker)}] Qty Mismatch: broker={m.broker_qty}, "
             f"positions={m.positions_qty} (lots={m.lot_count}, levels={m.levels})"
             for m in mismatches
         ]
@@ -298,16 +301,17 @@ class MagicSplitEngine:
         신호까지 얼마나 남았는지 직관적으로 파악할 수 있도록 한다.
         """
         ticker = rule.ticker
+        disp = display_ticker(ticker)
         current_price = portfolio.current_prices.get(ticker, 0)
         ticker_lots = [p for p in positions if p.ticker == ticker]
 
         if current_price <= 0:
-            self.logger.info(f"  [{ticker}] 신호 없음 | 현재가 조회 실패")
+            self.logger.info(f"  [{disp}] 신호 없음 | 현재가 조회 실패")
             return
 
         if not ticker_lots:
             msg = (
-                f"  [{ticker}] 신호 없음 | 보유 없음, "
+                f"  [{disp}] 신호 없음 | 보유 없음, "
                 f"현재 ${current_price:,.2f} (1차 진입 대기)"
             )
             last_sell = last_sell_prices.get(ticker) if last_sell_prices else None
@@ -327,7 +331,7 @@ class MagicSplitEngine:
         next_level = last_lot.level + 1
 
         msg = (
-            f"  [{ticker}] 신호 없음 | Lv{last_lot.level} "
+            f"  [{disp}] 신호 없음 | Lv{last_lot.level} "
             f"매수 ${last_lot.buy_price:,.2f} -> 현재 ${current_price:,.2f} "
             f"({profit_pct:+.2f}%) | 익절 +{sell_threshold:.1f}% / "
             f"추매 {buy_threshold:.1f}%"
@@ -369,12 +373,13 @@ class MagicSplitEngine:
             signal_map[(sig.ticker, sig.action)] = sig
 
         for exe in executions:
+            disp = display_ticker(exe.ticker)
             if exe.status == ExecutionStatus.REJECTED:
                 self.logger.warning(
-                    f"[Position] Skip: {exe.ticker} {exe.action} rejected"
+                    f"[Position] Skip: {disp} {exe.action} rejected"
                 )
                 self._notify_alert(
-                    f"[{exe.ticker}] {exe.action} 주문 거절 (REJECTED): "
+                    f"[{disp}] {exe.action} 주문 거절 (REJECTED): "
                     f"예수금 부족 등 브로커 사유 확인 필요. {exe.reason}"
                 )
                 continue
@@ -382,10 +387,10 @@ class MagicSplitEngine:
                 # 미체결 잔존 -> 잔고 미확정. 포지션 미반영. 알림.
                 self.logger.error(
                     f"[Position] ORDERED — 수동 확인 필요: "
-                    f"{exe.ticker} {exe.action} reason={exe.reason}"
+                    f"{disp} {exe.action} reason={exe.reason}"
                 )
                 self._notify_alert(
-                    f"[{exe.ticker}] {exe.action} 미체결 잔존 — "
+                    f"[{disp}] {exe.action} 미체결 잔존 — "
                     f"KIS에서 직접 확인 후 scripts/reconcile_positions.py 실행 권장. "
                     f"{exe.reason}"
                 )
@@ -394,7 +399,7 @@ class MagicSplitEngine:
                 # PARTIAL/FILLED 인데 체결 수량이 0 — 비정상. 안전상 미반영.
                 self.logger.warning(
                     f"[Position] Skip zero-qty execution: "
-                    f"{exe.ticker} {exe.action} status={exe.status}"
+                    f"{disp} {exe.action} status={exe.status}"
                 )
                 continue
 
@@ -415,14 +420,14 @@ class MagicSplitEngine:
                 # 동적 재매수 소비: 매수 체결 시 직전 매도가 초기화
                 if last_sell_prices is not None and exe.ticker in last_sell_prices:
                     self.logger.info(
-                        f"[{exe.ticker}] 동적 재매수 기준 초기화 "
+                        f"[{disp}] 동적 재매수 기준 초기화 "
                         f"(매도가 ${last_sell_prices[exe.ticker]:.2f} -> 소비됨)"
                     )
                     del last_sell_prices[exe.ticker]
                 tag = " (PARTIAL)" if exe.status == ExecutionStatus.PARTIAL else ""
                 self.logger.info(
                     f"[Position] New lot{tag}: {lot_id} Lv{level} "
-                    f"{exe.ticker} {exe.quantity}주 @${exe.price:.2f}"
+                    f"{disp} {exe.quantity}주 @${exe.price:.2f}"
                 )
 
             elif exe.action == OrderAction.SELL:
@@ -454,7 +459,7 @@ class MagicSplitEngine:
                         # 수동 매도 등으로 lot 보유분보다 더 체결된 비정상 상태.
                         # lot 은 제거하되 reconcile 단계에서 잡히도록 경고.
                         self.logger.warning(
-                            f"[Position] Over-fill detected: {exe.ticker} sold "
+                            f"[Position] Over-fill detected: {disp} sold "
                             f"{exe.quantity}주 but lot {target_lot.lot_id} held "
                             f"{target_lot.quantity}주 — removing lot. "
                             f"scripts/reconcile_positions.py 로 정합성 확인 권장."
@@ -516,7 +521,10 @@ class MagicSplitEngine:
         """신호 목록에서 사유 문자열을 생성한다."""
         if not signals:
             return "모니터링 - 신호 없음"
-        reasons = [f"{s.ticker}:{s.action.value}({s.reason})" for s in signals]
+        reasons = [
+            f"{display_ticker(s.ticker)}:{s.action.value}({s.reason})"
+            for s in signals
+        ]
         return ", ".join(reasons)
 
     def _notify_message(self, msg: str) -> None:

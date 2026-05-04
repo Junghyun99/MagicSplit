@@ -49,3 +49,30 @@ def get_exchange(ticker: str, db_path: str = DEFAULT_DB_PATH) -> Optional[str]:
     """티커를 사용하여 해당 종목의 거래소 정보를 조회합니다."""
     info = get_ticker_info(ticker, db_path)
     return info["exchange"] if info else None
+
+
+def to_yfinance_ticker(ticker: str, db_path: str = DEFAULT_DB_PATH) -> str:
+    """MagicSplit 표준 티커 -> yfinance 티커.
+
+    국내(KS/KQ)는 거래소 접미사를 부여하고, 해외는 그대로 반환한다.
+    DB에 등록되지 않은 티커는 ValueError를 발생시킨다.
+    """
+    info = get_ticker_info(ticker, db_path)
+    if info is None:
+        raise ValueError(f"Unknown ticker: {ticker!r}")
+    ex = info["exchange"]
+    if ex in ("KS", "KQ"):
+        return f"{ticker}.{ex}"
+    return ticker
+
+
+def display_ticker(ticker: str, db_path: str = DEFAULT_DB_PATH) -> str:
+    """로그/알림용 표시 문자열.
+
+    alias가 ticker와 다르면 'alias(ticker)' 형식 (국내 종목 한글명),
+    같거나 미등록이면 ticker 그대로 반환한다.
+    """
+    alias = get_alias(ticker, db_path)
+    if alias and alias != ticker:
+        return f"{alias}({ticker})"
+    return ticker
