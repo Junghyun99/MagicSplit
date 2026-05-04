@@ -28,6 +28,7 @@ class KisBrokerCommon(IBrokerAdapter):
     FILL_TR_ID: str = ""
     CANCEL_TR_ID: str = ""
     ASKING_PRICE_TR_ID: str = ""
+    MARGIN_TR_ID: str = ""
 
     SPREAD_THRESHOLD_PCT: float = 0.5  # 스프레드 임계값 (%) — 초과 시 주문 보류
 

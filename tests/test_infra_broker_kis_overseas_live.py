@@ -128,30 +128,6 @@ def _cleanup_pending(broker, logger, test_ticker, test_exch):
 class TestReadonly:
     """자금 위험 없는 조회 API 5종 검증."""
 
-    def test_s0_debug_foreign_margin(self, broker, logger):
-        """S0. 해외증거금/예수금 상세 (디버깅용).
-        
-        실전계좌(TTTC2101R)만 지원하는 API를 직접 호출하여
-        ovrs_ord_psbl_amt 등 누락된 것으로 의심되는 필드가 존재하는지 원본 데이터를 확인합니다.
-        """
-        url = f"{broker.base_url}/uapi/overseas-stock/v1/trading/foreign-margin"
-        params = {
-            "CANO": broker.cano,
-            "ACNT_PRDT_CD": broker.acnt_prdt_cd,
-        }
-        tr_id = "TTTC2101R"
-        headers = broker._get_header(tr_id)
-        
-        res = _pkg.requests.get(url, headers=headers, params=params, timeout=DEFAULT_HTTP_TIMEOUT)
-        res.raise_for_status()
-        data = res.json()
-        
-        logger.info(f"--- [DEBUG] Foreign Margin Response (TR_ID={tr_id}) ---")
-        logger.info(f"{data}")
-        logger.info("-----------------------------------------------------")
-        
-        assert data.get("rt_cd") is not None
-
     def test_s1_auth_and_token_cache(self, broker):
         """S1. 인증 + 토큰 캐시.
 

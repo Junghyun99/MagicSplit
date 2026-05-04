@@ -70,8 +70,9 @@ class KisOverseasBrokerBase(KisBrokerCommon):
 
         target_exchanges = ["NASD", "NYSE", "AMEX"]
 
-        total_cash = 0.0
-        cash_fetched = False
+        # 1. 예수금/주문가능금액 조회 (해외증거금 상세 API 필수)
+        total_cash = self._fetch_total_cash()
+        cash_fetched = total_cash > 0
         all_holdings: Dict[str, int] = {}
         all_prices: Dict[str, float] = {}
 
@@ -95,26 +96,6 @@ class KisOverseasBrokerBase(KisBrokerCommon):
                     self.logger.warning(f"[KisBroker] Get Portfolio Failed ({exch}): {data.get('msg1')}")
                     continue
 
-                # output2 파싱 (예수금/주문가능금액)
-                output2 = data.get('output2')
-                if not cash_fetched and output2:
-                    if isinstance(output2, list):
-                        output2 = output2[0] if output2 else {}
-                    
-                    if isinstance(output2, dict):
-                        # 'ovrs_ord_psbl_amt' (해외주문가능금액) 사용.
-                        # 키가 없는 경우 원인 파악을 위해 output2 전체 구조를 로그에 남깁니다.
-                        val = output2.get('ovrs_ord_psbl_amt')
-                        if val is not None:
-                            total_cash = float(val)
-                            cash_fetched = True
-                        else:
-                            self.logger.warning(
-                                f"[KisBroker] 'ovrs_ord_psbl_amt' missing in output2 for {exch}. "
-                                f"Full output2: {output2}"
-                            )
-                    else:
-                        self.logger.warning(f"[KisBroker] Unexpected output2 type for {exch}: {type(output2)}")
 
                 for item in data.get('output1', []):
                     qty = int(item.get('ovrs_cblc_qty', 0) or 0)
@@ -493,6 +474,32 @@ class KisOverseasBrokerBase(KisBrokerCommon):
             return EXCHANGE_CODE_SHORT_TO_FULL.get(price_code, 'NASD')
         return price_code
 
+    def _fetch_total_cash(self) -> float:
+        """해외증거금/예수금 상세 API를 통해 실제 주문 가능 금액을 조회한다."""
+        if not self.MARGIN_TR_ID:
+            return 0.0
+
+        url = f"{self.base_url}/uapi/overseas-stock/v1/trading/foreign-margin"
+        params = {
+            "CANO": self.cano,
+            "ACNT_PRDT_CD": self.acnt_prdt_cd,
+        }
+        headers = self._get_header(self.MARGIN_TR_ID)
+        try:
+            res = _pkg.requests.get(url, headers=headers, params=params, timeout=DEFAULT_HTTP_TIMEOUT)
+            res.raise_for_status()
+            data = res.json()
+            if data.get('rt_cd') == '0':
+                for item in data.get('output', []):
+                    if item.get('natn_name') == '미국':
+                        val = item.get('frcr_gnrl_ord_psbl_amt')
+                        if val is not None:
+                            return float(val)
+            self.logger.warning(f"[KisBroker] Margin Check Failed: {data.get('msg1')}")
+        except Exception as e:
+            self.logger.error(f"[KisBroker] Margin Check Error: {e}")
+        return 0.0
+
 
 class KisOverseasPaperBroker(KisOverseasBrokerBase):
     """한국투자증권 모의투자 브로커 — 해외주식 (가상거래 서버)"""
@@ -504,6 +511,7 @@ class KisOverseasPaperBroker(KisOverseasBrokerBase):
     PENDING_TR_ID = "VTTS3018R"
     FILL_TR_ID = "VTTS3035R"
     CANCEL_TR_ID = "VTTT1004U"
+    MARGIN_TR_ID = "VTTC2101R"
 
     def __init__(self, app_key: str, app_secret: str, acc_no: str, logger,
                  exchange_map: dict | None = None):
@@ -521,6 +529,7 @@ class KisOverseasLiveBroker(KisOverseasBrokerBase):
     PENDING_TR_ID = "TTTS3018R"
     FILL_TR_ID = "TTTS3035R"
     CANCEL_TR_ID = "TTTT1004U"
+    MARGIN_TR_ID = "TTTC2101R"
 
     def __init__(self, app_key: str, app_secret: str, acc_no: str, logger,
                  exchange_map: dict | None = None):
