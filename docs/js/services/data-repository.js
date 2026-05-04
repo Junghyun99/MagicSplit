@@ -6,11 +6,10 @@ window.DataRepository = (function () {
         const url = `data/${mode}/status.json?t=${Date.now()}`;
         try {
             const res = await fetch(url);
-            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            if (!res.ok) return null;
             return await res.json();
         } catch (e) {
-            console.error(`Failed to load status (${mode}):`, e);
-            return null; // Signals offline/error
+            return null;
         }
     }
 
@@ -18,11 +17,10 @@ window.DataRepository = (function () {
         const url = `data/${mode}/history.json?t=${Date.now()}`;
         try {
             const res = await fetch(url);
-            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            if (!res.ok) return [];
             return await res.json();
         } catch (e) {
-            console.error(`Failed to load history (${mode}):`, e);
-            return null;
+            return [];
         }
     }
 

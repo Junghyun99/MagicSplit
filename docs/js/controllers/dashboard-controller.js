@@ -61,16 +61,20 @@ window.DashboardController = (function () {
 
     function renderHistoryView() {
         const mode = DashboardModel.getMode();
-        const histData = HistoryModel.getTotalCount() > 0 ? true : false;
+        const hasData = HistoryModel.getTotalCount() > 0;
         
-        if (histData) {
+        if (hasData) {
             const pts = HistoryModel.buildEquityPoints(DashboardModel.getHistoryData());
             ChartsView.renderEquityCurve(pts, mode, DashboardView.formatCurrency);
-            
-            HistoryModel.resetPagination();
-            const firstPage = HistoryModel.getNextPage();
-            HistoryView.renderPage(firstPage, true, HistoryModel.hasMore(), DashboardView.formatCurrency, mode);
+        } else {
+            // Hide equity curve if no data
+            const equitySection = document.getElementById('equity-curve-section');
+            if (equitySection) equitySection.style.display = 'none';
         }
+
+        HistoryModel.resetPagination();
+        const firstPage = HistoryModel.getNextPage();
+        HistoryView.renderPage(firstPage, true, HistoryModel.hasMore(), DashboardView.formatCurrency, mode);
     }
 
     function setAutoRefresh(intervalMs) {

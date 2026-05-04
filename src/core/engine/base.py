@@ -122,6 +122,8 @@ class MagicSplitEngine:
                         self._notify_message(f"[{s.ticker}] {s.reason}")
 
                     all_signals.extend(active_signals)
+                    all_signals.extend(blocked_signals)
+                    all_signals.extend(info_signals)
 
                     if not active_signals:
                         # 활성 신호가 없고, 차단/정보 신호도 없었다면 '신호 없음' 상태 로깅

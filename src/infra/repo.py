@@ -30,6 +30,16 @@ class JsonRepository(IRepository):
         self.status_file = os.path.join(self.root, "status.json")
         self.last_sell_prices_file = os.path.join(self.root, "last_sell_prices.json")
 
+        # 초기 파일 생성 (404 방지)
+        if not os.path.exists(self.positions_file):
+            self._save_json(self.positions_file, [])
+        if not os.path.exists(self.history_file):
+            self._save_json(self.history_file, [])
+        if not os.path.exists(self.status_file):
+            self._save_json(self.status_file, {})
+        if not os.path.exists(self.last_sell_prices_file):
+            self._save_json(self.last_sell_prices_file, {})
+
     # === Positions ===
 
     def load_positions(self) -> List[PositionLot]:
