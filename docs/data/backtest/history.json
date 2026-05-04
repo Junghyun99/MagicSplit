@@ -2,16 +2,27 @@
     {
         "id": "tx_20200102",
         "date": "2020-01-02",
-        "portfolio_value": 9999982.64239771,
-        "total_trade_amount": 4960.5599999999995,
-        "reason": "AAPL:BUY(초기 매수 Lv1), MSFT:BUY(buy_amount($50.00) < 현재가($160.62) -> 1주도 매수 불가. buy_amount 상향 조정 필요)",
+        "portfolio_value": 9996519.916000001,
+        "total_trade_amount": 994593.6,
+        "reason": "005930.KS:BUY(초기 매수 Lv1), 058470.KQ:BUY(초기 매수 Lv1)",
         "executions": [
             {
-                "ticker": "AAPL",
+                "ticker": "005930.KS",
                 "action": "BUY",
-                "quantity": 66,
-                "price": 75.16,
-                "fee": 12.4,
+                "quantity": 9,
+                "price": 55255.2,
+                "fee": 1243.24,
+                "date": "2020-01-02",
+                "status": "FILLED",
+                "reason": "",
+                "level": 1
+            },
+            {
+                "ticker": "058470.KQ",
+                "action": "BUY",
+                "quantity": 40,
+                "price": 12432.42,
+                "fee": 1243.24,
                 "date": "2020-01-02",
                 "status": "FILLED",
                 "reason": "",
@@ -20,19 +31,62 @@
         ]
     },
     {
-        "id": "tx_20200227",
-        "date": "2020-02-27",
-        "portfolio_value": 9999522.463547079,
-        "total_trade_amount": 4996.85,
-        "reason": "AAPL:BUY(추가 매수 Lv2 (Lv1 대비 -9.0%)), MSFT:BUY(buy_amount($50.00) < 현재가($158.18) -> 1주도 매수 불가. buy_amount 상향 조정 필요)",
+        "id": "tx_20200123",
+        "date": "2020-01-23",
+        "portfolio_value": 10196206.084,
+        "total_trade_amount": 546652.7999999999,
+        "reason": "005930.KS:SELL(Lv1 트레일링 스톱 매도 (고점 대비 -2.56%))",
         "executions": [
             {
-                "ticker": "AAPL",
+                "ticker": "005930.KS",
+                "action": "SELL",
+                "quantity": 9,
+                "price": 60739.2,
+                "fee": 1366.63,
+                "date": "2020-01-23",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260504_070750_005930.KS_001",
+                "level": 1,
+                "buy_price": 55255.2,
+                "realized_pnl": 47989.37
+            }
+        ]
+    },
+    {
+        "id": "tx_20200124",
+        "date": "2020-01-24",
+        "portfolio_value": 10194502.468,
+        "total_trade_amount": 486886.4,
+        "reason": "005930.KS:BUY(초기 매수 Lv1)",
+        "executions": [
+            {
+                "ticker": "005930.KS",
                 "action": "BUY",
-                "quantity": 73,
-                "price": 68.45,
-                "fee": 12.49,
-                "date": "2020-02-27",
+                "quantity": 8,
+                "price": 60860.8,
+                "fee": 1217.22,
+                "date": "2020-01-24",
+                "status": "FILLED",
+                "reason": "",
+                "level": 1
+            }
+        ]
+    },
+    {
+        "id": "tx_20200130",
+        "date": "2020-01-30",
+        "portfolio_value": 10176099.724,
+        "total_trade_amount": 458057.6,
+        "reason": "005930.KS:BUY(추가 매수 Lv2 (Lv1 대비 -6.0%))",
+        "executions": [
+            {
+                "ticker": "005930.KS",
+                "action": "BUY",
+                "quantity": 8,
+                "price": 57257.2,
+                "fee": 1145.14,
+                "date": "2020-01-30",
                 "status": "FILLED",
                 "reason": "",
                 "level": 2
@@ -40,62 +94,62 @@
         ]
     },
     {
-        "id": "tx_20200305",
-        "date": "2020-03-05",
-        "portfolio_value": 10000177.917494085,
-        "total_trade_amount": 5340.679999999999,
-        "reason": "AAPL:SELL(Lv2 트레일링 스톱 매도 (고점 대비 -3.24%)), MSFT:BUY(buy_amount($50.00) < 현재가($166.27) -> 1주도 매수 불가. buy_amount 상향 조정 필요)",
+        "id": "tx_20200205",
+        "date": "2020-02-05",
+        "portfolio_value": 10201024.95,
+        "total_trade_amount": 649749.6,
+        "reason": "058470.KQ:SELL(Lv1 트레일링 스톱 매도 (고점 대비 -2.05%))",
         "executions": [
             {
-                "ticker": "AAPL",
+                "ticker": "058470.KQ",
                 "action": "SELL",
-                "quantity": 73,
-                "price": 73.16,
-                "fee": 13.35,
-                "date": "2020-03-05",
+                "quantity": 40,
+                "price": 16243.74,
+                "fee": 1624.37,
+                "date": "2020-02-05",
                 "status": "FILLED",
                 "reason": "",
-                "lot_id": "lot_20260504_070431_AAPL_002",
-                "level": 2,
-                "buy_price": 68.45,
-                "realized_pnl": 330.48
+                "lot_id": "lot_20260504_070750_058470.KQ_001",
+                "level": 1,
+                "buy_price": 12432.42,
+                "realized_pnl": 150828.43
             }
         ]
     },
     {
-        "id": "tx_20200309",
-        "date": "2020-03-09",
-        "portfolio_value": 9999719.062610233,
-        "total_trade_amount": 4995.75,
-        "reason": "AAPL:BUY(추가 매수 Lv2 (Lv1 대비 -11.5%)), MSFT:BUY(buy_amount($50.00) < 현재가($150.62) -> 1주도 매수 불가. buy_amount 상향 조정 필요)",
+        "id": "tx_20200206",
+        "date": "2020-02-06",
+        "portfolio_value": 10224920.633499999,
+        "total_trade_amount": 487086.6,
+        "reason": "058470.KQ:BUY(초기 매수 Lv1)",
         "executions": [
             {
-                "ticker": "AAPL",
+                "ticker": "058470.KQ",
                 "action": "BUY",
-                "quantity": 75,
-                "price": 66.61,
-                "fee": 12.49,
-                "date": "2020-03-09",
+                "quantity": 30,
+                "price": 16236.22,
+                "fee": 1217.72,
+                "date": "2020-02-06",
                 "status": "FILLED",
                 "reason": "",
-                "level": 2
+                "level": 1
             }
         ]
     },
     {
-        "id": "tx_20200312",
-        "date": "2020-03-12",
-        "portfolio_value": 9999069.2884751,
-        "total_trade_amount": 4969.599999999999,
-        "reason": "AAPL:BUY(추가 매수 Lv3 (Lv2 대비 -6.8%)), MSFT:BUY(buy_amount($50.00) < 현재가($139.06) -> 1주도 매수 불가. buy_amount 상향 조정 필요)",
+        "id": "tx_20200228",
+        "date": "2020-02-28",
+        "portfolio_value": 10111012.113999998,
+        "total_trade_amount": 488287.8,
+        "reason": "005930.KS:BUY(추가 매수 Lv3 (Lv2 대비 -5.3%))",
         "executions": [
             {
-                "ticker": "AAPL",
+                "ticker": "005930.KS",
                 "action": "BUY",
-                "quantity": 80,
-                "price": 62.12,
-                "fee": 12.42,
-                "date": "2020-03-12",
+                "quantity": 9,
+                "price": 54254.2,
+                "fee": 1220.72,
+                "date": "2020-02-28",
                 "status": "FILLED",
                 "reason": "",
                 "level": 3
@@ -103,62 +157,19 @@
         ]
     },
     {
-        "id": "tx_20200316",
-        "date": "2020-03-16",
-        "portfolio_value": 9998719.741492124,
-        "total_trade_amount": 4839.2,
-        "reason": "AAPL:SELL(Lv3 트레일링 스톱 매도 (고점 대비 -12.86%)), MSFT:BUY(buy_amount($50.00) < 현재가($135.42) -> 1주도 매수 불가. buy_amount 상향 조정 필요)",
+        "id": "tx_20200313",
+        "date": "2020-03-13",
+        "portfolio_value": 10001212.615249999,
+        "total_trade_amount": 499999.5,
+        "reason": "005930.KS:BUY(추가 매수 Lv4 (Lv3 대비 -7.9%))",
         "executions": [
             {
-                "ticker": "AAPL",
-                "action": "SELL",
-                "quantity": 80,
-                "price": 60.49,
-                "fee": 12.1,
-                "date": "2020-03-16",
-                "status": "FILLED",
-                "reason": "",
-                "lot_id": "lot_20260504_070431_AAPL_003",
-                "level": 3,
-                "buy_price": 62.12,
-                "realized_pnl": -142.5
-            }
-        ]
-    },
-    {
-        "id": "tx_20200317",
-        "date": "2020-03-17",
-        "portfolio_value": 9999077.66234447,
-        "total_trade_amount": 4999.12,
-        "reason": "AAPL:BUY(추가 매수 Lv3 (Lv2 대비 -5.1%)), MSFT:BUY(buy_amount($50.00) < 현재가($146.57) -> 1주도 매수 불가. buy_amount 상향 조정 필요)",
-        "executions": [
-            {
-                "ticker": "AAPL",
+                "ticker": "005930.KS",
                 "action": "BUY",
-                "quantity": 79,
-                "price": 63.28,
-                "fee": 12.5,
-                "date": "2020-03-17",
-                "status": "FILLED",
-                "reason": "",
-                "level": 3
-            }
-        ]
-    },
-    {
-        "id": "tx_20200320",
-        "date": "2020-03-20",
-        "portfolio_value": 9997761.099252682,
-        "total_trade_amount": 4991.19,
-        "reason": "AAPL:BUY(추가 매수 Lv4 (Lv3 대비 -9.4%)), MSFT:BUY(buy_amount($50.00) < 현재가($137.35) -> 1주도 매수 불가. buy_amount 상향 조정 필요)",
-        "executions": [
-            {
-                "ticker": "AAPL",
-                "action": "BUY",
-                "quantity": 87,
-                "price": 57.37,
-                "fee": 12.48,
-                "date": "2020-03-20",
+                "quantity": 10,
+                "price": 49999.95,
+                "fee": 1250.0,
+                "date": "2020-03-13",
                 "status": "FILLED",
                 "reason": "",
                 "level": 4
@@ -166,94 +177,4093 @@
         ]
     },
     {
-        "id": "tx_20200327",
-        "date": "2020-03-27",
-        "portfolio_value": 9999162.128515627,
-        "total_trade_amount": 5382.69,
-        "reason": "AAPL:SELL(Lv4 트레일링 스톱 매도 (고점 대비 -4.14%)), MSFT:BUY(buy_amount($50.00) < 현재가($149.70) -> 1주도 매수 불가. buy_amount 상향 조정 필요)",
+        "id": "tx_20200316",
+        "date": "2020-03-16",
+        "portfolio_value": 9929728.877749998,
+        "total_trade_amount": 495495.0,
+        "reason": "058470.KQ:BUY(추가 매수 Lv2 (Lv1 대비 -7.6%))",
         "executions": [
             {
-                "ticker": "AAPL",
+                "ticker": "058470.KQ",
+                "action": "BUY",
+                "quantity": 33,
+                "price": 15015.0,
+                "fee": 1238.74,
+                "date": "2020-03-16",
+                "status": "FILLED",
+                "reason": "",
+                "level": 2
+            }
+        ]
+    },
+    {
+        "id": "tx_20200317",
+        "date": "2020-03-17",
+        "portfolio_value": 9921212.195249997,
+        "total_trade_amount": 473473.0,
+        "reason": "005930.KS:BUY(추가 매수 Lv5 (Lv4 대비 -5.4%))",
+        "executions": [
+            {
+                "ticker": "005930.KS",
+                "action": "BUY",
+                "quantity": 10,
+                "price": 47347.3,
+                "fee": 1183.68,
+                "date": "2020-03-17",
+                "status": "FILLED",
+                "reason": "",
+                "level": 5
+            }
+        ]
+    },
+    {
+        "id": "tx_20200319",
+        "date": "2020-03-19",
+        "portfolio_value": 9616238.955374997,
+        "total_trade_amount": 966915.95,
+        "reason": "005930.KS:BUY(추가 매수 Lv6 (Lv5 대비 -9.3%)), 058470.KQ:BUY(추가 매수 Lv3 (Lv2 대비 -6.1%))",
+        "executions": [
+            {
+                "ticker": "005930.KS",
+                "action": "BUY",
+                "quantity": 11,
+                "price": 42992.95,
+                "fee": 1182.31,
+                "date": "2020-03-19",
+                "status": "FILLED",
+                "reason": "",
+                "level": 6
+            },
+            {
+                "ticker": "058470.KQ",
+                "action": "BUY",
+                "quantity": 35,
+                "price": 14114.1,
+                "fee": 1234.98,
+                "date": "2020-03-19",
+                "status": "FILLED",
+                "reason": "",
+                "level": 3
+            }
+        ]
+    },
+    {
+        "id": "tx_20200325",
+        "date": "2020-03-25",
+        "portfolio_value": 10141213.424624998,
+        "total_trade_amount": 567132.3,
+        "reason": "005930.KS:SELL(Lv6: 트레일링 스톱 활성화 — 현재가 $48,650 (매수가 대비 +13.2%), 스톱가 $47,677), 058470.KQ:SELL(Lv3 트레일링 스톱 매도 (고점 대비 -3.34%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
                 "action": "SELL",
-                "quantity": 87,
-                "price": 61.87,
-                "fee": 13.46,
+                "quantity": 35,
+                "price": 16203.78,
+                "fee": 1417.83,
+                "date": "2020-03-25",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260504_070750_058470.KQ_003",
+                "level": 3,
+                "buy_price": 14114.1,
+                "realized_pnl": 71720.97
+            }
+        ]
+    },
+    {
+        "id": "tx_20200327",
+        "date": "2020-03-27",
+        "portfolio_value": 10053134.291824998,
+        "total_trade_amount": 485605.12,
+        "reason": "058470.KQ:BUY(동적 재매수 Lv3 (매도가 $16204 대비 -6.4%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "BUY",
+                "quantity": 32,
+                "price": 15175.16,
+                "fee": 1214.01,
                 "date": "2020-03-27",
                 "status": "FILLED",
                 "reason": "",
-                "lot_id": "lot_20260504_070431_AAPL_004",
-                "level": 4,
-                "buy_price": 57.37,
-                "realized_pnl": 378.04
+                "level": 3
             }
         ]
     },
     {
-        "id": "tx_20200420",
-        "date": "2020-04-20",
-        "portfolio_value": 10000748.448698346,
-        "total_trade_amount": 5463.639999999999,
-        "reason": "AAPL:SELL(Lv3 트레일링 스톱 매도 (고점 대비 -3.53%)), MSFT:BUY(buy_amount($50.00) < 현재가($175.06) -> 1주도 매수 불가. buy_amount 상향 조정 필요)",
+        "id": "tx_20200401",
+        "date": "2020-04-01",
+        "portfolio_value": 9877172.251324998,
+        "total_trade_amount": 503296.19999999995,
+        "reason": "005930.KS:SELL(Lv6 트레일링 스톱 매도 (고점 대비 -5.86%))",
         "executions": [
             {
-                "ticker": "AAPL",
+                "ticker": "005930.KS",
                 "action": "SELL",
-                "quantity": 79,
-                "price": 69.16,
-                "fee": 13.66,
-                "date": "2020-04-20",
+                "quantity": 11,
+                "price": 45754.2,
+                "fee": 1258.24,
+                "date": "2020-04-01",
                 "status": "FILLED",
                 "reason": "",
-                "lot_id": "lot_20260504_070431_AAPL_003",
+                "lot_id": "lot_20260504_070750_005930.KS_006",
+                "level": 6,
+                "buy_price": 42992.95,
+                "realized_pnl": 29115.51
+            }
+        ]
+    },
+    {
+        "id": "tx_20200429",
+        "date": "2020-04-29",
+        "portfolio_value": 10354873.360124998,
+        "total_trade_amount": 570948.48,
+        "reason": "058470.KQ:SELL(Lv3 트레일링 스톱 매도 (고점 대비 -2.51%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "SELL",
+                "quantity": 32,
+                "price": 17842.14,
+                "fee": 1427.37,
+                "date": "2020-04-29",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260504_070750_058470.KQ_003",
                 "level": 3,
-                "buy_price": 63.28,
-                "realized_pnl": 450.86
+                "buy_price": 15175.16,
+                "realized_pnl": 83915.99
             }
         ]
     },
     {
-        "id": "tx_20200513",
-        "date": "2020-05-13",
-        "portfolio_value": 10001811.15363162,
-        "total_trade_amount": 5763.0,
-        "reason": "AAPL:SELL(Lv2 트레일링 스톱 매도 (고점 대비 -2.34%)), MSFT:BUY(buy_amount($50.00) < 현재가($179.75) -> 1주도 매수 불가. buy_amount 상향 조정 필요)",
+        "id": "tx_20200511",
+        "date": "2020-05-11",
+        "portfolio_value": 10322315.828024998,
+        "total_trade_amount": 610548.84,
+        "reason": "058470.KQ:SELL(Lv2 트레일링 스톱 매도 (고점 대비 -2.73%))",
         "executions": [
             {
-                "ticker": "AAPL",
+                "ticker": "058470.KQ",
                 "action": "SELL",
-                "quantity": 75,
-                "price": 76.84,
-                "fee": 14.41,
-                "date": "2020-05-13",
+                "quantity": 33,
+                "price": 18501.48,
+                "fee": 1526.37,
+                "date": "2020-05-11",
                 "status": "FILLED",
                 "reason": "",
-                "lot_id": "lot_20260504_070431_AAPL_002",
+                "lot_id": "lot_20260504_070750_058470.KQ_002",
                 "level": 2,
-                "buy_price": 66.61,
-                "realized_pnl": 752.84
+                "buy_price": 15015.0,
+                "realized_pnl": 113527.47
+            }
+        ]
+    },
+    {
+        "id": "tx_20200528",
+        "date": "2020-05-28",
+        "portfolio_value": 10451029.919024996,
+        "total_trade_amount": 595803.6,
+        "reason": "058470.KQ:SELL(Lv1 트레일링 스톱 매도 (고점 대비 -5.24%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "SELL",
+                "quantity": 30,
+                "price": 19860.12,
+                "fee": 1489.51,
+                "date": "2020-05-28",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260504_070750_058470.KQ_001",
+                "level": 1,
+                "buy_price": 16236.22,
+                "realized_pnl": 107227.49
+            }
+        ]
+    },
+    {
+        "id": "tx_20200529",
+        "date": "2020-05-29",
+        "portfolio_value": 10462836.460274998,
+        "total_trade_amount": 483983.5,
+        "reason": "058470.KQ:BUY(초기 매수 Lv1)",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "BUY",
+                "quantity": 25,
+                "price": 19359.34,
+                "fee": 1209.96,
+                "date": "2020-05-29",
+                "status": "FILLED",
+                "reason": "",
+                "level": 1
             }
         ]
     },
     {
         "id": "tx_20200611",
         "date": "2020-06-11",
-        "portfolio_value": 10002257.894262847,
-        "total_trade_amount": 5536.74,
-        "reason": "AAPL:SELL(Lv1 트레일링 스톱 매도 (고점 대비 -4.80%)), MSFT:BUY(buy_amount($50.00) < 현재가($186.27) -> 1주도 매수 불가. buy_amount 상향 조정 필요)",
+        "portfolio_value": 10676937.317774996,
+        "total_trade_amount": 542457.0,
+        "reason": "005930.KS:SELL(Lv5 트레일링 스톱 매도 (고점 대비 -2.16%))",
         "executions": [
             {
-                "ticker": "AAPL",
+                "ticker": "005930.KS",
                 "action": "SELL",
-                "quantity": 66,
-                "price": 83.89,
-                "fee": 13.84,
+                "quantity": 10,
+                "price": 54245.7,
+                "fee": 1356.14,
                 "date": "2020-06-11",
                 "status": "FILLED",
                 "reason": "",
-                "lot_id": "lot_20260504_070431_AAPL_001",
+                "lot_id": "lot_20260504_070750_005930.KS_005",
+                "level": 5,
+                "buy_price": 47347.3,
+                "realized_pnl": 67627.86
+            }
+        ]
+    },
+    {
+        "id": "tx_20200615",
+        "date": "2020-06-15",
+        "portfolio_value": 10492404.096524999,
+        "total_trade_amount": 1009488.5,
+        "reason": "005930.KS:BUY(동적 재매수 Lv5 (매도가 $54246 대비 -8.0%)), 058470.KQ:SELL(Lv1 트레일링 스톱 매도 (고점 대비 -5.02%))",
+        "executions": [
+            {
+                "ticker": "005930.KS",
+                "action": "BUY",
+                "quantity": 10,
+                "price": 49949.9,
+                "fee": 1248.75,
+                "date": "2020-06-15",
+                "status": "FILLED",
+                "reason": "",
+                "level": 5
+            },
+            {
+                "ticker": "058470.KQ",
+                "action": "SELL",
+                "quantity": 25,
+                "price": 20399.58,
+                "fee": 1274.97,
+                "date": "2020-06-15",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260504_070750_058470.KQ_001",
                 "level": 1,
-                "buy_price": 75.16,
-                "realized_pnl": 562.34
+                "buy_price": 19359.34,
+                "realized_pnl": 24731.03
+            }
+        ]
+    },
+    {
+        "id": "tx_20200616",
+        "date": "2020-06-16",
+        "portfolio_value": 10589720.444774996,
+        "total_trade_amount": 481180.7,
+        "reason": "058470.KQ:BUY(초기 매수 Lv1)",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "BUY",
+                "quantity": 23,
+                "price": 20920.9,
+                "fee": 1202.95,
+                "date": "2020-06-16",
+                "status": "FILLED",
+                "reason": "",
+                "level": 1
+            }
+        ]
+    },
+    {
+        "id": "tx_20200629",
+        "date": "2020-06-29",
+        "portfolio_value": 10643252.791174997,
+        "total_trade_amount": 522037.43999999994,
+        "reason": "058470.KQ:SELL(Lv1 트레일링 스톱 매도 (고점 대비 -3.48%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "SELL",
+                "quantity": 23,
+                "price": 22697.28,
+                "fee": 1305.09,
+                "date": "2020-06-29",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260504_070750_058470.KQ_001",
+                "level": 1,
+                "buy_price": 20920.9,
+                "realized_pnl": 39551.65
+            }
+        ]
+    },
+    {
+        "id": "tx_20200630",
+        "date": "2020-06-30",
+        "portfolio_value": 10659511.348174997,
+        "total_trade_amount": 497697.19999999995,
+        "reason": "058470.KQ:BUY(초기 매수 Lv1)",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "BUY",
+                "quantity": 22,
+                "price": 22622.6,
+                "fee": 1244.24,
+                "date": "2020-06-30",
+                "status": "FILLED",
+                "reason": "",
+                "level": 1
+            }
+        ]
+    },
+    {
+        "id": "tx_20200707",
+        "date": "2020-07-07",
+        "portfolio_value": 10695643.683174998,
+        "total_trade_amount": 533466.0,
+        "reason": "005930.KS:SELL(Lv5 트레일링 스톱 매도 (고점 대비 -2.91%))",
+        "executions": [
+            {
+                "ticker": "005930.KS",
+                "action": "SELL",
+                "quantity": 10,
+                "price": 53346.6,
+                "fee": 1333.66,
+                "date": "2020-07-07",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260504_070750_005930.KS_005",
+                "level": 5,
+                "buy_price": 49949.9,
+                "realized_pnl": 32633.34
+            }
+        ]
+    },
+    {
+        "id": "tx_20200723",
+        "date": "2020-07-23",
+        "portfolio_value": 10767531.535674997,
+        "total_trade_amount": 540459.0,
+        "reason": "005930.KS:SELL(Lv4 트레일링 스톱 매도 (고점 대비 -2.17%))",
+        "executions": [
+            {
+                "ticker": "005930.KS",
+                "action": "SELL",
+                "quantity": 10,
+                "price": 54045.9,
+                "fee": 1351.15,
+                "date": "2020-07-23",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260504_070750_005930.KS_004",
+                "level": 4,
+                "buy_price": 49999.95,
+                "realized_pnl": 39108.35
+            }
+        ]
+    },
+    {
+        "id": "tx_20200728",
+        "date": "2020-07-28",
+        "portfolio_value": 10923243.242674997,
+        "total_trade_amount": 602197.2,
+        "reason": "058470.KQ:SELL(Lv1 트레일링 스톱 매도 (고점 대비 -3.32%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "SELL",
+                "quantity": 22,
+                "price": 27372.6,
+                "fee": 1505.49,
+                "date": "2020-07-28",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260504_070750_058470.KQ_001",
+                "level": 1,
+                "buy_price": 22622.6,
+                "realized_pnl": 102994.51
+            }
+        ]
+    },
+    {
+        "id": "tx_20200729",
+        "date": "2020-07-29",
+        "portfolio_value": 10931559.380774997,
+        "total_trade_amount": 481240.76,
+        "reason": "058470.KQ:BUY(초기 매수 Lv1)",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "BUY",
+                "quantity": 17,
+                "price": 28308.28,
+                "fee": 1203.1,
+                "date": "2020-07-29",
+                "status": "FILLED",
+                "reason": "",
+                "level": 1
+            }
+        ]
+    },
+    {
+        "id": "tx_20200812",
+        "date": "2020-08-12",
+        "portfolio_value": 10904709.774774997,
+        "total_trade_amount": 482882.39999999997,
+        "reason": "058470.KQ:BUY(추가 매수 Lv2 (Lv1 대비 -5.3%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "BUY",
+                "quantity": 18,
+                "price": 26826.8,
+                "fee": 1207.21,
+                "date": "2020-08-12",
+                "status": "FILLED",
+                "reason": "",
+                "level": 2
+            }
+        ]
+    },
+    {
+        "id": "tx_20200820",
+        "date": "2020-08-20",
+        "portfolio_value": 10759827.453974996,
+        "total_trade_amount": 480800.31999999995,
+        "reason": "058470.KQ:BUY(추가 매수 Lv3 (Lv2 대비 -5.8%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "BUY",
+                "quantity": 19,
+                "price": 25305.28,
+                "fee": 1202.0,
+                "date": "2020-08-20",
+                "status": "FILLED",
+                "reason": "",
+                "level": 3
+            }
+        ]
+    },
+    {
+        "id": "tx_20200917",
+        "date": "2020-09-17",
+        "portfolio_value": 10905814.542724997,
+        "total_trade_amount": 534964.5,
+        "reason": "005930.KS:SELL(Lv3 트레일링 스톱 매도 (고점 대비 -2.46%))",
+        "executions": [
+            {
+                "ticker": "005930.KS",
+                "action": "SELL",
+                "quantity": 9,
+                "price": 59440.5,
+                "fee": 1337.41,
+                "date": "2020-09-17",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260504_070750_005930.KS_003",
+                "level": 3,
+                "buy_price": 54254.2,
+                "realized_pnl": 45339.29
+            }
+        ]
+    },
+    {
+        "id": "tx_20200925",
+        "date": "2020-09-25",
+        "portfolio_value": 10743477.232674997,
+        "total_trade_amount": 496516.01999999996,
+        "reason": "058470.KQ:BUY(추가 매수 Lv4 (Lv3 대비 -6.7%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "BUY",
+                "quantity": 21,
+                "price": 23643.62,
+                "fee": 1241.29,
+                "date": "2020-09-25",
+                "status": "FILLED",
+                "reason": "",
+                "level": 4
+            }
+        ]
+    },
+    {
+        "id": "tx_20201118",
+        "date": "2020-11-18",
+        "portfolio_value": 10963064.128674997,
+        "total_trade_amount": 517881.6,
+        "reason": "005930.KS:SELL(Lv2 트레일링 스톱 매도 (고점 대비 -2.26%))",
+        "executions": [
+            {
+                "ticker": "005930.KS",
+                "action": "SELL",
+                "quantity": 8,
+                "price": 64735.2,
+                "fee": 1294.7,
+                "date": "2020-11-18",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260504_070750_005930.KS_002",
+                "level": 2,
+                "buy_price": 57257.2,
+                "realized_pnl": 58529.3
+            }
+        ]
+    },
+    {
+        "id": "tx_20201130",
+        "date": "2020-11-30",
+        "portfolio_value": 10926897.862674996,
+        "total_trade_amount": 533066.4,
+        "reason": "005930.KS:SELL(Lv1 트레일링 스톱 매도 (고점 대비 -2.20%))",
+        "executions": [
+            {
+                "ticker": "005930.KS",
+                "action": "SELL",
+                "quantity": 8,
+                "price": 66633.3,
+                "fee": 1332.67,
+                "date": "2020-11-30",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260504_070750_005930.KS_001",
+                "level": 1,
+                "buy_price": 60860.8,
+                "realized_pnl": 44847.33
+            }
+        ]
+    },
+    {
+        "id": "tx_20201201",
+        "date": "2020-12-01",
+        "portfolio_value": 10911735.576174997,
+        "total_trade_amount": 475074.60000000003,
+        "reason": "005930.KS:BUY(초기 매수 Lv1)",
+        "executions": [
+            {
+                "ticker": "005930.KS",
+                "action": "BUY",
+                "quantity": 7,
+                "price": 67867.8,
+                "fee": 1187.69,
+                "date": "2020-12-01",
+                "status": "FILLED",
+                "reason": "",
+                "level": 1
+            }
+        ]
+    },
+    {
+        "id": "tx_20201222",
+        "date": "2020-12-22",
+        "portfolio_value": 11035861.195974996,
+        "total_trade_amount": 535384.08,
+        "reason": "058470.KQ:SELL(Lv4 트레일링 스톱 매도 (고점 대비 -2.37%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "SELL",
+                "quantity": 21,
+                "price": 25494.48,
+                "fee": 1338.46,
+                "date": "2020-12-22",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260504_070750_058470.KQ_004",
+                "level": 4,
+                "buy_price": 23643.62,
+                "realized_pnl": 37529.6
+            }
+        ]
+    },
+    {
+        "id": "tx_20210106",
+        "date": "2021-01-06",
+        "portfolio_value": 11185228.734474996,
+        "total_trade_amount": 574824.6,
+        "reason": "005930.KS:SELL(Lv1 트레일링 스톱 매도 (고점 대비 -2.03%))",
+        "executions": [
+            {
+                "ticker": "005930.KS",
+                "action": "SELL",
+                "quantity": 7,
+                "price": 82117.8,
+                "fee": 1437.06,
+                "date": "2021-01-06",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260504_070750_005930.KS_001",
+                "level": 1,
+                "buy_price": 67867.8,
+                "realized_pnl": 98312.94
+            }
+        ]
+    },
+    {
+        "id": "tx_20210107",
+        "date": "2021-01-07",
+        "portfolio_value": 11229926.590974996,
+        "total_trade_amount": 497897.39999999997,
+        "reason": "005930.KS:BUY(초기 매수 Lv1), 058470.KQ:SELL(Lv3: 트레일링 스톱 활성화 — 현재가 $27,900 (매수가 대비 +10.3%), 스톱가 $27,342)",
+        "executions": [
+            {
+                "ticker": "005930.KS",
+                "action": "BUY",
+                "quantity": 6,
+                "price": 82982.9,
+                "fee": 1244.74,
+                "date": "2021-01-07",
+                "status": "FILLED",
+                "reason": "",
+                "level": 1
+            }
+        ]
+    },
+    {
+        "id": "tx_20210112",
+        "date": "2021-01-12",
+        "portfolio_value": 11335756.810374996,
+        "total_trade_amount": 551208.24,
+        "reason": "058470.KQ:SELL(Lv3 트레일링 스톱 매도 (고점 대비 -4.91%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "SELL",
+                "quantity": 19,
+                "price": 29010.96,
+                "fee": 1378.02,
+                "date": "2021-01-12",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260504_070750_058470.KQ_003",
+                "level": 3,
+                "buy_price": 25305.28,
+                "realized_pnl": 69029.9
+            }
+        ]
+    },
+    {
+        "id": "tx_20210122",
+        "date": "2021-01-22",
+        "portfolio_value": 11404061.136874996,
+        "total_trade_amount": 570029.4,
+        "reason": "058470.KQ:SELL(Lv2 트레일링 스톱 매도 (고점 대비 -2.46%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "SELL",
+                "quantity": 18,
+                "price": 31668.3,
+                "fee": 1425.07,
+                "date": "2021-01-22",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260504_070750_058470.KQ_002",
+                "level": 2,
+                "buy_price": 26826.8,
+                "realized_pnl": 85721.93
+            }
+        ]
+    },
+    {
+        "id": "tx_20210128",
+        "date": "2021-01-28",
+        "portfolio_value": 11372056.765224997,
+        "total_trade_amount": 526812.66,
+        "reason": "058470.KQ:SELL(Lv1 트레일링 스톱 매도 (고점 대비 -3.12%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "SELL",
+                "quantity": 17,
+                "price": 30988.98,
+                "fee": 1317.03,
+                "date": "2021-01-28",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260504_070750_058470.KQ_001",
+                "level": 1,
+                "buy_price": 28308.28,
+                "realized_pnl": 44254.87
+            }
+        ]
+    },
+    {
+        "id": "tx_20210129",
+        "date": "2021-01-29",
+        "portfolio_value": 11360137.458024997,
+        "total_trade_amount": 491370.88,
+        "reason": "058470.KQ:BUY(초기 매수 Lv1)",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "BUY",
+                "quantity": 16,
+                "price": 30710.68,
+                "fee": 1228.43,
+                "date": "2021-01-29",
+                "status": "FILLED",
+                "reason": "",
+                "level": 1
+            }
+        ]
+    },
+    {
+        "id": "tx_20210223",
+        "date": "2021-02-23",
+        "portfolio_value": 11389989.804424997,
+        "total_trade_amount": 522037.44,
+        "reason": "058470.KQ:SELL(Lv1 트레일링 스톱 매도 (고점 대비 -5.11%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "SELL",
+                "quantity": 16,
+                "price": 32627.34,
+                "fee": 1305.09,
+                "date": "2021-02-23",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260504_070751_058470.KQ_001",
+                "level": 1,
+                "buy_price": 30710.68,
+                "realized_pnl": 29361.47
+            }
+        ]
+    },
+    {
+        "id": "tx_20210224",
+        "date": "2021-02-24",
+        "portfolio_value": 11388329.619424997,
+        "total_trade_amount": 474474.0,
+        "reason": "058470.KQ:BUY(초기 매수 Lv1)",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "BUY",
+                "quantity": 15,
+                "price": 31631.6,
+                "fee": 1186.18,
+                "date": "2021-02-24",
+                "status": "FILLED",
+                "reason": "",
+                "level": 1
+            }
+        ]
+    },
+    {
+        "id": "tx_20210308",
+        "date": "2021-03-08",
+        "portfolio_value": 11351188.596724996,
+        "total_trade_amount": 497577.08,
+        "reason": "058470.KQ:BUY(추가 매수 Lv2 (Lv1 대비 -7.6%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "BUY",
+                "quantity": 17,
+                "price": 29269.24,
+                "fee": 1243.94,
+                "date": "2021-03-08",
+                "status": "FILLED",
+                "reason": "",
+                "level": 2
+            }
+        ]
+    },
+    {
+        "id": "tx_20210407",
+        "date": "2021-04-07",
+        "portfolio_value": 11470065.741174996,
+        "total_trade_amount": 549230.22,
+        "reason": "058470.KQ:SELL(Lv2 트레일링 스톱 매도 (고점 대비 -2.24%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "SELL",
+                "quantity": 17,
+                "price": 32307.66,
+                "fee": 1373.08,
+                "date": "2021-04-07",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260504_070751_058470.KQ_002",
+                "level": 2,
+                "buy_price": 29269.24,
+                "realized_pnl": 50280.06
+            }
+        ]
+    },
+    {
+        "id": "tx_20210421",
+        "date": "2021-04-21",
+        "portfolio_value": 11478171.523674997,
+        "total_trade_amount": 512487.00000000006,
+        "reason": "058470.KQ:SELL(Lv1 트레일링 스톱 매도 (고점 대비 -3.12%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "SELL",
+                "quantity": 15,
+                "price": 34165.8,
+                "fee": 1281.22,
+                "date": "2021-04-21",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260504_070751_058470.KQ_001",
+                "level": 1,
+                "buy_price": 31631.6,
+                "realized_pnl": 36731.78
+            }
+        ]
+    },
+    {
+        "id": "tx_20210422",
+        "date": "2021-04-22",
+        "portfolio_value": 11475317.082774997,
+        "total_trade_amount": 472832.36,
+        "reason": "058470.KQ:BUY(초기 매수 Lv1)",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "BUY",
+                "quantity": 14,
+                "price": 33773.74,
+                "fee": 1182.08,
+                "date": "2021-04-22",
+                "status": "FILLED",
+                "reason": "",
+                "level": 1
+            }
+        ]
+    },
+    {
+        "id": "tx_20210504",
+        "date": "2021-05-04",
+        "portfolio_value": 11449360.085774997,
+        "total_trade_amount": 479278.8,
+        "reason": "058470.KQ:BUY(추가 매수 Lv2 (Lv1 대비 -5.5%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "BUY",
+                "quantity": 15,
+                "price": 31951.92,
+                "fee": 1198.2,
+                "date": "2021-05-04",
+                "status": "FILLED",
+                "reason": "",
+                "level": 2
+            }
+        ]
+    },
+    {
+        "id": "tx_20210513",
+        "date": "2021-05-13",
+        "portfolio_value": 11371538.000274997,
+        "total_trade_amount": 955154.2,
+        "reason": "005930.KS:BUY(추가 매수 Lv2 (Lv1 대비 -5.4%)), 058470.KQ:BUY(추가 매수 Lv3 (Lv2 대비 -5.5%))",
+        "executions": [
+            {
+                "ticker": "005930.KS",
+                "action": "BUY",
+                "quantity": 6,
+                "price": 78578.5,
+                "fee": 1178.68,
+                "date": "2021-05-13",
+                "status": "FILLED",
+                "reason": "",
+                "level": 2
+            },
+            {
+                "ticker": "058470.KQ",
+                "action": "BUY",
+                "quantity": 16,
+                "price": 30230.2,
+                "fee": 1209.21,
+                "date": "2021-05-13",
+                "status": "FILLED",
+                "reason": "",
+                "level": 3
+            }
+        ]
+    },
+    {
+        "id": "tx_20210531",
+        "date": "2021-05-31",
+        "portfolio_value": 11505309.227474997,
+        "total_trade_amount": 522357.12,
+        "reason": "058470.KQ:SELL(Lv3 트레일링 스톱 매도 (고점 대비 -2.27%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "SELL",
+                "quantity": 16,
+                "price": 32647.32,
+                "fee": 1305.89,
+                "date": "2021-05-31",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260504_070751_058470.KQ_003",
+                "level": 3,
+                "buy_price": 30230.2,
+                "realized_pnl": 37368.03
+            }
+        ]
+    },
+    {
+        "id": "tx_20210708",
+        "date": "2021-07-08",
+        "portfolio_value": 11616237.558224997,
+        "total_trade_amount": 551747.7,
+        "reason": "058470.KQ:SELL(Lv2 트레일링 스톱 매도 (고점 대비 -2.02%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "SELL",
+                "quantity": 15,
+                "price": 36783.18,
+                "fee": 1379.37,
+                "date": "2021-07-08",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260504_070751_058470.KQ_002",
+                "level": 2,
+                "buy_price": 31951.92,
+                "realized_pnl": 71089.53
+            }
+        ]
+    },
+    {
+        "id": "tx_20210720",
+        "date": "2021-07-20",
+        "portfolio_value": 11603634.666924996,
+        "total_trade_amount": 514964.52,
+        "reason": "058470.KQ:SELL(Lv1 트레일링 스톱 매도 (고점 대비 -2.39%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "SELL",
+                "quantity": 14,
+                "price": 36783.18,
+                "fee": 1287.41,
+                "date": "2021-07-20",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260504_070751_058470.KQ_001",
+                "level": 1,
+                "buy_price": 33773.74,
+                "realized_pnl": 40844.75
+            }
+        ]
+    },
+    {
+        "id": "tx_20210721",
+        "date": "2021-07-21",
+        "portfolio_value": 11595937.215324996,
+        "total_trade_amount": 485124.64,
+        "reason": "058470.KQ:BUY(초기 매수 Lv1)",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "BUY",
+                "quantity": 13,
+                "price": 37317.28,
+                "fee": 1212.81,
+                "date": "2021-07-21",
+                "status": "FILLED",
+                "reason": "",
+                "level": 1
+            }
+        ]
+    },
+    {
+        "id": "tx_20210802",
+        "date": "2021-08-02",
+        "portfolio_value": 11575735.106124995,
+        "total_trade_amount": 492171.68000000005,
+        "reason": "058470.KQ:BUY(추가 매수 Lv2 (Lv1 대비 -5.9%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "BUY",
+                "quantity": 14,
+                "price": 35155.12,
+                "fee": 1230.43,
+                "date": "2021-08-02",
+                "status": "FILLED",
+                "reason": "",
+                "level": 2
+            }
+        ]
+    },
+    {
+        "id": "tx_20210813",
+        "date": "2021-08-13",
+        "portfolio_value": 11498091.590124995,
+        "total_trade_amount": 446846.39999999997,
+        "reason": "005930.KS:BUY(추가 매수 Lv3 (Lv2 대비 -5.3%))",
+        "executions": [
+            {
+                "ticker": "005930.KS",
+                "action": "BUY",
+                "quantity": 6,
+                "price": 74474.4,
+                "fee": 1117.12,
+                "date": "2021-08-13",
+                "status": "FILLED",
+                "reason": "",
+                "level": 3
+            }
+        ]
+    },
+    {
+        "id": "tx_20210916",
+        "date": "2021-09-16",
+        "portfolio_value": 11688709.486924995,
+        "total_trade_amount": 566153.2799999999,
+        "reason": "058470.KQ:SELL(Lv2 트레일링 스톱 매도 (고점 대비 -4.80%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "SELL",
+                "quantity": 14,
+                "price": 40439.52,
+                "fee": 1415.38,
+                "date": "2021-09-16",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260504_070751_058470.KQ_002",
+                "level": 2,
+                "buy_price": 35155.12,
+                "realized_pnl": 72566.22
+            }
+        ]
+    },
+    {
+        "id": "tx_20210923",
+        "date": "2021-09-23",
+        "portfolio_value": 11667257.499224994,
+        "total_trade_amount": 483563.0800000001,
+        "reason": "058470.KQ:BUY(동적 재매수 Lv2 (매도가 $40440 대비 -8.1%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "BUY",
+                "quantity": 13,
+                "price": 37197.16,
+                "fee": 1208.91,
+                "date": "2021-09-23",
+                "status": "FILLED",
+                "reason": "",
+                "level": 2
+            }
+        ]
+    },
+    {
+        "id": "tx_20210930",
+        "date": "2021-09-30",
+        "portfolio_value": 11556209.505824994,
+        "total_trade_amount": 493853.36,
+        "reason": "058470.KQ:BUY(추가 매수 Lv3 (Lv2 대비 -5.3%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "BUY",
+                "quantity": 14,
+                "price": 35275.24,
+                "fee": 1234.63,
+                "date": "2021-09-30",
+                "status": "FILLED",
+                "reason": "",
+                "level": 3
+            }
+        ]
+    },
+    {
+        "id": "tx_20211008",
+        "date": "2021-10-08",
+        "portfolio_value": 11422070.514574993,
+        "total_trade_amount": 496996.5,
+        "reason": "058470.KQ:BUY(추가 매수 Lv4 (Lv3 대비 -6.2%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "BUY",
+                "quantity": 15,
+                "price": 33133.1,
+                "fee": 1242.49,
+                "date": "2021-10-08",
+                "status": "FILLED",
+                "reason": "",
+                "level": 4
+            }
+        ]
+    },
+    {
+        "id": "tx_20211012",
+        "date": "2021-10-12",
+        "portfolio_value": 11424878.807074994,
+        "total_trade_amount": 483483.0,
+        "reason": "005930.KS:BUY(추가 매수 Lv4 (Lv3 대비 -7.4%))",
+        "executions": [
+            {
+                "ticker": "005930.KS",
+                "action": "BUY",
+                "quantity": 7,
+                "price": 69069.0,
+                "fee": 1208.71,
+                "date": "2021-10-12",
+                "status": "FILLED",
+                "reason": "",
+                "level": 4
+            }
+        ]
+    },
+    {
+        "id": "tx_20211123",
+        "date": "2021-11-23",
+        "portfolio_value": 11916874.011574995,
+        "total_trade_amount": 601198.2,
+        "reason": "058470.KQ:SELL(Lv4 트레일링 스톱 매도 (고점 대비 -4.66%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "SELL",
+                "quantity": 15,
+                "price": 40079.88,
+                "fee": 1503.0,
+                "date": "2021-11-23",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260504_070751_058470.KQ_004",
+                "level": 4,
+                "buy_price": 33133.1,
+                "realized_pnl": 102698.7
+            }
+        ]
+    },
+    {
+        "id": "tx_20211125",
+        "date": "2021-11-25",
+        "portfolio_value": 11848541.852674995,
+        "total_trade_amount": 551887.56,
+        "reason": "058470.KQ:SELL(Lv3 트레일링 스톱 매도 (고점 대비 -3.14%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "SELL",
+                "quantity": 14,
+                "price": 39420.54,
+                "fee": 1379.72,
+                "date": "2021-11-25",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260504_070751_058470.KQ_003",
+                "level": 3,
+                "buy_price": 35275.24,
+                "realized_pnl": 56654.48
+            }
+        ]
+    },
+    {
+        "id": "tx_20211210",
+        "date": "2021-12-10",
+        "portfolio_value": 11944396.787224995,
+        "total_trade_amount": 521298.18,
+        "reason": "058470.KQ:SELL(Lv2 트레일링 스톱 매도 (고점 대비 -3.65%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "SELL",
+                "quantity": 13,
+                "price": 40099.86,
+                "fee": 1303.25,
+                "date": "2021-12-10",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260504_070751_058470.KQ_002",
+                "level": 2,
+                "buy_price": 37197.16,
+                "realized_pnl": 36431.85
+            }
+        ]
+    },
+    {
+        "id": "tx_20211229",
+        "date": "2021-12-29",
+        "portfolio_value": 11980347.566224994,
+        "total_trade_amount": 551048.4,
+        "reason": "005930.KS:SELL(Lv4 트레일링 스톱 매도 (고점 대비 -2.11%))",
+        "executions": [
+            {
+                "ticker": "005930.KS",
+                "action": "SELL",
+                "quantity": 7,
+                "price": 78721.2,
+                "fee": 1377.62,
+                "date": "2021-12-29",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260504_070751_005930.KS_004",
+                "level": 4,
+                "buy_price": 69069.0,
+                "realized_pnl": 66187.78
+            }
+        ]
+    },
+    {
+        "id": "tx_20220106",
+        "date": "2022-01-06",
+        "portfolio_value": 11925699.152524995,
+        "total_trade_amount": 493973.48,
+        "reason": "058470.KQ:BUY(동적 재매수 Lv2 (매도가 $40100 대비 -5.3%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "BUY",
+                "quantity": 13,
+                "price": 37997.96,
+                "fee": 1234.93,
+                "date": "2022-01-06",
+                "status": "FILLED",
+                "reason": "",
+                "level": 2
+            }
+        ]
+    },
+    {
+        "id": "tx_20220124",
+        "date": "2022-01-24",
+        "portfolio_value": 11842257.250574995,
+        "total_trade_amount": 469248.77999999997,
+        "reason": "058470.KQ:BUY(추가 매수 Lv3 (Lv2 대비 -5.1%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "BUY",
+                "quantity": 13,
+                "price": 36096.06,
+                "fee": 1173.12,
+                "date": "2022-01-24",
+                "status": "FILLED",
+                "reason": "",
+                "level": 3
+            }
+        ]
+    },
+    {
+        "id": "tx_20220125",
+        "date": "2022-01-25",
+        "portfolio_value": 11867702.140574995,
+        "total_trade_amount": 444444.0,
+        "reason": "005930.KS:BUY(동적 재매수 Lv4 (매도가 $78721 대비 -6.0%))",
+        "executions": [
+            {
+                "ticker": "005930.KS",
+                "action": "BUY",
+                "quantity": 6,
+                "price": 74074.0,
+                "fee": 1111.11,
+                "date": "2022-01-25",
+                "status": "FILLED",
+                "reason": "",
+                "level": 4
+            }
+        ]
+    },
+    {
+        "id": "tx_20220307",
+        "date": "2022-03-07",
+        "portfolio_value": 11721683.463824995,
+        "total_trade_amount": 491190.70000000007,
+        "reason": "005930.KS:BUY(추가 매수 Lv5 (Lv4 대비 -5.4%))",
+        "executions": [
+            {
+                "ticker": "005930.KS",
+                "action": "BUY",
+                "quantity": 7,
+                "price": 70170.1,
+                "fee": 1227.98,
+                "date": "2022-03-07",
+                "status": "FILLED",
+                "reason": "",
+                "level": 5
+            }
+        ]
+    },
+    {
+        "id": "tx_20220415",
+        "date": "2022-04-15",
+        "portfolio_value": 11587370.598324995,
+        "total_trade_amount": 466666.20000000007,
+        "reason": "005930.KS:BUY(추가 매수 Lv6 (Lv5 대비 -5.1%))",
+        "executions": [
+            {
+                "ticker": "005930.KS",
+                "action": "BUY",
+                "quantity": 7,
+                "price": 66666.6,
+                "fee": 1166.67,
+                "date": "2022-04-15",
+                "status": "FILLED",
+                "reason": "",
+                "level": 6
+            }
+        ]
+    },
+    {
+        "id": "tx_20220506",
+        "date": "2022-05-06",
+        "portfolio_value": 11539770.659224994,
+        "total_trade_amount": 480119.64,
+        "reason": "058470.KQ:BUY(추가 매수 Lv4 (Lv3 대비 -5.1%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "BUY",
+                "quantity": 14,
+                "price": 34294.26,
+                "fee": 1200.3,
+                "date": "2022-05-06",
+                "status": "FILLED",
+                "reason": "",
+                "level": 4
+            }
+        ]
+    },
+    {
+        "id": "tx_20220524",
+        "date": "2022-05-24",
+        "portfolio_value": 11447960.038224995,
+        "total_trade_amount": 488888.4,
+        "reason": "058470.KQ:BUY(추가 매수 Lv5 (Lv4 대비 -5.1%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "BUY",
+                "quantity": 15,
+                "price": 32592.56,
+                "fee": 1222.22,
+                "date": "2022-05-24",
+                "status": "FILLED",
+                "reason": "",
+                "level": 5
+            }
+        ]
+    },
+    {
+        "id": "tx_20220607",
+        "date": "2022-06-07",
+        "portfolio_value": 11213815.650224995,
+        "total_trade_amount": 475675.2,
+        "reason": "058470.KQ:BUY(추가 매수 Lv6 (Lv5 대비 -8.9%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "BUY",
+                "quantity": 16,
+                "price": 29729.7,
+                "fee": 1189.19,
+                "date": "2022-06-07",
+                "status": "FILLED",
+                "reason": "",
+                "level": 6
+            }
+        ]
+    },
+    {
+        "id": "tx_20220613",
+        "date": "2022-06-13",
+        "portfolio_value": 10911450.522624996,
+        "total_trade_amount": 996035.04,
+        "reason": "005930.KS:BUY(추가 매수 Lv7 (Lv6 대비 -6.8%)), 058470.KQ:BUY(추가 매수 Lv7 (Lv6 대비 -6.9%))",
+        "executions": [
+            {
+                "ticker": "005930.KS",
+                "action": "BUY",
+                "quantity": 8,
+                "price": 62162.1,
+                "fee": 1243.24,
+                "date": "2022-06-13",
+                "status": "FILLED",
+                "reason": "",
+                "level": 7
+            },
+            {
+                "ticker": "058470.KQ",
+                "action": "BUY",
+                "quantity": 18,
+                "price": 27707.68,
+                "fee": 1246.85,
+                "date": "2022-06-13",
+                "status": "FILLED",
+                "reason": "",
+                "level": 7
+            }
+        ]
+    },
+    {
+        "id": "tx_20220620",
+        "date": "2022-06-20",
+        "portfolio_value": 10663645.748624995,
+        "total_trade_amount": 470069.6,
+        "reason": "005930.KS:BUY(추가 매수 Lv8 (Lv7 대비 -5.6%))",
+        "executions": [
+            {
+                "ticker": "005930.KS",
+                "action": "BUY",
+                "quantity": 8,
+                "price": 58758.7,
+                "fee": 1175.17,
+                "date": "2022-06-20",
+                "status": "FILLED",
+                "reason": "",
+                "level": 8
+            }
+        ]
+    },
+    {
+        "id": "tx_20220623",
+        "date": "2022-06-23",
+        "portfolio_value": 10512154.182674995,
+        "total_trade_amount": 494874.38,
+        "reason": "058470.KQ:BUY(추가 매수 Lv8 (Lv7 대비 -6.1%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "BUY",
+                "quantity": 19,
+                "price": 26046.02,
+                "fee": 1237.19,
+                "date": "2022-06-23",
+                "status": "FILLED",
+                "reason": "",
+                "level": 8
+            }
+        ]
+    },
+    {
+        "id": "tx_20220822",
+        "date": "2022-08-22",
+        "portfolio_value": 10861249.461274995,
+        "total_trade_amount": 526912.56,
+        "reason": "058470.KQ:SELL(Lv8 트레일링 스톱 매도 (고점 대비 -3.61%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "SELL",
+                "quantity": 19,
+                "price": 27732.24,
+                "fee": 1317.28,
+                "date": "2022-08-22",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260504_070751_058470.KQ_008",
+                "level": 8,
+                "buy_price": 26046.02,
+                "realized_pnl": 30720.9
+            }
+        ]
+    },
+    {
+        "id": "tx_20220923",
+        "date": "2022-09-23",
+        "portfolio_value": 10344264.514324995,
+        "total_trade_amount": 487266.77999999997,
+        "reason": "005930.KS:BUY(비중 상한 초과: 현재 28.4% + 매수 예정 4.7% = 33.2% > 상한 30.0%), 058470.KQ:BUY(동적 재매수 Lv8 (매도가 $27732 대비 -7.6%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "BUY",
+                "quantity": 19,
+                "price": 25645.62,
+                "fee": 1218.17,
+                "date": "2022-09-23",
+                "status": "FILLED",
+                "reason": "",
+                "level": 8
+            }
+        ]
+    },
+    {
+        "id": "tx_20221011",
+        "date": "2022-10-11",
+        "portfolio_value": 10623354.412474994,
+        "total_trade_amount": 522736.74,
+        "reason": "005930.KS:BUY(비중 상한 초과: 현재 28.2% + 매수 예정 4.7% = 32.8% > 상한 30.0%), 058470.KQ:SELL(Lv8 트레일링 스톱 매도 (고점 대비 -2.41%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "SELL",
+                "quantity": 19,
+                "price": 27512.46,
+                "fee": 1306.84,
+                "date": "2022-10-11",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260504_070751_058470.KQ_008",
+                "level": 8,
+                "buy_price": 25645.62,
+                "realized_pnl": 34163.12
+            }
+        ]
+    },
+    {
+        "id": "tx_20221104",
+        "date": "2022-11-04",
+        "portfolio_value": 10702969.537024993,
+        "total_trade_amount": 498678.18000000005,
+        "reason": "058470.KQ:BUY(추가 매수 Lv8 (Lv7 대비 -5.4%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "BUY",
+                "quantity": 19,
+                "price": 26246.22,
+                "fee": 1246.7,
+                "date": "2022-11-04",
+                "status": "FILLED",
+                "reason": "",
+                "level": 8
+            }
+        ]
+    },
+    {
+        "id": "tx_20221122",
+        "date": "2022-11-22",
+        "portfolio_value": 11607724.643074993,
+        "total_trade_amount": 629789.58,
+        "reason": "058470.KQ:SELL(Lv8 트레일링 스톱 매도 (고점 대비 -2.75%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "SELL",
+                "quantity": 19,
+                "price": 33146.82,
+                "fee": 1574.47,
+                "date": "2022-11-22",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260504_070752_058470.KQ_008",
+                "level": 8,
+                "buy_price": 26246.22,
+                "realized_pnl": 129536.93
+            }
+        ]
+    },
+    {
+        "id": "tx_20221206",
+        "date": "2022-12-06",
+        "portfolio_value": 11613624.173074994,
+        "total_trade_amount": 611388.0,
+        "reason": "058470.KQ:SELL(Lv7 트레일링 스톱 매도 (고점 대비 -3.85%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "SELL",
+                "quantity": 18,
+                "price": 33966.0,
+                "fee": 1528.47,
+                "date": "2022-12-06",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260504_070751_058470.KQ_007",
+                "level": 7,
+                "buy_price": 27707.68,
+                "realized_pnl": 111121.29
+            }
+        ]
+    },
+    {
+        "id": "tx_20221209",
+        "date": "2022-12-09",
+        "portfolio_value": 11525532.465574995,
+        "total_trade_amount": 483483.0,
+        "reason": "058470.KQ:BUY(동적 재매수 Lv7 (매도가 $33966 대비 -5.2%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "BUY",
+                "quantity": 15,
+                "price": 32232.2,
+                "fee": 1208.71,
+                "date": "2022-12-09",
+                "status": "FILLED",
+                "reason": "",
+                "level": 7
+            }
+        ]
+    },
+    {
+        "id": "tx_20230308",
+        "date": "2023-03-08",
+        "portfolio_value": 11106622.893874995,
+        "total_trade_amount": 477156.68,
+        "reason": "058470.KQ:BUY(추가 매수 Lv8 (Lv7 대비 -13.0%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "BUY",
+                "quantity": 17,
+                "price": 28068.04,
+                "fee": 1192.89,
+                "date": "2023-03-08",
+                "status": "FILLED",
+                "reason": "",
+                "level": 8
+            }
+        ]
+    },
+    {
+        "id": "tx_20230425",
+        "date": "2023-04-25",
+        "portfolio_value": 11090483.365874995,
+        "total_trade_amount": 508291.2,
+        "reason": "005930.KS:SELL(Lv8 트레일링 스톱 매도 (고점 대비 -3.78%)), 058470.KQ:BUY(비중 상한 초과: 현재 27.6% + 매수 예정 4.3% = 31.9% > 상한 30.0%)",
+        "executions": [
+            {
+                "ticker": "005930.KS",
+                "action": "SELL",
+                "quantity": 8,
+                "price": 63536.4,
+                "fee": 1270.73,
+                "date": "2023-04-25",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260504_070751_005930.KS_008",
+                "level": 8,
+                "buy_price": 58758.7,
+                "realized_pnl": 36950.87
+            }
+        ]
+    },
+    {
+        "id": "tx_20230515",
+        "date": "2023-05-15",
+        "portfolio_value": 10733474.600474995,
+        "total_trade_amount": 482642.16,
+        "reason": "058470.KQ:BUY(추가 매수 Lv9 (Lv8 대비 -18.2%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "BUY",
+                "quantity": 21,
+                "price": 22982.96,
+                "fee": 1206.61,
+                "date": "2023-05-15",
+                "status": "FILLED",
+                "reason": "",
+                "level": 9
+            }
+        ]
+    },
+    {
+        "id": "tx_20230524",
+        "date": "2023-05-24",
+        "portfolio_value": 11173210.164574996,
+        "total_trade_amount": 521118.36,
+        "reason": "058470.KQ:SELL(Lv9 트레일링 스톱 매도 (고점 대비 -2.20%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "SELL",
+                "quantity": 21,
+                "price": 24815.16,
+                "fee": 1302.8,
+                "date": "2023-05-24",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260504_070752_058470.KQ_009",
+                "level": 9,
+                "buy_price": 22982.96,
+                "realized_pnl": 37173.4
+            }
+        ]
+    },
+    {
+        "id": "tx_20230621",
+        "date": "2023-06-21",
+        "portfolio_value": 11594997.574574996,
+        "total_trade_amount": 563436.0,
+        "reason": "005930.KS:SELL(Lv7 트레일링 스톱 매도 (고점 대비 -2.49%))",
+        "executions": [
+            {
+                "ticker": "005930.KS",
+                "action": "SELL",
+                "quantity": 8,
+                "price": 70429.5,
+                "fee": 1408.59,
+                "date": "2023-06-21",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260504_070751_005930.KS_007",
+                "level": 7,
+                "buy_price": 62162.1,
+                "realized_pnl": 64730.61
+            }
+        ]
+    },
+    {
+        "id": "tx_20230706",
+        "date": "2023-07-06",
+        "portfolio_value": 11899495.038724996,
+        "total_trade_amount": 509150.34,
+        "reason": "058470.KQ:SELL(Lv8 트레일링 스톱 매도 (고점 대비 -3.91%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "SELL",
+                "quantity": 17,
+                "price": 29950.02,
+                "fee": 1272.88,
+                "date": "2023-07-06",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260504_070752_058470.KQ_008",
+                "level": 8,
+                "buy_price": 28068.04,
+                "realized_pnl": 30720.78
+            }
+        ]
+    },
+    {
+        "id": "tx_20230707",
+        "date": "2023-07-07",
+        "portfolio_value": 11797595.133924995,
+        "total_trade_amount": 474393.92,
+        "reason": "058470.KQ:BUY(추가 매수 Lv8 (Lv7 대비 -8.1%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "BUY",
+                "quantity": 16,
+                "price": 29649.62,
+                "fee": 1185.98,
+                "date": "2023-07-07",
+                "status": "FILLED",
+                "reason": "",
+                "level": 8
+            }
+        ]
+    },
+    {
+        "id": "tx_20230719",
+        "date": "2023-07-19",
+        "portfolio_value": 12149439.738674995,
+        "total_trade_amount": 501398.10000000003,
+        "reason": "005930.KS:SELL(Lv6 트레일링 스톱 매도 (고점 대비 -2.32%))",
+        "executions": [
+            {
+                "ticker": "005930.KS",
+                "action": "SELL",
+                "quantity": 7,
+                "price": 71628.3,
+                "fee": 1253.5,
+                "date": "2023-07-19",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260504_070751_005930.KS_006",
+                "level": 6,
+                "buy_price": 66666.6,
+                "realized_pnl": 33478.4
+            }
+        ]
+    },
+    {
+        "id": "tx_20230720",
+        "date": "2023-07-20",
+        "portfolio_value": 12107552.376274996,
+        "total_trade_amount": 510528.96,
+        "reason": "058470.KQ:SELL(Lv8 트레일링 스톱 매도 (고점 대비 -2.20%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "SELL",
+                "quantity": 16,
+                "price": 31908.06,
+                "fee": 1276.32,
+                "date": "2023-07-20",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260504_070752_058470.KQ_008",
+                "level": 8,
+                "buy_price": 29649.62,
+                "realized_pnl": 34858.72
+            }
+        ]
+    },
+    {
+        "id": "tx_20230808",
+        "date": "2023-08-08",
+        "portfolio_value": 12004454.993274994,
+        "total_trade_amount": 473673.20000000007,
+        "reason": "005930.KS:BUY(동적 재매수 Lv6 (매도가 $71628 대비 -5.6%))",
+        "executions": [
+            {
+                "ticker": "005930.KS",
+                "action": "BUY",
+                "quantity": 7,
+                "price": 67667.6,
+                "fee": 1184.18,
+                "date": "2023-08-08",
+                "status": "FILLED",
+                "reason": "",
+                "level": 6
+            }
+        ]
+    },
+    {
+        "id": "tx_20230921",
+        "date": "2023-09-21",
+        "portfolio_value": 11838343.880474996,
+        "total_trade_amount": 477597.12,
+        "reason": "058470.KQ:BUY(추가 매수 Lv8 (Lv7 대비 -7.5%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "BUY",
+                "quantity": 16,
+                "price": 29849.82,
+                "fee": 1193.99,
+                "date": "2023-09-21",
+                "status": "FILLED",
+                "reason": "",
+                "level": 8
+            }
+        ]
+    },
+    {
+        "id": "tx_20231123",
+        "date": "2023-11-23",
+        "portfolio_value": 12624856.181274995,
+        "total_trade_amount": 567751.68,
+        "reason": "058470.KQ:SELL(Lv8 트레일링 스톱 매도 (고점 대비 -3.69%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "SELL",
+                "quantity": 16,
+                "price": 35484.48,
+                "fee": 1419.38,
+                "date": "2023-11-23",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260504_070752_058470.KQ_008",
+                "level": 8,
+                "buy_price": 29849.82,
+                "realized_pnl": 88735.18
+            }
+        ]
+    },
+    {
+        "id": "tx_20231128",
+        "date": "2023-11-28",
+        "portfolio_value": 12905508.966024995,
+        "total_trade_amount": 573326.1,
+        "reason": "058470.KQ:SELL(Lv7 트레일링 스톱 매도 (고점 대비 -2.15%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "SELL",
+                "quantity": 15,
+                "price": 38221.74,
+                "fee": 1433.32,
+                "date": "2023-11-28",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260504_070752_058470.KQ_007",
+                "level": 7,
+                "buy_price": 32232.2,
+                "realized_pnl": 88409.78
+            }
+        ]
+    },
+    {
+        "id": "tx_20231201",
+        "date": "2023-12-01",
+        "portfolio_value": 12947280.930024995,
+        "total_trade_amount": 624974.4,
+        "reason": "058470.KQ:SELL(Lv6 트레일링 스톱 매도 (고점 대비 -2.15%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "SELL",
+                "quantity": 16,
+                "price": 39060.9,
+                "fee": 1562.44,
+                "date": "2023-12-01",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260504_070751_058470.KQ_006",
+                "level": 6,
+                "buy_price": 29729.7,
+                "realized_pnl": 147736.76
+            }
+        ]
+    },
+    {
+        "id": "tx_20231206",
+        "date": "2023-12-06",
+        "portfolio_value": 12969162.365774995,
+        "total_trade_amount": 593705.7,
+        "reason": "058470.KQ:SELL(Lv5 트레일링 스톱 매도 (고점 대비 -3.13%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "SELL",
+                "quantity": 15,
+                "price": 39580.38,
+                "fee": 1484.26,
+                "date": "2023-12-06",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260504_070751_058470.KQ_005",
+                "level": 5,
+                "buy_price": 32592.56,
+                "realized_pnl": 103333.04
+            }
+        ]
+    },
+    {
+        "id": "tx_20231213",
+        "date": "2023-12-13",
+        "portfolio_value": 13124455.628774995,
+        "total_trade_amount": 584614.7999999999,
+        "reason": "058470.KQ:SELL(Lv4 트레일링 스톱 매도 (고점 대비 -2.56%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "SELL",
+                "quantity": 14,
+                "price": 41758.2,
+                "fee": 1461.54,
+                "date": "2023-12-13",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260504_070751_058470.KQ_004",
+                "level": 4,
+                "buy_price": 34294.26,
+                "realized_pnl": 103033.62
+            }
+        ]
+    },
+    {
+        "id": "tx_20231221",
+        "date": "2023-12-21",
+        "portfolio_value": 13151618.741774995,
+        "total_trade_amount": 524674.7999999999,
+        "reason": "058470.KQ:SELL(Lv3 트레일링 스톱 매도 (고점 대비 -2.65%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "SELL",
+                "quantity": 13,
+                "price": 40359.6,
+                "fee": 1311.69,
+                "date": "2023-12-21",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260504_070751_058470.KQ_003",
+                "level": 3,
+                "buy_price": 36096.06,
+                "realized_pnl": 54114.33
+            }
+        ]
+    },
+    {
+        "id": "tx_20240103",
+        "date": "2024-01-03",
+        "portfolio_value": 13286187.580274995,
+        "total_trade_amount": 1094304.6,
+        "reason": "005930.KS:SELL(Lv6 트레일링 스톱 매도 (고점 대비 -3.27%)), 058470.KQ:SELL(Lv2 트레일링 스톱 매도 (고점 대비 -4.25%))",
+        "executions": [
+            {
+                "ticker": "005930.KS",
+                "action": "SELL",
+                "quantity": 7,
+                "price": 76923.0,
+                "fee": 1346.15,
+                "date": "2024-01-03",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260504_070752_005930.KS_006",
+                "level": 6,
+                "buy_price": 67667.6,
+                "realized_pnl": 63441.65
+            },
+            {
+                "ticker": "058470.KQ",
+                "action": "SELL",
+                "quantity": 13,
+                "price": 42757.2,
+                "fee": 1389.61,
+                "date": "2024-01-03",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260504_070751_058470.KQ_002",
+                "level": 2,
+                "buy_price": 37997.96,
+                "realized_pnl": 60480.51
+            }
+        ]
+    },
+    {
+        "id": "tx_20240105",
+        "date": "2024-01-05",
+        "portfolio_value": 13245932.506274994,
+        "total_trade_amount": 529869.6,
+        "reason": "058470.KQ:SELL(Lv1 트레일링 스톱 매도 (고점 대비 -3.09%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "SELL",
+                "quantity": 13,
+                "price": 40759.2,
+                "fee": 1324.67,
+                "date": "2024-01-05",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260504_070751_058470.KQ_001",
+                "level": 1,
+                "buy_price": 37317.28,
+                "realized_pnl": 43420.29
+            }
+        ]
+    },
+    {
+        "id": "tx_20240108",
+        "date": "2024-01-08",
+        "portfolio_value": 13241096.667274995,
+        "total_trade_amount": 496095.60000000003,
+        "reason": "058470.KQ:BUY(초기 매수 Lv1)",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "BUY",
+                "quantity": 12,
+                "price": 41341.3,
+                "fee": 1240.24,
+                "date": "2024-01-08",
+                "status": "FILLED",
+                "reason": "",
+                "level": 1
+            }
+        ]
+    },
+    {
+        "id": "tx_20240116",
+        "date": "2024-01-16",
+        "portfolio_value": 13099470.978274995,
+        "total_trade_amount": 436035.60000000003,
+        "reason": "005930.KS:BUY(동적 재매수 Lv6 (매도가 $76923 대비 -5.6%))",
+        "executions": [
+            {
+                "ticker": "005930.KS",
+                "action": "BUY",
+                "quantity": 6,
+                "price": 72672.6,
+                "fee": 1090.09,
+                "date": "2024-01-16",
+                "status": "FILLED",
+                "reason": "",
+                "level": 6
+            }
+        ]
+    },
+    {
+        "id": "tx_20240124",
+        "date": "2024-01-24",
+        "portfolio_value": 13210590.722274996,
+        "total_trade_amount": 537062.3999999999,
+        "reason": "058470.KQ:SELL(Lv1 트레일링 스톱 매도 (고점 대비 -4.27%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "SELL",
+                "quantity": 12,
+                "price": 44755.2,
+                "fee": 1342.66,
+                "date": "2024-01-24",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260504_070752_058470.KQ_001",
+                "level": 1,
+                "buy_price": 41341.3,
+                "realized_pnl": 39624.14
+            }
+        ]
+    },
+    {
+        "id": "tx_20240125",
+        "date": "2024-01-25",
+        "portfolio_value": 13212556.984774996,
+        "total_trade_amount": 495495.0,
+        "reason": "058470.KQ:BUY(초기 매수 Lv1)",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "BUY",
+                "quantity": 11,
+                "price": 45045.0,
+                "fee": 1238.74,
+                "date": "2024-01-25",
+                "status": "FILLED",
+                "reason": "",
+                "level": 1
+            }
+        ]
+    },
+    {
+        "id": "tx_20240129",
+        "date": "2024-01-29",
+        "portfolio_value": 13195615.713274995,
+        "total_trade_amount": 469068.6,
+        "reason": "058470.KQ:BUY(추가 매수 Lv2 (Lv1 대비 -5.4%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "BUY",
+                "quantity": 11,
+                "price": 42642.6,
+                "fee": 1172.67,
+                "date": "2024-01-29",
+                "status": "FILLED",
+                "reason": "",
+                "level": 2
+            }
+        ]
+    },
+    {
+        "id": "tx_20240131",
+        "date": "2024-01-31",
+        "portfolio_value": 13069003.759874996,
+        "total_trade_amount": 477837.36,
+        "reason": "058470.KQ:BUY(추가 매수 Lv3 (Lv2 대비 -6.7%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "BUY",
+                "quantity": 12,
+                "price": 39819.78,
+                "fee": 1194.59,
+                "date": "2024-01-31",
+                "status": "FILLED",
+                "reason": "",
+                "level": 3
+            }
+        ]
+    },
+    {
+        "id": "tx_20240313",
+        "date": "2024-03-13",
+        "portfolio_value": 13367706.972874995,
+        "total_trade_amount": 564634.8,
+        "reason": "058470.KQ:SELL(Lv3 트레일링 스톱 매도 (고점 대비 -2.89%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "SELL",
+                "quantity": 12,
+                "price": 47052.9,
+                "fee": 1411.59,
+                "date": "2024-03-13",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260504_070752_058470.KQ_003",
+                "level": 3,
+                "buy_price": 39819.78,
+                "realized_pnl": 85385.85
+            }
+        ]
+    },
+    {
+        "id": "tx_20240320",
+        "date": "2024-03-20",
+        "portfolio_value": 13537575.653374996,
+        "total_trade_amount": 551647.8,
+        "reason": "058470.KQ:SELL(Lv2 트레일링 스톱 매도 (고점 대비 -2.90%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "SELL",
+                "quantity": 11,
+                "price": 50149.8,
+                "fee": 1379.12,
+                "date": "2024-03-20",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260504_070752_058470.KQ_002",
+                "level": 2,
+                "buy_price": 42642.6,
+                "realized_pnl": 81200.08
+            }
+        ]
+    },
+    {
+        "id": "tx_20240404",
+        "date": "2024-04-04",
+        "portfolio_value": 13872751.999874996,
+        "total_trade_amount": 578021.4,
+        "reason": "058470.KQ:SELL(Lv1 트레일링 스톱 매도 (고점 대비 -2.41%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "SELL",
+                "quantity": 11,
+                "price": 52547.4,
+                "fee": 1445.05,
+                "date": "2024-04-04",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260504_070752_058470.KQ_001",
+                "level": 1,
+                "buy_price": 45045.0,
+                "realized_pnl": 81081.35
+            }
+        ]
+    },
+    {
+        "id": "tx_20240405",
+        "date": "2024-04-05",
+        "portfolio_value": 13841500.220874997,
+        "total_trade_amount": 472071.60000000003,
+        "reason": "058470.KQ:BUY(초기 매수 Lv1)",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "BUY",
+                "quantity": 9,
+                "price": 52452.4,
+                "fee": 1180.18,
+                "date": "2024-04-05",
+                "status": "FILLED",
+                "reason": "",
+                "level": 1
+            }
+        ]
+    },
+    {
+        "id": "tx_20240408",
+        "date": "2024-04-08",
+        "portfolio_value": 13815459.478374997,
+        "total_trade_amount": 497497.0,
+        "reason": "058470.KQ:BUY(추가 매수 Lv2 (Lv1 대비 -5.2%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "BUY",
+                "quantity": 10,
+                "price": 49749.7,
+                "fee": 1243.74,
+                "date": "2024-04-08",
+                "status": "FILLED",
+                "reason": "",
+                "level": 2
+            }
+        ]
+    },
+    {
+        "id": "tx_20240415",
+        "date": "2024-04-15",
+        "portfolio_value": 13844534.511374997,
+        "total_trade_amount": 492706.80000000005,
+        "reason": "005930.KS:SELL(Lv6 트레일링 스톱 매도 (고점 대비 -3.63%))",
+        "executions": [
+            {
+                "ticker": "005930.KS",
+                "action": "SELL",
+                "quantity": 6,
+                "price": 82117.8,
+                "fee": 1231.77,
+                "date": "2024-04-15",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260504_070752_005930.KS_006",
+                "level": 6,
+                "buy_price": 72672.6,
+                "realized_pnl": 55439.43
+            }
+        ]
+    },
+    {
+        "id": "tx_20240416",
+        "date": "2024-04-16",
+        "portfolio_value": 13709901.821374997,
+        "total_trade_amount": 523476.0,
+        "reason": "005930.KS:SELL(Lv5: 트레일링 스톱 활성화 — 현재가 $80,000 (매수가 대비 +14.0%), 스톱가 $78,400), 058470.KQ:SELL(Lv2 트레일링 스톱 매도 (고점 대비 -6.09%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "SELL",
+                "quantity": 10,
+                "price": 52347.6,
+                "fee": 1308.69,
+                "date": "2024-04-16",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260504_070752_058470.KQ_002",
+                "level": 2,
+                "buy_price": 49749.7,
+                "realized_pnl": 24670.31
+            }
+        ]
+    },
+    {
+        "id": "tx_20240419",
+        "date": "2024-04-19",
+        "portfolio_value": 13654301.979374997,
+        "total_trade_amount": 542656.7999999999,
+        "reason": "005930.KS:SELL(Lv5 트레일링 스톱 매도 (고점 대비 -3.00%))",
+        "executions": [
+            {
+                "ticker": "005930.KS",
+                "action": "SELL",
+                "quantity": 7,
+                "price": 77522.4,
+                "fee": 1356.64,
+                "date": "2024-04-19",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260504_070751_005930.KS_005",
+                "level": 5,
+                "buy_price": 70170.1,
+                "realized_pnl": 50109.46
+            }
+        ]
+    },
+    {
+        "id": "tx_20240423",
+        "date": "2024-04-23",
+        "portfolio_value": 13546403.266874997,
+        "total_trade_amount": 485485.0,
+        "reason": "058470.KQ:BUY(추가 매수 Lv2 (Lv1 대비 -7.5%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "BUY",
+                "quantity": 10,
+                "price": 48548.5,
+                "fee": 1213.71,
+                "date": "2024-04-23",
+                "status": "FILLED",
+                "reason": "",
+                "level": 2
+            }
+        ]
+    },
+    {
+        "id": "tx_20240510",
+        "date": "2024-05-10",
+        "portfolio_value": 13798502.696874997,
+        "total_trade_amount": 571428.0,
+        "reason": "058470.KQ:SELL(Lv2 트레일링 스톱 매도 (고점 대비 -4.03%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "SELL",
+                "quantity": 10,
+                "price": 57142.8,
+                "fee": 1428.57,
+                "date": "2024-05-10",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260504_070752_058470.KQ_002",
+                "level": 2,
+                "buy_price": 48548.5,
+                "realized_pnl": 84514.43
+            }
+        ]
+    },
+    {
+        "id": "tx_20240516",
+        "date": "2024-05-16",
+        "portfolio_value": 13741312.355124997,
+        "total_trade_amount": 482816.7,
+        "reason": "058470.KQ:SELL(Lv1 트레일링 스톱 매도 (고점 대비 -7.73%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "SELL",
+                "quantity": 9,
+                "price": 53646.3,
+                "fee": 1207.04,
+                "date": "2024-05-16",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260504_070752_058470.KQ_001",
+                "level": 1,
+                "buy_price": 52452.4,
+                "realized_pnl": 9538.06
+            }
+        ]
+    },
+    {
+        "id": "tx_20240517",
+        "date": "2024-05-17",
+        "portfolio_value": 13720435.358124997,
+        "total_trade_amount": 479278.8,
+        "reason": "058470.KQ:BUY(초기 매수 Lv1)",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "BUY",
+                "quantity": 9,
+                "price": 53253.2,
+                "fee": 1198.2,
+                "date": "2024-05-17",
+                "status": "FILLED",
+                "reason": "",
+                "level": 1
+            }
+        ]
+    },
+    {
+        "id": "tx_20240530",
+        "date": "2024-05-30",
+        "portfolio_value": 13625290.755624998,
+        "total_trade_amount": 441441.0,
+        "reason": "005930.KS:BUY(동적 재매수 Lv5 (매도가 $77522 대비 -5.2%))",
+        "executions": [
+            {
+                "ticker": "005930.KS",
+                "action": "BUY",
+                "quantity": 6,
+                "price": 73573.5,
+                "fee": 1103.6,
+                "date": "2024-05-30",
+                "status": "FILLED",
+                "reason": "",
+                "level": 5
+            }
+        ]
+    },
+    {
+        "id": "tx_20240621",
+        "date": "2024-06-21",
+        "portfolio_value": 13784360.520624999,
+        "total_trade_amount": 494494.0,
+        "reason": "058470.KQ:BUY(추가 매수 Lv2 (Lv1 대비 -7.2%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "BUY",
+                "quantity": 10,
+                "price": 49449.4,
+                "fee": 1236.23,
+                "date": "2024-06-21",
+                "status": "FILLED",
+                "reason": "",
+                "level": 2
+            }
+        ]
+    },
+    {
+        "id": "tx_20240626",
+        "date": "2024-06-26",
+        "portfolio_value": 13766631.858125,
+        "total_trade_amount": 465465.0,
+        "reason": "058470.KQ:BUY(추가 매수 Lv3 (Lv2 대비 -6.0%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "BUY",
+                "quantity": 10,
+                "price": 46546.5,
+                "fee": 1163.66,
+                "date": "2024-06-26",
+                "status": "FILLED",
+                "reason": "",
+                "level": 3
+            }
+        ]
+    },
+    {
+        "id": "tx_20240703",
+        "date": "2024-07-03",
+        "portfolio_value": 13713228.942625,
+        "total_trade_amount": 486686.19999999995,
+        "reason": "058470.KQ:BUY(추가 매수 Lv4 (Lv3 대비 -5.0%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "BUY",
+                "quantity": 11,
+                "price": 44244.2,
+                "fee": 1216.72,
+                "date": "2024-07-03",
+                "status": "FILLED",
+                "reason": "",
+                "level": 4
+            }
+        ]
+    },
+    {
+        "id": "tx_20240712",
+        "date": "2024-07-12",
+        "portfolio_value": 13973457.808625,
+        "total_trade_amount": 505893.60000000003,
+        "reason": "005930.KS:SELL(Lv5 트레일링 스톱 매도 (고점 대비 -3.87%))",
+        "executions": [
+            {
+                "ticker": "005930.KS",
+                "action": "SELL",
+                "quantity": 6,
+                "price": 84315.6,
+                "fee": 1264.73,
+                "date": "2024-07-12",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260504_070753_005930.KS_005",
+                "level": 5,
+                "buy_price": 73573.5,
+                "realized_pnl": 63187.87
+            }
+        ]
+    },
+    {
+        "id": "tx_20240717",
+        "date": "2024-07-17",
+        "portfolio_value": 13890911.157125,
+        "total_trade_amount": 498900.6,
+        "reason": "058470.KQ:SELL(Lv4 트레일링 스톱 매도 (고점 대비 -6.97%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "SELL",
+                "quantity": 11,
+                "price": 45354.6,
+                "fee": 1247.25,
+                "date": "2024-07-17",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260504_070753_058470.KQ_004",
+                "level": 4,
+                "buy_price": 44244.2,
+                "realized_pnl": 10967.15
+            }
+        ]
+    },
+    {
+        "id": "tx_20240719",
+        "date": "2024-07-19",
+        "portfolio_value": 13788748.665875,
+        "total_trade_amount": 989276.5,
+        "reason": "005930.KS:SELL(Lv4 트레일링 스톱 매도 (고점 대비 -3.76%)), 058470.KQ:BUY(추가 매수 Lv4 (Lv3 대비 -5.7%))",
+        "executions": [
+            {
+                "ticker": "005930.KS",
+                "action": "SELL",
+                "quantity": 6,
+                "price": 84315.6,
+                "fee": 1264.73,
+                "date": "2024-07-19",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260504_070751_005930.KS_004",
+                "level": 4,
+                "buy_price": 74074.0,
+                "realized_pnl": 60184.87
+            },
+            {
+                "ticker": "058470.KQ",
+                "action": "BUY",
+                "quantity": 11,
+                "price": 43943.9,
+                "fee": 1208.46,
+                "date": "2024-07-19",
+                "status": "FILLED",
+                "reason": "",
+                "level": 4
+            }
+        ]
+    },
+    {
+        "id": "tx_20240724",
+        "date": "2024-07-24",
+        "portfolio_value": 13683827.895875001,
+        "total_trade_amount": 491508.0,
+        "reason": "005930.KS:SELL(Lv3 트레일링 스톱 매도 (고점 대비 -2.26%))",
+        "executions": [
+            {
+                "ticker": "005930.KS",
+                "action": "SELL",
+                "quantity": 6,
+                "price": 81918.0,
+                "fee": 1228.77,
+                "date": "2024-07-24",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260504_070751_005930.KS_003",
+                "level": 3,
+                "buy_price": 74474.4,
+                "realized_pnl": 43432.83
+            }
+        ]
+    },
+    {
+        "id": "tx_20240725",
+        "date": "2024-07-25",
+        "portfolio_value": 13594917.274875002,
+        "total_trade_amount": 488888.39999999997,
+        "reason": "058470.KQ:BUY(추가 매수 Lv5 (Lv4 대비 -7.4%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "BUY",
+                "quantity": 12,
+                "price": 40740.7,
+                "fee": 1222.22,
+                "date": "2024-07-25",
+                "status": "FILLED",
+                "reason": "",
+                "level": 5
+            }
+        ]
+    },
+    {
+        "id": "tx_20240802",
+        "date": "2024-08-02",
+        "portfolio_value": 13436952.503775002,
+        "total_trade_amount": 492932.43999999994,
+        "reason": "058470.KQ:BUY(추가 매수 Lv6 (Lv5 대비 -7.0%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "BUY",
+                "quantity": 13,
+                "price": 37917.88,
+                "fee": 1232.33,
+                "date": "2024-08-02",
+                "status": "FILLED",
+                "reason": "",
+                "level": 6
+            }
+        ]
+    },
+    {
+        "id": "tx_20240805",
+        "date": "2024-08-05",
+        "portfolio_value": 13069944.571275003,
+        "total_trade_amount": 973973.0,
+        "reason": "005930.KS:BUY(동적 재매수 Lv3 (매도가 $81918 대비 -12.8%)), 058470.KQ:BUY(추가 매수 Lv7 (Lv6 대비 -10.9%))",
+        "executions": [
+            {
+                "ticker": "005930.KS",
+                "action": "BUY",
+                "quantity": 7,
+                "price": 71471.4,
+                "fee": 1250.75,
+                "date": "2024-08-05",
+                "status": "FILLED",
+                "reason": "",
+                "level": 3
+            },
+            {
+                "ticker": "058470.KQ",
+                "action": "BUY",
+                "quantity": 14,
+                "price": 33833.8,
+                "fee": 1184.18,
+                "date": "2024-08-05",
+                "status": "FILLED",
+                "reason": "",
+                "level": 7
+            }
+        ]
+    },
+    {
+        "id": "tx_20240808",
+        "date": "2024-08-08",
+        "portfolio_value": 13475780.398075003,
+        "total_trade_amount": 538181.2799999999,
+        "reason": "058470.KQ:SELL(Lv7 트레일링 스톱 매도 (고점 대비 -2.34%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "SELL",
+                "quantity": 14,
+                "price": 38441.52,
+                "fee": 1345.45,
+                "date": "2024-08-08",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260504_070753_058470.KQ_007",
+                "level": 7,
+                "buy_price": 33833.8,
+                "realized_pnl": 63162.63
+            }
+        ]
+    },
+    {
+        "id": "tx_20240819",
+        "date": "2024-08-19",
+        "portfolio_value": 13787358.330075003,
+        "total_trade_amount": 1091707.2,
+        "reason": "005930.KS:SELL(Lv3 트레일링 스톱 매도 (고점 대비 -2.37%)), 058470.KQ:SELL(Lv6 트레일링 스톱 매도 (고점 대비 -5.63%))",
+        "executions": [
+            {
+                "ticker": "005930.KS",
+                "action": "SELL",
+                "quantity": 7,
+                "price": 78221.7,
+                "fee": 1368.88,
+                "date": "2024-08-19",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260504_070753_005930.KS_003",
+                "level": 3,
+                "buy_price": 71471.4,
+                "realized_pnl": 45883.22
+            },
+            {
+                "ticker": "058470.KQ",
+                "action": "SELL",
+                "quantity": 13,
+                "price": 41858.1,
+                "fee": 1360.39,
+                "date": "2024-08-19",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260504_070753_058470.KQ_006",
+                "level": 6,
+                "buy_price": 37917.88,
+                "realized_pnl": 49862.47
+            }
+        ]
+    },
+    {
+        "id": "tx_20240826",
+        "date": "2024-08-26",
+        "portfolio_value": 13604362.522475002,
+        "total_trade_amount": 467507.04,
+        "reason": "058470.KQ:BUY(동적 재매수 Lv6 (매도가 $41858 대비 -7.0%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "BUY",
+                "quantity": 12,
+                "price": 38958.92,
+                "fee": 1168.77,
+                "date": "2024-08-26",
+                "status": "FILLED",
+                "reason": "",
+                "level": 6
+            }
+        ]
+    },
+    {
+        "id": "tx_20240829",
+        "date": "2024-08-29",
+        "portfolio_value": 13571207.412475003,
+        "total_trade_amount": 444444.0,
+        "reason": "005930.KS:BUY(추가 매수 Lv3 (Lv2 대비 -5.8%))",
+        "executions": [
+            {
+                "ticker": "005930.KS",
+                "action": "BUY",
+                "quantity": 6,
+                "price": 74074.0,
+                "fee": 1111.11,
+                "date": "2024-08-29",
+                "status": "FILLED",
+                "reason": "",
+                "level": 3
+            }
+        ]
+    },
+    {
+        "id": "tx_20240904",
+        "date": "2024-09-04",
+        "portfolio_value": 13332000.179025004,
+        "total_trade_amount": 962341.38,
+        "reason": "005930.KS:BUY(추가 매수 Lv4 (Lv3 대비 -5.5%)), 058470.KQ:BUY(추가 매수 Lv7 (Lv6 대비 -6.9%))",
+        "executions": [
+            {
+                "ticker": "005930.KS",
+                "action": "BUY",
+                "quantity": 7,
+                "price": 70070.0,
+                "fee": 1226.22,
+                "date": "2024-09-04",
+                "status": "FILLED",
+                "reason": "",
+                "level": 4
+            },
+            {
+                "ticker": "058470.KQ",
+                "action": "BUY",
+                "quantity": 13,
+                "price": 36296.26,
+                "fee": 1179.63,
+                "date": "2024-09-04",
+                "status": "FILLED",
+                "reason": "",
+                "level": 7
+            }
+        ]
+    },
+    {
+        "id": "tx_20240910",
+        "date": "2024-09-10",
+        "portfolio_value": 13118337.120525002,
+        "total_trade_amount": 463863.39999999997,
+        "reason": "005930.KS:BUY(추가 매수 Lv5 (Lv4 대비 -5.5%))",
+        "executions": [
+            {
+                "ticker": "005930.KS",
+                "action": "BUY",
+                "quantity": 7,
+                "price": 66266.2,
+                "fee": 1159.66,
+                "date": "2024-09-10",
+                "status": "FILLED",
+                "reason": "",
+                "level": 5
+            }
+        ]
+    },
+    {
+        "id": "tx_20240911",
+        "date": "2024-09-11",
+        "portfolio_value": 13048870.316525005,
+        "total_trade_amount": 482081.60000000003,
+        "reason": "058470.KQ:BUY(추가 매수 Lv8 (Lv7 대비 -5.2%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "BUY",
+                "quantity": 14,
+                "price": 34434.4,
+                "fee": 1205.2,
+                "date": "2024-09-11",
+                "status": "FILLED",
+                "reason": "",
+                "level": 8
+            }
+        ]
+    },
+    {
+        "id": "tx_20240923",
+        "date": "2024-09-23",
+        "portfolio_value": 13283135.521025004,
+        "total_trade_amount": 438638.2,
+        "reason": "005930.KS:BUY(추가 매수 Lv6 (Lv5 대비 -5.5%))",
+        "executions": [
+            {
+                "ticker": "005930.KS",
+                "action": "BUY",
+                "quantity": 7,
+                "price": 62662.6,
+                "fee": 1096.6,
+                "date": "2024-09-23",
+                "status": "FILLED",
+                "reason": "",
+                "level": 6
+            }
+        ]
+    },
+    {
+        "id": "tx_20240930",
+        "date": "2024-09-30",
+        "portfolio_value": 13238384.644025004,
+        "total_trade_amount": 528670.7999999999,
+        "reason": "058470.KQ:SELL(Lv8 트레일링 스톱 매도 (고점 대비 -5.97%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "SELL",
+                "quantity": 14,
+                "price": 37762.2,
+                "fee": 1321.68,
+                "date": "2024-09-30",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260504_070753_058470.KQ_008",
+                "level": 8,
+                "buy_price": 34434.4,
+                "realized_pnl": 45267.52
+            }
+        ]
+    },
+    {
+        "id": "tx_20241010",
+        "date": "2024-10-10",
+        "portfolio_value": 13126094.266025003,
+        "total_trade_amount": 471671.2,
+        "reason": "005930.KS:BUY(추가 매수 Lv7 (Lv6 대비 -6.0%))",
+        "executions": [
+            {
+                "ticker": "005930.KS",
+                "action": "BUY",
+                "quantity": 8,
+                "price": 58958.9,
+                "fee": 1179.18,
+                "date": "2024-10-10",
+                "status": "FILLED",
+                "reason": "",
+                "level": 7
+            }
+        ]
+    },
+    {
+        "id": "tx_20241016",
+        "date": "2024-10-16",
+        "portfolio_value": 13291099.209125005,
+        "total_trade_amount": 512726.75999999995,
+        "reason": "058470.KQ:SELL(Lv7 트레일링 스톱 매도 (고점 대비 -3.71%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "SELL",
+                "quantity": 13,
+                "price": 39440.52,
+                "fee": 1281.82,
+                "date": "2024-10-16",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260504_070753_058470.KQ_007",
+                "level": 7,
+                "buy_price": 36296.26,
+                "realized_pnl": 39593.56
+            }
+        ]
+    },
+    {
+        "id": "tx_20241018",
+        "date": "2024-10-18",
+        "portfolio_value": 13107640.881175004,
+        "total_trade_amount": 479659.18,
+        "reason": "058470.KQ:BUY(동적 재매수 Lv7 (매도가 $39441 대비 -6.5%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "BUY",
+                "quantity": 13,
+                "price": 36896.86,
+                "fee": 1199.15,
+                "date": "2024-10-18",
+                "status": "FILLED",
+                "reason": "",
+                "level": 7
+            }
+        ]
+    },
+    {
+        "id": "tx_20241025",
+        "date": "2024-10-25",
+        "portfolio_value": 12893994.563175004,
+        "total_trade_amount": 447647.2,
+        "reason": "005930.KS:BUY(추가 매수 Lv8 (Lv7 대비 -5.2%))",
+        "executions": [
+            {
+                "ticker": "005930.KS",
+                "action": "BUY",
+                "quantity": 8,
+                "price": 55955.9,
+                "fee": 1119.12,
+                "date": "2024-10-25",
+                "status": "FILLED",
+                "reason": "",
+                "level": 8
+            }
+        ]
+    },
+    {
+        "id": "tx_20241101",
+        "date": "2024-11-01",
+        "portfolio_value": 12911875.010075003,
+        "total_trade_amount": 485725.24000000005,
+        "reason": "058470.KQ:BUY(추가 매수 Lv8 (Lv7 대비 -6.1%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "BUY",
+                "quantity": 14,
+                "price": 34694.66,
+                "fee": 1214.31,
+                "date": "2024-11-01",
+                "status": "FILLED",
+                "reason": "",
+                "level": 8
+            }
+        ]
+    },
+    {
+        "id": "tx_20241112",
+        "date": "2024-11-12",
+        "portfolio_value": 12444083.189075004,
+        "total_trade_amount": 969368.4,
+        "reason": "005930.KS:BUY(추가 매수 Lv9 (Lv8 대비 -5.3%)), 058470.KQ:BUY(추가 매수 Lv9 (Lv8 대비 -5.6%))",
+        "executions": [
+            {
+                "ticker": "005930.KS",
+                "action": "BUY",
+                "quantity": 9,
+                "price": 53053.0,
+                "fee": 1193.69,
+                "date": "2024-11-12",
+                "status": "FILLED",
+                "reason": "",
+                "level": 9
+            },
+            {
+                "ticker": "058470.KQ",
+                "action": "BUY",
+                "quantity": 15,
+                "price": 32792.76,
+                "fee": 1229.73,
+                "date": "2024-11-12",
+                "status": "FILLED",
+                "reason": "",
+                "level": 9
+            }
+        ]
+    },
+    {
+        "id": "tx_20241118",
+        "date": "2024-11-18",
+        "portfolio_value": 12416306.297875006,
+        "total_trade_amount": 484964.48,
+        "reason": "058470.KQ:BUY(추가 매수 Lv10 (Lv9 대비 -7.7%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "BUY",
+                "quantity": 16,
+                "price": 30310.28,
+                "fee": 1212.41,
+                "date": "2024-11-18",
+                "status": "FILLED",
+                "reason": "",
+                "level": 10
+            }
+        ]
+    },
+    {
+        "id": "tx_20241219",
+        "date": "2024-12-19",
+        "portfolio_value": 13123180.937075004,
+        "total_trade_amount": 607072.32,
+        "reason": "058470.KQ:SELL(Lv10 트레일링 스톱 매도 (고점 대비 -2.21%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "SELL",
+                "quantity": 16,
+                "price": 37942.02,
+                "fee": 1517.68,
+                "date": "2024-12-19",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260504_070753_058470.KQ_010",
+                "level": 10,
+                "buy_price": 30310.28,
+                "realized_pnl": 120590.16
+            }
+        ]
+    },
+    {
+        "id": "tx_20241226",
+        "date": "2024-12-26",
+        "portfolio_value": 13259135.948825005,
+        "total_trade_amount": 584115.2999999999,
+        "reason": "058470.KQ:SELL(Lv9 트레일링 스톱 매도 (고점 대비 -2.55%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "SELL",
+                "quantity": 15,
+                "price": 38941.02,
+                "fee": 1460.29,
+                "date": "2024-12-26",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260504_070753_058470.KQ_009",
+                "level": 9,
+                "buy_price": 32792.76,
+                "realized_pnl": 90763.61
+            }
+        ]
+    },
+    {
+        "id": "tx_20250107",
+        "date": "2025-01-07",
+        "portfolio_value": 13519767.969825003,
+        "total_trade_amount": 567831.6,
+        "reason": "058470.KQ:SELL(Lv8 트레일링 스톱 매도 (고점 대비 -2.87%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "SELL",
+                "quantity": 14,
+                "price": 40559.4,
+                "fee": 1419.58,
+                "date": "2025-01-07",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260504_070753_058470.KQ_008",
+                "level": 8,
+                "buy_price": 34694.66,
+                "realized_pnl": 80686.78
+            }
+        ]
+    },
+    {
+        "id": "tx_20250110",
+        "date": "2025-01-10",
+        "portfolio_value": 13448419.272675004,
+        "total_trade_amount": 516622.86,
+        "reason": "058470.KQ:SELL(Lv7 트레일링 스톱 매도 (고점 대비 -2.98%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "SELL",
+                "quantity": 13,
+                "price": 39740.22,
+                "fee": 1291.56,
+                "date": "2025-01-10",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260504_070753_058470.KQ_007",
+                "level": 7,
+                "buy_price": 36896.86,
+                "realized_pnl": 35672.12
+            }
+        ]
+    },
+    {
+        "id": "tx_20250123",
+        "date": "2025-01-23",
+        "portfolio_value": 13543898.759675004,
+        "total_trade_amount": 514285.19999999995,
+        "reason": "058470.KQ:SELL(Lv6 트레일링 스톱 매도 (고점 대비 -2.28%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "SELL",
+                "quantity": 12,
+                "price": 42857.1,
+                "fee": 1285.71,
+                "date": "2025-01-23",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260504_070753_058470.KQ_006",
+                "level": 6,
+                "buy_price": 38958.92,
+                "realized_pnl": 45492.45
+            }
+        ]
+    },
+    {
+        "id": "tx_20250204",
+        "date": "2025-02-04",
+        "portfolio_value": 13353396.544675004,
+        "total_trade_amount": 486486.0,
+        "reason": "058470.KQ:BUY(동적 재매수 Lv6 (매도가 $42857 대비 -5.5%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "BUY",
+                "quantity": 12,
+                "price": 40540.5,
+                "fee": 1216.21,
+                "date": "2025-02-04",
+                "status": "FILLED",
+                "reason": "",
+                "level": 6
+            }
+        ]
+    },
+    {
+        "id": "tx_20250214",
+        "date": "2025-02-14",
+        "portfolio_value": 13850707.894675003,
+        "total_trade_amount": 539460.0,
+        "reason": "058470.KQ:SELL(Lv6 트레일링 스톱 매도 (고점 대비 -2.39%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "SELL",
+                "quantity": 12,
+                "price": 44955.0,
+                "fee": 1348.65,
+                "date": "2025-02-14",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260504_070753_058470.KQ_006",
+                "level": 6,
+                "buy_price": 40540.5,
+                "realized_pnl": 51625.35
+            }
+        ]
+    },
+    {
+        "id": "tx_20250220",
+        "date": "2025-02-20",
+        "portfolio_value": 14012810.850675004,
+        "total_trade_amount": 541857.6000000001,
+        "reason": "058470.KQ:SELL(Lv5 트레일링 스톱 매도 (고점 대비 -3.21%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "SELL",
+                "quantity": 12,
+                "price": 45154.8,
+                "fee": 1354.64,
+                "date": "2025-02-20",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260504_070753_058470.KQ_005",
+                "level": 5,
+                "buy_price": 40740.7,
+                "realized_pnl": 51614.56
+            }
+        ]
+    },
+    {
+        "id": "tx_20250224",
+        "date": "2025-02-24",
+        "portfolio_value": 13932607.189925004,
+        "total_trade_amount": 515184.3,
+        "reason": "005930.KS:SELL(Lv9 트레일링 스톱 매도 (고점 대비 -2.39%))",
+        "executions": [
+            {
+                "ticker": "005930.KS",
+                "action": "SELL",
+                "quantity": 9,
+                "price": 57242.7,
+                "fee": 1287.96,
+                "date": "2025-02-24",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260504_070753_005930.KS_009",
+                "level": 9,
+                "buy_price": 53053.0,
+                "realized_pnl": 36419.34
+            }
+        ]
+    },
+    {
+        "id": "tx_20250228",
+        "date": "2025-02-28",
+        "portfolio_value": 13645000.593175003,
+        "total_trade_amount": 459158.69999999995,
+        "reason": "058470.KQ:BUY(동적 재매수 Lv5 (매도가 $45155 대비 -7.7%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "BUY",
+                "quantity": 11,
+                "price": 41741.7,
+                "fee": 1147.9,
+                "date": "2025-02-28",
+                "status": "FILLED",
+                "reason": "",
+                "level": 5
+            }
+        ]
+    },
+    {
+        "id": "tx_20250305",
+        "date": "2025-03-05",
+        "portfolio_value": 13590298.378175003,
+        "total_trade_amount": 486486.0,
+        "reason": "005930.KS:BUY(동적 재매수 Lv9 (매도가 $57243 대비 -5.7%))",
+        "executions": [
+            {
+                "ticker": "005930.KS",
+                "action": "BUY",
+                "quantity": 9,
+                "price": 54054.0,
+                "fee": 1216.21,
+                "date": "2025-03-05",
+                "status": "FILLED",
+                "reason": "",
+                "level": 9
+            }
+        ]
+    },
+    {
+        "id": "tx_20250306",
+        "date": "2025-03-06",
+        "portfolio_value": 13445587.232525002,
+        "total_trade_amount": 494754.25999999995,
+        "reason": "058470.KQ:BUY(추가 매수 Lv6 (Lv5 대비 -8.9%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "BUY",
+                "quantity": 13,
+                "price": 38058.02,
+                "fee": 1236.89,
+                "date": "2025-03-06",
+                "status": "FILLED",
+                "reason": "",
+                "level": 6
+            }
+        ]
+    },
+    {
+        "id": "tx_20250318",
+        "date": "2025-03-18",
+        "portfolio_value": 13941574.863775004,
+        "total_trade_amount": 551947.5,
+        "reason": "058470.KQ:SELL(Lv6 트레일링 스톱 매도 (고점 대비 -3.41%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "SELL",
+                "quantity": 13,
+                "price": 42457.5,
+                "fee": 1379.87,
+                "date": "2025-03-18",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260504_070753_058470.KQ_006",
+                "level": 6,
+                "buy_price": 38058.02,
+                "realized_pnl": 55813.37
+            }
+        ]
+    },
+    {
+        "id": "tx_20250325",
+        "date": "2025-03-25",
+        "portfolio_value": 13961502.903275002,
+        "total_trade_amount": 1020544.2,
+        "reason": "005930.KS:SELL(Lv9 트레일링 스톱 매도 (고점 대비 -3.08%)), 058470.KQ:BUY(동적 재매수 Lv6 (매도가 $42458 대비 -5.3%))",
+        "executions": [
+            {
+                "ticker": "005930.KS",
+                "action": "SELL",
+                "quantity": 9,
+                "price": 59740.2,
+                "fee": 1344.15,
+                "date": "2025-03-25",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260504_070753_005930.KS_009",
+                "level": 9,
+                "buy_price": 54054.0,
+                "realized_pnl": 49831.65
+            },
+            {
+                "ticker": "058470.KQ",
+                "action": "BUY",
+                "quantity": 12,
+                "price": 40240.2,
+                "fee": 1207.21,
+                "date": "2025-03-25",
+                "status": "FILLED",
+                "reason": "",
+                "level": 6
+            }
+        ]
+    },
+    {
+        "id": "tx_20250328",
+        "date": "2025-03-28",
+        "portfolio_value": 13906218.507275002,
+        "total_trade_amount": 481118.4,
+        "reason": "005930.KS:SELL(Lv8 트레일링 스톱 매도 (고점 대비 -2.59%))",
+        "executions": [
+            {
+                "ticker": "005930.KS",
+                "action": "SELL",
+                "quantity": 8,
+                "price": 60139.8,
+                "fee": 1202.8,
+                "date": "2025-03-28",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260504_070753_005930.KS_008",
+                "level": 8,
+                "buy_price": 55955.9,
+                "realized_pnl": 32268.4
+            }
+        ]
+    },
+    {
+        "id": "tx_20250331",
+        "date": "2025-03-31",
+        "portfolio_value": 13704765.574625002,
+        "total_trade_amount": 489549.06000000006,
+        "reason": "058470.KQ:BUY(추가 매수 Lv7 (Lv6 대비 -6.5%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "BUY",
+                "quantity": 13,
+                "price": 37657.62,
+                "fee": 1223.87,
+                "date": "2025-03-31",
+                "status": "FILLED",
+                "reason": "",
+                "level": 7
+            }
+        ]
+    },
+    {
+        "id": "tx_20250404",
+        "date": "2025-04-04",
+        "portfolio_value": 13605053.652625002,
+        "total_trade_amount": 449248.8,
+        "reason": "005930.KS:BUY(동적 재매수 Lv8 (매도가 $60140 대비 -6.7%))",
+        "executions": [
+            {
+                "ticker": "005930.KS",
+                "action": "BUY",
+                "quantity": 8,
+                "price": 56156.1,
+                "fee": 1123.12,
+                "date": "2025-04-04",
+                "status": "FILLED",
+                "reason": "",
+                "level": 8
+            }
+        ]
+    },
+    {
+        "id": "tx_20250407",
+        "date": "2025-04-07",
+        "portfolio_value": 13238495.141125003,
+        "total_trade_amount": 965564.5999999999,
+        "reason": "005930.KS:BUY(추가 매수 Lv9 (Lv8 대비 -5.3%)), 058470.KQ:BUY(추가 매수 Lv8 (Lv7 대비 -7.9%))",
+        "executions": [
+            {
+                "ticker": "005930.KS",
+                "action": "BUY",
+                "quantity": 9,
+                "price": 53253.2,
+                "fee": 1198.2,
+                "date": "2025-04-07",
+                "status": "FILLED",
+                "reason": "",
+                "level": 9
+            },
+            {
+                "ticker": "058470.KQ",
+                "action": "BUY",
+                "quantity": 14,
+                "price": 34734.7,
+                "fee": 1215.71,
+                "date": "2025-04-07",
+                "status": "FILLED",
+                "reason": "",
+                "level": 8
+            }
+        ]
+    },
+    {
+        "id": "tx_20250428",
+        "date": "2025-04-28",
+        "portfolio_value": 13524629.952875003,
+        "total_trade_amount": 504195.29999999993,
+        "reason": "058470.KQ:SELL(Lv8 트레일링 스톱 매도 (고점 대비 -6.12%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "SELL",
+                "quantity": 14,
+                "price": 36013.95,
+                "fee": 1260.49,
+                "date": "2025-04-28",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260504_070753_058470.KQ_008",
+                "level": 8,
+                "buy_price": 34734.7,
+                "realized_pnl": 16649.01
+            }
+        ]
+    },
+    {
+        "id": "tx_20250613",
+        "date": "2025-06-13",
+        "portfolio_value": 14577419.194750004,
+        "total_trade_amount": 1145603.25,
+        "reason": "005930.KS:SELL(Lv9 트레일링 스톱 매도 (고점 대비 -2.67%)), 058470.KQ:SELL(Lv7 트레일링 스톱 매도 (고점 대비 -3.63%))",
+        "executions": [
+            {
+                "ticker": "005930.KS",
+                "action": "SELL",
+                "quantity": 9,
+                "price": 58241.7,
+                "fee": 1310.44,
+                "date": "2025-06-13",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260504_070753_005930.KS_009",
+                "level": 9,
+                "buy_price": 53253.2,
+                "realized_pnl": 43586.06
+            },
+            {
+                "ticker": "058470.KQ",
+                "action": "SELL",
+                "quantity": 13,
+                "price": 47802.15,
+                "fee": 1553.57,
+                "date": "2025-06-13",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260504_070753_058470.KQ_007",
+                "level": 7,
+                "buy_price": 37657.62,
+                "realized_pnl": 130325.32
+            }
+        ]
+    },
+    {
+        "id": "tx_20250623",
+        "date": "2025-06-23",
+        "portfolio_value": 14719453.906750003,
+        "total_trade_amount": 604195.2,
+        "reason": "058470.KQ:SELL(Lv6 트레일링 스톱 매도 (고점 대비 -2.33%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "SELL",
+                "quantity": 12,
+                "price": 50349.6,
+                "fee": 1510.49,
+                "date": "2025-06-23",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260504_070753_058470.KQ_006",
+                "level": 6,
+                "buy_price": 40240.2,
+                "realized_pnl": 119802.31
+            }
+        ]
+    },
+    {
+        "id": "tx_20250626",
+        "date": "2025-06-26",
+        "portfolio_value": 14838514.892750002,
+        "total_trade_amount": 553845.6,
+        "reason": "058470.KQ:SELL(Lv5 트레일링 스톱 매도 (고점 대비 -2.89%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "SELL",
+                "quantity": 11,
+                "price": 50349.6,
+                "fee": 1384.61,
+                "date": "2025-06-26",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260504_070753_058470.KQ_005",
+                "level": 5,
+                "buy_price": 41741.7,
+                "realized_pnl": 93302.29
+            }
+        ]
+    },
+    {
+        "id": "tx_20250702",
+        "date": "2025-07-02",
+        "portfolio_value": 14821622.045750003,
+        "total_trade_amount": 540658.8,
+        "reason": "058470.KQ:SELL(Lv4 트레일링 스톱 매도 (고점 대비 -3.72%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "SELL",
+                "quantity": 11,
+                "price": 49150.8,
+                "fee": 1351.65,
+                "date": "2025-07-02",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260504_070753_058470.KQ_004",
+                "level": 4,
+                "buy_price": 43943.9,
+                "realized_pnl": 55924.25
+            }
+        ]
+    },
+    {
+        "id": "tx_20250704",
+        "date": "2025-07-04",
+        "portfolio_value": 14980573.295750003,
+        "total_trade_amount": 499500.0,
+        "reason": "058470.KQ:SELL(Lv3 트레일링 스톱 매도 (고점 대비 -2.91%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "SELL",
+                "quantity": 10,
+                "price": 49950.0,
+                "fee": 1248.75,
+                "date": "2025-07-04",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260504_070753_058470.KQ_003",
+                "level": 3,
+                "buy_price": 46546.5,
+                "realized_pnl": 32786.25
+            }
+        ]
+    },
+    {
+        "id": "tx_20250707",
+        "date": "2025-07-07",
+        "portfolio_value": 14892746.929750003,
+        "total_trade_amount": 493106.4,
+        "reason": "005930.KS:SELL(Lv8 트레일링 스톱 매도 (고점 대비 -3.29%))",
+        "executions": [
+            {
+                "ticker": "005930.KS",
+                "action": "SELL",
+                "quantity": 8,
+                "price": 61638.3,
+                "fee": 1232.77,
+                "date": "2025-07-07",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260504_070753_005930.KS_008",
+                "level": 8,
+                "buy_price": 56156.1,
+                "realized_pnl": 42624.83
+            }
+        ]
+    },
+    {
+        "id": "tx_20250722",
+        "date": "2025-07-22",
+        "portfolio_value": 15068300.249750003,
+        "total_trade_amount": 527472.0,
+        "reason": "005930.KS:SELL(Lv7 트레일링 스톱 매도 (고점 대비 -2.65%))",
+        "executions": [
+            {
+                "ticker": "005930.KS",
+                "action": "SELL",
+                "quantity": 8,
+                "price": 65934.0,
+                "fee": 1318.68,
+                "date": "2025-07-22",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260504_070753_005930.KS_007",
+                "level": 7,
+                "buy_price": 58958.9,
+                "realized_pnl": 54482.12
+            }
+        ]
+    },
+    {
+        "id": "tx_20250723",
+        "date": "2025-07-23",
+        "portfolio_value": 15043312.831000004,
+        "total_trade_amount": 467967.5,
+        "reason": "058470.KQ:BUY(동적 재매수 Lv3 (매도가 $49950 대비 -6.4%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "BUY",
+                "quantity": 10,
+                "price": 46796.75,
+                "fee": 1169.92,
+                "date": "2025-07-23",
+                "status": "FILLED",
+                "reason": "",
+                "level": 3
+            }
+        ]
+    },
+    {
+        "id": "tx_20250801",
+        "date": "2025-08-01",
+        "portfolio_value": 15092725.986750005,
+        "total_trade_amount": 481817.70000000007,
+        "reason": "005930.KS:SELL(Lv6 트레일링 스톱 매도 (고점 대비 -5.10%))",
+        "executions": [
+            {
+                "ticker": "005930.KS",
+                "action": "SELL",
+                "quantity": 7,
+                "price": 68831.1,
+                "fee": 1204.54,
+                "date": "2025-08-01",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260504_070753_005930.KS_006",
+                "level": 6,
+                "buy_price": 62662.6,
+                "realized_pnl": 41974.96
+            }
+        ]
+    },
+    {
+        "id": "tx_20250821",
+        "date": "2025-08-21",
+        "portfolio_value": 15123665.365750005,
+        "total_trade_amount": 488888.4,
+        "reason": "058470.KQ:BUY(추가 매수 Lv4 (Lv3 대비 -5.1%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "BUY",
+                "quantity": 11,
+                "price": 44444.4,
+                "fee": 1222.22,
+                "date": "2025-08-21",
+                "status": "FILLED",
+                "reason": "",
+                "level": 4
+            }
+        ]
+    },
+    {
+        "id": "tx_20250917",
+        "date": "2025-09-17",
+        "portfolio_value": 15532995.602250006,
+        "total_trade_amount": 534065.4,
+        "reason": "058470.KQ:SELL(Lv4 트레일링 스톱 매도 (고점 대비 -4.89%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "SELL",
+                "quantity": 11,
+                "price": 48551.4,
+                "fee": 1335.16,
+                "date": "2025-09-17",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260504_070754_058470.KQ_004",
+                "level": 4,
+                "buy_price": 44444.4,
+                "realized_pnl": 43841.84
+            }
+        ]
+    },
+    {
+        "id": "tx_20250925",
+        "date": "2025-09-25",
+        "portfolio_value": 15868094.389750006,
+        "total_trade_amount": 514485.0,
+        "reason": "058470.KQ:SELL(Lv3 트레일링 스톱 매도 (고점 대비 -3.56%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "SELL",
+                "quantity": 10,
+                "price": 51448.5,
+                "fee": 1286.21,
+                "date": "2025-09-25",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260504_070753_058470.KQ_003",
+                "level": 3,
+                "buy_price": 46796.75,
+                "realized_pnl": 45231.29
+            }
+        ]
+    },
+    {
+        "id": "tx_20250926",
+        "date": "2025-09-26",
+        "portfolio_value": 15768854.997500006,
+        "total_trade_amount": 582516.9,
+        "reason": "005930.KS:SELL(Lv5 트레일링 스톱 매도 (고점 대비 -3.25%))",
+        "executions": [
+            {
+                "ticker": "005930.KS",
+                "action": "SELL",
+                "quantity": 7,
+                "price": 83216.7,
+                "fee": 1456.29,
+                "date": "2025-09-26",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260504_070753_005930.KS_005",
+                "level": 5,
+                "buy_price": 66266.2,
+                "realized_pnl": 117197.21
+            }
+        ]
+    },
+    {
+        "id": "tx_20251014",
+        "date": "2025-10-14",
+        "portfolio_value": 16086212.400500007,
+        "total_trade_amount": 640558.7999999999,
+        "reason": "005930.KS:SELL(Lv4 트레일링 스톱 매도 (고점 대비 -2.97%))",
+        "executions": [
+            {
+                "ticker": "005930.KS",
+                "action": "SELL",
+                "quantity": 7,
+                "price": 91508.4,
+                "fee": 1601.4,
+                "date": "2025-10-14",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260504_070753_005930.KS_004",
+                "level": 4,
+                "buy_price": 70070.0,
+                "realized_pnl": 148467.4
+            }
+        ]
+    },
+    {
+        "id": "tx_20251023",
+        "date": "2025-10-23",
+        "portfolio_value": 16181887.348000007,
+        "total_trade_amount": 578421.0,
+        "reason": "005930.KS:SELL(Lv3 트레일링 스톱 매도 (고점 대비 -2.13%))",
+        "executions": [
+            {
+                "ticker": "005930.KS",
+                "action": "SELL",
+                "quantity": 6,
+                "price": 96403.5,
+                "fee": 1446.05,
+                "date": "2025-10-23",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260504_070753_005930.KS_003",
+                "level": 3,
+                "buy_price": 74074.0,
+                "realized_pnl": 132530.95
+            }
+        ]
+    },
+    {
+        "id": "tx_20251028",
+        "date": "2025-10-28",
+        "portfolio_value": 16211999.340500006,
+        "total_trade_amount": 596403.0,
+        "reason": "005930.KS:SELL(Lv2 트레일링 스톱 매도 (고점 대비 -2.45%))",
+        "executions": [
+            {
+                "ticker": "005930.KS",
+                "action": "SELL",
+                "quantity": 6,
+                "price": 99400.5,
+                "fee": 1491.01,
+                "date": "2025-10-28",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260504_070751_005930.KS_002",
+                "level": 2,
+                "buy_price": 78578.5,
+                "realized_pnl": 123440.99
+            }
+        ]
+    },
+    {
+        "id": "tx_20251104",
+        "date": "2025-11-04",
+        "portfolio_value": 16272598.014000006,
+        "total_trade_amount": 628770.6000000001,
+        "reason": "005930.KS:SELL(Lv1 트레일링 스톱 매도 (고점 대비 -5.58%))",
+        "executions": [
+            {
+                "ticker": "005930.KS",
+                "action": "SELL",
+                "quantity": 6,
+                "price": 104795.1,
+                "fee": 1571.93,
+                "date": "2025-11-04",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260504_070750_005930.KS_001",
+                "level": 1,
+                "buy_price": 82982.9,
+                "realized_pnl": 129301.27
+            }
+        ]
+    },
+    {
+        "id": "tx_20251105",
+        "date": "2025-11-05",
+        "portfolio_value": 16202750.993000006,
+        "total_trade_amount": 956248.4,
+        "reason": "005930.KS:BUY(초기 매수 Lv1), 058470.KQ:SELL(Lv2 트레일링 스톱 매도 (고점 대비 -5.94%))",
+        "executions": [
+            {
+                "ticker": "005930.KS",
+                "action": "BUY",
+                "quantity": 4,
+                "price": 100700.6,
+                "fee": 1007.01,
+                "date": "2025-11-05",
+                "status": "FILLED",
+                "reason": "",
+                "level": 1
+            },
+            {
+                "ticker": "058470.KQ",
+                "action": "SELL",
+                "quantity": 10,
+                "price": 55344.6,
+                "fee": 1383.62,
+                "date": "2025-11-05",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260504_070753_058470.KQ_002",
+                "level": 2,
+                "buy_price": 49449.4,
+                "realized_pnl": 57568.38
+            }
+        ]
+    },
+    {
+        "id": "tx_20251118",
+        "date": "2025-11-18",
+        "portfolio_value": 16203259.923250007,
+        "total_trade_amount": 511587.89999999997,
+        "reason": "058470.KQ:SELL(Lv1 트레일링 스톱 매도 (고점 대비 -3.72%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "SELL",
+                "quantity": 9,
+                "price": 56843.1,
+                "fee": 1278.97,
+                "date": "2025-11-18",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260504_070753_058470.KQ_001",
+                "level": 1,
+                "buy_price": 53253.2,
+                "realized_pnl": 31030.13
+            }
+        ]
+    },
+    {
+        "id": "tx_20251119",
+        "date": "2025-11-19",
+        "portfolio_value": 16196488.001250006,
+        "total_trade_amount": 449248.8,
+        "reason": "058470.KQ:BUY(초기 매수 Lv1)",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "BUY",
+                "quantity": 8,
+                "price": 56156.1,
+                "fee": 1123.12,
+                "date": "2025-11-19",
+                "status": "FILLED",
+                "reason": "",
+                "level": 1
+            }
+        ]
+    },
+    {
+        "id": "tx_20251121",
+        "date": "2025-11-21",
+        "portfolio_value": 16174427.816250006,
+        "total_trade_amount": 474474.0,
+        "reason": "005930.KS:BUY(추가 매수 Lv2 (Lv1 대비 -5.9%))",
+        "executions": [
+            {
+                "ticker": "005930.KS",
+                "action": "BUY",
+                "quantity": 5,
+                "price": 94894.8,
+                "fee": 1186.18,
+                "date": "2025-11-21",
+                "status": "FILLED",
+                "reason": "",
+                "level": 2
+            }
+        ]
+    },
+    {
+        "id": "tx_20251201",
+        "date": "2025-12-01",
+        "portfolio_value": 16324164.348250005,
+        "total_trade_amount": 532267.2,
+        "reason": "058470.KQ:SELL(Lv1 트레일링 스톱 매도 (고점 대비 -2.49%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "SELL",
+                "quantity": 8,
+                "price": 66533.4,
+                "fee": 1330.67,
+                "date": "2025-12-01",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260504_070754_058470.KQ_001",
+                "level": 1,
+                "buy_price": 56156.1,
+                "realized_pnl": 81687.73
+            }
+        ]
+    },
+    {
+        "id": "tx_20251202",
+        "date": "2025-12-02",
+        "portfolio_value": 16345956.000250006,
+        "total_trade_amount": 459659.20000000007,
+        "reason": "058470.KQ:BUY(초기 매수 Lv1)",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "BUY",
+                "quantity": 7,
+                "price": 65665.6,
+                "fee": 1149.15,
+                "date": "2025-12-02",
+                "status": "FILLED",
+                "reason": "",
+                "level": 1
+            }
+        ]
+    },
+    {
+        "id": "tx_20251211",
+        "date": "2025-12-11",
+        "portfolio_value": 16371479.591500007,
+        "total_trade_amount": 535963.5,
+        "reason": "005930.KS:SELL(Lv2 트레일링 스톱 매도 (고점 대비 -2.01%))",
+        "executions": [
+            {
+                "ticker": "005930.KS",
+                "action": "SELL",
+                "quantity": 5,
+                "price": 107192.7,
+                "fee": 1339.91,
+                "date": "2025-12-11",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260504_070754_005930.KS_002",
+                "level": 2,
+                "buy_price": 94894.8,
+                "realized_pnl": 60149.59
+            }
+        ]
+    },
+    {
+        "id": "tx_20251215",
+        "date": "2025-12-15",
+        "portfolio_value": 16339453.559500007,
+        "total_trade_amount": 493292.8,
+        "reason": "058470.KQ:BUY(추가 매수 Lv2 (Lv1 대비 -6.2%))",
+        "executions": [
+            {
+                "ticker": "058470.KQ",
+                "action": "BUY",
+                "quantity": 8,
+                "price": 61661.6,
+                "fee": 1233.23,
+                "date": "2025-12-15",
+                "status": "FILLED",
+                "reason": "",
+                "level": 2
             }
         ]
     }

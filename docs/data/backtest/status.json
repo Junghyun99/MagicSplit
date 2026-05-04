@@ -1,14 +1,82 @@
 {
     "last_updated": "2025-12-30",
     "last_run_date": "2025-12-30",
-    "reason": "AAPL:BUY(재진입 가드: 직전 매도가 $83.89 대비 +225.52% > 임계 -0.10% -> 진입 대기 중), MSFT:BUY(buy_amount($50.00) < 현재가($487.48) -> 1주도 매수 불가. buy_amount 상향 조정 필요)",
+    "reason": "모니터링 - 신호 없음",
     "portfolio": {
-        "total_value": 10002257.894262847,
-        "cash_balance": 10002257.894262847,
-        "holdings": []
+        "total_value": 16380353.559500007,
+        "cash_balance": 14996253.559500007,
+        "holdings": [
+            {
+                "ticker": "005930.KS",
+                "qty": 4,
+                "price": 119900.0,
+                "value": 479600.0
+            },
+            {
+                "ticker": "058470.KQ",
+                "qty": 15,
+                "price": 60300.0,
+                "value": 904500.0
+            }
+        ]
     },
-    "positions": {},
+    "positions": {
+        "005930.KS": {
+            "total_qty": 4,
+            "lot_count": 1,
+            "total_invested": 402802.4,
+            "current_value": 479600.0,
+            "lots": [
+                {
+                    "lot_id": "lot_20260504_070754_005930.KS_001",
+                    "buy_price": 100700.6,
+                    "quantity": 4,
+                    "buy_date": "2025-11-05",
+                    "level": 1,
+                    "current_price": 119900.0,
+                    "pct_change": 19.07
+                }
+            ],
+            "avg_buy_price": 100700.6,
+            "unrealized_pnl": 76797.6,
+            "unrealized_pnl_pct": 19.07,
+            "realized_pnl": 2058805.05,
+            "total_pnl": 2135602.65
+        },
+        "058470.KQ": {
+            "total_qty": 15,
+            "lot_count": 2,
+            "total_invested": 952952.0,
+            "current_value": 904500.0,
+            "lots": [
+                {
+                    "lot_id": "lot_20260504_070754_058470.KQ_001",
+                    "buy_price": 65665.6,
+                    "quantity": 7,
+                    "buy_date": "2025-12-02",
+                    "level": 1,
+                    "current_price": 60300.0,
+                    "pct_change": -8.17
+                },
+                {
+                    "lot_id": "lot_20260504_070754_058470.KQ_002",
+                    "buy_price": 61661.6,
+                    "quantity": 8,
+                    "buy_date": "2025-12-15",
+                    "level": 2,
+                    "current_price": 60300.0,
+                    "pct_change": -2.21
+                }
+            ],
+            "avg_buy_price": 63530.1333,
+            "unrealized_pnl": -48452.0,
+            "unrealized_pnl_pct": -5.08,
+            "realized_pnl": 4417894.11,
+            "total_pnl": 4369442.11
+        }
+    },
     "realized_pnl_by_ticker": {
-        "AAPL": 2332.06
+        "005930.KS": 2058805.05,
+        "058470.KQ": 4417894.110000001
     }
 }
