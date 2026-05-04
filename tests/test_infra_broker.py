@@ -181,6 +181,7 @@ class TestKisOverseasGetPortfolio:
         b.app_secret = "fake_secret"
         b.access_token = "fake_token"
         b.token_expires_at = datetime.now() + timedelta(hours=1)
+        b.MARGIN_TR_ID = "TTTC2101R"
         return b
 
     @patch("src.infra.broker.kis_overseas._pkg.requests.get")
@@ -217,7 +218,15 @@ class TestKisOverseasGetPortfolio:
             "output2": {"ovrs_ord_psbl_amt": "5000.00"},
         }
 
-        mock_get.side_effect = [fail_resp, success_resp, success_resp]
+        # 1: margin API (success), 2: exchange 1 (fail), 3: exchange 2 (success), 4: exchange 3 (success)
+        margin_resp = MagicMock()
+        margin_resp.raise_for_status.return_value = None
+        margin_resp.json.return_value = {
+            "rt_cd": "0",
+            "output": [{"natn_name": "미국", "frcr_gnrl_ord_psbl_amt": "5000.00"}]
+        }
+
+        mock_get.side_effect = [margin_resp, fail_resp, success_resp, success_resp]
 
         pf = broker.get_portfolio()
         assert pf.total_cash == 5000.0
