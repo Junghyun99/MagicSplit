@@ -1,12 +1,14 @@
 {
     "last_updated": "2025-12-30",
     "last_run_date": "2025-12-30",
-    "reason": "모니터링 - 신호 없음",
+    "reason": "AAPL:BUY(재진입 가드: 직전 매도가 $83.89 대비 +225.52% > 임계 -0.10% -> 진입 대기 중), MSFT:BUY(buy_amount($50.00) < 현재가($487.48) -> 1주도 매수 불가. buy_amount 상향 조정 필요)",
     "portfolio": {
-        "total_value": 100.0,
-        "cash_balance": 100.0,
+        "total_value": 10002257.894262847,
+        "cash_balance": 10002257.894262847,
         "holdings": []
     },
     "positions": {},
-    "realized_pnl_by_ticker": {}
+    "realized_pnl_by_ticker": {
+        "AAPL": 2332.06
+    }
 }
