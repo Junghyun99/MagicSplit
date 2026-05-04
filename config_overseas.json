@@ -7,8 +7,7 @@
             "buy_threshold_pct": -5,
             "sell_threshold_pct": 10,
             "buy_amount": 5000,
-            "max_lots": 100,
-            "reentry_guard_pct": -0.1,
+            "max_lots": 30,
             "enabled": true,
             "trailing_drop_pct": 2
         },
@@ -18,14 +17,13 @@
             "market_type": "overseas",
             "buy_threshold_pct": -5,
             "sell_threshold_pct": 10,
-            "buy_amount": 50,
-            "max_lots": 100,
-            "reentry_guard_pct": -0.1,
+            "buy_amount": 5000,
+            "max_lots": 30,
             "enabled": true
         }
     ],
     "global": {
-        "max_exposure_pct": 30.0,
+        "max_exposure_pct": 30,
         "notification_enabled": true
     }
 }
