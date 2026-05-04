@@ -64,12 +64,13 @@ class TestTradeHistory:
         assert len(data[0]["executions"]) == 1
 
     def test_empty_executions_not_saved(self, repo):
-        """체결 내역이 없으면 저장하지 않음"""
+        """체결 내역이 없으면 저장하지 않음 (초기화된 빈 상태 유지)"""
         portfolio = Portfolio(10000.0, {}, {})
         repo.save_trade_history([], portfolio, "no trades")
 
-        import os
-        assert not os.path.exists(repo.history_file)
+        with open(repo.history_file, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+        assert data == []
 
     def test_append_history(self, repo):
         """매매 내역은 append 방식"""
@@ -95,7 +96,7 @@ class TestStatus:
         assert last_run == "2026-04-10"
 
     def test_get_last_run_date_no_file(self, repo):
-        """status 파일이 없으면 None"""
+        """status 파일에 데이터가 없으면 None"""
         assert repo.get_last_run_date() is None
 
     def test_get_realized_pnl_by_ticker(self, repo):
