@@ -26,6 +26,7 @@ class SplitEvaluator:
 
     def __init__(self, logger: Optional[ILogger] = None):
         self._logger = logger
+        self.price_anomaly_threshold = 30.0  # % 이격 발생 시 차단
 
     def evaluate(
         self,
@@ -380,6 +381,17 @@ class SplitEvaluator:
             return True, ""
 
         pct_from_sell = (current_price - last_sell_price) / last_sell_price * 100
+
+        # [방어선 2] 가격 이격 과다 체크 (액면분할/병합 의심)
+        if abs(pct_from_sell) >= self.price_anomaly_threshold:
+            reason = (
+                f"가격 이격 과다({pct_from_sell:+.1f}%): 액면분할/병합 확인 필요 "
+                f"(직전매도 ${last_sell_price:.2f} vs 현재 ${current_price:.2f})"
+            )
+            if self._logger:
+                self._logger.warning(f"[{rule.ticker}] ⚠️ {reason}")
+            return False, reason
+
         if pct_from_sell <= rule.reentry_guard_pct:
             return True, ""
 

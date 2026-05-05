@@ -10,6 +10,7 @@ def build_dashboard_status(
     reason: str,
     old_realized_pnl_by_ticker: Dict[str, float],
     recent_executions: List[TradeExecution],
+    enabled_tickers: List[str],
     sim_date: Optional[str] = None
 ) -> dict:
     """대시보드 렌더링에 필요한 상태 데이터 구조(JSON)를 조립한다."""
@@ -93,6 +94,7 @@ def build_dashboard_status(
         },
         "positions": ticker_summary,
         "realized_pnl_by_ticker": realized_by_ticker,
+        "enabled_tickers": enabled_tickers,
     }
 
     return status

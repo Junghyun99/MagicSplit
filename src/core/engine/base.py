@@ -88,6 +88,9 @@ class MagicSplitEngine:
             # 매도 체결 시 갱신, 매수 체결 시 초기화.
             last_sell_prices: dict = self.repo.load_last_sell_prices()
 
+            # Step 2.1: 상태 전환 감지 및 자동 초기화 (OFF -> ON)
+            self._handle_state_transitions(positions, last_sell_prices)
+
             # Step 2.5: 브로커 수량 ↔ positions 수량 합 불일치 검사
             # 불일치 종목은 이번 사이클에서 매매 중단 (자동 보정 미지원)
             halted_tickers = self._check_reconcile(positions, portfolio)
@@ -511,11 +514,69 @@ class MagicSplitEngine:
         # 상태 조립 및 저장 (코어 계층 비즈니스 로직)
         old_realized_pnl = self.repo.get_realized_pnl_by_ticker()
         status_data = build_dashboard_status(
-            portfolio, positions, reason, old_realized_pnl, executions, sim_date
+            portfolio, positions, reason, old_realized_pnl, executions,
+            self.all_tickers, sim_date
         )
         self.repo.save_status(status_data)
 
     # ── Private helpers ──────────────────────────────────────────
+
+    def _handle_state_transitions(
+        self,
+        positions: List[PositionLot],
+        last_sell_prices: Dict[str, float],
+    ) -> None:
+        """종목의 상태 전이(OFF -> ON)를 감지하여 낡은 상태값을 초기화한다."""
+        try:
+            # 1. 이전 실행 상태 로드
+            prev_status = getattr(self.repo, "load_status", lambda: {})()
+            if not isinstance(prev_status, dict):
+                prev_status = {}
+            
+            prev_enabled = set(prev_status.get("enabled_tickers", []))
+            current_enabled = set(self.all_tickers)
+
+            # 2. 신규 활성화된 종목 식별 (OFF -> ON)
+            newly_enabled = current_enabled - prev_enabled
+            if not newly_enabled:
+                return
+
+            self.logger.info(f">>> Step 2.1: Detected {len(newly_enabled)} newly enabled ticker(s)")
+            
+            for ticker in newly_enabled:
+                # A. 보유 수량이 0인 경우 -> 직전 매도가 및 실현 손익(새 시즌) 초기화
+                ticker_lots = [l for l in positions if l.ticker == ticker]
+                if not ticker_lots:
+                    # 매도가 초기화
+                    if ticker in last_sell_prices:
+                        old_val = last_sell_prices.pop(ticker)
+                        self.logger.info(
+                            f"[{ticker}] OFF->ON 전환 감지: 0주 상태이므로 직전 매도가(${old_val:.2f}) 초기화"
+                        )
+                    
+                    # 실현 손익 초기화 (새 시즌)
+                    realized_pnls = prev_status.setdefault("realized_pnl_by_ticker", {})
+                    if realized_pnls.get(ticker, 0.0) != 0.0:
+                        old_pnl = realized_pnls[ticker]
+                        realized_pnls[ticker] = 0.0
+                        self.logger.info(
+                            f"[{ticker}] OFF->ON 전환 감지: 0주 상태이므로 누적 실현 손익(${old_pnl:,.2f}) 초기화"
+                        )
+                
+                # B. 보유 수량이 있는 경우 -> 트레일링 최고가 초기화 (현재가부터 다시 추적)
+                else:
+                    for lot in ticker_lots:
+                        if lot.trailing_highest_price is not None:
+                            lot.trailing_highest_price = None
+                            self.logger.info(
+                                f"[{ticker}] OFF->ON 전환 감지: Lv{lot.level} 트레일링 최고가 초기화"
+                            )
+
+            # 변경된 이전 상태 저장 (실현 손익 리셋 반영)
+            self.repo.save_status(prev_status)
+
+        except Exception as e:
+            self.logger.error(f"상태 전이 처리 중 오류 발생 (무시하고 진행): {e}")
 
     def _build_reason(self, signals: List[SplitSignal]) -> str:
         """신호 목록에서 사유 문자열을 생성한다."""
