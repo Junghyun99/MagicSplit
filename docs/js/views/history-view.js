@@ -11,12 +11,19 @@ window.HistoryView = (function () {
             .replace(/'/g, '&#39;');
     }
 
+    function formatTickerLabel(ticker, alias) {
+        if (!alias || alias === ticker) return ticker;
+        return `${alias} (${ticker})`;
+    }
+
     function renderFilters(tickers, onFilterChange) {
         const container = document.getElementById('history-filters');
         if (!container) return;
 
         const tickerOptions = ['<option value="">전체 종목</option>']
-            .concat(tickers.map((t) => `<option value="${escapeHtml(t)}">${escapeHtml(t)}</option>`))
+            .concat(tickers.map(({ ticker, alias }) =>
+                `<option value="${escapeHtml(ticker)}">${escapeHtml(formatTickerLabel(ticker, alias))}</option>`
+            ))
             .join('');
 
         container.innerHTML = `
@@ -75,7 +82,7 @@ window.HistoryView = (function () {
         return `
             <tr class="history-row ${actionClass}" title="${escapeHtml(row.txReason)}">
                 <td>${escapeHtml(row.date)}</td>
-                <td><strong>${escapeHtml(row.ticker)}</strong></td>
+                <td><strong>${escapeHtml(formatTickerLabel(row.ticker, row.alias))}</strong></td>
                 <td><span class="history-action ${actionClass}">${escapeHtml(row.action)}</span></td>
                 <td>${lvDisplay}</td>
                 <td>${escapeHtml(row.quantity)}</td>

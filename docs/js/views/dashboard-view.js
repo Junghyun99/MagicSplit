@@ -2,6 +2,20 @@
 window.DashboardView = (function () {
     'use strict';
 
+    function formatTickerLabel(ticker, alias) {
+        if (!alias || alias === ticker) return ticker;
+        return `${alias} (${ticker})`;
+    }
+
+    function escapeHtml(str) {
+        return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
+
     function setOfflineBadge(show) {
         const badge = document.getElementById('offline-badge');
         if (badge) badge.style.display = show ? '' : 'none';
@@ -221,9 +235,10 @@ window.DashboardView = (function () {
                     </div>`;
             }
 
+            const tickerLabel = escapeHtml(formatTickerLabel(ticker, info.alias));
             card.innerHTML = `
                 <div class="card-header">
-                    <span class="ticker">${ticker} ${levelBadge}</span>
+                    <span class="ticker">${tickerLabel} ${levelBadge}</span>
                     <span class="price">${info.total_qty} shares | ${info.lot_count} lots</span>
                 </div>
                 ${summaryHtml}

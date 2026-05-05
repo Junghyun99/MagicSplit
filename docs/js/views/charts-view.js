@@ -4,6 +4,11 @@ window.ChartsView = (function () {
 
     const LEVEL_CAP = 5;
 
+    function formatTickerLabel(ticker, alias) {
+        if (!alias || alias === ticker) return ticker;
+        return `${alias} (${ticker})`;
+    }
+
     function buildAxisRow(months) {
         const row = document.createElement('div');
         row.className = 'heatmap-row';
@@ -23,13 +28,16 @@ window.ChartsView = (function () {
         return row;
     }
 
-    function buildTickerRow(ticker, months, grid, trades) {
+    function buildTickerRow(ticker, months, grid, trades, aliasMap) {
         const row = document.createElement('div');
         row.className = 'heatmap-row';
 
+        const tickerLabel = formatTickerLabel(ticker, aliasMap && aliasMap[ticker]);
+
         const label = document.createElement('div');
         label.className = 'heatmap-label';
-        label.textContent = ticker;
+        label.textContent = tickerLabel;
+        label.title = ticker;
         row.appendChild(label);
 
         for (const m of months) {
@@ -44,7 +52,7 @@ window.ChartsView = (function () {
             cell.dataset.rawLevel = String(level);
             const levelLabel = level > 0 ? `Lv${level}` : '보유 없음';
             const tradeLabel = count > 0 ? ` (거래 ${count}건)` : '';
-            cell.title = `${ticker} | ${m} | ${levelLabel}${tradeLabel}`;
+            cell.title = `${tickerLabel} | ${m} | ${levelLabel}${tradeLabel}`;
             if (level > 0) cell.textContent = String(level);
             row.appendChild(cell);
         }
@@ -73,7 +81,7 @@ window.ChartsView = (function () {
 
         container.appendChild(buildAxisRow(data.months));
         for (const t of data.tickers) {
-            container.appendChild(buildTickerRow(t, data.months, data.grid, data.trades));
+            container.appendChild(buildTickerRow(t, data.months, data.grid, data.trades, data.aliasMap));
         }
 
         if (!container.dataset.listenersBound) {
