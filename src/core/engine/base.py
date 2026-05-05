@@ -2,7 +2,7 @@
 import time
 from dataclasses import replace
 from datetime import datetime
-from typing import List, Optional, Set
+from typing import Dict, List, Optional, Set
 
 from src.core.interfaces import IBrokerAdapter, IRepository, ILogger, INotifier
 from src.core.models import (

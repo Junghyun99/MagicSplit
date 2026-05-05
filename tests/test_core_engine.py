@@ -164,6 +164,9 @@ class TestRunOneCycle:
 
     def test_full_cycle_no_signals(self, engine, mock_repo):
         """신호 없을 때 전체 사이클 정상 완료"""
+        # transition logic 회피를 위해 기존 상태 설정
+        mock_repo.load_status.return_value = {"enabled_tickers": ["AAPL"]}
+
         result = engine.run_one_cycle(sim_date="2026-04-10")
 
         assert result.date == "2026-04-10"
