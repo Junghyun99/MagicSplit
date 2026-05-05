@@ -98,6 +98,7 @@ def _shrink_to(lots: List[PositionLot], ticker: str, target_qty: int) -> List[Po
             quantity=lot.quantity - remaining,
             buy_date=lot.buy_date,
             level=lot.level,
+            trailing_highest_price=lot.trailing_highest_price,
         ))
         remaining = 0
     return out
@@ -128,10 +129,13 @@ def _apply_split_ratio(
     ticker: str,
     num: int,
     den: int,
+    last_sell_prices: Optional[Dict[str, float]] = None,
 ) -> List[PositionLot]:
     """주식분할/병합 비율 적용 (num:den, 예 1:2 -> 1주를 2주로)."""
     if num <= 0 or den <= 0:
         raise ValueError("비율은 양수여야 합니다.")
+    
+    # 1. 포지션 단가/수량/최고가 조정
     out: List[PositionLot] = []
     for lot in lots:
         if lot.ticker != ticker:
@@ -139,14 +143,32 @@ def _apply_split_ratio(
             continue
         new_qty = lot.quantity * den // num
         new_price = lot.buy_price * num / den
-        out.append(PositionLot(
-            lot_id=lot.lot_id,
-            ticker=lot.ticker,
-            buy_price=round(new_price, 4),
-            quantity=new_qty,
-            buy_date=lot.buy_date,
-            level=lot.level,
-        ))
+        
+        # 트레일링 최고가도 비율에 맞춰 조정
+        new_high = None
+        if lot.trailing_highest_price is not None:
+            new_high = round(lot.trailing_highest_price * num / den, 4)
+
+        if new_qty > 0:
+            out.append(PositionLot(
+                lot_id=lot.lot_id,
+                ticker=lot.ticker,
+                buy_price=round(new_price, 4),
+                quantity=new_qty,
+                buy_date=lot.buy_date,
+                level=lot.level,
+                trailing_highest_price=new_high,
+            ))
+        else:
+            print(f"  ⚠️  수량이 0이 되어 로트 제거: {lot.lot_id} (Lv.{lot.level})")
+
+    # 2. 직전 매도가(last_sell_price)도 비율에 맞춰 조정 (망령 데이터 방지)
+    if last_sell_prices and ticker in last_sell_prices:
+        old_sell_price = last_sell_prices[ticker]
+        new_sell_price = round(old_sell_price * num / den, 4)
+        last_sell_prices[ticker] = new_sell_price
+        print(f"  💡 직전 매도가 조정: ${old_sell_price:,.2f} -> ${new_sell_price:,.2f}")
+
     return out
 
 
@@ -161,6 +183,7 @@ def _print_mismatch(m: QuantityMismatch) -> None:
 def _handle_ticker(
     mismatch: QuantityMismatch,
     lots: List[PositionLot],
+    last_sell_prices: Optional[Dict[str, float]] = None,
 ) -> List[PositionLot]:
     _print_mismatch(mismatch)
     while True:
@@ -207,7 +230,7 @@ def _handle_ticker(
                 print("  ⚠️  정수 형식 오류")
                 continue
             try:
-                return _apply_split_ratio(lots, mismatch.ticker, num, den)
+                return _apply_split_ratio(lots, mismatch.ticker, num, den, last_sell_prices)
             except ValueError as e:
                 print(f"  ⚠️  {e}")
                 continue
@@ -261,8 +284,10 @@ def main() -> int:
 
     print(f"불일치 {len(mismatches)}건:")
     lots = list(positions)
+    last_sell_prices = repo.load_last_sell_prices()
+
     for m in mismatches:
-        lots = _handle_ticker(m, lots)
+        lots = _handle_ticker(m, lots, last_sell_prices)
 
     print()
     print("── 변경 후 수량 요약 ──")
@@ -285,7 +310,8 @@ def main() -> int:
         return 0
 
     repo.save_positions(lots)
-    print("✓ 저장 완료.")
+    repo.save_last_sell_prices(last_sell_prices)
+    print("✓ 저장 완료 (positions.json & last_sell_prices.json).")
     return 0
 
 
