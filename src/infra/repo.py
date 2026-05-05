@@ -28,6 +28,8 @@ class JsonRepository(IRepository):
         self.history_file = os.path.join(self.root, "history.json")
         self.status_file = os.path.join(self.root, "status.json")
 
+        self._history_cache: Optional[List[dict]] = None
+
     # === Positions ===
 
     def load_positions(self) -> List[PositionLot]:
@@ -128,12 +130,13 @@ class JsonRepository(IRepository):
             "executions": enriched_execs,
         }
 
-        data = self._load_json(self.history_file, default=[])
+        data = self._get_history()
         data.append(record)
 
         if self.max_history_records > 0:
             data = data[-self.max_history_records:]
 
+        self._history_cache = data
         self._save_json(self.history_file, data)
 
     # === Status ===
@@ -216,9 +219,15 @@ class JsonRepository(IRepository):
 
         self._save_json(self.status_file, status)
 
+    def _get_history(self) -> List[dict]:
+        """history.json의 데이터를 로드하고 캐시한다."""
+        if self._history_cache is None:
+            self._history_cache = self._load_json(self.history_file, default=[])
+        return self._history_cache
+
     def _calc_realized_pnl_by_ticker(self) -> dict:
         """history.json에서 종목별 실현 손익 합계를 계산한다."""
-        history = self._load_json(self.history_file, default=[])
+        history = self._get_history()
         result: dict = {}
         for record in history:
             for exe in record.get("executions", []):
