@@ -34,14 +34,10 @@ window.ConfigView = (function () {
         document.getElementById('current-ticker-title').textContent = stock.ticker ? (isPresetMode ? `${stock.ticker} 프리셋` : `${stock.ticker} 설정`) : (isPresetMode ? '새 프리셋' : '새 종목 설정');
 
         document.getElementById('edit-ticker-label').textContent = isPresetMode ? 'Preset Name' : 'Ticker';
-        document.getElementById('group-exchange').style.display = isPresetMode ? 'none' : '';
-        document.getElementById('group-market').style.display = isPresetMode ? 'none' : '';
         document.getElementById('group-preset').style.display = isPresetMode ? 'none' : '';
         document.getElementById('group-enabled').style.display = isPresetMode ? 'none' : 'flex';
 
         document.getElementById('edit-ticker').value = stock.ticker || '';
-        document.getElementById('edit-exchange').value = stock.exchange || '';
-        document.getElementById('edit-market').value = stock.market_type || 'overseas';
         document.getElementById('edit-preset').value = stock.preset || '';
         document.getElementById('edit-max-lots').value = stock.max_lots !== undefined ? stock.max_lots : 10;
         document.getElementById('edit-reentry').value = stock.reentry_guard_pct !== undefined ? stock.reentry_guard_pct : '';
@@ -155,8 +151,6 @@ window.ConfigView = (function () {
 
         return {
             ticker: document.getElementById('edit-ticker').value.trim(),
-            exchange: document.getElementById('edit-exchange').value.trim(),
-            market_type: document.getElementById('edit-market').value,
             preset: document.getElementById('edit-preset').value.trim(),
             max_lots: document.getElementById('edit-max-lots').value,
             reentry_guard_pct: document.getElementById('edit-reentry').value,
