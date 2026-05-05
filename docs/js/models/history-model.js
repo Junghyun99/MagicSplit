@@ -27,6 +27,7 @@ window.HistoryModel = (function () {
                 rows.push({
                     date: ex.date || txDate,
                     ticker: ex.ticker || '',
+                    alias: ex.alias || '',
                     action,
                     level: ex.level != null ? ex.level : '',
                     quantity: ex.quantity || 0,
@@ -53,8 +54,18 @@ window.HistoryModel = (function () {
     }
 
     function getUniqueTickers() {
-        const set = new Set(allRows.map((r) => r.ticker).filter(Boolean));
-        return Array.from(set).sort();
+        const aliasByTicker = {};
+        for (const r of allRows) {
+            if (!r.ticker) continue;
+            if (!aliasByTicker[r.ticker] && r.alias) {
+                aliasByTicker[r.ticker] = r.alias;
+            } else if (!(r.ticker in aliasByTicker)) {
+                aliasByTicker[r.ticker] = '';
+            }
+        }
+        return Object.keys(aliasByTicker)
+            .sort()
+            .map((ticker) => ({ ticker, alias: aliasByTicker[ticker] }));
     }
 
     function setFilter(type, value) {

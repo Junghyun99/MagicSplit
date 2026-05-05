@@ -2,21 +2,16 @@
 window.HistoryView = (function () {
     'use strict';
 
-    function escapeHtml(str) {
-        return String(str)
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#39;');
-    }
+    const { escapeHtml, formatTickerLabel } = window.FormatUtils;
 
     function renderFilters(tickers, onFilterChange) {
         const container = document.getElementById('history-filters');
         if (!container) return;
 
         const tickerOptions = ['<option value="">전체 종목</option>']
-            .concat(tickers.map((t) => `<option value="${escapeHtml(t)}">${escapeHtml(t)}</option>`))
+            .concat(tickers.map(({ ticker, alias }) =>
+                `<option value="${escapeHtml(ticker)}">${escapeHtml(formatTickerLabel(ticker, alias))}</option>`
+            ))
             .join('');
 
         container.innerHTML = `
@@ -75,7 +70,7 @@ window.HistoryView = (function () {
         return `
             <tr class="history-row ${actionClass}" title="${escapeHtml(row.txReason)}">
                 <td>${escapeHtml(row.date)}</td>
-                <td><strong>${escapeHtml(row.ticker)}</strong></td>
+                <td><strong>${escapeHtml(formatTickerLabel(row.ticker, row.alias))}</strong></td>
                 <td><span class="history-action ${actionClass}">${escapeHtml(row.action)}</span></td>
                 <td>${lvDisplay}</td>
                 <td>${escapeHtml(row.quantity)}</td>

@@ -2,6 +2,8 @@
 window.DashboardView = (function () {
     'use strict';
 
+    const { escapeHtml, formatTickerLabel } = window.FormatUtils;
+
     function setOfflineBadge(show) {
         const badge = document.getElementById('offline-badge');
         if (badge) badge.style.display = show ? '' : 'none';
@@ -221,9 +223,10 @@ window.DashboardView = (function () {
                     </div>`;
             }
 
+            const tickerLabel = escapeHtml(formatTickerLabel(ticker, info.alias));
             card.innerHTML = `
                 <div class="card-header">
-                    <span class="ticker">${ticker} ${levelBadge}</span>
+                    <span class="ticker">${tickerLabel} ${levelBadge}</span>
                     <span class="price">${info.total_qty} shares | ${info.lot_count} lots</span>
                 </div>
                 ${summaryHtml}

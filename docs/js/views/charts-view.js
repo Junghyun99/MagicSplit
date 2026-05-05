@@ -3,6 +3,7 @@ window.ChartsView = (function () {
     'use strict';
 
     const LEVEL_CAP = 5;
+    const { escapeHtml: esc, formatTickerLabel } = window.FormatUtils;
 
     function buildAxisRow(months) {
         const row = document.createElement('div');
@@ -23,13 +24,16 @@ window.ChartsView = (function () {
         return row;
     }
 
-    function buildTickerRow(ticker, months, grid, trades) {
+    function buildTickerRow(ticker, months, grid, trades, aliasMap) {
         const row = document.createElement('div');
         row.className = 'heatmap-row';
 
+        const tickerLabel = formatTickerLabel(ticker, aliasMap && aliasMap[ticker]);
+
         const label = document.createElement('div');
         label.className = 'heatmap-label';
-        label.textContent = ticker;
+        label.textContent = tickerLabel;
+        label.title = ticker;
         row.appendChild(label);
 
         for (const m of months) {
@@ -44,7 +48,7 @@ window.ChartsView = (function () {
             cell.dataset.rawLevel = String(level);
             const levelLabel = level > 0 ? `Lv${level}` : '보유 없음';
             const tradeLabel = count > 0 ? ` (거래 ${count}건)` : '';
-            cell.title = `${ticker} | ${m} | ${levelLabel}${tradeLabel}`;
+            cell.title = `${tickerLabel} | ${m} | ${levelLabel}${tradeLabel}`;
             if (level > 0) cell.textContent = String(level);
             row.appendChild(cell);
         }
@@ -73,7 +77,7 @@ window.ChartsView = (function () {
 
         container.appendChild(buildAxisRow(data.months));
         for (const t of data.tickers) {
-            container.appendChild(buildTickerRow(t, data.months, data.grid, data.trades));
+            container.appendChild(buildTickerRow(t, data.months, data.grid, data.trades, data.aliasMap));
         }
 
         if (!container.dataset.listenersBound) {
@@ -90,14 +94,6 @@ window.ChartsView = (function () {
         section.style.display = '';
         section.dataset.mode = mode || '';
         container.dataset.columns = String(columnCount);
-    }
-
-    function esc(str) {
-        return String(str)
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;');
     }
 
     function renderEquityCurve(pts, mode, formatCurrencyFn) {

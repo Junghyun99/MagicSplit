@@ -107,7 +107,7 @@ window.DashboardModel = (function () {
 
     function buildLevelBuckets() {
         if (!Array.isArray(historyData) || historyData.length === 0) {
-            return { months: [], tickers: [], grid: {}, trades: {} };
+            return { months: [], tickers: [], grid: {}, trades: {}, aliasMap: {} };
         }
 
         const execs = [];
@@ -120,7 +120,7 @@ window.DashboardModel = (function () {
             }
         }
         if (execs.length === 0) {
-            return { months: [], tickers: [], grid: {}, trades: {} };
+            return { months: [], tickers: [], grid: {}, trades: {}, aliasMap: {} };
         }
 
         execs.sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : 0));
@@ -128,11 +128,13 @@ window.DashboardModel = (function () {
         const execsByTicker = {};
         const trades = {};
         const tickersSeen = new Set();
+        const aliasMap = {};
 
         for (const ex of execs) {
             const t = ex.ticker;
             const mk = monthKey(ex.date);
             tickersSeen.add(t);
+            if (ex.alias) aliasMap[t] = ex.alias;
             if (!execsByTicker[t]) execsByTicker[t] = {};
             if (!execsByTicker[t][mk]) execsByTicker[t][mk] = [];
             execsByTicker[t][mk].push(ex);
@@ -163,7 +165,7 @@ window.DashboardModel = (function () {
         }
 
         const tickers = Array.from(tickersSeen).sort();
-        return { months, tickers, grid, trades };
+        return { months, tickers, grid, trades, aliasMap };
     }
 
     return {
