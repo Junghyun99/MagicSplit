@@ -6,7 +6,7 @@
             "buy_threshold_pct": -5.0,
             "sell_threshold_pct": 10.0,
             "buy_amount": 500000,
-            "max_lots": 10,
+            "max_lots": 20,
             "enabled": true,
             "trailing_drop_pct": 2
         },
@@ -16,13 +16,13 @@
             "buy_threshold_pct": -5.0,
             "sell_threshold_pct": 10.0,
             "buy_amount": 500000,
-            "max_lots": 10,
+            "max_lots": 20,
             "enabled": true,
             "trailing_drop_pct": 2
         }
     ],
     "global": {
-        "max_exposure_pct": 30.0,
+        "max_exposure_pct": 50.0,
         "notification_enabled": true
     }
 }
