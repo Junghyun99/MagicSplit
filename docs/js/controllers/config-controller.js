@@ -11,8 +11,15 @@ window.ConfigController = (function () {
         bindEditorEvents();
 
         // Load tickers for search
-        allTickers = await DataRepository.loadTickers();
-        console.log(`Loaded ${allTickers.length} tickers for search.`);
+        DataRepository.loadTickers().then(data => {
+            allTickers = data;
+            console.log(`Loaded ${allTickers.length} tickers for search.`);
+            if (allTickers.length === 0) {
+                console.warn("Tickers data is empty. Search will not work.");
+            }
+        }).catch(err => {
+            console.error("Failed to load tickers.json:", err);
+        });
     }
 
     function initAuthForm() {
@@ -142,15 +149,21 @@ window.ConfigController = (function () {
                 return;
             }
 
+            if (allTickers.length === 0) {
+                console.warn("Still loading tickers or load failed.");
+                return;
+            }
+
             const results = allTickers.filter(t =>
-                t[1].toLowerCase().includes(query) ||
-                t[0].toLowerCase().includes(query)
+                (t[1] && t[1].toLowerCase().includes(query)) ||
+                (t[0] && t[0].toLowerCase().includes(query))
             ).slice(0, 50).map(t => ({
                 ticker: t[0],
                 alias: t[1],
                 exchange: t[2]
             }));
 
+            console.log(`Search query: ${query}, Results: ${results.length}`);
             ConfigView.renderTickerSearchResults(results, (selected) => {
                 tickerInput.value = selected.ticker;
                 saveCurrentTickerToModel();
