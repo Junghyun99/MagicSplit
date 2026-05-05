@@ -24,8 +24,20 @@ window.DataRepository = (function () {
         }
     }
 
+    async function loadDecisions(mode) {
+        const url = `data/${mode}/decisions.json?t=${Date.now()}`;
+        try {
+            const res = await fetch(url);
+            if (!res.ok) return [];
+            return await res.json();
+        } catch (e) {
+            return [];
+        }
+    }
+
     return {
         loadStatus,
-        loadHistory
+        loadHistory,
+        loadDecisions
     };
 })();

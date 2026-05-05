@@ -511,6 +511,10 @@ class MagicSplitEngine:
             self.repo.save_last_sell_prices(last_sell_prices)
         self.repo.save_trade_history(executions, portfolio, reason, sim_date=sim_date)
         
+        # 판단 내역 저장 (거래가 없어도 기록)
+        full_date = sim_date + " 23:59:59" if sim_date else datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        self.repo.save_decision_log(full_date, reason)
+        
         # 상태 조립 및 저장 (코어 계층 비즈니스 로직)
         old_realized_pnl = self.repo.get_realized_pnl_by_ticker()
         status_data = build_dashboard_status(

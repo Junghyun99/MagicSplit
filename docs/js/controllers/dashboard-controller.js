@@ -50,8 +50,13 @@ window.DashboardController = (function () {
             const buckets = DashboardModel.buildLevelBuckets();
             ChartsView.renderLevelHeatmap(buckets, mode, onHeatmapSelect);
             
+            const decData = await DataRepository.loadDecisions(mode);
+            DecisionModel.setDecisions(decData);
+
             if (document.querySelector('.view-link[data-view="history"]').classList.contains('active')) {
                 renderHistoryView();
+            } else if (document.querySelector('.view-link[data-view="decisions"]').classList.contains('active')) {
+                DecisionView.renderDecisions(DecisionModel.getDecisions());
             }
 
         } finally {
@@ -131,6 +136,8 @@ window.DashboardController = (function () {
                     });
                     
                     renderHistoryView();
+                } else if (view === 'decisions') {
+                    DecisionView.renderDecisions(DecisionModel.getDecisions());
                 }
             });
         });

@@ -40,6 +40,7 @@
     <nav class="view-switch" id="view-switch">
         <button class="view-link active" data-view="positions">Positions</button>
         <button class="view-link" data-view="history">History</button>
+        <button class="view-link" data-view="decisions">Decisions</button>
     </nav>
 
     <div id="reason-banner" class="reason-banner" style="display:none"></div>
@@ -63,12 +64,18 @@
         <button id="load-more-btn" class="load-more-btn" style="display:none">더 보기</button>
     </div>
 
+    <div id="decisions-section" style="display:none">
+        <div id="decisions-list"></div>
+    </div>
+
     <script src="js/utils/format-utils.js?v=20260505-2"></script>
     <script src="js/services/data-repository.js?v=20260505-2"></script>
     <script src="js/models/dashboard-model.js?v=20260505-2"></script>
     <script src="js/models/history-model.js?v=20260505-2"></script>
+    <script src="js/models/decision-model.js?v=20260505-2"></script>
     <script src="js/views/dashboard-view.js?v=20260505-2"></script>
     <script src="js/views/history-view.js?v=20260505-2"></script>
+    <script src="js/views/decision-view.js?v=20260505-2"></script>
     <script src="js/views/charts-view.js?v=20260505-2"></script>
     <script src="js/controllers/dashboard-controller.js?v=20260505-2"></script>
     <script src="js/main.js?v=20260505-2"></script>

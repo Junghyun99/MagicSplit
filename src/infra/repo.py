@@ -30,6 +30,7 @@ class JsonRepository(IRepository):
         self.history_file = os.path.join(self.root, "history.json")
         self.status_file = os.path.join(self.root, "status.json")
         self.last_sell_prices_file = os.path.join(self.root, "last_sell_prices.json")
+        self.decisions_file = os.path.join(self.root, "decisions.json")
 
         # 초기 파일 생성 (404 방지)
         if not os.path.exists(self.positions_file):
@@ -40,6 +41,8 @@ class JsonRepository(IRepository):
             self._save_json(self.status_file, {})
         if not os.path.exists(self.last_sell_prices_file):
             self._save_json(self.last_sell_prices_file, {})
+        if not os.path.exists(self.decisions_file):
+            self._save_json(self.decisions_file, [])
 
     # === Positions ===
 
@@ -194,6 +197,24 @@ class JsonRepository(IRepository):
     def save_last_sell_prices(self, prices: Dict[str, float]) -> None:
         """티커별 직전 매도가를 저장한다."""
         self._save_json(self.last_sell_prices_file, prices)
+
+    def save_decision_log(self, date: str, reason: str) -> None:
+        """판단 내역(모니터링 사유)을 저장한다 (Rolling 방식)."""
+        # 동일한 날짜/시간의 중복 기록 방지 (주로 백테스트 환경용)
+        data = self._load_json(self.decisions_file, default=[])
+        if data and data[-1].get("date") == date and data[-1].get("reason") == reason:
+            return
+
+        data.append({
+            "date": date,
+            "reason": reason
+        })
+
+        # 최근 1000건만 유지
+        if len(data) > 1000:
+            data = data[-1000:]
+
+        self._save_json(self.decisions_file, data)
 
     def _load_json(self, path: str, default=None):
         if not os.path.exists(path):

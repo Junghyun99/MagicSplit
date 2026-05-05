@@ -580,3 +580,45 @@ h2 { font-size: 1.1rem; margin-bottom: 8px; color: var(--text-muted); }
     flex: 1;
     margin-bottom: 0;
 }
+
+/* Decisions Section */
+.decisions-container h2 {
+    margin-bottom: 16px;
+    padding-left: 4px;
+}
+
+.decision-card {
+    padding: 16px;
+    margin-bottom: 12px;
+}
+
+.decision-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.decision-date {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text-muted);
+}
+
+.decision-reason {
+    font-size: 0.95rem;
+    color: var(--text);
+    word-break: break-all;
+}
+
+.reason-badge {
+    font-size: 0.65rem;
+    font-weight: 800;
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: white;
+}
+
+.badge-info { background: #94a3b8; }
+.badge-active { background: var(--success); }
+.badge-blocked { background: var(--danger); }

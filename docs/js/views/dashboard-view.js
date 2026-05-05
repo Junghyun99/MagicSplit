@@ -238,17 +238,18 @@ window.DashboardView = (function () {
     }
 
     function showView(view) {
-        const posEls = ['positions-container', 'level-heatmap-section', 'reason-banner'];
-        const histEls = ['history-section'];
+        const sections = {
+            'positions': ['positions-container', 'level-heatmap-section', 'reason-banner'],
+            'history': ['history-section'],
+            'decisions': ['decisions-section']
+        };
 
-        const isPositions = view === 'positions';
-        posEls.forEach((id) => {
-            const el = document.getElementById(id);
-            if (el) el.style.display = isPositions ? '' : 'none';
-        });
-        histEls.forEach((id) => {
-            const el = document.getElementById(id);
-            if (el) el.style.display = isPositions ? 'none' : '';
+        Object.keys(sections).forEach(key => {
+            const isVisible = (key === view);
+            sections[key].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.style.display = isVisible ? '' : 'none';
+            });
         });
 
         document.querySelectorAll('.view-link').forEach((btn) => {

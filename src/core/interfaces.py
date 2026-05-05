@@ -73,3 +73,8 @@ class IRepository(ABC):
     def save_last_sell_prices(self, prices: Dict[str, float]) -> None:
         """티커별 직전 매도가를 저장한다."""
         ...
+
+    @abstractmethod
+    def save_decision_log(self, date: str, reason: str) -> None:
+        """판단 내역(모니터링 사유)을 저장한다."""
+        ...
