@@ -622,3 +622,25 @@ h2 { font-size: 1.1rem; margin-bottom: 8px; color: var(--text-muted); }
 .badge-info { background: #94a3b8; }
 .badge-active { background: var(--success); }
 .badge-blocked { background: var(--danger); }
+
+.decision-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+    padding: 0 4px;
+}
+
+.decision-header-row h2 {
+    margin-bottom: 0;
+}
+
+.decision-info-note {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    background: rgba(0, 0, 0, 0.03);
+    padding: 4px 10px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+}

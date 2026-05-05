@@ -191,3 +191,5 @@ class DayResult:
     final_portfolio: Portfolio
     has_orders: bool
 
+# --- Constants ---
+REASON_NO_SIGNAL = "모니터링 - 신호 없음"

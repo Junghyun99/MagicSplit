@@ -30,7 +30,10 @@ window.DecisionView = (function () {
 
         container.innerHTML = `
             <div class="decisions-container">
-                <h2>최근 판단 내역 (Decision Logs)</h2>
+                <div class="decision-header-row">
+                    <h2>최근 판단 내역 (Decision Logs)</h2>
+                    <div class="decision-info-note">※ 목록에 없는 날짜는 '모니터링 - 신호 없음' 상태였습니다.</div>
+                </div>
                 ${rows}
             </div>
         `;

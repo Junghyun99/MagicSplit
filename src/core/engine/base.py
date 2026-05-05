@@ -15,6 +15,7 @@ from src.core.models import (
     ExecutionStatus,
     SplitSignal,
     DayResult,
+    REASON_NO_SIGNAL,
 )
 from src.core.logic import SplitEvaluator, detect_mismatches, build_dashboard_status
 from src.core.engine.registry import register_engine
@@ -511,9 +512,10 @@ class MagicSplitEngine:
             self.repo.save_last_sell_prices(last_sell_prices)
         self.repo.save_trade_history(executions, portfolio, reason, sim_date=sim_date)
         
-        # 판단 내역 저장 (거래가 없어도 기록)
-        full_date = sim_date + " 23:59:59" if sim_date else datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        self.repo.save_decision_log(full_date, reason)
+        # 판단 내역 저장 (신호가 있을 때만 기록하여 파일 비대화 방지)
+        if reason != REASON_NO_SIGNAL:
+            full_date = sim_date + " 23:59:59" if sim_date else datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            self.repo.save_decision_log(full_date, reason)
         
         # 상태 조립 및 저장 (코어 계층 비즈니스 로직)
         old_realized_pnl = self.repo.get_realized_pnl_by_ticker()
@@ -585,7 +587,7 @@ class MagicSplitEngine:
     def _build_reason(self, signals: List[SplitSignal]) -> str:
         """신호 목록에서 사유 문자열을 생성한다."""
         if not signals:
-            return "모니터링 - 신호 없음"
+            return REASON_NO_SIGNAL
         reasons = [
             f"{display_ticker(s.ticker)}:{s.action.value}({s.reason})"
             for s in signals
