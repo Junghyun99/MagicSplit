@@ -35,9 +35,21 @@ window.DataRepository = (function () {
         }
     }
 
+    async function loadTickers() {
+        const url = `data/tickers.json?t=${Date.now()}`;
+        try {
+            const res = await fetch(url);
+            if (!res.ok) return [];
+            return await res.json();
+        } catch (e) {
+            return [];
+        }
+    }
+
     return {
         loadStatus,
         loadHistory,
-        loadDecisions
+        loadDecisions,
+        loadTickers
     };
 })();

@@ -644,3 +644,32 @@ h2 { font-size: 1.1rem; margin-bottom: 8px; color: var(--text-muted); }
     border-radius: 6px;
     border: 1px solid var(--border);
 }
+/* Search Dropdown */
+.search-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    box-shadow: var(--shadow-lg);
+    z-index: 1000;
+    max-height: 250px;
+    overflow-y: auto;
+    margin-top: 4px;
+}
+.search-item {
+    padding: 10px 14px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.search-item:last-child { border-bottom: none; }
+.search-item:hover { background: #f8fafc; color: var(--primary); }
+.search-item .ticker-id { font-weight: 700; color: var(--primary); }
+.search-item .ticker-alias { font-weight: 500; }
+.search-item .ticker-ex { font-size: 0.75rem; color: var(--text-muted); margin-left: 8px; }

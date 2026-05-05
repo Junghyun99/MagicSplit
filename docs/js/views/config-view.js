@@ -177,6 +177,37 @@ window.ConfigView = (function () {
         };
     }
 
+    function renderTickerSearchResults(results, onSelect) {
+        const container = document.getElementById('ticker-search-results');
+        container.innerHTML = '';
+        if (results.length === 0) {
+            container.style.display = 'none';
+            return;
+        }
+
+        results.forEach(r => {
+            const div = document.createElement('div');
+            div.className = 'search-item';
+            div.innerHTML = `
+                <span class="ticker-alias">${r.alias}</span>
+                <span>
+                    <span class="ticker-id">${r.ticker}</span>
+                    <span class="ticker-ex">${r.exchange}</span>
+                </span>
+            `;
+            div.onclick = () => {
+                onSelect(r);
+                container.style.display = 'none';
+            };
+            container.appendChild(div);
+        });
+        container.style.display = 'block';
+    }
+
+    function hideTickerSearchResults() {
+        document.getElementById('ticker-search-results').style.display = 'none';
+    }
+
     return {
         showBanner,
         renderGlobalConfig,
@@ -189,6 +220,8 @@ window.ConfigView = (function () {
         setSaveButtonState,
         showConfigSection,
         getEditorValues,
-        getGlobalValues
+        getGlobalValues,
+        renderTickerSearchResults,
+        hideTickerSearchResults
     };
 })();

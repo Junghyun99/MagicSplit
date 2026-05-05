@@ -3,11 +3,16 @@ window.ConfigController = (function () {
     'use strict';
 
     let githubApi = null;
+    let allTickers = [];
 
-    function init() {
+    async function init() {
         initAuthForm();
         bindGlobalEvents();
         bindEditorEvents();
+
+        // Load tickers for search
+        allTickers = await DataRepository.loadTickers();
+        console.log(`Loaded ${allTickers.length} tickers for search.`);
     }
 
     function initAuthForm() {
@@ -125,6 +130,37 @@ window.ConfigController = (function () {
         editorInputs.forEach(input => {
             input.addEventListener('input', saveCurrentTickerToModel);
             input.addEventListener('change', saveCurrentTickerToModel);
+        });
+
+        const tickerInput = document.getElementById('edit-ticker');
+        tickerInput.addEventListener('input', (e) => {
+            if (ConfigModel.isPresetMode()) return;
+
+            const query = e.target.value.trim().toLowerCase();
+            if (query.length < 1) {
+                ConfigView.hideTickerSearchResults();
+                return;
+            }
+
+            const results = allTickers.filter(t =>
+                t[1].toLowerCase().includes(query) ||
+                t[0].toLowerCase().includes(query)
+            ).slice(0, 50).map(t => ({
+                ticker: t[0],
+                alias: t[1],
+                exchange: t[2]
+            }));
+
+            ConfigView.renderTickerSearchResults(results, (selected) => {
+                tickerInput.value = selected.ticker;
+                saveCurrentTickerToModel();
+            });
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.form-group')) {
+                ConfigView.hideTickerSearchResults();
+            }
         });
     }
 

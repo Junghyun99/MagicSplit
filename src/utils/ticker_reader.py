@@ -76,3 +76,22 @@ def display_ticker(ticker: str, db_path: str = DEFAULT_DB_PATH) -> str:
     if alias and alias != ticker:
         return f"{alias}({ticker})"
     return ticker
+
+
+def search_by_alias(query: str, db_path: str = DEFAULT_DB_PATH) -> list[Dict]:
+    """별칭(종목명)의 일부를 사용하여 티커 목록을 검색합니다."""
+    if not os.path.exists(db_path):
+        return []
+
+    try:
+        with sqlite3.connect(db_path) as conn:
+            conn.row_factory = sqlite3.Row
+            cur = conn.cursor()
+
+            # LIKE를 사용하여 부분 일치 검색
+            sql = "SELECT ticker, exchange, alias, asset_type, currency FROM tickers WHERE alias LIKE ?"
+            cur.execute(sql, (f"%{query}%",))
+            return [dict(row) for row in cur.fetchall()]
+
+    except sqlite3.Error:
+        return []
