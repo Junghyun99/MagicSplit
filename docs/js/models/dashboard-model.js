@@ -134,7 +134,7 @@ window.DashboardModel = (function () {
             const t = ex.ticker;
             const mk = monthKey(ex.date);
             tickersSeen.add(t);
-            if (ex.alias && !aliasMap[t]) aliasMap[t] = ex.alias;
+            if (ex.alias) aliasMap[t] = ex.alias;
             if (!execsByTicker[t]) execsByTicker[t] = {};
             if (!execsByTicker[t][mk]) execsByTicker[t][mk] = [];
             execsByTicker[t][mk].push(ex);

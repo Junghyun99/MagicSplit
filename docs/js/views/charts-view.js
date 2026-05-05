@@ -3,11 +3,7 @@ window.ChartsView = (function () {
     'use strict';
 
     const LEVEL_CAP = 5;
-
-    function formatTickerLabel(ticker, alias) {
-        if (!alias || alias === ticker) return ticker;
-        return `${alias} (${ticker})`;
-    }
+    const { escapeHtml: esc, formatTickerLabel } = window.FormatUtils;
 
     function buildAxisRow(months) {
         const row = document.createElement('div');
@@ -98,14 +94,6 @@ window.ChartsView = (function () {
         section.style.display = '';
         section.dataset.mode = mode || '';
         container.dataset.columns = String(columnCount);
-    }
-
-    function esc(str) {
-        return String(str)
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;');
     }
 
     function renderEquityCurve(pts, mode, formatCurrencyFn) {

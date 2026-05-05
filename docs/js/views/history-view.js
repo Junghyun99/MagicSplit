@@ -2,19 +2,7 @@
 window.HistoryView = (function () {
     'use strict';
 
-    function escapeHtml(str) {
-        return String(str)
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#39;');
-    }
-
-    function formatTickerLabel(ticker, alias) {
-        if (!alias || alias === ticker) return ticker;
-        return `${alias} (${ticker})`;
-    }
+    const { escapeHtml, formatTickerLabel } = window.FormatUtils;
 
     function renderFilters(tickers, onFilterChange) {
         const container = document.getElementById('history-filters');

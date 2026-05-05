@@ -2,19 +2,7 @@
 window.DashboardView = (function () {
     'use strict';
 
-    function formatTickerLabel(ticker, alias) {
-        if (!alias || alias === ticker) return ticker;
-        return `${alias} (${ticker})`;
-    }
-
-    function escapeHtml(str) {
-        return String(str)
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#39;');
-    }
+    const { escapeHtml, formatTickerLabel } = window.FormatUtils;
 
     function setOfflineBadge(show) {
         const badge = document.getElementById('offline-badge');

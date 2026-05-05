@@ -68,16 +68,6 @@ window.HistoryModel = (function () {
             .map((ticker) => ({ ticker, alias: aliasByTicker[ticker] }));
     }
 
-    function getAliasMap() {
-        const map = {};
-        for (const r of allRows) {
-            if (r.ticker && r.alias && !map[r.ticker]) {
-                map[r.ticker] = r.alias;
-            }
-        }
-        return map;
-    }
-
     function setFilter(type, value) {
         if (type === 'ticker') activeFilters.ticker = value;
         if (type === 'action') activeFilters.action = value;
@@ -130,7 +120,6 @@ window.HistoryModel = (function () {
     return {
         setHistoryData,
         getUniqueTickers,
-        getAliasMap,
         setFilter,
         getNextPage,
         hasMore,
