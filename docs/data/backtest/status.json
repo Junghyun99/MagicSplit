@@ -1,86 +1,111 @@
 {
     "last_updated": "2025-12-30",
     "last_run_date": "2025-12-30",
-    "reason": "모니터링 - 신호 없음",
+    "reason": "삼성전자(005930):SELL(Lv5: 트레일링 스톱 활성화 — 현재가 $119,900 (매수가 대비 +178.9%), 스톱가 $117,502), 리노공업(058470):SELL(Lv1: 트레일링 스톱 활성화 — 현재가 $60,300 (매수가 대비 +385.0%), 스톱가 $59,094)",
     "portfolio": {
-        "total_value": 17459356.416250013,
-        "cash_balance": 16075256.416250013,
+        "total_value": 15397062.975125002,
+        "cash_balance": 7109962.975125002,
         "holdings": [
             {
                 "ticker": "005930",
                 "alias": "삼성전자",
-                "qty": 4,
+                "qty": 49,
                 "price": 119900.0,
-                "value": 479600.0
+                "value": 5875100.0
             },
             {
                 "ticker": "058470",
                 "alias": "리노공업",
-                "qty": 15,
+                "qty": 40,
                 "price": 60300.0,
-                "value": 904500.0
+                "value": 2412000.0
             }
         ]
     },
     "positions": {
         "005930": {
-            "total_qty": 4,
-            "lot_count": 1,
-            "total_invested": 402802.4,
-            "current_value": 479600.0,
+            "total_qty": 49,
+            "lot_count": 5,
+            "total_invested": 2385533.15,
+            "current_value": 5875100.0,
             "lots": [
                 {
-                    "lot_id": "lot_20260505_120643_005930_001",
-                    "buy_price": 100700.6,
-                    "quantity": 4,
-                    "buy_date": "2025-11-05",
+                    "lot_id": "lot_20260505_135453_005930_001",
+                    "buy_price": 55255.2,
+                    "quantity": 9,
+                    "buy_date": "2020-01-02",
                     "level": 1,
                     "current_price": 119900.0,
-                    "pct_change": 19.07
+                    "pct_change": 116.99
+                },
+                {
+                    "lot_id": "lot_20260505_135453_005930_002",
+                    "buy_price": 52152.1,
+                    "quantity": 9,
+                    "buy_date": "2020-03-11",
+                    "level": 2,
+                    "current_price": 119900.0,
+                    "pct_change": 129.9
+                },
+                {
+                    "lot_id": "lot_20260505_135453_005930_003",
+                    "buy_price": 48948.9,
+                    "quantity": 10,
+                    "buy_date": "2020-03-16",
+                    "level": 3,
+                    "current_price": 119900.0,
+                    "pct_change": 144.95
+                },
+                {
+                    "lot_id": "lot_20260505_135453_005930_004",
+                    "buy_price": 45645.6,
+                    "quantity": 10,
+                    "buy_date": "2020-03-18",
+                    "level": 4,
+                    "current_price": 119900.0,
+                    "pct_change": 162.68
+                },
+                {
+                    "lot_id": "lot_20260505_135453_005930_005",
+                    "buy_price": 42992.95,
+                    "quantity": 11,
+                    "buy_date": "2020-03-19",
+                    "level": 5,
+                    "current_price": 119900.0,
+                    "pct_change": 178.88
                 }
             ],
             "alias": "삼성전자",
-            "avg_buy_price": 100700.6,
-            "unrealized_pnl": 76797.6,
-            "unrealized_pnl_pct": 19.07,
-            "realized_pnl": 2427024.61,
-            "total_pnl": 2503822.21
+            "avg_buy_price": 48684.35,
+            "unrealized_pnl": 3489566.85,
+            "unrealized_pnl_pct": 146.28,
+            "realized_pnl": 0.0,
+            "total_pnl": 3489566.85
         },
         "058470": {
-            "total_qty": 15,
-            "lot_count": 2,
-            "total_invested": 952952.0,
-            "current_value": 904500.0,
+            "total_qty": 40,
+            "lot_count": 1,
+            "total_invested": 497296.8,
+            "current_value": 2412000.0,
             "lots": [
                 {
-                    "lot_id": "lot_20260505_120643_058470_001",
-                    "buy_price": 65665.6,
-                    "quantity": 7,
-                    "buy_date": "2025-12-02",
+                    "lot_id": "lot_20260505_135453_058470_001",
+                    "buy_price": 12432.42,
+                    "quantity": 40,
+                    "buy_date": "2020-01-02",
                     "level": 1,
                     "current_price": 60300.0,
-                    "pct_change": -8.17
-                },
-                {
-                    "lot_id": "lot_20260505_120643_058470_002",
-                    "buy_price": 61661.6,
-                    "quantity": 8,
-                    "buy_date": "2025-12-15",
-                    "level": 2,
-                    "current_price": 60300.0,
-                    "pct_change": -2.21
+                    "pct_change": 385.02
                 }
             ],
             "alias": "리노공업",
-            "avg_buy_price": 63530.1333,
-            "unrealized_pnl": -48452.0,
-            "unrealized_pnl_pct": -5.08,
-            "realized_pnl": 5142895.4,
-            "total_pnl": 5094443.4
+            "avg_buy_price": 12432.42,
+            "unrealized_pnl": 1914703.2,
+            "unrealized_pnl_pct": 385.02,
+            "realized_pnl": 0.0,
+            "total_pnl": 1914703.2
         }
     },
-    "realized_pnl_by_ticker": {
-        "005930": 2427024.6100000003,
-        "058470": 5142895.4
-    }
+    "realized_pnl_by_ticker": {},
+    "enabled_tickers": ["005930", "058470"]
 }
