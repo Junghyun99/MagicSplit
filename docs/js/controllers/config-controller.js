@@ -169,8 +169,6 @@ window.ConfigController = (function () {
         const vals = ConfigView.getEditorValues();
 
         stock.ticker = vals.ticker;
-        if (vals.exchange) stock.exchange = vals.exchange; else delete stock.exchange;
-        stock.market_type = vals.market_type;
         if (vals.preset) stock.preset = vals.preset; else delete stock.preset;
         if (vals.max_lots) stock.max_lots = parseInt(vals.max_lots, 10);
         if (vals.reentry_guard_pct) stock.reentry_guard_pct = parseFloat(vals.reentry_guard_pct); else delete stock.reentry_guard_pct;
