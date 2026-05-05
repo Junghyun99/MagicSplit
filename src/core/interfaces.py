@@ -60,6 +60,11 @@ class IRepository(ABC):
         ...
 
     @abstractmethod
+    def load_status(self) -> dict:
+        """최근 저장된 상태 딕셔너리를 로드한다."""
+        ...
+
+    @abstractmethod
     def get_last_run_date(self) -> Optional[str]:
         """마지막 실행 날짜를 반환한다."""
         ...

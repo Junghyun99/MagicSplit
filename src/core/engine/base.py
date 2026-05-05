@@ -533,7 +533,7 @@ class MagicSplitEngine:
         """종목의 상태 전이(OFF -> ON)를 감지하여 낡은 상태값을 초기화한다."""
         try:
             # 1. 이전 실행 상태 로드
-            prev_status = getattr(self.repo, "load_status", lambda: {})()
+            prev_status = self.repo.load_status()
             if not isinstance(prev_status, dict):
                 prev_status = {}
             

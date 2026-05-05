@@ -171,6 +171,10 @@ class JsonRepository(IRepository):
         """최신 상태 딕셔너리를 저장한다 (대시보드용)."""
         self._save_json(self.status_file, status_data)
 
+    def load_status(self) -> dict:
+        """최근 저장된 상태 딕셔너리를 로드한다."""
+        return self._load_json(self.status_file, default={})
+
     def _calc_realized_pnl_by_ticker(self) -> dict:
         """history.json에서 종목별 실현 손익 합계를 계산한다."""
         history = self._load_json(self.history_file, default=[])
