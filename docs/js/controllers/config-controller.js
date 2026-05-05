@@ -154,16 +154,30 @@ window.ConfigController = (function () {
                 return;
             }
 
-            const results = allTickers.filter(t =>
-                (t[1] && t[1].toLowerCase().includes(query)) ||
-                (t[0] && t[0].toLowerCase().includes(query))
-            ).slice(0, 50).map(t => ({
+            // 현재 편집 중인 설정 파일에 맞춰 필터링
+            const isDomesticFile = ConfigModel.getPath() === 'config_domestic.json';
+
+            const results = allTickers.filter(t => {
+                const ticker = t[0];
+                const alias = t[1];
+                const exchange = t[2];
+
+                // 검색어 일치 확인
+                const matches = (alias && alias.toLowerCase().includes(query)) ||
+                                (ticker && ticker.toLowerCase().includes(query));
+                
+                if (!matches) return false;
+
+                // 마켓 타입 필터링 (KS, KQ는 국내)
+                const isDomesticTicker = (exchange === 'KS' || exchange === 'KQ');
+                return isDomesticFile ? isDomesticTicker : !isDomesticTicker;
+            }).slice(0, 50).map(t => ({
                 ticker: t[0],
                 alias: t[1],
                 exchange: t[2]
             }));
 
-            console.log(`Search query: ${query}, Results: ${results.length}`);
+            console.log(`Search query: ${query}, Results: ${results.length} (${isDomesticFile ? 'Domestic' : 'Overseas'})`);
             ConfigView.renderTickerSearchResults(results, (selected) => {
                 tickerInput.value = selected.ticker;
                 saveCurrentTickerToModel();
