@@ -212,11 +212,17 @@ window.DashboardModel = (function () {
             count
         })).sort((a, b) => a.level - b.level);
 
+        const riskSummary = statusData.risk_summary || {};
+        const nextLevelNeeds = Number(riskSummary.next_level_needs || 0);
+        const maxPotentialExposure = Number(riskSummary.max_potential_exposure || 0);
+
         return {
             totalValue,
             cashRatio,
             tickerConcentration,
-            levelDist: levelDistArray
+            levelDist: levelDistArray,
+            nextLevelNeeds,
+            maxPotentialExposure
         };
     }
 

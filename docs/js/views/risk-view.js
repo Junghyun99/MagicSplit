@@ -104,8 +104,42 @@ window.RiskView = (function () {
         if (section) section.style.display = 'none';
     }
 
+    function renderNextLevelNeeds(nextLevelNeeds, maxExposure, currentInvested, mode) {
+        const container = document.getElementById('next-level-needs-container');
+        if (!container) return;
+
+        const fmt = (val) => window.DashboardView.formatCurrency(val, mode);
+        
+        const totalPotential = Math.max(maxExposure, currentInvested + nextLevelNeeds, 1);
+        const investedPct = (currentInvested / totalPotential) * 100;
+        const needsPct = (nextLevelNeeds / totalPotential) * 100;
+        const remainingPct = Math.max(0, 100 - investedPct - needsPct);
+
+        const html = `
+            <div class="risk-metric">
+                <span class="risk-label">차기 매수 소요 자금</span>
+                <span class="risk-value text-warning">${fmt(nextLevelNeeds)}</span>
+            </div>
+            <div class="progress-bar-container">
+                <div class="progress-bar bg-primary" style="width: ${investedPct}%" title="현재 투입: ${fmt(currentInvested)}"></div>
+                <div class="progress-bar bg-warning" style="width: ${needsPct}%" title="차기 소요: ${fmt(nextLevelNeeds)}"></div>
+                <div class="progress-bar bg-secondary" style="width: ${remainingPct}%" title="잠재적 여유: ${fmt(totalPotential - currentInvested - nextLevelNeeds)}"></div>
+            </div>
+            <div class="risk-legend">
+                <span><span class="legend-dot bg-primary"></span>현재 투입</span>
+                <span><span class="legend-dot bg-warning"></span>차기 소요</span>
+                <span><span class="legend-dot bg-secondary"></span>최대 노출 여유</span>
+            </div>
+            <div class="risk-footer-info">
+                이론적 최대 노출액: ${fmt(maxExposure)}
+            </div>
+        `;
+        container.innerHTML = html;
+    }
+
     return {
         renderCashRatio,
+        renderNextLevelNeeds,
         renderTickerConcentration,
         renderLevelDist,
         showRiskSection,

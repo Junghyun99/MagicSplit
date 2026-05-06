@@ -11,6 +11,12 @@ window.RiskController = (function () {
         }
 
         window.RiskView.renderCashRatio(metrics.cashRatio, mode);
+        window.RiskView.renderNextLevelNeeds(
+            metrics.nextLevelNeeds, 
+            metrics.maxPotentialExposure, 
+            metrics.totalValue - (metrics.cashRatio * metrics.totalValue / 100),
+            mode
+        );
         window.RiskView.renderTickerConcentration(metrics.tickerConcentration, mode);
         window.RiskView.renderLevelDist(metrics.levelDist);
     }

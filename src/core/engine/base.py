@@ -521,7 +521,7 @@ class MagicSplitEngine:
         old_realized_pnl = self.repo.get_realized_pnl_by_ticker()
         status_data = build_dashboard_status(
             portfolio, positions, reason, old_realized_pnl, executions,
-            self.all_tickers, sim_date
+            self.all_tickers, sim_date, self.stock_rules
         )
         self.repo.save_status(status_data)
 

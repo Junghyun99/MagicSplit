@@ -1,7 +1,7 @@
 # src/core/logic/status_builder.py
 from typing import List, Dict, Optional
 from datetime import datetime
-from src.core.models import Portfolio, PositionLot, TradeExecution
+from src.core.models import Portfolio, PositionLot, TradeExecution, StockRule
 from src.utils.ticker_reader import get_alias
 
 def build_dashboard_status(
@@ -11,7 +11,8 @@ def build_dashboard_status(
     old_realized_pnl_by_ticker: Dict[str, float],
     recent_executions: List[TradeExecution],
     enabled_tickers: List[str],
-    sim_date: Optional[str] = None
+    sim_date: Optional[str] = None,
+    stock_rules: Optional[List[StockRule]] = None
 ) -> dict:
     """대시보드 렌더링에 필요한 상태 데이터 구조(JSON)를 조립한다."""
     last_updated = sim_date or datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -73,6 +74,28 @@ def build_dashboard_status(
         ts["realized_pnl"] = round(realized_pnl, 2)
         ts["total_pnl"] = round(realized_pnl + unrealized_pnl, 2)
 
+    # 3.5 Calculate Risk Summary (Liquidity focus)
+    next_level_needs = 0
+    max_potential_exposure = 0
+    
+    if stock_rules:
+        rule_map = {r.ticker: r for r in stock_rules}
+        
+        # Calculate Next Level Needs (based on current highest level per ticker)
+        ticker_max_levels = {}
+        for lot in positions:
+            ticker_max_levels[lot.ticker] = max(ticker_max_levels.get(lot.ticker, 0), lot.level)
+            
+        for ticker, max_lv in ticker_max_levels.items():
+            rule = rule_map.get(ticker)
+            if rule and max_lv < rule.max_lots:
+                next_level_needs += rule.buy_amount_at(max_lv + 1)
+        
+        # Calculate Max Potential Exposure (sum of all enabled rules' total possible investment)
+        for rule in stock_rules:
+            for lv in range(1, rule.max_lots + 1):
+                max_potential_exposure += rule.buy_amount_at(lv)
+
     # 4. Construct final status dictionary
     status = {
         "last_updated": last_updated,
@@ -95,6 +118,11 @@ def build_dashboard_status(
         "positions": ticker_summary,
         "realized_pnl_by_ticker": realized_by_ticker,
         "enabled_tickers": enabled_tickers,
+        "risk_summary": {
+            "next_level_needs": round(next_level_needs, 2),
+            "max_potential_exposure": round(max_potential_exposure, 2)
+        }
     }
 
     return status
+
