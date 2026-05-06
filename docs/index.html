@@ -38,10 +38,10 @@
     </div>
 
     <nav class="view-switch" id="view-switch">
-        <button class="view-link active" data-view="positions">Positions</button>
-        <button class="view-link" data-view="history">History</button>
+        <button class="view-link active" data-view="risk">Risk</button>
+        <button class="view-link" data-view="positions">Positions</button>
         <button class="view-link" data-view="decisions">Decisions</button>
-        <button class="view-link" data-view="risk">Risk</button>
+        <button class="view-link" data-view="history">History</button>
     </nav>
 
     <div id="reason-banner" class="reason-banner" style="display:none"></div>
@@ -53,7 +53,7 @@
         <div id="level-heatmap" class="heatmap-container"></div>
     </section>
 
-    <div id="positions-container"></div>
+    <div id="positions-container" style="display:none"></div>
 
     <div id="history-section" style="display:none">
         <section id="equity-curve-section" class="heatmap-section" style="display:none">
@@ -69,7 +69,7 @@
         <div id="decisions-list"></div>
     </div>
 
-    <div id="risk-section" style="display:none">
+    <div id="risk-section">
         <div class="risk-overview">
             <div id="risk-health-container" class="risk-health-card"></div>
             <div id="risk-alerts-container" class="risk-alerts-card"></div>
