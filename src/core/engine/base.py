@@ -519,9 +519,10 @@ class MagicSplitEngine:
         
         # 상태 조립 및 저장 (코어 계층 비즈니스 로직)
         old_realized_pnl = self.repo.get_realized_pnl_by_ticker()
+        last_trade_dates = self.repo.get_last_trade_dates()
         status_data = build_dashboard_status(
             portfolio, positions, reason, old_realized_pnl, executions,
-            self.all_tickers, sim_date, self.stock_rules
+            self.all_tickers, sim_date, self.stock_rules, last_trade_dates
         )
         self.repo.save_status(status_data)
 

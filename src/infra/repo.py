@@ -220,6 +220,20 @@ class JsonRepository(IRepository):
 
         self._save_json(self.decisions_file, data)
 
+    def get_last_trade_dates(self) -> Dict[str, str]:
+        """종목별 마지막 체결 날짜를 반환한다 (YYYY-MM-DD)."""
+        history = self._load_json(self.history_file, default=[])
+        result: Dict[str, str] = {}
+        for record in history:
+            rec_date = record.get("date", "").split(" ")[0]
+            for exe in record.get("executions", []):
+                ticker = exe.get("ticker")
+                exe_date = exe.get("date", "").split(" ")[0] or rec_date
+                if ticker and exe_date:
+                    if ticker not in result or exe_date > result[ticker]:
+                        result[ticker] = exe_date
+        return result
+
     def _load_json(self, path: str, default=None):
         if not os.path.exists(path):
             return default

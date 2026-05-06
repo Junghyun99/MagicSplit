@@ -19,6 +19,7 @@ window.RiskController = (function () {
         );
         window.RiskView.renderTickerConcentration(metrics.tickerConcentration, mode);
         window.RiskView.renderLevelDist(metrics.levelDist);
+        window.RiskView.renderStalePositions(metrics.staleInfo);
     }
 
     return {

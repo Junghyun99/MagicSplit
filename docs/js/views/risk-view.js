@@ -137,9 +137,40 @@ window.RiskView = (function () {
         container.innerHTML = html;
     }
 
+    function renderStalePositions(staleInfo) {
+        const container = document.getElementById('stale-positions-container');
+        if (!container) return;
+
+        if (!staleInfo || staleInfo.length === 0) {
+            container.innerHTML = '<div class="empty-state">정체된 종목이 없습니다.</div>';
+            return;
+        }
+
+        const listHtml = staleInfo.map(item => {
+            let statusClass = 'text-success';
+            if (item.days_stale >= 30) statusClass = 'text-danger';
+            else if (item.days_stale >= 15) statusClass = 'text-warning';
+
+            return `
+                <div class="stale-item">
+                    <div class="stale-info">
+                        <span class="stale-name" title="${esc(item.ticker)}">${esc(item.alias)}</span>
+                        <span class="stale-date">마지막 거래: ${item.last_trade_date}</span>
+                    </div>
+                    <div class="stale-days ${statusClass}">
+                        ${item.days_stale}일 경과
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+        container.innerHTML = `<div class="stale-list">${listHtml}</div>`;
+    }
+
     return {
         renderCashRatio,
         renderNextLevelNeeds,
+        renderStalePositions,
         renderTickerConcentration,
         renderLevelDist,
         showRiskSection,

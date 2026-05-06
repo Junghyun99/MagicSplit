@@ -83,3 +83,8 @@ class IRepository(ABC):
     def save_decision_log(self, date: str, reason: str) -> None:
         """판단 내역(모니터링 사유)을 저장한다."""
         ...
+
+    @abstractmethod
+    def get_last_trade_dates(self) -> Dict[str, str]:
+        """종목별 마지막 체결 날짜를 반환한다."""
+        ...

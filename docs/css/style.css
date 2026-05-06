@@ -816,3 +816,43 @@ h2 { font-size: 1.1rem; margin-bottom: 8px; color: var(--text-muted); }
     text-align: center;
     padding: 10px;
 }
+
+/* Stale Positions */
+.stale-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.stale-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    background: rgba(0, 0, 0, 0.02);
+    border-radius: 8px;
+    border: 1px solid var(--border);
+}
+.stale-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+.stale-name {
+    font-weight: 700;
+    font-size: 0.95rem;
+}
+.stale-date {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+.stale-days {
+    font-weight: 700;
+    font-size: 0.85rem;
+}
+.risk-footer-info {
+    margin-top: 12px;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-align: right;
+    font-weight: 500;
+}

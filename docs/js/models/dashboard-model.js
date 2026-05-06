@@ -215,6 +215,7 @@ window.DashboardModel = (function () {
         const riskSummary = statusData.risk_summary || {};
         const nextLevelNeeds = Number(riskSummary.next_level_needs || 0);
         const maxPotentialExposure = Number(riskSummary.max_potential_exposure || 0);
+        const staleInfo = riskSummary.stale_info || [];
 
         return {
             totalValue,
@@ -222,7 +223,8 @@ window.DashboardModel = (function () {
             tickerConcentration,
             levelDist: levelDistArray,
             nextLevelNeeds,
-            maxPotentialExposure
+            maxPotentialExposure,
+            staleInfo
         };
     }
 
