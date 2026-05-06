@@ -157,14 +157,15 @@ UPDATE tickers SET sector = 'Technology', industry = 'Semiconductors' WHERE tick
 ## 3. 구현 단계별 로드맵
 
 ### Phase 1: 프론트엔드 기초 시각화 (기존 데이터 활용)
-- [ ] 대시보드 내 'Risk' 탭 또는 섹션 추가
-- [ ] 현재 `portfolio.json`과 `positions.json` 기반 현금/종목 비중 차트 구현
-- [ ] 차수별 분포도(Histogram) 구현
+- [x] 대시보드 내 'Risk' 탭 또는 섹션 추가
+- [x] 현재 상태(`status.json`) 기반 현금 비중 및 종목별 비중 차트 구현
+- [x] 차수별 분포도(Histogram) 구현
 
 ### Phase 2: 백엔드 데이터 보강
+- [ ] `MagicSplitEngine` 종료 시 리스크 요약 데이터(`risk_summary`) 생성 로직 추가 (차기 매수 소요 자금 산출 포함)
 - [ ] `tickers.db`에 섹터(Industry) 정보 컬럼 추가 및 데이터 수집 스크립트 작성
-- [ ] `MagicSplitEngine` 종료 시 리스크 요약 데이터(`risk_summary`) 생성 로직 추가
-- [ ] `dashboard_data.json` 구조 확장 (섹터 정보 및 시뮬레이션 데이터 포함)
+- [ ] 대시보드 상태 데이터 구조 확장 (섹터 정보 및 리스크 요약 데이터 포함)
+- [ ] 프론트엔드에 차기 매수 소요 자금 및 섹터별 비중 시각화 연동
 
 ### Phase 3: 알림 및 리포트 고도화
 - [ ] 지표별 위험 임계치(Threshold) 설정 기능

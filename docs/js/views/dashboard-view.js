@@ -241,7 +241,8 @@ window.DashboardView = (function () {
         const sections = {
             'positions': ['positions-container', 'level-heatmap-section', 'reason-banner'],
             'history': ['history-section'],
-            'decisions': ['decisions-section']
+            'decisions': ['decisions-section'],
+            'risk': ['risk-section']
         };
 
         Object.keys(sections).forEach(key => {

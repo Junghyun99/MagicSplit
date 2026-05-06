@@ -168,6 +168,58 @@ window.DashboardModel = (function () {
         return { months, tickers, grid, trades, aliasMap };
     }
 
+    function calculateRiskMetrics() {
+        if (!statusData) return null;
+
+        const portfolio = statusData.portfolio || {};
+        const positions = statusData.positions || {};
+        
+        const totalValue = Number(portfolio.total_value || 0);
+        const cashBalance = Number(portfolio.cash_balance || 0);
+
+        const cashRatio = totalValue > 0 ? (cashBalance / totalValue) * 100 : 0;
+
+        const tickerConcentration = [];
+        const levelDist = {};
+
+        for (const [ticker, info] of Object.entries(positions)) {
+            const alias = info.alias || ticker;
+            const value = info.current_value || 0;
+            const weight = totalValue > 0 ? (value / totalValue) * 100 : 0;
+            
+            if (value > 0) {
+                tickerConcentration.push({
+                    ticker,
+                    alias,
+                    value,
+                    weight,
+                    isWarning: weight > 20
+                });
+            }
+
+            if (Array.isArray(info.lots)) {
+                for (const lot of info.lots) {
+                    const level = lot.level || 0;
+                    levelDist[level] = (levelDist[level] || 0) + 1;
+                }
+            }
+        }
+
+        tickerConcentration.sort((a, b) => b.weight - a.weight);
+
+        const levelDistArray = Object.entries(levelDist).map(([level, count]) => ({
+            level: parseInt(level, 10),
+            count
+        })).sort((a, b) => a.level - b.level);
+
+        return {
+            totalValue,
+            cashRatio,
+            tickerConcentration,
+            levelDist: levelDistArray
+        };
+    }
+
     return {
         getValidMode,
         setMode,
@@ -178,6 +230,7 @@ window.DashboardModel = (function () {
         getHistoryData,
         getPortfolioSummary,
         classifyReason,
-        buildLevelBuckets
+        buildLevelBuckets,
+        calculateRiskMetrics
     };
 })();

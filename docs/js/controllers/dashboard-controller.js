@@ -57,6 +57,8 @@ window.DashboardController = (function () {
                 renderHistoryView();
             } else if (document.querySelector('.view-link[data-view="decisions"]').classList.contains('active')) {
                 DecisionView.renderDecisions(DecisionModel.getDecisions());
+            } else if (document.querySelector('.view-link[data-view="risk"]').classList.contains('active')) {
+                window.RiskController.renderRisk();
             }
 
         } finally {
@@ -138,6 +140,8 @@ window.DashboardController = (function () {
                     renderHistoryView();
                 } else if (view === 'decisions') {
                     DecisionView.renderDecisions(DecisionModel.getDecisions());
+                } else if (view === 'risk') {
+                    window.RiskController.renderRisk();
                 }
             });
         });
