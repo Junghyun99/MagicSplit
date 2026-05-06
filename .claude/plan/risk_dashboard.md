@@ -161,9 +161,9 @@ UPDATE tickers SET sector = 'Technology', industry = 'Semiconductors' WHERE tick
 - [x] 현재 상태(`status.json`) 기반 현금 비중 및 종목별 비중 차트 구현
 - [x] 차수별 분포도(Histogram) 구현
 
-### Phase 2: 백엔드 데이터 보강 (유동성 중심)
-- [x] `MagicSplitEngine` 종료 시 리스크 요약 데이터(`risk_summary`) 생성 로직 추가 (차기 매수 소요 자금 및 최대 노출액 산출)
-- [x] 프론트엔드에 차기 매수 소요 자금 및 유동성 리스크 시각화 연동
+### Phase 2: 백엔드 데이터 보강 (유동성 및 정체 지표)
+- [x] `MagicSplitEngine` 종료 시 리스크 요약 데이터(`risk_summary`) 생성 로직 추가 (차기 매수 소요 자금, 최대 노출액, 장기 정체 종목 산출)
+- [x] 프론트엔드에 유동성 지표 및 장기 정체 종목 시각화 연동
 
 ### Phase 3: 섹터 데이터 및 알림 고도화
 - [ ] `tickers.db`에 섹터(Industry) 정보 컬럼 추가 및 데이터 수집 스크립트 작성
@@ -187,4 +187,4 @@ UPDATE tickers SET sector = 'Technology', industry = 'Semiconductors' WHERE tick
 ```
 
 ---
-**마지막 업데이트:** 2026-05-06
+**마지막 업데이트:** 2026-05-07
