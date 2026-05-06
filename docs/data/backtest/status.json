@@ -30,7 +30,7 @@
             "current_value": 479600.0,
             "lots": [
                 {
-                    "lot_id": "lot_20260506_145121_005930_001",
+                    "lot_id": "lot_20260506_162920_005930_001",
                     "buy_price": 100700.6,
                     "quantity": 4,
                     "buy_date": "2025-11-05",
@@ -53,7 +53,7 @@
             "current_value": 904500.0,
             "lots": [
                 {
-                    "lot_id": "lot_20260506_145121_058470_001",
+                    "lot_id": "lot_20260506_162920_058470_001",
                     "buy_price": 65665.6,
                     "quantity": 7,
                     "buy_date": "2025-12-02",
@@ -62,7 +62,7 @@
                     "pct_change": -8.17
                 },
                 {
-                    "lot_id": "lot_20260506_145121_058470_002",
+                    "lot_id": "lot_20260506_162921_058470_002",
                     "buy_price": 61661.6,
                     "quantity": 8,
                     "buy_date": "2025-12-15",
@@ -86,6 +86,25 @@
     "enabled_tickers": ["005930", "058470"],
     "risk_summary": {
         "next_level_needs": 1000000.0,
-        "max_potential_exposure": 20000000.0
+        "max_potential_exposure": 20000000.0,
+        "stale_info": [
+            {
+                "ticker": "005930",
+                "alias": "삼성전자",
+                "last_trade_date": "2025-12-11",
+                "days_stale": 19
+            },
+            {
+                "ticker": "058470",
+                "alias": "리노공업",
+                "last_trade_date": "2025-12-15",
+                "days_stale": 15
+            }
+        ],
+        "risk_score": 100,
+        "sync_error": false,
+        "alerts": [],
+        "max_ticker_concentration": 5.18,
+        "high_level_ratio": 0.0
     }
 }
