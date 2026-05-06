@@ -121,6 +121,57 @@ def build_dashboard_status(
     
     stale_info.sort(key=lambda x: x["days_stale"], reverse=True)
 
+    # 3.6 Advanced Risk Metrics & Scoring (Phase 3)
+    alerts = []
+    sync_error = False
+    
+    # 1. Sync Check (Local vs Portfolio)
+    local_sums = {t: ts["total_qty"] for t, ts in ticker_summary.items()}
+    all_tickers = set(local_sums.keys()) | {t for t, q in portfolio.holdings.items() if q > 0}
+    for t in all_tickers:
+        l_qty = local_sums.get(t, 0)
+        p_qty = portfolio.holdings.get(t, 0)
+        if l_qty != p_qty:
+            sync_error = True
+            alias = get_alias(t) or t
+            alerts.append(f"⚠️ [{alias}] 잔고 불일치 (봇: {l_qty}, 계좌: {p_qty})")
+
+    # 2. Metrics for Scoring
+    total_val = portfolio.total_value
+    cash_ratio = (portfolio.total_cash / total_val * 100) if total_val > 0 else 0
+    
+    max_concentration = 0
+    for t, ts in ticker_summary.items():
+        weight = (ts["current_value"] / total_val * 100) if total_val > 0 else 0
+        if weight > max_concentration:
+            max_concentration = weight
+            
+    high_level_count = sum(1 for lot in positions if lot.level >= 8)
+    high_level_ratio = (high_level_count / len(positions)) if positions else 0
+    stale_count = sum(1 for s in stale_info if s["days_stale"] >= 30)
+    
+    # 3. Calculate Risk Score (Base 100)
+    score = 100
+    if cash_ratio < 25:
+        score -= min(30, (25 - cash_ratio) * 1.5)
+        if cash_ratio < 10:
+            alerts.append(f"⚠️ 현금 비중 부족 ({cash_ratio:.1f}%)")
+        
+    if max_concentration > 15:
+        score -= min(30, (max_concentration - 15) * 2.0)
+        if max_concentration > 20:
+            alerts.append(f"⚠️ 단일 종목 집중도 과다 ({max_concentration:.1f}%)")
+        
+    if high_level_ratio > 0:
+        score -= min(20, high_level_ratio * 50)
+        if high_level_ratio > 0.3:
+            alerts.append(f"⚠️ 고차수 포지션 비중 높음 ({high_level_ratio*100:.1f}%)")
+            
+    if stale_count > 0:
+        score -= min(20, stale_count * 4)
+        if stale_count >= 3:
+            alerts.append(f"⚠️ 장기 정체 종목 존재 ({stale_count}개)")
+
     # 4. Construct final status dictionary
     status = {
         "last_updated": last_updated,
@@ -146,7 +197,12 @@ def build_dashboard_status(
         "risk_summary": {
             "next_level_needs": round(next_level_needs, 2),
             "max_potential_exposure": round(max_potential_exposure, 2),
-            "stale_info": stale_info
+            "stale_info": stale_info,
+            "risk_score": max(0, round(score)),
+            "sync_error": sync_error,
+            "alerts": alerts,
+            "max_ticker_concentration": round(max_concentration, 2),
+            "high_level_ratio": round(high_level_ratio, 4)
         }
     }
 

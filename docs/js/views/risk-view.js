@@ -32,6 +32,54 @@ window.RiskView = (function () {
         container.innerHTML = html;
     }
 
+    function renderRiskHealth(riskSummary) {
+        const container = document.getElementById('risk-health-container');
+        if (!container) return;
+
+        const score = riskSummary.risk_score;
+        let status = '안전';
+        let colorClass = 'text-success';
+
+        if (score < 50) {
+            status = '위험';
+            colorClass = 'text-danger';
+        } else if (score < 80) {
+            status = '주의';
+            colorClass = 'text-warning';
+        }
+
+        container.innerHTML = `
+            <div class="health-label">리스크 상태</div>
+            <div class="health-score ${colorClass}">${score}</div>
+            <div class="health-status ${colorClass}">${status}</div>
+        `;
+    }
+
+    function renderAlerts(alerts, syncError) {
+        const container = document.getElementById('risk-alerts-container');
+        if (!container) return;
+
+        let alertsHtml = '';
+        if (alerts && alerts.length > 0) {
+            const listHtml = alerts.map(alert => {
+                const isDanger = alert.includes('불일치') || alert.includes('위험') || alert.includes('중단');
+                return `<div class="alert-item ${isDanger ? 'danger' : ''}">${alert}</div>`;
+            }).join('');
+            alertsHtml = `<div class="alerts-list">${listHtml}</div>`;
+        } else {
+            alertsHtml = `
+                <div class="empty-alerts">
+                    <span>✅</span> 모든 리스크 지표가 정상 범위 내에 있습니다.
+                </div>
+            `;
+        }
+
+        container.innerHTML = `
+            <h2>리스크 알림판</h2>
+            ${alertsHtml}
+        `;
+    }
+
     function renderTickerConcentration(concentration, mode) {
         const container = document.getElementById('ticker-concentration-container');
         if (!container) return;
@@ -41,20 +89,27 @@ window.RiskView = (function () {
             return;
         }
 
-        const maxWeight = Math.max(...concentration.map(c => c.weight), 1);
+        // Sort by weight descending
+        const sorted = [...concentration].sort((a, b) => b.weight - a.weight);
+        const maxWeight = Math.max(...sorted.map(c => c.weight), 15); // At least 15 for scale
 
-        const listHtml = concentration.map(c => {
+        const listHtml = sorted.map(c => {
             const barWidth = (c.weight / maxWeight) * 100;
-            const barClass = c.isWarning ? 'bg-warning' : 'bg-primary';
-            const valueClass = c.isWarning ? 'text-warning' : '';
+            const thresholdPos = (15 / maxWeight) * 100;
+            
+            const isOver = c.weight > 15;
+            const barClass = isOver ? 'bg-danger' : 'bg-primary';
+            const valueClass = isOver ? 'text-danger' : '';
+
             return `
                 <div class="concentration-item">
                     <div class="concentration-info">
                         <span class="concentration-name" title="${esc(c.ticker)}">${esc(c.alias)}</span>
                         <span class="concentration-value ${valueClass}">${c.weight.toFixed(2)}%</span>
                     </div>
-                    <div class="progress-bar-container slim">
+                    <div class="progress-bar-container slim" style="position:relative">
                         <div class="progress-bar ${barClass}" style="width: ${barWidth}%"></div>
+                        <div class="threshold-marker" style="left: ${thresholdPos}%; position: absolute; top: 0; bottom: 0; width: 2px; background: rgba(239, 68, 68, 0.4); z-index: 1;" title="임계치: 15%"></div>
                     </div>
                 </div>
             `;

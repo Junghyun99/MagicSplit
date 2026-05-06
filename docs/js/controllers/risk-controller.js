@@ -10,6 +10,9 @@ window.RiskController = (function () {
             return;
         }
 
+        window.RiskView.renderRiskHealth(metrics.riskSummary);
+        window.RiskView.renderAlerts(metrics.riskSummary.alerts, metrics.riskSummary.sync_error);
+
         window.RiskView.renderCashRatio(metrics.cashRatio, mode);
         window.RiskView.renderNextLevelNeeds(
             metrics.nextLevelNeeds, 

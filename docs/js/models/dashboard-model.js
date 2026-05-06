@@ -224,7 +224,8 @@ window.DashboardModel = (function () {
             levelDist: levelDistArray,
             nextLevelNeeds,
             maxPotentialExposure,
-            staleInfo
+            staleInfo,
+            riskSummary
         };
     }
 
