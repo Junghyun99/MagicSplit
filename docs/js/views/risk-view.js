@@ -228,6 +228,8 @@ window.RiskView = (function () {
         renderStalePositions,
         renderTickerConcentration,
         renderLevelDist,
+        renderRiskHealth,
+        renderAlerts,
         showRiskSection,
         hideRiskSection
     };
