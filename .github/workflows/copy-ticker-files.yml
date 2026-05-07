@@ -44,7 +44,7 @@ jobs:
       run: |
         BASE="https://raw.githubusercontent.com/junghyun99/ticker-map/${{ inputs.ticker_map_ref }}"
         curl -fsSL "$BASE/src/utils/ticker_reader.py" \
-          -o "${{ inputs.utils_dest }}/ticker_reader.py"
+          -o "${{ inputs.utils_dest }}/ticker_reader_base.py"
         curl -fsSL "$BASE/src/utils/tickers.db" \
           -o "${{ inputs.utils_dest }}/tickers.db"
 
@@ -53,7 +53,7 @@ jobs:
         git config user.name "github-actions[bot]"
         git config user.email "github-actions[bot]@users.noreply.github.com"
         git add "${{ inputs.skill_dest }}/SKILL.md"
-        git add "${{ inputs.utils_dest }}/ticker_reader.py"
+        git add "${{ inputs.utils_dest }}/ticker_reader_base.py"
         git add "${{ inputs.utils_dest }}/tickers.db"
         if git diff --cached --quiet; then
           echo "변경 사항 없음 - 커밋 생략"
