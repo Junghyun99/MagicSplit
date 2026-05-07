@@ -52,5 +52,30 @@ class GitHubAPI {
         }
         return await res.json();
     }
+
+    async triggerWorkflow(workflowFileName, inputs) {
+        const res = await fetch(`${this.baseUrl}/actions/workflows/${workflowFileName}/dispatches`, {
+            method: 'POST',
+            headers: this.headers,
+            body: JSON.stringify({
+                ref: 'main',
+                inputs: inputs
+            })
+        });
+        if (!res.ok) {
+            const errData = await res.json();
+            throw new Error(`워크플로우 실행 실패: ${errData.message}`);
+        }
+        return true;
+    }
+
+    async getLatestWorkflowRun(workflowFileName) {
+        const res = await fetch(`${this.baseUrl}/actions/workflows/${workflowFileName}/runs?per_page=1`, {
+            headers: this.headers
+        });
+        if (!res.ok) return null;
+        const data = await res.json();
+        return data.workflow_runs && data.workflow_runs.length > 0 ? data.workflow_runs[0] : null;
+    }
 }
 window.GitHubAPI = GitHubAPI;
