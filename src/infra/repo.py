@@ -28,6 +28,9 @@ class JsonRepository(IRepository):
         self.history_file = os.path.join(self.root, "history.json")
         self.status_file = os.path.join(self.root, "status.json")
 
+        self._history_cache = None
+        self._realized_pnl_cache = None
+
     # === Positions ===
 
     def load_positions(self) -> List[PositionLot]:
@@ -128,13 +131,24 @@ class JsonRepository(IRepository):
             "executions": enriched_execs,
         }
 
-        data = self._load_json(self.history_file, default=[])
+        if self._history_cache is None:
+            self._history_cache = self._load_json(self.history_file, default=[])
+        data = self._history_cache
         data.append(record)
 
         if self.max_history_records > 0:
             data = data[-self.max_history_records:]
+            self._history_cache = data
 
         self._save_json(self.history_file, data)
+
+        # Update _realized_pnl_cache if it exists
+        if self._realized_pnl_cache is not None:
+            for exe in record.get("executions", []):
+                pnl = exe.get("realized_pnl")
+                if pnl is not None:
+                    ticker = exe.get("ticker", "")
+                    self._realized_pnl_cache[ticker] = self._realized_pnl_cache.get(ticker, 0.0) + pnl
 
     # === Status ===
 
@@ -218,15 +232,19 @@ class JsonRepository(IRepository):
 
     def _calc_realized_pnl_by_ticker(self) -> dict:
         """history.json에서 종목별 실현 손익 합계를 계산한다."""
-        history = self._load_json(self.history_file, default=[])
-        result: dict = {}
+        if self._realized_pnl_cache is not None:
+            return self._realized_pnl_cache
+        if self._history_cache is None:
+            self._history_cache = self._load_json(self.history_file, default=[])
+        history = self._history_cache
+        self._realized_pnl_cache = {}
         for record in history:
             for exe in record.get("executions", []):
                 pnl = exe.get("realized_pnl")
                 if pnl is not None:
                     ticker = exe.get("ticker", "")
-                    result[ticker] = result.get(ticker, 0.0) + pnl
-        return result
+                    self._realized_pnl_cache[ticker] = self._realized_pnl_cache.get(ticker, 0.0) + pnl
+        return self._realized_pnl_cache
 
     def get_last_run_date(self) -> Optional[str]:
         """마지막 실행 날짜를 반환한다."""
