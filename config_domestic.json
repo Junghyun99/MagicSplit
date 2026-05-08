@@ -28,14 +28,12 @@
             "buy_threshold_pct": -5,
             "sell_threshold_pct": 10,
             "buy_amount": 300000,
-            "max_exposure_pct": 30,
-            "buy_amounts": [1000000],
             "sell_threshold_pcts": [100],
             "trailing_drop_pct": 5
         }
     ],
     "global": {
-        "max_exposure_pct": 50,
+        "max_exposure_pct": 80,
         "notification_enabled": true
     }
 }
