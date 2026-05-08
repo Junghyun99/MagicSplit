@@ -147,9 +147,18 @@ window.ChartsView = (function () {
         }).join('');
 
         const yTickValues = [rawMin, (rawMin + rawMax) / 2, rawMax];
+        // KRW는 자릿수가 커서 K/M 단위로 압축, USD는 통화 심볼 그대로 노출.
+        const compactLabel = (v) => {
+            const abs = Math.abs(v);
+            if (abs >= 1_000_000_000) return (v / 1_000_000_000).toFixed(1) + 'B';
+            if (abs >= 1_000_000) return (v / 1_000_000).toFixed(1) + 'M';
+            if (abs >= 1_000) return (v / 1_000).toFixed(1) + 'K';
+            return v.toFixed(mode === 'domestic' ? 0 : 2);
+        };
+        const currencySymbol = mode === 'domestic' ? '₩' : '$';
         const yLabelHtml = yTickValues.map(v => {
             const y = yScale(v).toFixed(1);
-            const label = Math.abs(v) >= 1000 ? (v / 1000).toFixed(1) + 'K' : v.toFixed(0);
+            const label = currencySymbol + compactLabel(v);
             return `<text x="${PAD.left - 5}" y="${y}" text-anchor="end" dominant-baseline="middle" class="ec-axis">${esc(label)}</text>`;
         }).join('');
 

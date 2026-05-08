@@ -9,6 +9,7 @@ from src.core.models import DayResult
 from src.core.engine.base import MagicSplitEngine
 from src.infra.repo import JsonRepository
 from src.utils.logger import TradeLogger
+from src.utils.currency import format_money
 from src.strategy_config import StrategyConfig
 from src.backtest.fetcher import download_historical_data
 from src.backtest.components import BacktestBroker
@@ -133,8 +134,8 @@ def run_backtest(
     if last_result:
         pf = last_result.final_portfolio
         logger.info(
-            f"최종: Cash=${pf.total_cash:,.0f}, "
-            f"Value=${pf.total_value:,.0f}"
+            f"최종: Cash={format_money(pf.total_cash, market_type)}, "
+            f"Value={format_money(pf.total_value, market_type)}"
         )
 
     return last_result

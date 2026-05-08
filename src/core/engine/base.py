@@ -20,6 +20,7 @@ from src.core.models import (
 from src.core.logic import SplitEvaluator, detect_mismatches, build_dashboard_status
 from src.core.engine.registry import register_engine
 from src.utils.ticker_reader import display_ticker
+from src.utils.currency import format_money
 
 
 @register_engine(color="#1f77b4")
@@ -50,6 +51,8 @@ class MagicSplitEngine:
         self.all_tickers = [r.ticker for r in self.stock_rules]
         self.notifier = notifier
         self.is_live_trading = is_live_trading
+        # 한 사이클의 모든 종목은 동일 market_type. 로그 통화 분기에 사용.
+        self.market_type = self.stock_rules[0].market_type if self.stock_rules else "overseas"
 
     def run_one_cycle(self, sim_date: Optional[str] = None) -> DayResult:
         """하루치 매매 사이클 전체를 실행한다.
@@ -76,8 +79,8 @@ class MagicSplitEngine:
             self.logger.info(">>> Step 1: Portfolio & Price Fetch")
             portfolio = self.get_portfolio()
             self.logger.info(
-                f"Portfolio: Cash=${portfolio.total_cash:,.0f}, "
-                f"Value=${portfolio.total_value:,.0f}"
+                f"Portfolio: Cash={format_money(portfolio.total_cash, self.market_type)}, "
+                f"Value={format_money(portfolio.total_value, self.market_type)}"
             )
 
             # Step 2: 기존 분할 포지션 로드
@@ -207,7 +210,8 @@ class MagicSplitEngine:
             )
         elif portfolio is not None:
             self._notify_message(
-                f"모니터링 완료. 신호 없음 | ${portfolio.total_value:,.0f}"
+                f"모니터링 완료. 신호 없음 | "
+                f"{format_money(portfolio.total_value, self.market_type)}"
                 f"{reject_suffix}{fail_suffix}"
             )
         else:
@@ -316,14 +320,14 @@ class MagicSplitEngine:
         if not ticker_lots:
             msg = (
                 f"  [{disp}] 신호 없음 | 보유 없음, "
-                f"현재 ${current_price:,.2f} (1차 진입 대기)"
+                f"현재 {format_money(current_price, rule.market_type)} (1차 진입 대기)"
             )
             last_sell = last_sell_prices.get(ticker) if last_sell_prices else None
             if last_sell and last_sell > 0 and rule.reentry_guard_pct is not None:
                 pct_from_sell = (current_price - last_sell) / last_sell * 100
                 msg += (
-                    f" | 직전 매도가 ${last_sell:,.2f} 대비 {pct_from_sell:+.2f}% "
-                    f"(가드 {rule.reentry_guard_pct:+.2f}%)"
+                    f" | 직전 매도가 {format_money(last_sell, rule.market_type)} 대비 "
+                    f"{pct_from_sell:+.2f}% (가드 {rule.reentry_guard_pct:+.2f}%)"
                 )
             self.logger.info(msg)
             return
@@ -336,7 +340,8 @@ class MagicSplitEngine:
 
         msg = (
             f"  [{disp}] 신호 없음 | Lv{last_lot.level} "
-            f"매수 ${last_lot.buy_price:,.2f} -> 현재 ${current_price:,.2f} "
+            f"매수 {format_money(last_lot.buy_price, rule.market_type)} -> "
+            f"현재 {format_money(current_price, rule.market_type)} "
             f"({profit_pct:+.2f}%) | 익절 +{sell_threshold:.1f}% / "
             f"추매 {buy_threshold:.1f}%"
         )
@@ -425,13 +430,13 @@ class MagicSplitEngine:
                 if last_sell_prices is not None and exe.ticker in last_sell_prices:
                     self.logger.info(
                         f"[{disp}] 동적 재매수 기준 초기화 "
-                        f"(매도가 ${last_sell_prices[exe.ticker]:.2f} -> 소비됨)"
+                        f"(매도가 {format_money(last_sell_prices[exe.ticker], self.market_type)} -> 소비됨)"
                     )
                     del last_sell_prices[exe.ticker]
                 tag = " (PARTIAL)" if exe.status == ExecutionStatus.PARTIAL else ""
                 self.logger.info(
                     f"[Position] New lot{tag}: {lot_id} Lv{level} "
-                    f"{disp} {exe.quantity}주 @${exe.price:.2f}"
+                    f"{disp} {exe.quantity}주 @{format_money(exe.price, self.market_type)}"
                 )
 
             elif exe.action == OrderAction.SELL:
@@ -522,7 +527,8 @@ class MagicSplitEngine:
         last_trade_dates = self.repo.get_last_trade_dates()
         status_data = build_dashboard_status(
             portfolio, positions, reason, old_realized_pnl, executions,
-            self.all_tickers, sim_date, self.stock_rules, last_trade_dates
+            self.all_tickers, sim_date, self.stock_rules, last_trade_dates,
+            market_type=self.market_type,
         )
         self.repo.save_status(status_data)
 
@@ -558,16 +564,18 @@ class MagicSplitEngine:
                     if ticker in last_sell_prices:
                         old_val = last_sell_prices.pop(ticker)
                         self.logger.info(
-                            f"[{ticker}] OFF->ON 전환 감지: 0주 상태이므로 직전 매도가(${old_val:.2f}) 초기화"
+                            f"[{ticker}] OFF->ON 전환 감지: 0주 상태이므로 "
+                            f"직전 매도가({format_money(old_val, self.market_type)}) 초기화"
                         )
-                    
+
                     # 실현 손익 초기화 (새 시즌)
                     realized_pnls = prev_status.setdefault("realized_pnl_by_ticker", {})
                     if realized_pnls.get(ticker, 0.0) != 0.0:
                         old_pnl = realized_pnls[ticker]
                         realized_pnls[ticker] = 0.0
                         self.logger.info(
-                            f"[{ticker}] OFF->ON 전환 감지: 0주 상태이므로 누적 실현 손익(${old_pnl:,.2f}) 초기화"
+                            f"[{ticker}] OFF->ON 전환 감지: 0주 상태이므로 "
+                            f"누적 실현 손익({format_money(old_pnl, self.market_type)}) 초기화"
                         )
                 
                 # B. 보유 수량이 있는 경우 -> 트레일링 최고가 초기화 (현재가부터 다시 추적)

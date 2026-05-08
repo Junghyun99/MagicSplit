@@ -628,8 +628,8 @@ class TestNoSignalLog:
         assert "[AAPL]" in msg
         assert "신호 없음" in msg
         assert "Lv2" in msg
-        assert "$95.00" in msg
-        assert "$97.00" in msg
+        assert "USD 95.00" in msg
+        assert "USD 97.00" in msg
         assert "+2.11%" in msg
         assert "익절 +10.0%" in msg
         assert "추매 -5.0%" in msg
@@ -646,7 +646,7 @@ class TestNoSignalLog:
         msgs = [c.args[0] for c in mock_logger.info.call_args_list]
         assert len(msgs) == 1
         assert "보유 없음" in msgs[0]
-        assert "$100.00" in msgs[0]
+        assert "USD 100.00" in msgs[0]
         assert "1차 진입 대기" in msgs[0]
 
     def test_logs_reentry_guard_distance_when_active(self, engine, mock_logger):
@@ -661,7 +661,7 @@ class TestNoSignalLog:
         last_sell_prices = {"AAPL": 100.0}
         engine._log_no_signal_status(rule, [], portfolio, last_sell_prices)
         msg = mock_logger.info.call_args_list[0].args[0]
-        assert "직전 매도가 $100.00" in msg
+        assert "직전 매도가 USD 100.00" in msg
         assert "-0.50%" in msg
         assert "가드 -1.00%" in msg
 
@@ -712,6 +712,6 @@ class TestNoSignalLog:
         msgs = [c.args[0] for c in mock_logger.info.call_args_list]
         assert any(
             "[AAPL]" in m and "신호 없음" in m and "Lv1" in m
-            and "$99.00" in m and "$100.00" in m
+            and "USD 99.00" in m and "USD 100.00" in m
             for m in msgs
         )

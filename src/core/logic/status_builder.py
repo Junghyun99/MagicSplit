@@ -13,9 +13,13 @@ def build_dashboard_status(
     enabled_tickers: List[str],
     sim_date: Optional[str] = None,
     stock_rules: Optional[List[StockRule]] = None,
-    last_trade_dates: Optional[Dict[str, str]] = None
+    last_trade_dates: Optional[Dict[str, str]] = None,
+    market_type: str = "overseas",
 ) -> dict:
-    """대시보드 렌더링에 필요한 상태 데이터 구조(JSON)를 조립한다."""
+    """대시보드 렌더링에 필요한 상태 데이터 구조(JSON)를 조립한다.
+
+    market_type은 status.json에 기록되어 프런트가 통화(KRW/USD)를 결정할 때 사용된다.
+    """
     last_updated = sim_date or datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     last_run_date = sim_date or datetime.now().strftime("%Y-%m-%d")
 
@@ -176,6 +180,7 @@ def build_dashboard_status(
     status = {
         "last_updated": last_updated,
         "last_run_date": last_run_date,
+        "market_type": market_type,
         "reason": reason,
         "portfolio": {
             "total_value": portfolio.total_value,

@@ -19,6 +19,7 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/..")
 from src.config import Config
 from src.strategy_config import StrategyConfig
 from src.utils.logger import TradeLogger
+from src.utils.currency import format_money
 from src.core.models import Order, OrderAction, PositionLot, ExecutionStatus, SplitSignal
 from src.main import _create_broker
 from src.infra.repo import JsonRepository
@@ -77,7 +78,11 @@ def main():
         
         current_price = prices[args.ticker]
         order_qty = int(args.amount / current_price)
-        logger.info(f"금액 기반 수량 계산: {args.amount} / {current_price} = {order_qty}주")
+        logger.info(
+            f"금액 기반 수량 계산: "
+            f"{format_money(args.amount, market_type)} / "
+            f"{format_money(current_price, market_type)} = {order_qty}주"
+        )
         
         if order_qty <= 0:
             logger.error(f"계산된 수량이 0입니다. 금액({args.amount})이 너무 적습니다.")
@@ -142,7 +147,10 @@ def main():
         logger.error(f"알 수 없는 주문 상태({execution.status})입니다. 안전을 위해 장부를 업데이트하지 않습니다.")
         sys.exit(1)
 
-    logger.info(f"주문 체결 완료! (가격: {execution.price}, 수량: {execution.quantity})")
+    logger.info(
+        f"주문 체결 완료! "
+        f"(가격: {format_money(execution.price, market_type)}, 수량: {execution.quantity})"
+    )
 
     # 7. 포지션(positions.json) 업데이트
     updated_positions = list(positions)
@@ -159,7 +167,10 @@ def main():
             level=level,
         )
         updated_positions.append(new_lot)
-        logger.info(f"[Position] New lot 추가됨: Lv{level} / {execution.quantity}주 @ {execution.price}")
+        logger.info(
+            f"[Position] New lot 추가됨: Lv{level} / {execution.quantity}주 "
+            f"@ {format_money(execution.price, market_type)}"
+        )
     else:
         # 매도 처리 로직: 높은 차수(가장 최근에 물타기한 것)부터 우선적으로 팔도록 레벨 역순 정렬
         target_lots = sorted(
