@@ -1,0 +1,4 @@
+- The project uses a simple HTML/JS frontend that asynchronously loads data from a static `status.json` file.
+- It uses plain HTML strings inside JS for rendering the data, not a frontend framework.
+- Apply Korean market (KRX) conventions: Red = Up/Profit, Blue = Down/Loss.
+- Remember to use explicit ARIA labels and hidden arrows (▲, ▼) for better accessibility for visually impaired users.
