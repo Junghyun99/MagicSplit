@@ -108,7 +108,8 @@
     }
 
     function mergeData() {
-        if (!currentConfig || !currentConfig.rules) return;
+        if (!currentConfig) return;
+        const stocks = currentConfig.stocks || currentConfig.rules || [];
         
         const statusMap = {};
         if (currentStatus && currentStatus.positions) {
@@ -119,7 +120,7 @@
             });
         }
 
-        tickers = currentConfig.rules.map(rule => {
+        tickers = stocks.map(rule => {
             const status = statusMap[rule.ticker] || { level: 0, quantity: 0 };
             return {
                 ticker: rule.ticker,
