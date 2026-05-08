@@ -3,26 +3,39 @@
         {
             "ticker": "005930",
             "market_type": "domestic",
-            "buy_threshold_pct": -5.0,
-            "sell_threshold_pct": 10.0,
+            "buy_threshold_pct": -5,
+            "sell_threshold_pct": 10,
             "buy_amount": 500000,
             "max_lots": 20,
-            "enabled": true,
+            "enabled": false,
             "trailing_drop_pct": 2
         },
         {
             "ticker": "058470",
             "market_type": "domestic",
-            "buy_threshold_pct": -5.0,
-            "sell_threshold_pct": 10.0,
+            "buy_threshold_pct": -5,
+            "sell_threshold_pct": 10,
             "buy_amount": 500000,
             "max_lots": 20,
-            "enabled": true,
+            "enabled": false,
             "trailing_drop_pct": 2
+        },
+        {
+            "ticker": "483320",
+            "enabled": true,
+            "max_lots": 10,
+            "market_type": "domestic",
+            "buy_threshold_pct": -5,
+            "sell_threshold_pct": 10,
+            "buy_amount": 300000,
+            "max_exposure_pct": 30,
+            "buy_amounts": [1000000],
+            "sell_threshold_pcts": [100],
+            "trailing_drop_pct": 5
         }
     ],
     "global": {
-        "max_exposure_pct": 50.0,
+        "max_exposure_pct": 50,
         "notification_enabled": true
     }
 }
