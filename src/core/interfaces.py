@@ -22,13 +22,28 @@ class ILogger(ABC):
     def warning(self, msg: str) -> None: ...
     @abstractmethod
     def error(self, msg: str) -> None: ...
+    
+    @abstractmethod
+    def set_ticker_context(self, ticker: Optional[str]) -> None:
+        """현재 로그가 귀속될 종목명을 설정한다 (None은 공통 영역)."""
+        ...
+    
+    @abstractmethod
+    def get_captured_logs(self, ticker: Optional[str] = None) -> List[str]:
+        """캡처된 로그를 추출한다. ticker 지정 시 해당 종목 로그만, None이면 전체 로그."""
+        ...
+    
+    @abstractmethod
+    def clear_captured_logs(self) -> None:
+        """저장된 캡처 로그를 비운다."""
+        ...
 
 
 class INotifier(ABC):
     @abstractmethod
-    def send_message(self, message: str) -> None: ...
+    def send_message(self, message: str, detail: Optional[str] = None) -> None: ...
     @abstractmethod
-    def send_alert(self, message: str) -> None: ...
+    def send_alert(self, message: str, detail: Optional[str] = None) -> None: ...
 
 
 class IRepository(ABC):

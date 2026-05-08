@@ -37,6 +37,20 @@ class TestSlackNotifier:
         notifier.send_message("test")
         mock_logger.error.assert_called_once()
 
+    @patch("src.infra.notifier.requests.post")
+    def test_send_with_detail_block_kit(self, mock_post, mock_logger):
+        """상세 정보가 있으면 Block Kit 형식 사용"""
+        mock_post.return_value = MagicMock(status_code=200)
+        notifier = SlackNotifier("https://hooks.slack.com/test", mock_logger)
+        notifier.send_message("Summary", detail="Detail Log")
+        
+        args, kwargs = mock_post.call_args
+        payload = kwargs["json"]
+        assert "blocks" in payload
+        assert len(payload["blocks"]) == 3
+        assert payload["blocks"][0]["text"]["text"] == "*[MagicSplit]*\nSummary"
+        assert "Detail Log" in payload["blocks"][2]["text"]["text"]
+
 
 class TestTelegramNotifier:
     def test_send_no_token(self, mock_logger):

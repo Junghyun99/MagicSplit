@@ -97,10 +97,12 @@ class MagicSplitEngine:
 
             # Step 2.5: 브로커 수량 ↔ positions 수량 합 불일치 검사
             # 불일치 종목은 이번 사이클에서 매매 중단 (자동 보정 미지원)
+            self.logger.set_ticker_context(None)  # 공통 영역
             halted_tickers = self._check_reconcile(positions, portfolio)
 
             # Step 3~5: 종목별 순차 실행
             for rule in self.stock_rules:
+                self.logger.set_ticker_context(rule.ticker)  # 종목 영역 시작
                 if rule.ticker in halted_tickers:
                     self.logger.warning(
                         f"[{display_ticker(rule.ticker)}] 수량 불일치로 매매 중단. "
@@ -125,9 +127,11 @@ class MagicSplitEngine:
                     ]
 
                     for s in blocked_signals:
-                        self._notify_alert(f"[{display_ticker(s.ticker)}] {s.reason}")
+                        detail = "\n".join(self.logger.get_captured_logs(s.ticker))
+                        self._notify_alert(f"[{display_ticker(s.ticker)}] {s.reason}", detail=detail)
                     for s in info_signals:
-                        self._notify_message(f"[{display_ticker(s.ticker)}] {s.reason}")
+                        detail = "\n".join(self.logger.get_captured_logs(s.ticker))
+                        self._notify_message(f"[{display_ticker(s.ticker)}] {s.reason}", detail=detail)
 
                     all_signals.extend(active_signals)
                     all_signals.extend(blocked_signals)
@@ -169,7 +173,8 @@ class MagicSplitEngine:
                 except Exception as e:
                     disp = display_ticker(rule.ticker)
                     self.logger.error(f"[{disp}] 처리 실패: {e}")
-                    self._notify_alert(f"[{disp}] Error: {e}")
+                    detail = "\n".join(self.logger.get_captured_logs(rule.ticker))
+                    self._notify_alert(f"[{disp}] Error: {e}", detail=detail)
                     failed_tickers.append(rule.ticker)
 
         except Exception as e:
@@ -195,6 +200,10 @@ class MagicSplitEngine:
                 self.logger.error(msg)
                 self._notify_alert(f"데이터 저장 생략: {', '.join(missing)} 조회 실패. 수동 데이터 복구 필요")
 
+        # 공통 영역으로 복귀 (결과 보고)
+        self.logger.set_ticker_context(None)
+        all_detail = "\n".join(self.logger.get_captured_logs(None))
+
         # 알림
         fail_suffix = f" (실패: {', '.join(failed_tickers)})" if failed_tickers else ""
         filled_execs = [
@@ -206,16 +215,18 @@ class MagicSplitEngine:
         if filled_execs:
             self._notify_message(
                 f"Orders Executed. Count: {len(filled_execs)}"
-                f"{reject_suffix}{fail_suffix}"
+                f"{reject_suffix}{fail_suffix}",
+                detail=all_detail
             )
         elif portfolio is not None:
             self._notify_message(
                 f"모니터링 완료. 신호 없음 | "
                 f"{format_money(portfolio.total_value, self.market_type)}"
-                f"{reject_suffix}{fail_suffix}"
+                f"{reject_suffix}{fail_suffix}",
+                detail=all_detail
             )
         else:
-            self._notify_message(f"사이클 실패{reject_suffix}{fail_suffix}")
+            self._notify_message(f"사이클 실패{reject_suffix}{fail_suffix}", detail=all_detail)
 
         final_pf = portfolio or Portfolio(
             total_cash=0, holdings={}, current_prices={},
@@ -293,7 +304,8 @@ class MagicSplitEngine:
             + "\n실행 권장: scripts/reconcile_positions.py"
         )
         self.logger.error(summary)
-        self._notify_alert(summary)
+        detail = "\n".join(self.logger.get_captured_logs(None))
+        self._notify_alert(summary, detail=detail)
         return {m.ticker for m in mismatches}
 
     def _log_no_signal_status(
@@ -603,10 +615,10 @@ class MagicSplitEngine:
         ]
         return ", ".join(reasons)
 
-    def _notify_message(self, msg: str) -> None:
+    def _notify_message(self, msg: str, detail: Optional[str] = None) -> None:
         if self.notifier:
-            self.notifier.send_message(msg)
+            self.notifier.send_message(msg, detail=detail)
 
-    def _notify_alert(self, msg: str) -> None:
+    def _notify_alert(self, msg: str, detail: Optional[str] = None) -> None:
         if self.notifier:
-            self.notifier.send_alert(msg)
+            self.notifier.send_alert(msg, detail=detail)

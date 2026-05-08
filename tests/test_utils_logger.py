@@ -55,3 +55,43 @@ class TestTradeLogger:
     def test_run_number_suffix(self, tmp_path):
         logger = TradeLogger(log_dir=str(tmp_path), run_number="42")
         assert "_42" in logger.log_file
+
+    def test_captured_logs_all(self, tmp_path):
+        logger = TradeLogger(log_dir=str(tmp_path))
+        logger.info("common message")
+        logger.set_ticker_context("NVDA")
+        logger.info("nvda message")
+        logger.set_ticker_context(None)
+        logger.info("end message")
+        
+        logs = logger.get_captured_logs()
+        assert len(logs) == 3
+        assert "common message" in logs[0]
+        assert "nvda message" in logs[1]
+        assert "end message" in logs[2]
+
+    def test_captured_logs_by_ticker(self, tmp_path):
+        logger = TradeLogger(log_dir=str(tmp_path))
+        logger.info("common")
+        logger.set_ticker_context("NVDA")
+        logger.info("nvda message 1")
+        logger.set_ticker_context("AAPL")
+        logger.info("aapl message")
+        logger.set_ticker_context("NVDA")
+        logger.info("nvda message 2")
+        
+        nvda_logs = logger.get_captured_logs("NVDA")
+        assert len(nvda_logs) == 2
+        assert "nvda message 1" in nvda_logs[0]
+        assert "nvda message 2" in nvda_logs[1]
+        
+        aapl_logs = logger.get_captured_logs("AAPL")
+        assert len(aapl_logs) == 1
+        assert "aapl message" in aapl_logs[0]
+
+    def test_clear_captured_logs(self, tmp_path):
+        logger = TradeLogger(log_dir=str(tmp_path))
+        logger.info("message")
+        assert len(logger.get_captured_logs()) == 1
+        logger.clear_captured_logs()
+        assert len(logger.get_captured_logs()) == 0
