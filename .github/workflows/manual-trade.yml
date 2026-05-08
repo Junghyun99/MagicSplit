@@ -87,10 +87,15 @@ jobs:
         ls -R logs/${{ github.event.inputs.market_type }}/ || echo "Not found"
 
     - name: Commit updated data and logs
+      run: |
+        git add --force docs/data/${{ github.event.inputs.market_type }}/*.json || true
+        git add --force logs/${{ github.event.inputs.market_type }}/*.log || true
+
+    - name: Push updated data and logs
       uses: stefanzweifel/git-auto-commit-action@v5
       with:
         commit_message: "Manual trade update: ${{ github.event.inputs.ticker }} ${{ github.event.inputs.action }} [skip ci]"
-        file_pattern: "docs/data/${{ github.event.inputs.market_type }}/** logs/${{ github.event.inputs.market_type }}/**"
+        file_pattern: "docs/data/${{ github.event.inputs.market_type }}/*.json logs/${{ github.event.inputs.market_type }}/*.log"
         commit_user_name: "github-actions[bot]"
         commit_user_email: "github-actions[bot]@users.noreply.github.com"
         add_options: '--force'

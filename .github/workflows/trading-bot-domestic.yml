@@ -107,10 +107,16 @@ jobs:
 
     - name: Commit updated data and logs
       if: ${{ success() && steps.holiday.outputs.is_holiday != 'true' }}
+      run: |
+        git add --force docs/data/domestic/*.json || true
+        git add --force logs/domestic/*.log || true
+        
+    - name: Push updated data and logs
+      if: ${{ success() && steps.holiday.outputs.is_holiday != 'true' }}
       uses: stefanzweifel/git-auto-commit-action@v5
       with:
         commit_message: "Auto-update domestic trading data and logs [skip ci]"
-        file_pattern: "docs/data/domestic/** logs/domestic/**"
+        file_pattern: "docs/data/domestic/*.json logs/domestic/*.log"
         commit_user_name: "github-actions[bot]"
         commit_user_email: "github-actions[bot]@users.noreply.github.com"
         add_options: '--force'
