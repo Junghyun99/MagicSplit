@@ -17,21 +17,22 @@ window.ConfigView = (function () {
         document.getElementById('global-trailing-drop').value = globalConfig?.trailing_drop_pct !== undefined ? globalConfig.trailing_drop_pct : '';
     }
 
-    function renderTickerList(stocks, activeIndex, onSelect) {
+    function renderTickerList(stocks, activeIndex, onSelect, getDisplayName) {
         const list = document.getElementById('ticker-list');
         list.innerHTML = '';
         stocks.forEach((stock, idx) => {
             const li = document.createElement('li');
-            li.textContent = stock.ticker || '(New Ticker)';
+            li.textContent = getDisplayName ? getDisplayName(stock.ticker) : (stock.ticker || '(New Ticker)');
             if (idx === activeIndex) li.className = 'active-ticker';
             li.onclick = () => onSelect(idx);
             list.appendChild(li);
         });
     }
 
-    function showTickerEditor(stock, isPresetMode) {
+    function showTickerEditor(stock, isPresetMode, displayName) {
         document.getElementById('ticker-editor-pane').style.display = '';
-        document.getElementById('current-ticker-title').textContent = stock.ticker ? (isPresetMode ? `${stock.ticker} 프리셋` : `${stock.ticker} 설정`) : (isPresetMode ? '새 프리셋' : '새 종목 설정');
+        const titleText = displayName || stock.ticker;
+        document.getElementById('current-ticker-title').textContent = titleText ? (isPresetMode ? `${titleText} 프리셋` : `${titleText} 설정`) : (isPresetMode ? '새 프리셋' : '새 종목 설정');
 
         document.getElementById('edit-ticker-label').textContent = isPresetMode ? 'Preset Name' : 'Ticker';
         document.getElementById('group-preset').style.display = isPresetMode ? 'none' : '';

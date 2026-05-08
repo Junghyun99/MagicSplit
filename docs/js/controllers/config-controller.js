@@ -4,6 +4,7 @@ window.ConfigController = (function () {
 
     let githubApi = null;
     let allTickers = [];
+    let tickerMap = {};
 
     async function init() {
         initAuthForm();
@@ -13,13 +14,33 @@ window.ConfigController = (function () {
         // Load tickers for search
         DataRepository.loadTickers().then(data => {
             allTickers = data;
+            tickerMap = {};
+            data.forEach(t => {
+                tickerMap[t[0]] = t[1];
+            });
             console.log(`Loaded ${allTickers.length} tickers for search.`);
+
+            // If already loaded config, refresh list to show aliases
+            if (ConfigModel.getConfig()) {
+                ConfigView.renderTickerList(ConfigModel.getConfig().stocks, ConfigModel.getActiveStockIndex(), onSelectTicker, getTickerDisplayName);
+                const activeStock = ConfigModel.getActiveStock();
+                if (activeStock) {
+                    ConfigView.showTickerEditor(activeStock, ConfigModel.isPresetMode(), getTickerDisplayName(activeStock.ticker));
+                }
+            }
+
             if (allTickers.length === 0) {
                 console.warn("Tickers data is empty. Search will not work.");
             }
         }).catch(err => {
             console.error("Failed to load tickers.json:", err);
         });
+    }
+
+    function getTickerDisplayName(ticker) {
+        if (!ticker) return '(New Ticker)';
+        const alias = tickerMap[ticker];
+        return alias ? `${alias} (${ticker})` : ticker;
     }
 
     function initAuthForm() {
@@ -69,7 +90,7 @@ window.ConfigController = (function () {
             ConfigView.showConfigSection(ConfigModel.isPresetMode());
             ConfigView.renderGlobalConfig(ConfigModel.getConfig().global);
 
-            ConfigView.renderTickerList(ConfigModel.getConfig().stocks, null, onSelectTicker);
+            ConfigView.renderTickerList(ConfigModel.getConfig().stocks, null, onSelectTicker, getTickerDisplayName);
 
             if (ConfigModel.getConfig().stocks.length > 0) {
                 onSelectTicker(0);
@@ -89,11 +110,11 @@ window.ConfigController = (function () {
         saveCurrentTickerToModel();
         ConfigModel.setActiveStockIndex(index);
 
-        ConfigView.renderTickerList(ConfigModel.getConfig().stocks, index, onSelectTicker);
+        ConfigView.renderTickerList(ConfigModel.getConfig().stocks, index, onSelectTicker, getTickerDisplayName);
 
         const stock = ConfigModel.getActiveStock();
         if (stock) {
-            ConfigView.showTickerEditor(stock, ConfigModel.isPresetMode());
+            ConfigView.showTickerEditor(stock, ConfigModel.isPresetMode(), getTickerDisplayName(stock.ticker));
             bindLevelEvents();
         }
     }
@@ -105,14 +126,14 @@ window.ConfigController = (function () {
             if (!ConfigModel.getConfig()) return;
             saveCurrentTickerToModel();
             const newIndex = ConfigModel.addStock();
-            ConfigView.renderTickerList(ConfigModel.getConfig().stocks, ConfigModel.getActiveStockIndex(), onSelectTicker);
+            ConfigView.renderTickerList(ConfigModel.getConfig().stocks, ConfigModel.getActiveStockIndex(), onSelectTicker, getTickerDisplayName);
             onSelectTicker(newIndex);
         });
 
         document.getElementById('delete-stock-btn').addEventListener('click', () => {
             if (confirm('이 종목 설정을 삭제하시겠습니까?')) {
                 ConfigModel.deleteActiveStock();
-                ConfigView.renderTickerList(ConfigModel.getConfig().stocks, ConfigModel.getActiveStockIndex(), onSelectTicker);
+                ConfigView.renderTickerList(ConfigModel.getConfig().stocks, ConfigModel.getActiveStockIndex(), onSelectTicker, getTickerDisplayName);
 
                 if (ConfigModel.getConfig().stocks.length > 0) {
                     onSelectTicker(0);
@@ -264,10 +285,11 @@ window.ConfigController = (function () {
 
         const activeIdx = ConfigModel.getActiveStockIndex();
         const lis = document.getElementById('ticker-list').querySelectorAll('li');
+        const displayName = getTickerDisplayName(stock.ticker);
         if (lis[activeIdx]) {
-            lis[activeIdx].textContent = stock.ticker || '(New Ticker)';
+            lis[activeIdx].textContent = displayName;
         }
-        document.getElementById('current-ticker-title').textContent = stock.ticker ? (ConfigModel.isPresetMode() ? `${stock.ticker} 프리셋` : `${stock.ticker} 설정`) : (ConfigModel.isPresetMode() ? '새 프리셋' : '새 종목 설정');
+        document.getElementById('current-ticker-title').textContent = stock.ticker ? (ConfigModel.isPresetMode() ? `${displayName} 프리셋` : `${displayName} 설정`) : (ConfigModel.isPresetMode() ? '새 프리셋' : '새 종목 설정');
 
         ConfigView.updateDiffPreview(ConfigModel.getDiff());
     }
