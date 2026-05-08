@@ -3,38 +3,44 @@
     'use strict';
 
     let githubApi = null;
-    let tickers = [];
     let currentMarket = 'domestic';
+    let currentConfig = null;
+    let currentStatus = null;
+    let tickers = []; // Merged data
 
     // UI Elements
-    const authCard = document.getElementById('auth-card');
     const githubToken = document.getElementById('github-token');
     const githubOwner = document.getElementById('github-owner');
     const githubRepo = document.getElementById('github-repo');
     const saveSettingsBtn = document.getElementById('save-settings-btn');
 
-    const tickerSearch = document.getElementById('ticker-search');
-    const tickerResults = document.getElementById('ticker-results');
-    const selectedTicker = document.getElementById('selected-ticker');
-    const orderQty = document.getElementById('order-qty');
-    const executeTradeBtn = document.getElementById('execute-trade-btn');
+    const tickerTbody = document.getElementById('ticker-tbody');
+    const marketBtns = document.querySelectorAll('.tab-btn');
+
+    const orderModal = document.getElementById('order-modal');
+    const modalTitle = document.getElementById('modal-title');
+    const inputLabel = document.getElementById('input-label');
+    const orderValue = document.getElementById('order-value');
+    const inputHint = document.getElementById('input-hint');
+    const confirmTradeBtn = document.getElementById('confirm-trade-btn');
+    const cancelTradeBtn = document.getElementById('cancel-trade-btn');
     const statusFeedback = document.getElementById('status-feedback');
 
-    const marketBtns = document.querySelectorAll('.market-btn');
-    const actionBtns = document.querySelectorAll('.action-btn');
+    let activeOrderParams = null; // { ticker, alias, action, marketType }
 
-    // Initialize
+    // Init
     async function init() {
         loadSettings();
-        tickers = await DataRepository.loadTickers();
         setupEventListeners();
+        if (githubApi) {
+            await refreshData();
+        }
     }
 
     function loadSettings() {
         githubToken.value = localStorage.getItem('github_token') || '';
         githubOwner.value = localStorage.getItem('github_owner') || '';
         githubRepo.value = localStorage.getItem('github_repo') || '';
-        
         if (githubToken.value && githubOwner.value && githubRepo.value) {
             githubApi = new GitHubAPI(githubToken.value, githubOwner.value, githubRepo.value);
         }
@@ -45,17 +51,13 @@
             const token = githubToken.value.trim();
             const owner = githubOwner.value.trim();
             const repo = githubRepo.value.trim();
-
-            if (!token || !owner || !repo) {
-                alert('모든 GitHub 설정을 입력해 주세요.');
-                return;
-            }
-
+            if (!token || !owner || !repo) { alert('모든 설정을 입력해 주세요.'); return; }
             localStorage.setItem('github_token', token);
             localStorage.setItem('github_owner', owner);
             localStorage.setItem('github_repo', repo);
             githubApi = new GitHubAPI(token, owner, repo);
-            alert('설정이 저장되었습니다.');
+            alert('설정이 저장되었습니다. 데이터를 새로 불러옵니다.');
+            refreshData();
         };
 
         marketBtns.forEach(btn => {
@@ -63,150 +65,244 @@
                 marketBtns.forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
                 currentMarket = btn.dataset.market;
-                tickerSearch.value = '';
-                selectedTicker.value = '';
+                refreshData();
             };
         });
 
-        actionBtns.forEach(btn => {
-            btn.onclick = () => {
-                actionBtns.forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-            };
-        });
+        cancelTradeBtn.onclick = () => orderModal.style.display = 'none';
+        confirmTradeBtn.onclick = executeTrade;
+        
+        // Close modal when clicking overlay
+        orderModal.onclick = (e) => {
+            if (e.target === orderModal) orderModal.style.display = 'none';
+        };
+    }
 
-        tickerSearch.oninput = (e) => {
-            const val = e.target.value.trim().toLowerCase();
-            if (val.length < 1) {
-                tickerResults.style.display = 'none';
+    async function refreshData() {
+        tickerTbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding: 40px;">데이터를 불러오는 중...</td></tr>';
+        
+        try {
+            if (!githubApi) {
+                tickerTbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding: 40px; color: var(--danger);">GitHub 설정을 먼저 완료해 주세요.</td></tr>';
                 return;
             }
 
-            const results = tickers.filter(t => 
-                t.market_type === currentMarket && 
-                (t.ticker.toLowerCase().includes(val) || t.alias.toLowerCase().includes(val))
-            ).slice(0, 10);
+            // 1. Fetch Config from GitHub (Real-time)
+            const configPath = `config_${currentMarket}.json`;
+            const { content } = await githubApi.getFile(configPath);
+            currentConfig = JSON.parse(content);
 
-            renderSearchResults(results);
-        };
+            // 2. Fetch Status from Repository (Dashboard data)
+            currentStatus = await DataRepository.loadStatus(currentMarket);
 
-        // Close search results when clicking outside
-        document.addEventListener('click', (e) => {
-            if (!tickerSearch.contains(e.target) && !tickerResults.contains(e.target)) {
-                tickerResults.style.display = 'none';
-            }
-        });
+            // 3. Merge Data
+            mergeData();
 
-        executeTradeBtn.onclick = executeTrade;
+            // 4. Render
+            renderTable();
+
+        } catch (e) {
+            console.error(e);
+            tickerTbody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding: 40px; color: var(--danger);">로드 실패: ${e.message}</td></tr>`;
+        }
     }
 
-    function renderSearchResults(results) {
-        tickerResults.innerHTML = '';
-        if (results.length === 0) {
-            tickerResults.style.display = 'none';
+    function mergeData() {
+        if (!currentConfig || !currentConfig.rules) return;
+        
+        const statusMap = {};
+        if (currentStatus && currentStatus.positions) {
+            currentStatus.positions.forEach(pos => {
+                if (!statusMap[pos.ticker]) statusMap[pos.ticker] = { level: 0, quantity: 0 };
+                statusMap[pos.ticker].level = Math.max(statusMap[pos.ticker].level, pos.level);
+                statusMap[pos.ticker].quantity += pos.quantity;
+            });
+        }
+
+        tickers = currentConfig.rules.map(rule => {
+            const status = statusMap[rule.ticker] || { level: 0, quantity: 0 };
+            return {
+                ticker: rule.ticker,
+                alias: rule.alias || rule.ticker,
+                enabled: rule.enabled !== false,
+                currentLevel: status.level,
+                currentQty: status.quantity,
+                config: rule
+            };
+        });
+    }
+
+    function renderTable() {
+        tickerTbody.innerHTML = '';
+        if (tickers.length === 0) {
+            tickerTbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding: 40px;">설정된 종목이 없습니다.</td></tr>';
             return;
         }
 
-        results.forEach(r => {
-            const div = document.createElement('div');
-            div.className = 'search-item';
-            div.innerHTML = `
-                <span class="ticker-alias">${r.alias}</span>
-                <span>
-                    <span class="ticker-id">${r.ticker}</span>
-                    <span class="ticker-ex">${r.exchange}</span>
-                </span>
+        tickers.forEach(t => {
+            const tr = document.createElement('tr');
+            
+            // Info Column
+            const infoTd = document.createElement('td');
+            infoTd.innerHTML = `
+                <div class="ticker-info">
+                    <span class="ticker-name">${t.alias}</span>
+                    <span class="ticker-symbol">${t.ticker}</span>
+                </div>
             `;
-            div.onclick = () => {
-                tickerSearch.value = `${r.alias} (${r.ticker})`;
-                selectedTicker.value = r.ticker;
-                tickerResults.style.display = 'none';
-            };
-            tickerResults.appendChild(div);
+
+            // Status Column
+            const statusTd = document.createElement('td');
+            statusTd.innerHTML = `
+                <span class="badge ${t.enabled ? 'badge-enabled' : 'badge-disabled'}">${t.enabled ? 'Active' : 'Paused'}</span>
+            `;
+
+            // Inventory Column
+            const invTd = document.createElement('td');
+            invTd.innerHTML = `
+                <span class="badge badge-level">${t.currentLevel}차</span>
+                <span style="font-size:0.9rem; margin-left:5px;">${t.currentQty}주</span>
+            `;
+
+            // Actions Column
+            const actionsTd = document.createElement('td');
+            actionsTd.className = 'trade-actions';
+            
+            const buyBtn = document.createElement('button');
+            buyBtn.className = 'btn btn-sm btn-buy';
+            buyBtn.textContent = '매수';
+            buyBtn.onclick = () => openOrderModal(t, 'buy');
+
+            const sellBtn = document.createElement('button');
+            sellBtn.className = 'btn btn-sm btn-sell';
+            sellBtn.textContent = '매도';
+            if (t.currentQty <= 0) {
+                sellBtn.style.opacity = '0.5';
+                sellBtn.style.cursor = 'not-allowed';
+            } else {
+                sellBtn.onclick = () => openOrderModal(t, 'sell');
+            }
+
+            actionsTd.appendChild(buyBtn);
+            actionsTd.appendChild(sellBtn);
+
+            tr.appendChild(infoTd);
+            tr.appendChild(statusTd);
+            tr.appendChild(invTd);
+            tr.appendChild(actionsTd);
+            tickerTbody.appendChild(tr);
         });
-        tickerResults.style.display = 'block';
+    }
+
+    function openOrderModal(tickerObj, action) {
+        activeOrderParams = { 
+            ticker: tickerObj.ticker, 
+            alias: tickerObj.alias,
+            action: action,
+            marketType: currentMarket 
+        };
+
+        modalTitle.textContent = `${tickerObj.alias} (${tickerObj.ticker}) ${action === 'buy' ? '매수' : '매도'}`;
+        statusFeedback.style.display = 'none';
+        confirmTradeBtn.disabled = false;
+        confirmTradeBtn.textContent = '실행';
+
+        if (action === 'buy') {
+            inputLabel.textContent = currentMarket === 'domestic' ? '매수 금액 (원)' : '매수 금액 ($)';
+            const nextLv = tickerObj.currentLevel + 1;
+            const lvAmount = tickerObj.config.buy_amounts && tickerObj.config.buy_amounts[nextLv - 1];
+            const defaultAmt = lvAmount || tickerObj.config.buy_amount || 0;
+            orderValue.value = defaultAmt;
+            inputHint.textContent = `현재 ${tickerObj.currentLevel}차 -> ${nextLv}차 매수 설정값: ${defaultAmt.toLocaleString()}`;
+        } else {
+            inputLabel.textContent = '매도 수량 (주)';
+            // Find qty of highest level
+            const lots = currentStatus && currentStatus.positions ? currentStatus.positions.filter(p => p.ticker === tickerObj.ticker) : [];
+            const highestLvLot = lots.sort((a,b) => b.level - a.level)[0];
+            const defaultQty = highestLvLot ? highestLvLot.quantity : 0;
+            orderValue.value = defaultQty;
+            inputHint.textContent = `현재 최상위(${tickerObj.currentLevel}차) 보유량: ${defaultQty}주 / 총 ${tickerObj.currentQty}주`;
+        }
+
+        orderModal.style.display = 'flex';
     }
 
     async function executeTrade() {
-        if (!githubApi) {
-            showStatus('GitHub 설정을 먼저 저장해 주세요.', 'error');
+        if (!activeOrderParams || !githubApi) return;
+
+        const val = parseFloat(orderValue.value);
+        if (isNaN(val) || val <= 0) {
+            showFeedback('올바른 값을 입력해 주세요.', 'error');
             return;
         }
 
-        const ticker = selectedTicker.value;
-        const action = document.querySelector('.action-btn.active').dataset.action;
-        const qty = orderQty.value;
-
-        if (!ticker) {
-            showStatus('종목을 검색하여 선택해 주세요.', 'error');
-            return;
-        }
-        if (!qty || qty <= 0) {
-            showStatus('올바른 수량을 입력해 주세요.', 'error');
-            return;
-        }
-
-        const marketName = currentMarket === 'domestic' ? '국내' : '해외';
-        if (!confirm(`${marketName} 시장에서 ${ticker} 종목을 ${qty}주 ${action === 'buy' ? '매수' : '매도'} 하시겠습니까?`)) {
+        const unit = activeOrderParams.action === 'buy' ? (currentMarket === 'domestic' ? '원' : '$') : '주';
+        if (!confirm(`${activeOrderParams.alias} 종목을 ${val.toLocaleString()}${unit} ${activeOrderParams.action === 'buy' ? '매수' : '매도'} 하시겠습니까?`)) {
             return;
         }
 
         try {
             setLoading(true);
-            showStatus('GitHub Action 트리거 중...', 'info');
+            showFeedback('GitHub Action 트리거 중...', 'info');
 
-            await githubApi.triggerWorkflow('manual-trade.yml', {
-                market_type: currentMarket,
-                ticker: ticker,
-                action: action,
-                quantity: qty.toString()
-            });
+            const inputs = {
+                market_type: activeOrderParams.marketType,
+                ticker: activeOrderParams.ticker,
+                action: activeOrderParams.action
+            };
 
-            showStatus('매매 요청이 성공적으로 전송되었습니다! 1~2분 후 데이터 업데이트가 완료되면 대시보드에 반영됩니다.', 'success');
+            if (activeOrderParams.action === 'buy') {
+                inputs.amount = val.toString();
+                inputs.quantity = "";
+            } else {
+                inputs.quantity = val.toString();
+                inputs.amount = "";
+            }
+
+            await githubApi.triggerWorkflow('manual-trade.yml', inputs);
+
+            showFeedback('매매 요청 성공! 1~2분 후 대시보드 데이터 업데이트가 완료되면 반영됩니다.', 'success');
             
-            // 최신 실행 링크 가져오기 (약간의 지연 필요할 수 있음)
             setTimeout(async () => {
                 try {
-                    const runInfo = await githubApi.getLatestWorkflowRun('manual-trade.yml');
-                    if (runInfo) {
+                    const run = await githubApi.getLatestWorkflowRun('manual-trade.yml');
+                    if (run) {
                         const link = document.createElement('a');
-                        link.href = runInfo.html_url;
+                        link.href = run.html_url;
                         link.target = '_blank';
                         link.textContent = ' 🚀 GitHub Action 실행 로그 보기';
                         link.style.display = 'block';
                         link.style.marginTop = '12px';
-                        link.style.padding = '10px';
+                        link.style.padding = '8px';
                         link.style.background = '#f1f5f9';
-                        link.style.borderRadius = '6px';
+                        link.style.borderRadius = '4px';
                         link.style.textDecoration = 'none';
-                        link.style.color = 'var(--primary)';
-                        link.style.fontWeight = 'bold';
                         link.style.textAlign = 'center';
+                        link.style.fontWeight = 'bold';
                         statusFeedback.appendChild(link);
                     }
-                } catch (e) {
-                    console.error('Failed to fetch latest run:', e);
-                }
-            }, 2000);
+                } catch(e) {}
+            }, 3000);
 
         } catch (e) {
-            showStatus(`오류 발생: ${e.message}`, 'error');
+            showFeedback(`오류: ${e.message}`, 'error');
         } finally {
             setLoading(false);
         }
     }
 
-    function showStatus(msg, type) {
+    function showFeedback(msg, type) {
         statusFeedback.textContent = msg;
         statusFeedback.className = `status-feedback ${type}`;
+        statusFeedback.style.display = 'block';
     }
 
     function setLoading(isLoading) {
-        executeTradeBtn.disabled = isLoading;
+        confirmTradeBtn.disabled = isLoading;
         if (isLoading) {
-            executeTradeBtn.innerHTML = '<span class="loading-spinner"></span> 요청 중...';
+            confirmTradeBtn.innerHTML = '<span class="loading-spinner"></span> 요청 중...';
         } else {
-            executeTradeBtn.textContent = '매매 실행 (GitHub Action)';
+            confirmTradeBtn.textContent = '실행';
         }
     }
 

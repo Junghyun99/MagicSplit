@@ -27,15 +27,19 @@ def parse_args():
     parser = argparse.ArgumentParser(description="수동 매매 스크립트")
     parser.add_argument("--ticker", required=True, help="종목 코드 (예: 005930, TSLA)")
     parser.add_argument("--action", required=True, choices=["buy", "sell"], help="매수(buy) 또는 매도(sell)")
-    parser.add_argument("--qty", required=True, type=int, help="주문 수량")
+    parser.add_argument("--qty", type=int, help="주문 수량 (매도 시 필수 또는 매수 시 직접 지정)")
+    parser.add_argument("--amount", type=float, help="주문 금액 (매수 시 수량 대신 사용 가능)")
     parser.add_argument("--dry-run", action="store_true", help="실제 주문을 넣지 않고 시뮬레이션만 수행")
     return parser.parse_args()
 
 def main():
     args = parse_args()
+    if not args.qty and not args.amount:
+        print("에러: --qty 또는 --amount 중 하나는 반드시 입력해야 합니다.")
+        sys.exit(1)
     config = Config()
     logger = TradeLogger(config.LOG_PATH)
-    logger.info(f"=== 수동 매매(Manual Trade) 시작: {args.ticker} {args.action.upper()} {args.qty}주 ===")
+    logger.info(f"=== 수동 매매(Manual Trade) 시작: {args.ticker} {args.action.upper()} (Qty:{args.qty}, Amt:{args.amount}) ===")
 
     strategy = StrategyConfig(config.CONFIG_JSON_PATH)
 
@@ -63,6 +67,26 @@ def main():
         max_history_records=config.MAX_HISTORY_RECORDS,
     )
 
+    # 2.5 수량 결정 로직
+    order_qty = args.qty
+    if args.action == "buy" and args.amount:
+        prices = broker.fetch_current_prices([args.ticker])
+        if args.ticker not in prices or prices[args.ticker] <= 0:
+            logger.error(f"현재가 조회 실패: {args.ticker}")
+            sys.exit(1)
+        
+        current_price = prices[args.ticker]
+        order_qty = int(args.amount / current_price)
+        logger.info(f"금액 기반 수량 계산: {args.amount} / {current_price} = {order_qty}주")
+        
+        if order_qty <= 0:
+            logger.error(f"계산된 수량이 0입니다. 금액({args.amount})이 너무 적습니다.")
+            sys.exit(1)
+    
+    if not order_qty or order_qty <= 0:
+        logger.error("유효한 주문 수량이 결정되지 않았습니다. --qty 또는 --amount를 확인하세요.")
+        sys.exit(1)
+
     # 3. 기존 포지션 조회
     positions = repo.load_positions()
     ticker_lots = [lot for lot in positions if lot.ticker == args.ticker]
@@ -81,8 +105,8 @@ def main():
     if args.action == "sell":
         available_qty = sum([lot.quantity for lot in ticker_lots])
             
-        if args.qty > available_qty:
-            logger.error(f"입력하신 매도 수량({args.qty}주)이 봇 장부상의 보유 수량({available_qty}주)보다 많습니다. 팻핑거(오타) 방지를 위해 주문을 취소합니다.")
+        if order_qty > available_qty:
+            logger.error(f"입력하신 매도 수량({order_qty}주)이 봇 장부상의 보유 수량({available_qty}주)보다 많습니다. 팻핑거(오타) 방지를 위해 주문을 취소합니다.")
             sys.exit(1)
 
     # 6. 주문 객체 생성
@@ -90,7 +114,7 @@ def main():
     order = Order(
         ticker=args.ticker,
         action=action_enum,
-        quantity=args.qty,
+        quantity=order_qty,
         price=0.0,
     )
 

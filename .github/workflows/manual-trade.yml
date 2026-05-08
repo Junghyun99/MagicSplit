@@ -22,8 +22,12 @@ on:
           - buy
           - sell
       quantity:
-        description: 'Quantity'
-        required: true
+        description: 'Quantity (Optional if amount is set)'
+        required: false
+        type: string
+      amount:
+        description: 'Order Amount (Optional if quantity is set)'
+        required: false
         type: string
 
 jobs:
@@ -64,7 +68,8 @@ jobs:
         python scripts/manual_trade.py \
           --ticker "${{ github.event.inputs.ticker }}" \
           --action "${{ github.event.inputs.action }}" \
-          --qty "${{ github.event.inputs.quantity }}"
+          ${{ github.event.inputs.quantity != '' && format('--qty "{0}"', github.event.inputs.quantity) || '' }} \
+          ${{ github.event.inputs.amount != '' && format('--amount "{0}"', github.event.inputs.amount) || '' }}
 
     - name: Save KIS token cache
       if: always()
