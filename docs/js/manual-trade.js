@@ -26,6 +26,17 @@
 
     let activeOrderParams = null; // { ticker, alias, action, marketType }
 
+    /** market_type에 맞춰 통화 단위와 함께 금액을 포매팅한다. */
+    function formatAmount(value, marketType) {
+        const isDomestic = marketType === 'domestic';
+        return new Intl.NumberFormat(isDomestic ? 'ko-KR' : 'en-US', {
+            style: 'currency',
+            currency: isDomestic ? 'KRW' : 'USD',
+            minimumFractionDigits: isDomestic ? 0 : 2,
+            maximumFractionDigits: isDomestic ? 0 : 2,
+        }).format(Number(value));
+    }
+
     // Init
     async function init() {
         loadSettings();
@@ -224,7 +235,7 @@
             const lvAmount = tickerObj.config.buy_amounts && tickerObj.config.buy_amounts[nextLv - 1];
             const defaultAmt = lvAmount || tickerObj.config.buy_amount || 0;
             orderValue.value = defaultAmt;
-            inputHint.textContent = `현재 ${tickerObj.currentLevel}차 -> ${nextLv}차 매수 설정값: ${defaultAmt.toLocaleString()}`;
+            inputHint.textContent = `현재 ${tickerObj.currentLevel}차 -> ${nextLv}차 매수 설정값: ${formatAmount(defaultAmt, currentMarket)}`;
         } else {
             inputLabel.textContent = '매도 수량 (주)';
             // Find qty of highest level
@@ -247,8 +258,9 @@
             return;
         }
 
-        const unit = activeOrderParams.action === 'buy' ? (currentMarket === 'domestic' ? '원' : '$') : '주';
-        if (!confirm(`${activeOrderParams.alias} 종목을 ${val.toLocaleString()}${unit} ${activeOrderParams.action === 'buy' ? '매수' : '매도'} 하시겠습니까?`)) {
+        const isBuy = activeOrderParams.action === 'buy';
+        const valDisplay = isBuy ? formatAmount(val, currentMarket) : `${val.toLocaleString()}주`;
+        if (!confirm(`${activeOrderParams.alias} 종목을 ${valDisplay} ${isBuy ? '매수' : '매도'} 하시겠습니까?`)) {
             return;
         }
 

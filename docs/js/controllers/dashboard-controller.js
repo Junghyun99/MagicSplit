@@ -23,18 +23,21 @@ window.DashboardController = (function () {
         if (isRefreshing || document.visibilityState === 'hidden') return;
         isRefreshing = true;
         const mode = DashboardModel.getMode();
-        
+
         try {
             const data = await DataRepository.loadStatus(mode);
             DashboardModel.setStatusData(data);
-            
+
+            // setStatusData 호출 후에 결정해야 backtest 모드의 market_type이 반영된다.
+            const currencyMode = DashboardModel.getCurrencyMode();
+
             if (data) {
                 lastRefreshTime = Date.now();
                 DashboardView.updateRefreshAge(lastRefreshTime);
                 DashboardView.setOfflineBadge(false);
-                
+
                 const summary = DashboardModel.getPortfolioSummary();
-                DashboardView.renderStatus(data, mode, summary);
+                DashboardView.renderStatus(data, currencyMode, summary);
                 
                 const reasonType = DashboardModel.classifyReason(data.reason);
                 DashboardView.renderReasonBanner(data.reason, data.last_run_date, reasonType);
@@ -67,12 +70,12 @@ window.DashboardController = (function () {
     }
 
     function renderHistoryView() {
-        const mode = DashboardModel.getMode();
+        const currencyMode = DashboardModel.getCurrencyMode();
         const hasData = HistoryModel.getTotalCount() > 0;
-        
+
         if (hasData) {
             const pts = HistoryModel.buildEquityPoints(DashboardModel.getHistoryData());
-            ChartsView.renderEquityCurve(pts, mode, DashboardView.formatCurrency);
+            ChartsView.renderEquityCurve(pts, currencyMode, DashboardView.formatCurrency);
         } else {
             // Hide equity curve if no data
             const equitySection = document.getElementById('equity-curve-section');
@@ -81,7 +84,7 @@ window.DashboardController = (function () {
 
         HistoryModel.resetPagination();
         const firstPage = HistoryModel.getNextPage();
-        HistoryView.renderPage(firstPage, true, HistoryModel.hasMore(), DashboardView.formatCurrency, mode);
+        HistoryView.renderPage(firstPage, true, HistoryModel.hasMore(), DashboardView.formatCurrency, currencyMode);
     }
 
     function setAutoRefresh(intervalMs) {
@@ -119,7 +122,7 @@ window.DashboardController = (function () {
         if (moreBtn) {
             moreBtn.addEventListener('click', () => {
                 const page = HistoryModel.getNextPage();
-                HistoryView.renderPage(page, false, HistoryModel.hasMore(), DashboardView.formatCurrency, DashboardModel.getMode());
+                HistoryView.renderPage(page, false, HistoryModel.hasMore(), DashboardView.formatCurrency, DashboardModel.getCurrencyMode());
             });
         }
     }
@@ -134,7 +137,7 @@ window.DashboardController = (function () {
                     HistoryView.renderFilters(tickers, (type, value) => {
                         HistoryModel.setFilter(type, value);
                         const firstPage = HistoryModel.getNextPage();
-                        HistoryView.renderPage(firstPage, true, HistoryModel.hasMore(), DashboardView.formatCurrency, DashboardModel.getMode());
+                        HistoryView.renderPage(firstPage, true, HistoryModel.hasMore(), DashboardView.formatCurrency, DashboardModel.getCurrencyMode());
                     });
                     
                     renderHistoryView();
@@ -153,14 +156,14 @@ window.DashboardController = (function () {
         HistoryView.renderFilters(tickers, (type, value) => {
             HistoryModel.setFilter(type, value);
             const firstPage = HistoryModel.getNextPage();
-            HistoryView.renderPage(firstPage, true, HistoryModel.hasMore(), DashboardView.formatCurrency, DashboardModel.getMode());
+            HistoryView.renderPage(firstPage, true, HistoryModel.hasMore(), DashboardView.formatCurrency, DashboardModel.getCurrencyMode());
         });
         
         const tickerFilter = document.getElementById('history-ticker-filter');
         if (tickerFilter) tickerFilter.value = ticker;
         HistoryModel.setFilter('ticker', ticker);
         const firstPage = HistoryModel.getNextPage();
-        HistoryView.renderPage(firstPage, true, HistoryModel.hasMore(), DashboardView.formatCurrency, DashboardModel.getMode());
+        HistoryView.renderPage(firstPage, true, HistoryModel.hasMore(), DashboardView.formatCurrency, DashboardModel.getCurrencyMode());
         renderHistoryView();
     }
 

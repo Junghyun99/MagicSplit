@@ -182,7 +182,7 @@ window.DashboardView = (function () {
                 lotsHtml += `
                     <li class="lot-item">
                         ${lvLabel}
-                        <span class="lot-detail">${lot.buy_date} | ${lot.quantity}shares @$${lot.buy_price.toFixed(2)}</span>
+                        <span class="lot-detail">${lot.buy_date} | ${lot.quantity}shares @${formatCurrency(lot.buy_price, mode)}</span>
                         <span class="${pctClass}">${pctStr}</span>
                     </li>`;
             }

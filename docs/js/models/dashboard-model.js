@@ -21,6 +21,18 @@ window.DashboardModel = (function () {
         return currentMode;
     }
 
+    /**
+     * 금액 포매팅에 사용할 통화 모드.
+     * - domestic/overseas: 그대로 반환
+     * - backtest: status.json의 market_type 필드를 우선 사용 (없으면 'overseas')
+     */
+    function getCurrencyMode() {
+        if (currentMode === 'backtest') {
+            return (statusData && statusData.market_type) || 'overseas';
+        }
+        return currentMode;
+    }
+
     function setStatusData(data) {
         statusData = data;
     }
@@ -233,6 +245,7 @@ window.DashboardModel = (function () {
         getValidMode,
         setMode,
         getMode,
+        getCurrencyMode,
         setStatusData,
         getStatusData,
         setHistoryData,

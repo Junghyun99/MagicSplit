@@ -612,3 +612,42 @@ class TestMaxExposure:
         assert len(buy_signals) == 1
         assert buy_signals[0].level == 2
 
+
+
+class TestCurrencyAwareLogging:
+    """market_type에 따라 로그/reason 문자열의 통화 표기가 달라진다."""
+
+    def test_initial_buy_blocked_message_uses_usd(self, create_rule, create_portfolio):
+        captured = []
+
+        class _Logger:
+            def info(self, m): captured.append(m)
+            def warning(self, m): captured.append(m)
+            def error(self, m): captured.append(m)
+            def debug(self, m): captured.append(m)
+
+        evaluator = SplitEvaluator(logger=_Logger())
+        rules = [create_rule(
+            ticker="AAPL", buy_amount=50, market_type="overseas",
+        )]
+        portfolio = create_portfolio(prices={"AAPL": 100.0})
+        signals = evaluator.evaluate(rules, [], portfolio)
+        assert signals[0].is_blocked
+        assert "USD 50.00" in signals[0].reason
+        assert "USD 100.00" in signals[0].reason
+
+    def test_initial_buy_blocked_message_uses_krw_for_domestic(
+        self, create_rule, create_portfolio,
+    ):
+        evaluator = SplitEvaluator()
+        rules = [create_rule(
+            ticker="005930", buy_amount=50000, market_type="domestic",
+        )]
+        portfolio = create_portfolio(prices={"005930": 80000.0})
+        signals = evaluator.evaluate(rules, [], portfolio)
+        assert signals[0].is_blocked
+        # KRW는 소수점 없이 천단위 콤마.
+        assert "KRW 50,000" in signals[0].reason
+        assert "KRW 80,000" in signals[0].reason
+        # 해외 통화 표기가 섞이지 않아야 한다.
+        assert "USD" not in signals[0].reason

@@ -4,8 +4,8 @@ window.RiskController = (function () {
 
     function renderRisk() {
         const metrics = window.DashboardModel.calculateRiskMetrics();
-        const mode = window.DashboardModel.getMode();
-        
+        const currencyMode = window.DashboardModel.getCurrencyMode();
+
         if (!metrics) {
             return;
         }
@@ -13,14 +13,14 @@ window.RiskController = (function () {
         window.RiskView.renderRiskHealth(metrics.riskSummary);
         window.RiskView.renderAlerts(metrics.riskSummary.alerts, metrics.riskSummary.sync_error);
 
-        window.RiskView.renderCashRatio(metrics.cashRatio, mode);
+        window.RiskView.renderCashRatio(metrics.cashRatio, currencyMode);
         window.RiskView.renderNextLevelNeeds(
-            metrics.nextLevelNeeds, 
-            metrics.maxPotentialExposure, 
+            metrics.nextLevelNeeds,
+            metrics.maxPotentialExposure,
             metrics.totalValue - (metrics.cashRatio * metrics.totalValue / 100),
-            mode
+            currencyMode
         );
-        window.RiskView.renderTickerConcentration(metrics.tickerConcentration, mode);
+        window.RiskView.renderTickerConcentration(metrics.tickerConcentration, currencyMode);
         window.RiskView.renderLevelDist(metrics.levelDist);
         window.RiskView.renderStalePositions(metrics.staleInfo);
     }
