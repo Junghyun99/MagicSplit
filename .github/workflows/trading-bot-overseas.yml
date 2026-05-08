@@ -97,14 +97,20 @@ jobs:
         path: .kis_token_cache.json
         key: kis-token-shared-${{ github.run_id }}
 
+    - name: Debug - List data and logs
+      if: always()
+      run: |
+        echo "=== docs/data/overseas/ ==="
+        ls -R docs/data/overseas/ || echo "Not found"
+        echo "=== logs/overseas/ ==="
+        ls -R logs/overseas/ || echo "Not found"
+
     - name: Commit updated data and logs
       if: ${{ success() && steps.holiday.outputs.is_holiday != 'true' }}
       uses: stefanzweifel/git-auto-commit-action@v5
       with:
         commit_message: "Auto-update overseas trading data and logs [skip ci]"
-        file_pattern: |
-          docs/data/overseas/**
-          logs/overseas/**
+        file_pattern: "docs/data/overseas/** logs/overseas/**"
         commit_user_name: "github-actions[bot]"
         commit_user_email: "github-actions[bot]@users.noreply.github.com"
         add_options: '--force'

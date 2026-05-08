@@ -78,13 +78,19 @@ jobs:
         path: .kis_token_cache.json
         key: kis-token-shared-${{ github.run_id }}
 
+    - name: Debug - List data and logs
+      if: always()
+      run: |
+        echo "=== docs/data/${{ github.event.inputs.market_type }}/ ==="
+        ls -R docs/data/${{ github.event.inputs.market_type }}/ || echo "Not found"
+        echo "=== logs/${{ github.event.inputs.market_type }}/ ==="
+        ls -R logs/${{ github.event.inputs.market_type }}/ || echo "Not found"
+
     - name: Commit updated data and logs
       uses: stefanzweifel/git-auto-commit-action@v5
       with:
         commit_message: "Manual trade update: ${{ github.event.inputs.ticker }} ${{ github.event.inputs.action }} [skip ci]"
-        file_pattern: |
-          docs/data/${{ github.event.inputs.market_type }}/**
-          logs/${{ github.event.inputs.market_type }}/**
+        file_pattern: "docs/data/${{ github.event.inputs.market_type }}/** logs/${{ github.event.inputs.market_type }}/**"
         commit_user_name: "github-actions[bot]"
         commit_user_email: "github-actions[bot]@users.noreply.github.com"
         add_options: '--force'
