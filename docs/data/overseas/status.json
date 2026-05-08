@@ -1,0 +1,123 @@
+{
+    "last_updated": "2026-05-08 17:00:21",
+    "last_run_date": "2026-05-08",
+    "market_type": "overseas",
+    "reason": "AAPL:BUY(현금 부족: 보유 현금 USD 959.40 < 매수 예정 금액 USD 4,966.89 (17주)), MSFT:BUY(현금 부족: 보유 현금 USD 959.40 < 매수 예정 금액 USD 4,995.24 (12주))",
+    "portfolio": {
+        "total_value": 7590.3106,
+        "cash_balance": 959.4,
+        "holdings": [
+            {
+                "ticker": "ABT",
+                "alias": "ABT",
+                "qty": 3,
+                "price": 85.09,
+                "value": 255.27
+            },
+            {
+                "ticker": "ARKK",
+                "alias": "ARKK",
+                "qty": 11,
+                "price": 78.075,
+                "value": 858.825
+            },
+            {
+                "ticker": "AVGO",
+                "alias": "AVGO",
+                "qty": 2,
+                "price": 430.265,
+                "value": 860.53
+            },
+            {
+                "ticker": "CRM",
+                "alias": "CRM",
+                "qty": 3,
+                "price": 180.927,
+                "value": 542.781
+            },
+            {
+                "ticker": "DUK",
+                "alias": "DUK",
+                "qty": 1,
+                "price": 124.4,
+                "value": 124.4
+            },
+            {
+                "ticker": "GOOGL",
+                "alias": "GOOGL",
+                "qty": 2,
+                "price": 397.08,
+                "value": 794.16
+            },
+            {
+                "ticker": "ICLN",
+                "alias": "ICLN",
+                "qty": 1,
+                "price": 21.09,
+                "value": 21.09
+            },
+            {
+                "ticker": "O",
+                "alias": "O",
+                "qty": 6,
+                "price": 62.11,
+                "value": 372.65999999999997
+            },
+            {
+                "ticker": "PEP",
+                "alias": "PEP",
+                "qty": 4,
+                "price": 155.93,
+                "value": 623.72
+            },
+            {
+                "ticker": "PFE",
+                "alias": "PFE",
+                "qty": 1,
+                "price": 25.845,
+                "value": 25.845
+            },
+            {
+                "ticker": "PG",
+                "alias": "PG",
+                "qty": 5,
+                "price": 147.15,
+                "value": 735.75
+            },
+            {
+                "ticker": "SCHD",
+                "alias": "SCHD",
+                "qty": 4,
+                "price": 31.6899,
+                "value": 126.7596
+            },
+            {
+                "ticker": "TSLA",
+                "alias": "TSLA",
+                "qty": 2,
+                "price": 427.42,
+                "value": 854.84
+            },
+            {
+                "ticker": "WM",
+                "alias": "WM",
+                "qty": 2,
+                "price": 217.14,
+                "value": 434.28
+            }
+        ]
+    },
+    "positions": {},
+    "realized_pnl_by_ticker": {},
+    "enabled_tickers": ["AAPL", "MSFT"],
+    "risk_summary": {
+        "next_level_needs": 0,
+        "max_potential_exposure": 300000.0,
+        "stale_info": [],
+        "risk_score": 81,
+        "sync_error": true,
+        "alerts": ["⚠️ [DUK] 잔고 불일치 (봇: 0, 계좌: 1)", "⚠️ [CRM] 잔고 불일치 (봇: 0, 계좌: 3)", "⚠️ [PFE] 잔고 불일치 (봇: 0, 계좌: 1)", "⚠️ [SCHD] 잔고 불일치 (봇: 0, 계좌: 4)", "⚠️ [ARKK] 잔고 불일치 (봇: 0, 계좌: 11)", "⚠️ [AVGO] 잔고 불일치 (봇: 0, 계좌: 2)", "⚠️ [O] 잔고 불일치 (봇: 0, 계좌: 6)", "⚠️ [PEP] 잔고 불일치 (봇: 0, 계좌: 4)", "⚠️ [ICLN] 잔고 불일치 (봇: 0, 계좌: 1)", "⚠️ [TSLA] 잔고 불일치 (봇: 0, 계좌: 2)", "⚠️ [ABT] 잔고 불일치 (봇: 0, 계좌: 3)", "⚠️ [WM] 잔고 불일치 (봇: 0, 계좌: 2)", "⚠️ [GOOGL] 잔고 불일치 (봇: 0, 계좌: 2)", "⚠️ [PG] 잔고 불일치 (봇: 0, 계좌: 5)"],
+        "max_ticker_concentration": 0,
+        "high_level_ratio": 0
+    }
+}
