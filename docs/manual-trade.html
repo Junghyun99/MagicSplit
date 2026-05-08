@@ -187,35 +187,35 @@
         </nav>
     </header>
 
-    <div class="card" style="max-width: 600px; margin: 20px auto;" id="auth-card">
-        <details>
-            <summary style="cursor: pointer; font-weight: 600;">GitHub Settings (Click to expand)</summary>
-            <div style="margin-top: 15px;">
-                <div class="form-group">
-                    <label>Personal Access Token (PAT)</label>
-                    <input type="password" id="github-token" placeholder="ghp_..." class="form-control">
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Owner</label>
-                        <input type="text" id="github-owner" placeholder="Owner" class="form-control">
-                    </div>
-                    <div class="form-group">
-                        <label>Repo</label>
-                        <input type="text" id="github-repo" placeholder="Repo" class="form-control">
-                    </div>
-                </div>
-                <button id="save-settings-btn" class="btn btn-primary" style="width: 100%;">설정 저장</button>
+    <div class="card" id="auth-card" style="max-width: 600px; margin: 20px auto;">
+        <h2>GitHub Settings</h2>
+        <div class="form-group">
+            <label>Personal Access Token (PAT)</label>
+            <input type="password" id="github-token" placeholder="ghp_..." class="form-control">
+            <small class="form-text">repo 스코프 권한이 필요합니다. 브라우저 로컬 스토리지에만 저장됩니다.</small>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>Repository Owner</label>
+                <input type="text" id="github-owner" placeholder="Owner" class="form-control">
             </div>
-        </details>
+            <div class="form-group">
+                <label>Repository Name</label>
+                <input type="text" id="github-repo" placeholder="Repo" class="form-control">
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Config File Path</label>
+            <select id="config-path" class="form-control">
+                <option value="config_overseas.json">config_overseas.json</option>
+                <option value="config_domestic.json">config_domestic.json</option>
+                <option value="presets.json">presets.json</option>
+            </select>
+        </div>
+        <button id="load-config-btn" class="btn btn-primary" style="width: 100%;">설정 불러오기</button>
     </div>
 
     <div class="ticker-list-card">
-        <div class="market-tabs">
-            <button class="tab-btn active" data-market="domestic">Domestic (국내)</button>
-            <button class="tab-btn" data-market="overseas">Overseas (해외)</button>
-        </div>
-
         <div class="card">
             <table class="ticker-table">
                 <thead>

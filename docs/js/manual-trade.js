@@ -12,10 +12,8 @@
     const githubToken = document.getElementById('github-token');
     const githubOwner = document.getElementById('github-owner');
     const githubRepo = document.getElementById('github-repo');
-    const saveSettingsBtn = document.getElementById('save-settings-btn');
 
     const tickerTbody = document.getElementById('ticker-tbody');
-    const marketBtns = document.querySelectorAll('.tab-btn');
 
     const orderModal = document.getElementById('order-modal');
     const modalTitle = document.getElementById('modal-title');
@@ -38,36 +36,47 @@
     }
 
     function loadSettings() {
-        githubToken.value = localStorage.getItem('github_token') || '';
-        githubOwner.value = localStorage.getItem('github_owner') || '';
-        githubRepo.value = localStorage.getItem('github_repo') || '';
+        githubToken.value = localStorage.getItem('githubToken') || '';
+        githubOwner.value = localStorage.getItem('githubOwner') || 'Junghyun99';
+        githubRepo.value = localStorage.getItem('githubRepo') || 'MagicSplit';
+        
+        const configPathInput = document.getElementById('config-path');
+        const savedPath = localStorage.getItem('githubConfigPath') || 'config_overseas.json';
+        configPathInput.value = savedPath;
+        updateMarketByPath(savedPath);
+
         if (githubToken.value && githubOwner.value && githubRepo.value) {
             githubApi = new GitHubAPI(githubToken.value, githubOwner.value, githubRepo.value);
         }
     }
 
+    function updateMarketByPath(path) {
+        if (path === 'config_domestic.json') currentMarket = 'domestic';
+        else if (path === 'config_overseas.json') currentMarket = 'overseas';
+        else currentMarket = 'domestic';
+    }
+
     function setupEventListeners() {
-        saveSettingsBtn.onclick = () => {
+        const loadConfigBtn = document.getElementById('load-config-btn');
+        const configPathInput = document.getElementById('config-path');
+
+        loadConfigBtn.onclick = async () => {
             const token = githubToken.value.trim();
             const owner = githubOwner.value.trim();
             const repo = githubRepo.value.trim();
-            if (!token || !owner || !repo) { alert('모든 설정을 입력해 주세요.'); return; }
-            localStorage.setItem('github_token', token);
-            localStorage.setItem('github_owner', owner);
-            localStorage.setItem('github_repo', repo);
-            githubApi = new GitHubAPI(token, owner, repo);
-            alert('설정이 저장되었습니다. 데이터를 새로 불러옵니다.');
-            refreshData();
-        };
+            const path = configPathInput.value;
 
-        marketBtns.forEach(btn => {
-            btn.onclick = () => {
-                marketBtns.forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                currentMarket = btn.dataset.market;
-                refreshData();
-            };
-        });
+            if (!token || !owner || !repo || !path) { alert('모든 설정을 입력해 주세요.'); return; }
+            
+            localStorage.setItem('githubToken', token);
+            localStorage.setItem('githubOwner', owner);
+            localStorage.setItem('githubRepo', repo);
+            localStorage.setItem('githubConfigPath', path);
+
+            githubApi = new GitHubAPI(token, owner, repo);
+            updateMarketByPath(path);
+            await refreshData();
+        };
 
         cancelTradeBtn.onclick = () => orderModal.style.display = 'none';
         confirmTradeBtn.onclick = executeTrade;
@@ -88,8 +97,9 @@
             }
 
             // 1. Fetch Config from GitHub (Real-time)
-            const configPath = `config_${currentMarket}.json`;
-            const { content } = await githubApi.getFile(configPath);
+            const path = localStorage.getItem('githubConfigPath') || 'config_overseas.json';
+            updateMarketByPath(path);
+            const { content } = await githubApi.getFile(path);
             currentConfig = JSON.parse(content);
 
             // 2. Fetch Status from Repository (Dashboard data)
