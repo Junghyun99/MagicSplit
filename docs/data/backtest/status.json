@@ -1,74 +1,77 @@
 {
-    "last_updated": "2025-01-17",
-    "last_run_date": "2025-01-17",
+    "last_updated": "2025-12-30",
+    "last_run_date": "2025-12-30",
     "market_type": "domestic",
     "reason": "모니터링 - 신호 없음",
     "portfolio": {
-        "total_value": 10199732.4527875,
-        "cash_balance": 8815982.4527875,
+        "total_value": 11527621.0382125,
+        "cash_balance": 9822421.0382125,
         "holdings": [
             {
                 "ticker": "483320",
                 "alias": "ACE 엔비디아밸류체인액티브",
-                "qty": 135,
-                "price": 10250.0,
-                "value": 1383750.0
+                "qty": 116,
+                "price": 14700.0,
+                "value": 1705200.0
             }
         ]
     },
     "positions": {
         "483320": {
-            "total_qty": 135,
+            "total_qty": 116,
             "lot_count": 4,
-            "total_invested": 1181064.51,
-            "current_value": 1383750.0,
+            "total_invested": 1170934.59,
+            "current_value": 1705200.0,
             "lots": [
                 {
-                    "lot_id": "lot_20260508_125335_483320_001",
+                    "lot_id": "lot_20260508_141012_483320_001",
                     "buy_price": 10090.08,
                     "quantity": 29,
                     "buy_date": "2024-06-11",
                     "level": 1,
-                    "current_price": 10250.0,
-                    "pct_change": 1.58
+                    "current_price": 14700.0,
+                    "pct_change": 45.69
                 },
                 {
-                    "lot_id": "lot_20260508_125335_483320_002",
+                    "lot_id": "lot_20260508_141013_483320_002",
                     "buy_price": 9399.39,
                     "quantity": 31,
                     "buy_date": "2024-07-26",
                     "level": 2,
-                    "current_price": 10250.0,
-                    "pct_change": 9.05
+                    "current_price": 14700.0,
+                    "pct_change": 56.39
                 },
                 {
-                    "lot_id": "lot_20260508_125335_483320_003",
+                    "lot_id": "lot_20260508_141013_483320_003",
                     "buy_price": 8553.54,
                     "quantity": 35,
                     "buy_date": "2024-08-02",
                     "level": 3,
-                    "current_price": 10250.0,
-                    "pct_change": 19.83
+                    "current_price": 14700.0,
+                    "pct_change": 71.86
                 },
                 {
-                    "lot_id": "lot_20260508_125335_483320_004",
-                    "buy_price": 7442.43,
-                    "quantity": 40,
-                    "buy_date": "2024-08-05",
+                    "lot_id": "lot_20260508_141014_483320_004",
+                    "buy_price": 13693.68,
+                    "quantity": 21,
+                    "buy_date": "2025-12-18",
                     "level": 4,
-                    "current_price": 10250.0,
-                    "pct_change": 37.72
+                    "current_price": 14700.0,
+                    "pct_change": 7.35
                 }
             ],
+            "current_price": 14700.0,
             "alias": "ACE 엔비디아밸류체인액티브",
-            "avg_buy_price": 8748.626,
-            "unrealized_pnl": 202685.49,
-            "unrealized_pnl_pct": 17.16,
-            "realized_pnl": 0.0,
-            "total_pnl": 202685.49
+            "avg_buy_price": 10094.2637,
+            "unrealized_pnl": 534265.41,
+            "unrealized_pnl_pct": 45.63,
+            "realized_pnl": 998516.82,
+            "total_pnl": 1532782.23
         }
     },
-    "realized_pnl_by_ticker": {},
+    "realized_pnl_by_ticker": {
+        "483320": 998516.82
+    },
     "enabled_tickers": ["483320"],
     "risk_summary": {
         "next_level_needs": 300000.0,
@@ -77,14 +80,14 @@
             {
                 "ticker": "483320",
                 "alias": "ACE 엔비디아밸류체인액티브",
-                "last_trade_date": "2024-08-05",
-                "days_stale": 165
+                "last_trade_date": "2025-12-18",
+                "days_stale": 12
             }
         ],
-        "risk_score": 96,
+        "risk_score": 100,
         "sync_error": false,
         "alerts": [],
-        "max_ticker_concentration": 13.57,
+        "max_ticker_concentration": 14.79,
         "high_level_ratio": 0.0
     }
 }
