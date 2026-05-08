@@ -86,7 +86,7 @@ jobs:
         KIS_APP_KEY: ${{ secrets.KIS_APP_KEY }}
         KIS_APP_SECRET: ${{ secrets.KIS_APP_SECRET }}
         KIS_ACC_NO: ${{ secrets.KIS_ACC_NO }}
-        IS_LIVE: ${{ secrets.IS_LIVE }}
+        IS_LIVE: 'true'
         PYTHONUNBUFFERED: "1"
       run: python -m src.main
 
