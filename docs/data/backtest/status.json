@@ -1,110 +1,90 @@
 {
-    "last_updated": "2025-12-30",
-    "last_run_date": "2025-12-30",
+    "last_updated": "2025-01-17",
+    "last_run_date": "2025-01-17",
+    "market_type": "domestic",
     "reason": "모니터링 - 신호 없음",
     "portfolio": {
-        "total_value": 17459356.416250013,
-        "cash_balance": 16075256.416250013,
+        "total_value": 10199732.4527875,
+        "cash_balance": 8815982.4527875,
         "holdings": [
             {
-                "ticker": "005930",
-                "alias": "삼성전자",
-                "qty": 4,
-                "price": 119900.0,
-                "value": 479600.0
-            },
-            {
-                "ticker": "058470",
-                "alias": "리노공업",
-                "qty": 15,
-                "price": 60300.0,
-                "value": 904500.0
+                "ticker": "483320",
+                "alias": "ACE 엔비디아밸류체인액티브",
+                "qty": 135,
+                "price": 10250.0,
+                "value": 1383750.0
             }
         ]
     },
     "positions": {
-        "005930": {
-            "total_qty": 4,
-            "lot_count": 1,
-            "total_invested": 402802.4,
-            "current_value": 479600.0,
+        "483320": {
+            "total_qty": 135,
+            "lot_count": 4,
+            "total_invested": 1181064.51,
+            "current_value": 1383750.0,
             "lots": [
                 {
-                    "lot_id": "lot_20260506_162920_005930_001",
-                    "buy_price": 100700.6,
-                    "quantity": 4,
-                    "buy_date": "2025-11-05",
+                    "lot_id": "lot_20260508_125335_483320_001",
+                    "buy_price": 10090.08,
+                    "quantity": 29,
+                    "buy_date": "2024-06-11",
                     "level": 1,
-                    "current_price": 119900.0,
-                    "pct_change": 19.07
-                }
-            ],
-            "alias": "삼성전자",
-            "avg_buy_price": 100700.6,
-            "unrealized_pnl": 76797.6,
-            "unrealized_pnl_pct": 19.07,
-            "realized_pnl": 2427024.61,
-            "total_pnl": 2503822.21
-        },
-        "058470": {
-            "total_qty": 15,
-            "lot_count": 2,
-            "total_invested": 952952.0,
-            "current_value": 904500.0,
-            "lots": [
-                {
-                    "lot_id": "lot_20260506_162920_058470_001",
-                    "buy_price": 65665.6,
-                    "quantity": 7,
-                    "buy_date": "2025-12-02",
-                    "level": 1,
-                    "current_price": 60300.0,
-                    "pct_change": -8.17
+                    "current_price": 10250.0,
+                    "pct_change": 1.58
                 },
                 {
-                    "lot_id": "lot_20260506_162921_058470_002",
-                    "buy_price": 61661.6,
-                    "quantity": 8,
-                    "buy_date": "2025-12-15",
+                    "lot_id": "lot_20260508_125335_483320_002",
+                    "buy_price": 9399.39,
+                    "quantity": 31,
+                    "buy_date": "2024-07-26",
                     "level": 2,
-                    "current_price": 60300.0,
-                    "pct_change": -2.21
+                    "current_price": 10250.0,
+                    "pct_change": 9.05
+                },
+                {
+                    "lot_id": "lot_20260508_125335_483320_003",
+                    "buy_price": 8553.54,
+                    "quantity": 35,
+                    "buy_date": "2024-08-02",
+                    "level": 3,
+                    "current_price": 10250.0,
+                    "pct_change": 19.83
+                },
+                {
+                    "lot_id": "lot_20260508_125335_483320_004",
+                    "buy_price": 7442.43,
+                    "quantity": 40,
+                    "buy_date": "2024-08-05",
+                    "level": 4,
+                    "current_price": 10250.0,
+                    "pct_change": 37.72
                 }
             ],
-            "alias": "리노공업",
-            "avg_buy_price": 63530.1333,
-            "unrealized_pnl": -48452.0,
-            "unrealized_pnl_pct": -5.08,
-            "realized_pnl": 5142895.4,
-            "total_pnl": 5094443.4
+            "alias": "ACE 엔비디아밸류체인액티브",
+            "avg_buy_price": 8748.626,
+            "unrealized_pnl": 202685.49,
+            "unrealized_pnl_pct": 17.16,
+            "realized_pnl": 0.0,
+            "total_pnl": 202685.49
         }
     },
-    "realized_pnl_by_ticker": {
-        "005930": 2427024.6100000003,
-        "058470": 5142895.4
-    },
-    "enabled_tickers": ["005930", "058470"],
+    "realized_pnl_by_ticker": {},
+    "enabled_tickers": ["483320"],
     "risk_summary": {
-        "next_level_needs": 1000000.0,
-        "max_potential_exposure": 20000000.0,
+        "next_level_needs": 300000.0,
+        "max_potential_exposure": 3000000.0,
         "stale_info": [
             {
-                "ticker": "005930",
-                "alias": "삼성전자",
-                "last_trade_date": "2025-12-11",
-                "days_stale": 19
-            },
-            {
-                "ticker": "058470",
-                "alias": "리노공업",
-                "last_trade_date": "2025-12-15",
-                "days_stale": 15
+                "ticker": "483320",
+                "alias": "ACE 엔비디아밸류체인액티브",
+                "last_trade_date": "2024-08-05",
+                "days_stale": 165
             }
         ],
-        "risk_score": 100,
+        "risk_score": 96,
         "sync_error": false,
         "alerts": [],
-        "max_ticker_concentration": 5.18,
+        "max_ticker_concentration": 13.57,
         "high_level_ratio": 0.0
     }
 }
