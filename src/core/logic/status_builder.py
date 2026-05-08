@@ -45,6 +45,7 @@ def build_dashboard_status(
         ts["lot_count"] += 1
         
         current_price = portfolio.current_prices.get(lot.ticker, 0.0)
+        ts["current_price"] = current_price
         invested = lot.buy_price * lot.quantity
         
         ts["total_invested"] += invested

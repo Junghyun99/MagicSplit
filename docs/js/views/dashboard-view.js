@@ -190,8 +190,12 @@ window.DashboardView = (function () {
             const hasPnl = info.unrealized_pnl != null;
             const pnlClass = hasPnl && info.unrealized_pnl >= 0 ? 'pct-positive' : 'pct-negative';
             const pnlSign = hasPnl && info.unrealized_pnl >= 0 ? '+' : '';
+            const curPrice = info.current_price || (info.lots && info.lots.length > 0 ? info.lots[0].current_price : 0);
             const summaryHtml = hasPnl ? `
                 <div class="card-summary">
+                    <span class="summary-label">현재가:</span>
+                    <span class="price-value">${formatCurrency(curPrice, mode)}</span>
+                    <span class="summary-sep">|</span>
                     <span class="summary-label">평가:</span>
                     <span>${formatCurrency(info.current_value, mode)}</span>
                     <span class="summary-muted">(투자 ${formatCurrency(info.total_invested, mode)})</span>
@@ -227,7 +231,7 @@ window.DashboardView = (function () {
             card.innerHTML = `
                 <div class="card-header">
                     <span class="ticker">${tickerLabel} ${levelBadge}</span>
-                    <span class="price">${info.total_qty} shares | ${info.lot_count} lots</span>
+                    <span class="price">${info.total_qty} shares | ${info.lot_count} lots | @${formatCurrency(curPrice, mode)}</span>
                 </div>
                 ${summaryHtml}
                 ${realizedHtml}
