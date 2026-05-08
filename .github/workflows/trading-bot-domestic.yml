@@ -102,7 +102,9 @@ jobs:
       uses: stefanzweifel/git-auto-commit-action@v5
       with:
         commit_message: "Auto-update domestic trading data and logs [skip ci]"
-        file_pattern: "docs/data/domestic/*.json logs/domestic/*.log"
+        file_pattern: |
+          docs/data/domestic/**
+          logs/domestic/**
         commit_user_name: "github-actions[bot]"
         commit_user_email: "github-actions[bot]@users.noreply.github.com"
         add_options: '--force'
