@@ -196,13 +196,16 @@ window.RiskView = (function () {
         const container = document.getElementById('stale-positions-container');
         if (!container) return;
 
-        if (!staleInfo || staleInfo.length === 0) {
-            container.innerHTML = '<div class="empty-state">정체된 종목이 없습니다.</div>';
+        // Filter to show only Caution (15+) or Serious (30+) levels
+        const filteredStale = (staleInfo || []).filter(item => item.days_stale >= 15);
+
+        if (filteredStale.length === 0) {
+            container.innerHTML = '<div class="empty-state">주의 이상의 정체 종목이 없습니다.</div>';
             return;
         }
 
-        const listHtml = staleInfo.map(item => {
-            let statusClass = 'text-success';
+        const listHtml = filteredStale.map(item => {
+            let statusClass = 'text-success'; // Should not happen with filtering but kept for safety
             if (item.days_stale >= 30) statusClass = 'text-danger';
             else if (item.days_stale >= 15) statusClass = 'text-warning';
 
