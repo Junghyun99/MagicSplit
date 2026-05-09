@@ -24,6 +24,8 @@ class Config:
 
         # 알림
         self.SLACK_WEBHOOK_URL = os.getenv("SLACK_WEBHOOK_URL", "")
+        self.SLACK_BOT_TOKEN = os.getenv("SLACK_BOT_TOKEN", "")
+        self.SLACK_CHANNEL_ID = os.getenv("SLACK_CHANNEL_ID", "")
 
         # 종목별 매매 규칙 설정 파일 경로 (국내/해외 분리: config_domestic.json | config_overseas.json)
         self.CONFIG_JSON_PATH = os.getenv("CONFIG_JSON_PATH", "config_overseas.json")

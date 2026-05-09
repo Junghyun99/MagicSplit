@@ -31,6 +31,7 @@ def mock_repo():
 @pytest.fixture
 def mock_logger():
     logger = MagicMock()
+    logger.get_captured_logs.return_value = []
     return logger
 
 

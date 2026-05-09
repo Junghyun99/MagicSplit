@@ -19,6 +19,7 @@ def setup_bot(tmp_path):
     )
     repo = JsonRepository(str(tmp_path))
     logger = MagicMock()
+    logger.get_captured_logs.return_value = []
     rules = [
         StockRule("AAPL", -5.0, 10.0, 500, 100),
         StockRule("MSFT", -5.0, 10.0, 1000, 100),
