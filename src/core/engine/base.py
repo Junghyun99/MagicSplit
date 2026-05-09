@@ -51,6 +51,8 @@ class MagicSplitEngine:
         self.all_tickers = [r.ticker for r in self.stock_rules]
         self.notifier = notifier
         self.is_live_trading = is_live_trading
+        # 비활성 포함 전체 룰. 수동매매 등에서 룰 조회용으로 사용.
+        self.all_stock_rules = list(stock_rules)
         # 한 사이클의 모든 종목은 동일 market_type. 로그 통화 분기에 사용.
         self.market_type = self.stock_rules[0].market_type if self.stock_rules else "overseas"
 
@@ -236,6 +238,190 @@ class MagicSplitEngine:
             signals=all_signals,
             executions=all_executions,
             final_portfolio=final_pf,
+            has_orders=len(all_executions) > 0,
+        )
+
+    def run_manual_trade(
+        self,
+        ticker: str,
+        action: OrderAction,
+        qty: Optional[int] = None,
+        amount: Optional[float] = None,
+        dry_run: bool = False,
+        sim_date: Optional[str] = None,
+    ) -> DayResult:
+        """수동매매 1건을 실행한다.
+
+        evaluate_stock 단계만 우회하고 사용자 입력으로 SplitSignal을 직접 생성한 뒤,
+        자동매매와 동일한 후반부 파이프라인(주문 실행 -> 포지션 반영 -> 저장)에 흘려보낸다.
+        이로써 positions/history/status/last_sell_prices 갱신이 자동매매와 일관되게 보장된다.
+
+        Args:
+            ticker: 종목 코드 (활성화된 stock_rules에 등록되어 있어야 함)
+            action: OrderAction.BUY 또는 OrderAction.SELL
+            qty: 주문 수량 (amount와 둘 중 하나 필수)
+            amount: 매수 금액 (매수 시에만 유효, 현재가로 qty 계산)
+            dry_run: True면 신호 생성까지만 수행하고 주문/저장은 생략
+            sim_date: 시뮬레이션 날짜 ("YYYY-MM-DD")
+        """
+        today = sim_date or datetime.now().strftime("%Y-%m-%d")
+        disp = display_ticker(ticker)
+        self.logger.set_ticker_context(ticker)
+        self.logger.info(
+            f"=== Manual Trade: {disp} {action} (qty={qty}, amount={amount}) ==="
+        )
+
+        target_rule = next(
+            (r for r in self.all_stock_rules if r.ticker == ticker), None
+        )
+        if target_rule is None:
+            raise ValueError(f"설정에 등록되지 않은 종목입니다: {ticker}")
+        if not target_rule.enabled:
+            raise ValueError(
+                f"비활성화된 종목입니다: {ticker}. 매매하려면 config에서 enabled=true 설정 필요."
+            )
+        if qty is None and amount is None:
+            raise ValueError("qty 또는 amount 중 하나는 반드시 지정해야 합니다.")
+        if action == OrderAction.SELL and qty is None:
+            raise ValueError("매도는 qty로 지정해야 합니다 (amount 미지원).")
+
+        all_signals: List[SplitSignal] = []
+        all_executions: List[TradeExecution] = []
+        portfolio: Optional[Portfolio] = None
+        positions: Optional[List[PositionLot]] = None
+        last_sell_prices: dict = {}
+
+        try:
+            self.logger.info(">>> Step 1: Portfolio & Price Fetch")
+            portfolio = self.get_portfolio()
+            if portfolio.current_prices.get(ticker, 0) <= 0:
+                extra = self.broker.fetch_current_prices([ticker])
+                if extra.get(ticker, 0) > 0:
+                    portfolio.current_prices[ticker] = extra[ticker]
+            current_price = portfolio.current_prices.get(ticker, 0)
+            if current_price <= 0:
+                raise RuntimeError(f"{disp} 현재가 조회 실패")
+
+            self.logger.info(">>> Step 2: Load Positions")
+            positions = self.repo.load_positions()
+            last_sell_prices = self.repo.load_last_sell_prices()
+
+            order_qty = qty
+            if action == OrderAction.BUY and qty is None and amount is not None:
+                order_qty = int(amount / current_price)
+                self.logger.info(
+                    f"금액 기반 수량 계산: "
+                    f"{format_money(amount, self.market_type)} / "
+                    f"{format_money(current_price, self.market_type)} = {order_qty}주"
+                )
+            if not order_qty or order_qty <= 0:
+                raise ValueError(
+                    f"{disp} 유효한 주문 수량이 결정되지 않았습니다 (qty={order_qty})."
+                )
+
+            ticker_lots = [lot for lot in positions if lot.ticker == ticker]
+            highest_level = max((lot.level for lot in ticker_lots), default=0)
+            target_lot_id: Optional[str] = None
+            target_buy_price: float = 0.0
+            if action == OrderAction.BUY:
+                level = highest_level + 1
+            else:
+                if not ticker_lots:
+                    raise RuntimeError(
+                        f"{disp} 매도할 포지션이 존재하지 않습니다."
+                    )
+                available_qty = sum(lot.quantity for lot in ticker_lots)
+                if order_qty > available_qty:
+                    raise RuntimeError(
+                        f"{disp} 매도 수량({order_qty}주)이 보유 수량"
+                        f"({available_qty}주)보다 많습니다. 팻핑거 방지를 위해 주문 취소."
+                    )
+                target_lot = max(ticker_lots, key=lambda l: l.level)
+                level = target_lot.level
+                target_lot_id = target_lot.lot_id
+                target_buy_price = target_lot.buy_price
+
+            signal = SplitSignal(
+                ticker=ticker,
+                lot_id=target_lot_id,
+                action=action,
+                quantity=order_qty,
+                price=current_price,
+                reason="수동 매매(Manual Trade)",
+                pct_change=0.0,
+                level=level,
+                buy_price=target_buy_price,
+            )
+            all_signals.append(signal)
+            self.logger.info(
+                f"[{disp}] 수동 신호 생성: {action} Lv{level} {order_qty}주 "
+                f"@{format_money(current_price, self.market_type)}"
+            )
+
+            if dry_run:
+                self.logger.info("[DRY RUN] 주문 실행 및 저장을 생략합니다.")
+                return DayResult(
+                    date=today,
+                    signals=all_signals,
+                    executions=[],
+                    final_portfolio=portfolio,
+                    has_orders=False,
+                )
+
+            orders = self._signals_to_orders([signal])
+            executions = self._execute_stock_orders(orders)
+            self._enrich_executions(executions, [signal])
+            all_executions.extend(executions)
+
+            if executions:
+                try:
+                    positions = self._update_positions(
+                        positions, [signal], executions, today,
+                        last_sell_prices=last_sell_prices,
+                    )
+                    portfolio = self._refresh_portfolio(portfolio)
+                except Exception as e:
+                    self.logger.error(
+                        f"[{disp}] 포지션 반영 실패 (체결은 완료됨): {e}"
+                    )
+                    self._notify_alert(
+                        f"[{disp}] 수동매매 포지션 반영 실패 "
+                        f"(체결 {len(executions)}건 완료됨): {e}"
+                    )
+        finally:
+            if (
+                not dry_run
+                and portfolio is not None
+                and positions is not None
+                and all_executions
+            ):
+                self.logger.info(">>> Step 6: Persist")
+                self._persist(
+                    portfolio, all_signals, all_executions, positions,
+                    sim_date=sim_date, last_sell_prices=last_sell_prices,
+                )
+
+        self.logger.set_ticker_context(None)
+        detail = "\n".join(self.logger.get_captured_logs(ticker))
+        filled = [e for e in all_executions if e.status != ExecutionStatus.REJECTED]
+        if filled:
+            self._notify_message(
+                f"[수동매매] {disp} {action} 체결 {len(filled)}건",
+                detail=detail,
+            )
+        elif all_executions:
+            self._notify_alert(
+                f"[수동매매] {disp} {action} 체결 실패 또는 거절",
+                detail=detail,
+            )
+
+        return DayResult(
+            date=today,
+            signals=all_signals,
+            executions=all_executions,
+            final_portfolio=portfolio or Portfolio(
+                total_cash=0.0, holdings={}, current_prices={},
+            ),
             has_orders=len(all_executions) > 0,
         )
 

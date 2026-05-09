@@ -716,3 +716,295 @@ class TestNoSignalLog:
             and "USD 99.00" in m and "USD 100.00" in m
             for m in msgs
         )
+
+
+class TestRunManualTrade:
+    """수동매매(run_manual_trade) — evaluate_stock 우회 후 동일 파이프라인 사용."""
+
+    def _make_engine(self, mock_broker, mock_repo, mock_logger, rules, notifier=None):
+        return MagicSplitEngine(
+            broker=mock_broker, repo=mock_repo, logger=mock_logger,
+            stock_rules=rules, notifier=notifier,
+        )
+
+    def test_buy_creates_new_lot_at_next_level(
+        self, mock_broker, mock_repo, mock_logger,
+    ):
+        """매수: 기존 최고 차수 + 1로 새 lot 생성, save_positions 호출."""
+        rules = [StockRule("AAPL", -5.0, 10.0, 500, 10)]
+        mock_broker.get_portfolio.return_value = Portfolio(
+            total_cash=10000.0, holdings={"AAPL": 5},
+            current_prices={"AAPL": 100.0},
+        )
+        mock_broker.fetch_current_prices.return_value = {"AAPL": 100.0}
+        mock_repo.load_positions.return_value = [
+            PositionLot("lot_001", "AAPL", 110.0, 5, "2026-04-01", level=1),
+        ]
+        mock_repo.load_last_sell_prices.return_value = {}
+        mock_broker.execute_orders.return_value = [
+            TradeExecution("AAPL", OrderAction.BUY, 3, 100.0, 0.5,
+                           "2026-04-10", ExecutionStatus.FILLED),
+        ]
+
+        eng = self._make_engine(mock_broker, mock_repo, mock_logger, rules)
+        result = eng.run_manual_trade(
+            ticker="AAPL", action=OrderAction.BUY, qty=3, sim_date="2026-04-10",
+        )
+
+        assert result.has_orders is True
+        assert len(result.signals) == 1
+        assert result.signals[0].reason == "수동 매매(Manual Trade)"
+        assert result.signals[0].level == 2
+
+        mock_repo.save_positions.assert_called_once()
+        saved = mock_repo.save_positions.call_args[0][0]
+        assert len(saved) == 2
+        new_lot = max(saved, key=lambda l: l.level)
+        assert new_lot.level == 2
+        assert new_lot.quantity == 3
+        assert new_lot.buy_price == 100.0
+
+    def test_sell_targets_highest_level_lot_and_updates_last_sell_prices(
+        self, mock_broker, mock_repo, mock_logger,
+    ):
+        """매도: 최고 차수 lot을 대상으로 신호 생성, last_sell_prices 갱신됨."""
+        rules = [StockRule("AAPL", -5.0, 10.0, 500, 10)]
+        mock_broker.get_portfolio.return_value = Portfolio(
+            total_cash=10000.0, holdings={"AAPL": 10},
+            current_prices={"AAPL": 110.0},
+        )
+        mock_broker.fetch_current_prices.return_value = {"AAPL": 110.0}
+        mock_repo.load_positions.return_value = [
+            PositionLot("lot_lv1", "AAPL", 100.0, 5, "2026-04-01", level=1),
+            PositionLot("lot_lv2", "AAPL", 95.0, 5, "2026-04-05", level=2),
+        ]
+        last_sell = {}
+        mock_repo.load_last_sell_prices.return_value = last_sell
+        mock_broker.execute_orders.return_value = [
+            TradeExecution("AAPL", OrderAction.SELL, 5, 110.0, 0.5,
+                           "2026-04-10", ExecutionStatus.FILLED),
+        ]
+
+        eng = self._make_engine(mock_broker, mock_repo, mock_logger, rules)
+        result = eng.run_manual_trade(
+            ticker="AAPL", action=OrderAction.SELL, qty=5, sim_date="2026-04-10",
+        )
+
+        assert result.signals[0].lot_id == "lot_lv2"
+        assert result.signals[0].level == 2
+        assert result.signals[0].buy_price == 95.0
+
+        saved = mock_repo.save_positions.call_args[0][0]
+        assert len(saved) == 1
+        assert saved[0].lot_id == "lot_lv1"  # Lv2 lot이 제거됨
+
+        # last_sell_prices가 갱신되어 _persist에 전달되었는지
+        mock_repo.save_last_sell_prices.assert_called_once()
+        saved_lsp = mock_repo.save_last_sell_prices.call_args[0][0]
+        assert saved_lsp["AAPL"] == 110.0
+
+    def test_sell_qty_exceeding_holdings_raises(
+        self, mock_broker, mock_repo, mock_logger,
+    ):
+        """매도 수량 > 보유 수량 합 -> RuntimeError, 주문 미실행."""
+        rules = [StockRule("AAPL", -5.0, 10.0, 500, 10)]
+        mock_broker.get_portfolio.return_value = Portfolio(
+            total_cash=10000.0, holdings={"AAPL": 5},
+            current_prices={"AAPL": 100.0},
+        )
+        mock_broker.fetch_current_prices.return_value = {"AAPL": 100.0}
+        mock_repo.load_positions.return_value = [
+            PositionLot("lot_001", "AAPL", 100.0, 5, "2026-04-01", level=1),
+        ]
+        mock_repo.load_last_sell_prices.return_value = {}
+
+        eng = self._make_engine(mock_broker, mock_repo, mock_logger, rules)
+        with pytest.raises(RuntimeError, match="팻핑거"):
+            eng.run_manual_trade(
+                ticker="AAPL", action=OrderAction.SELL, qty=999,
+                sim_date="2026-04-10",
+            )
+        mock_broker.execute_orders.assert_not_called()
+        mock_repo.save_positions.assert_not_called()
+
+    def test_sell_with_no_position_raises(
+        self, mock_broker, mock_repo, mock_logger,
+    ):
+        """보유 수량 0인 종목 매도 시도 -> RuntimeError."""
+        rules = [StockRule("AAPL", -5.0, 10.0, 500, 10)]
+        mock_broker.get_portfolio.return_value = Portfolio(
+            total_cash=10000.0, holdings={}, current_prices={"AAPL": 100.0},
+        )
+        mock_broker.fetch_current_prices.return_value = {"AAPL": 100.0}
+        mock_repo.load_positions.return_value = []
+        mock_repo.load_last_sell_prices.return_value = {}
+
+        eng = self._make_engine(mock_broker, mock_repo, mock_logger, rules)
+        with pytest.raises(RuntimeError, match="매도할 포지션"):
+            eng.run_manual_trade(
+                ticker="AAPL", action=OrderAction.SELL, qty=1,
+                sim_date="2026-04-10",
+            )
+
+    def test_buy_with_amount_calculates_qty_from_current_price(
+        self, mock_broker, mock_repo, mock_logger,
+    ):
+        """amount만 지정한 매수: int(amount/현재가)로 qty 계산."""
+        rules = [StockRule("AAPL", -5.0, 10.0, 500, 10)]
+        mock_broker.get_portfolio.return_value = Portfolio(
+            total_cash=10000.0, holdings={}, current_prices={"AAPL": 95.0},
+        )
+        mock_broker.fetch_current_prices.return_value = {"AAPL": 95.0}
+        mock_repo.load_positions.return_value = []
+        mock_repo.load_last_sell_prices.return_value = {}
+        mock_broker.execute_orders.return_value = [
+            TradeExecution("AAPL", OrderAction.BUY, 10, 95.0, 0.5,
+                           "2026-04-10", ExecutionStatus.FILLED),
+        ]
+
+        eng = self._make_engine(mock_broker, mock_repo, mock_logger, rules)
+        result = eng.run_manual_trade(
+            ticker="AAPL", action=OrderAction.BUY, amount=1000.0,
+            sim_date="2026-04-10",
+        )
+
+        # 1000 / 95 = 10.52 -> int = 10
+        assert result.signals[0].quantity == 10
+
+    def test_dry_run_skips_execute_and_persist(
+        self, mock_broker, mock_repo, mock_logger,
+    ):
+        """dry_run=True: 신호만 생성하고 주문/저장 미실행."""
+        rules = [StockRule("AAPL", -5.0, 10.0, 500, 10)]
+        mock_broker.get_portfolio.return_value = Portfolio(
+            total_cash=10000.0, holdings={}, current_prices={"AAPL": 100.0},
+        )
+        mock_broker.fetch_current_prices.return_value = {"AAPL": 100.0}
+        mock_repo.load_positions.return_value = []
+        mock_repo.load_last_sell_prices.return_value = {}
+
+        eng = self._make_engine(mock_broker, mock_repo, mock_logger, rules)
+        result = eng.run_manual_trade(
+            ticker="AAPL", action=OrderAction.BUY, qty=5, dry_run=True,
+            sim_date="2026-04-10",
+        )
+
+        assert result.has_orders is False
+        assert len(result.signals) == 1
+        mock_broker.execute_orders.assert_not_called()
+        mock_repo.save_positions.assert_not_called()
+        mock_repo.save_status.assert_not_called()
+
+    def test_unknown_ticker_raises(
+        self, mock_broker, mock_repo, mock_logger,
+    ):
+        """설정에 없는 ticker -> ValueError."""
+        rules = [StockRule("AAPL", -5.0, 10.0, 500, 10)]
+        eng = self._make_engine(mock_broker, mock_repo, mock_logger, rules)
+        with pytest.raises(ValueError, match="등록되지 않은 종목"):
+            eng.run_manual_trade(
+                ticker="UNKNOWN", action=OrderAction.BUY, qty=1,
+                sim_date="2026-04-10",
+            )
+
+    def test_disabled_ticker_raises(
+        self, mock_broker, mock_repo, mock_logger,
+    ):
+        """비활성 ticker -> ValueError, 매매 차단."""
+        rules = [
+            StockRule("AAPL", -5.0, 10.0, 500, 10, enabled=True),
+            StockRule("MSFT", -5.0, 10.0, 500, 10, enabled=False),
+        ]
+        eng = self._make_engine(mock_broker, mock_repo, mock_logger, rules)
+        with pytest.raises(ValueError, match="비활성화"):
+            eng.run_manual_trade(
+                ticker="MSFT", action=OrderAction.BUY, qty=1,
+                sim_date="2026-04-10",
+            )
+
+    def test_neither_qty_nor_amount_raises(
+        self, mock_broker, mock_repo, mock_logger,
+    ):
+        """qty/amount 둘 다 미지정 -> ValueError."""
+        rules = [StockRule("AAPL", -5.0, 10.0, 500, 10)]
+        eng = self._make_engine(mock_broker, mock_repo, mock_logger, rules)
+        with pytest.raises(ValueError, match="qty 또는 amount"):
+            eng.run_manual_trade(
+                ticker="AAPL", action=OrderAction.BUY, sim_date="2026-04-10",
+            )
+
+    def test_sell_with_amount_only_raises(
+        self, mock_broker, mock_repo, mock_logger,
+    ):
+        """매도는 amount만으로는 지정 불가 -> ValueError."""
+        rules = [StockRule("AAPL", -5.0, 10.0, 500, 10)]
+        eng = self._make_engine(mock_broker, mock_repo, mock_logger, rules)
+        with pytest.raises(ValueError, match="매도는 qty"):
+            eng.run_manual_trade(
+                ticker="AAPL", action=OrderAction.SELL, amount=500.0,
+                sim_date="2026-04-10",
+            )
+
+    def test_persist_called_with_manual_signal(
+        self, mock_broker, mock_repo, mock_logger,
+    ):
+        """체결 성공 시 _persist를 통해 save_positions/save_trade_history/save_status 모두 호출."""
+        rules = [StockRule("AAPL", -5.0, 10.0, 500, 10)]
+        mock_broker.get_portfolio.return_value = Portfolio(
+            total_cash=10000.0, holdings={}, current_prices={"AAPL": 100.0},
+        )
+        mock_broker.fetch_current_prices.return_value = {"AAPL": 100.0}
+        mock_repo.load_positions.return_value = []
+        mock_repo.load_last_sell_prices.return_value = {}
+        mock_repo.get_realized_pnl_by_ticker.return_value = {}
+        mock_repo.get_last_trade_dates.return_value = {}
+        mock_broker.execute_orders.return_value = [
+            TradeExecution("AAPL", OrderAction.BUY, 5, 100.0, 0.5,
+                           "2026-04-10", ExecutionStatus.FILLED),
+        ]
+
+        eng = self._make_engine(mock_broker, mock_repo, mock_logger, rules)
+        eng.run_manual_trade(
+            ticker="AAPL", action=OrderAction.BUY, qty=5,
+            sim_date="2026-04-10",
+        )
+
+        mock_repo.save_positions.assert_called_once()
+        mock_repo.save_trade_history.assert_called_once()
+        mock_repo.save_status.assert_called_once()
+        # 사유 문자열에 "수동 매매(Manual Trade)"가 포함되어야 한다
+        history_args = mock_repo.save_trade_history.call_args
+        reason = history_args[0][2]
+        assert "수동 매매(Manual Trade)" in reason
+
+    def test_rejected_execution_does_not_persist(
+        self, mock_broker, mock_repo, mock_logger,
+    ):
+        """REJECTED 체결만 있으면 포지션 변경이 없으므로 _persist는 호출되지만
+        positions에 새 lot은 추가되지 않고 alert가 발송된다."""
+        rules = [StockRule("AAPL", -5.0, 10.0, 500, 10)]
+        mock_broker.get_portfolio.return_value = Portfolio(
+            total_cash=10000.0, holdings={}, current_prices={"AAPL": 100.0},
+        )
+        mock_broker.fetch_current_prices.return_value = {"AAPL": 100.0}
+        mock_repo.load_positions.return_value = []
+        mock_repo.load_last_sell_prices.return_value = {}
+        mock_repo.get_realized_pnl_by_ticker.return_value = {}
+        mock_repo.get_last_trade_dates.return_value = {}
+        mock_broker.execute_orders.return_value = [
+            TradeExecution("AAPL", OrderAction.BUY, 0, 0.0, 0.0,
+                           "2026-04-10", ExecutionStatus.REJECTED, reason="잔고 부족"),
+        ]
+        notifier = MagicMock()
+        eng = self._make_engine(
+            mock_broker, mock_repo, mock_logger, rules, notifier=notifier,
+        )
+        eng.run_manual_trade(
+            ticker="AAPL", action=OrderAction.BUY, qty=5,
+            sim_date="2026-04-10",
+        )
+
+        saved = mock_repo.save_positions.call_args[0][0]
+        assert saved == []  # 새 lot 미추가
+        alert_msgs = [c.args[0] for c in notifier.send_alert.call_args_list]
+        assert any("수동매매" in m and "체결 실패 또는 거절" in m for m in alert_msgs)
