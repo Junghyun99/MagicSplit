@@ -21,9 +21,8 @@ jobs:
   trade-overseas:
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    concurrency:
-      group: trading-overseas
-      cancel-in-progress: false
+    env:
+      TZ: Asia/Seoul
 
     steps:
     - name: Checkout
