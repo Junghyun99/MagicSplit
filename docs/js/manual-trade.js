@@ -144,32 +144,43 @@
             // If positions is an object (ticker -> summary), as produced by recent status_builder.py
             if (!Array.isArray(posData)) {
                 Object.entries(posData).forEach(([ticker, info]) => {
-                    const maxLevel = info.lots && info.lots.length > 0 
-                        ? Math.max(...info.lots.map(l => l.level || 0)) 
+                    const lots = info.lots || [];
+                    const maxLevel = lots.length > 0 
+                        ? Math.max(...lots.map(l => l.level || 0)) 
                         : 0;
+                    const highestLot = lots.find(l => (l.level || 0) === maxLevel);
                     statusMap[ticker] = { 
                         level: maxLevel, 
-                        quantity: info.total_qty || 0 
+                        quantity: info.total_qty || 0,
+                        highestLvQty: highestLot ? highestLot.quantity : 0
                     };
                 });
             } else {
                 // Legacy: positions is a flat array of lots
                 posData.forEach(pos => {
-                    if (!statusMap[pos.ticker]) statusMap[pos.ticker] = { level: 0, quantity: 0 };
-                    statusMap[pos.ticker].level = Math.max(statusMap[pos.ticker].level, pos.level || 0);
-                    statusMap[pos.ticker].quantity += (pos.quantity || 0);
+                    const t = pos.ticker;
+                    if (!statusMap[t]) statusMap[t] = { level: 0, quantity: 0, highestLvQty: 0 };
+                    
+                    if ((pos.level || 0) > statusMap[t].level) {
+                        statusMap[t].level = pos.level || 0;
+                        statusMap[t].highestLvQty = pos.quantity || 0;
+                    } else if ((pos.level || 0) === statusMap[t].level) {
+                        statusMap[t].highestLvQty += (pos.quantity || 0);
+                    }
+                    statusMap[t].quantity += (pos.quantity || 0);
                 });
             }
         }
 
         tickers = stocks.map(rule => {
-            const status = statusMap[rule.ticker] || { level: 0, quantity: 0 };
+            const status = statusMap[rule.ticker] || { level: 0, quantity: 0, highestLvQty: 0 };
             return {
                 ticker: rule.ticker,
                 alias: rule.alias || rule.ticker,
                 enabled: rule.enabled !== false,
                 currentLevel: status.level,
                 currentQty: status.quantity,
+                highestLvQty: status.highestLvQty,
                 config: rule
             };
         });
@@ -259,10 +270,7 @@
             inputHint.textContent = `현재 ${tickerObj.currentLevel}차 -> ${nextLv}차 매수 설정값: ${formatAmount(defaultAmt, currentMarket)}`;
         } else {
             inputLabel.textContent = '매도 수량 (주)';
-            // Find qty of highest level
-            const lots = currentStatus && currentStatus.positions ? currentStatus.positions.filter(p => p.ticker === tickerObj.ticker) : [];
-            const highestLvLot = lots.sort((a,b) => b.level - a.level)[0];
-            const defaultQty = highestLvLot ? highestLvLot.quantity : 0;
+            const defaultQty = tickerObj.highestLvQty || 0;
             orderValue.value = defaultQty;
             inputHint.textContent = `현재 최상위(${tickerObj.currentLevel}차) 보유량: ${defaultQty}주 / 총 ${tickerObj.currentQty}주`;
         }
