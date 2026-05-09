@@ -900,6 +900,40 @@ h2 { font-size: 1.1rem; margin-bottom: 8px; color: var(--text-muted); }
     margin-top: 4px;
 }
 
+.health-deductions {
+    margin-top: 16px;
+    width: 100%;
+    border-top: 1px solid var(--border);
+    padding-top: 12px;
+    text-align: left;
+}
+
+.deduction-header-mini {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+    letter-spacing: 0.5px;
+}
+
+.deduction-item {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+}
+
+.deduction-reason {
+    font-weight: 500;
+}
+
+.deduction-points {
+    font-weight: 700;
+    color: var(--danger);
+}
+
 .risk-alerts-card {
     background: var(--card-bg);
     border: 1px solid var(--border);

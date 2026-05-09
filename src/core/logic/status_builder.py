@@ -157,23 +157,33 @@ def build_dashboard_status(
     
     # 3. Calculate Risk Score (Base 100)
     score = 100
+    deductions = []
+    
     if cash_ratio < 25:
-        score -= min(30, (25 - cash_ratio) * 1.5)
+        points = min(30, (25 - cash_ratio) * 1.5)
+        score -= points
+        deductions.append({"reason": "현금 비중 부족", "points": round(points, 1)})
         if cash_ratio < 10:
             alerts.append(f"⚠️ 현금 비중 부족 ({cash_ratio:.1f}%)")
         
     if max_concentration > 15:
-        score -= min(30, (max_concentration - 15) * 2.0)
+        points = min(30, (max_concentration - 15) * 2.0)
+        score -= points
+        deductions.append({"reason": "단일 종목 집중도 과다", "points": round(points, 1)})
         if max_concentration > 20:
             alerts.append(f"⚠️ 단일 종목 집중도 과다 ({max_concentration:.1f}%)")
         
     if high_level_ratio > 0:
-        score -= min(20, high_level_ratio * 50)
+        points = min(20, high_level_ratio * 50)
+        score -= points
+        deductions.append({"reason": "고차수 포지션 비중", "points": round(points, 1)})
         if high_level_ratio > 0.3:
             alerts.append(f"⚠️ 고차수 포지션 비중 높음 ({high_level_ratio*100:.1f}%)")
             
     if stale_count > 0:
-        score -= min(20, stale_count * 4)
+        points = min(20, stale_count * 4)
+        score -= points
+        deductions.append({"reason": "장기 정체 종목", "points": round(points, 1)})
         if stale_count >= 3:
             alerts.append(f"⚠️ 장기 정체 종목 존재 ({stale_count}개)")
 
@@ -205,6 +215,7 @@ def build_dashboard_status(
             "max_potential_exposure": round(max_potential_exposure, 2),
             "stale_info": stale_info,
             "risk_score": max(0, round(score)),
+            "deductions": deductions,
             "sync_error": sync_error,
             "alerts": alerts,
             "max_ticker_concentration": round(max_concentration, 2),

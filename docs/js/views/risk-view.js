@@ -48,10 +48,27 @@ window.RiskView = (function () {
             colorClass = 'text-warning';
         }
 
+        let deductionsHtml = '';
+        if (riskSummary.deductions && riskSummary.deductions.length > 0) {
+            const items = riskSummary.deductions.map(d => `
+                <div class="deduction-item">
+                    <span class="deduction-reason">${esc(d.reason)}</span>
+                    <span class="deduction-points">-${d.points}</span>
+                </div>
+            `).join('');
+            deductionsHtml = `
+                <div class="health-deductions">
+                    <div class="deduction-header-mini">감점 요인</div>
+                    ${items}
+                </div>
+            `;
+        }
+
         container.innerHTML = `
             <div class="health-label">리스크 상태</div>
             <div class="health-score ${colorClass}">${score}</div>
             <div class="health-status ${colorClass}">${status}</div>
+            ${deductionsHtml}
         `;
     }
 
