@@ -62,8 +62,13 @@
     }
 
     function updateMarketByPath(path) {
-        if (path === 'config_domestic.json') currentMarket = 'domestic';
-        else if (path === 'config_overseas.json') currentMarket = 'overseas';
+        if (!path) {
+            currentMarket = 'domestic';
+            return;
+        }
+        const lowerPath = path.toLowerCase();
+        if (lowerPath.includes('overseas')) currentMarket = 'overseas';
+        else if (lowerPath.includes('domestic')) currentMarket = 'domestic';
         else currentMarket = 'domestic';
     }
 
@@ -134,11 +139,27 @@
         
         const statusMap = {};
         if (currentStatus && currentStatus.positions) {
-            currentStatus.positions.forEach(pos => {
-                if (!statusMap[pos.ticker]) statusMap[pos.ticker] = { level: 0, quantity: 0 };
-                statusMap[pos.ticker].level = Math.max(statusMap[pos.ticker].level, pos.level);
-                statusMap[pos.ticker].quantity += pos.quantity;
-            });
+            const posData = currentStatus.positions;
+            
+            // If positions is an object (ticker -> summary), as produced by recent status_builder.py
+            if (!Array.isArray(posData)) {
+                Object.entries(posData).forEach(([ticker, info]) => {
+                    const maxLevel = info.lots && info.lots.length > 0 
+                        ? Math.max(...info.lots.map(l => l.level || 0)) 
+                        : 0;
+                    statusMap[ticker] = { 
+                        level: maxLevel, 
+                        quantity: info.total_qty || 0 
+                    };
+                });
+            } else {
+                // Legacy: positions is a flat array of lots
+                posData.forEach(pos => {
+                    if (!statusMap[pos.ticker]) statusMap[pos.ticker] = { level: 0, quantity: 0 };
+                    statusMap[pos.ticker].level = Math.max(statusMap[pos.ticker].level, pos.level || 0);
+                    statusMap[pos.ticker].quantity += (pos.quantity || 0);
+                });
+            }
         }
 
         tickers = stocks.map(rule => {
