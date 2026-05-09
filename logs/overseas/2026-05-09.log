@@ -60,3 +60,23 @@
 2026-05-09 09:47:31,715 [INFO] [KisBroker] Available Cash for BUY: 669
 2026-05-09 09:47:32,435 [WARNING] [KisBroker] 스프레드 비정상 — QLD 매수 건너뜀
 2026-05-09 09:47:32,577 [INFO] >>> Step 6: Persist
+2026-05-09 14:50:58,574 [INFO] === Initializing MagicSplit Bot (overseas) ===
+2026-05-09 14:50:58,574 [INFO] Loaded 2 stock rule(s) from config_overseas.json
+2026-05-09 14:50:58,574 [INFO] [overseas] 2 rule(s), mode=LIVE
+2026-05-09 14:50:58,575 [INFO] [KisBroker] 캐시에서 토큰 로드 (API 호출 생략)
+2026-05-09 14:50:58,575 [INFO] [KisOverseasLiveBroker] Mode: LIVE TRADING
+2026-05-09 14:50:58,575 [INFO] === Running overseas engine ===
+2026-05-09 14:50:58,575 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-09 14:51:01,814 [INFO] Fetching real-time prices from Broker...
+2026-05-09 14:51:03,192 [INFO] Portfolio: Cash=USD 668.70, Value=USD 7,599.39
+2026-05-09 14:51:03,193 [INFO] >>> Step 2: Load Positions
+2026-05-09 14:51:03,193 [INFO] Loaded 1 position lot(s)
+2026-05-09 14:51:03,193 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-09 14:51:03,194 [INFO] >>> Processing AAPL
+2026-05-09 14:51:03,194 [INFO]   [AAPL] 신호 없음 | Lv1 매수 USD 291.90 -> 현재 USD 293.32 (+0.49%) | 익절 +10.0% / 추매 -5.0%
+2026-05-09 14:51:03,194 [INFO] >>> Processing QLD
+2026-05-09 14:51:03,194 [INFO] [QLD] 보유 lot 없음 -> 초기 매수 Lv1 5주 @USD 91.72
+2026-05-09 14:51:03,195 [INFO] Executing 1 order(s)...
+2026-05-09 14:51:06,377 [INFO] [KisBroker] Available Cash for BUY: 669
+2026-05-09 14:51:07,028 [WARNING] [KisBroker] 스프레드 비정상 — QLD 매수 건너뜀
+2026-05-09 14:51:07,219 [INFO] >>> Step 6: Persist
