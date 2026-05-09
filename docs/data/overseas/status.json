@@ -1,116 +1,116 @@
 {
-    "last_updated": "2026-05-08 17:10:05",
-    "last_run_date": "2026-05-08",
+    "last_updated": "2026-05-09 00:19:19",
+    "last_run_date": "2026-05-09",
     "market_type": "overseas",
-    "reason": "AAPL:BUY(초기 매수 Lv1), QLD:BUY(초기 매수 Lv1)",
+    "reason": "QLD:BUY(초기 매수 Lv1)",
     "portfolio": {
-        "total_value": 7594.4404,
-        "cash_balance": 667.53,
+        "total_value": 7599.389999999999,
+        "cash_balance": 668.7,
         "holdings": [
             {
                 "ticker": "AAPL",
                 "alias": "AAPL",
                 "qty": 1,
-                "price": 291.91,
-                "value": 291.91
+                "price": 293.32,
+                "value": 293.32
             },
             {
                 "ticker": "ABT",
                 "alias": "ABT",
                 "qty": 3,
-                "price": 85.015,
-                "value": 255.04500000000002
+                "price": 84.32,
+                "value": 252.95999999999998
             },
             {
                 "ticker": "ARKK",
                 "alias": "ARKK",
                 "qty": 11,
-                "price": 78.21,
-                "value": 860.31
+                "price": 79.12,
+                "value": 870.32
             },
             {
                 "ticker": "AVGO",
                 "alias": "AVGO",
                 "qty": 2,
-                "price": 430.29,
-                "value": 860.58
+                "price": 430.0,
+                "value": 860.0
             },
             {
                 "ticker": "CRM",
                 "alias": "CRM",
                 "qty": 3,
-                "price": 181.26,
-                "value": 543.78
+                "price": 181.82,
+                "value": 545.46
             },
             {
                 "ticker": "DUK",
                 "alias": "DUK",
                 "qty": 1,
-                "price": 124.345,
-                "value": 124.345
+                "price": 124.17,
+                "value": 124.17
             },
             {
                 "ticker": "GOOGL",
                 "alias": "GOOGL",
                 "qty": 2,
-                "price": 397.78,
-                "value": 795.56
+                "price": 400.8,
+                "value": 801.6
             },
             {
                 "ticker": "ICLN",
                 "alias": "ICLN",
                 "qty": 1,
-                "price": 21.09,
-                "value": 21.09
+                "price": 21.16,
+                "value": 21.16
             },
             {
                 "ticker": "O",
                 "alias": "O",
                 "qty": 6,
-                "price": 62.055,
-                "value": 372.33
+                "price": 61.92,
+                "value": 371.52
             },
             {
                 "ticker": "PEP",
                 "alias": "PEP",
                 "qty": 4,
-                "price": 155.91,
-                "value": 623.64
+                "price": 154.62,
+                "value": 618.48
             },
             {
                 "ticker": "PFE",
                 "alias": "PFE",
                 "qty": 1,
-                "price": 25.795,
-                "value": 25.795
+                "price": 25.68,
+                "value": 25.68
             },
             {
                 "ticker": "PG",
                 "alias": "PG",
                 "qty": 5,
-                "price": 147.051,
-                "value": 735.2549999999999
+                "price": 146.42,
+                "value": 732.0999999999999
             },
             {
                 "ticker": "SCHD",
                 "alias": "SCHD",
                 "qty": 4,
-                "price": 31.6901,
-                "value": 126.7604
+                "price": 31.62,
+                "value": 126.48
             },
             {
                 "ticker": "TSLA",
                 "alias": "TSLA",
                 "qty": 2,
-                "price": 428.165,
-                "value": 856.33
+                "price": 428.35,
+                "value": 856.7
             },
             {
                 "ticker": "WM",
                 "alias": "WM",
                 "qty": 2,
-                "price": 217.09,
-                "value": 434.18
+                "price": 215.37,
+                "value": 430.74
             }
         ]
     },
@@ -119,7 +119,7 @@
             "total_qty": 1,
             "lot_count": 1,
             "total_invested": 291.9,
-            "current_value": 291.91,
+            "current_value": 293.32,
             "lots": [
                 {
                     "lot_id": "lot_20260508_170952_AAPL_001",
@@ -127,17 +127,17 @@
                     "quantity": 1,
                     "buy_date": "2026-05-08",
                     "level": 1,
-                    "current_price": 291.91,
-                    "pct_change": 0.0
+                    "current_price": 293.32,
+                    "pct_change": 0.49
                 }
             ],
-            "current_price": 291.91,
+            "current_price": 293.32,
             "alias": "AAPL",
             "avg_buy_price": 291.9,
-            "unrealized_pnl": 0.01,
-            "unrealized_pnl_pct": 0.0,
+            "unrealized_pnl": 1.42,
+            "unrealized_pnl_pct": 0.49,
             "realized_pnl": 0.0,
-            "total_pnl": 0.01
+            "total_pnl": 1.42
         }
     },
     "realized_pnl_by_ticker": {},
@@ -150,13 +150,13 @@
                 "ticker": "AAPL",
                 "alias": "AAPL",
                 "last_trade_date": "2026-05-08",
-                "days_stale": 0
+                "days_stale": 1
             }
         ],
         "risk_score": 76,
         "sync_error": true,
-        "alerts": ["⚠️ [O] 잔고 불일치 (봇: 0, 계좌: 6)", "⚠️ [GOOGL] 잔고 불일치 (봇: 0, 계좌: 2)", "⚠️ [CRM] 잔고 불일치 (봇: 0, 계좌: 3)", "⚠️ [ICLN] 잔고 불일치 (봇: 0, 계좌: 1)", "⚠️ [SCHD] 잔고 불일치 (봇: 0, 계좌: 4)", "⚠️ [PFE] 잔고 불일치 (봇: 0, 계좌: 1)", "⚠️ [PEP] 잔고 불일치 (봇: 0, 계좌: 4)", "⚠️ [DUK] 잔고 불일치 (봇: 0, 계좌: 1)", "⚠️ [ARKK] 잔고 불일치 (봇: 0, 계좌: 11)", "⚠️ [ABT] 잔고 불일치 (봇: 0, 계좌: 3)", "⚠️ [PG] 잔고 불일치 (봇: 0, 계좌: 5)", "⚠️ [AVGO] 잔고 불일치 (봇: 0, 계좌: 2)", "⚠️ [TSLA] 잔고 불일치 (봇: 0, 계좌: 2)", "⚠️ [WM] 잔고 불일치 (봇: 0, 계좌: 2)", "⚠️ 현금 비중 부족 (8.8%)"],
-        "max_ticker_concentration": 3.84,
+        "alerts": ["⚠️ [TSLA] 잔고 불일치 (봇: 0, 계좌: 2)", "⚠️ [AVGO] 잔고 불일치 (봇: 0, 계좌: 2)", "⚠️ [ICLN] 잔고 불일치 (봇: 0, 계좌: 1)", "⚠️ [ARKK] 잔고 불일치 (봇: 0, 계좌: 11)", "⚠️ [PFE] 잔고 불일치 (봇: 0, 계좌: 1)", "⚠️ [PG] 잔고 불일치 (봇: 0, 계좌: 5)", "⚠️ [WM] 잔고 불일치 (봇: 0, 계좌: 2)", "⚠️ [O] 잔고 불일치 (봇: 0, 계좌: 6)", "⚠️ [GOOGL] 잔고 불일치 (봇: 0, 계좌: 2)", "⚠️ [PEP] 잔고 불일치 (봇: 0, 계좌: 4)", "⚠️ [ABT] 잔고 불일치 (봇: 0, 계좌: 3)", "⚠️ [CRM] 잔고 불일치 (봇: 0, 계좌: 3)", "⚠️ [DUK] 잔고 불일치 (봇: 0, 계좌: 1)", "⚠️ [SCHD] 잔고 불일치 (봇: 0, 계좌: 4)", "⚠️ 현금 비중 부족 (8.8%)"],
+        "max_ticker_concentration": 3.86,
         "high_level_ratio": 0.0
     }
 }
