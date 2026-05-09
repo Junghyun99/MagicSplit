@@ -28,6 +28,10 @@ class JsonRepository(IRepository):
         self.history_file = os.path.join(self.root, "history.json")
         self.status_file = os.path.join(self.root, "status.json")
 
+        # ⚡ Bolt: Memory cache to avoid redundant disk I/O and JSON decoding
+        # This dramatically speeds up the backtest loop which constantly reads/writes status.
+        self._cache = {}
+
     # === Positions ===
 
     def load_positions(self) -> List[PositionLot]:
@@ -236,11 +240,15 @@ class JsonRepository(IRepository):
     # === Internal helpers ===
 
     def _load_json(self, path: str, default=None):
+        if path in self._cache:
+            return self._cache[path]
         if not os.path.exists(path):
             return default
         try:
             with open(path, 'r', encoding='utf-8') as f:
-                return json.load(f)
+                data = json.load(f)
+                self._cache[path] = data
+                return data
         except (json.JSONDecodeError, IOError, OSError):
             return default
 
@@ -257,5 +265,6 @@ class JsonRepository(IRepository):
 
     def _save_json(self, path: str, data):
         sanitized = self._sanitize_for_json(data)
+        self._cache[path] = sanitized
         with open(path, 'w', encoding='utf-8') as f:
             json.dump(sanitized, f, indent=4, ensure_ascii=False)
