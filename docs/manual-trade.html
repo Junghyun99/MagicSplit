@@ -240,9 +240,8 @@
                 <h2 class="modal-title" id="modal-title">주문 실행</h2>
             </div>
             <div class="form-group">
-                <label id="input-label">매수 금액</label>
-                <input type="number" id="order-value" class="form-control" step="any">
-                <small id="input-hint" class="form-text"></small>
+                <p id="order-summary" style="margin: 0; line-height: 1.5;"></p>
+                <small id="input-hint" class="form-text" style="display:block; margin-top:8px; color: var(--text-muted);"></small>
             </div>
             <div style="display: flex; gap: 10px; margin-top: 24px;">
                 <button class="btn btn-primary" id="confirm-trade-btn" style="flex: 2;">실행</button>
@@ -254,7 +253,7 @@
 
     <script src="js/services/data-repository.js?v=20260509-2"></script>
     <script src="js/services/github-api.js?v=20260509-2"></script>
-    <script src="js/manual-trade.js?v=20260510-1"></script>
+    <script src="js/manual-trade.js?v=20260510-2"></script>
 </body>
 
 </html>

@@ -15,20 +15,12 @@ on:
         required: true
         type: string
       action:
-        description: 'Order Action'
+        description: 'Order Action (qty is auto-derived: BUY=rule.buy_amount, SELL=highest-level lot full)'
         required: true
         type: choice
         options:
           - buy
           - sell
-      quantity:
-        description: 'Quantity (BUY only — SELL is always full highest-level lot)'
-        required: false
-        type: string
-      amount:
-        description: 'Order Amount (BUY only — SELL is always full highest-level lot)'
-        required: false
-        type: string
 
 jobs:
   trade:
@@ -58,10 +50,6 @@ jobs:
 
     - name: Execute Manual Trade
       env:
-        ACTION: ${{ github.event.inputs.action }}
-        TICKER: ${{ github.event.inputs.ticker }}
-        QUANTITY: ${{ github.event.inputs.quantity }}
-        AMOUNT: ${{ github.event.inputs.amount }}
         CONFIG_JSON_PATH: config_${{ github.event.inputs.market_type }}.json
         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_LIVE }}
         KIS_APP_KEY: ${{ secrets.KIS_APP_KEY }}
@@ -69,13 +57,9 @@ jobs:
         KIS_ACC_NO: ${{ secrets.KIS_ACC_NO }}
         IS_LIVE: 'true'
       run: |
-        # 매수만 qty/amount 전달. 매도는 최고 차수 lot 전량을 엔진이 자동 도출.
-        ARGS=(--ticker "$TICKER" --action "$ACTION")
-        if [ "$ACTION" = "buy" ]; then
-          [ -n "$QUANTITY" ] && ARGS+=(--qty "$QUANTITY")
-          [ -n "$AMOUNT" ] && ARGS+=(--amount "$AMOUNT")
-        fi
-        python scripts/manual_trade.py "${ARGS[@]}"
+        python scripts/manual_trade.py \
+          --ticker "${{ github.event.inputs.ticker }}" \
+          --action "${{ github.event.inputs.action }}"
 
     - name: Save KIS token cache
       if: always()

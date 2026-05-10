@@ -730,7 +730,7 @@ class TestRunManualTrade:
     def test_buy_creates_new_lot_at_next_level(
         self, mock_broker, mock_repo, mock_logger,
     ):
-        """매수: 기존 최고 차수 + 1로 새 lot 생성, save_positions 호출."""
+        """매수: rule.buy_amount(500)/현재가(100)=5주를 자동 도출, Lv2로 신규 lot 생성."""
         rules = [StockRule("AAPL", -5.0, 10.0, 500, 10)]
         mock_broker.get_portfolio.return_value = Portfolio(
             total_cash=10000.0, holdings={"AAPL": 5},
@@ -742,26 +742,27 @@ class TestRunManualTrade:
         ]
         mock_repo.load_last_sell_prices.return_value = {}
         mock_broker.execute_orders.return_value = [
-            TradeExecution("AAPL", OrderAction.BUY, 3, 100.0, 0.5,
+            TradeExecution("AAPL", OrderAction.BUY, 5, 100.0, 0.5,
                            "2026-04-10", ExecutionStatus.FILLED),
         ]
 
         eng = self._make_engine(mock_broker, mock_repo, mock_logger, rules)
         result = eng.run_manual_trade(
-            ticker="AAPL", action=OrderAction.BUY, qty=3, sim_date="2026-04-10",
+            ticker="AAPL", action=OrderAction.BUY, sim_date="2026-04-10",
         )
 
         assert result.has_orders is True
         assert len(result.signals) == 1
         assert result.signals[0].reason == "수동 매매(Manual Trade)"
         assert result.signals[0].level == 2
+        assert result.signals[0].quantity == 5  # 500 / 100 = 5
 
         mock_repo.save_positions.assert_called_once()
         saved = mock_repo.save_positions.call_args[0][0]
         assert len(saved) == 2
         new_lot = max(saved, key=lambda l: l.level)
         assert new_lot.level == 2
-        assert new_lot.quantity == 3
+        assert new_lot.quantity == 5
         assert new_lot.buy_price == 100.0
 
     def test_sell_auto_derives_qty_from_highest_lot_and_updates_last_sell_prices(
@@ -808,30 +809,6 @@ class TestRunManualTrade:
         saved_lsp = mock_repo.save_last_sell_prices.call_args[0][0]
         assert saved_lsp["AAPL"] == 110.0
 
-    def test_sell_rejects_qty_argument(
-        self, mock_broker, mock_repo, mock_logger,
-    ):
-        """매도 시 qty를 지정하면 ValueError. 자동매매와 정책 일치."""
-        rules = [StockRule("AAPL", -5.0, 10.0, 500, 10)]
-        eng = self._make_engine(mock_broker, mock_repo, mock_logger, rules)
-        with pytest.raises(ValueError, match="최고 차수 lot 전량 매도만 지원"):
-            eng.run_manual_trade(
-                ticker="AAPL", action=OrderAction.SELL, qty=3,
-                sim_date="2026-04-10",
-            )
-
-    def test_sell_rejects_amount_argument(
-        self, mock_broker, mock_repo, mock_logger,
-    ):
-        """매도 시 amount를 지정하면 ValueError."""
-        rules = [StockRule("AAPL", -5.0, 10.0, 500, 10)]
-        eng = self._make_engine(mock_broker, mock_repo, mock_logger, rules)
-        with pytest.raises(ValueError, match="최고 차수 lot 전량 매도만 지원"):
-            eng.run_manual_trade(
-                ticker="AAPL", action=OrderAction.SELL, amount=500.0,
-                sim_date="2026-04-10",
-            )
-
     def test_sell_with_no_position_raises(
         self, mock_broker, mock_repo, mock_logger,
     ):
@@ -851,30 +828,76 @@ class TestRunManualTrade:
                 sim_date="2026-04-10",
             )
 
-    def test_buy_with_amount_calculates_qty_from_current_price(
+    def test_buy_uses_buy_amounts_array_for_target_level(
         self, mock_broker, mock_repo, mock_logger,
     ):
-        """amount만 지정한 매수: int(amount/현재가)로 qty 계산."""
-        rules = [StockRule("AAPL", -5.0, 10.0, 500, 10)]
+        """buy_amounts 배열이 있으면 다음 차수 인덱스 값을 사용 (단일값 buy_amount보다 우선)."""
+        rules = [StockRule(
+            "AAPL", -5.0, 10.0, 500, 10,
+            buy_amounts=[300.0, 600.0, 900.0],
+        )]
         mock_broker.get_portfolio.return_value = Portfolio(
-            total_cash=10000.0, holdings={}, current_prices={"AAPL": 95.0},
+            total_cash=10000.0, holdings={"AAPL": 3},
+            current_prices={"AAPL": 100.0},
         )
-        mock_broker.fetch_current_prices.return_value = {"AAPL": 95.0}
-        mock_repo.load_positions.return_value = []
+        mock_broker.fetch_current_prices.return_value = {"AAPL": 100.0}
+        mock_repo.load_positions.return_value = [
+            PositionLot("lot_001", "AAPL", 110.0, 3, "2026-04-01", level=1),
+        ]
         mock_repo.load_last_sell_prices.return_value = {}
         mock_broker.execute_orders.return_value = [
-            TradeExecution("AAPL", OrderAction.BUY, 10, 95.0, 0.5,
+            TradeExecution("AAPL", OrderAction.BUY, 6, 100.0, 0.5,
                            "2026-04-10", ExecutionStatus.FILLED),
         ]
 
         eng = self._make_engine(mock_broker, mock_repo, mock_logger, rules)
         result = eng.run_manual_trade(
-            ticker="AAPL", action=OrderAction.BUY, amount=1000.0,
-            sim_date="2026-04-10",
+            ticker="AAPL", action=OrderAction.BUY, sim_date="2026-04-10",
         )
 
-        # 1000 / 95 = 10.52 -> int = 10
-        assert result.signals[0].quantity == 10
+        # 다음 레벨 = Lv2 -> buy_amounts[1] = 600 / 100 = 6주
+        assert result.signals[0].level == 2
+        assert result.signals[0].quantity == 6
+
+    def test_buy_amount_too_small_raises(
+        self, mock_broker, mock_repo, mock_logger,
+    ):
+        """rule.buy_amount < 현재가 -> 도출 수량이 0이면 RuntimeError."""
+        rules = [StockRule("AAPL", -5.0, 10.0, 50, 10)]  # buy_amount=50
+        mock_broker.get_portfolio.return_value = Portfolio(
+            total_cash=10000.0, holdings={}, current_prices={"AAPL": 100.0},
+        )
+        mock_broker.fetch_current_prices.return_value = {"AAPL": 100.0}
+        mock_repo.load_positions.return_value = []
+        mock_repo.load_last_sell_prices.return_value = {}
+
+        eng = self._make_engine(mock_broker, mock_repo, mock_logger, rules)
+        with pytest.raises(RuntimeError, match="매수 수량 0주"):
+            eng.run_manual_trade(
+                ticker="AAPL", action=OrderAction.BUY, sim_date="2026-04-10",
+            )
+
+    def test_buy_at_max_lots_raises(
+        self, mock_broker, mock_repo, mock_logger,
+    ):
+        """이미 max_lots 도달 상태에서 추가 BUY 요청 -> RuntimeError."""
+        rules = [StockRule("AAPL", -5.0, 10.0, 500, 2)]  # max_lots=2
+        mock_broker.get_portfolio.return_value = Portfolio(
+            total_cash=10000.0, holdings={"AAPL": 10},
+            current_prices={"AAPL": 100.0},
+        )
+        mock_broker.fetch_current_prices.return_value = {"AAPL": 100.0}
+        mock_repo.load_positions.return_value = [
+            PositionLot("lot_lv1", "AAPL", 110.0, 5, "2026-04-01", level=1),
+            PositionLot("lot_lv2", "AAPL", 100.0, 5, "2026-04-05", level=2),
+        ]
+        mock_repo.load_last_sell_prices.return_value = {}
+
+        eng = self._make_engine(mock_broker, mock_repo, mock_logger, rules)
+        with pytest.raises(RuntimeError, match="max_lots"):
+            eng.run_manual_trade(
+                ticker="AAPL", action=OrderAction.BUY, sim_date="2026-04-10",
+            )
 
     def test_dry_run_skips_execute_and_persist(
         self, mock_broker, mock_repo, mock_logger,
@@ -890,7 +913,7 @@ class TestRunManualTrade:
 
         eng = self._make_engine(mock_broker, mock_repo, mock_logger, rules)
         result = eng.run_manual_trade(
-            ticker="AAPL", action=OrderAction.BUY, qty=5, dry_run=True,
+            ticker="AAPL", action=OrderAction.BUY, dry_run=True,
             sim_date="2026-04-10",
         )
 
@@ -908,7 +931,7 @@ class TestRunManualTrade:
         eng = self._make_engine(mock_broker, mock_repo, mock_logger, rules)
         with pytest.raises(ValueError, match="등록되지 않은 종목"):
             eng.run_manual_trade(
-                ticker="UNKNOWN", action=OrderAction.BUY, qty=1,
+                ticker="UNKNOWN", action=OrderAction.BUY,
                 sim_date="2026-04-10",
             )
 
@@ -923,7 +946,7 @@ class TestRunManualTrade:
         eng = self._make_engine(mock_broker, mock_repo, mock_logger, rules)
         with pytest.raises(ValueError, match="비활성화된 종목 매수 불가"):
             eng.run_manual_trade(
-                ticker="MSFT", action=OrderAction.BUY, qty=1,
+                ticker="MSFT", action=OrderAction.BUY,
                 sim_date="2026-04-10",
             )
 
@@ -961,17 +984,6 @@ class TestRunManualTrade:
         saved = mock_repo.save_positions.call_args[0][0]
         assert all(l.ticker != "MSFT" for l in saved)
 
-    def test_buy_without_qty_or_amount_raises(
-        self, mock_broker, mock_repo, mock_logger,
-    ):
-        """매수에서 qty/amount 둘 다 미지정 -> ValueError."""
-        rules = [StockRule("AAPL", -5.0, 10.0, 500, 10)]
-        eng = self._make_engine(mock_broker, mock_repo, mock_logger, rules)
-        with pytest.raises(ValueError, match="매수는 qty 또는 amount"):
-            eng.run_manual_trade(
-                ticker="AAPL", action=OrderAction.BUY, sim_date="2026-04-10",
-            )
-
     def test_persist_called_with_manual_signal(
         self, mock_broker, mock_repo, mock_logger,
     ):
@@ -992,7 +1004,7 @@ class TestRunManualTrade:
 
         eng = self._make_engine(mock_broker, mock_repo, mock_logger, rules)
         eng.run_manual_trade(
-            ticker="AAPL", action=OrderAction.BUY, qty=5,
+            ticker="AAPL", action=OrderAction.BUY,
             sim_date="2026-04-10",
         )
 
@@ -1027,7 +1039,7 @@ class TestRunManualTrade:
             mock_broker, mock_repo, mock_logger, rules, notifier=notifier,
         )
         eng.run_manual_trade(
-            ticker="AAPL", action=OrderAction.BUY, qty=5,
+            ticker="AAPL", action=OrderAction.BUY,
             sim_date="2026-04-10",
         )
 

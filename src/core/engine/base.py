@@ -229,31 +229,29 @@ class MagicSplitEngine:
         self,
         ticker: str,
         action: OrderAction,
-        qty: Optional[int] = None,
-        amount: Optional[float] = None,
         dry_run: bool = False,
         sim_date: Optional[str] = None,
     ) -> DayResult:
         """수동매매 1건을 실행한다.
 
-        evaluate_stock 단계만 우회하고 사용자 입력으로 SplitSignal을 직접 생성한 뒤,
-        자동매매와 동일한 후반부 파이프라인(주문 실행 -> 포지션 반영 -> 저장)에 흘려보낸다.
-        이로써 positions/history/status/last_sell_prices 갱신이 자동매매와 일관되게 보장된다.
+        evaluate_stock 단계만 우회하고, 자동매매와 동일한 방식으로 모든 수량을 도출한다.
+        - BUY: rule.buy_amount_at(next_level) / 현재가 -> 주문 수량 (사용자 입력 없음)
+        - SELL: 최고 차수 lot.quantity 전량 매도 (사용자 입력 없음)
+
+        후반부 파이프라인(주문 실행 -> 포지션 반영 -> 저장)은 자동매매와 100% 동일.
+        max_lots 같은 안전 한도도 동일하게 적용된다.
 
         Args:
-            ticker: 종목 코드 (활성화된 stock_rules에 등록되어 있어야 함)
+            ticker: 종목 코드 (활성화된 stock_rules에 등록되어 있어야 함;
+                    SELL은 비활성 종목도 청산 목적으로 허용)
             action: OrderAction.BUY 또는 OrderAction.SELL
-            qty: 주문 수량 (amount와 둘 중 하나 필수)
-            amount: 매수 금액 (매수 시에만 유효, 현재가로 qty 계산)
             dry_run: True면 신호 생성까지만 수행하고 주문/저장은 생략
             sim_date: 시뮬레이션 날짜 ("YYYY-MM-DD")
         """
         today = sim_date or datetime.now().strftime("%Y-%m-%d")
         disp = display_ticker(ticker)
         self.logger.set_ticker_context(ticker)
-        self.logger.info(
-            f"=== Manual Trade: {disp} {action} (qty={qty}, amount={amount}) ==="
-        )
+        self.logger.info(f"=== Manual Trade: {disp} {action} ===")
 
         target_rule = next(
             (r for r in self.all_stock_rules if r.ticker == ticker), None
@@ -266,18 +264,6 @@ class MagicSplitEngine:
                 f"비활성화된 종목 매수 불가: {ticker}. "
                 f"config에서 enabled=true 설정 후 매수하세요. (매도는 청산 목적으로 허용됨)"
             )
-        # 매도는 자동매매와 동일하게 최고 차수 lot 전량 매도만 지원 — 사용자 수량 지정 불가.
-        if action == OrderAction.SELL:
-            if qty is not None or amount is not None:
-                raise ValueError(
-                    "매도는 최고 차수 lot 전량 매도만 지원합니다. "
-                    "qty/amount는 지정하지 마세요 (자동매매와 동일 정책)."
-                )
-        else:  # BUY
-            if qty is None and amount is None:
-                raise ValueError(
-                    "매수는 qty 또는 amount 중 하나가 필수입니다."
-                )
 
         all_signals: List[SplitSignal] = []
         all_executions: List[TradeExecution] = []
@@ -298,20 +284,27 @@ class MagicSplitEngine:
             target_buy_price: float = 0.0
 
             if action == OrderAction.BUY:
-                # 매수: 사용자가 qty 직접 지정 또는 amount/현재가로 환산.
-                order_qty = qty
-                if order_qty is None and amount is not None:
-                    order_qty = int(amount / current_price)
-                    self.logger.info(
-                        f"금액 기반 수량 계산: "
-                        f"{format_money(amount, self.market_type)} / "
-                        f"{format_money(current_price, self.market_type)} = {order_qty}주"
-                    )
-                if not order_qty or order_qty <= 0:
-                    raise ValueError(
-                        f"{disp} 유효한 매수 수량이 결정되지 않았습니다 (qty={order_qty})."
-                    )
+                # 매수: 자동 evaluator와 동일하게 rule.buy_amount_at(next_level)에서 금액
+                # 도출 후 현재가로 수량 환산. 사용자 수량/금액 지정 없음.
                 level = highest_level + 1
+                if level > target_rule.max_lots:
+                    raise RuntimeError(
+                        f"{disp} max_lots({target_rule.max_lots}) 도달 — "
+                        f"현재 최고 차수 Lv{highest_level}, 다음 차수 Lv{level}는 매수 불가."
+                    )
+                buy_amount = target_rule.buy_amount_at(level)
+                order_qty = int(buy_amount / current_price)
+                if order_qty <= 0:
+                    raise RuntimeError(
+                        f"{disp} 매수 수량 0주 — Lv{level} buy_amount"
+                        f"({format_money(buy_amount, self.market_type)})가 "
+                        f"현재가({format_money(current_price, self.market_type)})보다 작음."
+                    )
+                self.logger.info(
+                    f"매수 수량 자동 도출: Lv{level} buy_amount="
+                    f"{format_money(buy_amount, self.market_type)} / 현재가="
+                    f"{format_money(current_price, self.market_type)} = {order_qty}주"
+                )
             else:
                 # 매도: 자동매매와 동일하게 최고 차수 lot 전량 매도. 수량은 자동 도출.
                 if not ticker_lots:

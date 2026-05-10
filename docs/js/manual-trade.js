@@ -17,8 +17,7 @@
 
     const orderModal = document.getElementById('order-modal');
     const modalTitle = document.getElementById('modal-title');
-    const inputLabel = document.getElementById('input-label');
-    const orderValue = document.getElementById('order-value');
+    const orderSummary = document.getElementById('order-summary');
     const inputHint = document.getElementById('input-hint');
     const confirmTradeBtn = document.getElementById('confirm-trade-btn');
     const cancelTradeBtn = document.getElementById('cancel-trade-btn');
@@ -254,7 +253,6 @@
             alias: tickerObj.alias,
             action: action,
             marketType: currentMarket,
-            sellQty: 0
         };
 
         modalTitle.textContent = `${tickerObj.alias} (${tickerObj.ticker}) ${action === 'buy' ? '매수' : '매도'}`;
@@ -262,24 +260,21 @@
         confirmTradeBtn.disabled = false;
         confirmTradeBtn.textContent = '실행';
 
-        // 모달 매번 열 때 입력 영역 표시 상태 초기화 (sell -> buy 전환 대비)
-        inputLabel.style.display = '';
-        orderValue.style.display = '';
-
         if (action === 'buy') {
-            inputLabel.textContent = currentMarket === 'domestic' ? '매수 금액 (원)' : '매수 금액 ($)';
             const nextLv = tickerObj.currentLevel + 1;
             const lvAmount = tickerObj.config.buy_amounts && tickerObj.config.buy_amounts[nextLv - 1];
-            const defaultAmt = lvAmount || tickerObj.config.buy_amount || 0;
-            orderValue.value = defaultAmt;
-            inputHint.textContent = `현재 ${tickerObj.currentLevel}차 -> ${nextLv}차 매수 설정값: ${formatAmount(defaultAmt, currentMarket)}`;
+            const cfgAmount = lvAmount || tickerObj.config.buy_amount || 0;
+            orderSummary.innerHTML =
+                `현재 <b>Lv${tickerObj.currentLevel}</b> -> <b>Lv${nextLv}</b> 매수<br>` +
+                `1회 매수 금액(설정): <b>${formatAmount(cfgAmount, currentMarket)}</b>`;
+            inputHint.textContent =
+                '실제 주문 수량은 엔진이 [설정 금액 / 현재가]로 자동 계산합니다 (자동매매와 동일).';
         } else {
-            // 매도: 자동매매와 동일하게 최고 차수 lot 전량 매도. 수량 입력 비활성화.
-            inputLabel.style.display = 'none';
-            orderValue.style.display = 'none';
             const sellQty = tickerObj.highestLvQty || 0;
-            activeOrderParams.sellQty = sellQty;
-            inputHint.textContent = `Lv${tickerObj.currentLevel} 차수 lot ${sellQty}주 전량 매도 (자동매매와 동일 정책 - 수량 지정 불가)`;
+            orderSummary.innerHTML =
+                `<b>Lv${tickerObj.currentLevel}</b> 차수 lot <b>${sellQty}주</b> 전량 매도`;
+            inputHint.textContent =
+                '매도 수량은 엔진이 최고 차수 lot 전량으로 자동 결정합니다 (자동매매와 동일).';
         }
 
         orderModal.style.display = 'flex';
@@ -289,22 +284,9 @@
         if (!activeOrderParams || !githubApi) return;
 
         const isBuy = activeOrderParams.action === 'buy';
-        let val = 0;
-        let valDisplay = '';
+        const actionLabel = isBuy ? '매수' : '매도';
 
-        if (isBuy) {
-            val = parseFloat(orderValue.value);
-            if (isNaN(val) || val <= 0) {
-                showFeedback('올바른 값을 입력해 주세요.', 'error');
-                return;
-            }
-            valDisplay = formatAmount(val, currentMarket);
-        } else {
-            // 매도는 사용자 입력 없이 최고 차수 lot 전량 매도 (수량은 엔진이 자동 도출).
-            valDisplay = `최고 차수 lot ${activeOrderParams.sellQty}주 전량`;
-        }
-
-        if (!confirm(`${activeOrderParams.alias} 종목을 ${valDisplay} ${isBuy ? '매수' : '매도'} 하시겠습니까?`)) {
+        if (!confirm(`${activeOrderParams.alias} 종목을 ${actionLabel} 하시겠습니까?\n(수량은 자동매매 정책에 따라 엔진이 결정합니다)`)) {
             return;
         }
 
@@ -316,14 +298,7 @@
                 market_type: activeOrderParams.marketType,
                 ticker: activeOrderParams.ticker,
                 action: activeOrderParams.action,
-                quantity: "",
-                amount: ""
             };
-
-            if (isBuy) {
-                inputs.amount = val.toString();
-            }
-            // 매도는 quantity/amount 모두 빈 문자열 — 워크플로우가 --qty/--amount 생략.
 
             await githubApi.triggerWorkflow('manual-trade.yml', inputs);
 

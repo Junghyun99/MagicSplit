@@ -3,12 +3,15 @@
 
 `MagicSplitEngine.run_manual_trade()`를 호출하여 자동매매와 동일한
 주문 -> 포지션 반영 -> 저장 파이프라인을 사용한다. 신호 평가(evaluate_stock)만
-우회하고, 사용자가 지정한 ticker/action/qty(또는 amount)로 즉시 매매를 강제한다.
+우회하고, 사용자가 지정한 ticker/action으로 즉시 매매를 강제한다.
+수량은 자동매매와 동일하게 엔진이 도출한다:
+  - BUY: rule.buy_amount_at(next_level) / 현재가
+  - SELL: 최고 차수 lot 전량
 
 사용법:
-    python scripts/manual_trade.py --ticker 005930 --action buy --qty 10
-    python scripts/manual_trade.py --ticker TSLA --action sell --qty 5
-    python scripts/manual_trade.py --ticker AAPL --action buy --amount 1000 --dry-run
+    python scripts/manual_trade.py --ticker 005930 --action buy
+    python scripts/manual_trade.py --ticker TSLA --action sell
+    python scripts/manual_trade.py --ticker AAPL --action buy --dry-run
 """
 import argparse
 import os
@@ -31,12 +34,7 @@ def parse_args():
     parser.add_argument("--ticker", required=True, help="종목 코드 (예: 005930, TSLA)")
     parser.add_argument(
         "--action", required=True, choices=["buy", "sell"],
-        help="매수(buy) 또는 매도(sell)",
-    )
-    parser.add_argument("--qty", type=int, help="주문 수량 (amount와 둘 중 하나 필수)")
-    parser.add_argument(
-        "--amount", type=float,
-        help="주문 금액 (매수 시 수량 대신 사용 가능, 현재가로 수량 계산)",
+        help="매수(buy) 또는 매도(sell). 수량은 자동 도출됨.",
     )
     parser.add_argument(
         "--dry-run", action="store_true",
@@ -47,17 +45,6 @@ def parse_args():
 
 def main():
     args = parse_args()
-    if args.action == "sell":
-        if args.qty is not None or args.amount is not None:
-            print(
-                "에러: 매도는 --qty/--amount 지정 불가. "
-                "최고 차수 lot 전량 매도만 지원합니다 (자동매매와 동일 정책)."
-            )
-            sys.exit(1)
-    else:  # buy
-        if not args.qty and not args.amount:
-            print("에러: 매수는 --qty 또는 --amount 중 하나가 필수입니다.")
-            sys.exit(1)
 
     config = Config()
     strategy = StrategyConfig(config.CONFIG_JSON_PATH)
@@ -71,10 +58,11 @@ def main():
             f"'{args.ticker}' 종목이 없습니다."
         )
         sys.exit(1)
-    if not target_rule.enabled:
+    # 매수만 비활성 종목 차단. 매도는 청산 목적으로 허용 (엔진과 동일 정책).
+    if args.action == "buy" and not target_rule.enabled:
         print(
             f"에러: '{args.ticker}'는 비활성화 상태입니다. "
-            f"매매하려면 설정 파일에서 enabled=true 로 변경하세요."
+            f"매수하려면 설정 파일에서 enabled=true 로 변경하세요."
         )
         sys.exit(1)
     market_type = target_rule.market_type
@@ -82,8 +70,7 @@ def main():
     log_dir = os.path.join(config.LOG_PATH, market_type)
     logger = TradeLogger(log_dir)
     logger.info(
-        f"=== Manual Trade CLI: {args.ticker} {args.action.upper()} "
-        f"(qty={args.qty}, amount={args.amount}) ==="
+        f"=== Manual Trade CLI: {args.ticker} {args.action.upper()} ==="
     )
 
     broker = _create_broker(
@@ -119,8 +106,6 @@ def main():
         result = engine.run_manual_trade(
             ticker=args.ticker,
             action=action,
-            qty=args.qty,
-            amount=args.amount,
             dry_run=args.dry_run,
         )
     except Exception as e:
