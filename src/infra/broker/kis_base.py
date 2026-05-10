@@ -173,10 +173,19 @@ class KisBrokerCommon(IBrokerAdapter):
                 # 호가 기반 매수가 추정 (ask 가격 사용, 실패 시 2% 버퍼)
                 bid, ask = self._fetch_asking_price(order.ticker)
                 disp = display_ticker(order.ticker)
-                if not self._check_spread(bid, ask):
-                    self.logger.warning(f"[KisBroker] 스프레드 비정상 — {disp} 매수 건너뜀")
+                if bid <= 0 or ask <= 0 or ask < bid:
+                    self.logger.warning(f"[KisBroker] 호가 조회 실패 — {disp} 현재가 기반 주문 진행")
+                    estimated_price = order.price * 1.02 if order.price > 0 else 0.0
+                elif not self._check_spread(bid, ask):
+                    mid = (bid + ask) / 2
+                    spread_pct = (ask - bid) / mid * 100
+                    self.logger.warning(
+                        f"[KisBroker] 스프레드 비정상 — {disp} 매수 건너뜀 "
+                        f"bid={bid} ask={ask} spread={spread_pct:.2f}%"
+                    )
                     continue
-                estimated_price = ask if ask > 0 else order.price * 1.02
+                else:
+                    estimated_price = ask
                 if estimated_price <= 0: continue
 
                 # 수량 재계산
