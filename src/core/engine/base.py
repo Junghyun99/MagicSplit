@@ -276,9 +276,11 @@ class MagicSplitEngine:
         )
         if target_rule is None:
             raise ValueError(f"설정에 등록되지 않은 종목입니다: {ticker}")
-        if not target_rule.enabled:
+        # 비활성 종목은 매수만 차단. 매도는 잔여 포지션 청산을 위해 허용.
+        if not target_rule.enabled and action == OrderAction.BUY:
             raise ValueError(
-                f"비활성화된 종목입니다: {ticker}. 매매하려면 config에서 enabled=true 설정 필요."
+                f"비활성화된 종목 매수 불가: {ticker}. "
+                f"config에서 enabled=true 설정 후 매수하세요. (매도는 청산 목적으로 허용됨)"
             )
         if qty is None and amount is None:
             raise ValueError("qty 또는 amount 중 하나는 반드시 지정해야 합니다.")
@@ -323,6 +325,7 @@ class MagicSplitEngine:
             highest_level = max((lot.level for lot in ticker_lots), default=0)
             target_lot_id: Optional[str] = None
             target_buy_price: float = 0.0
+            spans_lots: int = 1
             if action == OrderAction.BUY:
                 level = highest_level + 1
             else:
@@ -336,10 +339,19 @@ class MagicSplitEngine:
                         f"{disp} 매도 수량({order_qty}주)이 보유 수량"
                         f"({available_qty}주)보다 많습니다. 팻핑거 방지를 위해 주문 취소."
                     )
-                target_lot = max(ticker_lots, key=lambda l: l.level)
-                level = target_lot.level
-                target_lot_id = target_lot.lot_id
-                target_buy_price = target_lot.buy_price
+                # 매도 계획: 최고 차수부터 lot을 차감하며 가중 평균 매수가 산출.
+                # 단일 lot에 한정하지 않고 필요한 만큼 차수를 소비한다.
+                plan = self._plan_manual_sell_consumption(ticker_lots, order_qty)
+                spans_lots = len(plan)
+                top_lot = plan[0][0]
+                level = top_lot.level
+                target_lot_id = top_lot.lot_id
+                consumed_cost = sum(lot.buy_price * q for lot, q in plan)
+                target_buy_price = consumed_cost / order_qty
+
+            reason = "수동 매매(Manual Trade)"
+            if action == OrderAction.SELL and spans_lots > 1:
+                reason = f"수동 매매(Manual Trade) - {spans_lots}개 차수 소비"
 
             signal = SplitSignal(
                 ticker=ticker,
@@ -347,7 +359,7 @@ class MagicSplitEngine:
                 action=action,
                 quantity=order_qty,
                 price=current_price,
-                reason="수동 매매(Manual Trade)",
+                reason=reason,
                 pct_change=0.0,
                 level=level,
                 buy_price=target_buy_price,
@@ -375,10 +387,16 @@ class MagicSplitEngine:
 
             if executions:
                 try:
-                    positions = self._update_positions(
-                        positions, [signal], executions, today,
-                        last_sell_prices=last_sell_prices,
-                    )
+                    if action == OrderAction.SELL:
+                        positions = self._apply_manual_sell(
+                            positions, ticker, executions[0],
+                            last_sell_prices=last_sell_prices,
+                        )
+                    else:
+                        positions = self._update_positions(
+                            positions, [signal], executions, today,
+                            last_sell_prices=last_sell_prices,
+                        )
                     portfolio = self._refresh_portfolio(portfolio)
                 except Exception as e:
                     self.logger.error(
@@ -424,6 +442,132 @@ class MagicSplitEngine:
             ),
             has_orders=len(all_executions) > 0,
         )
+
+    @staticmethod
+    def _plan_manual_sell_consumption(
+        ticker_lots: List[PositionLot],
+        target_qty: int,
+    ) -> List[tuple]:
+        """target_qty를 소비하기 위해 어떤 lot을 얼마씩 차감할지 계획한다.
+
+        가장 높은 차수부터 순차 소비하며, lot 수량이 부족하면 다음 차수로 넘어간다.
+        호출 측에서 target_qty <= sum(lot.quantity) 검증을 마쳤다고 가정한다.
+
+        Returns:
+            [(lot, qty_to_consume), ...] 리스트. 첫 항목이 가장 높은 차수.
+        """
+        plan: List[tuple] = []
+        remaining = target_qty
+        for lot in sorted(ticker_lots, key=lambda l: l.level, reverse=True):
+            if remaining <= 0:
+                break
+            take = min(remaining, lot.quantity)
+            plan.append((lot, take))
+            remaining -= take
+        return plan
+
+    def _apply_manual_sell(
+        self,
+        positions: List[PositionLot],
+        ticker: str,
+        execution: TradeExecution,
+        last_sell_prices: Optional[dict] = None,
+    ) -> List[PositionLot]:
+        """수동 매도 체결을 다중 차수에 걸쳐 소비한다.
+
+        가장 높은 차수부터 소진하며, 체결 수량이 단일 lot을 초과하면 다음 차수의 lot도
+        부분 또는 전량 소비한다. 실제 체결 수량(execution.quantity) 기준으로 동작하므로
+        PARTIAL 체결 시에도 정확히 반영된다. 소비된 lot들의 매수가 가중평균으로
+        execution.realized_pnl/buy_price를 갱신한다.
+        """
+        disp = display_ticker(ticker)
+        if execution.status == ExecutionStatus.REJECTED:
+            self.logger.warning(
+                f"[Position] Skip: {disp} SELL rejected"
+            )
+            self._notify_alert(
+                f"[{disp}] 수동매도 거절(REJECTED): {execution.reason}"
+            )
+            return positions
+        if execution.status == ExecutionStatus.ORDERED:
+            self.logger.error(
+                f"[Position] ORDERED — 수동 확인 필요: {disp} SELL "
+                f"reason={execution.reason}"
+            )
+            self._notify_alert(
+                f"[{disp}] 수동매도 미체결 잔존 — KIS에서 직접 확인 후 "
+                f"scripts/reconcile_positions.py 실행 권장. {execution.reason}"
+            )
+            return positions
+        if execution.quantity <= 0:
+            self.logger.warning(
+                f"[Position] Skip zero-qty execution: {disp} SELL "
+                f"status={execution.status}"
+            )
+            return positions
+
+        updated = list(positions)
+        target_lots = sorted(
+            [l for l in updated if l.ticker == ticker],
+            key=lambda l: l.level,
+            reverse=True,
+        )
+
+        remaining = execution.quantity
+        consumed_cost = 0.0
+        consumed_qty = 0
+        top_consumed_lot: Optional[PositionLot] = None
+
+        for lot in target_lots:
+            if remaining <= 0:
+                break
+            if lot.quantity <= remaining:
+                consumed_cost += lot.buy_price * lot.quantity
+                consumed_qty += lot.quantity
+                remaining -= lot.quantity
+                if top_consumed_lot is None:
+                    top_consumed_lot = lot
+                updated.remove(lot)
+                self.logger.info(
+                    f"[Position] Remove lot: {lot.lot_id} Lv{lot.level} "
+                    f"({lot.quantity}주 전량 매도)"
+                )
+            else:
+                consumed_cost += lot.buy_price * remaining
+                consumed_qty += remaining
+                if top_consumed_lot is None:
+                    top_consumed_lot = lot
+                new_qty = lot.quantity - remaining
+                idx = updated.index(lot)
+                updated[idx] = replace(lot, quantity=new_qty)
+                self.logger.info(
+                    f"[Position] Partial sell: {lot.lot_id} Lv{lot.level} "
+                    f"({remaining}/{lot.quantity}주, 잔량 {new_qty})"
+                )
+                remaining = 0
+
+        if remaining > 0:
+            self.logger.warning(
+                f"[Position] Over-fill detected: {disp} 매도 체결 "
+                f"{execution.quantity}주 중 {remaining}주가 장부에 반영되지 못했습니다. "
+                f"scripts/reconcile_positions.py 로 정합성 확인 권장."
+            )
+
+        # 가중 평균 매수가로 PnL 재계산 (다중 차수 일관 처리)
+        if consumed_qty > 0:
+            weighted_buy = consumed_cost / consumed_qty
+            execution.buy_price = round(weighted_buy, 4)
+            execution.realized_pnl = round(
+                (execution.price - weighted_buy) * consumed_qty - execution.fee, 2
+            )
+            if top_consumed_lot is not None:
+                execution.lot_id = top_consumed_lot.lot_id
+                execution.level = top_consumed_lot.level
+
+        if last_sell_prices is not None:
+            last_sell_prices[ticker] = execution.price
+
+        return updated
 
     # ── Overridable step methods ─────────────────────────────────
 
