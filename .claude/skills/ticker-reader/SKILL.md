@@ -11,7 +11,7 @@ A read-only helper for looking up Korean and overseas stock ticker metadata. The
 
 Invoke whenever the user (or downstream code) needs to:
 
-- Resolve a ticker code to its Korean name or English symbol (`get_alias`).
+- Resolve a ticker code to its Korean name (or symbol if unavailable) via `get_alias`.
 - Determine which exchange a ticker belongs to (`get_exchange`).
 - Fetch the full metadata record for a ticker (`get_ticker_info`).
 - Set up `ticker_reader.py` + `tickers.db` in a brand-new repo by copying the `utils/` directory.
@@ -81,7 +81,7 @@ CREATE TABLE tickers (
 |---|---|---|---|
 | `ticker` | TEXT | NO (PK) | `005930` (KR 6-digit), `AAPL` (overseas symbol) |
 | `exchange` | TEXT | NO | `KS` (KOSPI), `KQ` (KOSDAQ), `NAS` (NASDAQ), `NYS` (NYSE), `AMS` (AMEX) |
-| `alias` | TEXT | YES | Korean name for KR tickers (e.g. `삼성전자`); ticker symbol repeated for overseas |
+| `alias` | TEXT | YES | Korean name (e.g. `삼성전자` for KR, `애플` for overseas); symbol repeated if no Korean name |
 | `asset_type` | TEXT | NO | `Stock`, `ETF` (the source pipeline can also produce `ETN`, currently absent from the DB) |
 | `currency` | TEXT | NO | `KRW`, `USD` |
 
@@ -107,7 +107,7 @@ get_ticker_info("005930")
 #  'asset_type': 'Stock', 'currency': 'KRW'}
 
 get_ticker_info("AAPL")
-# {'ticker': 'AAPL', 'exchange': 'NAS', 'alias': 'AAPL',
+# {'ticker': 'AAPL', 'exchange': 'NAS', 'alias': '애플',
 #  'asset_type': 'Stock', 'currency': 'USD'}
 
 get_ticker_info("NOT_A_TICKER")
