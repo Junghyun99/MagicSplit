@@ -2,7 +2,7 @@
 import time
 from dataclasses import replace
 from datetime import datetime
-from typing import Dict, List, Optional, Set
+from typing import Dict, List, Optional, Set, Tuple
 
 from src.core.interfaces import IBrokerAdapter, IRepository, ILogger, INotifier
 from src.core.models import (
@@ -77,22 +77,8 @@ class MagicSplitEngine:
         positions: Optional[List[PositionLot]] = None
 
         try:
-            # Step 1: 포트폴리오 조회 + 실시간 가격 (전 종목 일괄)
-            self.logger.info(">>> Step 1: Portfolio & Price Fetch")
-            portfolio = self.get_portfolio()
-            self.logger.info(
-                f"Portfolio: Cash={format_money(portfolio.total_cash, self.market_type)}, "
-                f"Value={format_money(portfolio.total_value, self.market_type)}"
-            )
-
-            # Step 2: 기존 분할 포지션 로드
-            self.logger.info(">>> Step 2: Load Positions")
-            positions = self.repo.load_positions()
-            self.logger.info(f"Loaded {len(positions)} position lot(s)")
-
-            # 재진입 가드 및 동적 재매수용 직전 매도가 조회.
-            # 매도 체결 시 갱신, 매수 체결 시 초기화.
-            last_sell_prices: dict = self.repo.load_last_sell_prices()
+            # Step 1+2: 포트폴리오 + 포지션 + 직전 매도가 (수동매매와 공유)
+            portfolio, positions, last_sell_prices = self._load_initial_state()
 
             # Step 2.1: 상태 전환 감지 및 자동 초기화 (OFF -> ON)
             self._handle_state_transitions(positions, last_sell_prices)
@@ -147,10 +133,8 @@ class MagicSplitEngine:
                             )
                         continue
 
-                    # 3b. 주문 실행
-                    orders = self._signals_to_orders(active_signals)
-                    executions = self._execute_stock_orders(orders)
-                    self._enrich_executions(executions, active_signals)
+                    # 3b. 주문 실행 (수동매매와 공유 절차)
+                    executions = self._execute_signals(active_signals)
                     all_executions.extend(executions)
 
                     # 3c. 포지션 즉시 반영 (다음 종목 판단에 영향)
@@ -294,19 +278,11 @@ class MagicSplitEngine:
         last_sell_prices: dict = {}
 
         try:
-            self.logger.info(">>> Step 1: Portfolio & Price Fetch")
-            portfolio = self.get_portfolio()
-            if portfolio.current_prices.get(ticker, 0) <= 0:
-                extra = self.broker.fetch_current_prices([ticker])
-                if extra.get(ticker, 0) > 0:
-                    portfolio.current_prices[ticker] = extra[ticker]
-            current_price = portfolio.current_prices.get(ticker, 0)
+            # Step 1+2: 자동 사이클과 동일한 상태 로드 (공유 헬퍼)
+            portfolio, positions, last_sell_prices = self._load_initial_state()
+            current_price = self._ensure_current_price(portfolio, ticker)
             if current_price <= 0:
                 raise RuntimeError(f"{disp} 현재가 조회 실패")
-
-            self.logger.info(">>> Step 2: Load Positions")
-            positions = self.repo.load_positions()
-            last_sell_prices = self.repo.load_last_sell_prices()
 
             order_qty = qty
             if action == OrderAction.BUY and qty is None and amount is not None:
@@ -380,9 +356,8 @@ class MagicSplitEngine:
                     has_orders=False,
                 )
 
-            orders = self._signals_to_orders([signal])
-            executions = self._execute_stock_orders(orders)
-            self._enrich_executions(executions, [signal])
+            # 주문 실행 (자동 사이클과 공유 절차)
+            executions = self._execute_signals([signal])
             all_executions.extend(executions)
 
             if executions:
@@ -580,6 +555,57 @@ class MagicSplitEngine:
             if price > 0:
                 portfolio.current_prices[ticker] = price
         return portfolio
+
+    # ── Shared procedural helpers (run_one_cycle / run_manual_trade 공용) ─
+
+    def _load_initial_state(
+        self,
+    ) -> Tuple[Portfolio, List[PositionLot], Dict[str, float]]:
+        """Step 1+2: 포트폴리오 + 포지션 + 직전 매도가 일괄 로드.
+
+        run_one_cycle, run_manual_trade가 공통으로 사용한다. 한쪽 절차에 추가/변경이
+        생기면 이 함수만 손대면 양쪽이 동일하게 따라온다.
+        """
+        self.logger.info(">>> Step 1: Portfolio & Price Fetch")
+        portfolio = self.get_portfolio()
+        self.logger.info(
+            f"Portfolio: Cash={format_money(portfolio.total_cash, self.market_type)}, "
+            f"Value={format_money(portfolio.total_value, self.market_type)}"
+        )
+        self.logger.info(">>> Step 2: Load Positions")
+        positions = self.repo.load_positions()
+        self.logger.info(f"Loaded {len(positions)} position lot(s)")
+        # 재진입 가드 및 동적 재매수용 직전 매도가 조회.
+        # 매도 체결 시 갱신, 매수 체결 시 초기화.
+        last_sell_prices: Dict[str, float] = self.repo.load_last_sell_prices()
+        return portfolio, positions, last_sell_prices
+
+    def _ensure_current_price(self, portfolio: Portfolio, ticker: str) -> float:
+        """portfolio.current_prices에 ticker가 빠져 있으면 broker로 보강 조회한다.
+
+        get_portfolio()는 self.all_tickers(활성 종목)에 대해서만 가격을 채우므로,
+        수동매매에서 비활성 종목을 청산할 때 등 전용 경로에서 사용한다.
+        """
+        if portfolio.current_prices.get(ticker, 0) <= 0:
+            extra = self.broker.fetch_current_prices([ticker])
+            if extra.get(ticker, 0) > 0:
+                portfolio.current_prices[ticker] = extra[ticker]
+        return portfolio.current_prices.get(ticker, 0)
+
+    def _execute_signals(
+        self, signals: List[SplitSignal],
+    ) -> List[TradeExecution]:
+        """SplitSignal -> Order -> 브로커 실행 -> 체결 컨텍스트 보강.
+
+        run_one_cycle과 run_manual_trade의 주문 실행 부분이 동일한 절차를 따르도록
+        한 곳으로 모은다. 신호가 비어 있으면 빈 리스트를 반환한다.
+        """
+        if not signals:
+            return []
+        orders = self._signals_to_orders(signals)
+        executions = self._execute_stock_orders(orders)
+        self._enrich_executions(executions, signals)
+        return executions
 
     def _signals_to_orders(self, signals: List[SplitSignal]) -> List[Order]:
         """SplitSignal 리스트를 Order 리스트로 변환한다."""
