@@ -2,7 +2,7 @@
 import time
 from dataclasses import replace
 from datetime import datetime
-from typing import Dict, List, Optional, Set
+from typing import Dict, List, Optional, Set, Tuple
 
 from src.core.interfaces import IBrokerAdapter, IRepository, ILogger, INotifier
 from src.core.models import (
@@ -51,6 +51,8 @@ class MagicSplitEngine:
         self.all_tickers = [r.ticker for r in self.stock_rules]
         self.notifier = notifier
         self.is_live_trading = is_live_trading
+        # 비활성 포함 전체 룰. 수동매매 등에서 룰 조회용으로 사용.
+        self.all_stock_rules = list(stock_rules)
         # 한 사이클의 모든 종목은 동일 market_type. 로그 통화 분기에 사용.
         self.market_type = self.stock_rules[0].market_type if self.stock_rules else "overseas"
 
@@ -75,22 +77,8 @@ class MagicSplitEngine:
         positions: Optional[List[PositionLot]] = None
 
         try:
-            # Step 1: 포트폴리오 조회 + 실시간 가격 (전 종목 일괄)
-            self.logger.info(">>> Step 1: Portfolio & Price Fetch")
-            portfolio = self.get_portfolio()
-            self.logger.info(
-                f"Portfolio: Cash={format_money(portfolio.total_cash, self.market_type)}, "
-                f"Value={format_money(portfolio.total_value, self.market_type)}"
-            )
-
-            # Step 2: 기존 분할 포지션 로드
-            self.logger.info(">>> Step 2: Load Positions")
-            positions = self.repo.load_positions()
-            self.logger.info(f"Loaded {len(positions)} position lot(s)")
-
-            # 재진입 가드 및 동적 재매수용 직전 매도가 조회.
-            # 매도 체결 시 갱신, 매수 체결 시 초기화.
-            last_sell_prices: dict = self.repo.load_last_sell_prices()
+            # Step 1+2: 포트폴리오 + 포지션 + 직전 매도가 (수동매매와 공유)
+            portfolio, positions, last_sell_prices = self._load_initial_state()
 
             # Step 2.1: 상태 전환 감지 및 자동 초기화 (OFF -> ON)
             self._handle_state_transitions(positions, last_sell_prices)
@@ -145,10 +133,8 @@ class MagicSplitEngine:
                             )
                         continue
 
-                    # 3b. 주문 실행
-                    orders = self._signals_to_orders(active_signals)
-                    executions = self._execute_stock_orders(orders)
-                    self._enrich_executions(executions, active_signals)
+                    # 3b. 주문 실행 (수동매매와 공유 절차)
+                    executions = self._execute_signals(active_signals)
                     all_executions.extend(executions)
 
                     # 3c. 포지션 즉시 반영 (다음 종목 판단에 영향)
@@ -239,6 +225,172 @@ class MagicSplitEngine:
             has_orders=len(all_executions) > 0,
         )
 
+    def run_manual_trade(
+        self,
+        ticker: str,
+        action: OrderAction,
+        sim_date: Optional[str] = None,
+    ) -> DayResult:
+        """수동매매 1건을 실행한다.
+
+        evaluate_stock 단계만 우회하고, 자동매매와 동일한 방식으로 모든 수량을 도출한다.
+        - BUY: rule.buy_amount_at(next_level) / 현재가 -> 주문 수량 (사용자 입력 없음)
+        - SELL: 최고 차수 lot.quantity 전량 매도 (사용자 입력 없음)
+
+        후반부 파이프라인(주문 실행 -> 포지션 반영 -> 저장)은 자동매매와 100% 동일.
+        max_lots 같은 안전 한도도 동일하게 적용된다.
+
+        Args:
+            ticker: 종목 코드 (활성화된 stock_rules에 등록되어 있어야 함;
+                    SELL은 비활성 종목도 청산 목적으로 허용)
+            action: OrderAction.BUY 또는 OrderAction.SELL
+            sim_date: 시뮬레이션 날짜 ("YYYY-MM-DD")
+        """
+        today = sim_date or datetime.now().strftime("%Y-%m-%d")
+        disp = display_ticker(ticker)
+        self.logger.set_ticker_context(ticker)
+        self.logger.info(f"=== Manual Trade: {disp} {action} ===")
+
+        target_rule = next(
+            (r for r in self.all_stock_rules if r.ticker == ticker), None
+        )
+        if target_rule is None:
+            raise ValueError(f"설정에 등록되지 않은 종목입니다: {ticker}")
+        # 비활성 종목은 매수만 차단. 매도는 잔여 포지션 청산을 위해 허용.
+        if not target_rule.enabled and action == OrderAction.BUY:
+            raise ValueError(
+                f"비활성화된 종목 매수 불가: {ticker}. "
+                f"config에서 enabled=true 설정 후 매수하세요. (매도는 청산 목적으로 허용됨)"
+            )
+
+        all_signals: List[SplitSignal] = []
+        all_executions: List[TradeExecution] = []
+        portfolio: Optional[Portfolio] = None
+        positions: Optional[List[PositionLot]] = None
+        last_sell_prices: dict = {}
+
+        try:
+            # Step 1+2: 자동 사이클과 동일한 상태 로드 (공유 헬퍼)
+            portfolio, positions, last_sell_prices = self._load_initial_state()
+            current_price = self._ensure_current_price(portfolio, ticker)
+            if current_price <= 0:
+                raise RuntimeError(f"{disp} 현재가 조회 실패")
+
+            ticker_lots = [lot for lot in positions if lot.ticker == ticker]
+            highest_level = max((lot.level for lot in ticker_lots), default=0)
+            target_lot_id: Optional[str] = None
+            target_buy_price: float = 0.0
+
+            if action == OrderAction.BUY:
+                # 매수: 자동 evaluator와 동일하게 rule.buy_amount_at(next_level)에서 금액
+                # 도출 후 현재가로 수량 환산. 사용자 수량/금액 지정 없음.
+                level = highest_level + 1
+                if level > target_rule.max_lots:
+                    raise RuntimeError(
+                        f"{disp} max_lots({target_rule.max_lots}) 도달 — "
+                        f"현재 최고 차수 Lv{highest_level}, 다음 차수 Lv{level}는 매수 불가."
+                    )
+                buy_amount = target_rule.buy_amount_at(level)
+                order_qty = int(buy_amount / current_price)
+                if order_qty <= 0:
+                    raise RuntimeError(
+                        f"{disp} 매수 수량 0주 — Lv{level} buy_amount"
+                        f"({format_money(buy_amount, self.market_type)})가 "
+                        f"현재가({format_money(current_price, self.market_type)})보다 작음."
+                    )
+                self.logger.info(
+                    f"매수 수량 자동 도출: Lv{level} buy_amount="
+                    f"{format_money(buy_amount, self.market_type)} / 현재가="
+                    f"{format_money(current_price, self.market_type)} = {order_qty}주"
+                )
+            else:
+                # 매도: 자동매매와 동일하게 최고 차수 lot 전량 매도. 수량은 자동 도출.
+                if not ticker_lots:
+                    raise RuntimeError(
+                        f"{disp} 매도할 포지션이 존재하지 않습니다."
+                    )
+                target_lot = max(ticker_lots, key=lambda l: l.level)
+                order_qty = target_lot.quantity
+                level = target_lot.level
+                target_lot_id = target_lot.lot_id
+                target_buy_price = target_lot.buy_price
+                self.logger.info(
+                    f"매도 수량 자동 도출: Lv{level} lot {order_qty}주 전량"
+                )
+
+            signal = SplitSignal(
+                ticker=ticker,
+                lot_id=target_lot_id,
+                action=action,
+                quantity=order_qty,
+                price=current_price,
+                reason="수동 매매(Manual Trade)",
+                pct_change=0.0,
+                level=level,
+                buy_price=target_buy_price,
+            )
+            all_signals.append(signal)
+            self.logger.info(
+                f"[{disp}] 수동 신호 생성: {action} Lv{level} {order_qty}주 "
+                f"@{format_money(current_price, self.market_type)}"
+            )
+
+            # 주문 실행 (자동 사이클과 공유 절차)
+            executions = self._execute_signals([signal])
+            all_executions.extend(executions)
+
+            if executions:
+                try:
+                    # 자동매매와 동일: 단일 lot 대상 신호 -> _update_positions
+                    positions = self._update_positions(
+                        positions, [signal], executions, today,
+                        last_sell_prices=last_sell_prices,
+                    )
+                    portfolio = self._refresh_portfolio(portfolio)
+                except Exception as e:
+                    self.logger.error(
+                        f"[{disp}] 포지션 반영 실패 (체결은 완료됨): {e}"
+                    )
+                    self._notify_alert(
+                        f"[{disp}] 수동매매 포지션 반영 실패 "
+                        f"(체결 {len(executions)}건 완료됨): {e}"
+                    )
+        finally:
+            if (
+                portfolio is not None
+                and positions is not None
+                and all_executions
+            ):
+                self.logger.info(">>> Step 6: Persist")
+                self._persist(
+                    portfolio, all_signals, all_executions, positions,
+                    sim_date=sim_date, last_sell_prices=last_sell_prices,
+                )
+
+        self.logger.set_ticker_context(None)
+        detail = "\n".join(self.logger.get_captured_logs(ticker))
+        filled = [e for e in all_executions if e.status != ExecutionStatus.REJECTED]
+        if filled:
+            self._notify_message(
+                f"[수동매매] {disp} {action} 체결 {len(filled)}건",
+                detail=detail,
+            )
+        elif all_executions:
+            self._notify_alert(
+                f"[수동매매] {disp} {action} 체결 실패 또는 거절",
+                detail=detail,
+            )
+
+        return DayResult(
+            date=today,
+            signals=all_signals,
+            executions=all_executions,
+            final_portfolio=portfolio or Portfolio(
+                total_cash=0.0, holdings={}, current_prices={},
+            ),
+            has_orders=len(all_executions) > 0,
+        )
+
     # ── Overridable step methods ─────────────────────────────────
 
     def get_portfolio(self) -> Portfolio:
@@ -250,6 +402,57 @@ class MagicSplitEngine:
             if price > 0:
                 portfolio.current_prices[ticker] = price
         return portfolio
+
+    # ── Shared procedural helpers (run_one_cycle / run_manual_trade 공용) ─
+
+    def _load_initial_state(
+        self,
+    ) -> Tuple[Portfolio, List[PositionLot], Dict[str, float]]:
+        """Step 1+2: 포트폴리오 + 포지션 + 직전 매도가 일괄 로드.
+
+        run_one_cycle, run_manual_trade가 공통으로 사용한다. 한쪽 절차에 추가/변경이
+        생기면 이 함수만 손대면 양쪽이 동일하게 따라온다.
+        """
+        self.logger.info(">>> Step 1: Portfolio & Price Fetch")
+        portfolio = self.get_portfolio()
+        self.logger.info(
+            f"Portfolio: Cash={format_money(portfolio.total_cash, self.market_type)}, "
+            f"Value={format_money(portfolio.total_value, self.market_type)}"
+        )
+        self.logger.info(">>> Step 2: Load Positions")
+        positions = self.repo.load_positions()
+        self.logger.info(f"Loaded {len(positions)} position lot(s)")
+        # 재진입 가드 및 동적 재매수용 직전 매도가 조회.
+        # 매도 체결 시 갱신, 매수 체결 시 초기화.
+        last_sell_prices: Dict[str, float] = self.repo.load_last_sell_prices()
+        return portfolio, positions, last_sell_prices
+
+    def _ensure_current_price(self, portfolio: Portfolio, ticker: str) -> float:
+        """portfolio.current_prices에 ticker가 빠져 있으면 broker로 보강 조회한다.
+
+        get_portfolio()는 self.all_tickers(활성 종목)에 대해서만 가격을 채우므로,
+        수동매매에서 비활성 종목을 청산할 때 등 전용 경로에서 사용한다.
+        """
+        if portfolio.current_prices.get(ticker, 0) <= 0:
+            extra = self.broker.fetch_current_prices([ticker])
+            if extra.get(ticker, 0) > 0:
+                portfolio.current_prices[ticker] = extra[ticker]
+        return portfolio.current_prices.get(ticker, 0)
+
+    def _execute_signals(
+        self, signals: List[SplitSignal],
+    ) -> List[TradeExecution]:
+        """SplitSignal -> Order -> 브로커 실행 -> 체결 컨텍스트 보강.
+
+        run_one_cycle과 run_manual_trade의 주문 실행 부분이 동일한 절차를 따르도록
+        한 곳으로 모은다. 신호가 비어 있으면 빈 리스트를 반환한다.
+        """
+        if not signals:
+            return []
+        orders = self._signals_to_orders(signals)
+        executions = self._execute_stock_orders(orders)
+        self._enrich_executions(executions, signals)
+        return executions
 
     def _signals_to_orders(self, signals: List[SplitSignal]) -> List[Order]:
         """SplitSignal 리스트를 Order 리스트로 변환한다."""

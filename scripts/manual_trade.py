@@ -1,60 +1,73 @@
 #!/usr/bin/env python3
-"""수동 매매(Manual Trade) 실행 및 상태 동기화 CLI 스크립트.
+"""수동 매매(Manual Trade) CLI.
 
-이 스크립트는 KIS 브로커 API를 직접 호출하여 매수/매도 주문을 실행하고,
-체결이 완료되면 즉시 `positions.json`, `history.json` 등 로컬 상태를 업데이트합니다.
-이를 통해 MTS에서 직접 매매하여 발생하는 불일치(Mismatch) 에러 없이 봇과 상태를 동기화할 수 있습니다.
+`MagicSplitEngine.run_manual_trade()`를 호출하여 자동매매와 동일한
+주문 -> 포지션 반영 -> 저장 파이프라인을 사용한다. 신호 평가(evaluate_stock)만
+우회하고, 사용자가 지정한 ticker/action으로 즉시 매매를 강제한다.
+수량은 자동매매와 동일하게 엔진이 도출한다:
+  - BUY: rule.buy_amount_at(next_level) / 현재가
+  - SELL: 최고 차수 lot 전량
 
 사용법:
-    python scripts/manual_trade.py --ticker 005930 --action buy --qty 10 --price 80000 --level 4
-    python scripts/manual_trade.py --ticker TSLA --action sell --qty 5
+    python scripts/manual_trade.py --ticker 005930 --action buy
+    python scripts/manual_trade.py --ticker TSLA --action sell
 """
 import argparse
 import os
 import sys
-from datetime import datetime
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/..")
 
 from src.config import Config
 from src.strategy_config import StrategyConfig
 from src.utils.logger import TradeLogger
-from src.utils.currency import format_money
-from src.core.models import Order, OrderAction, PositionLot, ExecutionStatus, SplitSignal
+from src.core.models import OrderAction, ExecutionStatus
+from src.core.engine.base import MagicSplitEngine
 from src.main import _create_broker
 from src.infra.repo import JsonRepository
+from src.infra.notifier import SlackNotifier
+
 
 def parse_args():
     parser = argparse.ArgumentParser(description="수동 매매 스크립트")
     parser.add_argument("--ticker", required=True, help="종목 코드 (예: 005930, TSLA)")
-    parser.add_argument("--action", required=True, choices=["buy", "sell"], help="매수(buy) 또는 매도(sell)")
-    parser.add_argument("--qty", type=int, help="주문 수량 (매도 시 필수 또는 매수 시 직접 지정)")
-    parser.add_argument("--amount", type=float, help="주문 금액 (매수 시 수량 대신 사용 가능)")
-    parser.add_argument("--dry-run", action="store_true", help="실제 주문을 넣지 않고 시뮬레이션만 수행")
+    parser.add_argument(
+        "--action", required=True, choices=["buy", "sell"],
+        help="매수(buy) 또는 매도(sell). 수량은 자동 도출됨.",
+    )
     return parser.parse_args()
+
 
 def main():
     args = parse_args()
-    if not args.qty and not args.amount:
-        print("에러: --qty 또는 --amount 중 하나는 반드시 입력해야 합니다.")
-        sys.exit(1)
-    config = Config()
-    logger = TradeLogger(config.LOG_PATH)
-    logger.info(f"=== 수동 매매(Manual Trade) 시작: {args.ticker} {args.action.upper()} (Qty:{args.qty}, Amt:{args.amount}) ===")
 
+    config = Config()
     strategy = StrategyConfig(config.CONFIG_JSON_PATH)
 
-    # 1. 룰에서 티커 검색 (마켓 타입을 얻기 위함). 티커 표기는 정확히 일치해야 한다.
-    target_rule = next((r for r in strategy.rules if r.ticker == args.ticker), None)
-
-    if not target_rule:
-        logger.error(f"설정 파일({config.CONFIG_JSON_PATH})에 '{args.ticker}' 종목이 없습니다.")
+    target_rule = next(
+        (r for r in strategy.rules if r.ticker == args.ticker), None
+    )
+    if target_rule is None:
+        print(
+            f"에러: 설정 파일({config.CONFIG_JSON_PATH})에 "
+            f"'{args.ticker}' 종목이 없습니다."
+        )
         sys.exit(1)
-
+    # 매수만 비활성 종목 차단. 매도는 청산 목적으로 허용 (엔진과 동일 정책).
+    if args.action == "buy" and not target_rule.enabled:
+        print(
+            f"에러: '{args.ticker}'는 비활성화 상태입니다. "
+            f"매수하려면 설정 파일에서 enabled=true 로 변경하세요."
+        )
+        sys.exit(1)
     market_type = target_rule.market_type
-    logger.info(f"Market Type: {market_type}")
 
-    # 2. 브로커 및 저장소 초기화
+    log_dir = os.path.join(config.LOG_PATH, market_type)
+    logger = TradeLogger(log_dir)
+    logger.info(
+        f"=== Manual Trade CLI: {args.ticker} {args.action.upper()} ==="
+    )
+
     broker = _create_broker(
         market_type=market_type,
         is_live=config.IS_LIVE,
@@ -67,159 +80,38 @@ def main():
         os.path.join(config.DATA_PATH, market_type),
         max_history_records=config.MAX_HISTORY_RECORDS,
     )
-
-    # 2.5 수량 결정 로직
-    order_qty = args.qty
-    if args.action == "buy" and args.amount:
-        prices = broker.fetch_current_prices([args.ticker])
-        if args.ticker not in prices or prices[args.ticker] <= 0:
-            logger.error(f"현재가 조회 실패: {args.ticker}")
-            sys.exit(1)
-        
-        current_price = prices[args.ticker]
-        order_qty = int(args.amount / current_price)
-        logger.info(
-            f"금액 기반 수량 계산: "
-            f"{format_money(args.amount, market_type)} / "
-            f"{format_money(current_price, market_type)} = {order_qty}주"
-        )
-        
-        if order_qty <= 0:
-            logger.error(f"계산된 수량이 0입니다. 금액({args.amount})이 너무 적습니다.")
-            sys.exit(1)
-    
-    if not order_qty or order_qty <= 0:
-        logger.error("유효한 주문 수량이 결정되지 않았습니다. --qty 또는 --amount를 확인하세요.")
-        sys.exit(1)
-
-    # 3. 기존 포지션 조회
-    positions = repo.load_positions()
-    ticker_lots = [lot for lot in positions if lot.ticker == args.ticker]
-    current_highest_level = max([lot.level for lot in ticker_lots]) if ticker_lots else 0
-
-    # 4. 차수(Level) 자동 할당
-    if args.action == "buy":
-        level = current_highest_level + 1
-    else: # sell
-        level = current_highest_level
-        if level == 0:
-            logger.error("매도할 포지션이 존재하지 않습니다.")
-            sys.exit(1)
-
-    # 5. 매도 전 수량 사전 검증 (안전 장치)
-    if args.action == "sell":
-        available_qty = sum([lot.quantity for lot in ticker_lots])
-            
-        if order_qty > available_qty:
-            logger.error(f"입력하신 매도 수량({order_qty}주)이 봇 장부상의 보유 수량({available_qty}주)보다 많습니다. 팻핑거(오타) 방지를 위해 주문을 취소합니다.")
-            sys.exit(1)
-
-    # 6. 주문 객체 생성
-    action_enum = OrderAction.BUY if args.action == "buy" else OrderAction.SELL
-    order = Order(
-        ticker=args.ticker,
-        action=action_enum,
-        quantity=order_qty,
-        price=0.0,
+    notifier = SlackNotifier(
+        webhook_url=config.SLACK_WEBHOOK_URL,
+        logger=logger,
+        bot_token=config.SLACK_BOT_TOKEN,
+        channel_id=config.SLACK_CHANNEL_ID,
+    )
+    engine = MagicSplitEngine(
+        broker=broker,
+        repo=repo,
+        logger=logger,
+        stock_rules=strategy.rules,
+        notifier=notifier,
+        is_live_trading=config.IS_LIVE,
     )
 
-    if args.dry_run:
-        logger.info(f"[DRY RUN] 다음 주문이 실행될 예정입니다: {order}")
-        logger.info(f"[DRY RUN] 할당될 차수(Level): {level}")
-        sys.exit(0)
+    action = OrderAction.BUY if args.action == "buy" else OrderAction.SELL
 
-    # 6. 매매 실행
-    logger.info(">>> 주문 실행 중...")
-    executions = broker.execute_orders([order])
-    
-    if not executions:
-        logger.error("주문 실행 실패: 브로커에서 응답을 받지 못했습니다.")
+    try:
+        result = engine.run_manual_trade(ticker=args.ticker, action=action)
+    except Exception as e:
+        logger.error(f"수동매매 중단: {e}")
         sys.exit(1)
 
-    execution = executions[0]
-    if execution.status == ExecutionStatus.REJECTED:
-        logger.error("브로커에서 주문이 거절(REJECTED)되었습니다.")
+    if not result.executions:
+        logger.error("주문이 실행되지 않았습니다.")
         sys.exit(1)
-    elif execution.status == ExecutionStatus.ORDERED:
-        logger.warning("주문이 접수(ORDERED)되었으나 지정된 대기 시간 내에 체결되지 않았습니다. 포지션 장부를 업데이트하지 않고 종료합니다.")
-        sys.exit(0)
-    elif execution.status not in [ExecutionStatus.FILLED, ExecutionStatus.PARTIAL]:
-        logger.error(f"알 수 없는 주문 상태({execution.status})입니다. 안전을 위해 장부를 업데이트하지 않습니다.")
+    if all(e.status == ExecutionStatus.REJECTED for e in result.executions):
+        logger.error("모든 주문이 거절(REJECTED)되었습니다.")
         sys.exit(1)
 
-    logger.info(
-        f"주문 체결 완료! "
-        f"(가격: {format_money(execution.price, market_type)}, 수량: {execution.quantity})"
-    )
+    logger.info("=== Manual Trade 완료 ===")
 
-    # 7. 포지션(positions.json) 업데이트
-    updated_positions = list(positions)
-    today_str = datetime.now().strftime("%Y-%m-%d")
-    
-    if args.action == "buy":
-        ts = datetime.now().strftime("%Y%m%d_%H%M%S")
-        new_lot = PositionLot(
-            lot_id=f"lot_{ts}_{args.ticker}_{level:03d}_manual",
-            ticker=execution.ticker,
-            buy_price=execution.price,
-            quantity=execution.quantity,
-            buy_date=today_str,
-            level=level,
-        )
-        updated_positions.append(new_lot)
-        logger.info(
-            f"[Position] New lot 추가됨: Lv{level} / {execution.quantity}주 "
-            f"@ {format_money(execution.price, market_type)}"
-        )
-    else:
-        # 매도 처리 로직: 높은 차수(가장 최근에 물타기한 것)부터 우선적으로 팔도록 레벨 역순 정렬
-        target_lots = sorted(
-            [lot for lot in updated_positions if lot.ticker == args.ticker], 
-            key=lambda x: x.level, 
-            reverse=True
-        )
-            
-        remaining_qty = execution.quantity
-        for target_lot in target_lots:
-            if remaining_qty <= 0:
-                break
-            
-            if target_lot.quantity <= remaining_qty:
-                # 해당 Lot 전량 매도
-                remaining_qty -= target_lot.quantity
-                updated_positions.remove(target_lot)
-                logger.info(f"[Position] Lot 제거됨: {target_lot.lot_id} (Lv{target_lot.level})")
-            else:
-                # 부분 매도
-                target_lot.quantity -= remaining_qty
-                remaining_qty = 0
-                logger.info(f"[Position] Lot 부분 매도됨: {target_lot.lot_id} (남은 수량: {target_lot.quantity})")
-                
-        if remaining_qty > 0:
-            logger.warning(f"매도 수량({execution.quantity})이 포지션 수량보다 많습니다. 초과분({remaining_qty})은 무시됩니다.")
-
-    # 8. 포트폴리오 상태 및 히스토리 업데이트
-    logger.info(">>> 상태 저장 중...")
-    portfolio = broker.get_portfolio()
-    repo.save_positions(updated_positions)
-    
-    # Fake Signal for history reason
-    reason_str = "수동 매매(Manual Trade)"
-    signals = [SplitSignal(
-        ticker=args.ticker,
-        lot_id=None,
-        action=action_enum,
-        quantity=execution.quantity,
-        price=execution.price,
-        reason=reason_str,
-        pct_change=0.0,
-        level=level
-    )]
-    
-    repo.save_trade_history(executions, portfolio, reason_str, signals=signals)
-    repo.update_status(portfolio, updated_positions, reason_str)
-    
-    logger.info("=== 수동 매매 및 상태 동기화 완료 ===")
 
 if __name__ == "__main__":
     main()

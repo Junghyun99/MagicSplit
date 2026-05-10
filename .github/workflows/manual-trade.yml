@@ -15,20 +15,12 @@ on:
         required: true
         type: string
       action:
-        description: 'Order Action'
+        description: 'Order Action (qty is auto-derived: BUY=rule.buy_amount, SELL=highest-level lot full)'
         required: true
         type: choice
         options:
           - buy
           - sell
-      quantity:
-        description: 'Quantity (Optional if amount is set)'
-        required: false
-        type: string
-      amount:
-        description: 'Order Amount (Optional if quantity is set)'
-        required: false
-        type: string
 
 jobs:
   trade:
@@ -67,9 +59,7 @@ jobs:
       run: |
         python scripts/manual_trade.py \
           --ticker "${{ github.event.inputs.ticker }}" \
-          --action "${{ github.event.inputs.action }}" \
-          ${{ github.event.inputs.quantity != '' && format('--qty "{0}"', github.event.inputs.quantity) || '' }} \
-          ${{ github.event.inputs.amount != '' && format('--amount "{0}"', github.event.inputs.amount) || '' }}
+          --action "${{ github.event.inputs.action }}"
 
     - name: Save KIS token cache
       if: always()
