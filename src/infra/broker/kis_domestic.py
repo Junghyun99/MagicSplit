@@ -129,7 +129,10 @@ class KisDomesticBrokerBase(KisBrokerCommon):
 
         bid, ask = self._fetch_asking_price(order.ticker)
 
-        if not self._check_spread(bid, ask):
+        if bid <= 0 or ask <= 0 or ask < bid:
+            self.logger.warning(f"[KisDomestic] 호가 조회 실패 — {display_ticker(order.ticker)} 현재가 기반 주문 진행")
+            bid, ask = 0.0, 0.0
+        elif not self._check_spread(bid, ask):
             mid = (bid + ask) / 2
             spread_pct = (ask - bid) / mid * 100
             self.logger.warning(
