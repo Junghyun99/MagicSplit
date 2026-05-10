@@ -48,6 +48,17 @@ jobs:
         curl -fsSL "$BASE/src/utils/tickers.db" \
           -o "${{ inputs.utils_dest }}/tickers.db"
 
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.10"
+        cache: pip
+
+    - name: Run export_tickers script
+      run: |
+        export PYTHONUTF8=1
+        python scripts/export_tickers.py
+
     - name: Commit and Push
       run: |
         git config user.name "github-actions[bot]"
@@ -55,6 +66,7 @@ jobs:
         git add "${{ inputs.skill_dest }}/SKILL.md"
         git add "${{ inputs.utils_dest }}/ticker_reader_base.py"
         git add "${{ inputs.utils_dest }}/tickers.db"
+        git add "docs/data/tickers.json"
         if git diff --cached --quiet; then
           echo "변경 사항 없음 - 커밋 생략"
         else
