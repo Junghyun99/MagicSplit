@@ -229,7 +229,6 @@ class MagicSplitEngine:
         self,
         ticker: str,
         action: OrderAction,
-        dry_run: bool = False,
         sim_date: Optional[str] = None,
     ) -> DayResult:
         """수동매매 1건을 실행한다.
@@ -245,7 +244,6 @@ class MagicSplitEngine:
             ticker: 종목 코드 (활성화된 stock_rules에 등록되어 있어야 함;
                     SELL은 비활성 종목도 청산 목적으로 허용)
             action: OrderAction.BUY 또는 OrderAction.SELL
-            dry_run: True면 신호 생성까지만 수행하고 주문/저장은 생략
             sim_date: 시뮬레이션 날짜 ("YYYY-MM-DD")
         """
         today = sim_date or datetime.now().strftime("%Y-%m-%d")
@@ -337,16 +335,6 @@ class MagicSplitEngine:
                 f"@{format_money(current_price, self.market_type)}"
             )
 
-            if dry_run:
-                self.logger.info("[DRY RUN] 주문 실행 및 저장을 생략합니다.")
-                return DayResult(
-                    date=today,
-                    signals=all_signals,
-                    executions=[],
-                    final_portfolio=portfolio,
-                    has_orders=False,
-                )
-
             # 주문 실행 (자동 사이클과 공유 절차)
             executions = self._execute_signals([signal])
             all_executions.extend(executions)
@@ -369,8 +357,7 @@ class MagicSplitEngine:
                     )
         finally:
             if (
-                not dry_run
-                and portfolio is not None
+                portfolio is not None
                 and positions is not None
                 and all_executions
             ):

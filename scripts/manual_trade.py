@@ -11,7 +11,6 @@
 사용법:
     python scripts/manual_trade.py --ticker 005930 --action buy
     python scripts/manual_trade.py --ticker TSLA --action sell
-    python scripts/manual_trade.py --ticker AAPL --action buy --dry-run
 """
 import argparse
 import os
@@ -35,10 +34,6 @@ def parse_args():
     parser.add_argument(
         "--action", required=True, choices=["buy", "sell"],
         help="매수(buy) 또는 매도(sell). 수량은 자동 도출됨.",
-    )
-    parser.add_argument(
-        "--dry-run", action="store_true",
-        help="실제 주문 없이 신호 생성 단계까지만 시뮬레이션",
     )
     return parser.parse_args()
 
@@ -103,18 +98,10 @@ def main():
     action = OrderAction.BUY if args.action == "buy" else OrderAction.SELL
 
     try:
-        result = engine.run_manual_trade(
-            ticker=args.ticker,
-            action=action,
-            dry_run=args.dry_run,
-        )
+        result = engine.run_manual_trade(ticker=args.ticker, action=action)
     except Exception as e:
         logger.error(f"수동매매 중단: {e}")
         sys.exit(1)
-
-    if args.dry_run:
-        logger.info("=== Manual Trade (DRY RUN) 완료 ===")
-        sys.exit(0)
 
     if not result.executions:
         logger.error("주문이 실행되지 않았습니다.")

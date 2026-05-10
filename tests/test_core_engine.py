@@ -899,30 +899,6 @@ class TestRunManualTrade:
                 ticker="AAPL", action=OrderAction.BUY, sim_date="2026-04-10",
             )
 
-    def test_dry_run_skips_execute_and_persist(
-        self, mock_broker, mock_repo, mock_logger,
-    ):
-        """dry_run=True: 신호만 생성하고 주문/저장 미실행."""
-        rules = [StockRule("AAPL", -5.0, 10.0, 500, 10)]
-        mock_broker.get_portfolio.return_value = Portfolio(
-            total_cash=10000.0, holdings={}, current_prices={"AAPL": 100.0},
-        )
-        mock_broker.fetch_current_prices.return_value = {"AAPL": 100.0}
-        mock_repo.load_positions.return_value = []
-        mock_repo.load_last_sell_prices.return_value = {}
-
-        eng = self._make_engine(mock_broker, mock_repo, mock_logger, rules)
-        result = eng.run_manual_trade(
-            ticker="AAPL", action=OrderAction.BUY, dry_run=True,
-            sim_date="2026-04-10",
-        )
-
-        assert result.has_orders is False
-        assert len(result.signals) == 1
-        mock_broker.execute_orders.assert_not_called()
-        mock_repo.save_positions.assert_not_called()
-        mock_repo.save_status.assert_not_called()
-
     def test_unknown_ticker_raises(
         self, mock_broker, mock_repo, mock_logger,
     ):
