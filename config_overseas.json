@@ -130,6 +130,17 @@
             "buy_amount": 500,
             "max_exposure_pct": 30,
             "trailing_drop_pct": 2
+        },
+        {
+            "ticker": "TSLA",
+            "enabled": true,
+            "max_lots": 10,
+            "market_type": "overseas",
+            "buy_threshold_pct": -5,
+            "sell_threshold_pct": 10,
+            "buy_amount": 500,
+            "max_exposure_pct": 30,
+            "trailing_drop_pct": 2
         }
     ],
     "global": {
