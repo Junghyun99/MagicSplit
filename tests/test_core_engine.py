@@ -764,10 +764,10 @@ class TestRunManualTrade:
         assert new_lot.quantity == 3
         assert new_lot.buy_price == 100.0
 
-    def test_sell_targets_highest_level_lot_and_updates_last_sell_prices(
+    def test_sell_auto_derives_qty_from_highest_lot_and_updates_last_sell_prices(
         self, mock_broker, mock_repo, mock_logger,
     ):
-        """매도: 최고 차수 lot을 대상으로 신호 생성, last_sell_prices 갱신됨."""
+        """매도: qty 미지정. 엔진이 최고 차수 lot 전량을 자동 도출."""
         rules = [StockRule("AAPL", -5.0, 10.0, 500, 10)]
         mock_broker.get_portfolio.return_value = Portfolio(
             total_cash=10000.0, holdings={"AAPL": 10},
@@ -778,8 +778,7 @@ class TestRunManualTrade:
             PositionLot("lot_lv1", "AAPL", 100.0, 5, "2026-04-01", level=1),
             PositionLot("lot_lv2", "AAPL", 95.0, 5, "2026-04-05", level=2),
         ]
-        last_sell = {}
-        mock_repo.load_last_sell_prices.return_value = last_sell
+        mock_repo.load_last_sell_prices.return_value = {}
         mock_broker.execute_orders.return_value = [
             TradeExecution("AAPL", OrderAction.SELL, 5, 110.0, 0.5,
                            "2026-04-10", ExecutionStatus.FILLED),
@@ -787,48 +786,51 @@ class TestRunManualTrade:
 
         eng = self._make_engine(mock_broker, mock_repo, mock_logger, rules)
         result = eng.run_manual_trade(
-            ticker="AAPL", action=OrderAction.SELL, qty=5, sim_date="2026-04-10",
+            ticker="AAPL", action=OrderAction.SELL, sim_date="2026-04-10",
         )
 
+        # 신호: 최고 차수(Lv2) lot 5주 매도
         assert result.signals[0].lot_id == "lot_lv2"
         assert result.signals[0].level == 2
         assert result.signals[0].buy_price == 95.0
+        assert result.signals[0].quantity == 5
+
+        # 브로커에 전달된 주문 수량도 자동 도출된 값
+        sent_orders = mock_broker.execute_orders.call_args[0][0]
+        assert sent_orders[0].quantity == 5
 
         saved = mock_repo.save_positions.call_args[0][0]
         assert len(saved) == 1
         assert saved[0].lot_id == "lot_lv1"  # Lv2 lot이 제거됨
 
-        # last_sell_prices가 갱신되어 _persist에 전달되었는지
+        # 완전 청산이므로 last_sell_prices 갱신
         mock_repo.save_last_sell_prices.assert_called_once()
         saved_lsp = mock_repo.save_last_sell_prices.call_args[0][0]
         assert saved_lsp["AAPL"] == 110.0
 
-    def test_sell_qty_exceeding_highest_lot_raises(
+    def test_sell_rejects_qty_argument(
         self, mock_broker, mock_repo, mock_logger,
     ):
-        """매도 수량 > 최고 차수 lot 수량 -> RuntimeError. 다중 차수 매도는 비지원."""
+        """매도 시 qty를 지정하면 ValueError. 자동매매와 정책 일치."""
         rules = [StockRule("AAPL", -5.0, 10.0, 500, 10)]
-        mock_broker.get_portfolio.return_value = Portfolio(
-            total_cash=10000.0, holdings={"AAPL": 10},
-            current_prices={"AAPL": 100.0},
-        )
-        mock_broker.fetch_current_prices.return_value = {"AAPL": 100.0}
-        # Lv1: 5주, Lv2: 5주 -> Lv2(최고 차수)는 5주뿐
-        mock_repo.load_positions.return_value = [
-            PositionLot("lot_lv1", "AAPL", 100.0, 5, "2026-04-01", level=1),
-            PositionLot("lot_lv2", "AAPL", 95.0, 5, "2026-04-05", level=2),
-        ]
-        mock_repo.load_last_sell_prices.return_value = {}
-
         eng = self._make_engine(mock_broker, mock_repo, mock_logger, rules)
-        # 보유 합 10주 < 요청 7주이지만, Lv2가 5주뿐이어서 차단되어야 함
-        with pytest.raises(RuntimeError, match="한 번에 한 차수"):
+        with pytest.raises(ValueError, match="최고 차수 lot 전량 매도만 지원"):
             eng.run_manual_trade(
-                ticker="AAPL", action=OrderAction.SELL, qty=7,
+                ticker="AAPL", action=OrderAction.SELL, qty=3,
                 sim_date="2026-04-10",
             )
-        mock_broker.execute_orders.assert_not_called()
-        mock_repo.save_positions.assert_not_called()
+
+    def test_sell_rejects_amount_argument(
+        self, mock_broker, mock_repo, mock_logger,
+    ):
+        """매도 시 amount를 지정하면 ValueError."""
+        rules = [StockRule("AAPL", -5.0, 10.0, 500, 10)]
+        eng = self._make_engine(mock_broker, mock_repo, mock_logger, rules)
+        with pytest.raises(ValueError, match="최고 차수 lot 전량 매도만 지원"):
+            eng.run_manual_trade(
+                ticker="AAPL", action=OrderAction.SELL, amount=500.0,
+                sim_date="2026-04-10",
+            )
 
     def test_sell_with_no_position_raises(
         self, mock_broker, mock_repo, mock_logger,
@@ -845,7 +847,7 @@ class TestRunManualTrade:
         eng = self._make_engine(mock_broker, mock_repo, mock_logger, rules)
         with pytest.raises(RuntimeError, match="매도할 포지션"):
             eng.run_manual_trade(
-                ticker="AAPL", action=OrderAction.SELL, qty=1,
+                ticker="AAPL", action=OrderAction.SELL,
                 sim_date="2026-04-10",
             )
 
@@ -928,7 +930,7 @@ class TestRunManualTrade:
     def test_disabled_ticker_sell_allowed_for_liquidation(
         self, mock_broker, mock_repo, mock_logger,
     ):
-        """비활성 ticker SELL -> 청산 목적으로 허용."""
+        """비활성 ticker SELL -> 청산 목적으로 허용. 수량은 자동 도출."""
         rules = [
             StockRule("AAPL", -5.0, 10.0, 500, 10, enabled=True),
             StockRule("MSFT", -5.0, 10.0, 500, 10, enabled=False),
@@ -953,34 +955,21 @@ class TestRunManualTrade:
 
         eng = self._make_engine(mock_broker, mock_repo, mock_logger, rules)
         result = eng.run_manual_trade(
-            ticker="MSFT", action=OrderAction.SELL, qty=5,
-            sim_date="2026-04-10",
+            ticker="MSFT", action=OrderAction.SELL, sim_date="2026-04-10",
         )
         assert result.has_orders is True
         saved = mock_repo.save_positions.call_args[0][0]
         assert all(l.ticker != "MSFT" for l in saved)
 
-    def test_neither_qty_nor_amount_raises(
+    def test_buy_without_qty_or_amount_raises(
         self, mock_broker, mock_repo, mock_logger,
     ):
-        """qty/amount 둘 다 미지정 -> ValueError."""
+        """매수에서 qty/amount 둘 다 미지정 -> ValueError."""
         rules = [StockRule("AAPL", -5.0, 10.0, 500, 10)]
         eng = self._make_engine(mock_broker, mock_repo, mock_logger, rules)
-        with pytest.raises(ValueError, match="qty 또는 amount"):
+        with pytest.raises(ValueError, match="매수는 qty 또는 amount"):
             eng.run_manual_trade(
                 ticker="AAPL", action=OrderAction.BUY, sim_date="2026-04-10",
-            )
-
-    def test_sell_with_amount_only_raises(
-        self, mock_broker, mock_repo, mock_logger,
-    ):
-        """매도는 amount만으로는 지정 불가 -> ValueError."""
-        rules = [StockRule("AAPL", -5.0, 10.0, 500, 10)]
-        eng = self._make_engine(mock_broker, mock_repo, mock_logger, rules)
-        with pytest.raises(ValueError, match="매도는 qty"):
-            eng.run_manual_trade(
-                ticker="AAPL", action=OrderAction.SELL, amount=500.0,
-                sim_date="2026-04-10",
             )
 
     def test_persist_called_with_manual_signal(
@@ -1014,41 +1003,6 @@ class TestRunManualTrade:
         history_args = mock_repo.save_trade_history.call_args
         reason = history_args[0][2]
         assert "수동 매매(Manual Trade)" in reason
-
-    def test_sell_partial_within_single_lot_decrements_quantity(
-        self, mock_broker, mock_repo, mock_logger,
-    ):
-        """단일 차수 부분 매도(qty < lot.qty)에서 FILLED 상태여도 lot 수량 차감."""
-        rules = [StockRule("AAPL", -5.0, 10.0, 500, 10)]
-        mock_broker.get_portfolio.return_value = Portfolio(
-            total_cash=10000.0, holdings={"AAPL": 5},
-            current_prices={"AAPL": 110.0},
-        )
-        mock_broker.fetch_current_prices.return_value = {"AAPL": 110.0}
-        # Lv1 단일 lot 5주 → 사용자가 3주만 매도
-        mock_repo.load_positions.return_value = [
-            PositionLot("lot_lv1", "AAPL", 100.0, 5, "2026-04-01", level=1),
-        ]
-        last_sell = {}
-        mock_repo.load_last_sell_prices.return_value = last_sell
-        mock_broker.execute_orders.return_value = [
-            TradeExecution("AAPL", OrderAction.SELL, 3, 110.0, 0.5,
-                           "2026-04-10", ExecutionStatus.FILLED),
-        ]
-        eng = self._make_engine(mock_broker, mock_repo, mock_logger, rules)
-
-        eng.run_manual_trade(
-            ticker="AAPL", action=OrderAction.SELL, qty=3,
-            sim_date="2026-04-10",
-        )
-
-        saved = mock_repo.save_positions.call_args[0][0]
-        remaining = [l for l in saved if l.ticker == "AAPL"]
-        assert len(remaining) == 1
-        assert remaining[0].lot_id == "lot_lv1"
-        assert remaining[0].quantity == 2  # 5 - 3
-        # lot 잔존 시 last_sell_prices 미갱신 (재진입 가드 정책 유지)
-        assert "AAPL" not in mock_repo.save_last_sell_prices.call_args[0][0]
 
     def test_rejected_execution_does_not_persist(
         self, mock_broker, mock_repo, mock_logger,

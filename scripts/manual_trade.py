@@ -47,9 +47,17 @@ def parse_args():
 
 def main():
     args = parse_args()
-    if not args.qty and not args.amount:
-        print("에러: --qty 또는 --amount 중 하나는 반드시 입력해야 합니다.")
-        sys.exit(1)
+    if args.action == "sell":
+        if args.qty is not None or args.amount is not None:
+            print(
+                "에러: 매도는 --qty/--amount 지정 불가. "
+                "최고 차수 lot 전량 매도만 지원합니다 (자동매매와 동일 정책)."
+            )
+            sys.exit(1)
+    else:  # buy
+        if not args.qty and not args.amount:
+            print("에러: 매수는 --qty 또는 --amount 중 하나가 필수입니다.")
+            sys.exit(1)
 
     config = Config()
     strategy = StrategyConfig(config.CONFIG_JSON_PATH)

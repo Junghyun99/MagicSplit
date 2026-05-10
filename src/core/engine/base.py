@@ -266,10 +266,18 @@ class MagicSplitEngine:
                 f"비활성화된 종목 매수 불가: {ticker}. "
                 f"config에서 enabled=true 설정 후 매수하세요. (매도는 청산 목적으로 허용됨)"
             )
-        if qty is None and amount is None:
-            raise ValueError("qty 또는 amount 중 하나는 반드시 지정해야 합니다.")
-        if action == OrderAction.SELL and qty is None:
-            raise ValueError("매도는 qty로 지정해야 합니다 (amount 미지원).")
+        # 매도는 자동매매와 동일하게 최고 차수 lot 전량 매도만 지원 — 사용자 수량 지정 불가.
+        if action == OrderAction.SELL:
+            if qty is not None or amount is not None:
+                raise ValueError(
+                    "매도는 최고 차수 lot 전량 매도만 지원합니다. "
+                    "qty/amount는 지정하지 마세요 (자동매매와 동일 정책)."
+                )
+        else:  # BUY
+            if qty is None and amount is None:
+                raise ValueError(
+                    "매수는 qty 또는 amount 중 하나가 필수입니다."
+                )
 
         all_signals: List[SplitSignal] = []
         all_executions: List[TradeExecution] = []
@@ -284,42 +292,40 @@ class MagicSplitEngine:
             if current_price <= 0:
                 raise RuntimeError(f"{disp} 현재가 조회 실패")
 
-            order_qty = qty
-            if action == OrderAction.BUY and qty is None and amount is not None:
-                order_qty = int(amount / current_price)
-                self.logger.info(
-                    f"금액 기반 수량 계산: "
-                    f"{format_money(amount, self.market_type)} / "
-                    f"{format_money(current_price, self.market_type)} = {order_qty}주"
-                )
-            if not order_qty or order_qty <= 0:
-                raise ValueError(
-                    f"{disp} 유효한 주문 수량이 결정되지 않았습니다 (qty={order_qty})."
-                )
-
             ticker_lots = [lot for lot in positions if lot.ticker == ticker]
             highest_level = max((lot.level for lot in ticker_lots), default=0)
             target_lot_id: Optional[str] = None
             target_buy_price: float = 0.0
+
             if action == OrderAction.BUY:
+                # 매수: 사용자가 qty 직접 지정 또는 amount/현재가로 환산.
+                order_qty = qty
+                if order_qty is None and amount is not None:
+                    order_qty = int(amount / current_price)
+                    self.logger.info(
+                        f"금액 기반 수량 계산: "
+                        f"{format_money(amount, self.market_type)} / "
+                        f"{format_money(current_price, self.market_type)} = {order_qty}주"
+                    )
+                if not order_qty or order_qty <= 0:
+                    raise ValueError(
+                        f"{disp} 유효한 매수 수량이 결정되지 않았습니다 (qty={order_qty})."
+                    )
                 level = highest_level + 1
             else:
-                # 다중 차수 매도는 지원하지 않음 — 자동매매와 동일하게 한 번에 한 차수(최고 차수)만
-                # 처리한다. 여러 차수를 매도하려면 차수마다 본 스크립트를 다시 실행한다.
+                # 매도: 자동매매와 동일하게 최고 차수 lot 전량 매도. 수량은 자동 도출.
                 if not ticker_lots:
                     raise RuntimeError(
                         f"{disp} 매도할 포지션이 존재하지 않습니다."
                     )
                 target_lot = max(ticker_lots, key=lambda l: l.level)
-                if order_qty > target_lot.quantity:
-                    raise RuntimeError(
-                        f"{disp} 매도 수량({order_qty}주)이 최고 차수(Lv{target_lot.level}) "
-                        f"lot 수량({target_lot.quantity}주)보다 많습니다. "
-                        f"한 번에 한 차수만 매도 가능 — 차수별로 나눠 실행하세요."
-                    )
+                order_qty = target_lot.quantity
                 level = target_lot.level
                 target_lot_id = target_lot.lot_id
                 target_buy_price = target_lot.buy_price
+                self.logger.info(
+                    f"매도 수량 자동 도출: Lv{level} lot {order_qty}주 전량"
+                )
 
             signal = SplitSignal(
                 ticker=ticker,
@@ -682,12 +688,8 @@ class MagicSplitEngine:
                 if target_lot is None:
                     continue
 
-                # 체결 수량이 lot 수량보다 적으면 차감(부분 매도). 상태(PARTIAL/FILLED)와
-                # 무관 — 자동은 신호 qty == lot.qty라서 FILLED+qty<lot.qty 조합이 안 나오지만,
-                # 수동 단일 차수 부분 매도(예: 5주 lot 중 3주 매도)에서는 FILLED인 채로
-                # exe.quantity < lot.quantity가 발생할 수 있다.
-                # last_sell_prices는 lot이 완전히 청산될 때만 갱신(재진입 가드 정책 유지).
-                if exe.quantity < target_lot.quantity:
+                if (exe.status == ExecutionStatus.PARTIAL
+                        and exe.quantity < target_lot.quantity):
                     new_qty = target_lot.quantity - exe.quantity
                     idx = updated.index(target_lot)
                     updated[idx] = replace(target_lot, quantity=new_qty)

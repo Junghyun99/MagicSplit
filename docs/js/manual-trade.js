@@ -249,17 +249,22 @@
     }
 
     function openOrderModal(tickerObj, action) {
-        activeOrderParams = { 
-            ticker: tickerObj.ticker, 
+        activeOrderParams = {
+            ticker: tickerObj.ticker,
             alias: tickerObj.alias,
             action: action,
-            marketType: currentMarket 
+            marketType: currentMarket,
+            sellQty: 0
         };
 
         modalTitle.textContent = `${tickerObj.alias} (${tickerObj.ticker}) ${action === 'buy' ? '매수' : '매도'}`;
         statusFeedback.style.display = 'none';
         confirmTradeBtn.disabled = false;
         confirmTradeBtn.textContent = '실행';
+
+        // 모달 매번 열 때 입력 영역 표시 상태 초기화 (sell -> buy 전환 대비)
+        inputLabel.style.display = '';
+        orderValue.style.display = '';
 
         if (action === 'buy') {
             inputLabel.textContent = currentMarket === 'domestic' ? '매수 금액 (원)' : '매수 금액 ($)';
@@ -269,10 +274,12 @@
             orderValue.value = defaultAmt;
             inputHint.textContent = `현재 ${tickerObj.currentLevel}차 -> ${nextLv}차 매수 설정값: ${formatAmount(defaultAmt, currentMarket)}`;
         } else {
-            inputLabel.textContent = '매도 수량 (주)';
-            const defaultQty = tickerObj.highestLvQty || 0;
-            orderValue.value = defaultQty;
-            inputHint.textContent = `현재 최상위(${tickerObj.currentLevel}차) 보유량: ${defaultQty}주 / 총 ${tickerObj.currentQty}주`;
+            // 매도: 자동매매와 동일하게 최고 차수 lot 전량 매도. 수량 입력 비활성화.
+            inputLabel.style.display = 'none';
+            orderValue.style.display = 'none';
+            const sellQty = tickerObj.highestLvQty || 0;
+            activeOrderParams.sellQty = sellQty;
+            inputHint.textContent = `Lv${tickerObj.currentLevel} 차수 lot ${sellQty}주 전량 매도 (자동매매와 동일 정책 - 수량 지정 불가)`;
         }
 
         orderModal.style.display = 'flex';
@@ -281,14 +288,22 @@
     async function executeTrade() {
         if (!activeOrderParams || !githubApi) return;
 
-        const val = parseFloat(orderValue.value);
-        if (isNaN(val) || val <= 0) {
-            showFeedback('올바른 값을 입력해 주세요.', 'error');
-            return;
+        const isBuy = activeOrderParams.action === 'buy';
+        let val = 0;
+        let valDisplay = '';
+
+        if (isBuy) {
+            val = parseFloat(orderValue.value);
+            if (isNaN(val) || val <= 0) {
+                showFeedback('올바른 값을 입력해 주세요.', 'error');
+                return;
+            }
+            valDisplay = formatAmount(val, currentMarket);
+        } else {
+            // 매도는 사용자 입력 없이 최고 차수 lot 전량 매도 (수량은 엔진이 자동 도출).
+            valDisplay = `최고 차수 lot ${activeOrderParams.sellQty}주 전량`;
         }
 
-        const isBuy = activeOrderParams.action === 'buy';
-        const valDisplay = isBuy ? formatAmount(val, currentMarket) : `${val.toLocaleString()}주`;
         if (!confirm(`${activeOrderParams.alias} 종목을 ${valDisplay} ${isBuy ? '매수' : '매도'} 하시겠습니까?`)) {
             return;
         }
@@ -300,16 +315,15 @@
             const inputs = {
                 market_type: activeOrderParams.marketType,
                 ticker: activeOrderParams.ticker,
-                action: activeOrderParams.action
+                action: activeOrderParams.action,
+                quantity: "",
+                amount: ""
             };
 
-            if (activeOrderParams.action === 'buy') {
+            if (isBuy) {
                 inputs.amount = val.toString();
-                inputs.quantity = "";
-            } else {
-                inputs.quantity = val.toString();
-                inputs.amount = "";
             }
+            // 매도는 quantity/amount 모두 빈 문자열 — 워크플로우가 --qty/--amount 생략.
 
             await githubApi.triggerWorkflow('manual-trade.yml', inputs);
 
