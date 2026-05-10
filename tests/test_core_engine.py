@@ -2,6 +2,7 @@
 import pytest
 from unittest.mock import MagicMock, patch
 from src.core.engine.base import MagicSplitEngine
+from src.utils.ticker_reader import display_ticker
 from src.core.models import (
     StockRule, PositionLot, Portfolio, Order, OrderAction,
     TradeExecution, ExecutionStatus, SplitSignal,
@@ -97,7 +98,7 @@ class TestRunOneCycle:
 
         result = engine.run_one_cycle(sim_date="2026-04-10")
 
-        mock_logger.error.assert_any_call("[AAPL] 처리 실패: Mock evaluator error")
+        mock_logger.error.assert_any_call(f"[{display_ticker('AAPL')}] 처리 실패: Mock evaluator error")
 
         assert result.has_orders is True
         assert len(result.executions) == 1
@@ -153,7 +154,7 @@ class TestRunOneCycle:
         result = engine.run_one_cycle(sim_date="2026-04-10")
 
         # AAPL 에러 로그 확인
-        mock_logger.error.assert_any_call("[AAPL] 포지션 반영 실패 (체결은 완료됨): Mock position update error")
+        mock_logger.error.assert_any_call(f"[{display_ticker('AAPL')}] 포지션 반영 실패 (체결은 완료됨): Mock position update error")
 
         # 두 종목 모두 체결은 완료되었는지 확인
         assert result.has_orders is True
@@ -626,7 +627,7 @@ class TestNoSignalLog:
         msgs = [c.args[0] for c in mock_logger.info.call_args_list]
         assert len(msgs) == 1
         msg = msgs[0]
-        assert "[AAPL]" in msg
+        assert f"[{display_ticker('AAPL')}]" in msg
         assert "신호 없음" in msg
         assert "Lv2" in msg
         assert "USD 95.00" in msg
@@ -712,7 +713,7 @@ class TestNoSignalLog:
         eng.run_one_cycle(sim_date="2026-04-10")
         msgs = [c.args[0] for c in mock_logger.info.call_args_list]
         assert any(
-            "[AAPL]" in m and "신호 없음" in m and "Lv1" in m
+            f"[{display_ticker('AAPL')}]" in m and "신호 없음" in m and "Lv1" in m
             and "USD 99.00" in m and "USD 100.00" in m
             for m in msgs
         )
