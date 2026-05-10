@@ -96,21 +96,27 @@ def run_backtest(
     # 5. 시뮬레이션 루프
     logger.info(f"--- 백테스트 시작 ({len(sim_days)} 거래일) ---")
 
-    prev_prices: Dict[str, float] = {}
+    # NaN → 전일 가격으로 대체 (forward-fill) 전체 벡터화 처리
+    close_df_ffilled = close_df.ffill()
+
+    # 교차된 index에 대해서만 추출하여 KeyError 방지
+    valid_sim_days = close_df_ffilled.index.intersection(sim_days)
+
+    # 해당 시뮬레이션 날짜의 데이터를 미리 딕셔너리로 변환하여 루프 내 접근 속도 최적화
+    prices_records = close_df_ffilled.loc[valid_sim_days].to_dict('index')
+
     last_result: Optional[DayResult] = None
 
     for today in sim_days:
         # 종가 추출
+        if today not in prices_records:
+            logger.warning(f"[{today.date()}] 종가 추출 실패, 건너뜀: Not in prices_records")
+            continue
+
         try:
-            row = close_df.loc[today]
-            current_prices = row.to_dict()
-            # NaN → 전일 가격으로 대체 (forward-fill)
-            current_prices = {
-                t: (p if not pd.isna(p) else prev_prices.get(t))
-                for t, p in current_prices.items()
-                if not pd.isna(p) or prev_prices.get(t) is not None
-            }
-            prev_prices = current_prices
+            current_prices = prices_records[today]
+            # NaN인 항목(전일 가격도 없는 경우 등) 제외
+            current_prices = {t: p for t, p in current_prices.items() if not pd.isna(p)}
         except Exception as e:
             logger.warning(f"[{today.date()}] 종가 추출 실패, 건너뜀: {e}")
             continue
