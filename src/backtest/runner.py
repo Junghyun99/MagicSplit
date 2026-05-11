@@ -1,6 +1,7 @@
 # src/backtest/runner.py
 import shutil
 import pandas as pd
+from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Optional
 
@@ -8,6 +9,7 @@ from src.core.models import DayResult
 from src.core.engine.base import MagicSplitEngine
 from src.infra.repo import JsonRepository
 from src.utils.logger import TradeLogger
+from src.utils.currency import format_money
 from src.strategy_config import StrategyConfig
 from src.backtest.fetcher import download_historical_data
 from src.backtest.components import BacktestBroker
@@ -36,7 +38,7 @@ def run_backtest(
     """MagicSplit 전략 백테스트를 실행한다.
 
     Args:
-        config_path: config.json 경로
+        config_path: 설정 파일(config_*.json) 경로
         start_date: 시작일 'YYYY-MM-DD'
         end_date: 종료일 'YYYY-MM-DD'
         initial_cash: 초기 자금 (USD 또는 KRW)
@@ -47,6 +49,9 @@ def run_backtest(
     Returns:
         마지막 거래일의 DayResult, 또는 데이터가 없으면 None
     """
+    if run_number is None:
+        run_number = f"{datetime.now().strftime('%H%M%S')}_{market_type}"
+
     logger = TradeLogger(log_dir="logs/backtest", run_number=run_number)
 
     # 1. 설정 로드
@@ -104,7 +109,7 @@ def run_backtest(
         try:
             row = close_df.loc[today]
             current_prices = row.to_dict()
-            # NaN → 전일 가격으로 대체 (forward-fill)
+            # NaN -> 전일 가격으로 대체 (forward-fill)
             current_prices = {
                 t: (p if not pd.isna(p) else prev_prices.get(t))
                 for t, p in current_prices.items()
@@ -129,8 +134,8 @@ def run_backtest(
     if last_result:
         pf = last_result.final_portfolio
         logger.info(
-            f"최종: Cash=${pf.total_cash:,.0f}, "
-            f"Value=${pf.total_value:,.0f}"
+            f"최종: Cash={format_money(pf.total_cash, market_type)}, "
+            f"Value={format_money(pf.total_value, market_type)}"
         )
 
     return last_result

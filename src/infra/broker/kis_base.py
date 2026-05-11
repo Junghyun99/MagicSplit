@@ -5,8 +5,10 @@ import time
 import src.infra.broker as _pkg  # test patch 타깃: src.infra.broker.requests
 from datetime import datetime, timedelta
 
+from src.config import DEFAULT_HTTP_TIMEOUT
 from src.core.interfaces import IBrokerAdapter
 from src.core.models import Portfolio, Order, TradeExecution, OrderAction, ExecutionStatus
+from src.utils.ticker_reader import display_ticker
 
 from . import kis_http
 from . import kis_token_cache
@@ -27,6 +29,7 @@ class KisBrokerCommon(IBrokerAdapter):
     FILL_TR_ID: str = ""
     CANCEL_TR_ID: str = ""
     ASKING_PRICE_TR_ID: str = ""
+    MARGIN_TR_ID: str = ""
 
     SPREAD_THRESHOLD_PCT: float = 0.5  # 스프레드 임계값 (%) — 초과 시 주문 보류
 
@@ -60,14 +63,16 @@ class KisBrokerCommon(IBrokerAdapter):
             "appsecret": self.app_secret,
         }
         try:
-            res = _pkg.requests.post(url, json=payload)
+            res = _pkg.requests.post(url, json=payload, timeout=DEFAULT_HTTP_TIMEOUT)
             res.raise_for_status()
             data = res.json()
             if 'access_token' not in data:
                 raise Exception(f"Auth Failed: {data}")
             expires_in = int(data.get('expires_in', 86400))
             self.token_expires_at = datetime.now() + timedelta(seconds=expires_in)
-            token = data['access_token']
+            token = data.get('access_token')
+            if not token:
+                raise Exception(f"Access token missing in response: {data}")
             self._save_token_to_cache(token, self.token_expires_at)
             return token
         except Exception as e:
@@ -144,7 +149,10 @@ class KisBrokerCommon(IBrokerAdapter):
             if e.action == OrderAction.SELL
         )
         if sell_timed_out:
-            self.logger.error("[KisBroker] 매도 미체결 주문 존재 — 매수 중단 (#227)")
+            self.logger.error(
+                "[KisBroker] 매도 ORDERED(미체결 잔존) 감지 — 자금 미확정으로 "
+                "매수 중단 (#227). PARTIAL/REJECTED는 차단 대상 아님."
+            )
             return executions
 
         if buy_orders:
@@ -164,10 +172,20 @@ class KisBrokerCommon(IBrokerAdapter):
 
                 # 호가 기반 매수가 추정 (ask 가격 사용, 실패 시 2% 버퍼)
                 bid, ask = self._fetch_asking_price(order.ticker)
-                if not self._check_spread(bid, ask):
-                    self.logger.warning(f"[KisBroker] 스프레드 비정상 — {order.ticker} 매수 건너뜀")
+                disp = display_ticker(order.ticker)
+                if bid <= 0 or ask <= 0 or ask < bid:
+                    self.logger.warning(f"[KisBroker] 호가 조회 실패 — {disp} 현재가 기반 주문 진행")
+                    estimated_price = order.price * 1.02 if order.price > 0 else 0.0
+                elif not self._check_spread(bid, ask):
+                    mid = (bid + ask) / 2
+                    spread_pct = (ask - bid) / mid * 100
+                    self.logger.warning(
+                        f"[KisBroker] 스프레드 비정상 — {disp} 매수 건너뜀 "
+                        f"bid={bid} ask={ask} spread={spread_pct:.2f}%"
+                    )
                     continue
-                estimated_price = ask if ask > 0 else order.price * 1.02
+                else:
+                    estimated_price = ask
                 if estimated_price <= 0: continue
 
                 # 수량 재계산
@@ -175,7 +193,7 @@ class KisBrokerCommon(IBrokerAdapter):
                 actual_qty = min(order.quantity, max_qty)
 
                 if max_qty < order.quantity:
-                    self.logger.warning(f"⚠️ Qty Adjusted: {order.ticker} {order.quantity} -> {actual_qty}")
+                    self.logger.warning(f"Qty Adjusted: {disp} {order.quantity} -> {actual_qty}")
 
                 if actual_qty > 0:
                     adjusted_order = Order(ticker=order.ticker, action=order.action, quantity=actual_qty, price=order.price)
@@ -197,9 +215,9 @@ class KisBrokerCommon(IBrokerAdapter):
         return False
 
     def _check_spread(self, bid: float, ask: float) -> bool:
-        """스프레드 정상 여부 반환. bid/ask가 0이면 True (fallback 허용)"""
-        if bid <= 0 or ask <= 0:
-            return True
+        """스프레드 정상 여부 반환. bid/ask가 유효하지 않거나(<=0) 역전되면 False"""
+        if bid <= 0 or ask <= 0 or ask < bid:
+            return False
         mid = (bid + ask) / 2
         spread_pct = (ask - bid) / mid * 100
         return spread_pct <= self.SPREAD_THRESHOLD_PCT

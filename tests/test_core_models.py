@@ -26,6 +26,63 @@ class TestStockRule:
         rule = StockRule("TSLA", -3.0, 8.0, 300, 5, enabled=False)
         assert rule.enabled is False
 
+    def test_accessor_uses_scalar_when_no_array(self):
+        rule = StockRule("AAPL", -5.0, 10.0, 500, 10)
+        assert rule.buy_threshold_at(1) == -5.0
+        assert rule.buy_threshold_at(5) == -5.0
+        assert rule.sell_threshold_at(3) == 10.0
+        assert rule.buy_amount_at(2) == 500
+
+    def test_accessor_uses_array_when_present(self):
+        rule = StockRule(
+            "AAPL",
+            buy_threshold_pct=-5.0,      # 배열이 있으면 무시되어야 함
+            sell_threshold_pct=10.0,
+            buy_amount=500,
+            max_lots=10,
+            buy_threshold_pcts=[-3.0, -5.0, -7.0, -10.0],
+            sell_threshold_pcts=[5.0, 7.0, 10.0, 15.0],
+            buy_amounts=[100.0, 200.0, 300.0, 400.0],
+        )
+        assert rule.buy_threshold_at(1) == -3.0
+        assert rule.buy_threshold_at(3) == -7.0
+        assert rule.sell_threshold_at(2) == 7.0
+        assert rule.buy_amount_at(4) == 400.0
+
+    def test_accessor_clamps_to_last_when_level_exceeds_array(self):
+        rule = StockRule(
+            "AAPL",
+            buy_amount=500,
+            max_lots=10,
+            buy_threshold_pcts=[-5.0],
+            sell_threshold_pcts=[10.0],
+            buy_amounts=[100.0, 200.0],
+        )
+        assert rule.buy_threshold_at(4) == -5.0
+        assert rule.sell_threshold_at(9) == 10.0
+        assert rule.buy_amount_at(7) == 200.0
+
+    def test_missing_buy_threshold_raises(self):
+        with pytest.raises(ValueError, match="buy_threshold"):
+            StockRule("AAPL", sell_threshold_pct=10.0, buy_amount=500)
+
+    def test_missing_sell_threshold_raises(self):
+        with pytest.raises(ValueError, match="sell_threshold"):
+            StockRule("AAPL", buy_threshold_pct=-5.0, buy_amount=500)
+
+    def test_missing_buy_amount_raises(self):
+        with pytest.raises(ValueError, match="buy_amount"):
+            StockRule("AAPL", buy_threshold_pct=-5.0, sell_threshold_pct=10.0)
+
+    def test_empty_array_rejected(self):
+        with pytest.raises(ValueError, match="buy_threshold_pcts"):
+            StockRule(
+                "AAPL",
+                sell_threshold_pct=10.0,
+                buy_amount=500,
+                buy_threshold_pcts=[],
+            )
+
 
 class TestPositionLot:
     def test_creation(self):
@@ -123,7 +180,7 @@ class TestSplitSignal:
             action=OrderAction.SELL,
             quantity=5,
             price=110.0,
-            reason="Lv1 +10.0% → 익절",
+            reason="Lv1 +10.0% -> 익절",
             pct_change=10.0,
             level=1,
         )

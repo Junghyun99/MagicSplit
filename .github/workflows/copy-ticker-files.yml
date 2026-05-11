@@ -1,0 +1,75 @@
+name: Copy Ticker Files from ticker-map
+
+on:
+  workflow_dispatch:
+    inputs:
+      ticker_map_ref:
+        description: 'ticker-map 브랜치 또는 태그 (기본: main)'
+        required: false
+        default: 'main'
+        type: string
+      skill_dest:
+        description: 'ticker-reader 스킬 복사 대상 경로'
+        required: false
+        default: '.claude/skills/ticker-reader'
+        type: string
+      utils_dest:
+        description: 'utils 파일 복사 대상 경로'
+        required: false
+        default: 'src/utils'
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  copy-ticker-files:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Create destination directories
+      run: |
+        mkdir -p "${{ inputs.skill_dest }}"
+        mkdir -p "${{ inputs.utils_dest }}"
+
+    - name: Download ticker-reader skill files
+      run: |
+        BASE="https://raw.githubusercontent.com/junghyun99/ticker-map/${{ inputs.ticker_map_ref }}"
+        curl -fsSL "$BASE/.claude/skills/ticker-reader/SKILL.md" \
+          -o "${{ inputs.skill_dest }}/SKILL.md"
+
+    - name: Download utils files
+      run: |
+        BASE="https://raw.githubusercontent.com/junghyun99/ticker-map/${{ inputs.ticker_map_ref }}"
+        curl -fsSL "$BASE/src/utils/ticker_reader.py" \
+          -o "${{ inputs.utils_dest }}/ticker_reader_base.py"
+        curl -fsSL "$BASE/src/utils/tickers.db" \
+          -o "${{ inputs.utils_dest }}/tickers.db"
+
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.10"
+        cache: pip
+
+    - name: Run export_tickers script
+      run: |
+        export PYTHONUTF8=1
+        python scripts/export_tickers.py
+
+    - name: Commit and Push
+      run: |
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+        git add "${{ inputs.skill_dest }}/SKILL.md"
+        git add "${{ inputs.utils_dest }}/ticker_reader_base.py"
+        git add "${{ inputs.utils_dest }}/tickers.db"
+        git add "docs/data/tickers.json"
+        if git diff --cached --quiet; then
+          echo "변경 사항 없음 - 커밋 생략"
+        else
+          git commit -m "feat: sync ticker files from ticker-map@${{ inputs.ticker_map_ref }} [skip ci]"
+          git push
+        fi

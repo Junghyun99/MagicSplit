@@ -1,22 +1,116 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ko">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MagicSplit Dashboard</title>
-    <link rel="stylesheet" href="css/style.css" />
-  </head>
-  <body>
-    <h1>MagicSplit</h1>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css?v=20260509-1">
+</head>
+<body>
+    <header class="page-header">
+        <h1>MagicSplit</h1>
+        <nav class="mode-switch" aria-label="data mode">
+            <a href="?mode=domestic" data-mode="domestic" class="mode-link">Domestic</a>
+            <a href="?mode=overseas" data-mode="overseas" class="mode-link">Overseas</a>
+            <a href="?mode=backtest" data-mode="backtest" class="mode-link">Backtest</a>
+            <a href="config-editor.html" class="mode-link">Config</a>
+            <a href="manual-trade.html" class="mode-link">Manual Trade</a>
+        </nav>
+    </header>
 
     <div class="status-bar" id="status-bar">
-      <span id="last-updated">Loading...</span>
-      <span id="total-value">-</span>
+        <span id="mode-badge" class="mode-badge">-</span>
+        <span id="last-updated">Loading...</span>
+        <span id="total-value">-</span>
+        <span id="offline-badge" class="offline-badge" style="display:none">⚠️ 실패</span>
+        <span class="refresh-controls">
+            <span id="refresh-age" class="refresh-age"></span>
+            <button id="refresh-btn" class="refresh-btn" title="새로고침">🔄</button>
+            <select id="auto-refresh-select" class="auto-refresh-select" title="자동 새로고침">
+                <option value="0">Off</option>
+                <option value="30000">30초</option>
+                <option value="60000">1분</option>
+                <option value="300000">5분</option>
+            </select>
+        </span>
     </div>
 
-    <div id="loading">Loading positions...</div>
-    <div id="positions-container"></div>
+    <nav class="view-switch" id="view-switch">
+        <button class="view-link active" data-view="risk">Risk</button>
+        <button class="view-link" data-view="positions">Positions</button>
+        <button class="view-link" data-view="decisions">Decisions</button>
+        <button class="view-link" data-view="history">History</button>
+    </nav>
 
-    <script src="js/main.js"></script>
-  </body>
+    <div id="reason-banner" class="reason-banner" style="display:none"></div>
+
+    <div id="loading">Loading positions...</div>
+
+    <section id="level-heatmap-section" class="heatmap-section" style="display:none">
+        <h2>차수 흐름 (Level Heatmap)</h2>
+        <div id="level-heatmap" class="heatmap-container"></div>
+    </section>
+
+    <div id="positions-container" style="display:none"></div>
+
+    <div id="history-section" style="display:none">
+        <section id="equity-curve-section" class="heatmap-section" style="display:none">
+            <h2>자산 곡선 (Equity Curve)</h2>
+            <div id="equity-curve" class="equity-curve-card"></div>
+        </section>
+        <div id="history-filters" class="filter-bar"></div>
+        <div id="history-list"></div>
+        <button id="load-more-btn" class="load-more-btn" style="display:none">더 보기</button>
+    </div>
+
+    <div id="decisions-section" style="display:none">
+        <div id="decisions-list"></div>
+    </div>
+
+    <div id="risk-section">
+        <div class="risk-overview">
+            <div id="risk-health-container" class="risk-health-card"></div>
+            <div id="risk-alerts-container" class="risk-alerts-card"></div>
+        </div>
+        <div class="risk-dashboard">
+            <section class="risk-card" id="liquidity-card">
+                <h2>유동성 지표 (Liquidity)</h2>
+                <div id="cash-ratio-container"></div>
+                <div id="next-level-needs-container"></div>
+            </section>
+            
+            <section class="risk-card" id="concentration-card">
+                <h2>종목별 집중도 (Concentration)</h2>
+                <div id="ticker-concentration-container"></div>
+            </section>
+
+            <section class="risk-card" id="level-dist-card">
+                <h2>차수별 분포 (Level Distribution)</h2>
+                <div id="level-dist-container"></div>
+            </section>
+
+            <section class="risk-card" id="stale-positions-card">
+                <h2>장기 정체 종목 (Stale Positions)</h2>
+                <div id="stale-positions-container"></div>
+            </section>
+        </div>
+    </div>
+
+    <script src="js/utils/format-utils.js?v=20260509-1"></script>
+    <script src="js/services/data-repository.js?v=20260509-1"></script>
+    <script src="js/models/dashboard-model.js?v=20260509-1"></script>
+    <script src="js/models/history-model.js?v=20260509-1"></script>
+    <script src="js/models/decision-model.js?v=20260509-1"></script>
+    <script src="js/views/dashboard-view.js?v=20260509-1"></script>
+    <script src="js/views/history-view.js?v=20260509-1"></script>
+    <script src="js/views/decision-view.js?v=20260509-1"></script>
+    <script src="js/views/charts-view.js?v=20260509-1"></script>
+    <script src="js/views/risk-view.js?v=20260509-1"></script>
+    <script src="js/controllers/dashboard-controller.js?v=20260509-1"></script>
+    <script src="js/controllers/risk-controller.js?v=20260509-1"></script>
+    <script src="js/main.js?v=20260509-1"></script>
+</body>
 </html>
