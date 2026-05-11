@@ -1,0 +1,70 @@
+{
+    "last_updated": "2026-05-11 09:38:05",
+    "last_run_date": "2026-05-11",
+    "market_type": "domestic",
+    "reason": "ACE 엔비디아밸류체인액티브(483320):BUY(초기 매수 Lv1)",
+    "portfolio": {
+        "total_value": 1082786.0,
+        "cash_balance": 802066.0,
+        "holdings": [
+            {
+                "ticker": "483320",
+                "alias": "ACE 엔비디아밸류체인액티브",
+                "qty": 11,
+                "price": 25520.0,
+                "value": 280720.0
+            }
+        ]
+    },
+    "positions": {
+        "483320": {
+            "total_qty": 11,
+            "lot_count": 1,
+            "total_invested": 280720.0,
+            "current_value": 280720.0,
+            "lots": [
+                {
+                    "lot_id": "lot_20260511_093801_483320_001",
+                    "buy_price": 25520.0,
+                    "quantity": 11,
+                    "buy_date": "2026-05-11",
+                    "level": 1,
+                    "current_price": 25520.0,
+                    "pct_change": 0.0
+                }
+            ],
+            "current_price": 25520.0,
+            "alias": "ACE 엔비디아밸류체인액티브",
+            "avg_buy_price": 25520.0,
+            "unrealized_pnl": 0.0,
+            "unrealized_pnl_pct": 0.0,
+            "realized_pnl": 0.0,
+            "total_pnl": 0.0
+        }
+    },
+    "realized_pnl_by_ticker": {},
+    "enabled_tickers": ["483320"],
+    "risk_summary": {
+        "next_level_needs": 300000.0,
+        "max_potential_exposure": 3000000.0,
+        "stale_info": [
+            {
+                "ticker": "483320",
+                "alias": "ACE 엔비디아밸류체인액티브",
+                "last_trade_date": "2026-05-11",
+                "days_stale": 0
+            }
+        ],
+        "risk_score": 78,
+        "deductions": [
+            {
+                "reason": "단일 종목 집중도 과다",
+                "points": 21.9
+            }
+        ],
+        "sync_error": false,
+        "alerts": ["⚠️ 단일 종목 집중도 과다 (25.9%)"],
+        "max_ticker_concentration": 25.93,
+        "high_level_ratio": 0.0
+    }
+}

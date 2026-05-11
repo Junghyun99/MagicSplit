@@ -19,3 +19,24 @@
 2026-05-11 09:23:34,903 [INFO] [KisDomestic] Order FILLED: ACE 엔비디아밸류체인액티브(483320) ODNO=0012487900 price=25500.0 qty=11 fee=42.074999999999996
 2026-05-11 09:23:35,105 [INFO] [Position] New lot: lot_20260511_092335_483320_001 Lv1 ACE 엔비디아밸류체인액티브(483320) 11주 @KRW 25,500
 2026-05-11 09:23:38,888 [INFO] >>> Step 6: Persist
+2026-05-11 09:37:55,318 [INFO] === Initializing MagicSplit Bot (domestic) ===
+2026-05-11 09:37:55,318 [INFO] Loaded 3 stock rule(s) from config_domestic.json
+2026-05-11 09:37:55,318 [INFO] [domestic] 1 rule(s), mode=LIVE
+2026-05-11 09:37:55,318 [INFO] [KisBroker] 캐시에서 토큰 로드 (API 호출 생략)
+2026-05-11 09:37:55,318 [INFO] [KisDomesticLiveBroker] Mode: LIVE TRADING
+2026-05-11 09:37:55,319 [INFO] === Running domestic engine ===
+2026-05-11 09:37:55,319 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-11 09:37:56,209 [INFO] Fetching real-time prices from Broker...
+2026-05-11 09:37:56,868 [INFO] Portfolio: Cash=KRW 1,082,826, Value=KRW 1,082,826
+2026-05-11 09:37:56,869 [INFO] >>> Step 2: Load Positions
+2026-05-11 09:37:56,869 [INFO] Loaded 0 position lot(s)
+2026-05-11 09:37:56,869 [INFO] >>> Step 2.1: Detected 1 newly enabled ticker(s)
+2026-05-11 09:37:56,869 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-11 09:37:56,870 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-11 09:37:56,870 [INFO] [ACE 엔비디아밸류체인액티브(483320)] 보유 lot 없음 -> 초기 매수 Lv1 11주 @KRW 25,520
+2026-05-11 09:37:56,870 [INFO] Executing 1 order(s)...
+2026-05-11 09:37:57,630 [INFO] [KisBroker] Available Cash for BUY: 1,082,826
+2026-05-11 09:38:00,037 [INFO] [KisDomestic] Order Sent: BUY ACE 엔비디아밸류체인액티브(483320) 11 @ 25525 (ODNO=0015302200)
+2026-05-11 09:38:01,209 [INFO] [KisDomestic] Order FILLED: ACE 엔비디아밸류체인액티브(483320) ODNO=0015302200 price=25520.0 qty=11 fee=42.108
+2026-05-11 09:38:01,411 [INFO] [Position] New lot: lot_20260511_093801_483320_001 Lv1 ACE 엔비디아밸류체인액티브(483320) 11주 @KRW 25,520
+2026-05-11 09:38:05,201 [INFO] >>> Step 6: Persist
