@@ -1,0 +1,92 @@
+[
+    {
+        "id": "tx_20260511_093805",
+        "date": "2026-05-11 09:38:05",
+        "portfolio_value": 1082786.0,
+        "total_trade_amount": 280720.0,
+        "reason": "ACE 엔비디아밸류체인액티브(483320):BUY(초기 매수 Lv1)",
+        "executions": [
+            {
+                "ticker": "483320",
+                "action": "BUY",
+                "quantity": 11,
+                "price": 25520.0,
+                "fee": 42.108,
+                "date": "2026-05-11 09:38:01",
+                "status": "FILLED",
+                "reason": "ODNO=0015302200",
+                "level": 1,
+                "alias": "ACE 엔비디아밸류체인액티브"
+            }
+        ]
+    },
+    {
+        "id": "tx_20260511_003940",
+        "date": "2026-05-11 00:39:40",
+        "portfolio_value": 1082691.0,
+        "total_trade_amount": 280665.0,
+        "reason": "ACE 엔비디아밸류체인액티브(483320):BUY(수동 매매(Manual Trade))",
+        "executions": [
+            {
+                "ticker": "483320",
+                "action": "BUY",
+                "quantity": 11,
+                "price": 25515.0,
+                "fee": 42.09974999999999,
+                "date": "2026-05-11 00:39:37",
+                "status": "FILLED",
+                "reason": "ODNO=0015602000",
+                "level": 2,
+                "alias": "ACE 엔비디아밸류체인액티브"
+            }
+        ]
+    },
+    {
+        "id": "tx_20260511_004126",
+        "date": "2026-05-11 00:41:26",
+        "portfolio_value": 1082651.0,
+        "total_trade_amount": 280610.0,
+        "reason": "ACE 엔비디아밸류체인액티브(483320):SELL(수동 매매(Manual Trade))",
+        "executions": [
+            {
+                "ticker": "483320",
+                "action": "SELL",
+                "quantity": 11,
+                "price": 25510.0,
+                "fee": 42.091499999999996,
+                "date": "2026-05-11 00:41:22",
+                "status": "FILLED",
+                "reason": "ODNO=0015920300",
+                "lot_id": "lot_20260511_003937_483320_002",
+                "level": 2,
+                "buy_price": 25515.0,
+                "realized_pnl": -97.09,
+                "alias": "ACE 엔비디아밸류체인액티브"
+            }
+        ]
+    },
+    {
+        "id": "tx_20260511_004308",
+        "date": "2026-05-11 00:43:08",
+        "portfolio_value": 1082556.0,
+        "total_trade_amount": 280665.0,
+        "reason": "ACE 엔비디아밸류체인액티브(483320):SELL(수동 매매(Manual Trade))",
+        "executions": [
+            {
+                "ticker": "483320",
+                "action": "SELL",
+                "quantity": 11,
+                "price": 25515.0,
+                "fee": 42.09974999999999,
+                "date": "2026-05-11 00:43:05",
+                "status": "FILLED",
+                "reason": "ODNO=0016249100",
+                "lot_id": "lot_20260511_093801_483320_001",
+                "level": 1,
+                "buy_price": 25520.0,
+                "realized_pnl": -97.1,
+                "alias": "ACE 엔비디아밸류체인액티브"
+            }
+        ]
+    }
+]

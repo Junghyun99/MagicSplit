@@ -34,5 +34,5 @@ jobs:
         fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
         author_name: GitHub Actions Test Fail
       env:
-        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_TEST }}
       if: failure()

@@ -15,18 +15,35 @@ class IBrokerAdapter(ABC):
 
 class ILogger(ABC):
     @abstractmethod
+    def debug(self, msg: str) -> None: ...
+    @abstractmethod
     def info(self, msg: str) -> None: ...
     @abstractmethod
     def warning(self, msg: str) -> None: ...
     @abstractmethod
     def error(self, msg: str) -> None: ...
+    
+    @abstractmethod
+    def set_ticker_context(self, ticker: Optional[str]) -> None:
+        """현재 로그가 귀속될 종목명을 설정한다 (None은 공통 영역)."""
+        ...
+    
+    @abstractmethod
+    def get_captured_logs(self, ticker: Optional[str] = None) -> List[str]:
+        """캡처된 로그를 추출한다. ticker 지정 시 해당 종목 로그만, None이면 전체 로그."""
+        ...
+    
+    @abstractmethod
+    def clear_captured_logs(self) -> None:
+        """저장된 캡처 로그를 비운다."""
+        ...
 
 
 class INotifier(ABC):
     @abstractmethod
-    def send_message(self, message: str) -> None: ...
+    def send_message(self, message: str, detail: Optional[str] = None) -> None: ...
     @abstractmethod
-    def send_alert(self, message: str) -> None: ...
+    def send_alert(self, message: str, detail: Optional[str] = None) -> None: ...
 
 
 class IRepository(ABC):
@@ -43,20 +60,46 @@ class IRepository(ABC):
     @abstractmethod
     def save_trade_history(self, executions: List[TradeExecution],
                            portfolio: Portfolio, reason: str,
-                           signals: Optional[List[SplitSignal]] = None,
                            sim_date: Optional[str] = None) -> None:
         """매매 내역을 저장한다."""
         ...
 
     @abstractmethod
-    def update_status(self, portfolio: Portfolio,
-                      positions: List[PositionLot],
-                      reason: str,
-                      sim_date: Optional[str] = None) -> None:
-        """최신 상태를 저장한다."""
+    def get_realized_pnl_by_ticker(self) -> Dict[str, float]:
+        """과거 누적 실현 손익을 종목별로 반환한다."""
+        ...
+
+    @abstractmethod
+    def save_status(self, status_data: dict) -> None:
+        """최신 상태 딕셔너리를 저장한다."""
+        ...
+
+    @abstractmethod
+    def load_status(self) -> dict:
+        """최근 저장된 상태 딕셔너리를 로드한다."""
         ...
 
     @abstractmethod
     def get_last_run_date(self) -> Optional[str]:
         """마지막 실행 날짜를 반환한다."""
+        ...
+
+    @abstractmethod
+    def load_last_sell_prices(self) -> Dict[str, float]:
+        """티커별 직전 매도가를 로드한다 (동적 재매수 기준용)."""
+        ...
+
+    @abstractmethod
+    def save_last_sell_prices(self, prices: Dict[str, float]) -> None:
+        """티커별 직전 매도가를 저장한다."""
+        ...
+
+    @abstractmethod
+    def save_decision_log(self, date: str, reason: str) -> None:
+        """판단 내역(모니터링 사유)을 저장한다."""
+        ...
+
+    @abstractmethod
+    def get_last_trade_dates(self) -> Dict[str, str]:
+        """종목별 마지막 체결 날짜를 반환한다."""
         ...
