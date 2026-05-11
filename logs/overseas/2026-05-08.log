@@ -1,0 +1,44 @@
+2026-05-08 17:00:15,911 [INFO] === Initializing MagicSplit Bot (overseas) ===
+2026-05-08 17:00:15,911 [INFO] Loaded 2 stock rule(s) from config_overseas.json
+2026-05-08 17:00:15,911 [INFO] [overseas] 2 rule(s), mode=LIVE
+2026-05-08 17:00:15,912 [INFO] [KisBroker] 캐시에서 토큰 로드 (API 호출 생략)
+2026-05-08 17:00:15,912 [INFO] [KisOverseasLiveBroker] Mode: LIVE TRADING
+2026-05-08 17:00:15,913 [INFO] === Running overseas engine ===
+2026-05-08 17:00:15,913 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 17:00:19,346 [INFO] Fetching real-time prices from Broker...
+2026-05-08 17:00:20,857 [INFO] Portfolio: Cash=USD 959.40, Value=USD 7,590.31
+2026-05-08 17:00:20,857 [INFO] >>> Step 2: Load Positions
+2026-05-08 17:00:20,857 [INFO] Loaded 0 position lot(s)
+2026-05-08 17:00:20,858 [INFO] >>> Step 2.1: Detected 2 newly enabled ticker(s)
+2026-05-08 17:00:20,858 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 17:00:20,858 [INFO] >>> Processing AAPL
+2026-05-08 17:00:20,859 [INFO] [AAPL] 현금 부족: 보유 현금 USD 959.40 < 매수 예정 금액 USD 4,966.89 (17주) -> 매수 보류
+2026-05-08 17:00:20,961 [INFO] >>> Processing MSFT
+2026-05-08 17:00:20,961 [INFO] [MSFT] 현금 부족: 보유 현금 USD 959.40 < 매수 예정 금액 USD 4,995.24 (12주) -> 매수 보류
+2026-05-08 17:00:21,048 [INFO] >>> Step 6: Persist
+2026-05-08 17:09:40,235 [INFO] === Initializing MagicSplit Bot (overseas) ===
+2026-05-08 17:09:40,235 [INFO] Loaded 2 stock rule(s) from config_overseas.json
+2026-05-08 17:09:40,235 [INFO] [overseas] 2 rule(s), mode=LIVE
+2026-05-08 17:09:40,235 [INFO] [KisBroker] 캐시에서 토큰 로드 (API 호출 생략)
+2026-05-08 17:09:40,236 [INFO] [KisOverseasLiveBroker] Mode: LIVE TRADING
+2026-05-08 17:09:40,236 [INFO] === Running overseas engine ===
+2026-05-08 17:09:40,236 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 17:09:43,799 [INFO] Fetching real-time prices from Broker...
+2026-05-08 17:09:45,300 [INFO] Portfolio: Cash=USD 959.40, Value=USD 7,594.47
+2026-05-08 17:09:45,300 [INFO] >>> Step 2: Load Positions
+2026-05-08 17:09:45,300 [INFO] Loaded 0 position lot(s)
+2026-05-08 17:09:45,301 [INFO] >>> Step 2.1: Detected 1 newly enabled ticker(s)
+2026-05-08 17:09:45,302 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 17:09:45,302 [INFO] >>> Processing AAPL
+2026-05-08 17:09:45,302 [INFO] [AAPL] 보유 lot 없음 -> 초기 매수 Lv1 1주 @USD 291.94
+2026-05-08 17:09:45,303 [INFO] Executing 1 order(s)...
+2026-05-08 17:09:48,711 [INFO] [KisBroker] Available Cash for BUY: 959
+2026-05-08 17:09:51,489 [INFO] [KisBroker] Order Sent: BUY AAPL 1 @ 291.9 (ODNO=0032129424)
+2026-05-08 17:09:52,707 [INFO] [KisBroker] Order FILLED: AAPL ODNO=0032129424 price=291.9 qty=1 fee=0.0
+2026-05-08 17:09:52,909 [INFO] [Position] New lot: lot_20260508_170952_AAPL_001 Lv1 AAPL 1주 @USD 291.90
+2026-05-08 17:09:59,211 [INFO] >>> Processing QLD
+2026-05-08 17:09:59,211 [INFO] [QLD] 보유 lot 없음 -> 초기 매수 Lv1 5주 @USD 91.36
+2026-05-08 17:09:59,211 [INFO] Executing 1 order(s)...
+2026-05-08 17:10:02,587 [INFO] [KisBroker] Available Cash for BUY: 668
+2026-05-08 17:10:05,383 [ERROR] [KisBroker] Order Failed: 해당종목은 교육이수가 등록/승인된 계좌만 매수주문가능합니다
+2026-05-08 17:10:05,689 [INFO] >>> Step 6: Persist

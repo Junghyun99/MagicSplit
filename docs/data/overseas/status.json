@@ -1,0 +1,168 @@
+{
+    "last_updated": "2026-05-09 14:51:07",
+    "last_run_date": "2026-05-09",
+    "market_type": "overseas",
+    "reason": "QLD:BUY(초기 매수 Lv1)",
+    "portfolio": {
+        "total_value": 7599.389999999999,
+        "cash_balance": 668.7,
+        "holdings": [
+            {
+                "ticker": "AAPL",
+                "alias": "AAPL",
+                "qty": 1,
+                "price": 293.32,
+                "value": 293.32
+            },
+            {
+                "ticker": "ABT",
+                "alias": "ABT",
+                "qty": 3,
+                "price": 84.32,
+                "value": 252.95999999999998
+            },
+            {
+                "ticker": "ARKK",
+                "alias": "ARKK",
+                "qty": 11,
+                "price": 79.12,
+                "value": 870.32
+            },
+            {
+                "ticker": "AVGO",
+                "alias": "AVGO",
+                "qty": 2,
+                "price": 430.0,
+                "value": 860.0
+            },
+            {
+                "ticker": "CRM",
+                "alias": "CRM",
+                "qty": 3,
+                "price": 181.82,
+                "value": 545.46
+            },
+            {
+                "ticker": "DUK",
+                "alias": "DUK",
+                "qty": 1,
+                "price": 124.17,
+                "value": 124.17
+            },
+            {
+                "ticker": "GOOGL",
+                "alias": "GOOGL",
+                "qty": 2,
+                "price": 400.8,
+                "value": 801.6
+            },
+            {
+                "ticker": "ICLN",
+                "alias": "ICLN",
+                "qty": 1,
+                "price": 21.16,
+                "value": 21.16
+            },
+            {
+                "ticker": "O",
+                "alias": "O",
+                "qty": 6,
+                "price": 61.92,
+                "value": 371.52
+            },
+            {
+                "ticker": "PEP",
+                "alias": "PEP",
+                "qty": 4,
+                "price": 154.62,
+                "value": 618.48
+            },
+            {
+                "ticker": "PFE",
+                "alias": "PFE",
+                "qty": 1,
+                "price": 25.68,
+                "value": 25.68
+            },
+            {
+                "ticker": "PG",
+                "alias": "PG",
+                "qty": 5,
+                "price": 146.42,
+                "value": 732.0999999999999
+            },
+            {
+                "ticker": "SCHD",
+                "alias": "SCHD",
+                "qty": 4,
+                "price": 31.62,
+                "value": 126.48
+            },
+            {
+                "ticker": "TSLA",
+                "alias": "TSLA",
+                "qty": 2,
+                "price": 428.35,
+                "value": 856.7
+            },
+            {
+                "ticker": "WM",
+                "alias": "WM",
+                "qty": 2,
+                "price": 215.37,
+                "value": 430.74
+            }
+        ]
+    },
+    "positions": {
+        "AAPL": {
+            "total_qty": 1,
+            "lot_count": 1,
+            "total_invested": 291.9,
+            "current_value": 293.32,
+            "lots": [
+                {
+                    "lot_id": "lot_20260508_170952_AAPL_001",
+                    "buy_price": 291.9,
+                    "quantity": 1,
+                    "buy_date": "2026-05-08",
+                    "level": 1,
+                    "current_price": 293.32,
+                    "pct_change": 0.49
+                }
+            ],
+            "current_price": 293.32,
+            "alias": "AAPL",
+            "avg_buy_price": 291.9,
+            "unrealized_pnl": 1.42,
+            "unrealized_pnl_pct": 0.49,
+            "realized_pnl": 0.0,
+            "total_pnl": 1.42
+        }
+    },
+    "realized_pnl_by_ticker": {},
+    "enabled_tickers": ["AAPL", "QLD"],
+    "risk_summary": {
+        "next_level_needs": 500.0,
+        "max_potential_exposure": 30000.0,
+        "stale_info": [
+            {
+                "ticker": "AAPL",
+                "alias": "AAPL",
+                "last_trade_date": "2026-05-08",
+                "days_stale": 1
+            }
+        ],
+        "risk_score": 76,
+        "deductions": [
+            {
+                "reason": "현금 비중 부족",
+                "points": 24.3
+            }
+        ],
+        "sync_error": true,
+        "alerts": ["⚠️ [DUK] 잔고 불일치 (봇: 0, 계좌: 1)", "⚠️ [SCHD] 잔고 불일치 (봇: 0, 계좌: 4)", "⚠️ [PFE] 잔고 불일치 (봇: 0, 계좌: 1)", "⚠️ [O] 잔고 불일치 (봇: 0, 계좌: 6)", "⚠️ [PG] 잔고 불일치 (봇: 0, 계좌: 5)", "⚠️ [WM] 잔고 불일치 (봇: 0, 계좌: 2)", "⚠️ [GOOGL] 잔고 불일치 (봇: 0, 계좌: 2)", "⚠️ [ICLN] 잔고 불일치 (봇: 0, 계좌: 1)", "⚠️ [PEP] 잔고 불일치 (봇: 0, 계좌: 4)", "⚠️ [ARKK] 잔고 불일치 (봇: 0, 계좌: 11)", "⚠️ [AVGO] 잔고 불일치 (봇: 0, 계좌: 2)", "⚠️ [ABT] 잔고 불일치 (봇: 0, 계좌: 3)", "⚠️ [CRM] 잔고 불일치 (봇: 0, 계좌: 3)", "⚠️ [TSLA] 잔고 불일치 (봇: 0, 계좌: 2)", "⚠️ 현금 비중 부족 (8.8%)"],
+        "max_ticker_concentration": 3.86,
+        "high_level_ratio": 0.0
+    }
+}

@@ -1,0 +1,137 @@
+name: MagicSplit Trading Bot (Overseas)
+
+on:
+  # [임시 비활성화] 개발 중이므로 스케줄 실행을 중지합니다.
+  # schedule:
+  #   # 미국 장 운영시간: 한국시간 23:30~06:00 (서머타임 22:30~05:00)
+  #   # UTC 기준 14:00~21:00 (월~금) -> KST 23:00~06:00
+  #   - cron: '0 14-21 * * 1-5'
+  workflow_dispatch:
+    inputs:
+      skip_holiday_check:
+        description: '미국 공휴일 체크를 건너뛰고 강제 실행(수동 디버그용)'
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: write
+
+jobs:
+  trade-overseas:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      TZ: Asia/Seoul
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Show runner time (timezone debug)
+      run: |
+        echo "Runner UTC : $(date -u '+%Y-%m-%d %H:%M:%S %Z')"
+        echo "KST equiv  : $(TZ=Asia/Seoul date '+%Y-%m-%d %H:%M:%S %Z')"
+
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.10"
+        cache: pip
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Check US holiday
+      id: holiday
+      if: ${{ github.event_name == 'schedule' || inputs.skip_holiday_check != true }}
+      run: |
+        python - <<'PY'
+        import os, datetime, zoneinfo, holidays
+        us = holidays.country_holidays('US')
+        ny_tz = zoneinfo.ZoneInfo('America/New_York')
+        today_ny = datetime.datetime.now(datetime.timezone.utc).astimezone(ny_tz).date()
+        is_holiday = today_ny in us
+        name = us.get(today_ny, "")
+        print(f"NY today={today_ny}, holiday={is_holiday}, name={name}")
+        with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
+            f.write(f"is_holiday={'true' if is_holiday else 'false'}\n")
+            f.write(f"ny_date={today_ny.isoformat()}\n")
+        PY
+
+    - name: Skip if holiday
+      if: ${{ steps.holiday.outputs.is_holiday == 'true' }}
+      run: |
+        echo "::notice title=Holiday Skip::${{ steps.holiday.outputs.ny_date }} 는 미국 공휴일입니다. 실행을 건너뜁니다."
+        exit 0
+
+    - name: Restore KIS token cache
+      if: ${{ steps.holiday.outputs.is_holiday != 'true' }}
+      id: token-cache-restore
+      uses: actions/cache/restore@v4
+      with:
+        path: .kis_token_cache.json
+        key: kis-token-shared-${{ github.run_id }}
+        restore-keys: |
+          kis-token-shared-
+
+    - name: Run MagicSplit Bot (Overseas)
+      if: ${{ steps.holiday.outputs.is_holiday != 'true' }}
+      env:
+        CONFIG_JSON_PATH: config_overseas.json
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_LIVE }}
+        SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+        SLACK_CHANNEL_ID: ${{ secrets.SLACK_CHANNEL_ID }}
+        KIS_APP_KEY: ${{ secrets.KIS_APP_KEY }}
+        KIS_APP_SECRET: ${{ secrets.KIS_APP_SECRET }}
+        KIS_ACC_NO: ${{ secrets.KIS_ACC_NO }}
+        IS_LIVE: 'true'
+        PYTHONUNBUFFERED: "1"
+      run: python -m src.main
+
+    - name: Save KIS token cache
+      if: ${{ always() && steps.holiday.outputs.is_holiday != 'true' }}
+      uses: actions/cache/save@v4
+      with:
+        path: .kis_token_cache.json
+        key: kis-token-shared-${{ github.run_id }}
+
+    - name: Debug - List data and logs
+      if: always()
+      run: |
+        echo "=== docs/data/overseas/ ==="
+        ls -R docs/data/overseas/ || echo "Not found"
+        echo "=== logs/overseas/ ==="
+        ls -R logs/overseas/ || echo "Not found"
+
+    - name: Commit updated data and logs
+      if: ${{ success() && steps.holiday.outputs.is_holiday != 'true' }}
+      run: |
+        git add --force docs/data/overseas/*.json || true
+        git add --force logs/overseas/*.log || true
+
+    - name: Push updated data and logs
+      if: ${{ success() && steps.holiday.outputs.is_holiday != 'true' }}
+      uses: stefanzweifel/git-auto-commit-action@v5
+      with:
+        commit_message: "Auto-update overseas trading data and logs [skip ci]"
+        file_pattern: "docs/data/overseas/*.json logs/overseas/*.log"
+        commit_user_name: "github-actions[bot]"
+        commit_user_email: "github-actions[bot]@users.noreply.github.com"
+        add_options: '--force'
+
+    - name: Notify Slack on failure
+      if: ${{ failure() && steps.holiday.outputs.is_holiday != 'true' }}
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_LIVE }}
+      run: |
+        if [ -z "${SLACK_WEBHOOK_URL:-}" ]; then
+          echo "SLACK_WEBHOOK_URL not set, skipping Slack notification"
+          exit 0
+        fi
+        RUN_URL="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+        curl -X POST -H 'Content-type: application/json' \
+          --data "{\"text\":\":rotating_light: MagicSplit (Overseas) FAILED\n<${RUN_URL}|Run #${{ github.run_id }}>\"}" \
+          "$SLACK_WEBHOOK_URL"

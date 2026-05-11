@@ -1,6 +1,5 @@
 # src/infra/broker/mock.py
 from typing import List, Dict, Optional
-import time
 from datetime import datetime
 
 from src.core.interfaces import IBrokerAdapter, ILogger
@@ -84,10 +83,26 @@ class MockBroker(IBrokerAdapter):
         elif order.action == OrderAction.SELL:
             current_qty = self.holdings.get(order.ticker, 0)
             actual_qty = min(order.quantity, current_qty)
+
+            if actual_qty <= 0:
+                if self.logger:
+                    self.logger.warning(
+                        f"[REJECTED] SELL {order.ticker}: 보유량 없음 (보유: {current_qty}주)"
+                    )
+                return TradeExecution(
+                    ticker=order.ticker,
+                    action=order.action,
+                    quantity=0,
+                    price=round(exec_price, 2),
+                    fee=0.0,
+                    date=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                    status=ExecutionStatus.REJECTED,
+                )
+
             if actual_qty < order.quantity and self.logger:
                 self.logger.warning(
                     f"[QTY ADJUSTED] {order.ticker} SELL: "
-                    f"요청 {order.quantity}주 → 실제 {actual_qty}주 (보유량 부족)"
+                    f"요청 {order.quantity}주 -> 실제 {actual_qty}주 (보유량 부족)"
                 )
             amount = exec_price * actual_qty
             fee = amount * 0.0025
