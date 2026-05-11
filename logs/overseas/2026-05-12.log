@@ -1,0 +1,86 @@
+2026-05-12 00:34:33,739 [INFO] === Initializing MagicSplit Bot (overseas) ===
+2026-05-12 00:34:33,739 [INFO] Loaded 13 stock rule(s) from config_overseas.json
+2026-05-12 00:34:33,739 [INFO] [overseas] 11 rule(s), mode=LIVE
+2026-05-12 00:34:33,739 [INFO] [KisBroker] 새 토큰 발급 중...
+2026-05-12 00:34:34,390 [INFO] [KisOverseasLiveBroker] Mode: LIVE TRADING
+2026-05-12 00:34:34,390 [INFO] === Running overseas engine ===
+2026-05-12 00:34:34,390 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-12 00:34:37,186 [INFO] Fetching real-time prices from Broker...
+2026-05-12 00:34:43,449 [INFO] Portfolio: Cash=USD 7,198.94, Value=USD 7,492.52
+2026-05-12 00:34:43,449 [INFO] >>> Step 2: Load Positions
+2026-05-12 00:34:43,450 [INFO] Loaded 1 position lot(s)
+2026-05-12 00:34:43,450 [INFO] >>> Step 2.1: Detected 10 newly enabled ticker(s)
+2026-05-12 00:34:43,451 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-12 00:34:43,451 [INFO] >>> Processing 애플(AAPL)
+2026-05-12 00:34:43,452 [INFO]   [애플(AAPL)] 신호 없음 | Lv1 매수 USD 291.90 -> 현재 USD 293.58 (+0.58%) | 익절 +10.0% / 추매 -5.0%
+2026-05-12 00:34:43,452 [INFO] >>> Processing 리얼티 인컴(O)
+2026-05-12 00:34:43,452 [INFO] [리얼티 인컴(O)] 보유 lot 없음 -> 초기 매수 Lv1 8주 @USD 62.38
+2026-05-12 00:34:43,452 [INFO] Executing 1 order(s)...
+2026-05-12 00:34:46,071 [INFO] [KisBroker] Available Cash for BUY: 7,199
+2026-05-12 00:34:48,418 [INFO] [KisBroker] Order Sent: BUY 리얼티 인컴(O) 8 @ 62.37 (ODNO=0030398787)
+2026-05-12 00:34:49,380 [INFO] [KisBroker] Order FILLED: 리얼티 인컴(O) ODNO=0030398787 price=62.37 qty=8 fee=0.0
+2026-05-12 00:34:49,582 [INFO] [Position] New lot: lot_20260512_003449_O_001 Lv1 리얼티 인컴(O) 8주 @USD 62.37
+2026-05-12 00:34:55,250 [INFO] >>> Processing 프록터 앤드 갬블(PG)
+2026-05-12 00:34:55,251 [INFO] [프록터 앤드 갬블(PG)] 보유 lot 없음 -> 초기 매수 Lv1 3주 @USD 142.87
+2026-05-12 00:34:55,251 [INFO] Executing 1 order(s)...
+2026-05-12 00:34:57,919 [INFO] [KisBroker] Available Cash for BUY: 6,700
+2026-05-12 00:34:59,984 [INFO] [KisBroker] Order Sent: BUY 프록터 앤드 갬블(PG) 3 @ 142.81 (ODNO=0030398950)
+2026-05-12 00:35:00,889 [INFO] [KisBroker] Order FILLED: 프록터 앤드 갬블(PG) ODNO=0030398950 price=142.81 qty=3 fee=0.0
+2026-05-12 00:35:01,091 [INFO] [Position] New lot: lot_20260512_003501_PG_001 Lv1 프록터 앤드 갬블(PG) 3주 @USD 142.81
+2026-05-12 00:35:06,843 [INFO] >>> Processing 펩시코(PEP)
+2026-05-12 00:35:06,844 [INFO] [펩시코(PEP)] 보유 lot 없음 -> 초기 매수 Lv1 3주 @USD 150.14
+2026-05-12 00:35:06,844 [INFO] Executing 1 order(s)...
+2026-05-12 00:35:09,610 [INFO] [KisBroker] Available Cash for BUY: 6,272
+2026-05-12 00:35:11,789 [INFO] [KisBroker] Order Sent: BUY 펩시코(PEP) 3 @ 150.05 (ODNO=0030399121)
+2026-05-12 00:35:12,771 [INFO] [KisBroker] Order FILLED: 펩시코(PEP) ODNO=0030399121 price=150.05 qty=3 fee=0.0
+2026-05-12 00:35:12,973 [INFO] [Position] New lot: lot_20260512_003512_PEP_001 Lv1 펩시코(PEP) 3주 @USD 150.05
+2026-05-12 00:35:18,667 [INFO] >>> Processing 듀크 에너지(DUK)
+2026-05-12 00:35:18,667 [INFO] [듀크 에너지(DUK)] 보유 lot 없음 -> 초기 매수 Lv1 4주 @USD 124.91
+2026-05-12 00:35:18,667 [INFO] Executing 1 order(s)...
+2026-05-12 00:35:21,363 [INFO] [KisBroker] Available Cash for BUY: 5,822
+2026-05-12 00:35:23,427 [INFO] [KisBroker] Order Sent: BUY 듀크 에너지(DUK) 4 @ 124.92 (ODNO=0030399263)
+2026-05-12 00:35:24,359 [INFO] [KisBroker] Order FILLED: 듀크 에너지(DUK) ODNO=0030399263 price=124.92 qty=4 fee=0.0
+2026-05-12 00:35:24,561 [INFO] [Position] New lot: lot_20260512_003524_DUK_001 Lv1 듀크 에너지(DUK) 4주 @USD 124.92
+2026-05-12 00:35:30,226 [INFO] >>> Processing ARK INNOVATION(ARKK)
+2026-05-12 00:35:30,226 [INFO] [ARK INNOVATION(ARKK)] 보유 lot 없음 -> 초기 매수 Lv1 6주 @USD 79.87
+2026-05-12 00:35:30,226 [INFO] Executing 1 order(s)...
+2026-05-12 00:35:32,844 [INFO] [KisBroker] Available Cash for BUY: 5,322
+2026-05-12 00:35:34,963 [INFO] [KisBroker] Order Sent: BUY ARK INNOVATION(ARKK) 6 @ 79.92 (ODNO=0030399418)
+2026-05-12 00:35:35,889 [INFO] [KisBroker] Order FILLED: ARK INNOVATION(ARKK) ODNO=0030399418 price=79.92 qty=6 fee=0.0
+2026-05-12 00:35:36,091 [INFO] [Position] New lot: lot_20260512_003536_ARKK_001 Lv1 ARK INNOVATION(ARKK) 6주 @USD 79.92
+2026-05-12 00:35:41,777 [INFO] >>> Processing SCHWAB US DIVIDEND EQUITY(SCHD)
+2026-05-12 00:35:41,778 [INFO] [SCHWAB US DIVIDEND EQUITY(SCHD)] 보유 lot 없음 -> 초기 매수 Lv1 15주 @USD 31.73
+2026-05-12 00:35:41,778 [INFO] Executing 1 order(s)...
+2026-05-12 00:35:44,396 [INFO] [KisBroker] Available Cash for BUY: 4,842
+2026-05-12 00:35:46,442 [INFO] [KisBroker] Order Sent: BUY SCHWAB US DIVIDEND EQUITY(SCHD) 15 @ 31.74 (ODNO=0030399579)
+2026-05-12 00:35:47,360 [INFO] [KisBroker] Order FILLED: SCHWAB US DIVIDEND EQUITY(SCHD) ODNO=0030399579 price=31.74 qty=15 fee=0.0
+2026-05-12 00:35:47,561 [INFO] [Position] New lot: lot_20260512_003547_SCHD_001 Lv1 SCHWAB US DIVIDEND EQUITY(SCHD) 15주 @USD 31.74
+2026-05-12 00:35:53,191 [INFO] >>> Processing ISHARES GLOBAL CLEAN ENERGY(ICLN)
+2026-05-12 00:35:53,192 [INFO] [ISHARES GLOBAL CLEAN ENERGY(ICLN)] 보유 lot 없음 -> 초기 매수 Lv1 22주 @USD 21.99
+2026-05-12 00:35:53,192 [INFO] Executing 1 order(s)...
+2026-05-12 00:35:55,920 [INFO] [KisBroker] Available Cash for BUY: 4,366
+2026-05-12 00:35:58,010 [INFO] [KisBroker] Order Sent: BUY ISHARES GLOBAL CLEAN ENERGY(ICLN) 22 @ 22.01 (ODNO=0030399781)
+2026-05-12 00:35:58,911 [INFO] [KisBroker] Order FILLED: ISHARES GLOBAL CLEAN ENERGY(ICLN) ODNO=0030399781 price=22.01 qty=22 fee=0.0
+2026-05-12 00:35:59,113 [INFO] [Position] New lot: lot_20260512_003559_ICLN_001 Lv1 ISHARES GLOBAL CLEAN ENERGY(ICLN) 22주 @USD 22.01
+2026-05-12 00:36:04,795 [INFO] >>> Processing 알파벳 A(GOOGL)
+2026-05-12 00:36:04,795 [INFO] [알파벳 A(GOOGL)] 보유 lot 없음 -> 초기 매수 Lv1 1주 @USD 393.86
+2026-05-12 00:36:04,795 [INFO] Executing 1 order(s)...
+2026-05-12 00:36:07,424 [INFO] [KisBroker] Available Cash for BUY: 3,882
+2026-05-12 00:36:09,515 [INFO] [KisBroker] Order Sent: BUY 알파벳 A(GOOGL) 1 @ 393.85 (ODNO=0030399989)
+2026-05-12 00:36:10,415 [INFO] [KisBroker] Order FILLED: 알파벳 A(GOOGL) ODNO=0030399989 price=393.85 qty=1 fee=0.0
+2026-05-12 00:36:10,617 [INFO] [Position] New lot: lot_20260512_003610_GOOGL_001 Lv1 알파벳 A(GOOGL) 1주 @USD 393.85
+2026-05-12 00:36:16,310 [INFO] >>> Processing 브로드컴(AVGO)
+2026-05-12 00:36:16,310 [INFO] [브로드컴(AVGO)] 보유 lot 없음 -> 초기 매수 Lv1 1주 @USD 430.30
+2026-05-12 00:36:16,310 [INFO] Executing 1 order(s)...
+2026-05-12 00:36:18,944 [INFO] [KisBroker] Available Cash for BUY: 3,488
+2026-05-12 00:36:21,012 [INFO] [KisBroker] Order Sent: BUY 브로드컴(AVGO) 1 @ 429.8 (ODNO=0030400179)
+2026-05-12 00:36:21,939 [INFO] [KisBroker] Order FILLED: 브로드컴(AVGO) ODNO=0030400179 price=429.8 qty=1 fee=0.0
+2026-05-12 00:36:22,141 [INFO] [Position] New lot: lot_20260512_003622_AVGO_001 Lv1 브로드컴(AVGO) 1주 @USD 429.80
+2026-05-12 00:36:27,847 [INFO] >>> Processing 테슬라(TSLA)
+2026-05-12 00:36:27,848 [INFO] [테슬라(TSLA)] 보유 lot 없음 -> 초기 매수 Lv1 1주 @USD 435.74
+2026-05-12 00:36:27,848 [INFO] Executing 1 order(s)...
+2026-05-12 00:36:30,495 [INFO] [KisBroker] Available Cash for BUY: 3,058
+2026-05-12 00:36:32,569 [INFO] [KisBroker] Order Sent: BUY 테슬라(TSLA) 1 @ 438.44 (ODNO=0030400364)
+2026-05-12 00:36:33,492 [INFO] [KisBroker] Order FILLED: 테슬라(TSLA) ODNO=0030400364 price=438.44 qty=1 fee=0.0
+2026-05-12 00:36:33,694 [INFO] [Position] New lot: lot_20260512_003633_TSLA_001 Lv1 테슬라(TSLA) 1주 @USD 438.44
+2026-05-12 00:36:39,355 [INFO] >>> Step 6: Persist
