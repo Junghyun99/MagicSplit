@@ -22,6 +22,9 @@ on:
           - buy
           - sell
 
+permissions:
+  contents: write
+
 jobs:
   trade:
     runs-on: ubuntu-latest
