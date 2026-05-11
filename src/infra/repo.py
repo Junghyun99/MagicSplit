@@ -1,5 +1,6 @@
 # src/infra/repo.py
 import json
+import copy
 import math
 import os
 import re
@@ -22,6 +23,7 @@ class JsonRepository(IRepository):
 
     def __init__(self, root_path: str = "docs/data",
                  max_history_records: int = 100000):
+        self._cache = {}  # ⚡ Bolt: Initialize cache first
         self.root = root_path
         self.max_history_records = max_history_records
         os.makedirs(self.root, exist_ok=True)
@@ -43,6 +45,9 @@ class JsonRepository(IRepository):
             self._save_json(self.last_sell_prices_file, {})
         if not os.path.exists(self.decisions_file):
             self._save_json(self.decisions_file, [])
+
+        # ⚡ Bolt: Memory cache to avoid redundant disk I/O and JSON decoding
+        # This dramatically speeds up the backtest loop which constantly reads/writes status.
 
     # === Positions ===
 
@@ -234,12 +239,21 @@ class JsonRepository(IRepository):
                         result[ticker] = exe_date
         return result
 
+    def clear_cache(self):
+        """메모리 캐시를 비운다 (테스트 또는 외부 프로세스에 의한 파일 변경 대응용)."""
+        self._cache = {}
+
     def _load_json(self, path: str, default=None):
+        if path in self._cache:
+            # ⚡ Bolt: Return a deep copy to prevent the caller from accidentally corrupting the cache
+            return copy.deepcopy(self._cache[path])
         if not os.path.exists(path):
             return default
         try:
             with open(path, 'r', encoding='utf-8') as f:
-                return json.load(f)
+                data = json.load(f)
+                self._cache[path] = data
+                return data
         except (json.JSONDecodeError, IOError, OSError):
             return default
 
@@ -253,7 +267,6 @@ class JsonRepository(IRepository):
         if isinstance(obj, list):
             return [JsonRepository._sanitize_for_json(v) for v in obj]
         return obj
-
     def _save_json(self, path: str, data):
         sanitized = self._sanitize_for_json(data)
         # 기본적으로 4칸 들여쓰기로 변환
@@ -268,6 +281,9 @@ class JsonRepository(IRepository):
         content = re.sub(r'\[\s+((?:"[^"]*"(?:,\s+)?)+)\s+\]', 
                          lambda m: "[" + re.sub(r'\s+', ' ', m.group(1)) + "]", 
                          content)
-        
+
         with open(path, 'w', encoding='utf-8') as f:
             f.write(content)
+        
+        # ⚡ Bolt: Update cache ONLY after successful disk write
+        self._cache[path] = sanitized
