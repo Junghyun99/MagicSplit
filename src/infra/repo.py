@@ -22,6 +22,7 @@ class JsonRepository(IRepository):
 
     def __init__(self, root_path: str = "docs/data",
                  max_history_records: int = 100000):
+        self._cache = {}  # ⚡ Bolt: Initialize cache first
         self.root = root_path
         self.max_history_records = max_history_records
         os.makedirs(self.root, exist_ok=True)
@@ -46,7 +47,6 @@ class JsonRepository(IRepository):
 
         # ⚡ Bolt: Memory cache to avoid redundant disk I/O and JSON decoding
         # This dramatically speeds up the backtest loop which constantly reads/writes status.
-        self._cache = {}
 
     # === Positions ===
 
@@ -238,6 +238,10 @@ class JsonRepository(IRepository):
                         result[ticker] = exe_date
         return result
 
+    def clear_cache(self):
+        """메모리 캐시를 비운다 (테스트 또는 외부 프로세스에 의한 파일 변경 대응용)."""
+        self._cache = {}
+
     def _load_json(self, path: str, default=None):
         if path in self._cache:
             return self._cache[path]
@@ -261,10 +265,8 @@ class JsonRepository(IRepository):
         if isinstance(obj, list):
             return [JsonRepository._sanitize_for_json(v) for v in obj]
         return obj
-
     def _save_json(self, path: str, data):
         sanitized = self._sanitize_for_json(data)
-        self._cache[path] = sanitized
         # 기본적으로 4칸 들여쓰기로 변환
         content = json.dumps(sanitized, indent=4, ensure_ascii=False)
         
@@ -277,6 +279,9 @@ class JsonRepository(IRepository):
         content = re.sub(r'\[\s+((?:"[^"]*"(?:,\s+)?)+)\s+\]', 
                          lambda m: "[" + re.sub(r'\s+', ' ', m.group(1)) + "]", 
                          content)
-        
+
         with open(path, 'w', encoding='utf-8') as f:
             f.write(content)
+        
+        # ⚡ Bolt: Update cache ONLY after successful disk write
+        self._cache[path] = sanitized

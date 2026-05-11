@@ -1,18 +1,262 @@
 [
     {
-        "lot_id": "lot_20260509_180859_AAPL_001",
+        "lot_id": "lot_20260512_015803_AAPL_001",
         "ticker": "AAPL",
         "buy_price": 182.19,
         "quantity": 2,
         "buy_date": "2022-01-03",
-        "level": 1
+        "level": 1,
+        "trailing_highest_price": null,
+        "alias": "애플"
     },
     {
-        "lot_id": "lot_20260509_180902_MSFT_001",
-        "ticker": "MSFT",
-        "buy_price": 367.05,
+        "lot_id": "lot_20260512_015803_O_001",
+        "ticker": "O",
+        "buy_price": 71.27,
+        "quantity": 7,
+        "buy_date": "2022-01-03",
+        "level": 1,
+        "trailing_highest_price": null,
+        "alias": "리얼티 인컴"
+    },
+    {
+        "lot_id": "lot_20260512_015803_PG_001",
+        "ticker": "PG",
+        "buy_price": 163.06,
+        "quantity": 3,
+        "buy_date": "2022-01-03",
+        "level": 1,
+        "trailing_highest_price": null,
+        "alias": "프록터 앤드 갬블"
+    },
+    {
+        "lot_id": "lot_20260512_015803_ARKK_001",
+        "ticker": "ARKK",
+        "buy_price": 97.09,
+        "quantity": 5,
+        "buy_date": "2022-01-03",
+        "level": 1,
+        "trailing_highest_price": null,
+        "alias": "ARK INNOVATION"
+    },
+    {
+        "lot_id": "lot_20260512_015803_SCHD_001",
+        "ticker": "SCHD",
+        "buy_price": 26.96,
+        "quantity": 18,
+        "buy_date": "2022-01-03",
+        "level": 1,
+        "trailing_highest_price": null,
+        "alias": "SCHWAB US DIVIDEND EQUITY"
+    },
+    {
+        "lot_id": "lot_20260512_015803_GOOGL_001",
+        "ticker": "GOOGL",
+        "buy_price": 145.14,
+        "quantity": 3,
+        "buy_date": "2022-01-03",
+        "level": 1,
+        "trailing_highest_price": null,
+        "alias": "알파벳 A"
+    },
+    {
+        "lot_id": "lot_20260512_015803_TSLA_001",
+        "ticker": "TSLA",
+        "buy_price": 400.33,
         "quantity": 1,
-        "buy_date": "2023-11-13",
-        "level": 1
+        "buy_date": "2022-01-03",
+        "level": 1,
+        "trailing_highest_price": null,
+        "alias": "테슬라"
+    },
+    {
+        "lot_id": "lot_20260512_015803_ARKK_002",
+        "ticker": "ARKK",
+        "buy_price": 86.21,
+        "quantity": 5,
+        "buy_date": "2022-01-05",
+        "level": 2,
+        "trailing_highest_price": null,
+        "alias": "ARK INNOVATION"
+    },
+    {
+        "lot_id": "lot_20260512_015803_GOOGL_002",
+        "ticker": "GOOGL",
+        "buy_price": 137.91,
+        "quantity": 3,
+        "buy_date": "2022-01-05",
+        "level": 2,
+        "trailing_highest_price": null,
+        "alias": "알파벳 A"
+    },
+    {
+        "lot_id": "lot_20260512_015803_TSLA_002",
+        "ticker": "TSLA",
+        "buy_price": 363.07,
+        "quantity": 1,
+        "buy_date": "2022-01-05",
+        "level": 2,
+        "trailing_highest_price": null,
+        "alias": "테슬라"
+    },
+    {
+        "lot_id": "lot_20260512_015804_TSLA_003",
+        "ticker": "TSLA",
+        "buy_price": 342.66,
+        "quantity": 1,
+        "buy_date": "2022-01-07",
+        "level": 3,
+        "trailing_highest_price": null,
+        "alias": "테슬라"
+    },
+    {
+        "lot_id": "lot_20260512_015804_ARKK_003",
+        "ticker": "ARKK",
+        "buy_price": 80.06,
+        "quantity": 6,
+        "buy_date": "2022-01-13",
+        "level": 3,
+        "trailing_highest_price": null,
+        "alias": "ARK INNOVATION"
+    },
+    {
+        "lot_id": "lot_20260512_015804_ARKK_004",
+        "ticker": "ARKK",
+        "buy_price": 75.83,
+        "quantity": 6,
+        "buy_date": "2022-01-19",
+        "level": 4,
+        "trailing_highest_price": null,
+        "alias": "ARK INNOVATION"
+    },
+    {
+        "lot_id": "lot_20260512_015808_GOOGL_003",
+        "ticker": "GOOGL",
+        "buy_price": 130.0,
+        "quantity": 3,
+        "buy_date": "2022-03-11",
+        "level": 3,
+        "trailing_highest_price": null,
+        "alias": "알파벳 A"
+    },
+    {
+        "lot_id": "lot_20260512_015809_PG_002",
+        "ticker": "PG",
+        "buy_price": 154.23,
+        "quantity": 3,
+        "buy_date": "2022-04-04",
+        "level": 2,
+        "trailing_highest_price": null,
+        "alias": "프록터 앤드 갬블"
+    },
+    {
+        "lot_id": "lot_20260512_015809_ARKK_005",
+        "ticker": "ARKK",
+        "buy_price": 63.46,
+        "quantity": 7,
+        "buy_date": "2022-04-06",
+        "level": 5,
+        "trailing_highest_price": null,
+        "alias": "ARK INNOVATION"
+    },
+    {
+        "lot_id": "lot_20260512_015810_ARKK_006",
+        "ticker": "ARKK",
+        "buy_price": 49.61,
+        "quantity": 10,
+        "buy_date": "2022-04-27",
+        "level": 6,
+        "trailing_highest_price": null,
+        "alias": "ARK INNOVATION"
+    },
+    {
+        "lot_id": "lot_20260512_015840_DUK_001",
+        "ticker": "DUK",
+        "buy_price": 93.11,
+        "quantity": 5,
+        "buy_date": "2023-05-17",
+        "level": 1,
+        "trailing_highest_price": null,
+        "alias": "듀크 에너지"
+    },
+    {
+        "lot_id": "lot_20260512_015841_O_002",
+        "ticker": "O",
+        "buy_price": 61.06,
+        "quantity": 8,
+        "buy_date": "2023-06-07",
+        "level": 2,
+        "trailing_highest_price": null,
+        "alias": "리얼티 인컴"
+    },
+    {
+        "lot_id": "lot_20260512_015841_PG_003",
+        "ticker": "PG",
+        "buy_price": 144.94,
+        "quantity": 2,
+        "buy_date": "2023-06-07",
+        "level": 3,
+        "trailing_highest_price": null,
+        "alias": "프록터 앤드 갬블"
+    },
+    {
+        "lot_id": "lot_20260512_015842_PEP_001",
+        "ticker": "PEP",
+        "buy_price": 185.5,
+        "quantity": 2,
+        "buy_date": "2023-06-20",
+        "level": 1,
+        "trailing_highest_price": null,
+        "alias": "펩시코"
+    },
+    {
+        "lot_id": "lot_20260512_015844_TSLA_004",
+        "ticker": "TSLA",
+        "buy_price": 269.88,
+        "quantity": 1,
+        "buy_date": "2023-07-10",
+        "level": 4,
+        "trailing_highest_price": null,
+        "alias": "테슬라"
+    },
+    {
+        "lot_id": "lot_20260512_015844_SCHD_002",
+        "ticker": "SCHD",
+        "buy_price": 24.48,
+        "quantity": 20,
+        "buy_date": "2023-07-14",
+        "level": 2,
+        "trailing_highest_price": null,
+        "alias": "SCHWAB US DIVIDEND EQUITY"
+    },
+    {
+        "lot_id": "lot_20260512_015846_TSLA_005",
+        "ticker": "TSLA",
+        "buy_price": 254.36,
+        "quantity": 1,
+        "buy_date": "2023-08-02",
+        "level": 5,
+        "trailing_highest_price": null,
+        "alias": "테슬라"
+    },
+    {
+        "lot_id": "lot_20260512_015857_PEP_002",
+        "ticker": "PEP",
+        "buy_price": 169.54,
+        "quantity": 2,
+        "buy_date": "2023-11-24",
+        "level": 2,
+        "trailing_highest_price": null,
+        "alias": "펩시코"
+    },
+    {
+        "lot_id": "lot_20260512_015900_ICLN_001",
+        "ticker": "ICLN",
+        "buy_price": 14.9,
+        "quantity": 33,
+        "buy_date": "2023-12-20",
+        "level": 1,
+        "trailing_highest_price": null,
+        "alias": "ISHARES GLOBAL CLEAN ENERGY"
     }
 ]

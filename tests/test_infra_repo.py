@@ -117,6 +117,7 @@ class TestStatus:
         ]
         with open(repo.positions_file, 'w', encoding='utf-8') as f:
             json.dump(legacy_data, f, ensure_ascii=False)
+        repo.clear_cache()
 
         loaded = repo.load_positions()
         assert len(loaded) == 2
