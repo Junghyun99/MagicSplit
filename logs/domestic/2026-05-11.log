@@ -58,3 +58,21 @@
 2026-05-11 00:39:37,285 [INFO] [Position] New lot: lot_20260511_003937_483320_002 Lv2 ACE 엔비디아밸류체인액티브(483320) 11주 @KRW 25,515
 2026-05-11 00:39:40,959 [INFO] >>> Step 6: Persist
 2026-05-11 00:39:41,172 [INFO] === Manual Trade 완료 ===
+2026-05-11 00:41:18,659 [INFO] === Manual Trade CLI: 483320 SELL ===
+2026-05-11 00:41:18,659 [INFO] [KisBroker] 캐시에서 토큰 로드 (API 호출 생략)
+2026-05-11 00:41:18,659 [INFO] [KisDomesticLiveBroker] Mode: LIVE TRADING
+2026-05-11 00:41:18,659 [INFO] === Manual Trade: ACE 엔비디아밸류체인액티브(483320) SELL ===
+2026-05-11 00:41:18,659 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-11 00:41:19,400 [INFO] Fetching real-time prices from Broker...
+2026-05-11 00:41:20,015 [INFO] Portfolio: Cash=KRW 521,361, Value=KRW 1,082,801
+2026-05-11 00:41:20,016 [INFO] >>> Step 2: Load Positions
+2026-05-11 00:41:20,016 [INFO] Loaded 2 position lot(s)
+2026-05-11 00:41:20,016 [INFO] 매도 수량 자동 도출: Lv2 lot 11주 전량
+2026-05-11 00:41:20,016 [INFO] [ACE 엔비디아밸류체인액티브(483320)] 수동 신호 생성: SELL Lv2 11주 @KRW 25,520
+2026-05-11 00:41:20,016 [INFO] Executing 1 order(s)...
+2026-05-11 00:41:20,016 [INFO] [KisBroker] Processing 1 SELL orders...
+2026-05-11 00:41:21,673 [INFO] [KisDomestic] Order Sent: SELL ACE 엔비디아밸류체인액티브(483320) 11 @ 25510 (ODNO=0015920300)
+2026-05-11 00:41:22,736 [INFO] [KisDomestic] Order FILLED: ACE 엔비디아밸류체인액티브(483320) ODNO=0015920300 price=25510.0 qty=11 fee=42.091499999999996
+2026-05-11 00:41:22,938 [INFO] [Position] Remove lot: lot_20260511_003937_483320_002 Lv2 (11주 전량 매도)
+2026-05-11 00:41:26,627 [INFO] >>> Step 6: Persist
+2026-05-11 00:41:26,840 [INFO] === Manual Trade 완료 ===
