@@ -176,14 +176,16 @@ window.DashboardView = (function () {
 
             let lotsHtml = '';
             for (const lot of lots) {
-                const pctClass = lot.pct_change >= 0 ? 'pct-positive' : 'pct-negative';
-                const pctStr = (lot.pct_change >= 0 ? '+' : '') + lot.pct_change.toFixed(1) + '%';
+                const isPositive = lot.pct_change >= 0;
+                const pctClass = isPositive ? 'pct-positive' : 'pct-negative';
+                const pctStr = (isPositive ? '+' : '') + lot.pct_change.toFixed(1) + '%';
+                const indicator = isPositive ? '▲' : '▼';
                 const lvLabel = lot.level != null ? `<span class="lot-level">Lv${lot.level}</span>` : '<span class="lot-level"></span>';
                 lotsHtml += `
                     <li class="lot-item">
                         ${lvLabel}
-                        <span class="lot-detail">${lot.buy_date} | ${lot.quantity}shares @${formatCurrency(lot.buy_price, mode)}</span>
-                        <span class="${pctClass}">${pctStr}</span>
+                        <span class="lot-detail">${lot.buy_date} | ${lot.quantity} shares @${formatCurrency(lot.buy_price, mode)}</span>
+                        <span class="${pctClass}">${pctStr} ${indicator}</span>
                     </li>`;
             }
 
