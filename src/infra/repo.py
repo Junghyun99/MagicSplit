@@ -1,5 +1,6 @@
 # src/infra/repo.py
 import json
+import copy
 import math
 import os
 import re
@@ -244,7 +245,8 @@ class JsonRepository(IRepository):
 
     def _load_json(self, path: str, default=None):
         if path in self._cache:
-            return self._cache[path]
+            # ⚡ Bolt: Return a deep copy to prevent the caller from accidentally corrupting the cache
+            return copy.deepcopy(self._cache[path])
         if not os.path.exists(path):
             return default
         try:
