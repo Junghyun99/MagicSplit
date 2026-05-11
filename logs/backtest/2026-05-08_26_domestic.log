@@ -1,0 +1,1331 @@
+2026-05-08 12:53:34,540 [INFO] --- 데이터 다운로드: ['483320'] (2020-01-01 ~ 2025-01-20) ---
+2026-05-08 12:53:35,280 [INFO] --- 백테스트 시작 (146 거래일) ---
+2026-05-08 12:53:35,280 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,280 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,280 [INFO] Portfolio: Cash=KRW 10,000,000, Value=KRW 10,000,000
+2026-05-08 12:53:35,280 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,280 [INFO] Loaded 0 position lot(s)
+2026-05-08 12:53:35,280 [INFO] >>> Step 2.1: Detected 1 newly enabled ticker(s)
+2026-05-08 12:53:35,280 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,281 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,281 [INFO] [ACE 엔비디아밸류체인액티브(483320)] 보유 lot 없음 -> 초기 매수 Lv1 29주 @KRW 10,080
+2026-05-08 12:53:35,281 [INFO] Executing 1 order(s)...
+2026-05-08 12:53:35,281 [INFO] [FILLED] BUY 483320: 29 @ $10090.08 (Fee: $731.53)
+2026-05-08 12:53:35,282 [INFO] [Position] New lot: lot_20260508_125335_483320_001 Lv1 ACE 엔비디아밸류체인액티브(483320) 29주 @KRW 10,090
+2026-05-08 12:53:35,282 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,284 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,284 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,284 [INFO] Portfolio: Cash=KRW 9,706,656, Value=KRW 10,001,006
+2026-05-08 12:53:35,284 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,284 [INFO] Loaded 1 position lot(s)
+2026-05-08 12:53:35,284 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,285 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,285 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv1 매수 KRW 10,090 -> 현재 KRW 10,150 (+0.59%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,285 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,287 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,287 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,287 [INFO] Portfolio: Cash=KRW 9,706,656, Value=KRW 10,018,261
+2026-05-08 12:53:35,287 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,287 [INFO] Loaded 1 position lot(s)
+2026-05-08 12:53:35,287 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,287 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,287 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv1 매수 KRW 10,090 -> 현재 KRW 10,745 (+6.49%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,288 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,289 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,289 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,289 [INFO] Portfolio: Cash=KRW 9,706,656, Value=KRW 10,021,016
+2026-05-08 12:53:35,289 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,289 [INFO] Loaded 1 position lot(s)
+2026-05-08 12:53:35,289 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,290 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,290 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv1 매수 KRW 10,090 -> 현재 KRW 10,840 (+7.43%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,290 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,292 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,292 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,292 [INFO] Portfolio: Cash=KRW 9,706,656, Value=KRW 10,020,871
+2026-05-08 12:53:35,292 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,292 [INFO] Loaded 1 position lot(s)
+2026-05-08 12:53:35,292 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,292 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,292 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv1 매수 KRW 10,090 -> 현재 KRW 10,835 (+7.38%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,293 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,294 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,294 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,294 [INFO] Portfolio: Cash=KRW 9,706,656, Value=KRW 10,028,411
+2026-05-08 12:53:35,294 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,294 [INFO] Loaded 1 position lot(s)
+2026-05-08 12:53:35,294 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,295 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,295 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv1 매수 KRW 10,090 -> 현재 KRW 11,095 (+9.96%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,295 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,296 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,297 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,297 [INFO] Portfolio: Cash=KRW 9,706,656, Value=KRW 10,043,491
+2026-05-08 12:53:35,297 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,297 [INFO] Loaded 1 position lot(s)
+2026-05-08 12:53:35,297 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,297 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,297 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv1 매수 KRW 10,090 -> 현재 KRW 11,615 (+15.11%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,298 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,299 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,299 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,299 [INFO] Portfolio: Cash=KRW 9,706,656, Value=KRW 10,046,971
+2026-05-08 12:53:35,299 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,299 [INFO] Loaded 1 position lot(s)
+2026-05-08 12:53:35,299 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,300 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,300 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv1 매수 KRW 10,090 -> 현재 KRW 11,735 (+16.30%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,300 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,301 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,302 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,302 [INFO] Portfolio: Cash=KRW 9,706,656, Value=KRW 10,030,731
+2026-05-08 12:53:35,302 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,302 [INFO] Loaded 1 position lot(s)
+2026-05-08 12:53:35,302 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,302 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,302 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv1 매수 KRW 10,090 -> 현재 KRW 11,175 (+10.75%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,302 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,305 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,305 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,305 [INFO] Portfolio: Cash=KRW 9,706,656, Value=KRW 10,023,481
+2026-05-08 12:53:35,305 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,305 [INFO] Loaded 1 position lot(s)
+2026-05-08 12:53:35,305 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,305 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,306 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv1 매수 KRW 10,090 -> 현재 KRW 10,925 (+8.27%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,306 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,307 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,307 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,307 [INFO] Portfolio: Cash=KRW 9,706,656, Value=KRW 10,008,401
+2026-05-08 12:53:35,307 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,307 [INFO] Loaded 1 position lot(s)
+2026-05-08 12:53:35,308 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,308 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,308 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv1 매수 KRW 10,090 -> 현재 KRW 10,405 (+3.12%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,308 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,310 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,310 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,310 [INFO] Portfolio: Cash=KRW 9,706,656, Value=KRW 10,024,641
+2026-05-08 12:53:35,310 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,310 [INFO] Loaded 1 position lot(s)
+2026-05-08 12:53:35,310 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,310 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,311 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv1 매수 KRW 10,090 -> 현재 KRW 10,965 (+8.67%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,311 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,312 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,312 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,312 [INFO] Portfolio: Cash=KRW 9,706,656, Value=KRW 10,018,841
+2026-05-08 12:53:35,312 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,312 [INFO] Loaded 1 position lot(s)
+2026-05-08 12:53:35,313 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,313 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,313 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv1 매수 KRW 10,090 -> 현재 KRW 10,765 (+6.69%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,313 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,315 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,315 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,315 [INFO] Portfolio: Cash=KRW 9,706,656, Value=KRW 10,017,826
+2026-05-08 12:53:35,315 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,315 [INFO] Loaded 1 position lot(s)
+2026-05-08 12:53:35,315 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,315 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,316 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv1 매수 KRW 10,090 -> 현재 KRW 10,730 (+6.34%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,316 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,317 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,317 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,317 [INFO] Portfolio: Cash=KRW 9,706,656, Value=KRW 10,017,826
+2026-05-08 12:53:35,317 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,317 [INFO] Loaded 1 position lot(s)
+2026-05-08 12:53:35,318 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,318 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,318 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv1 매수 KRW 10,090 -> 현재 KRW 10,730 (+6.34%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,318 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,320 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,320 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,320 [INFO] Portfolio: Cash=KRW 9,706,656, Value=KRW 10,018,551
+2026-05-08 12:53:35,320 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,320 [INFO] Loaded 1 position lot(s)
+2026-05-08 12:53:35,320 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,320 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,320 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv1 매수 KRW 10,090 -> 현재 KRW 10,755 (+6.59%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,321 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,322 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,322 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,322 [INFO] Portfolio: Cash=KRW 9,706,656, Value=KRW 10,021,451
+2026-05-08 12:53:35,322 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,322 [INFO] Loaded 1 position lot(s)
+2026-05-08 12:53:35,322 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,323 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,323 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv1 매수 KRW 10,090 -> 현재 KRW 10,855 (+7.58%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,323 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,324 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,325 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,325 [INFO] Portfolio: Cash=KRW 9,706,656, Value=KRW 10,027,831
+2026-05-08 12:53:35,325 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,325 [INFO] Loaded 1 position lot(s)
+2026-05-08 12:53:35,325 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,325 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,325 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv1 매수 KRW 10,090 -> 현재 KRW 11,075 (+9.76%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,325 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,327 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,327 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,327 [INFO] Portfolio: Cash=KRW 9,706,656, Value=KRW 10,030,441
+2026-05-08 12:53:35,327 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,327 [INFO] Loaded 1 position lot(s)
+2026-05-08 12:53:35,327 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,327 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,328 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv1 매수 KRW 10,090 -> 현재 KRW 11,165 (+10.65%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,328 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,329 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,329 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,329 [INFO] Portfolio: Cash=KRW 9,706,656, Value=KRW 10,030,586
+2026-05-08 12:53:35,329 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,330 [INFO] Loaded 1 position lot(s)
+2026-05-08 12:53:35,330 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,330 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,330 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv1 매수 KRW 10,090 -> 현재 KRW 11,170 (+10.70%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,330 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,332 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,332 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,332 [INFO] Portfolio: Cash=KRW 9,706,656, Value=KRW 10,037,546
+2026-05-08 12:53:35,332 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,332 [INFO] Loaded 1 position lot(s)
+2026-05-08 12:53:35,332 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,332 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,333 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv1 매수 KRW 10,090 -> 현재 KRW 11,410 (+13.08%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,333 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,334 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,334 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,334 [INFO] Portfolio: Cash=KRW 9,706,656, Value=KRW 10,037,256
+2026-05-08 12:53:35,334 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,334 [INFO] Loaded 1 position lot(s)
+2026-05-08 12:53:35,335 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,335 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,335 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv1 매수 KRW 10,090 -> 현재 KRW 11,400 (+12.98%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,335 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,337 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,337 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,337 [INFO] Portfolio: Cash=KRW 9,706,656, Value=KRW 10,042,911
+2026-05-08 12:53:35,337 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,337 [INFO] Loaded 1 position lot(s)
+2026-05-08 12:53:35,337 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,337 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,338 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv1 매수 KRW 10,090 -> 현재 KRW 11,595 (+14.91%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,338 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,339 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,339 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,339 [INFO] Portfolio: Cash=KRW 9,706,656, Value=KRW 10,026,091
+2026-05-08 12:53:35,339 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,339 [INFO] Loaded 1 position lot(s)
+2026-05-08 12:53:35,340 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,340 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,340 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv1 매수 KRW 10,090 -> 현재 KRW 11,015 (+9.17%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,340 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,342 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,342 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,342 [INFO] Portfolio: Cash=KRW 9,706,656, Value=KRW 10,032,471
+2026-05-08 12:53:35,342 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,342 [INFO] Loaded 1 position lot(s)
+2026-05-08 12:53:35,342 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,343 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,343 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv1 매수 KRW 10,090 -> 현재 KRW 11,235 (+11.35%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,343 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,344 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,344 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,344 [INFO] Portfolio: Cash=KRW 9,706,656, Value=KRW 10,031,601
+2026-05-08 12:53:35,345 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,345 [INFO] Loaded 1 position lot(s)
+2026-05-08 12:53:35,345 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,345 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,345 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv1 매수 KRW 10,090 -> 현재 KRW 11,205 (+11.05%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,345 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,347 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,347 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,347 [INFO] Portfolio: Cash=KRW 9,706,656, Value=KRW 10,025,656
+2026-05-08 12:53:35,347 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,347 [INFO] Loaded 1 position lot(s)
+2026-05-08 12:53:35,347 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,348 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,348 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv1 매수 KRW 10,090 -> 현재 KRW 11,000 (+9.02%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,348 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,349 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,349 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,349 [INFO] Portfolio: Cash=KRW 9,706,656, Value=KRW 10,007,821
+2026-05-08 12:53:35,350 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,350 [INFO] Loaded 1 position lot(s)
+2026-05-08 12:53:35,350 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,350 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,350 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv1 매수 KRW 10,090 -> 현재 KRW 10,385 (+2.92%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,350 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,352 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,352 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,352 [INFO] Portfolio: Cash=KRW 9,706,656, Value=KRW 10,002,891
+2026-05-08 12:53:35,352 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,352 [INFO] Loaded 1 position lot(s)
+2026-05-08 12:53:35,352 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,353 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,353 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv1 매수 KRW 10,090 -> 현재 KRW 10,215 (+1.24%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,353 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,354 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,354 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,355 [INFO] Portfolio: Cash=KRW 9,706,656, Value=KRW 9,996,946
+2026-05-08 12:53:35,355 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,355 [INFO] Loaded 1 position lot(s)
+2026-05-08 12:53:35,355 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,355 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,355 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv1 매수 KRW 10,090 -> 현재 KRW 10,010 (-0.79%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,355 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,357 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,357 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,357 [INFO] Portfolio: Cash=KRW 9,706,656, Value=KRW 10,005,066
+2026-05-08 12:53:35,357 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,357 [INFO] Loaded 1 position lot(s)
+2026-05-08 12:53:35,357 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,358 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,358 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv1 매수 KRW 10,090 -> 현재 KRW 10,290 (+1.98%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,358 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,360 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,360 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,360 [INFO] Portfolio: Cash=KRW 9,706,656, Value=KRW 10,003,761
+2026-05-08 12:53:35,360 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,360 [INFO] Loaded 1 position lot(s)
+2026-05-08 12:53:35,360 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,360 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,361 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv1 매수 KRW 10,090 -> 현재 KRW 10,245 (+1.54%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,361 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,362 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,362 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,363 [INFO] Portfolio: Cash=KRW 9,706,656, Value=KRW 9,984,766
+2026-05-08 12:53:35,363 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,363 [INFO] Loaded 1 position lot(s)
+2026-05-08 12:53:35,363 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,363 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,363 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv1 매수 KRW 10,090 -> 현재 KRW 9,590 (-4.96%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,364 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,365 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,365 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,365 [INFO] Portfolio: Cash=KRW 9,706,656, Value=KRW 9,978,966
+2026-05-08 12:53:35,365 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,365 [INFO] Loaded 1 position lot(s)
+2026-05-08 12:53:35,366 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,366 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,366 [INFO] [ACE 엔비디아밸류체인액티브(483320)] Lv1 매수가 KRW 10,090 대비 -6.9% -> 추가 매수 Lv2 31주 @KRW 9,390
+2026-05-08 12:53:35,366 [INFO] Executing 1 order(s)...
+2026-05-08 12:53:35,366 [INFO] [FILLED] BUY 483320: 31 @ $9399.39 (Fee: $728.45)
+2026-05-08 12:53:35,367 [INFO] [Position] New lot: lot_20260508_125335_483320_002 Lv2 ACE 엔비디아밸류체인액티브(483320) 31주 @KRW 9,399
+2026-05-08 12:53:35,367 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,369 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,369 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,370 [INFO] Portfolio: Cash=KRW 9,414,547, Value=KRW 9,983,647
+2026-05-08 12:53:35,370 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,370 [INFO] Loaded 2 position lot(s)
+2026-05-08 12:53:35,370 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,370 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,370 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv2 매수 KRW 9,399 -> 현재 KRW 9,485 (+0.91%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,371 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,372 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,372 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,372 [INFO] Portfolio: Cash=KRW 9,414,547, Value=KRW 9,962,047
+2026-05-08 12:53:35,372 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,373 [INFO] Loaded 2 position lot(s)
+2026-05-08 12:53:35,373 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,373 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,373 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv2 매수 KRW 9,399 -> 현재 KRW 9,125 (-2.92%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,373 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,375 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,375 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,375 [INFO] Portfolio: Cash=KRW 9,414,547, Value=KRW 9,955,747
+2026-05-08 12:53:35,375 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,376 [INFO] Loaded 2 position lot(s)
+2026-05-08 12:53:35,376 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,376 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,376 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv2 매수 KRW 9,399 -> 현재 KRW 9,020 (-4.04%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,376 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,378 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,378 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,378 [INFO] Portfolio: Cash=KRW 9,414,547, Value=KRW 9,981,847
+2026-05-08 12:53:35,378 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,379 [INFO] Loaded 2 position lot(s)
+2026-05-08 12:53:35,379 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,379 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,379 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv2 매수 KRW 9,399 -> 현재 KRW 9,455 (+0.59%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,379 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,381 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,381 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,381 [INFO] Portfolio: Cash=KRW 9,414,547, Value=KRW 9,927,247
+2026-05-08 12:53:35,381 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,382 [INFO] Loaded 2 position lot(s)
+2026-05-08 12:53:35,382 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,382 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,382 [INFO] [ACE 엔비디아밸류체인액티브(483320)] Lv2 매수가 KRW 9,399 대비 -9.1% -> 추가 매수 Lv3 35주 @KRW 8,545
+2026-05-08 12:53:35,382 [INFO] Executing 1 order(s)...
+2026-05-08 12:53:35,383 [INFO] [FILLED] BUY 483320: 35 @ $8553.54 (Fee: $748.44)
+2026-05-08 12:53:35,383 [INFO] [Position] New lot: lot_20260508_125335_483320_003 Lv3 ACE 엔비디아밸류체인액티브(483320) 35주 @KRW 8,554
+2026-05-08 12:53:35,383 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,386 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,386 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,386 [INFO] Portfolio: Cash=KRW 9,114,424, Value=KRW 9,820,749
+2026-05-08 12:53:35,386 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,386 [INFO] Loaded 3 position lot(s)
+2026-05-08 12:53:35,386 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,387 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,387 [INFO] [ACE 엔비디아밸류체인액티브(483320)] Lv3 매수가 KRW 8,554 대비 -13.1% -> 추가 매수 Lv4 40주 @KRW 7,435
+2026-05-08 12:53:35,387 [INFO] Executing 1 order(s)...
+2026-05-08 12:53:35,387 [INFO] [FILLED] BUY 483320: 40 @ $7442.43 (Fee: $744.24)
+2026-05-08 12:53:35,388 [INFO] [Position] New lot: lot_20260508_125335_483320_004 Lv4 ACE 엔비디아밸류체인액티브(483320) 40주 @KRW 7,442
+2026-05-08 12:53:35,388 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,390 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,390 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,391 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 9,903,407
+2026-05-08 12:53:35,391 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,391 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,391 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,391 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,391 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 8,055 (+8.23%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,391 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,393 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,393 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,394 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 9,907,457
+2026-05-08 12:53:35,394 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,394 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,394 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,394 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,394 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 8,085 (+8.63%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,394 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,396 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,396 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,397 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 9,863,582
+2026-05-08 12:53:35,397 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,397 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,397 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,397 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,397 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 7,760 (+4.27%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,397 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,400 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,400 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,400 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 9,920,957
+2026-05-08 12:53:35,400 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,400 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,400 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,400 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,401 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 8,185 (+9.98%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,401 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,403 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,403 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,403 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 9,931,082
+2026-05-08 12:53:35,403 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,403 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,403 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,403 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,404 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 8,260 (+10.99%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,404 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,406 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,406 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,406 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 9,955,382
+2026-05-08 12:53:35,406 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,406 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,406 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,406 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,407 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 8,440 (+13.40%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,407 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,409 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,409 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,409 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 10,002,632
+2026-05-08 12:53:35,409 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,409 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,409 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,409 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,409 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 8,790 (+18.11%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,409 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,411 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,412 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,412 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 10,072,157
+2026-05-08 12:53:35,412 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,412 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,412 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,412 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,412 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 9,305 (+25.03%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,412 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,414 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,415 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,415 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 10,047,182
+2026-05-08 12:53:35,415 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,415 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,415 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,415 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,415 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 9,120 (+22.54%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,416 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,418 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,418 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,418 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 10,076,207
+2026-05-08 12:53:35,418 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,418 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,418 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,418 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,418 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 9,335 (+25.43%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,419 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,421 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,421 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,421 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 10,050,557
+2026-05-08 12:53:35,421 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,421 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,421 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,421 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,422 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 9,145 (+22.88%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,422 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,424 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,424 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,424 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 10,058,657
+2026-05-08 12:53:35,424 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,424 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,424 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,424 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,425 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 9,205 (+23.68%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,425 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,427 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,427 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,427 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 10,028,282
+2026-05-08 12:53:35,427 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,427 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,427 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,427 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,428 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 8,980 (+20.66%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,428 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,430 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,430 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,430 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 10,043,132
+2026-05-08 12:53:35,430 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,430 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,430 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,430 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,431 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 9,090 (+22.14%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,431 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,433 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,433 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,433 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 10,026,257
+2026-05-08 12:53:35,433 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,433 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,433 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,433 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,434 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 8,965 (+20.46%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,434 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,436 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,436 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,436 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 9,937,157
+2026-05-08 12:53:35,436 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,436 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,436 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,436 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,437 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 8,305 (+11.59%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,437 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,439 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,439 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,439 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 9,979,682
+2026-05-08 12:53:35,439 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,439 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,439 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,439 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,440 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 8,620 (+15.82%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,440 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,442 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,442 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,442 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 9,990,482
+2026-05-08 12:53:35,442 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,442 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,442 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,443 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,443 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 8,700 (+16.90%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,443 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,445 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,445 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,445 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 9,991,832
+2026-05-08 12:53:35,445 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,445 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,445 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,446 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,446 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 8,710 (+17.03%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,446 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,448 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,448 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,448 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 9,888,557
+2026-05-08 12:53:35,448 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,448 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,448 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,449 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,449 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 7,945 (+6.75%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,449 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,451 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,451 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,451 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 9,878,432
+2026-05-08 12:53:35,451 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,451 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,452 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,452 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,452 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 7,870 (+5.75%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,452 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,454 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,454 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,454 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 9,864,932
+2026-05-08 12:53:35,454 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,455 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,455 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,455 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,455 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 7,770 (+4.40%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,455 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,457 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,457 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,458 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 9,841,982
+2026-05-08 12:53:35,458 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,458 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,458 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,458 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,458 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 7,600 (+2.12%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,459 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,461 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,461 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,461 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 9,868,307
+2026-05-08 12:53:35,461 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,461 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,461 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,461 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,462 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 7,795 (+4.74%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,462 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,464 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,464 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,464 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 9,872,357
+2026-05-08 12:53:35,464 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,464 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,464 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,465 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,465 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 7,825 (+5.14%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,465 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,467 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,467 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,467 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 9,952,007
+2026-05-08 12:53:35,467 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,467 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,468 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,468 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,468 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 8,415 (+13.07%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,468 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,470 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,470 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,470 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 9,955,382
+2026-05-08 12:53:35,470 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,471 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,471 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,471 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,471 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 8,440 (+13.40%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,471 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,473 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,474 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,474 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 9,935,807
+2026-05-08 12:53:35,474 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,474 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,474 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,474 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,474 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 8,295 (+11.46%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,475 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,477 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,477 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,477 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 9,970,907
+2026-05-08 12:53:35,477 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,477 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,477 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,477 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,478 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 8,555 (+14.95%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,478 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,480 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,480 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,480 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 9,976,982
+2026-05-08 12:53:35,480 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,480 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,480 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,480 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,481 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 8,600 (+15.55%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,481 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,483 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,483 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,483 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 9,979,007
+2026-05-08 12:53:35,483 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,483 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,483 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,483 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,484 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 8,615 (+15.76%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,484 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,486 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,486 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,486 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 10,006,682
+2026-05-08 12:53:35,486 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,486 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,486 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,486 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,487 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 8,820 (+18.51%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,487 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,489 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,489 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,489 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 10,047,857
+2026-05-08 12:53:35,489 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,489 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,489 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,490 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,490 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 9,125 (+22.61%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,490 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,492 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,492 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,492 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 10,043,807
+2026-05-08 12:53:35,492 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,492 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,492 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,493 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,493 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 9,095 (+22.20%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,493 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,495 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,495 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,495 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 10,002,632
+2026-05-08 12:53:35,495 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,495 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,496 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,496 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,496 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 8,790 (+18.11%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,496 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,498 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,498 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,498 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 9,957,407
+2026-05-08 12:53:35,499 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,499 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,499 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,499 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,499 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 8,455 (+13.61%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,500 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,502 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,502 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,502 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 10,003,982
+2026-05-08 12:53:35,502 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,502 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,502 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,502 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,503 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 8,800 (+18.24%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,503 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,505 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,505 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,505 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 10,041,782
+2026-05-08 12:53:35,505 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,505 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,505 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,506 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,506 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 9,080 (+22.00%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,506 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,508 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,508 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,508 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 10,042,457
+2026-05-08 12:53:35,508 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,508 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,509 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,509 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,509 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 9,085 (+22.07%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,509 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,511 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,511 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,511 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 10,091,057
+2026-05-08 12:53:35,512 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,512 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,512 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,512 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,512 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 9,445 (+26.91%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,513 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,515 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,515 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,515 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 10,098,482
+2026-05-08 12:53:35,515 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,515 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,515 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,515 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,516 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 9,500 (+27.65%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,516 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,518 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,518 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,518 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 10,121,432
+2026-05-08 12:53:35,518 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,518 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,518 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,519 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,519 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 9,670 (+29.93%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,519 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,521 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,521 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,521 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 10,161,257
+2026-05-08 12:53:35,521 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,521 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,521 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,522 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,522 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 9,965 (+33.89%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,522 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,524 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,524 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,524 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 10,081,607
+2026-05-08 12:53:35,524 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,524 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,525 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,525 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,525 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 9,375 (+25.97%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,525 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,527 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,527 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,528 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 10,111,307
+2026-05-08 12:53:35,528 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,528 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,528 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,528 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,529 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 9,595 (+28.92%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,529 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,531 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,531 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,531 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 10,109,282
+2026-05-08 12:53:35,531 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,531 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,531 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,532 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,532 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 9,580 (+28.72%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,532 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,534 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,534 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,534 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 10,118,057
+2026-05-08 12:53:35,534 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,534 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,535 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,535 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,535 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 9,645 (+29.59%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,535 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,537 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,537 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,537 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 10,118,732
+2026-05-08 12:53:35,537 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,538 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,538 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,538 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,538 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 9,650 (+29.66%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,538 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,540 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,540 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,541 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 10,120,757
+2026-05-08 12:53:35,541 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,541 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,541 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,541 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,542 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 9,665 (+29.86%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,542 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,544 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,544 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,544 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 10,101,857
+2026-05-08 12:53:35,544 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,544 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,544 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,544 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,545 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 9,525 (+27.98%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,545 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,547 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,547 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,547 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 10,103,207
+2026-05-08 12:53:35,547 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,547 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,547 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,548 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,548 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 9,535 (+28.12%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,548 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,550 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,550 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,550 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 10,114,682
+2026-05-08 12:53:35,550 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,550 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,551 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,551 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,551 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 9,620 (+29.26%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,551 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,553 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,553 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,554 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 10,113,332
+2026-05-08 12:53:35,554 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,554 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,554 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,554 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,555 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 9,610 (+29.12%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,555 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,557 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,557 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,557 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 10,105,232
+2026-05-08 12:53:35,557 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,557 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,557 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,557 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,558 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 9,550 (+28.32%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,558 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,560 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,560 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,560 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 10,064,057
+2026-05-08 12:53:35,560 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,560 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,560 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,561 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,561 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 9,245 (+24.22%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,561 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,563 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,563 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,563 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 10,078,907
+2026-05-08 12:53:35,563 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,563 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,564 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,564 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,564 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 9,355 (+25.70%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,564 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,566 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,566 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,566 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 10,117,382
+2026-05-08 12:53:35,566 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,567 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,567 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,567 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,567 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 9,640 (+29.53%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,567 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,570 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,570 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,570 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 10,141,682
+2026-05-08 12:53:35,570 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,570 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,570 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,570 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,571 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 9,820 (+31.95%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,571 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,573 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,573 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,573 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 10,180,832
+2026-05-08 12:53:35,573 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,573 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,573 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,574 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,574 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 10,110 (+35.84%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,574 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,576 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,576 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,576 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 10,162,607
+2026-05-08 12:53:35,576 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,576 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,577 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,577 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,577 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 9,975 (+34.03%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,577 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,579 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,579 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,579 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 10,140,332
+2026-05-08 12:53:35,580 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,580 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,580 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,580 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,580 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 9,810 (+31.81%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,581 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,583 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,583 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,583 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 10,134,257
+2026-05-08 12:53:35,583 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,583 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,583 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,583 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,584 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 9,765 (+31.21%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,584 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,586 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,586 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,586 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 10,105,232
+2026-05-08 12:53:35,586 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,586 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,586 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,587 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,587 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 9,550 (+28.32%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,587 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,589 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,589 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,589 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 10,105,232
+2026-05-08 12:53:35,589 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,589 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,590 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,590 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,590 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 9,550 (+28.32%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,590 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,592 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,592 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,592 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 10,069,457
+2026-05-08 12:53:35,592 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,593 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,593 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,593 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,593 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 9,285 (+24.76%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,593 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,595 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,595 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,595 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 10,064,057
+2026-05-08 12:53:35,595 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,596 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,596 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,596 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,596 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 9,245 (+24.22%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,597 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,599 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,599 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,599 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 10,094,432
+2026-05-08 12:53:35,599 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,599 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,599 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,599 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,600 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 9,470 (+27.24%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,600 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,602 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,602 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,602 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 10,088,357
+2026-05-08 12:53:35,602 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,602 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,602 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,603 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,603 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 9,425 (+26.64%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,603 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,605 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,605 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,605 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 10,126,832
+2026-05-08 12:53:35,605 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,606 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,606 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,606 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,606 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 9,710 (+30.47%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,606 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,608 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,608 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,609 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 10,122,782
+2026-05-08 12:53:35,609 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,609 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,609 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,609 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,610 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 9,680 (+30.07%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,610 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,612 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,612 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,612 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 10,105,907
+2026-05-08 12:53:35,612 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,612 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,612 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,613 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,613 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 9,555 (+28.39%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,613 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,615 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,615 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,615 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 10,082,282
+2026-05-08 12:53:35,615 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,615 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,616 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,616 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,616 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 9,380 (+26.03%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,616 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,618 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,618 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,618 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 10,058,657
+2026-05-08 12:53:35,618 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,619 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,619 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,619 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,619 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 9,205 (+23.68%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,619 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,622 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,622 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,622 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 10,064,057
+2026-05-08 12:53:35,622 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,622 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,622 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,623 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,623 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 9,245 (+24.22%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,623 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,625 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,625 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,625 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 10,070,132
+2026-05-08 12:53:35,625 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,625 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,625 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,626 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,626 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 9,290 (+24.82%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,626 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,628 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,628 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,628 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 10,104,557
+2026-05-08 12:53:35,628 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,628 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,629 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,629 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,629 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 9,545 (+28.25%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,629 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,631 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,631 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,632 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 10,124,132
+2026-05-08 12:53:35,632 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,632 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,632 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,632 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,632 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 9,690 (+30.20%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,633 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,635 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,635 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,635 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 10,153,157
+2026-05-08 12:53:35,635 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,635 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,635 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,635 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,636 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 9,905 (+33.09%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,636 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,638 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,638 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,638 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 10,133,582
+2026-05-08 12:53:35,638 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,638 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,638 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,639 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,639 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 9,760 (+31.14%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,639 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,641 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,641 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,641 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 10,143,707
+2026-05-08 12:53:35,641 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,641 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,642 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,642 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,642 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 9,835 (+32.15%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,642 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,644 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,644 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,644 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 10,124,132
+2026-05-08 12:53:35,644 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,645 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,645 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,645 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,645 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 9,690 (+30.20%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,645 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,647 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,647 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,648 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 10,099,832
+2026-05-08 12:53:35,648 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,648 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,648 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,648 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,649 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 9,510 (+27.78%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,649 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,651 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,651 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,651 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 10,143,032
+2026-05-08 12:53:35,651 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,651 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,651 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,651 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,652 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 9,830 (+32.08%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,652 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,654 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,654 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,654 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 10,155,182
+2026-05-08 12:53:35,654 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,654 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,654 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,654 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,655 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 9,920 (+33.29%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,655 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,657 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,657 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,657 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 10,161,932
+2026-05-08 12:53:35,657 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,657 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,657 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,658 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,658 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 9,970 (+33.96%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,658 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,660 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,660 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,660 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 10,170,707
+2026-05-08 12:53:35,660 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,660 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,661 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,661 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,661 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 10,035 (+34.83%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,661 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,663 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,663 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,663 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 10,156,532
+2026-05-08 12:53:35,663 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,663 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,664 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,664 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,664 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 9,930 (+33.42%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,664 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,666 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,666 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,667 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 10,122,782
+2026-05-08 12:53:35,667 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,667 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,667 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,667 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,667 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 9,680 (+30.07%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,668 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,670 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,670 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,670 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 10,095,107
+2026-05-08 12:53:35,670 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,670 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,670 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,670 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,671 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 9,475 (+27.31%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,671 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,673 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,673 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,673 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 10,127,507
+2026-05-08 12:53:35,673 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,673 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,673 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,674 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,674 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 9,715 (+30.54%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,674 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,676 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,676 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,676 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 10,155,857
+2026-05-08 12:53:35,676 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,676 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,677 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,677 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,677 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 9,925 (+33.36%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,677 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,680 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,680 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,680 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 10,173,407
+2026-05-08 12:53:35,680 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,680 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,680 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,681 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,681 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 10,055 (+35.10%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,681 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,684 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,684 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,684 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 10,176,107
+2026-05-08 12:53:35,684 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,684 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,684 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,685 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,685 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 10,075 (+35.37%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,685 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,687 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,687 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,687 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 10,163,282
+2026-05-08 12:53:35,687 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,687 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,688 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,688 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,688 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 9,980 (+34.10%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,688 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,690 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,690 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,690 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 10,122,782
+2026-05-08 12:53:35,691 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,691 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,691 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,691 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,691 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 9,680 (+30.07%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,692 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,694 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,694 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,694 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 10,149,107
+2026-05-08 12:53:35,694 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,694 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,694 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,694 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,695 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 9,875 (+32.69%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,695 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,697 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,697 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,697 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 10,225,382
+2026-05-08 12:53:35,697 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,697 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,697 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,698 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,698 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 10,440 (+40.28%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,698 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,700 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,700 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,700 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 10,273,307
+2026-05-08 12:53:35,700 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,700 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,701 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,701 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,701 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 10,795 (+45.05%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,701 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,703 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,703 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,703 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 10,207,832
+2026-05-08 12:53:35,703 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,704 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,704 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,704 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,704 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 10,310 (+38.53%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,704 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,706 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,706 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,706 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 10,200,407
+2026-05-08 12:53:35,706 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,707 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,707 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,707 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,707 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 10,255 (+37.79%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,707 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,709 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,709 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,709 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 10,211,882
+2026-05-08 12:53:35,709 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,710 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,710 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,710 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,710 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 10,340 (+38.93%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,710 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,712 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,712 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,712 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 10,177,457
+2026-05-08 12:53:35,712 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,713 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,713 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,713 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,713 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 10,085 (+35.51%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,713 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,716 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,716 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,716 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 10,151,807
+2026-05-08 12:53:35,716 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,716 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,716 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,716 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,717 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 9,895 (+32.95%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,717 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,719 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,719 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,719 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 10,147,757
+2026-05-08 12:53:35,719 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,719 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,719 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,719 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,720 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 9,865 (+32.55%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,720 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,722 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,722 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,722 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 10,194,332
+2026-05-08 12:53:35,722 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,722 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,722 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,722 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,723 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 10,210 (+37.19%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,723 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,725 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-08 12:53:35,725 [INFO] Fetching real-time prices from Broker...
+2026-05-08 12:53:35,725 [INFO] Portfolio: Cash=KRW 8,815,982, Value=KRW 10,199,732
+2026-05-08 12:53:35,725 [INFO] >>> Step 2: Load Positions
+2026-05-08 12:53:35,725 [INFO] Loaded 4 position lot(s)
+2026-05-08 12:53:35,725 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-08 12:53:35,725 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-08 12:53:35,726 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv4 매수 KRW 7,442 -> 현재 KRW 10,250 (+37.72%) | 익절 +100.0% / 추매 -5.0%
+2026-05-08 12:53:35,726 [INFO] >>> Step 6: Persist
+2026-05-08 12:53:35,728 [INFO] --- 백테스트 완료 ---
+2026-05-08 12:53:35,728 [INFO] 최종: Cash=KRW 8,815,982, Value=KRW 10,199,732

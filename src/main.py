@@ -1,8 +1,5 @@
 # src/main.py
-import sys
 import os
-sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/..")
-
 from src.config import Config
 from src.strategy_config import StrategyConfig
 from src.core.engine import MagicSplitEngine  # noqa: F401  (레지스트리 등록)
@@ -43,23 +40,31 @@ class MagicSplitBot:
         # 1. 공용 설정 및 인프라
         self.config = Config()
         self.strategy = StrategyConfig(self.config.CONFIG_JSON_PATH)
-        self.logger = TradeLogger(self.config.LOG_PATH)
-        self.logger.info("=== Initializing MagicSplit Bot (single account) ===")
+        
+        # 2. 매매 규칙 로드 및 마켓 타입 식별
+        rules = [r for r in self.strategy.rules if r.enabled]
+        if not rules:
+            raise ValueError(
+                "활성화된 종목이 없습니다. 설정 파일(config_domestic.json 또는 config_overseas.json)의 stocks 항목을 확인하세요."
+            )
+        self.market_type = rules[0].market_type
 
-        self.notifier = SlackNotifier(self.config.SLACK_WEBHOOK_URL, self.logger)
+        # 3. 마켓별 로그 경로 설정 및 로거 초기화
+        log_dir = os.path.join(self.config.LOG_PATH, self.market_type)
+        self.logger = TradeLogger(log_dir)
+        self.logger.info(f"=== Initializing MagicSplit Bot ({self.market_type}) ===")
+
+        self.notifier = SlackNotifier(
+            webhook_url=self.config.SLACK_WEBHOOK_URL,
+            logger=self.logger,
+            bot_token=self.config.SLACK_BOT_TOKEN,
+            channel_id=self.config.SLACK_CHANNEL_ID
+        )
 
         self.logger.info(
             f"Loaded {len(self.strategy.rules)} stock rule(s) from {self.config.CONFIG_JSON_PATH}"
         )
 
-        # 2. 엔진 생성 (config 파일의 마켓 타입으로 단일 엔진)
-        rules = [r for r in self.strategy.rules if r.enabled]
-        if not rules:
-            raise ValueError(
-                "활성화된 종목이 없습니다. config.json의 stocks 항목을 확인하세요."
-            )
-
-        self.market_type = rules[0].market_type
         self.logger.info(
             f"[{self.market_type}] {len(rules)} rule(s), "
             f"mode={'LIVE' if self.config.IS_LIVE else 'PAPER'}"

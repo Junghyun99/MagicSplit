@@ -51,9 +51,9 @@ class TestCreateBroker:
 class TestMagicSplitBot:
     @pytest.fixture
     def bot_env(self, tmp_path, monkeypatch):
-        """config.json과 단일 계좌 env vars를 준비한 환경."""
+        """config_overseas.json과 단일 계좌 env vars를 준비한 환경."""
         # config.json
-        cfg_path = tmp_path / "config.json"
+        cfg_path = tmp_path / "config_overseas.json"
         cfg_path.write_text(json.dumps({
             "stocks": [
                 {
@@ -66,7 +66,7 @@ class TestMagicSplitBot:
                     "enabled": True,
                 },
             ],
-            "global": {"check_interval_minutes": 60},
+            "global": { },
         }))
 
         monkeypatch.chdir(tmp_path)
@@ -109,7 +109,7 @@ class TestMagicSplitBot:
 
     def test_no_active_stocks_raises(self, tmp_path, monkeypatch):
         """활성 종목이 없으면 ValueError"""
-        cfg_path = tmp_path / "config.json"
+        cfg_path = tmp_path / "config_overseas.json"
         cfg_path.write_text(json.dumps({
             "stocks": [
                 {

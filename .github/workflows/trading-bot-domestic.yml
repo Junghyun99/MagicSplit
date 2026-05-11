@@ -4,41 +4,134 @@ on:
   # [임시 비활성화] 개발 중이므로 스케줄 실행을 중지합니다.
   # schedule:
   #   # 한국 장 운영시간: 09:00~15:30 KST = UTC 00:00~06:30
+  #   # 매시 정각 및 일부 주요 시간대 실행 (필요에 따라 조정 가능)
   #   - cron: '0 0-6 * * 1-5'  # UTC 00:00~06:00 = KST 09:00~15:00 (월~금)
-  workflow_dispatch:  # 수동 실행 허용
+  workflow_dispatch:
+    inputs:
+      skip_holiday_check:
+        description: '한국 공휴일 체크를 건너뛰고 강제 실행(수동 디버그용)'
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: write
 
 jobs:
-  trade:
+  trade-domestic:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      TZ: Asia/Seoul
 
     steps:
-    - uses: actions/checkout@v3
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Show runner time (timezone debug)
+      run: |
+        echo "Runner UTC : $(date -u '+%Y-%m-%d %H:%M:%S %Z')"
+        echo "KST equiv  : $(TZ=Asia/Seoul date '+%Y-%m-%d %H:%M:%S %Z')"
 
     - name: Set up Python 3.10
-      uses: actions/setup-python@v3
+      uses: actions/setup-python@v5
       with:
         python-version: "3.10"
+        cache: pip
 
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-    - name: Run MagicSplit Bot
+    - name: Check Korean holiday
+      id: holiday
+      if: ${{ github.event_name == 'schedule' || inputs.skip_holiday_check != true }}
+      run: |
+        python - <<'PY'
+        import os, datetime, zoneinfo, holidays
+        kr = holidays.country_holidays('KR')
+        kst_tz = zoneinfo.ZoneInfo('Asia/Seoul')
+        today_kst = datetime.datetime.now(datetime.timezone.utc).astimezone(kst_tz).date()
+        is_holiday = today_kst in kr
+        name = kr.get(today_kst, "")
+        print(f"KST today={today_kst}, holiday={is_holiday}, name={name}")
+        with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
+            f.write(f"is_holiday={'true' if is_holiday else 'false'}\n")
+            f.write(f"kst_date={today_kst.isoformat()}\n")
+        PY
+
+    - name: Skip if holiday
+      if: ${{ steps.holiday.outputs.is_holiday == 'true' }}
+      run: |
+        echo "::notice title=Holiday Skip::${{ steps.holiday.outputs.kst_date }} 는 한국 공휴일입니다. 실행을 건너뜁니다."
+        exit 0
+
+    - name: Restore KIS token cache
+      if: ${{ steps.holiday.outputs.is_holiday != 'true' }}
+      id: token-cache-restore
+      uses: actions/cache/restore@v4
+      with:
+        path: .kis_token_cache.json
+        key: kis-token-shared-${{ github.run_id }}
+        restore-keys: |
+          kis-token-shared-
+
+    - name: Run MagicSplit Bot (Domestic)
+      if: ${{ steps.holiday.outputs.is_holiday != 'true' }}
       env:
         CONFIG_JSON_PATH: config_domestic.json
-        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_LIVE }}
+        SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+        SLACK_CHANNEL_ID: ${{ secrets.SLACK_CHANNEL_ID }}
         KIS_APP_KEY: ${{ secrets.KIS_APP_KEY }}
         KIS_APP_SECRET: ${{ secrets.KIS_APP_SECRET }}
         KIS_ACC_NO: ${{ secrets.KIS_ACC_NO }}
-        IS_LIVE: ${{ secrets.IS_LIVE }}
-      run: |
-        python src/main.py
+        IS_LIVE: 'true'
+        PYTHONUNBUFFERED: "1"
+      run: python -m src.main
 
-    - name: Commit updated data files
+    - name: Save KIS token cache
+      if: ${{ always() && steps.holiday.outputs.is_holiday != 'true' }}
+      uses: actions/cache/save@v4
+      with:
+        path: .kis_token_cache.json
+        key: kis-token-shared-${{ github.run_id }}
+
+    - name: Debug - List data and logs
+      if: always()
       run: |
-        git config user.name "github-actions[bot]"
-        git config user.email "github-actions[bot]@users.noreply.github.com"
-        git add docs/data/ || true
-        git diff --staged --quiet || git commit -m "Auto-update domestic trading data [skip ci]"
-        git push || true
+        echo "=== docs/data/domestic/ ==="
+        ls -R docs/data/domestic/ || echo "Not found"
+        echo "=== logs/domestic/ ==="
+        ls -R logs/domestic/ || echo "Not found"
+
+    - name: Commit updated data and logs
+      if: ${{ success() && steps.holiday.outputs.is_holiday != 'true' }}
+      run: |
+        git add --force docs/data/domestic/*.json || true
+        git add --force logs/domestic/*.log || true
+        
+    - name: Push updated data and logs
+      if: ${{ success() && steps.holiday.outputs.is_holiday != 'true' }}
+      uses: stefanzweifel/git-auto-commit-action@v5
+      with:
+        commit_message: "Auto-update domestic trading data and logs [skip ci]"
+        file_pattern: "docs/data/domestic/*.json logs/domestic/*.log"
+        commit_user_name: "github-actions[bot]"
+        commit_user_email: "github-actions[bot]@users.noreply.github.com"
+        add_options: '--force'
+
+    - name: Notify Slack on failure
+      if: ${{ failure() && steps.holiday.outputs.is_holiday != 'true' }}
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_LIVE }}
+      run: |
+        if [ -z "${SLACK_WEBHOOK_URL:-}" ]; then
+          echo "SLACK_WEBHOOK_URL not set, skipping Slack notification"
+          exit 0
+        fi
+        RUN_URL="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+        curl -X POST -H 'Content-type: application/json' \
+          --data "{\"text\":\":rotating_light: MagicSplit (Domestic) FAILED\n<${RUN_URL}|Run #${{ github.run_id }}>\"}" \
+          "$SLACK_WEBHOOK_URL"

@@ -1,0 +1,66 @@
+<<<<<<< SEARCH
+    def __init__(self, root_path: str = "docs/data",
+                 max_history_records: int = 100000):
+        self.root = root_path
+        self.max_history_records = max_history_records
+        os.makedirs(self.root, exist_ok=True)
+
+        self.positions_file = os.path.join(self.root, "positions.json")
+        self.history_file = os.path.join(self.root, "history.json")
+        self.status_file = os.path.join(self.root, "status.json")
+
+    # === Positions ===
+=======
+    def __init__(self, root_path: str = "docs/data",
+                 max_history_records: int = 100000):
+        self.root = root_path
+        self.max_history_records = max_history_records
+        os.makedirs(self.root, exist_ok=True)
+
+        self.positions_file = os.path.join(self.root, "positions.json")
+        self.history_file = os.path.join(self.root, "history.json")
+        self.status_file = os.path.join(self.root, "status.json")
+
+        self._cache = {}
+
+    # === Positions ===
+>>>>>>> REPLACE
+<<<<<<< SEARCH
+    def _load_json(self, path: str, default=None):
+        if not os.path.exists(path):
+            return default
+        try:
+            with open(path, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        except (json.JSONDecodeError, IOError, OSError):
+            return default
+
+    @staticmethod
+=======
+    def _load_json(self, path: str, default=None):
+        if path in self._cache:
+            return self._cache[path]
+        if not os.path.exists(path):
+            return default
+        try:
+            with open(path, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+                self._cache[path] = data
+                return data
+        except (json.JSONDecodeError, IOError, OSError):
+            return default
+
+    @staticmethod
+>>>>>>> REPLACE
+<<<<<<< SEARCH
+    def _save_json(self, path: str, data):
+        sanitized = self._sanitize_for_json(data)
+        with open(path, 'w', encoding='utf-8') as f:
+            json.dump(sanitized, f, indent=4, ensure_ascii=False)
+=======
+    def _save_json(self, path: str, data):
+        sanitized = self._sanitize_for_json(data)
+        self._cache[path] = sanitized
+        with open(path, 'w', encoding='utf-8') as f:
+            json.dump(sanitized, f, indent=4, ensure_ascii=False)
+>>>>>>> REPLACE
