@@ -1,11 +1,8 @@
 name: MagicSplit Trading Bot (Overseas)
 
 on:
-  # [임시 비활성화] 개발 중이므로 스케줄 실행을 중지합니다.
-  # schedule:
-  #   # 미국 장 운영시간: 한국시간 23:30~06:00 (서머타임 22:30~05:00)
-  #   # UTC 기준 14:00~21:00 (월~금) -> KST 23:00~06:00
-  #   - cron: '0 14-21 * * 1-5'
+  schedule:
+    - cron: '58 14 * * 1-5'
   workflow_dispatch:
     inputs:
       skip_holiday_check:
