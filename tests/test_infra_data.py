@@ -1,5 +1,4 @@
 # tests/test_infra_data.py
-import pytest
 from unittest.mock import MagicMock, patch
 from src.infra.data import YFinanceLoader
 

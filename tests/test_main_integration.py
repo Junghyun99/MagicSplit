@@ -1,10 +1,9 @@
 # tests/test_main_integration.py
 """MagicSplitBot 통합 테스트 — MockBroker를 사용한 전체 플로우."""
-import json
 import pytest
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock
 from src.core.engine.base import MagicSplitEngine
-from src.core.models import StockRule, Portfolio
+from src.core.models import StockRule
 from src.infra.broker.mock import MockBroker
 from src.infra.repo import JsonRepository
 

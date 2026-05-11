@@ -1,6 +1,5 @@
 # tests/test_main.py
 """MagicSplitBot 초기화/실행 테스트 — KIS 브로커는 목으로 대체."""
-import os
 import json
 import pytest
 from unittest.mock import patch, MagicMock

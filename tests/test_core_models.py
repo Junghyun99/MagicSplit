@@ -1,8 +1,7 @@
 # tests/test_core_models.py
-import pytest
 from src.core.models import (
     StockRule, PositionLot, Portfolio, Order, OrderAction,
-    TradeExecution, ExecutionStatus, SplitSignal, TradeSignal, DayResult,
+    ExecutionStatus, SplitSignal, TradeSignal,
 )
 
 
