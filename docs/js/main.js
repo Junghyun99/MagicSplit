@@ -62,17 +62,12 @@
         const pctClass = isPositive ? "pct-positive" : "pct-negative";
         const pctStr =
           (isPositive ? "+" : "") + lot.pct_change.toFixed(1) + "%";
-        const ariaLabel = isPositive
-          ? `Profit of ${lot.pct_change.toFixed(1)}%`
-          : `Loss of ${Math.abs(lot.pct_change).toFixed(1)}%`;
         const indicator = isPositive ? "▲" : "▼";
 
         lotsHtml += `
                     <li class="lot-item">
                         <span>${lot.buy_date} | ${lot.quantity} shares @$${lot.buy_price.toFixed(2)}</span>
-                        <span class="${pctClass}" aria-label="${ariaLabel}">
-                            ${pctStr} <span aria-hidden="true">${indicator}</span>
-                        </span>
+                        <span class="${pctClass}">${pctStr} ${indicator}</span>
                     </li>`;
       }
 
