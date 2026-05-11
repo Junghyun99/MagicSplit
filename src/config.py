@@ -25,6 +25,8 @@ EXCHANGE_CODE_SHORT_TO_FULL: dict[str, str] = {
     'AMS': 'AMEX',
 }
 
+DEFAULT_HTTP_TIMEOUT = 10
+
 
 class Config:
     def __init__(self):
@@ -46,3 +48,4 @@ class Config:
 
         # 저장소 크기 제한
         self.MAX_HISTORY_RECORDS = 100000
+DEFAULT_HTTP_TIMEOUT = 10

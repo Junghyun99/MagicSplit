@@ -1,6 +1,7 @@
 # src/infra/broker/kis_http.py
 """KIS REST 요청 공통 헤더/HashKey 헬퍼."""
 from typing import Optional
+from src.config import DEFAULT_HTTP_TIMEOUT
 import src.infra.broker as _pkg  # test patch 타깃: src.infra.broker.requests
 
 
@@ -40,7 +41,8 @@ def fetch_hashkey(base_url: str, app_key: str, app_secret: str, data: dict, logg
                 "appkey": app_key,
                 "appsecret": app_secret,
             },
-            json=data, timeout=10
+            json=data,
+            timeout=DEFAULT_HTTP_TIMEOUT,
         )
         res.raise_for_status()
         return res.json()["HASH"]
