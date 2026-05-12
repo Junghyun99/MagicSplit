@@ -3,12 +3,9 @@
         {
             "ticker": "AAPL",
             "market_type": "overseas",
-            "buy_threshold_pct": -5,
-            "sell_threshold_pct": 10,
-            "buy_amount": 500,
-            "max_lots": 30,
+            "max_lots": 3,
             "enabled": true,
-            "trailing_drop_pct": 2
+            "preset": "large_cap_us"
         },
         {
             "ticker": "PFE",
