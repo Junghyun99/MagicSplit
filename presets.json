@@ -16,5 +16,23 @@
         "trailing_drop_pct": 5,
         "buy_amount": 500000,
         "buy_amounts": [1000000, 500000]
+    },
+    "small_cap_us": {
+        "max_lots": 100,
+        "buy_threshold_pct": -10,
+        "sell_threshold_pct": 20,
+        "buy_amount": 500,
+        "max_exposure_pct": 40,
+        "trailing_drop_pct": 10,
+        "buy_amounts": [1000, 500]
+    },
+    "small_cap_ks": {
+        "max_lots": 100,
+        "buy_threshold_pct": -10,
+        "sell_threshold_pct": 20,
+        "buy_amount": 500000,
+        "max_exposure_pct": 40,
+        "trailing_drop_pct": 10,
+        "buy_amounts": [1000000, 500000]
     }
 }
