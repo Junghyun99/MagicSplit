@@ -3,141 +3,80 @@
         {
             "ticker": "AAPL",
             "market_type": "overseas",
-            "max_lots": 3,
             "enabled": true,
             "preset": "large_cap_us"
         },
         {
             "ticker": "PFE",
-            "enabled": false,
-            "max_lots": 20,
             "market_type": "overseas",
-            "buy_threshold_pct": -5,
-            "sell_threshold_pct": 10,
-            "buy_amount": 500,
-            "max_exposure_pct": 30,
-            "trailing_drop_pct": 2
+            "enabled": false,
+            "preset": "large_cap_us"
         },
         {
             "ticker": "O",
-            "enabled": true,
-            "max_lots": 10,
             "market_type": "overseas",
-            "buy_threshold_pct": -5,
-            "sell_threshold_pct": 10,
-            "buy_amount": 500,
-            "max_exposure_pct": 30,
-            "trailing_drop_pct": 2
+            "enabled": true,
+            "preset": "large_cap_us"
         },
         {
             "ticker": "WM",
-            "enabled": false,
-            "max_lots": 10,
             "market_type": "overseas",
-            "buy_threshold_pct": -5,
-            "sell_threshold_pct": 10,
-            "buy_amount": 500,
-            "max_exposure_pct": 30,
-            "trailing_drop_pct": 2
+            "enabled": false,
+            "preset": "large_cap_us"
         },
         {
             "ticker": "PG",
-            "enabled": true,
-            "max_lots": 10,
             "market_type": "overseas",
-            "buy_threshold_pct": -5,
-            "sell_threshold_pct": 10,
-            "buy_amount": 500,
-            "max_exposure_pct": 30,
-            "trailing_drop_pct": 2
+            "enabled": true,
+            "preset": "large_cap_us"
         },
         {
             "ticker": "PEP",
-            "enabled": true,
-            "max_lots": 10,
             "market_type": "overseas",
-            "buy_threshold_pct": -5,
-            "sell_threshold_pct": 10,
-            "buy_amount": 500,
-            "max_exposure_pct": 30,
-            "trailing_drop_pct": 2
+            "enabled": true,
+            "preset": "large_cap_us"
         },
         {
             "ticker": "DUK",
-            "enabled": true,
-            "max_lots": 10,
             "market_type": "overseas",
-            "buy_threshold_pct": -5,
-            "sell_threshold_pct": 10,
-            "buy_amount": 500,
-            "max_exposure_pct": 30,
-            "trailing_drop_pct": 2
+            "enabled": true,
+            "preset": "large_cap_us"
         },
         {
             "ticker": "ARKK",
-            "enabled": true,
-            "max_lots": 10,
             "market_type": "overseas",
-            "buy_threshold_pct": -5,
-            "sell_threshold_pct": 10,
-            "buy_amount": 500,
-            "max_exposure_pct": 30,
-            "trailing_drop_pct": 2
+            "enabled": true,
+            "preset": "large_cap_us"
         },
         {
             "ticker": "SCHD",
-            "enabled": true,
-            "max_lots": 10,
             "market_type": "overseas",
-            "buy_threshold_pct": -5,
-            "sell_threshold_pct": 10,
-            "buy_amount": 500,
-            "max_exposure_pct": 30,
-            "trailing_drop_pct": 2
+            "enabled": true,
+            "preset": "large_cap_us"
         },
         {
             "ticker": "ICLN",
-            "enabled": true,
-            "max_lots": 10,
             "market_type": "overseas",
-            "buy_threshold_pct": -5,
-            "sell_threshold_pct": 10,
-            "buy_amount": 500,
-            "max_exposure_pct": 30,
-            "trailing_drop_pct": 2
+            "enabled": true,
+            "preset": "large_cap_us"
         },
         {
             "ticker": "GOOGL",
-            "enabled": true,
-            "max_lots": 10,
             "market_type": "overseas",
-            "buy_threshold_pct": -5,
-            "sell_threshold_pct": 10,
-            "buy_amount": 500,
-            "max_exposure_pct": 30,
-            "trailing_drop_pct": 2
+            "enabled": true,
+            "preset": "large_cap_us"
         },
         {
             "ticker": "AVGO",
-            "enabled": true,
-            "max_lots": 10,
             "market_type": "overseas",
-            "buy_threshold_pct": -5,
-            "sell_threshold_pct": 10,
-            "buy_amount": 500,
-            "max_exposure_pct": 30,
-            "trailing_drop_pct": 2
+            "enabled": true,
+            "preset": "large_cap_us"
         },
         {
             "ticker": "TSLA",
-            "enabled": true,
-            "max_lots": 10,
             "market_type": "overseas",
-            "buy_threshold_pct": -5,
-            "sell_threshold_pct": 10,
-            "buy_amount": 500,
-            "max_exposure_pct": 30,
-            "trailing_drop_pct": 2
+            "enabled": true,
+            "preset": "large_cap_us"
         }
     ],
     "global": {
