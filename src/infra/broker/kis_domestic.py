@@ -33,15 +33,16 @@ class KisDomesticBrokerBase(KisBrokerCommon):
         prices = {}
         tr_id = self.PRICE_TR_ID
         url = f"{self.base_url}/uapi/domestic-stock/v1/quotations/inquire-price"
+        headers = self._get_header(tr_id)
+        self.session.headers.update(headers)
         for ticker in tickers:
             params = {
                 "FID_COND_MRKT_DIV_CODE": "J",
                 "FID_INPUT_ISCD": _to_kis_code(ticker)
             }
-            headers = self._get_header(tr_id)
+            time.sleep(0.1)
             try:
-                time.sleep(0.1)
-                res = _pkg.requests.get(url, headers=headers, params=params, timeout=DEFAULT_HTTP_TIMEOUT)
+                res = self._request('GET', url, params=params, timeout=DEFAULT_HTTP_TIMEOUT)
                 res.raise_for_status()
                 data = res.json()
 
@@ -86,14 +87,13 @@ class KisDomesticBrokerBase(KisBrokerCommon):
             "CTX_AREA_NK100": ""
         }
         headers = self._get_header(tr_id)
-
         total_cash = 0.0
         all_holdings: Dict[str, int] = {}
         all_prices: Dict[str, float] = {}
 
+        time.sleep(0.2)
         try:
-            time.sleep(0.2)
-            res = _pkg.requests.get(url, headers=headers, params=params, timeout=DEFAULT_HTTP_TIMEOUT)
+            res = self._request('GET', url, headers=headers, params=params, timeout=DEFAULT_HTTP_TIMEOUT)
             res.raise_for_status()
             data = res.json()
 
@@ -162,7 +162,7 @@ class KisDomesticBrokerBase(KisBrokerCommon):
 
         try:
             headers = self._get_header(tr_id, data)
-            res = _pkg.requests.post(url, headers=headers, json=data, timeout=DEFAULT_HTTP_TIMEOUT)
+            res = self._request('POST', url, headers=headers, json=data, timeout=DEFAULT_HTTP_TIMEOUT)
             res.raise_for_status()
             resp_data = res.json()
 
@@ -295,7 +295,7 @@ class KisDomesticBrokerBase(KisBrokerCommon):
         }
         try:
             headers = self._get_header(tr_id)
-            res = _pkg.requests.get(url, headers=headers, params=params, timeout=DEFAULT_HTTP_TIMEOUT)
+            res = self._request('GET', url, headers=headers, params=params, timeout=DEFAULT_HTTP_TIMEOUT)
             res.raise_for_status()
             data = res.json()
             if data.get('rt_cd') == '0':
@@ -342,7 +342,7 @@ class KisDomesticBrokerBase(KisBrokerCommon):
         }
         try:
             headers = self._get_header(self.FILL_TR_ID)
-            res = _pkg.requests.get(url, headers=headers, params=params, timeout=DEFAULT_HTTP_TIMEOUT)
+            res = self._request('GET', url, headers=headers, params=params, timeout=DEFAULT_HTTP_TIMEOUT)
             res.raise_for_status()
             data = res.json()
             if data.get('rt_cd') != '0':
@@ -385,7 +385,7 @@ class KisDomesticBrokerBase(KisBrokerCommon):
         }
         try:
             headers = self._get_header(self.CANCEL_TR_ID, data)
-            res = _pkg.requests.post(url, headers=headers, json=data, timeout=DEFAULT_HTTP_TIMEOUT)
+            res = self._request('POST', url, headers=headers, json=data, timeout=DEFAULT_HTTP_TIMEOUT)
             res.raise_for_status()
             resp_data = res.json()
             if resp_data.get('rt_cd') == '0':
@@ -409,9 +409,9 @@ class KisDomesticBrokerBase(KisBrokerCommon):
             "FID_INPUT_ISCD": _to_kis_code(ticker)
         }
         headers = self._get_header(self.ASKING_PRICE_TR_ID)
+        time.sleep(0.1)
         try:
-            time.sleep(0.1)
-            res = _pkg.requests.get(url, headers=headers, params=params, timeout=DEFAULT_HTTP_TIMEOUT)
+            res = self._request('GET', url, headers=headers, params=params, timeout=DEFAULT_HTTP_TIMEOUT)
             res.raise_for_status()
             data = res.json()
 

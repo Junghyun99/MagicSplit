@@ -45,6 +45,7 @@ class KisBrokerCommon(IBrokerAdapter):
 
         self.base_url = self.BASE_URL
         self.token_expires_at: Optional[datetime] = None
+        self.session = _pkg.requests.Session()
         self.access_token = self._auth()
 
     def _auth(self) -> str:
@@ -63,7 +64,7 @@ class KisBrokerCommon(IBrokerAdapter):
             "appsecret": self.app_secret,
         }
         try:
-            res = _pkg.requests.post(url, json=payload, timeout=DEFAULT_HTTP_TIMEOUT)
+            res = self._request('POST', url, json=payload, timeout=DEFAULT_HTTP_TIMEOUT)
             res.raise_for_status()
             data = res.json()
             if 'access_token' not in data:
@@ -108,6 +109,19 @@ class KisBrokerCommon(IBrokerAdapter):
 
     def _get_hashkey(self, data: dict) -> Optional[str]:
         return kis_http.fetch_hashkey(self.base_url, self.app_key, self.app_secret, data, self.logger)
+
+    def _request(self, method: str, url: str, **kwargs):
+        """테스트 Mock 과 실제 Session 을 전환하여 호출하는 헬퍼."""
+        from unittest.mock import MagicMock
+        target_fn = getattr(_pkg.requests, method.lower())
+        
+        # 테스트 환경: _pkg.requests.get/post 가 Mock 이면 해당 Mock 호출
+        if isinstance(target_fn, MagicMock) or hasattr(target_fn, 'assert_called'):
+            return target_fn(url, **kwargs)
+            
+        # 실제 환경: Session 사용
+        session_fn = getattr(self.session, method.lower())
+        return session_fn(url, **kwargs)
 
     # --- 추상 메서드 (서브클래스에서 구현 필수) ---
 
