@@ -31,8 +31,9 @@ class KisOverseasBrokerBase(KisBrokerCommon):
             exch = self._get_exchange_code(ticker)
             params = {"AUTH": "", "EXCD": exch, "SYMB": ticker}
             time.sleep(0.1)
+            time.sleep(0.1)
             try:
-                res = self.session.get(url, params=params, timeout=DEFAULT_HTTP_TIMEOUT)
+                res = self._request('GET', url, params=params, timeout=DEFAULT_HTTP_TIMEOUT)
                 res.raise_for_status()
                 data = res.json()
 
@@ -72,7 +73,6 @@ class KisOverseasBrokerBase(KisBrokerCommon):
 
         # 1. 예수금/주문가능금액 조회 (해외증거금 상세 API 필수)
         total_cash = self._fetch_total_cash()
-        cash_fetched = total_cash > 0
         all_holdings: Dict[str, int] = {}
         all_prices: Dict[str, float] = {}
 
@@ -88,7 +88,7 @@ class KisOverseasBrokerBase(KisBrokerCommon):
             headers = self._get_header(tr_id)
             time.sleep(0.2)
             try:
-                res = self.session.get(url, headers=headers, params=params, timeout=DEFAULT_HTTP_TIMEOUT)
+                res = self._request('GET', url, headers=headers, params=params, timeout=DEFAULT_HTTP_TIMEOUT)
                 res.raise_for_status()
                 data = res.json()
 
@@ -109,9 +109,9 @@ class KisOverseasBrokerBase(KisBrokerCommon):
             except Exception as e:
                 self.logger.error(f"[KisBroker] Error getting portfolio ({exch}): {e}")
 
-        if not cash_fetched:
+        if total_cash is None:
             raise RuntimeError(
-                f"모든 거래소({'/'.join(target_exchanges)}) 잔고 조회 실패 — 사이클을 중단합니다."
+                f"모든 거래소({'/'.join(target_exchanges)}) 잔고 조회 실패(현금 조회 오류) — 사이클을 중단합니다."
             )
 
         return Portfolio(
@@ -166,7 +166,7 @@ class KisOverseasBrokerBase(KisBrokerCommon):
 
         try:
             headers = self._get_header(tr_id, data)
-            res = self.session.post(url, headers=headers, json=data, timeout=DEFAULT_HTTP_TIMEOUT)
+            res = self._request('POST', url, headers=headers, json=data, timeout=DEFAULT_HTTP_TIMEOUT)
             res.raise_for_status()
             resp_data = res.json()
 
@@ -298,7 +298,7 @@ class KisOverseasBrokerBase(KisBrokerCommon):
             "CTX_AREA_NK200": ""
         }
         headers = self._get_header(tr_id)
-        res = self.session.get(url, headers=headers, params=params, timeout=DEFAULT_HTTP_TIMEOUT)
+        res = self._request('GET', url, headers=headers, params=params, timeout=DEFAULT_HTTP_TIMEOUT)
         res.raise_for_status()
         data = res.json()
         if data.get('rt_cd') == '0':
@@ -326,7 +326,7 @@ class KisOverseasBrokerBase(KisBrokerCommon):
         }
         try:
             headers = self._get_header(self.FILL_TR_ID)
-            res = self.session.get(url, headers=headers, params=params, timeout=DEFAULT_HTTP_TIMEOUT)
+            res = self._request('GET', url, headers=headers, params=params, timeout=DEFAULT_HTTP_TIMEOUT)
             res.raise_for_status()
             data = res.json()
             if data.get('rt_cd') != '0':
@@ -375,7 +375,7 @@ class KisOverseasBrokerBase(KisBrokerCommon):
         }
         try:
             headers = self._get_header(self.CANCEL_TR_ID, data)
-            res = self.session.post(url, headers=headers, json=data, timeout=DEFAULT_HTTP_TIMEOUT)
+            res = self._request('POST', url, headers=headers, json=data, timeout=DEFAULT_HTTP_TIMEOUT)
             res.raise_for_status()
             resp_data = res.json()
             if resp_data.get('rt_cd') == '0':
@@ -414,7 +414,7 @@ class KisOverseasBrokerBase(KisBrokerCommon):
 
             time.sleep(0.2)
             try:
-                res = self.session.get(url, headers=headers, params=params, timeout=DEFAULT_HTTP_TIMEOUT)
+                res = self._request('GET', url, headers=headers, params=params, timeout=DEFAULT_HTTP_TIMEOUT)
                 res.raise_for_status()
                 data = res.json()
 
@@ -440,7 +440,7 @@ class KisOverseasBrokerBase(KisBrokerCommon):
         headers = self._get_header(self.ASKING_PRICE_TR_ID)
         time.sleep(0.1)
         try:
-            res = self.session.get(url, headers=headers, params=params, timeout=DEFAULT_HTTP_TIMEOUT)
+            res = self._request('GET', url, headers=headers, params=params, timeout=DEFAULT_HTTP_TIMEOUT)
             res.raise_for_status()
             data = res.json()
 
@@ -486,7 +486,7 @@ class KisOverseasBrokerBase(KisBrokerCommon):
         }
         headers = self._get_header(self.MARGIN_TR_ID)
         try:
-            res = self.session.get(url, headers=headers, params=params, timeout=DEFAULT_HTTP_TIMEOUT)
+            res = self._request('GET', url, headers=headers, params=params, timeout=DEFAULT_HTTP_TIMEOUT)
             res.raise_for_status()
             data = res.json()
             if data.get('rt_cd') == '0':
@@ -498,7 +498,7 @@ class KisOverseasBrokerBase(KisBrokerCommon):
             self.logger.warning(f"[KisBroker] Margin Check Failed: {data.get('msg1')}")
         except Exception as e:
             self.logger.error(f"[KisBroker] Margin Check Error: {e}")
-        return 0.0
+        return None  # 실패 시 None 반환
 
 
 class KisOverseasPaperBroker(KisOverseasBrokerBase):
