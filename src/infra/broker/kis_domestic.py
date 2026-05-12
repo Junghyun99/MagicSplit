@@ -33,37 +33,39 @@ class KisDomesticBrokerBase(KisBrokerCommon):
         prices = {}
         tr_id = self.PRICE_TR_ID
         url = f"{self.base_url}/uapi/domestic-stock/v1/quotations/inquire-price"
-        for ticker in tickers:
-            params = {
-                "FID_COND_MRKT_DIV_CODE": "J",
-                "FID_INPUT_ISCD": _to_kis_code(ticker)
-            }
-            headers = self._get_header(tr_id)
-            try:
-                time.sleep(0.1)
-                res = _pkg.requests.get(url, headers=headers, params=params, timeout=DEFAULT_HTTP_TIMEOUT)
-                res.raise_for_status()
-                data = res.json()
+        headers = self._get_header(tr_id)
+        with _pkg.requests.Session() as session:
+            session.headers.update(headers)
+            for ticker in tickers:
+                params = {
+                    "FID_COND_MRKT_DIV_CODE": "J",
+                    "FID_INPUT_ISCD": _to_kis_code(ticker)
+                }
+                try:
+                    time.sleep(0.1)
+                    res = session.get(url, params=params, timeout=DEFAULT_HTTP_TIMEOUT)
+                    res.raise_for_status()
+                    data = res.json()
 
-                if data.get('rt_cd') == '0':
-                    output = data.get('output', {})
-                    price = float(output.get('stck_prpr', 0) or 0)
-                    if price <= 0:
-                        # 장외 시간 등 현재가가 0인 경우 전일종가(stck_sdpr) fallback
-                        price = float(output.get('stck_sdpr', 0) or 0)
+                    if data.get('rt_cd') == '0':
+                        output = data.get('output', {})
+                        price = float(output.get('stck_prpr', 0) or 0)
+                        if price <= 0:
+                            # 장외 시간 등 현재가가 0인 경우 전일종가(stck_sdpr) fallback
+                            price = float(output.get('stck_sdpr', 0) or 0)
 
-                    if price <= 0:
-                        self.logger.warning(
-                            f"[KisDomestic] Price is 0 for {display_ticker(ticker)}. "
-                            f"Response output: {output}"
-                        )
-                    prices[ticker] = price
-                else:
-                    self.logger.warning(f"[KisDomestic] Price fetch failed for {display_ticker(ticker)}: {data.get('msg1')}")
+                        if price <= 0:
+                            self.logger.warning(
+                                f"[KisDomestic] Price is 0 for {display_ticker(ticker)}. "
+                                f"Response output: {output}"
+                            )
+                        prices[ticker] = price
+                    else:
+                        self.logger.warning(f"[KisDomestic] Price fetch failed for {display_ticker(ticker)}: {data.get('msg1')}")
+                        prices[ticker] = 0.0
+                except Exception as e:
+                    self.logger.error(f"[KisDomestic] Price fetch error {display_ticker(ticker)}: {e}")
                     prices[ticker] = 0.0
-            except Exception as e:
-                self.logger.error(f"[KisDomestic] Price fetch error {display_ticker(ticker)}: {e}")
-                prices[ticker] = 0.0
 
         return prices
 
