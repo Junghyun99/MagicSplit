@@ -40,7 +40,7 @@ window.ConfigView = (function () {
 
         document.getElementById('edit-ticker').value = stock.ticker || '';
         document.getElementById('edit-preset').value = stock.preset || '';
-        document.getElementById('edit-max-lots').value = stock.max_lots !== undefined ? stock.max_lots : 10;
+        document.getElementById('edit-max-lots').value = stock.max_lots !== undefined ? stock.max_lots : '';
         document.getElementById('edit-reentry').value = stock.reentry_guard_pct !== undefined ? stock.reentry_guard_pct : '';
         document.getElementById('edit-enabled').checked = stock.enabled !== false;
 

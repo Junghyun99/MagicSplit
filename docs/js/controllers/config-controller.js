@@ -255,7 +255,7 @@ window.ConfigController = (function () {
         stock.ticker = vals.ticker;
         delete stock.exchange;
         if (vals.preset) stock.preset = vals.preset; else delete stock.preset;
-        if (vals.max_lots) stock.max_lots = parseInt(vals.max_lots, 10);
+        if (vals.max_lots) stock.max_lots = parseInt(vals.max_lots, 10); else delete stock.max_lots;
         if (vals.reentry_guard_pct) stock.reentry_guard_pct = parseFloat(vals.reentry_guard_pct); else delete stock.reentry_guard_pct;
         if (vals.buy_threshold_pct) stock.buy_threshold_pct = parseFloat(vals.buy_threshold_pct); else delete stock.buy_threshold_pct;
         if (vals.sell_threshold_pct) stock.sell_threshold_pct = parseFloat(vals.sell_threshold_pct); else delete stock.sell_threshold_pct;
