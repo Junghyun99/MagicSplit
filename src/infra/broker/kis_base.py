@@ -45,6 +45,7 @@ class KisBrokerCommon(IBrokerAdapter):
 
         self.base_url = self.BASE_URL
         self.token_expires_at: Optional[datetime] = None
+        self.session = _pkg.requests.Session()
         self.access_token = self._auth()
 
     def _auth(self) -> str:
@@ -63,7 +64,7 @@ class KisBrokerCommon(IBrokerAdapter):
             "appsecret": self.app_secret,
         }
         try:
-            res = _pkg.requests.post(url, json=payload, timeout=DEFAULT_HTTP_TIMEOUT)
+            res = self.session.post(url, json=payload, timeout=DEFAULT_HTTP_TIMEOUT)
             res.raise_for_status()
             data = res.json()
             if 'access_token' not in data:
