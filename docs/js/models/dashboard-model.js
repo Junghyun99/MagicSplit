@@ -52,13 +52,23 @@ window.DashboardModel = (function () {
     function getPortfolioSummary() {
         if (!statusData) return null;
 
-        const positions = statusData.positions || {};
+        // 실현손익은 개별 포지션 합산이 아닌, 전체 누적 데이터를 우선 사용
         let totalRealizedPnl = 0;
+        if (statusData.realized_pnl_by_ticker) {
+            totalRealizedPnl = Object.values(statusData.realized_pnl_by_ticker).reduce((a, b) => a + Number(b), 0);
+        } else {
+            // 하위 호환성: positions 정보에서 합산
+            const positions = statusData.positions || {};
+            for (const info of Object.values(positions)) {
+                if (info.realized_pnl != null) totalRealizedPnl += Number(info.realized_pnl);
+            }
+        }
+
+        const positions = statusData.positions || {};
         let totalUnrealizedPnl = 0;
         let totalInvested = 0;
 
         for (const info of Object.values(positions)) {
-            if (info.realized_pnl != null) totalRealizedPnl += Number(info.realized_pnl);
             if (info.unrealized_pnl != null) totalUnrealizedPnl += Number(info.unrealized_pnl);
             if (info.total_invested != null) totalInvested += Number(info.total_invested);
         }

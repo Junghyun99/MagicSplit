@@ -108,6 +108,55 @@ window.DashboardView = (function () {
         document.getElementById('total-value').textContent =
             formatCurrency(portfolioSummary.totalValue, mode);
 
+        // Portfolio Summary section (Always show if summary data exists)
+        if (portfolioSummary) {
+            const portRSign = portfolioSummary.totalRealizedPnl >= 0 ? '+' : '';
+            const portRClass = portfolioSummary.totalRealizedPnl >= 0 ? 'pct-positive' : 'pct-negative';
+            const portUSign = portfolioSummary.totalUnrealizedPnl >= 0 ? '+' : '';
+            const portUClass = portfolioSummary.totalUnrealizedPnl >= 0 ? 'pct-positive' : 'pct-negative';
+            const portUPctSign = portfolioSummary.unrealizedPct != null && portfolioSummary.unrealizedPct >= 0 ? '+' : '';
+            const portUPctClass = portfolioSummary.unrealizedPct != null ? (portfolioSummary.unrealizedPct >= 0 ? 'pct-positive' : 'pct-negative') : '';
+
+            const cashBalanceRows = portfolioSummary.cashBalance != null ? `
+                <div class="ps-row">
+                    <span class="ps-label">예수금</span>
+                    <span class="ps-value">${formatCurrency(portfolioSummary.cashBalance, mode)}</span>
+                    <span class="ps-pct">(${portfolioSummary.cashPct.toFixed(1)}%)</span>
+                </div>
+                <div class="ps-row">
+                    <span class="ps-label">주식평가</span>
+                    <span class="ps-value">${formatCurrency(portfolioSummary.stockValue, mode)}</span>
+                    <span class="ps-pct">(${portfolioSummary.stockPct.toFixed(1)}%)</span>
+                </div>` : '';
+
+            const unrealizedPctHtml = portfolioSummary.unrealizedPct != null
+                ? `<span class="ps-pct ${portUPctClass}">(${portUPctSign}${portfolioSummary.unrealizedPct.toFixed(2)}%)</span>`
+                : '';
+
+            const portfolioCard = document.createElement('div');
+            portfolioCard.className = 'card portfolio-summary';
+            portfolioCard.innerHTML = `
+                <div class="portfolio-summary-title">Portfolio Summary</div>
+                <div class="ps-rows">
+                    <div class="ps-row">
+                        <span class="ps-label">총평가액</span>
+                        <span class="ps-value">${formatCurrency(portfolioSummary.totalValue, mode)}</span>
+                    </div>
+                    ${cashBalanceRows}
+                    <div class="ps-row">
+                        <span class="ps-label">실현손익</span>
+                        <span class="ps-value ${portRClass}">${portRSign}${formatCurrency(portfolioSummary.totalRealizedPnl, mode)}</span>
+                    </div>
+                    <div class="ps-row">
+                        <span class="ps-label">평가손익</span>
+                        <span class="ps-value ${portUClass}">${portUSign}${formatCurrency(portfolioSummary.totalUnrealizedPnl, mode)}</span>
+                        ${unrealizedPctHtml}
+                    </div>
+                </div>
+            `;
+            container.appendChild(portfolioCard);
+        }
+
         const positions = statusData.positions || {};
         if (Object.keys(positions).length === 0) {
             const emptyCard = document.createElement('div');
@@ -116,52 +165,6 @@ window.DashboardView = (function () {
             container.appendChild(emptyCard);
             return;
         }
-
-        const portRSign = portfolioSummary.totalRealizedPnl >= 0 ? '+' : '';
-        const portRClass = portfolioSummary.totalRealizedPnl >= 0 ? 'pct-positive' : 'pct-negative';
-        const portUSign = portfolioSummary.totalUnrealizedPnl >= 0 ? '+' : '';
-        const portUClass = portfolioSummary.totalUnrealizedPnl >= 0 ? 'pct-positive' : 'pct-negative';
-        const portUPctSign = portfolioSummary.unrealizedPct != null && portfolioSummary.unrealizedPct >= 0 ? '+' : '';
-        const portUPctClass = portfolioSummary.unrealizedPct != null ? (portfolioSummary.unrealizedPct >= 0 ? 'pct-positive' : 'pct-negative') : '';
-
-        const cashBalanceRows = portfolioSummary.cashBalance != null ? `
-            <div class="ps-row">
-                <span class="ps-label">예수금</span>
-                <span class="ps-value">${formatCurrency(portfolioSummary.cashBalance, mode)}</span>
-                <span class="ps-pct">(${portfolioSummary.cashPct.toFixed(1)}%)</span>
-            </div>
-            <div class="ps-row">
-                <span class="ps-label">주식평가</span>
-                <span class="ps-value">${formatCurrency(portfolioSummary.stockValue, mode)}</span>
-                <span class="ps-pct">(${portfolioSummary.stockPct.toFixed(1)}%)</span>
-            </div>` : '';
-
-        const unrealizedPctHtml = portfolioSummary.unrealizedPct != null
-            ? `<span class="ps-pct ${portUPctClass}">(${portUPctSign}${portfolioSummary.unrealizedPct.toFixed(2)}%)</span>`
-            : '';
-
-        const portfolioCard = document.createElement('div');
-        portfolioCard.className = 'card portfolio-summary';
-        portfolioCard.innerHTML = `
-            <div class="portfolio-summary-title">Portfolio Summary</div>
-            <div class="ps-rows">
-                <div class="ps-row">
-                    <span class="ps-label">총평가액</span>
-                    <span class="ps-value">${formatCurrency(portfolioSummary.totalValue, mode)}</span>
-                </div>
-                ${cashBalanceRows}
-                <div class="ps-row">
-                    <span class="ps-label">실현손익</span>
-                    <span class="ps-value ${portRClass}">${portRSign}${formatCurrency(portfolioSummary.totalRealizedPnl, mode)}</span>
-                </div>
-                <div class="ps-row">
-                    <span class="ps-label">평가손익</span>
-                    <span class="ps-value ${portUClass}">${portUSign}${formatCurrency(portfolioSummary.totalUnrealizedPnl, mode)}</span>
-                    ${unrealizedPctHtml}
-                </div>
-            </div>
-        `;
-        container.appendChild(portfolioCard);
 
         for (const [ticker, info] of Object.entries(positions)) {
             const card = document.createElement('div');
