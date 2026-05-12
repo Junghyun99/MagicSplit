@@ -1,0 +1,35 @@
+2026-05-13 02:00:26,280 [INFO] === Initializing MagicSplit Bot (overseas) ===
+2026-05-13 02:00:26,280 [INFO] Loaded 13 stock rule(s) from config_overseas.json
+2026-05-13 02:00:26,280 [INFO] [overseas] 11 rule(s), mode=LIVE
+2026-05-13 02:00:26,280 [INFO] [KisBroker] 새 토큰 발급 중...
+2026-05-13 02:00:27,258 [INFO] [KisOverseasLiveBroker] Mode: LIVE TRADING
+2026-05-13 02:00:27,259 [INFO] === Running overseas engine ===
+2026-05-13 02:00:27,259 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-13 02:00:28,852 [INFO] Fetching real-time prices from Broker...
+2026-05-13 02:00:33,067 [INFO] Portfolio: Cash=USD 2,228.93, Value=USD 7,458.25
+2026-05-13 02:00:33,067 [INFO] >>> Step 2: Load Positions
+2026-05-13 02:00:33,067 [INFO] Loaded 12 position lot(s)
+2026-05-13 02:00:33,068 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-13 02:00:33,068 [INFO] >>> Processing 애플(AAPL)
+2026-05-13 02:00:33,068 [INFO]   [애플(AAPL)] 신호 없음 | Lv1 매수 USD 291.90 -> 현재 USD 293.79 (+0.65%) | 익절 +10.0% / 추매 -5.0%
+2026-05-13 02:00:33,069 [INFO] >>> Processing 리얼티 인컴(O)
+2026-05-13 02:00:33,069 [INFO]   [리얼티 인컴(O)] 신호 없음 | Lv1 매수 USD 62.37 -> 현재 USD 62.62 (+0.39%) | 익절 +10.0% / 추매 -5.0%
+2026-05-13 02:00:33,069 [INFO] >>> Processing 프록터 앤드 갬블(PG)
+2026-05-13 02:00:33,069 [INFO]   [프록터 앤드 갬블(PG)] 신호 없음 | Lv1 매수 USD 142.81 -> 현재 USD 145.72 (+2.04%) | 익절 +10.0% / 추매 -5.0%
+2026-05-13 02:00:33,070 [INFO] >>> Processing 펩시코(PEP)
+2026-05-13 02:00:33,070 [INFO]   [펩시코(PEP)] 신호 없음 | Lv1 매수 USD 150.05 -> 현재 USD 152.49 (+1.62%) | 익절 +10.0% / 추매 -5.0%
+2026-05-13 02:00:33,070 [INFO] >>> Processing 듀크 에너지(DUK)
+2026-05-13 02:00:33,071 [INFO]   [듀크 에너지(DUK)] 신호 없음 | Lv1 매수 USD 124.92 -> 현재 USD 125.64 (+0.58%) | 익절 +10.0% / 추매 -5.0%
+2026-05-13 02:00:33,071 [INFO] >>> Processing ARK INNOVATION(ARKK)
+2026-05-13 02:00:33,071 [INFO]   [ARK INNOVATION(ARKK)] 신호 없음 | Lv1 매수 USD 79.92 -> 현재 USD 76.59 (-4.17%) | 익절 +10.0% / 추매 -5.0%
+2026-05-13 02:00:33,071 [INFO] >>> Processing SCHWAB US DIVIDEND EQUITY(SCHD)
+2026-05-13 02:00:33,072 [INFO]   [SCHWAB US DIVIDEND EQUITY(SCHD)] 신호 없음 | Lv1 매수 USD 31.74 -> 현재 USD 31.70 (-0.11%) | 익절 +10.0% / 추매 -5.0%
+2026-05-13 02:00:33,072 [INFO] >>> Processing ISHARES GLOBAL CLEAN ENERGY(ICLN)
+2026-05-13 02:00:33,072 [INFO]   [ISHARES GLOBAL CLEAN ENERGY(ICLN)] 신호 없음 | Lv1 매수 USD 22.01 -> 현재 USD 21.08 (-4.23%) | 익절 +10.0% / 추매 -5.0%
+2026-05-13 02:00:33,072 [INFO] >>> Processing 알파벳 A(GOOGL)
+2026-05-13 02:00:33,073 [INFO]   [알파벳 A(GOOGL)] 신호 없음 | Lv1 매수 USD 393.85 -> 현재 USD 383.55 (-2.62%) | 익절 +10.0% / 추매 -5.0%
+2026-05-13 02:00:33,073 [INFO] >>> Processing 브로드컴(AVGO)
+2026-05-13 02:00:33,073 [INFO]   [브로드컴(AVGO)] 신호 없음 | Lv1 매수 USD 429.80 -> 현재 USD 408.50 (-4.96%) | 익절 +10.0% / 추매 -5.0%
+2026-05-13 02:00:33,073 [INFO] >>> Processing 테슬라(TSLA)
+2026-05-13 02:00:33,074 [INFO]   [테슬라(TSLA)] 신호 없음 | Lv2 매수 USD 435.49 -> 현재 USD 423.25 (-2.81%) | 익절 +10.0% / 추매 -5.0%
+2026-05-13 02:00:33,074 [INFO] >>> Step 6: Persist
