@@ -4,42 +4,35 @@ from typing import List, Dict, Optional
 import time
 import src.infra.broker as _pkg  # test patch 타깃: src.infra.broker.requests
 from datetime import datetime
-
+from src.config import DEFAULT_HTTP_TIMEOUT
 from src.core.models import Portfolio, Order, TradeExecution, OrderAction, ExecutionStatus
+from src.utils.ticker_reader import display_ticker
 
 from .kis_base import KisBrokerCommon
-from .kis_order_helpers import poll_order_fill
+from .kis_order_helpers import poll_order_fill, resolve_timeout_outcome
 
 
 def _to_kis_code(ticker: str) -> str:
-    """yfinance 티커 → KIS 종목코드. '069500.KS' → '069500'"""
-    return ticker.removesuffix(".KS")
-
-
-def _to_yf_ticker(code: str) -> str:
-    """KIS 종목코드 → yfinance 티커. '069500' → '069500.KS'"""
-    return code if code.endswith(".KS") else code + ".KS"
+    """MagicSplit 표준 티커 -> KIS 종목코드 (zero-padded 6자리). '5930' -> '005930'"""
+    return ticker.zfill(6)
 
 
 class KisDomesticBrokerBase(KisBrokerCommon):
     """국내주식 전용 브로커 베이스 클래스."""
     ASKING_PRICE_TR_ID: str = "FHKST01010200"  # 국내주식 호가 조회 (실전/모의 동일)
 
-    # 하위 호환: 기존 테스트가 인스턴스 메서드로 호출할 수 있어 스태틱 래퍼 유지
+    def __init__(self, app_key: str, app_secret: str, acc_no: str, logger):
+        super().__init__(app_key, app_secret, acc_no, logger)
+
     @staticmethod
     def _to_kis_code(ticker: str) -> str:
         return _to_kis_code(ticker)
-
-    @staticmethod
-    def _to_yf_ticker(code: str) -> str:
-        return _to_yf_ticker(code)
 
     def fetch_current_prices(self, tickers: List[str]) -> Dict[str, float]:
         """국내주식 현재가 조회"""
         prices = {}
         tr_id = self.PRICE_TR_ID
         url = f"{self.base_url}/uapi/domestic-stock/v1/quotations/inquire-price"
-
         headers = self._get_header(tr_id)
         with _pkg.requests.Session() as session:
             session.headers.update(headers)
@@ -50,18 +43,28 @@ class KisDomesticBrokerBase(KisBrokerCommon):
                 }
                 try:
                     time.sleep(0.1)
-                    res = session.get(url, params=params)
+                    res = session.get(url, params=params, timeout=DEFAULT_HTTP_TIMEOUT)
                     res.raise_for_status()
                     data = res.json()
 
-                    if data['rt_cd'] == '0':
-                        price = float(data['output']['stck_prpr'])
+                    if data.get('rt_cd') == '0':
+                        output = data.get('output', {})
+                        price = float(output.get('stck_prpr', 0) or 0)
+                        if price <= 0:
+                            # 장외 시간 등 현재가가 0인 경우 전일종가(stck_sdpr) fallback
+                            price = float(output.get('stck_sdpr', 0) or 0)
+
+                        if price <= 0:
+                            self.logger.warning(
+                                f"[KisDomestic] Price is 0 for {display_ticker(ticker)}. "
+                                f"Response output: {output}"
+                            )
                         prices[ticker] = price
                     else:
-                        self.logger.warning(f"[KisDomestic] Price fetch failed for {ticker}: {data.get('msg1')}")
+                        self.logger.warning(f"[KisDomestic] Price fetch failed for {display_ticker(ticker)}: {data.get('msg1')}")
                         prices[ticker] = 0.0
                 except Exception as e:
-                    self.logger.error(f"[KisDomestic] Price fetch error {ticker}: {e}")
+                    self.logger.error(f"[KisDomestic] Price fetch error {display_ticker(ticker)}: {e}")
                     prices[ticker] = 0.0
 
         return prices
@@ -92,24 +95,23 @@ class KisDomesticBrokerBase(KisBrokerCommon):
 
         try:
             time.sleep(0.2)
-            res = _pkg.requests.get(url, headers=headers, params=params)
+            res = _pkg.requests.get(url, headers=headers, params=params, timeout=DEFAULT_HTTP_TIMEOUT)
             res.raise_for_status()
             data = res.json()
 
-            if data['rt_cd'] != '0':
+            if data.get('rt_cd') != '0':
                 self.logger.warning(f"[KisDomestic] Get Portfolio Failed: {data.get('msg1')}")
                 return Portfolio(total_cash=0.0, holdings={}, current_prices={})
 
             output2_list = data.get('output2', [])
             summary = output2_list[0] if output2_list else {}
-            dnca = float(summary.get('dnca_tot_amt', 0) or 0)
-            cma = float(summary.get('cma_evlu_amt', 0) or 0)
-            total_cash = dnca + cma
+            
+            total_cash = float(summary.get('prvs_rcdl_excc_amt', 0) or 0)
 
             for item in data.get('output1', []):
                 qty = int(item.get('hldg_qty', 0) or 0)
                 if qty > 0:
-                    ticker = _to_yf_ticker(item['pdno'])
+                    ticker = item.get('pdno', '').zfill(6)
                     all_holdings[ticker] = qty
                     all_prices[ticker] = float(item.get('prpr', 0) or 0)
 
@@ -129,11 +131,14 @@ class KisDomesticBrokerBase(KisBrokerCommon):
 
         bid, ask = self._fetch_asking_price(order.ticker)
 
-        if not self._check_spread(bid, ask):
+        if bid <= 0 or ask <= 0 or ask < bid:
+            self.logger.warning(f"[KisDomestic] 호가 조회 실패 — {display_ticker(order.ticker)} 현재가 기반 주문 진행")
+            bid, ask = 0.0, 0.0
+        elif not self._check_spread(bid, ask):
             mid = (bid + ask) / 2
             spread_pct = (ask - bid) / mid * 100
             self.logger.warning(
-                f"[KisDomestic] 스프레드 비정상 — {order.ticker} "
+                f"[KisDomestic] 스프레드 비정상 — {display_ticker(order.ticker)} "
                 f"bid={bid} ask={ask} spread={spread_pct:.2f}% > {self.SPREAD_THRESHOLD_PCT}% — 주문 보류"
             )
             return TradeExecution(
@@ -159,17 +164,17 @@ class KisDomesticBrokerBase(KisBrokerCommon):
 
         try:
             headers = self._get_header(tr_id, data)
-            res = _pkg.requests.post(url, headers=headers, json=data)
+            res = _pkg.requests.post(url, headers=headers, json=data, timeout=DEFAULT_HTTP_TIMEOUT)
             res.raise_for_status()
             resp_data = res.json()
 
-            if resp_data['rt_cd'] != '0':
+            if resp_data.get('rt_cd') != '0':
                 self.logger.error(f"[KisDomestic] Order Failed: {resp_data.get('msg1')}")
                 return None
 
             odno = resp_data.get('output', {}).get('ODNO', '')
             self.logger.info(
-                f"[KisDomestic] Order Sent: {order.action} {order.ticker} "
+                f"[KisDomestic] Order Sent: {order.action} {display_ticker(order.ticker)} "
                 f"{order.quantity} @ {order_price} (ODNO={odno})"
             )
 
@@ -180,7 +185,7 @@ class KisDomesticBrokerBase(KisBrokerCommon):
                     actual_price = fill_price if fill_price > 0 else float(order_price)
                     actual_qty = fill_qty if fill_qty > 0 else order.quantity
                     self.logger.info(
-                        f"[KisDomestic] Order FILLED: {order.ticker} ODNO={odno} "
+                        f"[KisDomestic] Order FILLED: {display_ticker(order.ticker)} ODNO={odno} "
                         f"price={actual_price} qty={actual_qty} fee={fill_fee}"
                     )
                     return TradeExecution(
@@ -196,13 +201,18 @@ class KisDomesticBrokerBase(KisBrokerCommon):
                 else:
                     self.logger.warning(
                         f"[KisDomestic] Order NOT confirmed within {timeout}s: "
-                        f"{order.ticker} ODNO={odno} — 미체결 주문 취소 시도"
+                        f"{display_ticker(order.ticker)} ODNO={odno} — 취소 시도 후 재폴링·체결조회"
                     )
-                    cancelled = self._cancel_order(odno, order.ticker, order.quantity)
-                    if not cancelled:
-                        self.logger.error(
-                            f"[KisDomestic] 주문 취소 실패: {order.ticker} ODNO={odno} — 수동 확인 필요"
-                        )
+                    outcome = resolve_timeout_outcome(
+                        odno=odno,
+                        order_qty=order.quantity,
+                        cancel_fn=lambda: self._cancel_order(odno, order.ticker, order.quantity),
+                        pending_ids_fn=self._get_pending_order_ids,
+                        fill_query_fn=lambda: self._query_fill_details(odno, order.ticker),
+                        logger=self.logger,
+                        log_prefix="[KisDomestic]",
+                    )
+                    return self._outcome_to_execution(outcome, order, odno, float(order_price))
 
             return TradeExecution(
                 ticker=order.ticker,
@@ -218,6 +228,50 @@ class KisDomesticBrokerBase(KisBrokerCommon):
         except Exception as e:
             self.logger.error(f"[KisDomestic] Order Error: {e}")
             return None
+
+    def _outcome_to_execution(self, outcome, order: Order, odno: str,
+                              fallback_price: float) -> TradeExecution:
+        """resolve_timeout_outcome 결과를 TradeExecution 으로 변환."""
+        status_map = {
+            "FILLED":   ExecutionStatus.FILLED,
+            "PARTIAL":  ExecutionStatus.PARTIAL,
+            "REJECTED": ExecutionStatus.REJECTED,
+            "ORDERED":  ExecutionStatus.ORDERED,
+        }
+        if outcome.classification == "REJECTED":
+            final_qty = 0
+            final_price = fallback_price
+            final_fee = 0.0
+        else:
+            final_qty = outcome.fill_qty
+            final_price = outcome.fill_price if outcome.fill_price > 0 else fallback_price
+            final_fee = outcome.fill_fee
+        reason = f"ODNO={odno}"
+        if outcome.classification == "PARTIAL":
+            reason += f" partial_after_cancel({outcome.fill_qty}/{order.quantity})"
+        elif outcome.classification == "ORDERED" and outcome.fill_qty > 0:
+            reason += f" PARTIAL_FILL={outcome.fill_qty} manual_check_required"
+        elif outcome.classification == "ORDERED":
+            reason += " manual_check_required"
+        elif outcome.classification == "FILLED":
+            reason += " race_full_fill"
+        if not outcome.cancel_ok:
+            reason += " cancel_unconfirmed"
+        self.logger.info(
+            f"[KisDomestic] Timeout outcome: {display_ticker(order.ticker)} ODNO={odno} "
+            f"{outcome.classification} qty={outcome.fill_qty}/{order.quantity} "
+            f"detail={outcome.detail}"
+        )
+        return TradeExecution(
+            ticker=order.ticker,
+            action=order.action,
+            quantity=final_qty,
+            price=final_price,
+            fee=final_fee,
+            date=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            status=status_map[outcome.classification],
+            reason=reason,
+        )
 
     def _poll_order_fill(self, odno: str, timeout: int = 30) -> bool:
         """공용 poll helper 호출 래퍼."""
@@ -241,13 +295,17 @@ class KisDomesticBrokerBase(KisBrokerCommon):
             "INQR_DVSN_1": "0",
             "INQR_DVSN_2": "0"
         }
-        headers = self._get_header(tr_id)
-        res = _pkg.requests.get(url, headers=headers, params=params)
-        res.raise_for_status()
-        data = res.json()
-        if data['rt_cd'] == '0':
-            return {item.get('odno', '') for item in data.get('output', [])}
-        return set()
+        try:
+            headers = self._get_header(tr_id)
+            res = _pkg.requests.get(url, headers=headers, params=params, timeout=DEFAULT_HTTP_TIMEOUT)
+            res.raise_for_status()
+            data = res.json()
+            if data.get('rt_cd') == '0':
+                return {item.get('odno', '') for item in data.get('output', [])}
+            return set()
+        except Exception as e:
+            self.logger.warning(f"[KisDomestic] _get_pending_order_ids error: {e}")
+            return set()
 
     def _get_pending_orders_count(self) -> int:
         """국내주식 미체결 건수 조회."""
@@ -286,15 +344,21 @@ class KisDomesticBrokerBase(KisBrokerCommon):
         }
         try:
             headers = self._get_header(self.FILL_TR_ID)
-            res = _pkg.requests.get(url, headers=headers, params=params)
+            res = _pkg.requests.get(url, headers=headers, params=params, timeout=DEFAULT_HTTP_TIMEOUT)
             res.raise_for_status()
             data = res.json()
-            if data['rt_cd'] != '0':
+            if data.get('rt_cd') != '0':
                 return 0.0, 0, 0.0
 
-            for item in data.get('output1', []):
-                if item.get('odno') != odno:
-                    continue
+            # tot_ccld_qty 는 ODNO 누적 체결량이라 단일 row 만 사용해도 정상.
+            # 같은 ODNO 에 row 가 2개 이상인 비정상 응답이면 첫 매칭만 사용하고 경고.
+            matching = [it for it in data.get('output1', []) if it.get('odno') == odno]
+            if len(matching) > 1:
+                self.logger.warning(
+                    f"[KisDomestic] inquire-daily-ccld returned {len(matching)} rows "
+                    f"for ODNO={odno} — using first row (avg_prvs is cumulative)"
+                )
+            for item in matching:
                 fill_price = float(item.get('avg_prvs', 0) or 0)
                 fill_qty = int(item.get('tot_ccld_qty', 0) or 0)
                 fill_fee = float(item.get('tot_ccld_amt', 0) or 0) * 0.00015
@@ -323,19 +387,19 @@ class KisDomesticBrokerBase(KisBrokerCommon):
         }
         try:
             headers = self._get_header(self.CANCEL_TR_ID, data)
-            res = _pkg.requests.post(url, headers=headers, json=data)
+            res = _pkg.requests.post(url, headers=headers, json=data, timeout=DEFAULT_HTTP_TIMEOUT)
             res.raise_for_status()
             resp_data = res.json()
-            if resp_data['rt_cd'] == '0':
-                self.logger.info(f"[KisDomestic] Order Cancelled: {ticker} ODNO={odno}")
+            if resp_data.get('rt_cd') == '0':
+                self.logger.info(f"[KisDomestic] Order Cancelled: {display_ticker(ticker)} ODNO={odno}")
                 return True
             else:
                 self.logger.error(
-                    f"[KisDomestic] Cancel Failed: {ticker} ODNO={odno} — {resp_data.get('msg1')}"
+                    f"[KisDomestic] Cancel Failed: {display_ticker(ticker)} ODNO={odno} — {resp_data.get('msg1')}"
                 )
                 return False
         except Exception as e:
-            self.logger.error(f"[KisDomestic] Cancel Error: {ticker} ODNO={odno} — {e}")
+            self.logger.error(f"[KisDomestic] Cancel Error: {display_ticker(ticker)} ODNO={odno} — {e}")
             return False
 
     def _fetch_asking_price(self, ticker: str) -> tuple:
@@ -349,12 +413,12 @@ class KisDomesticBrokerBase(KisBrokerCommon):
         headers = self._get_header(self.ASKING_PRICE_TR_ID)
         try:
             time.sleep(0.1)
-            res = _pkg.requests.get(url, headers=headers, params=params)
+            res = _pkg.requests.get(url, headers=headers, params=params, timeout=DEFAULT_HTTP_TIMEOUT)
             res.raise_for_status()
             data = res.json()
 
-            if data['rt_cd'] != '0':
-                self.logger.warning(f"[KisDomestic] 호가 조회 실패 {ticker}: {data.get('msg1')}")
+            if data.get('rt_cd') != '0':
+                self.logger.warning(f"[KisDomestic] 호가 조회 실패 {display_ticker(ticker)}: {data.get('msg1')}")
                 return (0.0, 0.0)
 
             output1 = data.get('output1', {})
@@ -363,7 +427,7 @@ class KisDomesticBrokerBase(KisBrokerCommon):
             return (bid, ask)
 
         except Exception as e:
-            self.logger.warning(f"[KisDomestic] 호가 조회 에러 {ticker}: {e}")
+            self.logger.warning(f"[KisDomestic] 호가 조회 에러 {display_ticker(ticker)}: {e}")
             return (0.0, 0.0)
 
 
@@ -374,7 +438,7 @@ class KisDomesticPaperBroker(KisDomesticBrokerBase):
     PORTFOLIO_TR_ID = "VTTC8434R"
     BUY_TR_ID = "VTTC0012U"
     SELL_TR_ID = "VTTC0011U"
-    PENDING_TR_ID = "TTTC0084R"
+    PENDING_TR_ID = "VTTC0084R"
     FILL_TR_ID = "VTTC0081R"
     CANCEL_TR_ID = "VTTC0013U"
 

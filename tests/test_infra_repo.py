@@ -57,18 +57,20 @@ class TestTradeHistory:
         repo.save_trade_history(executions, portfolio, "초기 매수")
 
         # 파일 확인
-        data = json.loads(open(repo.history_file, 'r').read())
+        with open(repo.history_file, 'r', encoding='utf-8') as f:
+            data = json.load(f)
         assert len(data) == 1
         assert data[0]["reason"] == "초기 매수"
         assert len(data[0]["executions"]) == 1
 
     def test_empty_executions_not_saved(self, repo):
-        """체결 내역이 없으면 저장하지 않음"""
+        """체결 내역이 없으면 저장하지 않음 (초기화된 빈 상태 유지)"""
         portfolio = Portfolio(10000.0, {}, {})
         repo.save_trade_history([], portfolio, "no trades")
 
-        import os
-        assert not os.path.exists(repo.history_file)
+        with open(repo.history_file, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+        assert data == []
 
     def test_append_history(self, repo):
         """매매 내역은 append 방식"""
@@ -79,40 +81,31 @@ class TestTradeHistory:
         repo.save_trade_history(exe1, pf, "매수")
         repo.save_trade_history(exe2, pf, "매도")
 
-        data = json.loads(open(repo.history_file, 'r').read())
+        with open(repo.history_file, 'r', encoding='utf-8') as f:
+            data = json.load(f)
         assert len(data) == 2
 
 
 class TestStatus:
-    def test_update_and_get_status(self, repo):
+    def test_save_and_get_status(self, repo):
         """상태 저장 및 마지막 실행일 조회"""
-        portfolio = Portfolio(10000.0, {"AAPL": 5}, {"AAPL": 150.0})
-        positions = [PositionLot("lot_001", "AAPL", 140.0, 5, "2026-04-01", level=1)]
-
-        repo.update_status(portfolio, positions, "모니터링", sim_date="2026-04-10")
+        status_data = {"last_run_date": "2026-04-10", "positions": {"AAPL": {}}}
+        repo.save_status(status_data)
 
         last_run = repo.get_last_run_date()
         assert last_run == "2026-04-10"
 
     def test_get_last_run_date_no_file(self, repo):
-        """status 파일이 없으면 None"""
+        """status 파일에 데이터가 없으면 None"""
         assert repo.get_last_run_date() is None
 
-    def test_status_contains_position_details(self, repo):
-        """상태에 포지션 상세 정보 포함 (level 포함)"""
-        portfolio = Portfolio(10000.0, {"AAPL": 5}, {"AAPL": 160.0})
-        positions = [PositionLot("lot_001", "AAPL", 150.0, 5, "2026-04-01", level=1)]
-
-        repo.update_status(portfolio, positions, "test")
-
-        data = json.loads(open(repo.status_file, 'r').read())
-        assert "positions" in data
-        assert "AAPL" in data["positions"]
-        assert data["positions"]["AAPL"]["lot_count"] == 1
-        # pct_change: (160-150)/150*100 = 6.67%
-        lot_detail = data["positions"]["AAPL"]["lots"][0]
-        assert lot_detail["pct_change"] == pytest.approx(6.67, abs=0.01)
-        assert lot_detail["level"] == 1
+    def test_get_realized_pnl_by_ticker(self, repo):
+        """누적 손익 조회"""
+        status_data = {"realized_pnl_by_ticker": {"AAPL": 100.0}}
+        repo.save_status(status_data)
+        
+        pnl = repo.get_realized_pnl_by_ticker()
+        assert pnl == {"AAPL": 100.0}
 
     def test_load_legacy_positions_without_level(self, repo):
         """레거시 positions.json (level 필드 없음) 정상 로드 및 마이그레이션"""
@@ -122,8 +115,9 @@ class TestStatus:
             {"lot_id": "lot_002", "ticker": "AAPL", "buy_price": 95.0,
              "quantity": 5, "buy_date": "2026-04-05"},
         ]
-        with open(repo.positions_file, 'w') as f:
-            json.dump(legacy_data, f)
+        with open(repo.positions_file, 'w', encoding='utf-8') as f:
+            json.dump(legacy_data, f, ensure_ascii=False)
+        repo.clear_cache()
 
         loaded = repo.load_positions()
         assert len(loaded) == 2
