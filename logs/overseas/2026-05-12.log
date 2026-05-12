@@ -84,3 +84,21 @@
 2026-05-12 00:36:33,492 [INFO] [KisBroker] Order FILLED: 테슬라(TSLA) ODNO=0030400364 price=438.44 qty=1 fee=0.0
 2026-05-12 00:36:33,694 [INFO] [Position] New lot: lot_20260512_003633_TSLA_001 Lv1 테슬라(TSLA) 1주 @USD 438.44
 2026-05-12 00:36:39,355 [INFO] >>> Step 6: Persist
+2026-05-12 14:38:56,154 [INFO] === Manual Trade CLI: TSLA BUY ===
+2026-05-12 14:38:56,155 [INFO] [KisBroker] 캐시에서 토큰 로드 (API 호출 생략)
+2026-05-12 14:38:56,155 [INFO] [KisOverseasLiveBroker] Mode: LIVE TRADING
+2026-05-12 14:38:56,155 [INFO] === Manual Trade: 테슬라(TSLA) BUY ===
+2026-05-12 14:38:56,155 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-12 14:38:58,710 [INFO] Fetching real-time prices from Broker...
+2026-05-12 14:39:04,958 [INFO] Portfolio: Cash=USD 2,664.37, Value=USD 7,496.61
+2026-05-12 14:39:04,958 [INFO] >>> Step 2: Load Positions
+2026-05-12 14:39:04,959 [INFO] Loaded 11 position lot(s)
+2026-05-12 14:39:04,959 [INFO] 매수 수량 자동 도출: Lv2 buy_amount=USD 500.00 / 현재가=USD 435.46 = 1주
+2026-05-12 14:39:04,959 [INFO] [테슬라(TSLA)] 수동 신호 생성: BUY Lv2 1주 @USD 435.46
+2026-05-12 14:39:04,959 [INFO] Executing 1 order(s)...
+2026-05-12 14:39:06,703 [INFO] [KisBroker] Available Cash for BUY: 2,664
+2026-05-12 14:39:08,424 [INFO] [KisBroker] Order Sent: BUY 테슬라(TSLA) 1 @ 435.49 (ODNO=0030793787)
+2026-05-12 14:39:08,882 [INFO] [KisBroker] Order FILLED: 테슬라(TSLA) ODNO=0030793787 price=435.49 qty=1 fee=0.0
+2026-05-12 14:39:09,083 [INFO] [Position] New lot: lot_20260512_143909_TSLA_002 Lv2 테슬라(TSLA) 1주 @USD 435.49
+2026-05-12 14:39:13,912 [INFO] >>> Step 6: Persist
+2026-05-12 14:39:14,372 [INFO] === Manual Trade 완료 ===
