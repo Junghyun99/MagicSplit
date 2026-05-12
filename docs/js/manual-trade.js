@@ -7,6 +7,7 @@
     let currentConfig = null;
     let currentStatus = null;
     let tickers = []; // Merged data
+    let tickerMap = {};
 
     // UI Elements
     const githubToken = document.getElementById('github-token');
@@ -40,6 +41,18 @@
     async function init() {
         loadSettings();
         setupEventListeners();
+
+        // Load ticker mapping
+        try {
+            const tickerData = await DataRepository.loadTickers();
+            tickerMap = {};
+            tickerData.forEach(t => {
+                tickerMap[t[0]] = t[1];
+            });
+        } catch (e) {
+            console.error("Failed to load tickers:", e);
+        }
+
         if (githubApi) {
             await refreshData();
         }
@@ -173,9 +186,11 @@
 
         tickers = stocks.map(rule => {
             const status = statusMap[rule.ticker] || { level: 0, quantity: 0, highestLvQty: 0 };
+            const resolvedAlias = rule.alias || tickerMap[rule.ticker] || rule.ticker;
+            
             return {
                 ticker: rule.ticker,
-                alias: rule.alias || rule.ticker,
+                alias: resolvedAlias,
                 enabled: rule.enabled !== false,
                 currentLevel: status.level,
                 currentQty: status.quantity,
@@ -255,7 +270,11 @@
             marketType: currentMarket,
         };
 
-        modalTitle.textContent = `${tickerObj.alias} (${tickerObj.ticker}) ${action === 'buy' ? '매수' : '매도'}`;
+        const displayName = tickerObj.alias !== tickerObj.ticker 
+            ? `${tickerObj.alias} (${tickerObj.ticker})` 
+            : tickerObj.ticker;
+
+        modalTitle.textContent = `${displayName} ${action === 'buy' ? '매수' : '매도'}`;
         statusFeedback.style.display = 'none';
         confirmTradeBtn.disabled = false;
         confirmTradeBtn.textContent = '실행';
