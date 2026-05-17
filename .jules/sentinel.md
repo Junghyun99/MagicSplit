@@ -1,0 +1,1 @@
+- Missing API timeouts identified in KIS Brokerage API calls. Applied timeout=10 to all requests.get and requests.post to prevent bot freezes during market volatility or network disruption.
