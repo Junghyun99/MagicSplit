@@ -34,7 +34,7 @@ def fetch_hashkey(base_url: str, app_key: str, app_secret: str, data: dict, logg
     url = f"{base_url}/uapi/hashkey"
     try:
         res = _pkg.requests.post(
-            url,
+            url, timeout=10,
             headers={
                 "content-type": "application/json",
                 "appkey": app_key,
