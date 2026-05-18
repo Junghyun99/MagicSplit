@@ -3,7 +3,7 @@
         {
             "ticker": "005930",
             "market_type": "domestic",
-            "enabled": false,
+            "enabled": true,
             "preset": "large_cap_ks"
         },
         {
@@ -32,7 +32,7 @@
         }
     ],
     "global": {
-        "max_exposure_pct": 80,
+        "max_exposure_pct": 99,
         "notification_enabled": true
     }
 }
