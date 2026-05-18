@@ -20,3 +20,29 @@
 2026-05-18 09:48:36,321 [INFO] >>> Processing 와이씨(232140)
 2026-05-18 09:48:36,321 [INFO] [와이씨(232140)] 비중 상한 초과: 현재 0.0% + 매수 예정 91.9% = 91.9% > 상한 40.0% -> 매수 보류
 2026-05-18 09:48:36,904 [INFO] >>> Step 6: Persist
+2026-05-18 09:53:44,703 [INFO] === Initializing MagicSplit Bot (domestic) ===
+2026-05-18 09:53:44,703 [INFO] Loaded 5 stock rule(s) from config_domestic.json
+2026-05-18 09:53:44,703 [INFO] [domestic] 4 rule(s), mode=LIVE
+2026-05-18 09:53:44,703 [INFO] [KisBroker] 캐시에서 토큰 로드 (API 호출 생략)
+2026-05-18 09:53:44,703 [INFO] [KisDomesticLiveBroker] Mode: LIVE TRADING
+2026-05-18 09:53:44,703 [INFO] === Running domestic engine ===
+2026-05-18 09:53:44,703 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-18 09:53:45,591 [INFO] Fetching real-time prices from Broker...
+2026-05-18 09:53:46,571 [INFO] Portfolio: Cash=KRW 1,082,556, Value=KRW 1,082,556
+2026-05-18 09:53:46,571 [INFO] >>> Step 2: Load Positions
+2026-05-18 09:53:46,571 [INFO] Loaded 0 position lot(s)
+2026-05-18 09:53:46,571 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-18 09:53:46,572 [INFO] >>> Processing 삼성전자(005930)
+2026-05-18 09:53:46,572 [INFO] [삼성전자(005930)] 보유 lot 없음 -> 초기 매수 Lv1 3주 @KRW 273,750
+2026-05-18 09:53:46,572 [INFO] Executing 1 order(s)...
+2026-05-18 09:53:46,918 [INFO] [KisBroker] Available Cash for BUY: 1,082,556
+2026-05-18 09:53:48,116 [INFO] [KisDomestic] Order Sent: BUY 삼성전자(005930) 3 @ 274000 (ODNO=0019098600)
+2026-05-18 09:53:48,410 [INFO] [KisDomestic] Order FILLED: 삼성전자(005930) ODNO=0019098600 price=274000.0 qty=3 fee=123.29999999999998
+2026-05-18 09:53:48,611 [INFO] [Position] New lot: lot_20260518_095348_005930_001 Lv1 삼성전자(005930) 3주 @KRW 274,000
+2026-05-18 09:53:51,966 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-18 09:53:51,966 [INFO] [ACE 엔비디아밸류체인액티브(483320)] 현금 부족: 보유 현금 KRW 260,446 < 매수 예정 금액 KRW 977,550 (38주) -> 매수 보류
+2026-05-18 09:53:52,640 [INFO] >>> Processing 현대건설(000720)
+2026-05-18 09:53:52,640 [INFO] [현대건설(000720)] 현금 부족: 보유 현금 KRW 260,446 < 매수 예정 금액 KRW 978,600 (7주) -> 매수 보류
+2026-05-18 09:53:53,296 [INFO] >>> Processing 와이씨(232140)
+2026-05-18 09:53:53,296 [INFO] [와이씨(232140)] 현금 부족: 보유 현금 KRW 260,446 < 매수 예정 금액 KRW 992,940 (57주) -> 매수 보류
+2026-05-18 09:53:53,896 [INFO] >>> Step 6: Persist

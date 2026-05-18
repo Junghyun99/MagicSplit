@@ -1,27 +1,76 @@
 {
-    "last_updated": "2026-05-18 09:48:36",
+    "last_updated": "2026-05-18 09:53:53",
     "last_run_date": "2026-05-18",
     "market_type": "domestic",
-    "reason": "삼성전자(005930):BUY(비중 상한 초과: 현재 0.0% + 매수 예정 75.1% = 75.1% > 상한 40.0%), ACE 엔비디아밸류체인액티브(483320):BUY(비중 상한 초과: 현재 0.0% + 매수 예정 92.4% = 92.4% > 상한 40.0%), 현대건설(000720):BUY(비중 상한 초과: 현재 0.0% + 매수 예정 89.5% = 89.5% > 상한 40.0%), 와이씨(232140):BUY(비중 상한 초과: 현재 0.0% + 매수 예정 91.9% = 91.9% > 상한 40.0%)",
+    "reason": "삼성전자(005930):BUY(초기 매수 Lv1), ACE 엔비디아밸류체인액티브(483320):BUY(현금 부족: 보유 현금 KRW 260,446 < 매수 예정 금액 KRW 977,550 (38주)), 현대건설(000720):BUY(현금 부족: 보유 현금 KRW 260,446 < 매수 예정 금액 KRW 978,600 (7주)), 와이씨(232140):BUY(현금 부족: 보유 현금 KRW 260,446 < 매수 예정 금액 KRW 992,940 (57주))",
     "portfolio": {
-        "total_value": 1082556.0,
-        "cash_balance": 1082556.0,
-        "holdings": []
+        "total_value": 1082446.0,
+        "cash_balance": 260446.0,
+        "holdings": [
+            {
+                "ticker": "005930",
+                "alias": "삼성전자",
+                "qty": 3,
+                "price": 274000.0,
+                "value": 822000.0
+            }
+        ]
     },
-    "positions": {},
+    "positions": {
+        "005930": {
+            "total_qty": 3,
+            "lot_count": 1,
+            "total_invested": 822000.0,
+            "current_value": 822000.0,
+            "lots": [
+                {
+                    "lot_id": "lot_20260518_095348_005930_001",
+                    "buy_price": 274000.0,
+                    "quantity": 3,
+                    "buy_date": "2026-05-18",
+                    "level": 1,
+                    "current_price": 274000.0,
+                    "pct_change": 0.0
+                }
+            ],
+            "current_price": 274000.0,
+            "alias": "삼성전자",
+            "avg_buy_price": 274000.0,
+            "unrealized_pnl": 0.0,
+            "unrealized_pnl_pct": 0.0,
+            "realized_pnl": 0.0,
+            "total_pnl": 0.0
+        }
+    },
     "realized_pnl_by_ticker": {
         "483320": -194.19
     },
     "enabled_tickers": ["005930", "483320", "000720", "232140"],
     "risk_summary": {
-        "next_level_needs": 0,
+        "next_level_needs": 500000.0,
         "max_potential_exposure": 202000000.0,
-        "stale_info": [],
-        "risk_score": 100,
-        "deductions": [],
+        "stale_info": [
+            {
+                "ticker": "005930",
+                "alias": "삼성전자",
+                "last_trade_date": "2026-05-18",
+                "days_stale": 0
+            }
+        ],
+        "risk_score": 69,
+        "deductions": [
+            {
+                "reason": "현금 비중 부족",
+                "points": 1.4
+            },
+            {
+                "reason": "단일 종목 집중도 과다",
+                "points": 30
+            }
+        ],
         "sync_error": false,
-        "alerts": [],
-        "max_ticker_concentration": 0,
-        "high_level_ratio": 0
+        "alerts": ["⚠️ 단일 종목 집중도 과다 (75.9%)"],
+        "max_ticker_concentration": 75.94,
+        "high_level_ratio": 0.0
     }
 }
