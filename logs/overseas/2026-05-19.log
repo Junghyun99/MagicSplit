@@ -1,0 +1,47 @@
+2026-05-19 02:22:05,198 [INFO] === Initializing MagicSplit Bot (overseas) ===
+2026-05-19 02:22:05,198 [INFO] Loaded 14 stock rule(s) from config_overseas.json
+2026-05-19 02:22:05,198 [INFO] [overseas] 12 rule(s), mode=LIVE
+2026-05-19 02:22:05,199 [INFO] [KisBroker] 캐시에서 토큰 로드 (API 호출 생략)
+2026-05-19 02:22:05,199 [INFO] [KisOverseasLiveBroker] Mode: LIVE TRADING
+2026-05-19 02:22:05,199 [INFO] === Running overseas engine ===
+2026-05-19 02:22:05,199 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-19 02:22:07,370 [INFO] Fetching real-time prices from Broker...
+2026-05-19 02:22:11,920 [INFO] Portfolio: Cash=USD 980.69, Value=USD 7,320.58
+2026-05-19 02:22:11,920 [INFO] >>> Step 2: Load Positions
+2026-05-19 02:22:11,921 [INFO] Loaded 14 position lot(s)
+2026-05-19 02:22:11,921 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-19 02:22:11,921 [INFO] >>> Processing 애플(AAPL)
+2026-05-19 02:22:11,922 [INFO]   [애플(AAPL)] 신호 없음 | Lv1 매수 USD 291.90 -> 현재 USD 295.69 (+1.30%) | 익절 +10.0% / 추매 -5.0%
+2026-05-19 02:22:11,922 [INFO] >>> Processing 리얼티 인컴(O)
+2026-05-19 02:22:11,922 [INFO]   [리얼티 인컴(O)] 신호 없음 | Lv1 매수 USD 62.37 -> 현재 USD 61.54 (-1.33%) | 익절 +10.0% / 추매 -5.0%
+2026-05-19 02:22:11,923 [INFO] >>> Processing 프록터 앤드 갬블(PG)
+2026-05-19 02:22:11,923 [INFO]   [프록터 앤드 갬블(PG)] 신호 없음 | Lv1 매수 USD 142.81 -> 현재 USD 142.27 (-0.38%) | 익절 +10.0% / 추매 -5.0%
+2026-05-19 02:22:11,923 [INFO] >>> Processing 펩시코(PEP)
+2026-05-19 02:22:11,924 [INFO]   [펩시코(PEP)] 신호 없음 | Lv1 매수 USD 150.05 -> 현재 USD 148.51 (-1.03%) | 익절 +10.0% / 추매 -5.0%
+2026-05-19 02:22:11,924 [INFO] >>> Processing 듀크 에너지(DUK)
+2026-05-19 02:22:11,924 [INFO]   [듀크 에너지(DUK)] 신호 없음 | Lv1 매수 USD 124.92 -> 현재 USD 122.18 (-2.19%) | 익절 +10.0% / 추매 -5.0%
+2026-05-19 02:22:11,924 [INFO] >>> Processing ARK INNOVATION(ARKK)
+2026-05-19 02:22:11,925 [INFO]   [ARK INNOVATION(ARKK)] 신호 없음 | Lv2 매수 USD 75.28 -> 현재 USD 74.32 (-1.28%) | 익절 +10.0% / 추매 -5.0%
+2026-05-19 02:22:11,925 [INFO] >>> Processing SCHWAB US DIVIDEND EQUITY(SCHD)
+2026-05-19 02:22:11,925 [INFO]   [SCHWAB US DIVIDEND EQUITY(SCHD)] 신호 없음 | Lv1 매수 USD 31.74 -> 현재 USD 31.93 (+0.61%) | 익절 +10.0% / 추매 -5.0%
+2026-05-19 02:22:11,926 [INFO] >>> Processing ISHARES GLOBAL CLEAN ENERGY(ICLN)
+2026-05-19 02:22:11,926 [INFO]   [ISHARES GLOBAL CLEAN ENERGY(ICLN)] 신호 없음 | Lv1 매수 USD 22.01 -> 현재 USD 21.30 (-3.25%) | 익절 +10.0% / 추매 -5.0%
+2026-05-19 02:22:11,926 [INFO] >>> Processing 알파벳 A(GOOGL)
+2026-05-19 02:22:11,926 [INFO]   [알파벳 A(GOOGL)] 신호 없음 | Lv1 매수 USD 393.85 -> 현재 USD 401.82 (+2.02%) | 익절 +10.0% / 추매 -5.0%
+2026-05-19 02:22:11,927 [INFO] >>> Processing 브로드컴(AVGO)
+2026-05-19 02:22:11,927 [INFO]   [브로드컴(AVGO)] 신호 없음 | Lv1 매수 USD 429.80 -> 현재 USD 418.67 (-2.59%) | 익절 +10.0% / 추매 -5.0%
+2026-05-19 02:22:11,927 [INFO] >>> Processing 테슬라(TSLA)
+2026-05-19 02:22:11,928 [INFO] [테슬라(TSLA)] Lv2 매수가 USD 435.49 대비 -5.9% -> 추가 매수 Lv3 1주 @USD 409.87
+2026-05-19 02:22:11,928 [INFO] Executing 1 order(s)...
+2026-05-19 02:22:13,488 [INFO] [KisBroker] Available Cash for BUY: 981
+2026-05-19 02:22:14,847 [INFO] [KisBroker] Order Sent: BUY 테슬라(TSLA) 1 @ 409.9 (ODNO=0030386705)
+2026-05-19 02:22:17,417 [INFO] [KisBroker] Order FILLED: 테슬라(TSLA) ODNO=0030386705 price=409.9 qty=1 fee=0.0
+2026-05-19 02:22:17,618 [INFO] [Position] New lot: lot_20260519_022217_TSLA_003 Lv3 테슬라(TSLA) 1주 @USD 409.90
+2026-05-19 02:22:22,191 [INFO] >>> Processing 코닝(GLW)
+2026-05-19 02:22:22,192 [INFO] [코닝(GLW)] Lv1 매수가 USD 202.75 대비 -12.4% -> 추가 매수 Lv2 2주 @USD 177.66
+2026-05-19 02:22:22,192 [INFO] Executing 1 order(s)...
+2026-05-19 02:22:23,761 [INFO] [KisBroker] Available Cash for BUY: 571
+2026-05-19 02:22:25,089 [INFO] [KisBroker] Order Sent: BUY 코닝(GLW) 2 @ 177.85 (ODNO=0030386759)
+2026-05-19 02:22:27,639 [INFO] [KisBroker] Order FILLED: 코닝(GLW) ODNO=0030386759 price=177.85 qty=2 fee=0.0
+2026-05-19 02:22:27,840 [INFO] [Position] New lot: lot_20260519_022227_GLW_002 Lv2 코닝(GLW) 2주 @USD 177.85
+2026-05-19 02:22:32,416 [INFO] >>> Step 6: Persist
