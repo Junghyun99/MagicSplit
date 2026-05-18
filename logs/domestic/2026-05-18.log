@@ -1,0 +1,22 @@
+2026-05-18 09:48:32,463 [INFO] === Initializing MagicSplit Bot (domestic) ===
+2026-05-18 09:48:32,463 [INFO] Loaded 5 stock rule(s) from config_domestic.json
+2026-05-18 09:48:32,463 [INFO] [domestic] 4 rule(s), mode=LIVE
+2026-05-18 09:48:32,463 [INFO] [KisBroker] 캐시에서 토큰 로드 (API 호출 생략)
+2026-05-18 09:48:32,463 [INFO] [KisDomesticLiveBroker] Mode: LIVE TRADING
+2026-05-18 09:48:32,464 [INFO] === Running domestic engine ===
+2026-05-18 09:48:32,464 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-18 09:48:33,341 [INFO] Fetching real-time prices from Broker...
+2026-05-18 09:48:34,314 [INFO] Portfolio: Cash=KRW 1,082,556, Value=KRW 1,082,556
+2026-05-18 09:48:34,315 [INFO] >>> Step 2: Load Positions
+2026-05-18 09:48:34,315 [INFO] Loaded 0 position lot(s)
+2026-05-18 09:48:34,315 [INFO] >>> Step 2.1: Detected 3 newly enabled ticker(s)
+2026-05-18 09:48:34,316 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-18 09:48:34,316 [INFO] >>> Processing 삼성전자(005930)
+2026-05-18 09:48:34,316 [INFO] [삼성전자(005930)] 비중 상한 초과: 현재 0.0% + 매수 예정 75.1% = 75.1% > 상한 40.0% -> 매수 보류
+2026-05-18 09:48:34,993 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-18 09:48:34,993 [INFO] [ACE 엔비디아밸류체인액티브(483320)] 비중 상한 초과: 현재 0.0% + 매수 예정 92.4% = 92.4% > 상한 40.0% -> 매수 보류
+2026-05-18 09:48:35,637 [INFO] >>> Processing 현대건설(000720)
+2026-05-18 09:48:35,637 [INFO] [현대건설(000720)] 비중 상한 초과: 현재 0.0% + 매수 예정 89.5% = 89.5% > 상한 40.0% -> 매수 보류
+2026-05-18 09:48:36,321 [INFO] >>> Processing 와이씨(232140)
+2026-05-18 09:48:36,321 [INFO] [와이씨(232140)] 비중 상한 초과: 현재 0.0% + 매수 예정 91.9% = 91.9% > 상한 40.0% -> 매수 보류
+2026-05-18 09:48:36,904 [INFO] >>> Step 6: Persist
