@@ -1,0 +1,1 @@
+- **Brokerage API Timeouts**: Added `timeout=10` parameter to all `requests.get` and `requests.post` calls to the KIS API. This is critical because missing timeouts can cause the trading bot to hang indefinitely if the broker's API becomes unresponsive or experiences high latency during market volatility.
