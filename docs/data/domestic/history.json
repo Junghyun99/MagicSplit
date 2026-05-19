@@ -109,5 +109,146 @@
                 "alias": "삼성전자"
             }
         ]
+    },
+    {
+        "id": "tx_20260519_143406",
+        "date": "2026-05-19 14:34:06",
+        "portfolio_value": 31887171.0,
+        "total_trade_amount": 10493145.0,
+        "reason": "ACE 엔비디아밸류체인액티브(483320):BUY(초기 매수 Lv1), 현대차(005380):BUY(초기 매수 Lv1), 미래에셋증권(006800):BUY(초기 매수 Lv1), KODEX 증권(102970):BUY(초기 매수 Lv1), SK하이닉스(000660):BUY(buy_amount(KRW 1,000,000) < 현재가(KRW 1,767,000) -> 1주도 매수 불가. buy_amount 상향 조정 필요), TIGER 지주회사(307520):BUY(초기 매수 Lv1), 메리츠금융지주(138040):BUY(초기 매수 Lv1), KODEX 미국S&P500에너지(합성)(218420):BUY(초기 매수 Lv1), KODEX 미국S&P500금융(453650):BUY(초기 매수 Lv1), KODEX 미국S&P500필수소비재(453630):BUY(초기 매수 Lv1), ACE 테슬라밸류체인액티브(457480):BUY(초기 매수 Lv1), SOL 반도체전공정(475300):BUY(초기 매수 Lv1)",
+        "executions": [
+            {
+                "ticker": "483320",
+                "action": "BUY",
+                "quantity": 39,
+                "price": 25290.0,
+                "fee": 147.9465,
+                "date": "2026-05-19 14:33:02",
+                "status": "FILLED",
+                "reason": "ODNO=0032789500",
+                "level": 1,
+                "alias": "ACE 엔비디아밸류체인액티브"
+            },
+            {
+                "ticker": "005380",
+                "action": "BUY",
+                "quantity": 1,
+                "price": 604000.0,
+                "fee": 90.6,
+                "date": "2026-05-19 14:33:08",
+                "status": "FILLED",
+                "reason": "ODNO=0032796700",
+                "level": 1,
+                "alias": "현대차"
+            },
+            {
+                "ticker": "006800",
+                "action": "BUY",
+                "quantity": 15,
+                "price": 66400.0,
+                "fee": 149.39999999999998,
+                "date": "2026-05-19 14:33:13",
+                "status": "FILLED",
+                "reason": "ODNO=0032802300",
+                "level": 1,
+                "alias": "미래에셋증권"
+            },
+            {
+                "ticker": "102970",
+                "action": "BUY",
+                "quantity": 37,
+                "price": 26355.0,
+                "fee": 146.27024999999998,
+                "date": "2026-05-19 14:33:19",
+                "status": "FILLED",
+                "reason": "ODNO=0032807000",
+                "level": 1,
+                "alias": "KODEX 증권"
+            },
+            {
+                "ticker": "307520",
+                "action": "BUY",
+                "quantity": 41,
+                "price": 24265.0,
+                "fee": 149.22975,
+                "date": "2026-05-19 14:33:26",
+                "status": "FILLED",
+                "reason": "ODNO=0032814300",
+                "level": 1,
+                "alias": "TIGER 지주회사"
+            },
+            {
+                "ticker": "138040",
+                "action": "BUY",
+                "quantity": 9,
+                "price": 109100.0,
+                "fee": 147.285,
+                "date": "2026-05-19 14:33:32",
+                "status": "FILLED",
+                "reason": "ODNO=0032821800",
+                "level": 1,
+                "alias": "메리츠금융지주"
+            },
+            {
+                "ticker": "218420",
+                "action": "BUY",
+                "quantity": 47,
+                "price": 21155.0,
+                "fee": 149.14274999999998,
+                "date": "2026-05-19 14:33:38",
+                "status": "FILLED",
+                "reason": "ODNO=0032828500",
+                "level": 1,
+                "alias": "KODEX 미국S&P500에너지(합성)"
+            },
+            {
+                "ticker": "453650",
+                "action": "BUY",
+                "quantity": 52,
+                "price": 18975.0,
+                "fee": 148.005,
+                "date": "2026-05-19 14:33:44",
+                "status": "FILLED",
+                "reason": "ODNO=0032832500",
+                "level": 1,
+                "alias": "KODEX 미국S&P500금융"
+            },
+            {
+                "ticker": "453630",
+                "action": "BUY",
+                "quantity": 73,
+                "price": 13600.0,
+                "fee": 148.92,
+                "date": "2026-05-19 14:33:50",
+                "status": "FILLED",
+                "reason": "ODNO=0032839000",
+                "level": 1,
+                "alias": "KODEX 미국S&P500필수소비재"
+            },
+            {
+                "ticker": "457480",
+                "action": "BUY",
+                "quantity": 42,
+                "price": 23625.0,
+                "fee": 148.83749999999998,
+                "date": "2026-05-19 14:33:56",
+                "status": "FILLED",
+                "reason": "ODNO=0032845000",
+                "level": 1,
+                "alias": "ACE 테슬라밸류체인액티브"
+            },
+            {
+                "ticker": "475300",
+                "action": "BUY",
+                "quantity": 44,
+                "price": 22475.0,
+                "fee": 148.33499999999998,
+                "date": "2026-05-19 14:34:02",
+                "status": "FILLED",
+                "reason": "ODNO=0032849400",
+                "level": 1,
+                "alias": "SOL 반도체전공정"
+            }
+        ]
     }
 ]

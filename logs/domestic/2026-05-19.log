@@ -1,0 +1,96 @@
+2026-05-19 14:32:54,280 [INFO] === Initializing MagicSplit Bot (domestic) ===
+2026-05-19 14:32:54,280 [INFO] Loaded 13 stock rule(s) from config_domestic.json
+2026-05-19 14:32:54,280 [INFO] [domestic] 13 rule(s), mode=LIVE
+2026-05-19 14:32:54,280 [INFO] [KisBroker] 새 토큰 발급 중...
+2026-05-19 14:32:55,467 [INFO] [KisDomesticLiveBroker] Mode: LIVE TRADING
+2026-05-19 14:32:55,467 [INFO] === Running domestic engine ===
+2026-05-19 14:32:55,467 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-19 14:32:55,890 [INFO] Fetching real-time prices from Broker...
+2026-05-19 14:32:59,858 [INFO] Portfolio: Cash=KRW 31,050,446, Value=KRW 31,887,446
+2026-05-19 14:32:59,858 [INFO] >>> Step 2: Load Positions
+2026-05-19 14:32:59,858 [INFO] Loaded 1 position lot(s)
+2026-05-19 14:32:59,858 [INFO] >>> Step 2.1: Detected 11 newly enabled ticker(s)
+2026-05-19 14:32:59,859 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-19 14:32:59,860 [INFO] >>> Processing 삼성전자(005930)
+2026-05-19 14:32:59,860 [INFO]   [삼성전자(005930)] 신호 없음 | Lv1 매수 KRW 274,000 -> 현재 KRW 279,000 (+1.82%) | 익절 +10.0% / 추매 -5.0%
+2026-05-19 14:32:59,860 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-05-19 14:32:59,861 [INFO] [ACE 엔비디아밸류체인액티브(483320)] 보유 lot 없음 -> 초기 매수 Lv1 39주 @KRW 25,290
+2026-05-19 14:32:59,861 [INFO] Executing 1 order(s)...
+2026-05-19 14:33:00,276 [INFO] [KisBroker] Available Cash for BUY: 31,050,446
+2026-05-19 14:33:01,737 [INFO] [KisDomestic] Order Sent: BUY ACE 엔비디아밸류체인액티브(483320) 39 @ 25290 (ODNO=0032789500)
+2026-05-19 14:33:02,143 [INFO] [KisDomestic] Order FILLED: ACE 엔비디아밸류체인액티브(483320) ODNO=0032789500 price=25290.0 qty=39 fee=147.9465
+2026-05-19 14:33:02,344 [INFO] [ACE 엔비디아밸류체인액티브(483320)] 동적 재매수 기준 초기화 (매도가 KRW 25,515 -> 소비됨)
+2026-05-19 14:33:02,344 [INFO] [Position] New lot: lot_20260519_143302_483320_001 Lv1 ACE 엔비디아밸류체인액티브(483320) 39주 @KRW 25,290
+2026-05-19 14:33:05,764 [INFO] >>> Processing 현대차(005380)
+2026-05-19 14:33:05,765 [INFO] [현대차(005380)] 보유 lot 없음 -> 초기 매수 Lv1 1주 @KRW 606,000
+2026-05-19 14:33:05,765 [INFO] Executing 1 order(s)...
+2026-05-19 14:33:06,171 [INFO] [KisBroker] Available Cash for BUY: 30,063,996
+2026-05-19 14:33:07,693 [INFO] [KisDomestic] Order Sent: BUY 현대차(005380) 1 @ 604000 (ODNO=0032796700)
+2026-05-19 14:33:08,098 [INFO] [KisDomestic] Order FILLED: 현대차(005380) ODNO=0032796700 price=604000.0 qty=1 fee=90.6
+2026-05-19 14:33:08,299 [INFO] [Position] New lot: lot_20260519_143308_005380_001 Lv1 현대차(005380) 1주 @KRW 604,000
+2026-05-19 14:33:11,710 [INFO] >>> Processing 미래에셋증권(006800)
+2026-05-19 14:33:11,710 [INFO] [미래에셋증권(006800)] 보유 lot 없음 -> 초기 매수 Lv1 15주 @KRW 66,400
+2026-05-19 14:33:11,711 [INFO] Executing 1 order(s)...
+2026-05-19 14:33:12,122 [INFO] [KisBroker] Available Cash for BUY: 29,459,916
+2026-05-19 14:33:13,590 [INFO] [KisDomestic] Order Sent: BUY 미래에셋증권(006800) 15 @ 66400 (ODNO=0032802300)
+2026-05-19 14:33:13,996 [INFO] [KisDomestic] Order FILLED: 미래에셋증권(006800) ODNO=0032802300 price=66400.0 qty=15 fee=149.39999999999998
+2026-05-19 14:33:14,197 [INFO] [Position] New lot: lot_20260519_143314_006800_001 Lv1 미래에셋증권(006800) 15주 @KRW 66,400
+2026-05-19 14:33:17,630 [INFO] >>> Processing KODEX 증권(102970)
+2026-05-19 14:33:17,631 [INFO] [KODEX 증권(102970)] 보유 lot 없음 -> 초기 매수 Lv1 37주 @KRW 26,375
+2026-05-19 14:33:17,631 [INFO] Executing 1 order(s)...
+2026-05-19 14:33:18,042 [INFO] [KisBroker] Available Cash for BUY: 28,463,786
+2026-05-19 14:33:19,508 [INFO] [KisDomestic] Order Sent: BUY KODEX 증권(102970) 37 @ 26355 (ODNO=0032807000)
+2026-05-19 14:33:19,912 [INFO] [KisDomestic] Order FILLED: KODEX 증권(102970) ODNO=0032807000 price=26355.0 qty=37 fee=146.27024999999998
+2026-05-19 14:33:20,113 [INFO] [Position] New lot: lot_20260519_143320_102970_001 Lv1 KODEX 증권(102970) 37주 @KRW 26,355
+2026-05-19 14:33:23,529 [INFO] >>> Processing SK하이닉스(000660)
+2026-05-19 14:33:23,530 [INFO] [SK하이닉스(000660)] buy_amount(KRW 1,000,000) < 현재가(KRW 1,767,000) -> 1주도 매수 불가. buy_amount 상향 조정 필요
+2026-05-19 14:33:23,881 [INFO] >>> Processing TIGER 지주회사(307520)
+2026-05-19 14:33:23,881 [INFO] [TIGER 지주회사(307520)] 보유 lot 없음 -> 초기 매수 Lv1 41주 @KRW 24,250
+2026-05-19 14:33:23,881 [INFO] Executing 1 order(s)...
+2026-05-19 14:33:24,293 [INFO] [KisBroker] Available Cash for BUY: 27,488,511
+2026-05-19 14:33:25,704 [INFO] [KisDomestic] Order Sent: BUY TIGER 지주회사(307520) 41 @ 24265 (ODNO=0032814300)
+2026-05-19 14:33:26,107 [INFO] [KisDomestic] Order FILLED: TIGER 지주회사(307520) ODNO=0032814300 price=24265.0 qty=41 fee=149.22975
+2026-05-19 14:33:26,308 [INFO] [Position] New lot: lot_20260519_143326_307520_001 Lv1 TIGER 지주회사(307520) 41주 @KRW 24,265
+2026-05-19 14:33:29,727 [INFO] >>> Processing 메리츠금융지주(138040)
+2026-05-19 14:33:29,727 [INFO] [메리츠금융지주(138040)] 보유 lot 없음 -> 초기 매수 Lv1 9주 @KRW 109,100
+2026-05-19 14:33:29,727 [INFO] Executing 1 order(s)...
+2026-05-19 14:33:30,160 [INFO] [KisBroker] Available Cash for BUY: 26,493,506
+2026-05-19 14:33:31,633 [INFO] [KisDomestic] Order Sent: BUY 메리츠금융지주(138040) 9 @ 109100 (ODNO=0032821800)
+2026-05-19 14:33:32,035 [INFO] [KisDomestic] Order FILLED: 메리츠금융지주(138040) ODNO=0032821800 price=109100.0 qty=9 fee=147.285
+2026-05-19 14:33:32,236 [INFO] [Position] New lot: lot_20260519_143332_138040_001 Lv1 메리츠금융지주(138040) 9주 @KRW 109,100
+2026-05-19 14:33:35,841 [INFO] >>> Processing KODEX 미국S&P500에너지(합성)(218420)
+2026-05-19 14:33:35,841 [INFO] [KODEX 미국S&P500에너지(합성)(218420)] 보유 lot 없음 -> 초기 매수 Lv1 47주 @KRW 21,130
+2026-05-19 14:33:35,841 [INFO] Executing 1 order(s)...
+2026-05-19 14:33:36,442 [INFO] [KisBroker] Available Cash for BUY: 25,511,476
+2026-05-19 14:33:37,852 [INFO] [KisDomestic] Order Sent: BUY KODEX 미국S&P500에너지(합성)(218420) 47 @ 21155 (ODNO=0032828500)
+2026-05-19 14:33:38,255 [INFO] [KisDomestic] Order FILLED: KODEX 미국S&P500에너지(합성)(218420) ODNO=0032828500 price=21155.0 qty=47 fee=149.14274999999998
+2026-05-19 14:33:38,456 [INFO] [Position] New lot: lot_20260519_143338_218420_001 Lv1 KODEX 미국S&P500에너지(합성)(218420) 47주 @KRW 21,155
+2026-05-19 14:33:41,872 [INFO] >>> Processing KODEX 미국S&P500금융(453650)
+2026-05-19 14:33:41,873 [INFO] [KODEX 미국S&P500금융(453650)] 보유 lot 없음 -> 초기 매수 Lv1 52주 @KRW 18,940
+2026-05-19 14:33:41,873 [INFO] Executing 1 order(s)...
+2026-05-19 14:33:42,480 [INFO] [KisBroker] Available Cash for BUY: 24,517,051
+2026-05-19 14:33:43,904 [INFO] [KisDomestic] Order Sent: BUY KODEX 미국S&P500금융(453650) 52 @ 18975 (ODNO=0032832500)
+2026-05-19 14:33:44,311 [INFO] [KisDomestic] Order FILLED: KODEX 미국S&P500금융(453650) ODNO=0032832500 price=18975.0 qty=52 fee=148.005
+2026-05-19 14:33:44,511 [INFO] [Position] New lot: lot_20260519_143344_453650_001 Lv1 KODEX 미국S&P500금융(453650) 52주 @KRW 18,975
+2026-05-19 14:33:48,119 [INFO] >>> Processing KODEX 미국S&P500필수소비재(453630)
+2026-05-19 14:33:48,120 [INFO] [KODEX 미국S&P500필수소비재(453630)] 보유 lot 없음 -> 초기 매수 Lv1 73주 @KRW 13,570
+2026-05-19 14:33:48,120 [INFO] Executing 1 order(s)...
+2026-05-19 14:33:48,540 [INFO] [KisBroker] Available Cash for BUY: 23,530,211
+2026-05-19 14:33:49,946 [INFO] [KisDomestic] Order Sent: BUY KODEX 미국S&P500필수소비재(453630) 73 @ 13600 (ODNO=0032839000)
+2026-05-19 14:33:50,349 [INFO] [KisDomestic] Order FILLED: KODEX 미국S&P500필수소비재(453630) ODNO=0032839000 price=13600.0 qty=73 fee=148.92
+2026-05-19 14:33:50,550 [INFO] [Position] New lot: lot_20260519_143350_453630_001 Lv1 KODEX 미국S&P500필수소비재(453630) 73주 @KRW 13,600
+2026-05-19 14:33:54,161 [INFO] >>> Processing ACE 테슬라밸류체인액티브(457480)
+2026-05-19 14:33:54,162 [INFO] [ACE 테슬라밸류체인액티브(457480)] 보유 lot 없음 -> 초기 매수 Lv1 42주 @KRW 23,620
+2026-05-19 14:33:54,162 [INFO] Executing 1 order(s)...
+2026-05-19 14:33:54,773 [INFO] [KisBroker] Available Cash for BUY: 22,537,271
+2026-05-19 14:33:56,177 [INFO] [KisDomestic] Order Sent: BUY ACE 테슬라밸류체인액티브(457480) 42 @ 23625 (ODNO=0032845000)
+2026-05-19 14:33:56,581 [INFO] [KisDomestic] Order FILLED: ACE 테슬라밸류체인액티브(457480) ODNO=0032845000 price=23625.0 qty=42 fee=148.83749999999998
+2026-05-19 14:33:56,782 [INFO] [Position] New lot: lot_20260519_143356_457480_001 Lv1 ACE 테슬라밸류체인액티브(457480) 42주 @KRW 23,625
+2026-05-19 14:34:00,401 [INFO] >>> Processing SOL 반도체전공정(475300)
+2026-05-19 14:34:00,402 [INFO] [SOL 반도체전공정(475300)] 보유 lot 없음 -> 초기 매수 Lv1 44주 @KRW 22,465
+2026-05-19 14:34:00,402 [INFO] Executing 1 order(s)...
+2026-05-19 14:34:00,825 [INFO] [KisBroker] Available Cash for BUY: 21,544,881
+2026-05-19 14:34:02,245 [INFO] [KisDomestic] Order Sent: BUY SOL 반도체전공정(475300) 44 @ 22475 (ODNO=0032849400)
+2026-05-19 14:34:02,647 [INFO] [KisDomestic] Order FILLED: SOL 반도체전공정(475300) ODNO=0032849400 price=22475.0 qty=44 fee=148.33499999999998
+2026-05-19 14:34:02,848 [INFO] [Position] New lot: lot_20260519_143402_475300_001 Lv1 SOL 반도체전공정(475300) 44주 @KRW 22,475
+2026-05-19 14:34:06,465 [INFO] >>> Step 6: Persist
