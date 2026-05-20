@@ -250,5 +250,26 @@
                 "alias": "SOL 반도체전공정"
             }
         ]
+    },
+    {
+        "id": "tx_20260520_145432",
+        "date": "2026-05-20 14:54:32",
+        "portfolio_value": 31654246.0,
+        "total_trade_amount": 489600.0,
+        "reason": "현대차(005380):BUY(buy_amount(KRW 500,000) < 현재가(KRW 590,000) -> 1주도 매수 불가. buy_amount 상향 조정 필요), 미래에셋증권(006800):BUY(추가 매수 Lv2 (Lv1 대비 -8.0%))",
+        "executions": [
+            {
+                "ticker": "006800",
+                "action": "BUY",
+                "quantity": 8,
+                "price": 61200.0,
+                "fee": 73.44,
+                "date": "2026-05-20 14:54:28",
+                "status": "FILLED",
+                "reason": "ODNO=0031791900",
+                "level": 2,
+                "alias": "미래에셋증권"
+            }
+        ]
     }
 ]
