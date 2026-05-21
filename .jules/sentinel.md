@@ -1,0 +1,1 @@
+- Brokerage APIs are prone to hanging during volatility; all requests MUST have a timeout.
