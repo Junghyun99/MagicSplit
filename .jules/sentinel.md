@@ -1,0 +1,3 @@
+- Use timeouts on ALL API requests (e.g. `requests.get(url, timeout=5)`).
+- This repo is a trading bot targeting KIS APIs (Korea Investment).
+- The KIS APIs do not have `timeout=` args set.
