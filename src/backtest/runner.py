@@ -12,7 +12,7 @@ from src.utils.logger import TradeLogger
 from src.utils.currency import format_money
 from src.strategy_config import StrategyConfig
 from src.backtest.fetcher import download_ohlc_data
-from src.backtest.components import BacktestBroker
+from src.backtest.components import BacktestBroker, BacktestMarketDataProvider
 
 
 def _validate_tickers(
@@ -90,6 +90,13 @@ def run_backtest(
 
     broker = BacktestBroker(initial_cash=initial_cash, logger=logger)
     repo = JsonRepository(root_path=output_dir)
+    # 레짐 지표용 시세 제공자 (브로커와 분리). 레짐 종목이 있을 때만 주입.
+    regime_active = any(getattr(r, "regime_enabled", False) for r in rules)
+    window_size = max((r.regime_min_bars for r in rules), default=200) + 60
+    market_data = (
+        BacktestMarketDataProvider(ohlc_df, window_size=window_size)
+        if regime_active else None
+    )
     engine = MagicSplitEngine(
         broker=broker,
         repo=repo,
@@ -97,6 +104,7 @@ def run_backtest(
         stock_rules=rules,
         notifier=None,
         is_live_trading=False,
+        market_data=market_data,
     )
 
     # 5. 시뮬레이션 루프
@@ -104,10 +112,6 @@ def run_backtest(
 
     prev_prices: Dict[str, float] = {}
     last_result: Optional[DayResult] = None
-
-    # 레짐 필터가 켜진 종목이 하나라도 있으면 추세 윈도우를 매일 공급한다.
-    regime_active = any(getattr(r, "regime_enabled", False) for r in rules)
-    window_size = max((r.regime_min_bars for r in rules), default=200) + 60
 
     for today in sim_days:
         # 종가 추출
@@ -130,20 +134,8 @@ def run_backtest(
         broker.set_date(today)
         broker.set_prices(current_prices)
 
-        if regime_active:
-            # 지표는 "어제까지 완성봉"으로만 계산한다 (오늘 봉 제외).
-            # 오늘의 미완성 봉을 끼우면 ADX/ATR의 H/L 결손·장중 repaint·룩어헤드가
-            # 생기므로, 현재가(오늘 종가)는 트리거 비교에만 쓰고 지표 입력에선 뺀다.
-            window_block = ohlc_df.loc[:today].iloc[:-1].tail(window_size)
-            windows: Dict[str, pd.DataFrame] = {}
-            for t in tickers:
-                try:
-                    windows[t] = window_block.xs(t, axis=1, level=1)
-                except KeyError:
-                    continue
-            broker.set_ohlc_windows(windows)
-
         try:
+            # 엔진이 market_data 제공자에서 "오늘 직전까지" 윈도우를 직접 조회한다.
             last_result = engine.run_one_cycle(sim_date=sim_date)
         except Exception as e:
             logger.error(f"[{sim_date}] 사이클 실행 실패: {e}")

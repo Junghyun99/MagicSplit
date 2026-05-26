@@ -1,6 +1,6 @@
 # src/core/interfaces.py
 from abc import ABC, abstractmethod
-from typing import List, Dict, Optional
+from typing import Any, List, Dict, Optional
 from src.core.models import Portfolio, Order, TradeExecution, PositionLot, SplitSignal
 
 
@@ -11,6 +11,21 @@ class IBrokerAdapter(ABC):
     def execute_orders(self, orders: List[Order]) -> List[TradeExecution]: ...
     @abstractmethod
     def fetch_current_prices(self, tickers: List[str]) -> Dict[str, float]: ...
+
+
+class IMarketDataProvider(ABC):
+    """레짐 지표 계산용 과거 시세(OHLC)를 제공한다. 실행 브로커와 분리된 시장 데이터 출처.
+
+    백테스트는 yfinance 캐시 기반 프레임을, 라이브는 yfinance/증권사 일봉을 구현으로 끼운다.
+    """
+
+    @abstractmethod
+    def get_ohlc_window(self, ticker: str, asof: Any) -> Optional["Any"]:
+        """asof(오늘) *직전*까지의 완성봉 OHLC 윈도우를 반환한다 (오늘 봉 제외).
+
+        반환: index=날짜, columns=[High, Low, Close]인 DataFrame. 데이터가 없으면 None.
+        """
+        ...
 
 
 class ILogger(ABC):

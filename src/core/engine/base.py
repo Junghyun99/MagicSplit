@@ -5,7 +5,9 @@ from dataclasses import replace
 from datetime import datetime
 from typing import Dict, List, Optional, Set, Tuple
 
-from src.core.interfaces import IBrokerAdapter, IRepository, ILogger, INotifier
+from src.core.interfaces import (
+    IBrokerAdapter, IRepository, ILogger, INotifier, IMarketDataProvider,
+)
 from src.core.models import (
     StockRule,
     PositionLot,
@@ -43,10 +45,13 @@ class MagicSplitEngine:
         stock_rules: List[StockRule],
         notifier: Optional[INotifier] = None,
         is_live_trading: bool = False,
+        market_data: Optional[IMarketDataProvider] = None,
     ):
         self.broker = broker
         self.repo = repo
         self.logger = logger
+        # 레짐 지표용 시세 제공자 (실행 브로커와 분리). None이면 레짐 비활성(현 라이브).
+        self.market_data = market_data
         self.evaluator = SplitEvaluator(logger=logger)
         self.stock_rules = [r for r in stock_rules if r.enabled]
         self.all_tickers = [r.ticker for r in self.stock_rules]
@@ -93,9 +98,6 @@ class MagicSplitEngine:
             self.logger.set_ticker_context(None)  # 공통 영역
             halted_tickers = self._check_reconcile(positions, portfolio)
 
-            # 레짐 판정용 종목별 OHLC 윈도우 (백테스트 브로커만 제공; 라이브는 빈 dict)
-            ohlc_windows = getattr(self.broker, "get_ohlc_windows", lambda: {})()
-
             # Step 3~5: 종목별 순차 실행
             for rule in self.stock_rules:
                 self.logger.set_ticker_context(rule.ticker)  # 종목 영역 시작
@@ -110,9 +112,14 @@ class MagicSplitEngine:
                     self.logger.info(f">>> Processing {display_ticker(rule.ticker)}")
 
                     # 3a. 해당 종목 신호 평가
+                    # 레짐 지표용 OHLC 윈도우는 시세 제공자에서 (오늘 직전까지). 없으면 None.
+                    ohlc_window = (
+                        self.market_data.get_ohlc_window(rule.ticker, today)
+                        if self.market_data is not None else None
+                    )
                     signals = self.evaluator.evaluate_stock(
                         rule, positions, portfolio, last_sell_prices,
-                        ohlc_window=ohlc_windows.get(rule.ticker),
+                        ohlc_window=ohlc_window,
                         regime_state=regime_state,
                     )
 
