@@ -67,8 +67,22 @@ def run_backtest(
         return None
 
     # 2. 데이터 다운로드 (OHLC; 레짐 지표 + 종가 모두 여기서 파생)
-    logger.info(f"--- 데이터 다운로드: {tickers} ({start_date} ~ {end_date}) ---")
-    ohlc_df = download_ohlc_data(tickers, start_date, end_date)
+    # 만약 레짐 지표(이동평균/ADX/ATR 등)를 사용한다면, 첫 백테스트 거래일에 충분한 과거 데이터(window_size 봉)가 
+    # 확보되도록 데이터 다운로드 시작 시점을 과거로 이동합니다.
+    regime_active = any(getattr(r, "regime_enabled", False) for r in rules)
+    window_size = max((r.regime_min_bars for r in rules), default=200) + 60
+    
+    if regime_active:
+        start_dt = pd.to_datetime(start_date)
+        # 1 거래일 = 약 1.45 영업일. 안전하게 1.6배 곱해 calendar days 산출
+        days_to_subtract = int(window_size * 1.6)
+        download_start = (start_dt - pd.Timedelta(days=days_to_subtract)).strftime("%Y-%m-%d")
+        logger.info(f"레짐 감지 활성화: 과거 데이터 {window_size}봉 확보를 위해 다운로드 시작일을 {start_date}에서 {download_start}로 조정합니다.")
+    else:
+        download_start = start_date
+
+    logger.info(f"--- 데이터 다운로드: {tickers} ({download_start} ~ {end_date}) ---")
+    ohlc_df = download_ohlc_data(tickers, download_start, end_date)
     close_df = ohlc_df["Close"]
 
     if _validate_tickers(close_df, tickers, logger):

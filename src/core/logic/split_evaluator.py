@@ -118,7 +118,7 @@ class SplitEvaluator:
                 min_bars=rule.regime_min_bars,
             )
             st = regime_state.setdefault(rule.ticker, {}) if regime_state is not None else {}
-            if self._resolve_regime(reading, st) == Regime.UPTREND:
+            if self._resolve_regime(reading, st, rule.ticker) == Regime.UPTREND:
                 return self._evaluate_uptrend(
                     rule, ticker_lots, current_price, reading, st, portfolio
                 )
@@ -665,7 +665,7 @@ class SplitEvaluator:
 
     # ── 레짐(상승장) 분기 ──────────────────────────────────────
 
-    def _resolve_regime(self, reading, st: dict) -> Regime:
+    def _resolve_regime(self, reading, st: dict, ticker: str) -> Regime:
         """레짐 히스테리시스를 적용해 유효 레짐을 반환한다 (st를 in-place 변이).
 
         - 상승 진입은 REGIME_CONFIRM_BARS 연속 UPTREND 판정 후에만.
@@ -685,6 +685,11 @@ class SplitEvaluator:
             st["adds"] = 0
             st["last_add_swing_high"] = reading.swing_high
             st["uptrend_streak"] = 0
+            if self._logger:
+                self._logger.info(
+                    f"[{display_ticker(ticker)}] 🔥 강한 상승 추세 진입 확정! "
+                    f"(ADX {reading.adx:.1f} 돌파, 20EMA/50MA/200MA 정배열 정렬 상승 국면)"
+                )
             return Regime.UPTREND
         return Regime.SIDEWAYS
 
@@ -703,6 +708,18 @@ class SplitEvaluator:
         # 기본(use_sma50)은 50MA 하향 이탈을 쓴다. 50MA는 상승 정렬에서 항상 20EMA보다
         # 아래이므로, 20EMA로의 정상 눌림이 이탈로 오인되지 않는 버퍼가 보장된다.
         # use_sma50=False면 변동성 기반 Chandelier 스톱을 쓴다(버퍼는 사용자 책임).
+        
+        # 지표 결손(NaN) 감지 시 안전 최우선 필터: 오작동 및 청산 누락 방지
+        import math
+        target_indicator = reading.sma50 if rule.trendbreak_use_sma50 else reading.chandelier_stop
+        if math.isnan(target_indicator):
+            if self._logger:
+                self._logger.warning(
+                    f"[{display_ticker(rule.ticker)}] ⚠️ 레짐 기술적 지표 결손(NaN) 감지! "
+                    "추세 이탈 여부를 판단할 수 없으므로 안전을 위해 매매 평가를 보류합니다."
+                )
+            return []
+
         if rule.trendbreak_use_sma50:
             broke = current_price < reading.sma50
         else:
@@ -755,14 +772,30 @@ class SplitEvaluator:
         """상승 추세 눌림 매수(불타기) 평가. 새 고점 게이트 + 눌림/반등 확인."""
         adds = st.get("adds", 0)
         if adds >= rule.uptrend_max_adds:
+            if self._logger:
+                self._logger.debug(
+                    f"  [{display_ticker(rule.ticker)}] 불타기 대기 | "
+                    f"최대 추가 매수 횟수 도달 ({adds}/{rule.uptrend_max_adds})"
+                )
             return None
         next_level = last_lot.level + 1
         if next_level > rule.max_lots:
+            if self._logger:
+                self._logger.debug(
+                    f"  [{display_ticker(rule.ticker)}] 불타기 대기 | "
+                    f"최대 보유 차수 도달 ({next_level - 1}/{rule.max_lots})"
+                )
             return None
 
         # 새 고점 게이트: 직전 add(또는 진입) 이후 새 스윙 고점이 나와야 추가
         last_high = st.get("last_add_swing_high")
         if last_high is not None and not (reading.swing_high > last_high):
+            if self._logger:
+                self._logger.debug(
+                    f"  [{display_ticker(rule.ticker)}] 불타기 대기 | "
+                    f"고점 게이트 미갱신 (현재 swing_high {format_money(reading.swing_high, rule.market_type)} "
+                    f"<= 직전 고점 {format_money(last_high, rule.market_type)})"
+                )
             return None
 
         # 눌림(20EMA 근처) + 반등 확인.
@@ -772,11 +805,25 @@ class SplitEvaluator:
         in_band = abs(current_price - ema20) <= ema20 * rule.uptrend_pullback_band_pct / 100
         bounced = current_price > reading.close or current_price > ema20
         if not (in_band and bounced):
+            if self._logger:
+                self._logger.debug(
+                    f"  [{display_ticker(rule.ticker)}] 불타기 대기 | "
+                    f"눌림목 조건 미충족 (현재 {format_money(current_price, rule.market_type)} vs "
+                    f"20EMA {format_money(ema20, rule.market_type)}, "
+                    f"이격 {abs(current_price - ema20)/ema20*100:.2f}% (임계 {rule.uptrend_pullback_band_pct}%), "
+                    f"bounced={bounced})"
+                )
             return None
 
         amount = rule.uptrend_add_amount_at(adds + 1)
         buy_qty = math.floor(amount / current_price)
         if buy_qty <= 0:
+            if self._logger:
+                self._logger.warning(
+                    f"  [{display_ticker(rule.ticker)}] 불타기 취소 | "
+                    f"주문 수량이 0주입니다 (금액 {format_money(amount, rule.market_type)} "
+                    f"< 현재가 {format_money(current_price, rule.market_type)})"
+                )
             return None
 
         passed, reason = self._passes_cash_guard(rule, current_price, buy_qty, portfolio)

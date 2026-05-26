@@ -147,6 +147,8 @@ class MagicSplitEngine:
                         if not blocked_signals and not info_signals:
                             self._log_no_signal_status(
                                 rule, positions, portfolio, last_sell_prices,
+                                regime_state=regime_state,
+                                ohlc_window=ohlc_window,
                             )
                         continue
 
@@ -536,6 +538,8 @@ class MagicSplitEngine:
         positions: List[PositionLot],
         portfolio: Portfolio,
         last_sell_prices: Optional[dict] = None,
+        regime_state: Optional[dict] = None,
+        ohlc_window = None,
     ) -> None:
         """신호 없음일 때 마지막 차수 현황을 한 줄로 요약 로깅한다.
 
@@ -567,6 +571,39 @@ class MagicSplitEngine:
             return
 
         last_lot = max(ticker_lots, key=lambda l: l.level)
+
+        # ── 상승 레짐 전용 요약 로그 분기 ──
+        ticker_state = regime_state.get(ticker, {}) if regime_state else {}
+        if ticker_state.get("regime") == "uptrend" and ohlc_window is not None:
+            from src.core.logic.regime import classify
+            reading = classify(
+                ohlc_window,
+                adx_trend_threshold=rule.regime_adx_trend,
+                adx_range_threshold=rule.regime_adx_range,
+                chandelier_k=rule.trendbreak_chandelier_k,
+                chandelier_lookback=rule.trendbreak_chandelier_lookback,
+                swing_lookback=rule.uptrend_swing_lookback,
+                min_bars=rule.regime_min_bars,
+            )
+            ema20 = reading.ema20
+            sma50 = reading.sma50
+            adds = ticker_state.get("adds", 0)
+            
+            profit_pct = (current_price - last_lot.buy_price) / last_lot.buy_price * 100
+            ema_dist = (current_price - ema20) / ema20 * 100 if ema20 > 0 else float("nan")
+            
+            msg = (
+                f"  [{disp}] 📈 상승 레짐 유지 | Lv{last_lot.level} "
+                f"매수 {format_money(last_lot.buy_price, rule.market_type)} -> "
+                f"현재 {format_money(current_price, rule.market_type)} ({profit_pct:+.2f}%) | "
+                f"50MA(이탈선) {format_money(sma50, rule.market_type)} | "
+                f"20EMA(눌림) {format_money(ema20, rule.market_type)} (이격 {ema_dist:+.2f}%) | "
+                f"adds {adds}/{rule.uptrend_max_adds}"
+            )
+            self.logger.info(msg)
+            return
+
+        # ── 횡보/하락장 (Sideways) 기본 요약 로그 ──
         profit_pct = (current_price - last_lot.buy_price) / last_lot.buy_price * 100
         sell_threshold = rule.sell_threshold_at(last_lot.level)
         buy_threshold = rule.buy_threshold_at(last_lot.level)
@@ -738,8 +775,11 @@ class MagicSplitEngine:
 
                 # 추세이탈 전량청산 매도 체결 확정 시에만 레짐 상태 리셋(flat 재시작).
                 # (신호 생성이 아닌 실제 체결 기준 -> 청산 거절 시 모드 유지하고 재시도)
+                # 단, 부분 매도 거절 등으로 인해 여전히 잔여 포지션이 남아있다면 상태 리셋을 보류하고 
+                # 다음 사이클에서 마저 청산하도록 보장합니다.
+                remaining_lots = [l for l in updated if l.ticker == exe.ticker]
                 if (regime_state is not None and sig is not None
-                        and sig.regime_liquidation):
+                        and sig.regime_liquidation and not remaining_lots):
                     regime_state.pop(exe.ticker, None)
 
         return updated
