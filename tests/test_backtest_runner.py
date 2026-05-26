@@ -217,3 +217,97 @@ class TestRunBacktest:
                 output_dir=output_dir,
             )
         assert result is None
+
+
+def _make_regime_switch_ohlc(spread=0.3):
+    """횡보(210) -> 완만한 상승(150) -> 급락(15)으로 레짐 전환을 합성한다."""
+    sideways = [100 + (i % 2) * 0.5 for i in range(210)]
+    climb = []
+    p = sideways[-1]
+    for _ in range(150):
+        p *= 1.001
+        climb.append(p)
+    drop = []
+    p = climb[-1]
+    for _ in range(15):
+        p *= 0.97
+        drop.append(p)
+    closes = sideways + climb + drop
+    dates = pd.bdate_range("2022-01-03", periods=len(closes))
+    data = {
+        ("High", "AAPL"): [c + spread for c in closes],
+        ("Low", "AAPL"): [c - spread for c in closes],
+        ("Close", "AAPL"): closes,
+    }
+    df = pd.DataFrame(data, index=dates)
+    df.columns = pd.MultiIndex.from_tuples(df.columns)
+    return df
+
+
+def _regime_config(tmp_path, enabled):
+    config = {
+        "stocks": [{
+            "ticker": "AAPL",
+            "market_type": "overseas",
+            "buy_threshold_pct": -20.0,
+            "sell_threshold_pct": 50.0,
+            "buy_amount": 300,
+            "max_lots": 20,
+            "enabled": True,
+            "regime_enabled": enabled,
+            "regime_min_bars": 200,
+            "uptrend_max_adds": 5,
+            "uptrend_pullback_band_pct": 4.0,
+        }],
+        "global": {"notification_enabled": False},
+    }
+    tmp_path.mkdir(parents=True, exist_ok=True)
+    path = tmp_path / "config_overseas.json"
+    path.write_text(json.dumps(config))
+    return str(path)
+
+
+def _max_sells_per_day(output_dir, ticker="AAPL"):
+    with open(os.path.join(output_dir, "history.json"), encoding="utf-8") as f:
+        history = json.load(f)
+    worst = 0
+    for rec in history:
+        sells = sum(
+            1 for e in rec.get("executions", [])
+            if e.get("ticker") == ticker and e.get("action") == "SELL"
+        )
+        worst = max(worst, sells)
+    return worst
+
+
+class TestRegimeIntegration:
+    def test_uptrend_accumulates_then_liquidates(self, tmp_path):
+        ohlc = _make_regime_switch_ohlc()
+        dates = ohlc.index
+        start, end = dates[0].strftime("%Y-%m-%d"), dates[-1].strftime("%Y-%m-%d")
+
+        on_dir = str(tmp_path / "on")
+        with patch("src.backtest.runner.download_ohlc_data", return_value=ohlc):
+            result = run_backtest(
+                config_path=_regime_config(tmp_path / "on_cfg", enabled=True),
+                start_date=start, end_date=end,
+                initial_cash=100000.0, output_dir=on_dir,
+            )
+        assert result is not None
+        # 상승장에서 누적 후 추세 이탈 시 다수 lot을 같은 날 전량 청산
+        assert _max_sells_per_day(on_dir) >= 2
+
+    def test_control_regime_off_single_sell_path(self, tmp_path):
+        ohlc = _make_regime_switch_ohlc()
+        dates = ohlc.index
+        start, end = dates[0].strftime("%Y-%m-%d"), dates[-1].strftime("%Y-%m-%d")
+
+        off_dir = str(tmp_path / "off")
+        with patch("src.backtest.runner.download_ohlc_data", return_value=ohlc):
+            run_backtest(
+                config_path=_regime_config(tmp_path / "off_cfg", enabled=False),
+                start_date=start, end_date=end,
+                initial_cash=100000.0, output_dir=off_dir,
+            )
+        # 평균회귀 경로는 종목당 하루 최대 1건 매도 (동시 다중 청산 없음)
+        assert _max_sells_per_day(off_dir) <= 1

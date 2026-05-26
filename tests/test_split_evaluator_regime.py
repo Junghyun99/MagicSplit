@@ -120,6 +120,45 @@ class TestUptrendPullbackAdd:
         )
         assert signals == []
 
+    def test_add_blocked_by_exposure(self, evaluator):
+        rule = _regime_rule(max_exposure_pct=0.001)  # 사실상 어떤 매수도 비중 초과
+        window = _uptrend_window()
+        r = _reading(window, rule)
+        price = r.ema20 * 1.005
+        lot = _lot(level=1, buy_price=50.0)
+        state = {"AAPL": {"regime": "uptrend", "adds": 0,
+                          "last_add_swing_high": r.swing_high - 5}}
+        signals = evaluator.evaluate_stock(
+            rule, [lot], _pf(price=price), ohlc_window=window, regime_state=state,
+        )
+        assert len(signals) == 1 and signals[0].is_blocked
+
+    def test_add_blocked_by_cash(self, evaluator):
+        rule = _regime_rule(uptrend_add_amount=100000)
+        window = _uptrend_window()
+        r = _reading(window, rule)
+        price = r.ema20 * 1.005
+        lot = _lot(level=1, buy_price=50.0)
+        state = {"AAPL": {"regime": "uptrend", "adds": 0,
+                          "last_add_swing_high": r.swing_high - 5}}
+        signals = evaluator.evaluate_stock(
+            rule, [lot], _pf(price=price, cash=50.0), ohlc_window=window, regime_state=state,
+        )
+        assert len(signals) == 1 and signals[0].is_blocked
+
+    def test_add_qty_zero_skips(self, evaluator):
+        rule = _regime_rule(uptrend_add_amount=1.0)  # 1주도 못 사는 금액
+        window = _uptrend_window()
+        r = _reading(window, rule)
+        price = r.ema20 * 1.005
+        lot = _lot(level=1, buy_price=50.0)
+        state = {"AAPL": {"regime": "uptrend", "adds": 0,
+                          "last_add_swing_high": r.swing_high - 5}}
+        signals = evaluator.evaluate_stock(
+            rule, [lot], _pf(price=price), ohlc_window=window, regime_state=state,
+        )
+        assert signals == []
+
     def test_max_adds_caps(self, evaluator):
         rule = _regime_rule(uptrend_max_adds=2)
         window = _uptrend_window()
