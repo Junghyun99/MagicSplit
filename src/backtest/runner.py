@@ -131,8 +131,10 @@ def run_backtest(
         broker.set_prices(current_prices)
 
         if regime_active:
-            # 오늘까지 포함한 추세 윈도우 (룩어헤드 금지: .loc[:today])
-            window_block = ohlc_df.loc[:today].tail(window_size)
+            # 지표는 "어제까지 완성봉"으로만 계산한다 (오늘 봉 제외).
+            # 오늘의 미완성 봉을 끼우면 ADX/ATR의 H/L 결손·장중 repaint·룩어헤드가
+            # 생기므로, 현재가(오늘 종가)는 트리거 비교에만 쓰고 지표 입력에선 뺀다.
+            window_block = ohlc_df.loc[:today].iloc[:-1].tail(window_size)
             windows: Dict[str, pd.DataFrame] = {}
             for t in tickers:
                 try:

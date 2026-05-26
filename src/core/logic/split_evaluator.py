@@ -765,10 +765,12 @@ class SplitEvaluator:
         if last_high is not None and not (reading.swing_high > last_high):
             return None
 
-        # 눌림(20EMA 근처) + 반등 확인
+        # 눌림(20EMA 근처) + 반등 확인.
+        # 윈도우는 "어제까지"이므로 reading.close = 직전 완성봉(어제) 종가.
+        # 반등 = 현재가가 어제 종가 위 또는 20EMA 위.
         ema20 = reading.ema20
         in_band = abs(current_price - ema20) <= ema20 * rule.uptrend_pullback_band_pct / 100
-        bounced = current_price > reading.prev_close or current_price > ema20
+        bounced = current_price > reading.close or current_price > ema20
         if not (in_band and bounced):
             return None
 

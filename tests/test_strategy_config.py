@@ -1,7 +1,10 @@
 # tests/test_strategy_config.py
 import json
+import os
 import pytest
 from src.strategy_config import StrategyConfig
+
+REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 class TestStrategyConfig:
@@ -423,3 +426,23 @@ class TestStrategyConfigRegime:
         assert rule.regime_enabled is True
         assert rule.uptrend_add_amounts == [1500.0, 1000.0, 600.0]
 
+
+
+class TestRepoConfigRegimeSeparation:
+    """라이브 config는 레짐 OFF, 백테스트 전용 config_test_*는 레짐 ON 불변식."""
+
+    def test_live_overseas_regime_off(self):
+        sc = StrategyConfig(os.path.join(REPO_ROOT, "config_overseas.json"))
+        assert sc.rules and all(r.regime_enabled is False for r in sc.rules)
+
+    def test_live_domestic_regime_off(self):
+        sc = StrategyConfig(os.path.join(REPO_ROOT, "config_domestic.json"))
+        assert sc.rules and all(r.regime_enabled is False for r in sc.rules)
+
+    def test_backtest_overseas_regime_on(self):
+        sc = StrategyConfig(os.path.join(REPO_ROOT, "config_test_overseas.json"))
+        assert sc.rules and all(r.regime_enabled is True for r in sc.rules)
+
+    def test_backtest_domestic_regime_on(self):
+        sc = StrategyConfig(os.path.join(REPO_ROOT, "config_test_domestic.json"))
+        assert sc.rules and all(r.regime_enabled is True for r in sc.rules)
