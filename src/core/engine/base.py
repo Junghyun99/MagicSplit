@@ -736,6 +736,12 @@ class MagicSplitEngine:
                         f"Lv{target_lot.level} ({target_lot.quantity}주 전량 매도)"
                     )
 
+                # 추세이탈 전량청산 매도 체결 확정 시에만 레짐 상태 리셋(flat 재시작).
+                # (신호 생성이 아닌 실제 체결 기준 -> 청산 거절 시 모드 유지하고 재시도)
+                if (regime_state is not None and sig is not None
+                        and sig.regime_liquidation):
+                    regime_state.pop(exe.ticker, None)
+
         return updated
 
     def _enrich_executions(self, executions: List[TradeExecution], signals: List[SplitSignal]) -> None:

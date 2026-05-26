@@ -708,10 +708,9 @@ class SplitEvaluator:
         else:
             broke = current_price < reading.chandelier_stop
         if broke:
-            st["regime"] = "sideways"
-            st["adds"] = 0
-            st["uptrend_streak"] = 0
-            st.pop("last_add_swing_high", None)
+            # regime_state 리셋은 여기서 하지 않는다. 매도 체결이 확정될 때
+            # (엔진 _update_positions)에서 리셋해야 백테스트/라이브가 동일하다.
+            # 청산 매도가 모두 거절되면 다음 사이클에 다시 청산을 시도한다.
             if self._logger:
                 self._logger.info(
                     f"[{display_ticker(rule.ticker)}] 추세 이탈 -> 전량 청산 "
@@ -732,6 +731,7 @@ class SplitEvaluator:
                     pct_change=pct,
                     level=lot.level,
                     buy_price=lot.buy_price,
+                    regime_liquidation=True,
                 ))
             return signals
 

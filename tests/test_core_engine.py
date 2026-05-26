@@ -1072,6 +1072,48 @@ class TestRegimeAddCommitOnFill:
         assert regime_state["AAPL"]["adds"] == 2
 
 
+class TestRegimeLiquidationResetOnFill:
+    """추세이탈 전량청산: 매도 체결이 확정될 때만 regime_state를 리셋한다."""
+
+    def _positions(self):
+        return [
+            PositionLot("lotA", "AAPL", 50.0, 5, "2024-01-01", level=1),
+            PositionLot("lotB", "AAPL", 60.0, 5, "2024-01-01", level=2),
+        ]
+
+    def _liq_signals(self):
+        return [
+            SplitSignal("AAPL", "lotB", OrderAction.SELL, 5, 90.0, "청산", 0.0, 2, 60.0,
+                        regime_liquidation=True),
+            SplitSignal("AAPL", "lotA", OrderAction.SELL, 5, 90.0, "청산", 0.0, 1, 50.0,
+                        regime_liquidation=True),
+        ]
+
+    def _sell(self, status=ExecutionStatus.FILLED, qty=5):
+        return TradeExecution("AAPL", OrderAction.SELL, qty, 90.0, 0.0, "2024-01-01", status)
+
+    def test_reset_on_filled_liquidation(self, engine):
+        regime_state = {"AAPL": {"regime": "uptrend", "adds": 3, "last_add_swing_high": 200.0}}
+        engine._update_positions(
+            self._positions(), self._liq_signals(), [self._sell(), self._sell()],
+            "2024-01-02", last_sell_prices={}, regime_state=regime_state,
+        )
+        assert "AAPL" not in regime_state  # flat 재시작
+
+    def test_no_reset_when_all_rejected(self, engine):
+        regime_state = {"AAPL": {"regime": "uptrend", "adds": 3, "last_add_swing_high": 200.0}}
+        rejected = [
+            self._sell(status=ExecutionStatus.REJECTED, qty=0),
+            self._sell(status=ExecutionStatus.REJECTED, qty=0),
+        ]
+        engine._update_positions(
+            self._positions(), self._liq_signals(), rejected,
+            "2024-01-02", last_sell_prices={}, regime_state=regime_state,
+        )
+        # 거절되면 상승 모드 유지 -> 다음 사이클 재시도
+        assert regime_state["AAPL"]["regime"] == "uptrend"
+
+
 class TestUpdatePositionsMultiSell:
     """추세 이탈 전량청산: 한 종목에 매도 신호가 여럿일 때 lot별로 모두 제거."""
 

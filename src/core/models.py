@@ -217,6 +217,8 @@ class SplitSignal:
     # 상승장 누적매수(add) 신호 표식 + 체결 확정 시 기록할 스윙고점.
     # None이 아니면 "상승 add"이며, 매수 체결이 확정될 때 regime_state를 갱신한다.
     regime_add_swing_high: Optional[float] = None
+    # 추세이탈 전량청산 매도 표식. 매도 체결이 확정될 때 regime_state를 리셋(flat 재시작)한다.
+    regime_liquidation: bool = False
 
 
 @dataclass

@@ -192,9 +192,9 @@ class TestTrendBreakLiquidation:
         assert len(signals) == 3
         assert all(s.action == OrderAction.SELL for s in signals)
         assert {s.lot_id for s in signals} == {"lotA", "lotB", "lotC"}
-        # 상태가 초기화되어 다음 사이클 flat 재시작
-        assert state["AAPL"]["regime"] == "sideways"
-        assert state["AAPL"]["adds"] == 0
+        # 청산 표식이 실려야 하고, 리셋은 체결 시 엔진이 수행 -> 평가 시점엔 상승 유지
+        assert all(s.regime_liquidation for s in signals)
+        assert state["AAPL"]["regime"] == "uptrend"
 
 
 class TestResolveRegimeHysteresis:
