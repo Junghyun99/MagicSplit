@@ -160,6 +160,7 @@ class MagicSplitEngine:
                             positions = self._update_positions(
                                 positions, signals, executions, today,
                                 last_sell_prices=last_sell_prices,
+                                regime_state=regime_state,
                             )
                             portfolio = self._refresh_portfolio(portfolio)
                         except Exception as e:
@@ -600,6 +601,7 @@ class MagicSplitEngine:
         executions: List[TradeExecution],
         today: str,
         last_sell_prices: Optional[dict] = None,
+        regime_state: Optional[dict] = None,
     ) -> List[PositionLot]:
         """체결 결과를 반영하여 포지션을 업데이트한다.
 
@@ -671,6 +673,13 @@ class MagicSplitEngine:
                     level=level,
                 )
                 updated.append(new_lot)
+                # 상승장 누적매수(add) 체결 확정 시에만 regime_state를 갱신한다.
+                # (신호 생성이 아닌 실제 체결 기준 -> 백테스트/라이브 동일 동작)
+                if (regime_state is not None and sig is not None
+                        and sig.regime_add_swing_high is not None):
+                    st = regime_state.setdefault(exe.ticker, {})
+                    st["adds"] = st.get("adds", 0) + 1
+                    st["last_add_swing_high"] = sig.regime_add_swing_high
                 # 동적 재매수 소비: 매수 체결 시 직전 매도가 초기화
                 if last_sell_prices is not None and exe.ticker in last_sell_prices:
                     self.logger.info(

@@ -796,10 +796,9 @@ class SplitEvaluator:
                 pct_change=0.0, level=next_level, is_blocked=True,
             )
 
-        # 낙관적 상태 갱신 (백테스트 결정적 체결 가정). 가드 통과 후에만 갱신한다.
-        st["adds"] = adds + 1
-        st["last_add_swing_high"] = reading.swing_high
-
+        # 상태 갱신은 여기서 하지 않는다. 매수 체결이 확정될 때(엔진 _update_positions)
+        # regime_state["adds"]/["last_add_swing_high"]를 갱신해야 백테스트/라이브가 동일해진다.
+        # 신호에 스윙고점을 실어 보내 체결 시 엔진이 커밋하도록 한다.
         if self._logger:
             self._logger.info(
                 f"[{display_ticker(rule.ticker)}] 상승장 누적 매수 Lv{next_level} "
@@ -815,5 +814,6 @@ class SplitEvaluator:
             reason=f"상승장 누적 매수 Lv{next_level} (20EMA 눌림, add {adds + 1})",
             pct_change=0.0,
             level=next_level,
+            regime_add_swing_high=reading.swing_high,
         )
 

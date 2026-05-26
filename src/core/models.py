@@ -214,6 +214,9 @@ class SplitSignal:
     buy_price: float = 0.0  # 매도 시 원래 매수 단가 (손익 계산용)
     is_blocked: bool = False  # 비중 제한 등으로 인해 실행이 차단된 신호 여부
     is_info: bool = False     # 정보성 알림 전용 신호 (주문 없이 상태 변화만 알림)
+    # 상승장 누적매수(add) 신호 표식 + 체결 확정 시 기록할 스윙고점.
+    # None이 아니면 "상승 add"이며, 매수 체결이 확정될 때 regime_state를 갱신한다.
+    regime_add_swing_high: Optional[float] = None
 
 
 @dataclass

@@ -143,11 +143,11 @@ class TestRunOneCycle:
         # Original _update_positions method
         original_update_positions = engine._update_positions
 
-        def mock_update_positions(positions, signals, executions, today, last_sell_prices=None):
+        def mock_update_positions(positions, signals, executions, today, last_sell_prices=None, **kwargs):
             # Check if this is the AAPL update
             if any(e.ticker == "AAPL" for e in executions):
                 raise Exception("Mock position update error")
-            return original_update_positions(positions, signals, executions, today, last_sell_prices=last_sell_prices)
+            return original_update_positions(positions, signals, executions, today, last_sell_prices=last_sell_prices, **kwargs)
 
         engine._update_positions = MagicMock(side_effect=mock_update_positions)
 
@@ -1024,6 +1024,52 @@ class TestRunManualTrade:
         assert saved == []  # 새 lot 미추가
         alert_msgs = [c.args[0] for c in notifier.send_alert.call_args_list]
         assert any("수동매매" in m and "체결 실패 또는 거절" in m for m in alert_msgs)
+
+
+class TestRegimeAddCommitOnFill:
+    """상승 add는 매수 체결이 확정될 때만 regime_state를 갱신한다 (백테스트/라이브 동일)."""
+
+    def _buy_sig(self):
+        sig = SplitSignal("AAPL", None, OrderAction.BUY, 5, 110.0, "상승 add", 0.0, 2)
+        sig.regime_add_swing_high = 120.0
+        return sig
+
+    def test_commit_on_filled_buy(self, engine):
+        regime_state = {"AAPL": {"regime": "uptrend", "adds": 0, "last_add_swing_high": 100.0}}
+        exe = TradeExecution(
+            "AAPL", OrderAction.BUY, 5, 110.0, 1.0, "2024-01-01", ExecutionStatus.FILLED,
+        )
+        engine._update_positions(
+            [], [self._buy_sig()], [exe], "2024-01-02",
+            last_sell_prices={}, regime_state=regime_state,
+        )
+        assert regime_state["AAPL"]["adds"] == 1
+        assert regime_state["AAPL"]["last_add_swing_high"] == 120.0
+
+    def test_no_commit_on_rejected_buy(self, engine):
+        regime_state = {"AAPL": {"regime": "uptrend", "adds": 0, "last_add_swing_high": 100.0}}
+        exe = TradeExecution(
+            "AAPL", OrderAction.BUY, 0, 110.0, 0.0, "2024-01-01", ExecutionStatus.REJECTED,
+        )
+        engine._update_positions(
+            [], [self._buy_sig()], [exe], "2024-01-02",
+            last_sell_prices={}, regime_state=regime_state,
+        )
+        # 거절되면 add 카운트/고점 기준이 그대로 유지된다
+        assert regime_state["AAPL"]["adds"] == 0
+        assert regime_state["AAPL"]["last_add_swing_high"] == 100.0
+
+    def test_normal_buy_does_not_touch_regime_state(self, engine):
+        # regime_add_swing_high 없는 일반 매수는 regime_state를 건드리지 않는다
+        regime_state = {"AAPL": {"regime": "uptrend", "adds": 2, "last_add_swing_high": 100.0}}
+        sig = SplitSignal("AAPL", None, OrderAction.BUY, 5, 110.0, "일반 매수", 0.0, 2)
+        exe = TradeExecution(
+            "AAPL", OrderAction.BUY, 5, 110.0, 1.0, "2024-01-01", ExecutionStatus.FILLED,
+        )
+        engine._update_positions(
+            [], [sig], [exe], "2024-01-02", last_sell_prices={}, regime_state=regime_state,
+        )
+        assert regime_state["AAPL"]["adds"] == 2
 
 
 class TestUpdatePositionsMultiSell:

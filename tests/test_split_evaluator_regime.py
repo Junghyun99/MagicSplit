@@ -103,8 +103,9 @@ class TestUptrendPullbackAdd:
         assert len(buys) == 1
         assert buys[0].level == 2
         assert buys[0].quantity >= 1
-        # 낙관적 상태 갱신
-        assert state["AAPL"]["adds"] == 1
+        # 신호에 스윙고점이 실리고(체결 시 엔진이 커밋), 평가 시점엔 adds 미변경
+        assert buys[0].regime_add_swing_high == r.swing_high
+        assert state["AAPL"]["adds"] == 0
 
     def test_new_high_gate_blocks_add(self, evaluator):
         rule = _regime_rule()
