@@ -267,16 +267,18 @@ def _regime_config(tmp_path, enabled):
     return str(path)
 
 
-def _max_exec_qty(output_dir, action, ticker="AAPL"):
-    """history.json에서 단일 체결의 최대 수량(해당 action·종목)을 반환."""
+def _max_sells_in_a_day(output_dir, ticker="AAPL"):
+    """history.json에서 하루치 레코드 내 SELL 체결 건수의 최댓값."""
     with open(os.path.join(output_dir, "history.json"), encoding="utf-8") as f:
         history = json.load(f)
-    best = 0
+    worst = 0
     for rec in history:
-        for e in rec.get("executions", []):
-            if e.get("ticker") == ticker and e.get("action") == action:
-                best = max(best, int(e.get("quantity", 0)))
-    return best
+        sells = sum(
+            1 for e in rec.get("executions", [])
+            if e.get("ticker") == ticker and e.get("action") == "SELL"
+        )
+        worst = max(worst, sells)
+    return worst
 
 
 class TestRegimeIntegration:
@@ -293,9 +295,9 @@ class TestRegimeIntegration:
                 initial_cash=100000.0, output_dir=on_dir,
             )
         assert result is not None
-        # 누적된 여러 lot을 추세 이탈 시 통합 1건으로 청산 -> 단일 매도 수량이
-        # 어떤 단일 매수 수량보다 크다(여러 lot 합산 청산의 증거).
-        assert _max_exec_qty(on_dir, "SELL") > _max_exec_qty(on_dir, "BUY")
+        # 통합 1건 청산이지만 history엔 소진 lot별 N개 레코드로 분리 기록되므로,
+        # 청산 당일 SELL 레코드가 2건 이상이면 다수 lot 누적 후 일괄 청산의 증거.
+        assert _max_sells_in_a_day(on_dir) >= 2
 
     def test_control_regime_off_no_bulk_sell(self, tmp_path):
         ohlc = _make_regime_switch_ohlc()
@@ -309,5 +311,5 @@ class TestRegimeIntegration:
                 start_date=start, end_date=end,
                 initial_cash=100000.0, output_dir=off_dir,
             )
-        # 평균회귀 경로는 lot 단위 매도뿐 -> 통합 매도(매수보다 큰 단일 매도) 없음
-        assert _max_exec_qty(off_dir, "SELL") <= _max_exec_qty(off_dir, "BUY")
+        # 평균회귀 경로는 종목당 하루 최대 1건 매도 (일괄 분리 청산 없음)
+        assert _max_sells_in_a_day(off_dir) <= 1

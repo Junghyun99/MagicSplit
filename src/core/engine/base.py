@@ -795,13 +795,19 @@ class MagicSplitEngine:
         total_pnl = 0.0
         total_cost = 0.0
         consumed = 0
+        breakdown = []  # 소진 lot별 분해(차수별 손익 기록용)
         for lot in lots_desc:
             if qty_left <= 0:
                 break
             take = min(qty_left, lot.quantity)
-            total_pnl += (exe.price - lot.buy_price) * take
+            gross = (exe.price - lot.buy_price) * take
+            total_pnl += gross
             total_cost += lot.buy_price * take
             consumed += take
+            breakdown.append({
+                "lot_id": lot.lot_id, "level": lot.level,
+                "buy_price": lot.buy_price, "quantity": take, "_gross": gross,
+            })
             if take >= lot.quantity:
                 updated.remove(lot)
             else:
@@ -811,6 +817,11 @@ class MagicSplitEngine:
         if consumed > 0:
             exe.buy_price = round(total_cost / consumed, 4)
             exe.realized_pnl = round(total_pnl - exe.fee, 2)
+            # 수수료를 소진 수량 비례로 배분해 lot별 실현손익을 확정(합 = 순실현손익).
+            for item in breakdown:
+                lot_fee = exe.fee * (item["quantity"] / consumed)
+                item["realized_pnl"] = round(item.pop("_gross") - lot_fee, 2)
+            exe.liquidation_lots = breakdown
             if last_sell_prices is not None:
                 last_sell_prices[exe.ticker] = exe.price
 

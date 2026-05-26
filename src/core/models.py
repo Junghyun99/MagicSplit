@@ -198,6 +198,10 @@ class TradeExecution:
     level: int = 0
     buy_price: float = 0.0
     realized_pnl: float = 0.0
+    # 통합 청산(Bulk Sell) 시 소진한 lot별 분해 내역(차수별 손익 기록용).
+    # 각 항목: {lot_id, level, buy_price, quantity, realized_pnl}.
+    # 저장 시 이 내역을 차수별 N개 레코드로 펼친다.
+    liquidation_lots: Optional[List[dict]] = None
 
 
 @dataclass

@@ -1110,6 +1110,20 @@ class TestBulkLiquidation:
         # (90-70)+(90-60)+(90-50) per 5주 = (20+30+40)*5 = 450
         assert exe.realized_pnl == 450.0
 
+    def test_breakdown_records_per_lot(self, engine):
+        exe = self._exe(15)
+        engine._update_positions(
+            self._positions(), [self._bulk_signal(15)], [exe],
+            "2024-01-02", last_sell_prices={}, regime_state={},
+        )
+        bd = exe.liquidation_lots
+        assert bd is not None and len(bd) == 3
+        # 고차수부터 차감: Lv3 -> Lv2 -> Lv1
+        assert [x["level"] for x in bd] == [3, 2, 1]
+        assert {x["lot_id"] for x in bd} == {"lotA", "lotB", "lotC"}
+        # lot별 손익 합 == 종목 누적용 aggregate (fee=0)
+        assert round(sum(x["realized_pnl"] for x in bd), 2) == exe.realized_pnl
+
     def test_partial_fill_consumes_high_level_first_and_keeps_mode(self, engine):
         regime_state = {"AAPL": {"regime": "uptrend", "adds": 3, "last_add_swing_high": 200.0}}
         # 7주만 체결 -> Lv3(5) 전량 + Lv2(2) 부분 차감
