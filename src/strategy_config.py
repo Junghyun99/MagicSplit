@@ -106,6 +106,49 @@ class StrategyConfig:
         merged.pop("preset", None)
         return merged
 
+    # 레짐 필터 파라미터: 타입별 키 집합 (개별 > 글로벌 > dataclass 기본값)
+    _REGIME_KEYS_BOOL = ("regime_enabled", "trendbreak_use_sma50")
+    _REGIME_KEYS_INT = (
+        "regime_min_bars", "uptrend_max_adds",
+        "uptrend_swing_lookback", "trendbreak_chandelier_lookback",
+    )
+    _REGIME_KEYS_FLOAT = (
+        "regime_adx_trend", "regime_adx_range",
+        "uptrend_pullback_band_pct", "uptrend_add_amount",
+        "trendbreak_chandelier_k",
+    )
+    _REGIME_KEYS_LIST = ("uptrend_add_amounts",)
+
+    def _build_regime_kwargs(self, merged: dict) -> dict:
+        """레짐 필터 파라미터를 StockRule 생성자 kwargs로 변환한다.
+
+        개별 종목 설정 > 글로벌 설정 순. 둘 다 없으면 키를 생략하여
+        StockRule의 dataclass 기본값(=OFF)이 적용되게 한다.
+        """
+        def resolve(key):
+            if key in merged:
+                return merged[key]
+            return self.global_config.get(key)
+
+        kwargs: dict = {}
+        for key in self._REGIME_KEYS_BOOL:
+            val = resolve(key)
+            if val is not None:
+                kwargs[key] = bool(val)
+        for key in self._REGIME_KEYS_INT:
+            val = resolve(key)
+            if val is not None:
+                kwargs[key] = int(val)
+        for key in self._REGIME_KEYS_FLOAT:
+            val = resolve(key)
+            if val is not None:
+                kwargs[key] = float(val)
+        for key in self._REGIME_KEYS_LIST:
+            val = resolve(key)
+            if val:
+                kwargs[key] = [float(x) for x in val]
+        return kwargs
+
     def _load(self):
         if not os.path.exists(self.config_path):
             raise FileNotFoundError(
@@ -191,6 +234,9 @@ class StrategyConfig:
                 float(trailing_drop_raw) if trailing_drop_raw is not None else None
             )
 
+            # 레짐 필터: 개별 설정 > 글로벌 설정 > StockRule 기본값(부재 시 키 생략).
+            regime_kwargs = self._build_regime_kwargs(merged)
+
             rule = StockRule(
                 ticker=ticker,
                 buy_threshold_pct=float(buy_pct) if buy_pct is not None else None,
@@ -206,6 +252,7 @@ class StrategyConfig:
                 trailing_drop_pct=trailing_drop_pct,
                 trailing_drop_pcts=[float(x) for x in trailing_drops] if trailing_drops else None,
                 max_exposure_pct=max_exposure_pct,
+                **regime_kwargs,
             )
             self.rules.append(rule)
             self.market_types.add(market_type)

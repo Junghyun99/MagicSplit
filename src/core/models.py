@@ -51,6 +51,22 @@ class StockRule:
     # None이면 비중 제한 없음. 글로벌 설정을 strategy_config에서 상속받을 수 있음.
     max_exposure_pct: Optional[float] = None
 
+    # --- 레짐 필터 (전부 기본값 => OFF => 오늘과 완전히 동일 동작) ---
+    regime_enabled: bool = False
+    regime_adx_trend: float = 25.0      # ADX 이상이면 추세장으로 간주
+    regime_adx_range: float = 20.0      # ADX 미만이면 횡보장 (히스테리시스 하단)
+    regime_min_bars: int = 200          # 레짐 판정에 필요한 최소 봉 수
+    # 상승 레짐: 차수 매도를 잠그고 추세 눌림에 누적 매수
+    uptrend_pullback_band_pct: float = 1.5   # 상승 20EMA 위 +band% 이내면 눌림 매수
+    uptrend_max_adds: int = 3                # 상승장 1사이클 최대 추가매수 횟수
+    uptrend_add_amount: Optional[float] = None          # 회차 공통 금액 (scalar fallback)
+    uptrend_add_amounts: Optional[List[float]] = None   # 회차별 금액 (점감 권장)
+    uptrend_swing_lookback: int = 10         # 새 고점 게이트용 스윙 룩백
+    # 추세 이탈 (전량 청산). 눌림 밴드보다 깊어야 정상 눌림에 안 털린다.
+    trendbreak_chandelier_k: float = 3.0     # 고점 - k*ATR
+    trendbreak_chandelier_lookback: int = 22
+    trendbreak_use_sma50: bool = True        # 이탈 = close<sma50 OR close<chandelier_stop
+
     def __post_init__(self):
         if self.buy_threshold_pct is None and not self.buy_threshold_pcts:
             raise ValueError(
@@ -69,9 +85,25 @@ class StockRule:
             ("sell_threshold_pcts", self.sell_threshold_pcts),
             ("buy_amounts", self.buy_amounts),
             ("trailing_drop_pcts", self.trailing_drop_pcts),
+            ("uptrend_add_amounts", self.uptrend_add_amounts),
         ):
             if arr is not None and len(arr) == 0:
                 raise ValueError(f"StockRule({self.ticker}): {name}는 비어 있으면 안 됩니다.")
+
+        if self.regime_enabled:
+            if self.regime_adx_range > self.regime_adx_trend:
+                raise ValueError(
+                    f"StockRule({self.ticker}): regime_adx_range({self.regime_adx_range})는 "
+                    f"regime_adx_trend({self.regime_adx_trend}) 이하여야 합니다."
+                )
+            if self.uptrend_pullback_band_pct < 0:
+                raise ValueError(
+                    f"StockRule({self.ticker}): uptrend_pullback_band_pct는 음수일 수 없습니다."
+                )
+            if self.uptrend_max_adds < 0:
+                raise ValueError(
+                    f"StockRule({self.ticker}): uptrend_max_adds는 음수일 수 없습니다."
+                )
 
     @staticmethod
     def _at(arr: Optional[List[float]], scalar: Optional[float], level: int) -> float:
@@ -102,6 +134,19 @@ class StockRule:
         if self.trailing_drop_pct is not None:
             return float(self.trailing_drop_pct)
         return None
+
+    def uptrend_add_amount_at(self, add_index: int) -> float:
+        """주어진 상승장 추가매수 회차(1-based)의 금액을 반환한다.
+
+        uptrend_add_amounts(배열) > uptrend_add_amount(단일) > buy_amount(기본) 순으로 fallback.
+        배열이 회차보다 짧으면 마지막 값으로 clamp.
+        """
+        if self.uptrend_add_amounts:
+            idx = max(0, min(add_index - 1, len(self.uptrend_add_amounts) - 1))
+            return float(self.uptrend_add_amounts[idx])
+        if self.uptrend_add_amount is not None:
+            return float(self.uptrend_add_amount)
+        return self.buy_amount_at(1)
 
 
 @dataclass
