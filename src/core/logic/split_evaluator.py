@@ -65,6 +65,8 @@ class SplitEvaluator:
         positions: List[PositionLot],
         portfolio: Portfolio,
         last_sell_prices: Optional[Dict[str, float]] = None,
+        ohlc_window=None,
+        regime_state: Optional[dict] = None,
     ) -> List[SplitSignal]:
         """단일 종목에 대해 매수/매도 신호를 평가한다.
 

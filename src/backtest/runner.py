@@ -11,7 +11,7 @@ from src.infra.repo import JsonRepository
 from src.utils.logger import TradeLogger
 from src.utils.currency import format_money
 from src.strategy_config import StrategyConfig
-from src.backtest.fetcher import download_historical_data
+from src.backtest.fetcher import download_ohlc_data
 from src.backtest.components import BacktestBroker
 
 
@@ -66,9 +66,10 @@ def run_backtest(
         logger.warning("활성화된 종목이 없습니다.")
         return None
 
-    # 2. 데이터 다운로드
+    # 2. 데이터 다운로드 (OHLC; 레짐 지표 + 종가 모두 여기서 파생)
     logger.info(f"--- 데이터 다운로드: {tickers} ({start_date} ~ {end_date}) ---")
-    close_df = download_historical_data(tickers, start_date, end_date)
+    ohlc_df = download_ohlc_data(tickers, start_date, end_date)
+    close_df = ohlc_df["Close"]
 
     if _validate_tickers(close_df, tickers, logger):
         return None
@@ -104,6 +105,10 @@ def run_backtest(
     prev_prices: Dict[str, float] = {}
     last_result: Optional[DayResult] = None
 
+    # 레짐 필터가 켜진 종목이 하나라도 있으면 추세 윈도우를 매일 공급한다.
+    regime_active = any(getattr(r, "regime_enabled", False) for r in rules)
+    window_size = max((r.regime_min_bars for r in rules), default=200) + 60
+
     for today in sim_days:
         # 종가 추출
         try:
@@ -124,6 +129,17 @@ def run_backtest(
 
         broker.set_date(today)
         broker.set_prices(current_prices)
+
+        if regime_active:
+            # 오늘까지 포함한 추세 윈도우 (룩어헤드 금지: .loc[:today])
+            window_block = ohlc_df.loc[:today].tail(window_size)
+            windows: Dict[str, pd.DataFrame] = {}
+            for t in tickers:
+                try:
+                    windows[t] = window_block.xs(t, axis=1, level=1)
+                except KeyError:
+                    continue
+            broker.set_ohlc_windows(windows)
 
         try:
             last_result = engine.run_one_cycle(sim_date=sim_date)

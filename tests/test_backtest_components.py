@@ -121,3 +121,18 @@ class TestBacktestBrokerOrderExecution:
         # 보유 가치: 5 * 110 = 550
         assert portfolio.holdings["AAPL"] == 5
         assert portfolio.current_prices["AAPL"] == 110.0
+
+
+class TestBacktestBrokerOhlcWindows:
+    def test_windows_default_empty(self, broker):
+        assert broker.get_ohlc_windows() == {}
+
+    def test_set_get_windows_roundtrip(self, broker):
+        idx = pd.bdate_range("2024-01-02", periods=3)
+        win = pd.DataFrame(
+            {"High": [1, 2, 3], "Low": [0, 1, 2], "Close": [0.5, 1.5, 2.5]}, index=idx
+        )
+        broker.set_ohlc_windows({"AAPL": win})
+        out = broker.get_ohlc_windows()
+        assert "AAPL" in out
+        pd.testing.assert_frame_equal(out["AAPL"], win)

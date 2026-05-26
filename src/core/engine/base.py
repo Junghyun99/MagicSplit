@@ -88,6 +88,9 @@ class MagicSplitEngine:
             self.logger.set_ticker_context(None)  # 공통 영역
             halted_tickers = self._check_reconcile(positions, portfolio)
 
+            # 레짐 판정용 종목별 OHLC 윈도우 (백테스트 브로커만 제공; 라이브는 빈 dict)
+            ohlc_windows = getattr(self.broker, "get_ohlc_windows", lambda: {})()
+
             # Step 3~5: 종목별 순차 실행
             for rule in self.stock_rules:
                 self.logger.set_ticker_context(rule.ticker)  # 종목 영역 시작
@@ -104,6 +107,7 @@ class MagicSplitEngine:
                     # 3a. 해당 종목 신호 평가
                     signals = self.evaluator.evaluate_stock(
                         rule, positions, portfolio, last_sell_prices,
+                        ohlc_window=ohlc_windows.get(rule.ticker),
                     )
 
                     # 신호 3-way 분류: blocked(경고) / info(상태보고) / active(주문)

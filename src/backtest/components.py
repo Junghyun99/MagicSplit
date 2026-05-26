@@ -17,6 +17,7 @@ class BacktestBroker(MockBroker):
         super().__init__(initial_cash=initial_cash, logger=logger)
         self.simulation_prices: Dict[str, float] = {}
         self.current_date = None  # 시뮬레이션 상의 '오늘'
+        self.ohlc_windows: Dict[str, "pd.DataFrame"] = {}
 
     def set_date(self, date):
         """시뮬레이션 날짜를 설정한다. runner가 매 거래일마다 호출해야 한다."""
@@ -25,6 +26,14 @@ class BacktestBroker(MockBroker):
     def set_prices(self, prices: Dict[str, float]):
         """시뮬레이션 종가를 설정한다."""
         self.simulation_prices = prices
+
+    def set_ohlc_windows(self, windows: Dict[str, "pd.DataFrame"]):
+        """현재 거래일까지의 종목별 추세 OHLC 윈도우를 설정한다 (레짐 판정용)."""
+        self.ohlc_windows = windows
+
+    def get_ohlc_windows(self) -> Dict[str, "pd.DataFrame"]:
+        """현재 거래일 기준 종목별 OHLC 윈도우를 반환한다 (엔진이 조회)."""
+        return self.ohlc_windows
 
     def fetch_current_prices(self, tickers: List[str]) -> Dict[str, float]:
         """백테스터가 설정해준 시뮬레이션 가격을 반환한다."""

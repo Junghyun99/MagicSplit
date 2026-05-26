@@ -67,16 +67,23 @@ def multi_stock_config(tmp_path):
     return str(config_path)
 
 
-def _make_close_df(tickers, days=20, start_price=100.0, price_step=-1.0):
-    """가격이 점진적으로 변하는 종가 DataFrame 생성.
+def _make_ohlc_df(tickers, days=20, start_price=100.0, price_step=-1.0, spread=0.5):
+    """가격이 점진적으로 변하는 OHLC DataFrame 생성 (컬럼 MultiIndex (field, ticker)).
 
     기본값: 100 -> 99 -> 98 -> ... (하락 추세, 추가 매수 유도)
+    runner는 ohlc_df["Close"]로 종가를 파생한다.
     """
     dates = pd.bdate_range("2024-01-02", periods=days)
+    closes = {t: [start_price + i * price_step for i in range(days)] for t in tickers}
     data = {}
     for t in tickers:
-        data[t] = [start_price + i * price_step for i in range(days)]
-    return pd.DataFrame(data, index=dates)
+        c = closes[t]
+        data[("High", t)] = [x + spread for x in c]
+        data[("Low", t)] = [x - spread for x in c]
+        data[("Close", t)] = c
+    df = pd.DataFrame(data, index=dates)
+    df.columns = pd.MultiIndex.from_tuples(df.columns)
+    return df
 
 
 class TestValidateTickers:
@@ -103,10 +110,10 @@ class TestValidateTickers:
 class TestRunBacktest:
     def test_basic_backtest_flow(self, backtest_config, tmp_path):
         """기본 백테스트 흐름: 데이터 다운 -> 시뮬레이션 -> 결과 파일 생성"""
-        close_df = _make_close_df(["AAPL"], days=10, start_price=100.0, price_step=-2.0)
+        close_df = _make_ohlc_df(["AAPL"], days=10, start_price=100.0, price_step=-2.0)
         output_dir = str(tmp_path / "output")
 
-        with patch("src.backtest.runner.download_historical_data", return_value=close_df):
+        with patch("src.backtest.runner.download_ohlc_data", return_value=close_df):
             result = run_backtest(
                 config_path=backtest_config,
                 start_date="2024-01-02",
@@ -124,10 +131,10 @@ class TestRunBacktest:
 
     def test_initial_buy_occurs(self, backtest_config, tmp_path):
         """첫 거래일에 Lv1 초기 매수가 발생"""
-        close_df = _make_close_df(["AAPL"], days=5, start_price=100.0, price_step=0.0)
+        close_df = _make_ohlc_df(["AAPL"], days=5, start_price=100.0, price_step=0.0)
         output_dir = str(tmp_path / "output")
 
-        with patch("src.backtest.runner.download_historical_data", return_value=close_df):
+        with patch("src.backtest.runner.download_ohlc_data", return_value=close_df):
             result = run_backtest(
                 config_path=backtest_config,
                 start_date="2024-01-02",
@@ -176,12 +183,12 @@ class TestRunBacktest:
 
     def test_multi_stock_backtest(self, multi_stock_config, tmp_path):
         """2종목 백테스트가 정상 실행"""
-        close_df = _make_close_df(
+        close_df = _make_ohlc_df(
             ["AAPL", "MSFT"], days=10, start_price=100.0, price_step=-1.0,
         )
         output_dir = str(tmp_path / "output")
 
-        with patch("src.backtest.runner.download_historical_data", return_value=close_df):
+        with patch("src.backtest.runner.download_ohlc_data", return_value=close_df):
             result = run_backtest(
                 config_path=multi_stock_config,
                 start_date="2024-01-02",
@@ -199,10 +206,10 @@ class TestRunBacktest:
     def test_missing_ticker_data_returns_none(self, backtest_config, tmp_path):
         """필요한 티커 데이터가 없으면 None 반환"""
         # AAPL이 필요한데 MSFT만 있는 데이터
-        close_df = _make_close_df(["MSFT"], days=5)
+        close_df = _make_ohlc_df(["MSFT"], days=5)
         output_dir = str(tmp_path / "output")
 
-        with patch("src.backtest.runner.download_historical_data", return_value=close_df):
+        with patch("src.backtest.runner.download_ohlc_data", return_value=close_df):
             result = run_backtest(
                 config_path=backtest_config,
                 start_date="2024-01-02",
