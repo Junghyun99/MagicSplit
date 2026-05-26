@@ -1081,6 +1081,45 @@ class TestUpdatePositionsMultiSell:
         assert executions[1].level == 1
         assert executions[1].buy_price == 50.0
 
+    def test_rejected_sell_keeps_queue_aligned(self, engine):
+        # 전량청산 다중 매도 중 첫 건이 REJECTED여도, 거절된 lot은 유지되고
+        # 정상 체결된 lot만 각자의 신호와 올바르게 매칭되어 제거된다.
+        positions = [
+            PositionLot("lotA", "AAPL", 50.0, 5, "2024-01-01", level=1),
+            PositionLot("lotB", "AAPL", 60.0, 5, "2024-01-01", level=2),
+            PositionLot("lotC", "AAPL", 70.0, 5, "2024-01-01", level=3),
+        ]
+        signals = [  # 청산 순서: 높은 차수부터
+            SplitSignal("AAPL", "lotC", OrderAction.SELL, 5, 90.0, "청산 Lv3", 0.0, 3, 70.0),
+            SplitSignal("AAPL", "lotB", OrderAction.SELL, 5, 90.0, "청산 Lv2", 0.0, 2, 60.0),
+            SplitSignal("AAPL", "lotA", OrderAction.SELL, 5, 90.0, "청산 Lv1", 0.0, 1, 50.0),
+        ]
+        rejected = TradeExecution(
+            "AAPL", OrderAction.SELL, 0, 90.0, 0.0, "2024-01-01",
+            ExecutionStatus.REJECTED,
+        )
+        executions = [rejected, self._exe(5, 90.0), self._exe(5, 90.0)]
+        result = engine._update_positions(
+            positions, signals, executions, "2024-01-02", last_sell_prices={},
+        )
+        # lotC(첫 신호=거절)는 남고, lotB/lotA만 제거
+        assert [l.lot_id for l in result] == ["lotC"]
+
+    def test_rejected_enrich_keeps_queue_aligned(self, engine):
+        signals = [
+            SplitSignal("AAPL", "lotC", OrderAction.SELL, 5, 90.0, "Lv3", 0.0, 3, 70.0),
+            SplitSignal("AAPL", "lotB", OrderAction.SELL, 5, 90.0, "Lv2", 0.0, 2, 60.0),
+        ]
+        rejected = TradeExecution(
+            "AAPL", OrderAction.SELL, 0, 90.0, 0.0, "2024-01-01",
+            ExecutionStatus.REJECTED,
+        )
+        executions = [rejected, self._exe(5, 90.0)]
+        engine._enrich_executions(executions, signals)
+        # 두 번째(정상) 체결은 두 번째 신호(lotB, Lv2)와 매칭되어야 한다
+        assert executions[1].level == 2
+        assert executions[1].buy_price == 60.0
+
 
 class TestRegimeStateEngine:
     def test_load_regime_state_from_status(self, engine, mock_repo):

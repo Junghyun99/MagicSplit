@@ -614,6 +614,13 @@ class MagicSplitEngine:
 
         for exe in executions:
             disp = display_ticker(exe.ticker)
+            # 매도 신호 큐는 스킵(REJECTED/ORDERED/zero-qty) 여부와 무관하게 루프 시작에서
+            # 먼저 소비한다. 체결 순서와 신호 순서의 정렬을 유지해 전량청산 다중 매도 시
+            # 거절된 건이 뒤 체결과 잘못 매칭되는 것을 막는다.
+            sell_sig = None
+            if exe.action == OrderAction.SELL:
+                q = sell_queues.get(exe.ticker)
+                sell_sig = q.popleft() if q else None
             if exe.status == ExecutionStatus.REJECTED:
                 self.logger.warning(
                     f"[Position] Skip: {disp} {exe.action} rejected"
@@ -671,8 +678,7 @@ class MagicSplitEngine:
                 )
 
             elif exe.action == OrderAction.SELL:
-                q = sell_queues.get(exe.ticker)
-                sig = q.popleft() if q else None
+                sig = sell_sig
                 target_lot = None
                 if sig and sig.lot_id:
                     candidates = [l for l in updated if l.lot_id == sig.lot_id]
@@ -725,10 +731,11 @@ class MagicSplitEngine:
         for sig in signals:
             queues.setdefault((sig.ticker, sig.action), deque()).append(sig)
         for exe in executions:
-            if exe.status == ExecutionStatus.REJECTED:
-                continue
+            # 큐는 REJECTED 여부와 무관하게 먼저 소비해 체결-신호 순서 정렬을 유지한다.
             q = queues.get((exe.ticker, OrderAction(exe.action)))
             sig = q.popleft() if q else None
+            if exe.status == ExecutionStatus.REJECTED:
+                continue
             if sig:
                 exe.lot_id = sig.lot_id
                 exe.level = sig.level

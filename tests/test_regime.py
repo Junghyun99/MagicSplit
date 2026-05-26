@@ -74,6 +74,16 @@ class TestIndicators:
         df = _sideways()
         assert adx(df).iloc[-1] < 25.0
 
+    def test_adx_flat_series_no_divide_by_zero(self):
+        # 변동이 전혀 없는 평탄 시계열(거래정지 등): ATR=0 이어도 경고/NaN 없이 0.
+        import warnings
+        df = _ohlc([100.0] * 60, spread=0.0)  # High=Low=Close -> TR=0 -> ATR=0
+        with warnings.catch_warnings():
+            warnings.simplefilter("error")  # RuntimeWarning을 에러로 승격
+            val = adx(df).iloc[-1]
+        assert np.isfinite(val)
+        assert val == pytest.approx(0.0)
+
     def test_swing_high(self):
         df = _ohlc([100, 105, 103, 108, 101])
         # 고가 = close+0.5; 최근 3봉 고가 max = 108.5

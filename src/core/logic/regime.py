@@ -65,8 +65,10 @@ def adx(df: pd.DataFrame, period: int = 14) -> pd.Series:
 
     tr = true_range(df)
     atr_ = tr.ewm(alpha=1 / period, adjust=False).mean()
-    plus_di = 100 * plus_dm.ewm(alpha=1 / period, adjust=False).mean() / atr_
-    minus_di = 100 * minus_dm.ewm(alpha=1 / period, adjust=False).mean() / atr_
+    # 변동이 전혀 없는 횡보/거래정지 구간은 atr_=0 -> 0으로 나누지 않도록 NaN 처리 후 0으로 복구
+    atr_safe = atr_.replace(0, np.nan)
+    plus_di = (100 * plus_dm.ewm(alpha=1 / period, adjust=False).mean() / atr_safe).fillna(0.0)
+    minus_di = (100 * minus_dm.ewm(alpha=1 / period, adjust=False).mean() / atr_safe).fillna(0.0)
 
     di_sum = plus_di + minus_di
     dx = 100 * (plus_di - minus_di).abs() / di_sum
