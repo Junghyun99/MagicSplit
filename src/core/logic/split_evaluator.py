@@ -3,6 +3,7 @@ import math
 from typing import Dict, List, Optional
 
 from src.core.interfaces import ILogger
+from src.core.logic.regime import Regime, classify
 from src.core.models import (
     StockRule,
     PositionLot,
@@ -12,6 +13,9 @@ from src.core.models import (
 )
 from src.utils.ticker_reader import display_ticker
 from src.utils.currency import format_money
+
+# 상승 레짐 진입 확정에 필요한 연속 UPTREND 판정 횟수 (휩쏘 완화)
+REGIME_CONFIRM_BARS = 2
 
 
 class SplitEvaluator:
@@ -100,6 +104,24 @@ class SplitEvaluator:
                 pct_change=0.0,
                 is_blocked=True,
             )]
+
+        # 레짐 분기: 상승 레짐 + 보유 lot이 있을 때만 누적/추세이탈 로직으로 분기.
+        # (OFF / 윈도우 없음 / UNKNOWN / SIDEWAYS / DOWNTREND / flat -> 기존 경로)
+        if rule.regime_enabled and ohlc_window is not None and ticker_lots:
+            reading = classify(
+                ohlc_window,
+                adx_trend_threshold=rule.regime_adx_trend,
+                adx_range_threshold=rule.regime_adx_range,
+                chandelier_k=rule.trendbreak_chandelier_k,
+                chandelier_lookback=rule.trendbreak_chandelier_lookback,
+                swing_lookback=rule.uptrend_swing_lookback,
+                min_bars=rule.regime_min_bars,
+            )
+            st = regime_state.setdefault(rule.ticker, {}) if regime_state is not None else {}
+            if self._resolve_regime(reading, st) == Regime.UPTREND:
+                return self._evaluate_uptrend(
+                    rule, ticker_lots, current_price, reading, st, portfolio
+                )
 
         # 보유 lot이 없으면 -> 1차수 초기 매수
         if not ticker_lots:
@@ -640,4 +662,156 @@ class SplitEvaluator:
             )
 
         return None
+
+    # ── 레짐(상승장) 분기 ──────────────────────────────────────
+
+    def _resolve_regime(self, reading, st: dict) -> Regime:
+        """레짐 히스테리시스를 적용해 유효 레짐을 반환한다 (st를 in-place 변이).
+
+        - 상승 진입은 REGIME_CONFIRM_BARS 연속 UPTREND 판정 후에만.
+        - 일단 상승에 진입하면 탈출은 추세 이탈(전량 청산)로만 이뤄진다.
+          (소프트 ADX 하락으로는 매도 churn을 일으키지 않음)
+        """
+        if st.get("regime") == "uptrend":
+            return Regime.UPTREND
+
+        if reading.regime == Regime.UPTREND:
+            st["uptrend_streak"] = st.get("uptrend_streak", 0) + 1
+        else:
+            st["uptrend_streak"] = 0
+
+        if st.get("uptrend_streak", 0) >= REGIME_CONFIRM_BARS:
+            st["regime"] = "uptrend"
+            st["adds"] = 0
+            st["last_add_swing_high"] = reading.swing_high
+            st["uptrend_streak"] = 0
+            return Regime.UPTREND
+        return Regime.SIDEWAYS
+
+    def _evaluate_uptrend(
+        self,
+        rule: StockRule,
+        ticker_lots: List[PositionLot],
+        current_price: float,
+        reading,
+        st: dict,
+        portfolio: Optional[Portfolio],
+    ) -> List[SplitSignal]:
+        """상승 레짐: 차수별 매도를 잠그고 추세 눌림에 누적 매수하며,
+        추세 이탈 시 전 차수를 전량 청산한다."""
+        # 1. 추세 이탈 우선 판정 -> 전량 청산.
+        # 기본(use_sma50)은 50MA 하향 이탈을 쓴다. 50MA는 상승 정렬에서 항상 20EMA보다
+        # 아래이므로, 20EMA로의 정상 눌림이 이탈로 오인되지 않는 버퍼가 보장된다.
+        # use_sma50=False면 변동성 기반 Chandelier 스톱을 쓴다(버퍼는 사용자 책임).
+        if rule.trendbreak_use_sma50:
+            broke = current_price < reading.sma50
+        else:
+            broke = current_price < reading.chandelier_stop
+        if broke:
+            st["regime"] = "sideways"
+            st["adds"] = 0
+            st["uptrend_streak"] = 0
+            st.pop("last_add_swing_high", None)
+            if self._logger:
+                self._logger.info(
+                    f"[{display_ticker(rule.ticker)}] 추세 이탈 -> 전량 청산 "
+                    f"(현재가 {format_money(current_price, rule.market_type)}, "
+                    f"50MA {format_money(reading.sma50, rule.market_type)}, "
+                    f"Chandelier {format_money(reading.chandelier_stop, rule.market_type)})"
+                )
+            signals: List[SplitSignal] = []
+            for lot in sorted(ticker_lots, key=lambda l: l.level, reverse=True):
+                pct = (current_price - lot.buy_price) / lot.buy_price * 100
+                signals.append(SplitSignal(
+                    ticker=rule.ticker,
+                    lot_id=lot.lot_id,
+                    action=OrderAction.SELL,
+                    quantity=lot.quantity,
+                    price=current_price,
+                    reason=f"추세 이탈 전량 청산 (Lv{lot.level} {pct:+.1f}%)",
+                    pct_change=pct,
+                    level=lot.level,
+                    buy_price=lot.buy_price,
+                ))
+            return signals
+
+        # 2. 매도 잠금 -> 추세 눌림 누적 매수만 평가
+        last_lot = max(ticker_lots, key=lambda l: l.level)
+        add_signal = self._evaluate_uptrend_add(
+            rule, ticker_lots, last_lot, current_price, reading, st, portfolio
+        )
+        return [add_signal] if add_signal else []
+
+    def _evaluate_uptrend_add(
+        self,
+        rule: StockRule,
+        lots: List[PositionLot],
+        last_lot: PositionLot,
+        current_price: float,
+        reading,
+        st: dict,
+        portfolio: Optional[Portfolio],
+    ) -> Optional[SplitSignal]:
+        """상승 추세 눌림 매수(불타기) 평가. 새 고점 게이트 + 눌림/반등 확인."""
+        adds = st.get("adds", 0)
+        if adds >= rule.uptrend_max_adds:
+            return None
+        next_level = last_lot.level + 1
+        if next_level > rule.max_lots:
+            return None
+
+        # 새 고점 게이트: 직전 add(또는 진입) 이후 새 스윙 고점이 나와야 추가
+        last_high = st.get("last_add_swing_high")
+        if last_high is not None and not (reading.swing_high > last_high):
+            return None
+
+        # 눌림(20EMA 근처) + 반등 확인
+        ema20 = reading.ema20
+        in_band = abs(current_price - ema20) <= ema20 * rule.uptrend_pullback_band_pct / 100
+        bounced = current_price > reading.prev_close or current_price > ema20
+        if not (in_band and bounced):
+            return None
+
+        amount = rule.uptrend_add_amount_at(adds + 1)
+        buy_qty = math.floor(amount / current_price)
+        if buy_qty <= 0:
+            return None
+
+        passed, reason = self._passes_cash_guard(rule, current_price, buy_qty, portfolio)
+        if not passed:
+            return SplitSignal(
+                ticker=rule.ticker, lot_id=None, action=OrderAction.BUY,
+                quantity=buy_qty, price=current_price, reason=reason,
+                pct_change=0.0, level=next_level, is_blocked=True,
+            )
+        passed, reason = self._passes_exposure_guard(
+            rule, lots, current_price, buy_qty, portfolio
+        )
+        if not passed:
+            return SplitSignal(
+                ticker=rule.ticker, lot_id=None, action=OrderAction.BUY,
+                quantity=buy_qty, price=current_price, reason=reason,
+                pct_change=0.0, level=next_level, is_blocked=True,
+            )
+
+        # 낙관적 상태 갱신 (백테스트 결정적 체결 가정). 가드 통과 후에만 갱신한다.
+        st["adds"] = adds + 1
+        st["last_add_swing_high"] = reading.swing_high
+
+        if self._logger:
+            self._logger.info(
+                f"[{display_ticker(rule.ticker)}] 상승장 누적 매수 Lv{next_level} "
+                f"{buy_qty}주 @{format_money(current_price, rule.market_type)} "
+                f"(20EMA {format_money(ema20, rule.market_type)} 눌림, add {adds + 1}/{rule.uptrend_max_adds})"
+            )
+        return SplitSignal(
+            ticker=rule.ticker,
+            lot_id=None,
+            action=OrderAction.BUY,
+            quantity=buy_qty,
+            price=current_price,
+            reason=f"상승장 누적 매수 Lv{next_level} (20EMA 눌림, add {adds + 1})",
+            pct_change=0.0,
+            level=next_level,
+        )
 

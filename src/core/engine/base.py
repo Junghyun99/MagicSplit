@@ -1,5 +1,6 @@
 # src/core/engine/base.py
 import time
+from collections import deque
 from dataclasses import replace
 from datetime import datetime
 from typing import Dict, List, Optional, Set, Tuple
@@ -594,11 +595,16 @@ class MagicSplitEngine:
         """
         updated = list(positions)
 
-        # 신호 매핑: (ticker, action) -> signal
-        # 한 종목당 한 사이클에 하나의 신호만 발생하므로 unambiguous
+        # 신호 매핑: 매수는 종목당 1건이므로 (ticker, action) 맵으로 충분.
+        # 매도는 추세이탈 전량청산 시 종목당 N건이 가능하므로 종목별 순서 큐로 매칭한다.
+        # (백테스트 결정적 체결 전제; 라이브는 윈도우 부재로 레짐/전량청산이 비활성)
         signal_map = {}
+        sell_queues: Dict[str, deque] = {}
         for sig in signals:
-            signal_map[(sig.ticker, sig.action)] = sig
+            if sig.action == OrderAction.SELL:
+                sell_queues.setdefault(sig.ticker, deque()).append(sig)
+            else:
+                signal_map[(sig.ticker, sig.action)] = sig
 
         for exe in executions:
             disp = display_ticker(exe.ticker)
@@ -659,7 +665,8 @@ class MagicSplitEngine:
                 )
 
             elif exe.action == OrderAction.SELL:
-                sig = signal_map.get((exe.ticker, OrderAction.SELL))
+                q = sell_queues.get(exe.ticker)
+                sig = q.popleft() if q else None
                 target_lot = None
                 if sig and sig.lot_id:
                     candidates = [l for l in updated if l.lot_id == sig.lot_id]
@@ -704,12 +711,18 @@ class MagicSplitEngine:
         return updated
 
     def _enrich_executions(self, executions: List[TradeExecution], signals: List[SplitSignal]) -> None:
-        """체결 내역에 신호의 비즈니스 컨텍스트(차수, 손익 등)를 주입한다."""
-        signal_map = {(sig.ticker, sig.action): sig for sig in signals}
+        """체결 내역에 신호의 비즈니스 컨텍스트(차수, 손익 등)를 주입한다.
+
+        전량청산 시 한 종목에 매도 신호가 여럿이므로 (ticker, action)별 순서 큐로 매칭한다.
+        """
+        queues: Dict[Tuple[str, OrderAction], deque] = {}
+        for sig in signals:
+            queues.setdefault((sig.ticker, sig.action), deque()).append(sig)
         for exe in executions:
             if exe.status == ExecutionStatus.REJECTED:
                 continue
-            sig = signal_map.get((exe.ticker, OrderAction(exe.action)))
+            q = queues.get((exe.ticker, OrderAction(exe.action)))
+            sig = q.popleft() if q else None
             if sig:
                 exe.lot_id = sig.lot_id
                 exe.level = sig.level

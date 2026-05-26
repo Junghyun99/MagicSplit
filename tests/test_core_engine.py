@@ -1024,3 +1024,59 @@ class TestRunManualTrade:
         assert saved == []  # 새 lot 미추가
         alert_msgs = [c.args[0] for c in notifier.send_alert.call_args_list]
         assert any("수동매매" in m and "체결 실패 또는 거절" in m for m in alert_msgs)
+
+
+class TestUpdatePositionsMultiSell:
+    """추세 이탈 전량청산: 한 종목에 매도 신호가 여럿일 때 lot별로 모두 제거."""
+
+    def _exe(self, qty, price):
+        return TradeExecution(
+            "AAPL", OrderAction.SELL, qty, price, 0.0,
+            "2024-01-01", ExecutionStatus.FILLED,
+        )
+
+    def test_all_lots_removed_and_last_sell_price_is_final_fill(self, engine):
+        positions = [
+            PositionLot("lotA", "AAPL", 50.0, 5, "2024-01-01", level=1),
+            PositionLot("lotB", "AAPL", 60.0, 5, "2024-01-01", level=2),
+            PositionLot("lotC", "AAPL", 70.0, 5, "2024-01-01", level=3),
+        ]
+        signals = [
+            SplitSignal("AAPL", "lotC", OrderAction.SELL, 5, 90.0, "청산 Lv3", 0.0, 3, 70.0),
+            SplitSignal("AAPL", "lotB", OrderAction.SELL, 5, 90.0, "청산 Lv2", 0.0, 2, 60.0),
+            SplitSignal("AAPL", "lotA", OrderAction.SELL, 5, 90.0, "청산 Lv1", 0.0, 1, 50.0),
+        ]
+        executions = [self._exe(5, 90.0), self._exe(5, 90.0), self._exe(5, 91.0)]
+        last_sell = {}
+        result = engine._update_positions(
+            positions, signals, executions, "2024-01-02", last_sell_prices=last_sell,
+        )
+        assert result == []
+        assert last_sell["AAPL"] == 91.0  # 마지막 체결가
+
+    def test_single_sell_path_unchanged(self, engine):
+        positions = [
+            PositionLot("lotA", "AAPL", 50.0, 5, "2024-01-01", level=1),
+            PositionLot("lotB", "AAPL", 60.0, 5, "2024-01-01", level=2),
+        ]
+        signals = [
+            SplitSignal("AAPL", "lotB", OrderAction.SELL, 5, 90.0, "익절 Lv2", 0.0, 2, 60.0),
+        ]
+        executions = [self._exe(5, 90.0)]
+        result = engine._update_positions(
+            positions, signals, executions, "2024-01-02", last_sell_prices={},
+        )
+        assert [l.lot_id for l in result] == ["lotA"]
+
+    def test_enrich_executions_matches_each_lot(self, engine):
+        signals = [
+            SplitSignal("AAPL", "lotB", OrderAction.SELL, 5, 90.0, "Lv2", 0.0, 2, 60.0),
+            SplitSignal("AAPL", "lotA", OrderAction.SELL, 5, 90.0, "Lv1", 0.0, 1, 50.0),
+        ]
+        executions = [self._exe(5, 90.0), self._exe(5, 90.0)]
+        engine._enrich_executions(executions, signals)
+        assert executions[0].level == 2
+        assert executions[0].buy_price == 60.0
+        assert executions[0].realized_pnl == round((90.0 - 60.0) * 5, 2)
+        assert executions[1].level == 1
+        assert executions[1].buy_price == 50.0
