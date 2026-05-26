@@ -1,6 +1,5 @@
 # src/core/engine/base.py
 import time
-from collections import deque
 from dataclasses import replace
 from datetime import datetime
 from typing import Dict, List, Optional, Set, Tuple
@@ -647,26 +646,14 @@ class MagicSplitEngine:
         """
         updated = list(positions)
 
-        # 신호 매핑: 매수는 종목당 1건이므로 (ticker, action) 맵으로 충분.
-        # 매도는 추세이탈 전량청산 시 종목당 N건이 가능하므로 종목별 순서 큐로 매칭한다.
-        # (백테스트 결정적 체결 전제; 라이브는 윈도우 부재로 레짐/전량청산이 비활성)
+        # 신호 매핑: 종목당 한 사이클에 매수/매도 각 1건이므로 (ticker, action) 맵으로 충분.
+        # (추세이탈 전량청산도 통합 매도 1건이라 종목별 다중 매도가 발생하지 않는다.)
         signal_map = {}
-        sell_queues: Dict[str, deque] = {}
         for sig in signals:
-            if sig.action == OrderAction.SELL:
-                sell_queues.setdefault(sig.ticker, deque()).append(sig)
-            else:
-                signal_map[(sig.ticker, sig.action)] = sig
+            signal_map[(sig.ticker, sig.action)] = sig
 
         for exe in executions:
             disp = display_ticker(exe.ticker)
-            # 매도 신호 큐는 스킵(REJECTED/ORDERED/zero-qty) 여부와 무관하게 루프 시작에서
-            # 먼저 소비한다. 체결 순서와 신호 순서의 정렬을 유지해 전량청산 다중 매도 시
-            # 거절된 건이 뒤 체결과 잘못 매칭되는 것을 막는다.
-            sell_sig = None
-            if exe.action == OrderAction.SELL:
-                q = sell_queues.get(exe.ticker)
-                sell_sig = q.popleft() if q else None
             if exe.status == ExecutionStatus.REJECTED:
                 self.logger.warning(
                     f"[Position] Skip: {disp} {exe.action} rejected"
@@ -731,7 +718,18 @@ class MagicSplitEngine:
                 )
 
             elif exe.action == OrderAction.SELL:
-                sig = sell_sig
+                sig = signal_map.get((exe.ticker, OrderAction.SELL))
+
+                # 통합 전량청산(Bulk Sell): lot_id 없는 청산 매도는 체결 수량을
+                # 고차수(High Level)부터 순차 차감하며 lot을 지운다. 손익은 차감한
+                # 각 lot의 매수가 대비로 합산해 단일 체결 내역에 기록한다.
+                if sig is not None and sig.regime_liquidation and sig.lot_id is None:
+                    updated = self._apply_bulk_liquidation(
+                        updated, exe, disp, last_sell_prices, regime_state
+                    )
+                    continue
+
+                # 일반 단건 매도: 신호의 lot_id로 해당 차수 lot 제거
                 target_lot = None
                 if sig and sig.lot_id:
                     candidates = [l for l in updated if l.lot_id == sig.lot_id]
@@ -773,31 +771,78 @@ class MagicSplitEngine:
                         f"Lv{target_lot.level} ({target_lot.quantity}주 전량 매도)"
                     )
 
-                # 추세이탈 전량청산 매도 체결 확정 시에만 레짐 상태 리셋(flat 재시작).
-                # (신호 생성이 아닌 실제 체결 기준 -> 청산 거절 시 모드 유지하고 재시도)
-                # 단, 부분 매도 거절 등으로 인해 여전히 잔여 포지션이 남아있다면 상태 리셋을 보류하고 
-                # 다음 사이클에서 마저 청산하도록 보장합니다.
-                remaining_lots = [l for l in updated if l.ticker == exe.ticker]
-                if (regime_state is not None and sig is not None
-                        and sig.regime_liquidation and not remaining_lots):
-                    regime_state.pop(exe.ticker, None)
+        return updated
 
+    def _apply_bulk_liquidation(
+        self,
+        updated: List[PositionLot],
+        exe: TradeExecution,
+        disp: str,
+        last_sell_prices: Optional[dict],
+        regime_state: Optional[dict],
+    ) -> List[PositionLot]:
+        """통합 전량청산 체결을 고차수부터 순차 차감하여 반영한다.
+
+        - 체결 수량만큼 고레벨 lot부터 소진(전량 소진 lot은 제거, 마지막은 부분 잔량).
+        - 실현 손익은 소진한 각 lot의 매수가 기준으로 합산해 exe에 기록.
+        - 잔여 포지션이 0이 될 때만 레짐 상태를 리셋(부분체결/거절 시 모드 유지).
+        """
+        qty_left = exe.quantity
+        lots_desc = sorted(
+            [l for l in updated if l.ticker == exe.ticker],
+            key=lambda l: l.level, reverse=True,
+        )
+        total_pnl = 0.0
+        total_cost = 0.0
+        consumed = 0
+        for lot in lots_desc:
+            if qty_left <= 0:
+                break
+            take = min(qty_left, lot.quantity)
+            total_pnl += (exe.price - lot.buy_price) * take
+            total_cost += lot.buy_price * take
+            consumed += take
+            if take >= lot.quantity:
+                updated.remove(lot)
+            else:
+                updated[updated.index(lot)] = replace(lot, quantity=lot.quantity - take)
+            qty_left -= take
+
+        if consumed > 0:
+            exe.buy_price = round(total_cost / consumed, 4)
+            exe.realized_pnl = round(total_pnl - exe.fee, 2)
+            if last_sell_prices is not None:
+                last_sell_prices[exe.ticker] = exe.price
+
+        remaining = [l for l in updated if l.ticker == exe.ticker]
+        self.logger.info(
+            f"[Position] Bulk 청산: {disp} {consumed}주 소진 "
+            f"(잔여 {sum(l.quantity for l in remaining)}주), "
+            f"실현손익 {format_money(exe.realized_pnl, self.market_type)}"
+        )
+        if qty_left > 0:
+            self.logger.warning(
+                f"[Position] Bulk 청산 초과 체결: {disp} 미차감 {qty_left}주 — "
+                f"scripts/reconcile_positions.py 로 정합성 확인 권장."
+            )
+
+        # 잔여 0일 때만 레짐 리셋(flat 재시작). 부분체결/거절이면 모드 유지 -> 다음 사이클 재청산.
+        if regime_state is not None and not remaining:
+            regime_state.pop(exe.ticker, None)
         return updated
 
     def _enrich_executions(self, executions: List[TradeExecution], signals: List[SplitSignal]) -> None:
         """체결 내역에 신호의 비즈니스 컨텍스트(차수, 손익 등)를 주입한다.
 
-        전량청산 시 한 종목에 매도 신호가 여럿이므로 (ticker, action)별 순서 큐로 매칭한다.
+        종목당 매수/매도 각 1건이므로 (ticker, action) 맵으로 매칭한다.
+        통합 청산 매도는 buy_price를 신호에 싣지 않으므로(=0) 여기서 손익을 계산하지 않고,
+        _apply_bulk_liquidation에서 소진 lot별로 합산해 기록한다.
         """
-        queues: Dict[Tuple[str, OrderAction], deque] = {}
-        for sig in signals:
-            queues.setdefault((sig.ticker, sig.action), deque()).append(sig)
+        signal_map = {(sig.ticker, sig.action): sig for sig in signals}
         for exe in executions:
-            # 큐는 REJECTED 여부와 무관하게 먼저 소비해 체결-신호 순서 정렬을 유지한다.
-            q = queues.get((exe.ticker, OrderAction(exe.action)))
-            sig = q.popleft() if q else None
             if exe.status == ExecutionStatus.REJECTED:
                 continue
+            sig = signal_map.get((exe.ticker, OrderAction(exe.action)))
             if sig:
                 exe.lot_id = sig.lot_id
                 exe.level = sig.level

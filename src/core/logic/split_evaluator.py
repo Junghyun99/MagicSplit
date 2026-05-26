@@ -727,30 +727,33 @@ class SplitEvaluator:
         if broke:
             # regime_state 리셋은 여기서 하지 않는다. 매도 체결이 확정될 때
             # (엔진 _update_positions)에서 리셋해야 백테스트/라이브가 동일하다.
-            # 청산 매도가 모두 거절되면 다음 사이클에 다시 청산을 시도한다.
+            # 청산 매도가 거절되면 다음 사이클에 다시 청산을 시도한다.
+            # 통합 매도(Bulk Sell): 차수별 N건이 아니라 총 보유 수량 1건으로 청산한다.
+            # (라이브 API 호출/수수료 최소화. 손익은 엔진이 고차수부터 차감하며 계산.)
+            total_qty = sum(l.quantity for l in ticker_lots)
+            total_cost = sum(l.buy_price * l.quantity for l in ticker_lots)
+            avg_buy = total_cost / total_qty if total_qty else 0.0
+            pct = (current_price - avg_buy) / avg_buy * 100 if avg_buy else 0.0
+            max_level = max(l.level for l in ticker_lots)
             if self._logger:
                 self._logger.info(
-                    f"[{display_ticker(rule.ticker)}] 추세 이탈 -> 전량 청산 "
-                    f"(현재가 {format_money(current_price, rule.market_type)}, "
+                    f"[{display_ticker(rule.ticker)}] 추세 이탈 -> 통합 전량 청산(Bulk) "
+                    f"{total_qty}주 (평단 {format_money(avg_buy, rule.market_type)}, "
+                    f"현재가 {format_money(current_price, rule.market_type)}, "
                     f"50MA {format_money(reading.sma50, rule.market_type)}, "
                     f"Chandelier {format_money(reading.chandelier_stop, rule.market_type)})"
                 )
-            signals: List[SplitSignal] = []
-            for lot in sorted(ticker_lots, key=lambda l: l.level, reverse=True):
-                pct = (current_price - lot.buy_price) / lot.buy_price * 100
-                signals.append(SplitSignal(
-                    ticker=rule.ticker,
-                    lot_id=lot.lot_id,
-                    action=OrderAction.SELL,
-                    quantity=lot.quantity,
-                    price=current_price,
-                    reason=f"추세 이탈 전량 청산 (Lv{lot.level} {pct:+.1f}%)",
-                    pct_change=pct,
-                    level=lot.level,
-                    buy_price=lot.buy_price,
-                    regime_liquidation=True,
-                ))
-            return signals
+            return [SplitSignal(
+                ticker=rule.ticker,
+                lot_id=None,  # 개별 lot이 아닌 합산 -> 엔진이 고차수부터 차감
+                action=OrderAction.SELL,
+                quantity=total_qty,
+                price=current_price,
+                reason=f"추세 이탈 통합 전량 청산(Bulk Sell, {total_qty}주 {pct:+.1f}%)",
+                pct_change=pct,
+                level=max_level,
+                regime_liquidation=True,
+            )]
 
         # 2. 매도 잠금 -> 추세 눌림 누적 매수만 평가
         last_lot = max(ticker_lots, key=lambda l: l.level)

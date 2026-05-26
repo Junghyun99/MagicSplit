@@ -267,21 +267,20 @@ def _regime_config(tmp_path, enabled):
     return str(path)
 
 
-def _max_sells_per_day(output_dir, ticker="AAPL"):
+def _max_exec_qty(output_dir, action, ticker="AAPL"):
+    """history.json에서 단일 체결의 최대 수량(해당 action·종목)을 반환."""
     with open(os.path.join(output_dir, "history.json"), encoding="utf-8") as f:
         history = json.load(f)
-    worst = 0
+    best = 0
     for rec in history:
-        sells = sum(
-            1 for e in rec.get("executions", [])
-            if e.get("ticker") == ticker and e.get("action") == "SELL"
-        )
-        worst = max(worst, sells)
-    return worst
+        for e in rec.get("executions", []):
+            if e.get("ticker") == ticker and e.get("action") == action:
+                best = max(best, int(e.get("quantity", 0)))
+    return best
 
 
 class TestRegimeIntegration:
-    def test_uptrend_accumulates_then_liquidates(self, tmp_path):
+    def test_uptrend_accumulates_then_bulk_liquidates(self, tmp_path):
         ohlc = _make_regime_switch_ohlc()
         dates = ohlc.index
         start, end = dates[0].strftime("%Y-%m-%d"), dates[-1].strftime("%Y-%m-%d")
@@ -294,10 +293,11 @@ class TestRegimeIntegration:
                 initial_cash=100000.0, output_dir=on_dir,
             )
         assert result is not None
-        # 상승장에서 누적 후 추세 이탈 시 다수 lot을 같은 날 전량 청산
-        assert _max_sells_per_day(on_dir) >= 2
+        # 누적된 여러 lot을 추세 이탈 시 통합 1건으로 청산 -> 단일 매도 수량이
+        # 어떤 단일 매수 수량보다 크다(여러 lot 합산 청산의 증거).
+        assert _max_exec_qty(on_dir, "SELL") > _max_exec_qty(on_dir, "BUY")
 
-    def test_control_regime_off_single_sell_path(self, tmp_path):
+    def test_control_regime_off_no_bulk_sell(self, tmp_path):
         ohlc = _make_regime_switch_ohlc()
         dates = ohlc.index
         start, end = dates[0].strftime("%Y-%m-%d"), dates[-1].strftime("%Y-%m-%d")
@@ -309,5 +309,5 @@ class TestRegimeIntegration:
                 start_date=start, end_date=end,
                 initial_cash=100000.0, output_dir=off_dir,
             )
-        # 평균회귀 경로는 종목당 하루 최대 1건 매도 (동시 다중 청산 없음)
-        assert _max_sells_per_day(off_dir) <= 1
+        # 평균회귀 경로는 lot 단위 매도뿐 -> 통합 매도(매수보다 큰 단일 매도) 없음
+        assert _max_exec_qty(off_dir, "SELL") <= _max_exec_qty(off_dir, "BUY")

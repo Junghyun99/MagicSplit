@@ -1072,141 +1072,96 @@ class TestRegimeAddCommitOnFill:
         assert regime_state["AAPL"]["adds"] == 2
 
 
-class TestRegimeLiquidationResetOnFill:
-    """추세이탈 전량청산: 매도 체결이 확정될 때만 regime_state를 리셋한다."""
+class TestBulkLiquidation:
+    """추세이탈 통합 전량청산(Bulk Sell): 단일 매도를 고차수부터 차감한다."""
 
     def _positions(self):
         return [
             PositionLot("lotA", "AAPL", 50.0, 5, "2024-01-01", level=1),
             PositionLot("lotB", "AAPL", 60.0, 5, "2024-01-01", level=2),
+            PositionLot("lotC", "AAPL", 70.0, 5, "2024-01-01", level=3),
         ]
 
-    def _liq_signals(self):
-        return [
-            SplitSignal("AAPL", "lotB", OrderAction.SELL, 5, 90.0, "청산", 0.0, 2, 60.0,
-                        regime_liquidation=True),
-            SplitSignal("AAPL", "lotA", OrderAction.SELL, 5, 90.0, "청산", 0.0, 1, 50.0,
-                        regime_liquidation=True),
-        ]
+    def _bulk_signal(self, total_qty=15, price=90.0):
+        # lot_id=None + regime_liquidation=True -> 통합 청산
+        return SplitSignal("AAPL", None, OrderAction.SELL, total_qty, price,
+                           "Bulk 청산", 0.0, 3, regime_liquidation=True)
 
-    def _sell(self, status=ExecutionStatus.FILLED, qty=5):
-        return TradeExecution("AAPL", OrderAction.SELL, qty, 90.0, 0.0, "2024-01-01", status)
+    def _exe(self, qty, price=90.0, status=ExecutionStatus.FILLED):
+        return TradeExecution("AAPL", OrderAction.SELL, qty, price, 0.0, "2024-01-01", status)
 
-    def test_reset_on_filled_liquidation(self, engine):
+    def test_full_fill_removes_all_and_resets(self, engine):
         regime_state = {"AAPL": {"regime": "uptrend", "adds": 3, "last_add_swing_high": 200.0}}
-        engine._update_positions(
-            self._positions(), self._liq_signals(), [self._sell(), self._sell()],
-            "2024-01-02", last_sell_prices={}, regime_state=regime_state,
+        last_sell = {}
+        result = engine._update_positions(
+            self._positions(), [self._bulk_signal(15)], [self._exe(15)],
+            "2024-01-02", last_sell_prices=last_sell, regime_state=regime_state,
         )
+        assert result == []
+        assert last_sell["AAPL"] == 90.0
         assert "AAPL" not in regime_state  # flat 재시작
 
-    def test_no_reset_when_all_rejected(self, engine):
-        regime_state = {"AAPL": {"regime": "uptrend", "adds": 3, "last_add_swing_high": 200.0}}
-        rejected = [
-            self._sell(status=ExecutionStatus.REJECTED, qty=0),
-            self._sell(status=ExecutionStatus.REJECTED, qty=0),
-        ]
+    def test_realized_pnl_aggregates_over_lots(self, engine):
+        exe = self._exe(15)
         engine._update_positions(
-            self._positions(), self._liq_signals(), rejected,
+            self._positions(), [self._bulk_signal(15)], [exe],
+            "2024-01-02", last_sell_prices={}, regime_state={},
+        )
+        # (90-70)+(90-60)+(90-50) per 5주 = (20+30+40)*5 = 450
+        assert exe.realized_pnl == 450.0
+
+    def test_partial_fill_consumes_high_level_first_and_keeps_mode(self, engine):
+        regime_state = {"AAPL": {"regime": "uptrend", "adds": 3, "last_add_swing_high": 200.0}}
+        # 7주만 체결 -> Lv3(5) 전량 + Lv2(2) 부분 차감
+        result = engine._update_positions(
+            self._positions(), [self._bulk_signal(15)],
+            [self._exe(7, status=ExecutionStatus.PARTIAL)],
             "2024-01-02", last_sell_prices={}, regime_state=regime_state,
         )
-        # 거절되면 상승 모드 유지 -> 다음 사이클 재시도
+        ids = sorted(l.lot_id for l in result)
+        assert ids == ["lotA", "lotB"]            # lotC 전량 제거
+        lotB = next(l for l in result if l.lot_id == "lotB")
+        assert lotB.quantity == 3                  # 5 - 2
+        # 잔여 포지션 있으므로 모드 유지 -> 다음 사이클 재청산
+        assert regime_state["AAPL"]["regime"] == "uptrend"
+
+    def test_rejected_keeps_all_and_mode(self, engine):
+        regime_state = {"AAPL": {"regime": "uptrend", "adds": 3, "last_add_swing_high": 200.0}}
+        result = engine._update_positions(
+            self._positions(), [self._bulk_signal(15)],
+            [self._exe(0, status=ExecutionStatus.REJECTED)],
+            "2024-01-02", last_sell_prices={}, regime_state=regime_state,
+        )
+        assert len(result) == 3                    # 아무것도 안 지워짐
         assert regime_state["AAPL"]["regime"] == "uptrend"
 
 
-class TestUpdatePositionsMultiSell:
-    """추세 이탈 전량청산: 한 종목에 매도 신호가 여럿일 때 lot별로 모두 제거."""
+class TestNormalSingleSell:
+    """일반(평균회귀) 단건 매도는 lot_id로 해당 lot만 제거한다."""
 
     def _exe(self, qty, price):
         return TradeExecution(
-            "AAPL", OrderAction.SELL, qty, price, 0.0,
-            "2024-01-01", ExecutionStatus.FILLED,
+            "AAPL", OrderAction.SELL, qty, price, 0.0, "2024-01-01", ExecutionStatus.FILLED,
         )
 
-    def test_all_lots_removed_and_last_sell_price_is_final_fill(self, engine):
-        positions = [
-            PositionLot("lotA", "AAPL", 50.0, 5, "2024-01-01", level=1),
-            PositionLot("lotB", "AAPL", 60.0, 5, "2024-01-01", level=2),
-            PositionLot("lotC", "AAPL", 70.0, 5, "2024-01-01", level=3),
-        ]
-        signals = [
-            SplitSignal("AAPL", "lotC", OrderAction.SELL, 5, 90.0, "청산 Lv3", 0.0, 3, 70.0),
-            SplitSignal("AAPL", "lotB", OrderAction.SELL, 5, 90.0, "청산 Lv2", 0.0, 2, 60.0),
-            SplitSignal("AAPL", "lotA", OrderAction.SELL, 5, 90.0, "청산 Lv1", 0.0, 1, 50.0),
-        ]
-        executions = [self._exe(5, 90.0), self._exe(5, 90.0), self._exe(5, 91.0)]
-        last_sell = {}
-        result = engine._update_positions(
-            positions, signals, executions, "2024-01-02", last_sell_prices=last_sell,
-        )
-        assert result == []
-        assert last_sell["AAPL"] == 91.0  # 마지막 체결가
-
-    def test_single_sell_path_unchanged(self, engine):
+    def test_single_sell_removes_targeted_lot(self, engine):
         positions = [
             PositionLot("lotA", "AAPL", 50.0, 5, "2024-01-01", level=1),
             PositionLot("lotB", "AAPL", 60.0, 5, "2024-01-01", level=2),
         ]
-        signals = [
-            SplitSignal("AAPL", "lotB", OrderAction.SELL, 5, 90.0, "익절 Lv2", 0.0, 2, 60.0),
-        ]
-        executions = [self._exe(5, 90.0)]
+        signals = [SplitSignal("AAPL", "lotB", OrderAction.SELL, 5, 90.0, "익절 Lv2", 0.0, 2, 60.0)]
         result = engine._update_positions(
-            positions, signals, executions, "2024-01-02", last_sell_prices={},
+            positions, signals, [self._exe(5, 90.0)], "2024-01-02", last_sell_prices={},
         )
         assert [l.lot_id for l in result] == ["lotA"]
 
-    def test_enrich_executions_matches_each_lot(self, engine):
-        signals = [
-            SplitSignal("AAPL", "lotB", OrderAction.SELL, 5, 90.0, "Lv2", 0.0, 2, 60.0),
-            SplitSignal("AAPL", "lotA", OrderAction.SELL, 5, 90.0, "Lv1", 0.0, 1, 50.0),
-        ]
-        executions = [self._exe(5, 90.0), self._exe(5, 90.0)]
+    def test_enrich_single_sell_pnl(self, engine):
+        signals = [SplitSignal("AAPL", "lotB", OrderAction.SELL, 5, 90.0, "Lv2", 0.0, 2, 60.0)]
+        executions = [self._exe(5, 90.0)]
         engine._enrich_executions(executions, signals)
         assert executions[0].level == 2
         assert executions[0].buy_price == 60.0
         assert executions[0].realized_pnl == round((90.0 - 60.0) * 5, 2)
-        assert executions[1].level == 1
-        assert executions[1].buy_price == 50.0
-
-    def test_rejected_sell_keeps_queue_aligned(self, engine):
-        # 전량청산 다중 매도 중 첫 건이 REJECTED여도, 거절된 lot은 유지되고
-        # 정상 체결된 lot만 각자의 신호와 올바르게 매칭되어 제거된다.
-        positions = [
-            PositionLot("lotA", "AAPL", 50.0, 5, "2024-01-01", level=1),
-            PositionLot("lotB", "AAPL", 60.0, 5, "2024-01-01", level=2),
-            PositionLot("lotC", "AAPL", 70.0, 5, "2024-01-01", level=3),
-        ]
-        signals = [  # 청산 순서: 높은 차수부터
-            SplitSignal("AAPL", "lotC", OrderAction.SELL, 5, 90.0, "청산 Lv3", 0.0, 3, 70.0),
-            SplitSignal("AAPL", "lotB", OrderAction.SELL, 5, 90.0, "청산 Lv2", 0.0, 2, 60.0),
-            SplitSignal("AAPL", "lotA", OrderAction.SELL, 5, 90.0, "청산 Lv1", 0.0, 1, 50.0),
-        ]
-        rejected = TradeExecution(
-            "AAPL", OrderAction.SELL, 0, 90.0, 0.0, "2024-01-01",
-            ExecutionStatus.REJECTED,
-        )
-        executions = [rejected, self._exe(5, 90.0), self._exe(5, 90.0)]
-        result = engine._update_positions(
-            positions, signals, executions, "2024-01-02", last_sell_prices={},
-        )
-        # lotC(첫 신호=거절)는 남고, lotB/lotA만 제거
-        assert [l.lot_id for l in result] == ["lotC"]
-
-    def test_rejected_enrich_keeps_queue_aligned(self, engine):
-        signals = [
-            SplitSignal("AAPL", "lotC", OrderAction.SELL, 5, 90.0, "Lv3", 0.0, 3, 70.0),
-            SplitSignal("AAPL", "lotB", OrderAction.SELL, 5, 90.0, "Lv2", 0.0, 2, 60.0),
-        ]
-        rejected = TradeExecution(
-            "AAPL", OrderAction.SELL, 0, 90.0, 0.0, "2024-01-01",
-            ExecutionStatus.REJECTED,
-        )
-        executions = [rejected, self._exe(5, 90.0)]
-        engine._enrich_executions(executions, signals)
-        # 두 번째(정상) 체결은 두 번째 신호(lotB, Lv2)와 매칭되어야 한다
-        assert executions[1].level == 2
-        assert executions[1].buy_price == 60.0
 
 
 class TestRegimeStateEngine:

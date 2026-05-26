@@ -175,26 +175,47 @@ class TestUptrendPullbackAdd:
 
 
 class TestTrendBreakLiquidation:
-    def test_full_liquidation_emits_sell_per_lot(self, evaluator):
+    def test_full_liquidation_emits_bulk_sell(self, evaluator):
         rule = _regime_rule()
         window = _uptrend_window()
         r = _reading(window, rule)
         price = r.sma50 * 0.9  # 50MA 하향 이탈 -> 전량 청산
         lots = [
-            _lot(level=1, buy_price=50.0, lot_id="lotA"),
-            _lot(level=2, buy_price=60.0, lot_id="lotB"),
-            _lot(level=3, buy_price=70.0, lot_id="lotC"),
+            _lot(level=1, buy_price=50.0, qty=5, lot_id="lotA"),
+            _lot(level=2, buy_price=60.0, qty=5, lot_id="lotB"),
+            _lot(level=3, buy_price=70.0, qty=5, lot_id="lotC"),
         ]
         state = {"AAPL": {"regime": "uptrend", "adds": 2, "last_add_swing_high": 999}}
         signals = evaluator.evaluate_stock(
-            rule, lots, _pf(price=price), ohlc_window=window, regime_state=state,
+            rule, lots, _pf(price=price, qty=15), ohlc_window=window, regime_state=state,
         )
-        assert len(signals) == 3
-        assert all(s.action == OrderAction.SELL for s in signals)
-        assert {s.lot_id for s in signals} == {"lotA", "lotB", "lotC"}
-        # 청산 표식이 실려야 하고, 리셋은 체결 시 엔진이 수행 -> 평가 시점엔 상승 유지
-        assert all(s.regime_liquidation for s in signals)
+        # 통합 매도 1건: 총 보유 수량, lot_id 없음, 청산 표식
+        assert len(signals) == 1
+        s = signals[0]
+        assert s.action == OrderAction.SELL
+        assert s.lot_id is None
+        assert s.quantity == 15  # 5+5+5
+        assert s.regime_liquidation is True
+        # 리셋은 체결 시 엔진이 수행 -> 평가 시점엔 상승 유지
         assert state["AAPL"]["regime"] == "uptrend"
+
+
+class TestNanGuard:
+    def test_nan_indicator_holds_and_warns(self):
+        from unittest.mock import MagicMock
+        logger = MagicMock()
+        ev = SplitEvaluator(logger=logger)
+        rule = _regime_rule()
+        window = _uptrend_window(50)  # < min_bars(200) -> UNKNOWN -> sma50 NaN
+        lot = _lot(level=1, buy_price=50.0)
+        # 이미 상승 래치 상태라 _resolve_regime은 UPTREND 유지 -> _evaluate_uptrend 진입
+        state = {"AAPL": {"regime": "uptrend", "adds": 0, "last_add_swing_high": 0.0}}
+        signals = ev.evaluate_stock(
+            rule, [lot], _pf(price=100.0), ohlc_window=window, regime_state=state,
+        )
+        # 지표 NaN -> 이탈 판단 불가 -> 평가 보류(빈 신호) + 경고 로그
+        assert signals == []
+        assert logger.warning.called
 
 
 class TestResolveRegimeHysteresis:
