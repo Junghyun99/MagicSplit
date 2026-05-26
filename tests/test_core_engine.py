@@ -1080,3 +1080,21 @@ class TestUpdatePositionsMultiSell:
         assert executions[0].realized_pnl == round((90.0 - 60.0) * 5, 2)
         assert executions[1].level == 1
         assert executions[1].buy_price == 50.0
+
+
+class TestRegimeStateEngine:
+    def test_load_regime_state_from_status(self, engine, mock_repo):
+        rs = {"AAPL": {"regime": "uptrend", "adds": 1}}
+        mock_repo.load_status.return_value = {"regime_state_by_ticker": rs}
+        assert engine._load_regime_state() == rs
+
+    def test_load_regime_state_missing_returns_empty(self, engine, mock_repo):
+        mock_repo.load_status.return_value = {"last_run_date": "2026-04-10"}
+        assert engine._load_regime_state() == {}
+
+    def test_state_transition_resets_regime_state(self, engine, mock_repo):
+        # 이전 사이클엔 AAPL이 비활성 -> 이번에 활성(OFF->ON)
+        mock_repo.load_status.return_value = {"enabled_tickers": []}
+        regime_state = {"AAPL": {"regime": "uptrend", "adds": 3}}
+        engine._handle_state_transitions([], {}, regime_state)
+        assert "AAPL" not in regime_state

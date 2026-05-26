@@ -123,3 +123,11 @@ class TestStatus:
         assert len(loaded) == 2
         assert loaded[0].level == 1
         assert loaded[1].level == 2
+
+
+class TestRegimeStateRoundtrip:
+    def test_status_preserves_nested_regime_state(self, repo):
+        rs = {"AAPL": {"regime": "uptrend", "adds": 1, "last_add_swing_high": 150.5}}
+        repo.save_status({"last_run_date": "2026-04-10", "regime_state_by_ticker": rs})
+        loaded = repo.load_status()
+        assert loaded["regime_state_by_ticker"] == rs

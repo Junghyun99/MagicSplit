@@ -76,13 +76,17 @@ class MagicSplitEngine:
         failed_tickers: List[str] = []
         portfolio: Optional[Portfolio] = None
         positions: Optional[List[PositionLot]] = None
+        regime_state: dict = {}
 
         try:
             # Step 1+2: 포트폴리오 + 포지션 + 직전 매도가 (수동매매와 공유)
             portfolio, positions, last_sell_prices = self._load_initial_state()
 
+            # 레짐 상태 로드 (status.json에 영속). 종목별 현재 레짐/스윙고점/누적횟수.
+            regime_state = self._load_regime_state()
+
             # Step 2.1: 상태 전환 감지 및 자동 초기화 (OFF -> ON)
-            self._handle_state_transitions(positions, last_sell_prices)
+            self._handle_state_transitions(positions, last_sell_prices, regime_state)
 
             # Step 2.5: 브로커 수량 ↔ positions 수량 합 불일치 검사
             # 불일치 종목은 이번 사이클에서 매매 중단 (자동 보정 미지원)
@@ -109,6 +113,7 @@ class MagicSplitEngine:
                     signals = self.evaluator.evaluate_stock(
                         rule, positions, portfolio, last_sell_prices,
                         ohlc_window=ohlc_windows.get(rule.ticker),
+                        regime_state=regime_state,
                     )
 
                     # 신호 3-way 분류: blocked(경고) / info(상태보고) / active(주문)
@@ -177,7 +182,8 @@ class MagicSplitEngine:
                 self.logger.info(">>> Step 6: Persist")
                 self._persist(portfolio, all_signals, all_executions, positions,
                               sim_date=sim_date,
-                              last_sell_prices=last_sell_prices)
+                              last_sell_prices=last_sell_prices,
+                              regime_state=regime_state)
             else:
                 missing = []
                 if portfolio is None:
@@ -740,6 +746,7 @@ class MagicSplitEngine:
         positions: List[PositionLot],
         sim_date: Optional[str] = None,
         last_sell_prices: Optional[dict] = None,
+        regime_state: Optional[dict] = None,
     ) -> None:
         """Step 6: 저장 4종 호출."""
         reason = self._build_reason(signals)
@@ -761,8 +768,21 @@ class MagicSplitEngine:
             portfolio, positions, reason, old_realized_pnl, executions,
             self.all_tickers, sim_date, self.stock_rules, last_trade_dates,
             market_type=self.market_type,
+            regime_state_by_ticker=regime_state,
         )
         self.repo.save_status(status_data)
+
+    def _load_regime_state(self) -> dict:
+        """status.json에서 종목별 레짐 상태를 로드한다 (없으면 빈 dict)."""
+        try:
+            prev = self.repo.load_status()
+        except Exception:
+            return {}
+        if isinstance(prev, dict):
+            state = prev.get("regime_state_by_ticker")
+            if isinstance(state, dict):
+                return state
+        return {}
 
     # ── Private helpers ──────────────────────────────────────────
 
@@ -770,6 +790,7 @@ class MagicSplitEngine:
         self,
         positions: List[PositionLot],
         last_sell_prices: Dict[str, float],
+        regime_state: Optional[dict] = None,
     ) -> None:
         """종목의 상태 전이(OFF -> ON)를 감지하여 낡은 상태값을 초기화한다."""
         try:
@@ -789,6 +810,10 @@ class MagicSplitEngine:
             self.logger.info(f">>> Step 2.1: Detected {len(newly_enabled)} newly enabled ticker(s)")
             
             for ticker in newly_enabled:
+                # 레짐 상태도 새 시즌으로 초기화 (낡은 레짐/스윙고점/누적횟수 제거)
+                if regime_state is not None:
+                    regime_state.pop(ticker, None)
+
                 # A. 보유 수량이 0인 경우 -> 직전 매도가 및 실현 손익(새 시즌) 초기화
                 ticker_lots = [l for l in positions if l.ticker == ticker]
                 if not ticker_lots:
