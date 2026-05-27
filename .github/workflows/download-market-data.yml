@@ -50,14 +50,15 @@ jobs:
 
         cache = BacktestDataCache(logger=TradeLogger())
         cache.clear()
-        close_df = cache.get_data(tickers, real_start_str, end_date)
+        ohlc_df = cache.get_ohlc(tickers, real_start_str, end_date)
 
-        print(f'Close shape: {close_df.shape}')
-        print(f'Close range: {close_df.index.min()} ~ {close_df.index.max()}')
-        print(f'Close columns: {list(close_df.columns)}')
-        print(close_df.head(10))
+        print(f'OHLC shape: {ohlc_df.shape}')
+        print(f'OHLC range: {ohlc_df.index.min()} ~ {ohlc_df.index.max()}')
+        print(f'OHLC columns: {list(ohlc_df.columns)}')
+        print(ohlc_df.head(10))
         print('')
         print('=== NaN 진단 (Close 기준) ===')
+        close_df = ohlc_df["Close"]
         total_rows = len(close_df)
         for ticker in tickers:
             try:
