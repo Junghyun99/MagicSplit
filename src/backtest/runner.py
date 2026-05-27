@@ -11,8 +11,8 @@ from src.infra.repo import JsonRepository
 from src.utils.logger import TradeLogger
 from src.utils.currency import format_money
 from src.strategy_config import StrategyConfig
-from src.backtest.fetcher import download_historical_data
-from src.backtest.components import BacktestBroker
+from src.backtest.fetcher import download_ohlc_data
+from src.backtest.components import BacktestBroker, BacktestMarketDataProvider
 
 
 def _validate_tickers(
@@ -66,9 +66,24 @@ def run_backtest(
         logger.warning("활성화된 종목이 없습니다.")
         return None
 
-    # 2. 데이터 다운로드
-    logger.info(f"--- 데이터 다운로드: {tickers} ({start_date} ~ {end_date}) ---")
-    close_df = download_historical_data(tickers, start_date, end_date)
+    # 2. 데이터 다운로드 (OHLC; 레짐 지표 + 종가 모두 여기서 파생)
+    # 만약 레짐 지표(이동평균/ADX/ATR 등)를 사용한다면, 첫 백테스트 거래일에 충분한 과거 데이터(window_size 봉)가 
+    # 확보되도록 데이터 다운로드 시작 시점을 과거로 이동합니다.
+    regime_active = any(getattr(r, "regime_enabled", False) for r in rules)
+    window_size = max((r.regime_min_bars for r in rules), default=200) + 60
+    
+    if regime_active:
+        start_dt = pd.to_datetime(start_date)
+        # 1 거래일 = 약 1.45 영업일. 안전하게 1.6배 곱해 calendar days 산출
+        days_to_subtract = int(window_size * 1.6)
+        download_start = (start_dt - pd.Timedelta(days=days_to_subtract)).strftime("%Y-%m-%d")
+        logger.info(f"레짐 감지 활성화: 과거 데이터 {window_size}봉 확보를 위해 다운로드 시작일을 {start_date}에서 {download_start}로 조정합니다.")
+    else:
+        download_start = start_date
+
+    logger.info(f"--- 데이터 다운로드: {tickers} ({download_start} ~ {end_date}) ---")
+    ohlc_df = download_ohlc_data(tickers, download_start, end_date)
+    close_df = ohlc_df["Close"]
 
     if _validate_tickers(close_df, tickers, logger):
         return None
@@ -89,6 +104,13 @@ def run_backtest(
 
     broker = BacktestBroker(initial_cash=initial_cash, logger=logger)
     repo = JsonRepository(root_path=output_dir)
+    # 레짐 지표용 시세 제공자 (브로커와 분리). 레짐 종목이 있을 때만 주입.
+    regime_active = any(getattr(r, "regime_enabled", False) for r in rules)
+    window_size = max((r.regime_min_bars for r in rules), default=200) + 60
+    market_data = (
+        BacktestMarketDataProvider(ohlc_df, window_size=window_size)
+        if regime_active else None
+    )
     engine = MagicSplitEngine(
         broker=broker,
         repo=repo,
@@ -96,6 +118,7 @@ def run_backtest(
         stock_rules=rules,
         notifier=None,
         is_live_trading=False,
+        market_data=market_data,
     )
 
     # 5. 시뮬레이션 루프
@@ -126,6 +149,7 @@ def run_backtest(
         broker.set_prices(current_prices)
 
         try:
+            # 엔진이 market_data 제공자에서 "오늘 직전까지" 윈도우를 직접 조회한다.
             last_result = engine.run_one_cycle(sim_date=sim_date)
         except Exception as e:
             logger.error(f"[{sim_date}] 사이클 실행 실패: {e}")

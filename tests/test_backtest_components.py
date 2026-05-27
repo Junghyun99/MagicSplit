@@ -121,3 +121,46 @@ class TestBacktestBrokerOrderExecution:
         # 보유 가치: 5 * 110 = 550
         assert portfolio.holdings["AAPL"] == 5
         assert portfolio.current_prices["AAPL"] == 110.0
+
+
+class TestBacktestMarketDataProvider:
+    def _ohlc(self, tickers, days=10):
+        idx = pd.bdate_range("2024-01-02", periods=days)
+        data = {}
+        for t in tickers:
+            base = [100 + i for i in range(days)]
+            data[("High", t)] = [x + 0.5 for x in base]
+            data[("Low", t)] = [x - 0.5 for x in base]
+            data[("Close", t)] = base
+        df = pd.DataFrame(data, index=idx)
+        df.columns = pd.MultiIndex.from_tuples(df.columns)
+        return df
+
+    def test_window_excludes_today(self):
+        from src.backtest.components import BacktestMarketDataProvider
+        df = self._ohlc(["AAPL"], days=10)
+        provider = BacktestMarketDataProvider(df, window_size=260)
+        asof = df.index[5]                      # 6번째 거래일
+        win = provider.get_ohlc_window("AAPL", asof)
+        assert list(win.columns) == ["High", "Low", "Close"]
+        assert (win.index < asof).all()          # 오늘 봉 제외
+        assert win.index.max() == df.index[4]    # 직전 완성봉(어제)까지
+
+    def test_window_size_clamp(self):
+        from src.backtest.components import BacktestMarketDataProvider
+        df = self._ohlc(["AAPL"], days=10)
+        provider = BacktestMarketDataProvider(df, window_size=3)
+        win = provider.get_ohlc_window("AAPL", df.index[9])
+        assert len(win) == 3
+
+    def test_empty_before_first_day_returns_none(self):
+        from src.backtest.components import BacktestMarketDataProvider
+        df = self._ohlc(["AAPL"], days=10)
+        provider = BacktestMarketDataProvider(df)
+        assert provider.get_ohlc_window("AAPL", df.index[0]) is None  # 직전 봉 없음
+
+    def test_unknown_ticker_returns_none(self):
+        from src.backtest.components import BacktestMarketDataProvider
+        df = self._ohlc(["AAPL"], days=10)
+        provider = BacktestMarketDataProvider(df)
+        assert provider.get_ohlc_window("MSFT", df.index[5]) is None

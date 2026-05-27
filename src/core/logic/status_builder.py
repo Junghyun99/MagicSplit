@@ -15,6 +15,7 @@ def build_dashboard_status(
     stock_rules: Optional[List[StockRule]] = None,
     last_trade_dates: Optional[Dict[str, str]] = None,
     market_type: str = "overseas",
+    regime_state_by_ticker: Optional[Dict[str, dict]] = None,
 ) -> dict:
     """대시보드 렌더링에 필요한 상태 데이터 구조(JSON)를 조립한다.
 
@@ -209,6 +210,7 @@ def build_dashboard_status(
         },
         "positions": ticker_summary,
         "realized_pnl_by_ticker": realized_by_ticker,
+        "regime_state_by_ticker": regime_state_by_ticker or {},
         "enabled_tickers": enabled_tickers,
         "risk_summary": {
             "next_level_needs": round(next_level_needs, 2),

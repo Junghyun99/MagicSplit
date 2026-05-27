@@ -123,3 +123,38 @@ class TestStatus:
         assert len(loaded) == 2
         assert loaded[0].level == 1
         assert loaded[1].level == 2
+
+
+class TestRegimeStateRoundtrip:
+    def test_status_preserves_nested_regime_state(self, repo):
+        rs = {"AAPL": {"regime": "uptrend", "adds": 1, "last_add_swing_high": 150.5}}
+        repo.save_status({"last_run_date": "2026-04-10", "regime_state_by_ticker": rs})
+        loaded = repo.load_status()
+        assert loaded["regime_state_by_ticker"] == rs
+
+
+class TestBulkLiquidationHistory:
+    def test_breakdown_expands_to_per_lot_records(self, repo):
+        exe = TradeExecution(
+            "AAPL", OrderAction.SELL, 10, 90.0, 0.0, "2024-01-02",
+            ExecutionStatus.FILLED, reason="Bulk 청산",
+            buy_price=55.0, realized_pnl=350.0,
+            liquidation_lots=[
+                {"lot_id": "lotB", "level": 2, "buy_price": 60.0, "quantity": 5, "realized_pnl": 150.0},
+                {"lot_id": "lotA", "level": 1, "buy_price": 50.0, "quantity": 5, "realized_pnl": 200.0},
+            ],
+        )
+        pf = Portfolio(total_cash=1000.0, holdings={}, current_prices={"AAPL": 90.0})
+        repo.save_trade_history([exe], pf, "Bulk 청산", sim_date="2024-01-02")
+
+        with open(repo.history_file, encoding="utf-8") as f:
+            history = json.load(f)
+        execs = history[-1]["executions"]
+        # 1건의 통합 청산이 lot별 2개 레코드로 분리됨
+        assert len(execs) == 2
+        assert {e["level"] for e in execs} == {1, 2}
+        assert {e["lot_id"] for e in execs} == {"lotA", "lotB"}
+        # 분리된 레코드엔 raw breakdown 필드가 남지 않는다
+        assert all("liquidation_lots" not in e for e in execs)
+        # 차수별 손익 합 보존
+        assert round(sum(e["realized_pnl"] for e in execs), 2) == 350.0

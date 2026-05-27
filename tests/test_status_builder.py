@@ -54,3 +54,31 @@ class TestStatusMarketType:
         assert "positions" in status
         assert "risk_summary" in status
         assert status["market_type"] == "overseas"
+
+
+class TestRegimeStatePersistence:
+    def test_regime_state_included_in_status(self):
+        rs = {"AAPL": {"regime": "uptrend", "adds": 2, "last_add_swing_high": 198.4}}
+        status = build_dashboard_status(
+            portfolio=_empty_portfolio(),
+            positions=[],
+            reason="-",
+            old_realized_pnl_by_ticker={},
+            recent_executions=[],
+            enabled_tickers=["AAPL"],
+            sim_date="2026-04-10",
+            regime_state_by_ticker=rs,
+        )
+        assert status["regime_state_by_ticker"] == rs
+
+    def test_regime_state_defaults_empty(self):
+        status = build_dashboard_status(
+            portfolio=_empty_portfolio(),
+            positions=[],
+            reason="-",
+            old_realized_pnl_by_ticker={},
+            recent_executions=[],
+            enabled_tickers=[],
+            sim_date="2026-04-10",
+        )
+        assert status["regime_state_by_ticker"] == {}

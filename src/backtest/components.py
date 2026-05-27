@@ -1,10 +1,35 @@
 # src/backtest/components.py
 from dataclasses import replace
-from typing import List, Dict, Optional
+from typing import Any, List, Dict, Optional
 
-from src.core.interfaces import ILogger
+import pandas as pd
+
+from src.core.interfaces import ILogger, IMarketDataProvider
 from src.core.models import Portfolio, Order, TradeExecution
 from src.infra.broker.mock import MockBroker
+
+
+class BacktestMarketDataProvider(IMarketDataProvider):
+    """백테스트용 시세 제공자. 다운로드된 OHLC 프레임에서 '오늘 직전까지' 윈도우를 잘라준다.
+
+    실행 브로커와 완전히 분리된 시장 데이터 출처다. 입력 프레임은 컬럼이
+    MultiIndex (field, ticker)이고 field는 High/Low/Close.
+    """
+
+    def __init__(self, ohlc_df: pd.DataFrame, window_size: int = 260):
+        self.ohlc_df = ohlc_df
+        self.window_size = window_size
+
+    def get_ohlc_window(self, ticker: str, asof: Any) -> Optional[pd.DataFrame]:
+        asof_ts = pd.Timestamp(asof)
+        # 오늘(asof) 봉 제외: index < asof 인 완성봉만. 룩어헤드/장중 repaint 방지.
+        block = self.ohlc_df[self.ohlc_df.index < asof_ts].tail(self.window_size)
+        if block.empty:
+            return None
+        try:
+            return block.xs(ticker, axis=1, level=1)
+        except KeyError:
+            return None
 
 
 class BacktestBroker(MockBroker):

@@ -4,7 +4,9 @@ from dataclasses import replace
 from datetime import datetime
 from typing import Dict, List, Optional, Set, Tuple
 
-from src.core.interfaces import IBrokerAdapter, IRepository, ILogger, INotifier
+from src.core.interfaces import (
+    IBrokerAdapter, IRepository, ILogger, INotifier, IMarketDataProvider,
+)
 from src.core.models import (
     StockRule,
     PositionLot,
@@ -42,10 +44,13 @@ class MagicSplitEngine:
         stock_rules: List[StockRule],
         notifier: Optional[INotifier] = None,
         is_live_trading: bool = False,
+        market_data: Optional[IMarketDataProvider] = None,
     ):
         self.broker = broker
         self.repo = repo
         self.logger = logger
+        # 레짐 지표용 시세 제공자 (실행 브로커와 분리). None이면 레짐 비활성(현 라이브).
+        self.market_data = market_data
         self.evaluator = SplitEvaluator(logger=logger)
         self.stock_rules = [r for r in stock_rules if r.enabled]
         self.all_tickers = [r.ticker for r in self.stock_rules]
@@ -75,13 +80,17 @@ class MagicSplitEngine:
         failed_tickers: List[str] = []
         portfolio: Optional[Portfolio] = None
         positions: Optional[List[PositionLot]] = None
+        regime_state: dict = {}
 
         try:
             # Step 1+2: 포트폴리오 + 포지션 + 직전 매도가 (수동매매와 공유)
             portfolio, positions, last_sell_prices = self._load_initial_state()
 
+            # 레짐 상태 로드 (status.json에 영속). 종목별 현재 레짐/스윙고점/누적횟수.
+            regime_state = self._load_regime_state()
+
             # Step 2.1: 상태 전환 감지 및 자동 초기화 (OFF -> ON)
-            self._handle_state_transitions(positions, last_sell_prices)
+            self._handle_state_transitions(positions, last_sell_prices, regime_state)
 
             # Step 2.5: 브로커 수량 ↔ positions 수량 합 불일치 검사
             # 불일치 종목은 이번 사이클에서 매매 중단 (자동 보정 미지원)
@@ -102,8 +111,15 @@ class MagicSplitEngine:
                     self.logger.info(f">>> Processing {display_ticker(rule.ticker)}")
 
                     # 3a. 해당 종목 신호 평가
+                    # 레짐 지표용 OHLC 윈도우는 시세 제공자에서 (오늘 직전까지). 없으면 None.
+                    ohlc_window = (
+                        self.market_data.get_ohlc_window(rule.ticker, today)
+                        if self.market_data is not None else None
+                    )
                     signals = self.evaluator.evaluate_stock(
                         rule, positions, portfolio, last_sell_prices,
+                        ohlc_window=ohlc_window,
+                        regime_state=regime_state,
                     )
 
                     # 신호 3-way 분류: blocked(경고) / info(상태보고) / active(주문)
@@ -130,6 +146,8 @@ class MagicSplitEngine:
                         if not blocked_signals and not info_signals:
                             self._log_no_signal_status(
                                 rule, positions, portfolio, last_sell_prices,
+                                regime_state=regime_state,
+                                ohlc_window=ohlc_window,
                             )
                         continue
 
@@ -143,6 +161,7 @@ class MagicSplitEngine:
                             positions = self._update_positions(
                                 positions, signals, executions, today,
                                 last_sell_prices=last_sell_prices,
+                                regime_state=regime_state,
                             )
                             portfolio = self._refresh_portfolio(portfolio)
                         except Exception as e:
@@ -172,7 +191,8 @@ class MagicSplitEngine:
                 self.logger.info(">>> Step 6: Persist")
                 self._persist(portfolio, all_signals, all_executions, positions,
                               sim_date=sim_date,
-                              last_sell_prices=last_sell_prices)
+                              last_sell_prices=last_sell_prices,
+                              regime_state=regime_state)
             else:
                 missing = []
                 if portfolio is None:
@@ -517,6 +537,8 @@ class MagicSplitEngine:
         positions: List[PositionLot],
         portfolio: Portfolio,
         last_sell_prices: Optional[dict] = None,
+        regime_state: Optional[dict] = None,
+        ohlc_window = None,
     ) -> None:
         """신호 없음일 때 마지막 차수 현황을 한 줄로 요약 로깅한다.
 
@@ -548,6 +570,39 @@ class MagicSplitEngine:
             return
 
         last_lot = max(ticker_lots, key=lambda l: l.level)
+
+        # ── 상승 레짐 전용 요약 로그 분기 ──
+        ticker_state = regime_state.get(ticker, {}) if regime_state else {}
+        if ticker_state.get("regime") == "uptrend" and ohlc_window is not None:
+            from src.core.logic.regime import classify
+            reading = classify(
+                ohlc_window,
+                adx_trend_threshold=rule.regime_adx_trend,
+                adx_range_threshold=rule.regime_adx_range,
+                chandelier_k=rule.trendbreak_chandelier_k,
+                chandelier_lookback=rule.trendbreak_chandelier_lookback,
+                swing_lookback=rule.uptrend_swing_lookback,
+                min_bars=rule.regime_min_bars,
+            )
+            ema20 = reading.ema20
+            sma50 = reading.sma50
+            adds = ticker_state.get("adds", 0)
+            
+            profit_pct = (current_price - last_lot.buy_price) / last_lot.buy_price * 100
+            ema_dist = (current_price - ema20) / ema20 * 100 if ema20 > 0 else float("nan")
+            
+            msg = (
+                f"  [{disp}] 📈 상승 레짐 유지 | Lv{last_lot.level} "
+                f"매수 {format_money(last_lot.buy_price, rule.market_type)} -> "
+                f"현재 {format_money(current_price, rule.market_type)} ({profit_pct:+.2f}%) | "
+                f"50MA(이탈선) {format_money(sma50, rule.market_type)} | "
+                f"20EMA(눌림) {format_money(ema20, rule.market_type)} (이격 {ema_dist:+.2f}%) | "
+                f"adds {adds}/{rule.uptrend_max_adds}"
+            )
+            self.logger.info(msg)
+            return
+
+        # ── 횡보/하락장 (Sideways) 기본 요약 로그 ──
         profit_pct = (current_price - last_lot.buy_price) / last_lot.buy_price * 100
         sell_threshold = rule.sell_threshold_at(last_lot.level)
         buy_threshold = rule.buy_threshold_at(last_lot.level)
@@ -582,6 +637,7 @@ class MagicSplitEngine:
         executions: List[TradeExecution],
         today: str,
         last_sell_prices: Optional[dict] = None,
+        regime_state: Optional[dict] = None,
     ) -> List[PositionLot]:
         """체결 결과를 반영하여 포지션을 업데이트한다.
 
@@ -590,8 +646,8 @@ class MagicSplitEngine:
         """
         updated = list(positions)
 
-        # 신호 매핑: (ticker, action) -> signal
-        # 한 종목당 한 사이클에 하나의 신호만 발생하므로 unambiguous
+        # 신호 매핑: 종목당 한 사이클에 매수/매도 각 1건이므로 (ticker, action) 맵으로 충분.
+        # (추세이탈 전량청산도 통합 매도 1건이라 종목별 다중 매도가 발생하지 않는다.)
         signal_map = {}
         for sig in signals:
             signal_map[(sig.ticker, sig.action)] = sig
@@ -641,6 +697,13 @@ class MagicSplitEngine:
                     level=level,
                 )
                 updated.append(new_lot)
+                # 상승장 누적매수(add) 체결 확정 시에만 regime_state를 갱신한다.
+                # (신호 생성이 아닌 실제 체결 기준 -> 백테스트/라이브 동일 동작)
+                if (regime_state is not None and sig is not None
+                        and sig.regime_add_swing_high is not None):
+                    st = regime_state.setdefault(exe.ticker, {})
+                    st["adds"] = st.get("adds", 0) + 1
+                    st["last_add_swing_high"] = sig.regime_add_swing_high
                 # 동적 재매수 소비: 매수 체결 시 직전 매도가 초기화
                 if last_sell_prices is not None and exe.ticker in last_sell_prices:
                     self.logger.info(
@@ -656,6 +719,17 @@ class MagicSplitEngine:
 
             elif exe.action == OrderAction.SELL:
                 sig = signal_map.get((exe.ticker, OrderAction.SELL))
+
+                # 통합 전량청산(Bulk Sell): lot_id 없는 청산 매도는 체결 수량을
+                # 고차수(High Level)부터 순차 차감하며 lot을 지운다. 손익은 차감한
+                # 각 lot의 매수가 대비로 합산해 단일 체결 내역에 기록한다.
+                if sig is not None and sig.regime_liquidation and sig.lot_id is None:
+                    updated = self._apply_bulk_liquidation(
+                        updated, exe, disp, last_sell_prices, regime_state
+                    )
+                    continue
+
+                # 일반 단건 매도: 신호의 lot_id로 해당 차수 lot 제거
                 target_lot = None
                 if sig and sig.lot_id:
                     candidates = [l for l in updated if l.lot_id == sig.lot_id]
@@ -699,8 +773,82 @@ class MagicSplitEngine:
 
         return updated
 
+    def _apply_bulk_liquidation(
+        self,
+        updated: List[PositionLot],
+        exe: TradeExecution,
+        disp: str,
+        last_sell_prices: Optional[dict],
+        regime_state: Optional[dict],
+    ) -> List[PositionLot]:
+        """통합 전량청산 체결을 고차수부터 순차 차감하여 반영한다.
+
+        - 체결 수량만큼 고레벨 lot부터 소진(전량 소진 lot은 제거, 마지막은 부분 잔량).
+        - 실현 손익은 소진한 각 lot의 매수가 기준으로 합산해 exe에 기록.
+        - 잔여 포지션이 0이 될 때만 레짐 상태를 리셋(부분체결/거절 시 모드 유지).
+        """
+        qty_left = exe.quantity
+        lots_desc = sorted(
+            [l for l in updated if l.ticker == exe.ticker],
+            key=lambda l: l.level, reverse=True,
+        )
+        total_pnl = 0.0
+        total_cost = 0.0
+        consumed = 0
+        breakdown = []  # 소진 lot별 분해(차수별 손익 기록용)
+        for lot in lots_desc:
+            if qty_left <= 0:
+                break
+            take = min(qty_left, lot.quantity)
+            gross = (exe.price - lot.buy_price) * take
+            total_pnl += gross
+            total_cost += lot.buy_price * take
+            consumed += take
+            breakdown.append({
+                "lot_id": lot.lot_id, "level": lot.level,
+                "buy_price": lot.buy_price, "quantity": take, "_gross": gross,
+            })
+            if take >= lot.quantity:
+                updated.remove(lot)
+            else:
+                updated[updated.index(lot)] = replace(lot, quantity=lot.quantity - take)
+            qty_left -= take
+
+        if consumed > 0:
+            exe.buy_price = round(total_cost / consumed, 4)
+            exe.realized_pnl = round(total_pnl - exe.fee, 2)
+            # 수수료를 소진 수량 비례로 배분해 lot별 실현손익을 확정(합 = 순실현손익).
+            for item in breakdown:
+                lot_fee = exe.fee * (item["quantity"] / consumed)
+                item["realized_pnl"] = round(item.pop("_gross") - lot_fee, 2)
+            exe.liquidation_lots = breakdown
+            if last_sell_prices is not None:
+                last_sell_prices[exe.ticker] = exe.price
+
+        remaining = [l for l in updated if l.ticker == exe.ticker]
+        self.logger.info(
+            f"[Position] Bulk 청산: {disp} {consumed}주 소진 "
+            f"(잔여 {sum(l.quantity for l in remaining)}주), "
+            f"실현손익 {format_money(exe.realized_pnl, self.market_type)}"
+        )
+        if qty_left > 0:
+            self.logger.warning(
+                f"[Position] Bulk 청산 초과 체결: {disp} 미차감 {qty_left}주 — "
+                f"scripts/reconcile_positions.py 로 정합성 확인 권장."
+            )
+
+        # 잔여 0일 때만 레짐 리셋(flat 재시작). 부분체결/거절이면 모드 유지 -> 다음 사이클 재청산.
+        if regime_state is not None and not remaining:
+            regime_state.pop(exe.ticker, None)
+        return updated
+
     def _enrich_executions(self, executions: List[TradeExecution], signals: List[SplitSignal]) -> None:
-        """체결 내역에 신호의 비즈니스 컨텍스트(차수, 손익 등)를 주입한다."""
+        """체결 내역에 신호의 비즈니스 컨텍스트(차수, 손익 등)를 주입한다.
+
+        종목당 매수/매도 각 1건이므로 (ticker, action) 맵으로 매칭한다.
+        통합 청산 매도는 buy_price를 신호에 싣지 않으므로(=0) 여기서 손익을 계산하지 않고,
+        _apply_bulk_liquidation에서 소진 lot별로 합산해 기록한다.
+        """
         signal_map = {(sig.ticker, sig.action): sig for sig in signals}
         for exe in executions:
             if exe.status == ExecutionStatus.REJECTED:
@@ -723,6 +871,7 @@ class MagicSplitEngine:
         positions: List[PositionLot],
         sim_date: Optional[str] = None,
         last_sell_prices: Optional[dict] = None,
+        regime_state: Optional[dict] = None,
     ) -> None:
         """Step 6: 저장 4종 호출."""
         reason = self._build_reason(signals)
@@ -744,8 +893,21 @@ class MagicSplitEngine:
             portfolio, positions, reason, old_realized_pnl, executions,
             self.all_tickers, sim_date, self.stock_rules, last_trade_dates,
             market_type=self.market_type,
+            regime_state_by_ticker=regime_state,
         )
         self.repo.save_status(status_data)
+
+    def _load_regime_state(self) -> dict:
+        """status.json에서 종목별 레짐 상태를 로드한다 (없으면 빈 dict)."""
+        try:
+            prev = self.repo.load_status()
+        except Exception:
+            return {}
+        if isinstance(prev, dict):
+            state = prev.get("regime_state_by_ticker")
+            if isinstance(state, dict):
+                return state
+        return {}
 
     # ── Private helpers ──────────────────────────────────────────
 
@@ -753,6 +915,7 @@ class MagicSplitEngine:
         self,
         positions: List[PositionLot],
         last_sell_prices: Dict[str, float],
+        regime_state: Optional[dict] = None,
     ) -> None:
         """종목의 상태 전이(OFF -> ON)를 감지하여 낡은 상태값을 초기화한다."""
         try:
@@ -772,6 +935,10 @@ class MagicSplitEngine:
             self.logger.info(f">>> Step 2.1: Detected {len(newly_enabled)} newly enabled ticker(s)")
             
             for ticker in newly_enabled:
+                # 레짐 상태도 새 시즌으로 초기화 (낡은 레짐/스윙고점/누적횟수 제거)
+                if regime_state is not None:
+                    regime_state.pop(ticker, None)
+
                 # A. 보유 수량이 0인 경우 -> 직전 매도가 및 실현 손익(새 시즌) 초기화
                 ticker_lots = [l for l in positions if l.ticker == ticker]
                 if not ticker_lots:

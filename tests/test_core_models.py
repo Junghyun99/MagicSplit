@@ -204,3 +204,62 @@ class TestExecutionStatus:
     def test_str(self):
         assert str(ExecutionStatus.FILLED) == "FILLED"
         assert str(ExecutionStatus.REJECTED) == "REJECTED"
+
+
+class TestStockRuleRegime:
+    def test_regime_defaults_off(self):
+        rule = StockRule("AAPL", -5.0, 10.0, 500, 10)
+        assert rule.regime_enabled is False
+        assert rule.regime_adx_trend == 25.0
+        assert rule.regime_adx_range == 20.0
+        assert rule.regime_min_bars == 200
+        assert rule.uptrend_max_adds == 3
+        assert rule.trendbreak_use_sma50 is True
+        assert rule.uptrend_add_amount is None
+        assert rule.uptrend_add_amounts is None
+
+    def test_uptrend_add_amount_fallback_to_buy_amount(self):
+        rule = StockRule("AAPL", -5.0, 10.0, 500, 10)
+        assert rule.uptrend_add_amount_at(1) == 500
+        assert rule.uptrend_add_amount_at(3) == 500
+
+    def test_uptrend_add_amount_scalar(self):
+        rule = StockRule("AAPL", -5.0, 10.0, 500, 10, uptrend_add_amount=800)
+        assert rule.uptrend_add_amount_at(1) == 800
+        assert rule.uptrend_add_amount_at(5) == 800
+
+    def test_uptrend_add_amounts_array_clamps(self):
+        rule = StockRule(
+            "AAPL", -5.0, 10.0, 500, 10,
+            uptrend_add_amounts=[1500.0, 1000.0, 600.0],
+        )
+        assert rule.uptrend_add_amount_at(1) == 1500.0
+        assert rule.uptrend_add_amount_at(2) == 1000.0
+        assert rule.uptrend_add_amount_at(3) == 600.0
+        assert rule.uptrend_add_amount_at(9) == 600.0  # clamp to last
+
+    def test_guard_rejects_inverted_adx_thresholds(self):
+        with pytest.raises(ValueError, match="regime_adx_range"):
+            StockRule(
+                "AAPL", -5.0, 10.0, 500, 10,
+                regime_enabled=True, regime_adx_trend=20.0, regime_adx_range=30.0,
+            )
+
+    def test_guard_rejects_negative_pullback_band(self):
+        with pytest.raises(ValueError, match="uptrend_pullback_band_pct"):
+            StockRule(
+                "AAPL", -5.0, 10.0, 500, 10,
+                regime_enabled=True, uptrend_pullback_band_pct=-1.0,
+            )
+
+    def test_guard_inactive_when_regime_disabled(self):
+        # regime_enabled=False면 비정상 값이어도 통과 (OFF)
+        rule = StockRule(
+            "AAPL", -5.0, 10.0, 500, 10,
+            regime_adx_trend=20.0, regime_adx_range=30.0,
+        )
+        assert rule.regime_enabled is False
+
+    def test_empty_uptrend_add_amounts_rejected(self):
+        with pytest.raises(ValueError, match="uptrend_add_amounts"):
+            StockRule("AAPL", -5.0, 10.0, 500, 10, uptrend_add_amounts=[])

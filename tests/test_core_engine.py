@@ -81,7 +81,7 @@ class TestRunOneCycle:
             logger=mock_logger, stock_rules=rules,
         )
 
-        def mock_evaluate_stock(rule, positions, portfolio, last_sell_prices=None):
+        def mock_evaluate_stock(rule, positions, portfolio, last_sell_prices=None, **kwargs):
             if rule.ticker == "AAPL":
                 raise Exception("Mock evaluator error")
             elif rule.ticker == "MSFT":
@@ -121,7 +121,7 @@ class TestRunOneCycle:
             logger=mock_logger, stock_rules=rules,
         )
 
-        def mock_evaluate_stock(rule, positions, portfolio, last_sell_prices=None):
+        def mock_evaluate_stock(rule, positions, portfolio, last_sell_prices=None, **kwargs):
             if rule.ticker == "AAPL":
                 return [SplitSignal("AAPL", None, OrderAction.BUY, 5, 100.0, "AAPL Buy", 0.0, 1)]
             elif rule.ticker == "MSFT":
@@ -143,11 +143,11 @@ class TestRunOneCycle:
         # Original _update_positions method
         original_update_positions = engine._update_positions
 
-        def mock_update_positions(positions, signals, executions, today, last_sell_prices=None):
+        def mock_update_positions(positions, signals, executions, today, last_sell_prices=None, **kwargs):
             # Check if this is the AAPL update
             if any(e.ticker == "AAPL" for e in executions):
                 raise Exception("Mock position update error")
-            return original_update_positions(positions, signals, executions, today, last_sell_prices=last_sell_prices)
+            return original_update_positions(positions, signals, executions, today, last_sell_prices=last_sell_prices, **kwargs)
 
         engine._update_positions = MagicMock(side_effect=mock_update_positions)
 
@@ -1024,3 +1024,173 @@ class TestRunManualTrade:
         assert saved == []  # 새 lot 미추가
         alert_msgs = [c.args[0] for c in notifier.send_alert.call_args_list]
         assert any("수동매매" in m and "체결 실패 또는 거절" in m for m in alert_msgs)
+
+
+class TestRegimeAddCommitOnFill:
+    """상승 add는 매수 체결이 확정될 때만 regime_state를 갱신한다 (백테스트/라이브 동일)."""
+
+    def _buy_sig(self):
+        sig = SplitSignal("AAPL", None, OrderAction.BUY, 5, 110.0, "상승 add", 0.0, 2)
+        sig.regime_add_swing_high = 120.0
+        return sig
+
+    def test_commit_on_filled_buy(self, engine):
+        regime_state = {"AAPL": {"regime": "uptrend", "adds": 0, "last_add_swing_high": 100.0}}
+        exe = TradeExecution(
+            "AAPL", OrderAction.BUY, 5, 110.0, 1.0, "2024-01-01", ExecutionStatus.FILLED,
+        )
+        engine._update_positions(
+            [], [self._buy_sig()], [exe], "2024-01-02",
+            last_sell_prices={}, regime_state=regime_state,
+        )
+        assert regime_state["AAPL"]["adds"] == 1
+        assert regime_state["AAPL"]["last_add_swing_high"] == 120.0
+
+    def test_no_commit_on_rejected_buy(self, engine):
+        regime_state = {"AAPL": {"regime": "uptrend", "adds": 0, "last_add_swing_high": 100.0}}
+        exe = TradeExecution(
+            "AAPL", OrderAction.BUY, 0, 110.0, 0.0, "2024-01-01", ExecutionStatus.REJECTED,
+        )
+        engine._update_positions(
+            [], [self._buy_sig()], [exe], "2024-01-02",
+            last_sell_prices={}, regime_state=regime_state,
+        )
+        # 거절되면 add 카운트/고점 기준이 그대로 유지된다
+        assert regime_state["AAPL"]["adds"] == 0
+        assert regime_state["AAPL"]["last_add_swing_high"] == 100.0
+
+    def test_normal_buy_does_not_touch_regime_state(self, engine):
+        # regime_add_swing_high 없는 일반 매수는 regime_state를 건드리지 않는다
+        regime_state = {"AAPL": {"regime": "uptrend", "adds": 2, "last_add_swing_high": 100.0}}
+        sig = SplitSignal("AAPL", None, OrderAction.BUY, 5, 110.0, "일반 매수", 0.0, 2)
+        exe = TradeExecution(
+            "AAPL", OrderAction.BUY, 5, 110.0, 1.0, "2024-01-01", ExecutionStatus.FILLED,
+        )
+        engine._update_positions(
+            [], [sig], [exe], "2024-01-02", last_sell_prices={}, regime_state=regime_state,
+        )
+        assert regime_state["AAPL"]["adds"] == 2
+
+
+class TestBulkLiquidation:
+    """추세이탈 통합 전량청산(Bulk Sell): 단일 매도를 고차수부터 차감한다."""
+
+    def _positions(self):
+        return [
+            PositionLot("lotA", "AAPL", 50.0, 5, "2024-01-01", level=1),
+            PositionLot("lotB", "AAPL", 60.0, 5, "2024-01-01", level=2),
+            PositionLot("lotC", "AAPL", 70.0, 5, "2024-01-01", level=3),
+        ]
+
+    def _bulk_signal(self, total_qty=15, price=90.0):
+        # lot_id=None + regime_liquidation=True -> 통합 청산
+        return SplitSignal("AAPL", None, OrderAction.SELL, total_qty, price,
+                           "Bulk 청산", 0.0, 3, regime_liquidation=True)
+
+    def _exe(self, qty, price=90.0, status=ExecutionStatus.FILLED):
+        return TradeExecution("AAPL", OrderAction.SELL, qty, price, 0.0, "2024-01-01", status)
+
+    def test_full_fill_removes_all_and_resets(self, engine):
+        regime_state = {"AAPL": {"regime": "uptrend", "adds": 3, "last_add_swing_high": 200.0}}
+        last_sell = {}
+        result = engine._update_positions(
+            self._positions(), [self._bulk_signal(15)], [self._exe(15)],
+            "2024-01-02", last_sell_prices=last_sell, regime_state=regime_state,
+        )
+        assert result == []
+        assert last_sell["AAPL"] == 90.0
+        assert "AAPL" not in regime_state  # flat 재시작
+
+    def test_realized_pnl_aggregates_over_lots(self, engine):
+        exe = self._exe(15)
+        engine._update_positions(
+            self._positions(), [self._bulk_signal(15)], [exe],
+            "2024-01-02", last_sell_prices={}, regime_state={},
+        )
+        # (90-70)+(90-60)+(90-50) per 5주 = (20+30+40)*5 = 450
+        assert exe.realized_pnl == 450.0
+
+    def test_breakdown_records_per_lot(self, engine):
+        exe = self._exe(15)
+        engine._update_positions(
+            self._positions(), [self._bulk_signal(15)], [exe],
+            "2024-01-02", last_sell_prices={}, regime_state={},
+        )
+        bd = exe.liquidation_lots
+        assert bd is not None and len(bd) == 3
+        # 고차수부터 차감: Lv3 -> Lv2 -> Lv1
+        assert [x["level"] for x in bd] == [3, 2, 1]
+        assert {x["lot_id"] for x in bd} == {"lotA", "lotB", "lotC"}
+        # lot별 손익 합 == 종목 누적용 aggregate (fee=0)
+        assert round(sum(x["realized_pnl"] for x in bd), 2) == exe.realized_pnl
+
+    def test_partial_fill_consumes_high_level_first_and_keeps_mode(self, engine):
+        regime_state = {"AAPL": {"regime": "uptrend", "adds": 3, "last_add_swing_high": 200.0}}
+        # 7주만 체결 -> Lv3(5) 전량 + Lv2(2) 부분 차감
+        result = engine._update_positions(
+            self._positions(), [self._bulk_signal(15)],
+            [self._exe(7, status=ExecutionStatus.PARTIAL)],
+            "2024-01-02", last_sell_prices={}, regime_state=regime_state,
+        )
+        ids = sorted(l.lot_id for l in result)
+        assert ids == ["lotA", "lotB"]            # lotC 전량 제거
+        lotB = next(l for l in result if l.lot_id == "lotB")
+        assert lotB.quantity == 3                  # 5 - 2
+        # 잔여 포지션 있으므로 모드 유지 -> 다음 사이클 재청산
+        assert regime_state["AAPL"]["regime"] == "uptrend"
+
+    def test_rejected_keeps_all_and_mode(self, engine):
+        regime_state = {"AAPL": {"regime": "uptrend", "adds": 3, "last_add_swing_high": 200.0}}
+        result = engine._update_positions(
+            self._positions(), [self._bulk_signal(15)],
+            [self._exe(0, status=ExecutionStatus.REJECTED)],
+            "2024-01-02", last_sell_prices={}, regime_state=regime_state,
+        )
+        assert len(result) == 3                    # 아무것도 안 지워짐
+        assert regime_state["AAPL"]["regime"] == "uptrend"
+
+
+class TestNormalSingleSell:
+    """일반(평균회귀) 단건 매도는 lot_id로 해당 lot만 제거한다."""
+
+    def _exe(self, qty, price):
+        return TradeExecution(
+            "AAPL", OrderAction.SELL, qty, price, 0.0, "2024-01-01", ExecutionStatus.FILLED,
+        )
+
+    def test_single_sell_removes_targeted_lot(self, engine):
+        positions = [
+            PositionLot("lotA", "AAPL", 50.0, 5, "2024-01-01", level=1),
+            PositionLot("lotB", "AAPL", 60.0, 5, "2024-01-01", level=2),
+        ]
+        signals = [SplitSignal("AAPL", "lotB", OrderAction.SELL, 5, 90.0, "익절 Lv2", 0.0, 2, 60.0)]
+        result = engine._update_positions(
+            positions, signals, [self._exe(5, 90.0)], "2024-01-02", last_sell_prices={},
+        )
+        assert [l.lot_id for l in result] == ["lotA"]
+
+    def test_enrich_single_sell_pnl(self, engine):
+        signals = [SplitSignal("AAPL", "lotB", OrderAction.SELL, 5, 90.0, "Lv2", 0.0, 2, 60.0)]
+        executions = [self._exe(5, 90.0)]
+        engine._enrich_executions(executions, signals)
+        assert executions[0].level == 2
+        assert executions[0].buy_price == 60.0
+        assert executions[0].realized_pnl == round((90.0 - 60.0) * 5, 2)
+
+
+class TestRegimeStateEngine:
+    def test_load_regime_state_from_status(self, engine, mock_repo):
+        rs = {"AAPL": {"regime": "uptrend", "adds": 1}}
+        mock_repo.load_status.return_value = {"regime_state_by_ticker": rs}
+        assert engine._load_regime_state() == rs
+
+    def test_load_regime_state_missing_returns_empty(self, engine, mock_repo):
+        mock_repo.load_status.return_value = {"last_run_date": "2026-04-10"}
+        assert engine._load_regime_state() == {}
+
+    def test_state_transition_resets_regime_state(self, engine, mock_repo):
+        # 이전 사이클엔 AAPL이 비활성 -> 이번에 활성(OFF->ON)
+        mock_repo.load_status.return_value = {"enabled_tickers": []}
+        regime_state = {"AAPL": {"regime": "uptrend", "adds": 3}}
+        engine._handle_state_transitions([], {}, regime_state)
+        assert "AAPL" not in regime_state

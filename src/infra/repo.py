@@ -131,9 +131,25 @@ class JsonRepository(IRepository):
         alias_by_ticker = {e.ticker: get_alias(e.ticker) or e.ticker for e in executions}
         enriched_execs = []
         for e in executions:
-            rec = asdict(e)
-            rec["alias"] = alias_by_ticker[e.ticker]
+            base = asdict(e)
+            base["alias"] = alias_by_ticker[e.ticker]
+            breakdown = base.pop("liquidation_lots", None)
 
+            # 통합 청산(Bulk): 소진 lot별 N개 레코드로 분리 기록(차수별 손익 보존)
+            if breakdown:
+                for lot in breakdown:
+                    rec = dict(base)
+                    rec.update({
+                        "quantity": lot["quantity"],
+                        "lot_id": lot["lot_id"],
+                        "level": lot["level"],
+                        "buy_price": lot["buy_price"],
+                        "realized_pnl": lot["realized_pnl"],
+                    })
+                    enriched_execs.append(rec)
+                continue
+
+            rec = base
             # JSON 깔끔함을 위해 불필요한 빈 필드 제거
             if rec.get("lot_id") is None:
                 rec.pop("lot_id", None)

@@ -1,7 +1,10 @@
 # tests/test_strategy_config.py
 import json
+import os
 import pytest
 from src.strategy_config import StrategyConfig
+
+REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 class TestStrategyConfig:
@@ -344,3 +347,102 @@ class TestTrailingDropConfig:
         assert rule.trailing_drop_at(2) == 1.5
         assert rule.trailing_drop_at(10) == 2.0  # clamp to last
 
+
+class TestStrategyConfigRegime:
+    def test_regime_absent_defaults_off(self, tmp_path):
+        config = {"stocks": [{"ticker": "AAPL"}]}
+        config_file = tmp_path / "config_overseas.json"
+        config_file.write_text(json.dumps(config))
+
+        rule = StrategyConfig(str(config_file)).rules[0]
+        assert rule.regime_enabled is False
+        assert rule.regime_adx_trend == 25.0
+        assert rule.uptrend_add_amounts is None
+
+    def test_regime_fields_parsed_from_stock(self, tmp_path):
+        config = {
+            "stocks": [{
+                "ticker": "AAPL",
+                "regime_enabled": True,
+                "regime_adx_trend": 30,
+                "regime_adx_range": 18,
+                "regime_min_bars": 150,
+                "uptrend_pullback_band_pct": 2.0,
+                "uptrend_max_adds": 4,
+                "uptrend_add_amounts": [1500, 1000, 600],
+                "uptrend_swing_lookback": 12,
+                "trendbreak_chandelier_k": 2.5,
+                "trendbreak_chandelier_lookback": 20,
+                "trendbreak_use_sma50": False,
+            }]
+        }
+        config_file = tmp_path / "config_overseas.json"
+        config_file.write_text(json.dumps(config))
+
+        rule = StrategyConfig(str(config_file)).rules[0]
+        assert rule.regime_enabled is True
+        assert rule.regime_adx_trend == 30.0
+        assert rule.regime_adx_range == 18.0
+        assert rule.regime_min_bars == 150
+        assert rule.uptrend_pullback_band_pct == 2.0
+        assert rule.uptrend_max_adds == 4
+        assert rule.uptrend_add_amounts == [1500.0, 1000.0, 600.0]
+        assert rule.uptrend_swing_lookback == 12
+        assert rule.trendbreak_chandelier_k == 2.5
+        assert rule.trendbreak_chandelier_lookback == 20
+        assert rule.trendbreak_use_sma50 is False
+
+    def test_regime_global_inheritance_and_override(self, tmp_path):
+        config = {
+            "stocks": [
+                {"ticker": "AAPL"},                          # 글로벌 상속
+                {"ticker": "MSFT", "regime_adx_trend": 35},  # 개별 오버라이드
+            ],
+            "global": {"regime_enabled": True, "regime_adx_trend": 28},
+        }
+        config_file = tmp_path / "config_overseas.json"
+        config_file.write_text(json.dumps(config))
+
+        rules = StrategyConfig(str(config_file)).rules
+        assert rules[0].regime_enabled is True
+        assert rules[0].regime_adx_trend == 28.0   # 글로벌
+        assert rules[1].regime_enabled is True      # 글로벌 상속
+        assert rules[1].regime_adx_trend == 35.0    # 개별 오버라이드
+
+    def test_regime_via_preset(self, tmp_path):
+        presets = {
+            "trend_us": {
+                "buy_amount": 1000,
+                "regime_enabled": True,
+                "uptrend_add_amounts": [1500, 1000, 600],
+            }
+        }
+        config = {"stocks": [{"ticker": "AAPL", "preset": "trend_us"}]}
+        (tmp_path / "presets.json").write_text(json.dumps(presets))
+        config_file = tmp_path / "config_overseas.json"
+        config_file.write_text(json.dumps(config))
+
+        rule = StrategyConfig(str(config_file)).rules[0]
+        assert rule.regime_enabled is True
+        assert rule.uptrend_add_amounts == [1500.0, 1000.0, 600.0]
+
+
+
+class TestRepoConfigRegimeSeparation:
+    """라이브 config는 레짐 OFF, 백테스트 전용 config_test_*는 레짐 ON 불변식."""
+
+    def test_live_overseas_regime_off(self):
+        sc = StrategyConfig(os.path.join(REPO_ROOT, "config_overseas.json"))
+        assert sc.rules and all(r.regime_enabled is False for r in sc.rules)
+
+    def test_live_domestic_regime_off(self):
+        sc = StrategyConfig(os.path.join(REPO_ROOT, "config_domestic.json"))
+        assert sc.rules and all(r.regime_enabled is False for r in sc.rules)
+
+    def test_backtest_overseas_regime_on(self):
+        sc = StrategyConfig(os.path.join(REPO_ROOT, "config_test_overseas.json"))
+        assert sc.rules and all(r.regime_enabled is True for r in sc.rules)
+
+    def test_backtest_domestic_regime_on(self):
+        sc = StrategyConfig(os.path.join(REPO_ROOT, "config_test_domestic.json"))
+        assert sc.rules and all(r.regime_enabled is True for r in sc.rules)

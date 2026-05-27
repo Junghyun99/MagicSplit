@@ -182,3 +182,50 @@ class TestIpoTrim:
 
         # 트림 없이 yf 응답의 첫 날짜가 그대로 유지
         assert result.index.min() == pd.Timestamp("2024-01-02")
+
+
+class TestBacktestDataCacheOHLC:
+    def test_get_ohlc_single_ticker(self, cache, tmp_cache_dir):
+        mock_df = _make_yf_response(["AAPL"], days=5)
+        with patch("src.backtest.cache.yf.download", return_value=mock_df):
+            result = cache.get_ohlc(["AAPL"], "2024-01-01", "2024-01-10")
+
+        assert isinstance(result.columns, pd.MultiIndex)
+        assert set(result.columns.get_level_values(0)) == {"High", "Low", "Close"}
+        assert "AAPL" in result.columns.get_level_values(1)
+        assert (tmp_cache_dir / "ohlc.parquet").exists()
+
+    def test_get_ohlc_multi_ticker(self, cache):
+        mock_df = _make_yf_response(["AAPL", "MSFT"], days=5)
+        with patch("src.backtest.cache.yf.download", return_value=mock_df):
+            result = cache.get_ohlc(["AAPL", "MSFT"], "2024-01-01", "2024-01-10")
+
+        tickers = set(result.columns.get_level_values(1))
+        assert {"AAPL", "MSFT"} <= tickers
+        # 종목별 서브프레임 추출이 동작해야 한다
+        sub = result.xs("AAPL", axis=1, level=1)
+        assert list(sub.columns) == ["High", "Low", "Close"]
+
+    def test_get_ohlc_parquet_roundtrip(self, cache, tmp_cache_dir):
+        """ohlc.parquet에 MultiIndex 컬럼이 보존되어 캐시 히트가 동작한다."""
+        mock_df = _make_yf_response(["AAPL", "MSFT"], days=8)
+        with patch("src.backtest.cache.yf.download", return_value=mock_df) as dl:
+            first = cache.get_ohlc(["AAPL", "MSFT"], "2024-01-01", "2024-01-12")
+            assert dl.call_count == 1
+            # 두 번째 호출은 캐시 히트 -> 다운로드 미발생
+            second = cache.get_ohlc(["AAPL", "MSFT"], "2024-01-01", "2024-01-12")
+            assert dl.call_count == 1
+
+        assert isinstance(second.columns, pd.MultiIndex)
+        assert set(second.columns.get_level_values(0)) == {"High", "Low", "Close"}
+
+    def test_get_ohlc_raises_on_empty(self, cache):
+        with patch("src.backtest.cache.yf.download", return_value=pd.DataFrame()):
+            with pytest.raises(ValueError, match="OHLC 다운로드 실패"):
+                cache.get_ohlc(["AAPL"], "2024-01-01", "2024-01-10")
+
+    def test_clear_removes_ohlc(self, cache, tmp_cache_dir):
+        tmp_cache_dir.mkdir(parents=True, exist_ok=True)
+        (tmp_cache_dir / "ohlc.parquet").write_text("dummy")
+        cache.clear()
+        assert not (tmp_cache_dir / "ohlc.parquet").exists()

@@ -48,10 +48,10 @@ jobs:
     - name: Set Environment Variables
       run: |
         if [ "${{ inputs.market_type }}" == "국내" ]; then
-          echo "CONFIG_PATH=config_domestic.json" >> $GITHUB_ENV
+          echo "CONFIG_PATH=config_test_domestic.json" >> $GITHUB_ENV
           echo "MARKET_VAL=domestic" >> $GITHUB_ENV
         else
-          echo "CONFIG_PATH=config_overseas.json" >> $GITHUB_ENV
+          echo "CONFIG_PATH=config_test_overseas.json" >> $GITHUB_ENV
           echo "MARKET_VAL=overseas" >> $GITHUB_ENV
         fi
       shell: bash
