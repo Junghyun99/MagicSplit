@@ -1,0 +1,2230 @@
+2026-05-27 01:12:16,174 [INFO] 레짐 감지 활성화: 과거 데이터 260봉 확보를 위해 다운로드 시작일을 2025-01-01에서 2023-11-12로 조정합니다.
+2026-05-27 01:12:16,174 [INFO] --- 데이터 다운로드: ['005930'] (2023-11-12 ~ 2025-12-31) ---
+2026-05-27 01:12:16,498 [INFO] --- 백테스트 시작 (241 거래일) ---
+2026-05-27 01:12:16,498 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:16,499 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:16,499 [INFO] Portfolio: Cash=KRW 1,000,000,000, Value=KRW 1,000,000,000
+2026-05-27 01:12:16,499 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:16,499 [INFO] Loaded 0 position lot(s)
+2026-05-27 01:12:16,499 [INFO] >>> Step 2.1: Detected 1 newly enabled ticker(s)
+2026-05-27 01:12:16,499 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:16,499 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:16,500 [INFO] [삼성전자(005930)] 보유 lot 없음 -> 초기 매수 Lv1 18주 @KRW 53,400
+2026-05-27 01:12:16,501 [INFO] Executing 1 order(s)...
+2026-05-27 01:12:16,501 [INFO] [FILLED] BUY 005930: 18 @ $53453.40 (Fee: $2405.40)
+2026-05-27 01:12:16,501 [INFO] [Position] New lot: lot_20260527_011216_005930_001 Lv1 삼성전자(005930) 18주 @KRW 53,453
+2026-05-27 01:12:16,501 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:16,503 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:16,503 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:16,504 [INFO] Portfolio: Cash=KRW 999,035,433, Value=KRW 1,000,014,633
+2026-05-27 01:12:16,504 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:16,504 [INFO] Loaded 1 position lot(s)
+2026-05-27 01:12:16,504 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:16,504 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:16,510 [INFO]   [삼성전자(005930)] 신호 없음 | Lv1 매수 KRW 53,453 -> 현재 KRW 54,400 (+1.77%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:16,510 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:16,512 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:16,512 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:16,512 [INFO] Portfolio: Cash=KRW 999,035,433, Value=KRW 1,000,041,633
+2026-05-27 01:12:16,512 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:16,513 [INFO] Loaded 1 position lot(s)
+2026-05-27 01:12:16,513 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:16,513 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:16,519 [INFO]   [삼성전자(005930)] 신호 없음 | Lv1 매수 KRW 53,453 -> 현재 KRW 55,900 (+4.58%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:16,519 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:16,521 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:16,521 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:16,522 [INFO] Portfolio: Cash=KRW 999,035,433, Value=KRW 1,000,032,633
+2026-05-27 01:12:16,522 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:16,522 [INFO] Loaded 1 position lot(s)
+2026-05-27 01:12:16,522 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:16,522 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:16,528 [INFO]   [삼성전자(005930)] 신호 없음 | Lv1 매수 KRW 53,453 -> 현재 KRW 55,400 (+3.64%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:16,528 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:16,530 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:16,530 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:16,530 [INFO] Portfolio: Cash=KRW 999,035,433, Value=KRW 1,000,066,833
+2026-05-27 01:12:16,530 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:16,530 [INFO] Loaded 1 position lot(s)
+2026-05-27 01:12:16,531 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:16,531 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:16,537 [INFO]   [삼성전자(005930)] 신호 없음 | Lv1 매수 KRW 53,453 -> 현재 KRW 57,300 (+7.20%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:16,537 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:16,539 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:16,539 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:16,539 [INFO] Portfolio: Cash=KRW 999,035,433, Value=KRW 1,000,045,233
+2026-05-27 01:12:16,539 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:16,539 [INFO] Loaded 1 position lot(s)
+2026-05-27 01:12:16,539 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:16,539 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:16,545 [INFO]   [삼성전자(005930)] 신호 없음 | Lv1 매수 KRW 53,453 -> 현재 KRW 56,100 (+4.95%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:16,545 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:16,547 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:16,547 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:16,547 [INFO] Portfolio: Cash=KRW 999,035,433, Value=KRW 1,000,030,833
+2026-05-27 01:12:16,547 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:16,547 [INFO] Loaded 1 position lot(s)
+2026-05-27 01:12:16,548 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:16,548 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:16,554 [INFO]   [삼성전자(005930)] 신호 없음 | Lv1 매수 KRW 53,453 -> 현재 KRW 55,300 (+3.45%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:16,554 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:16,555 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:16,556 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:16,556 [INFO] Portfolio: Cash=KRW 999,035,433, Value=KRW 1,000,009,233
+2026-05-27 01:12:16,556 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:16,556 [INFO] Loaded 1 position lot(s)
+2026-05-27 01:12:16,556 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:16,556 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:16,562 [INFO]   [삼성전자(005930)] 신호 없음 | Lv1 매수 KRW 53,453 -> 현재 KRW 54,100 (+1.21%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:16,562 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:16,564 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:16,564 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:16,564 [INFO] Portfolio: Cash=KRW 999,035,433, Value=KRW 1,000,005,633
+2026-05-27 01:12:16,564 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:16,564 [INFO] Loaded 1 position lot(s)
+2026-05-27 01:12:16,564 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:16,565 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:16,570 [INFO]   [삼성전자(005930)] 신호 없음 | Lv1 매수 KRW 53,453 -> 현재 KRW 53,900 (+0.84%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:16,571 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:16,572 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:16,572 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:16,573 [INFO] Portfolio: Cash=KRW 999,035,433, Value=KRW 1,000,002,033
+2026-05-27 01:12:16,573 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:16,573 [INFO] Loaded 1 position lot(s)
+2026-05-27 01:12:16,573 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:16,573 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:16,580 [INFO]   [삼성전자(005930)] 신호 없음 | Lv1 매수 KRW 53,453 -> 현재 KRW 53,700 (+0.46%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:16,580 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:16,582 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:16,582 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:16,582 [INFO] Portfolio: Cash=KRW 999,035,433, Value=KRW 1,000,012,833
+2026-05-27 01:12:16,582 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:16,582 [INFO] Loaded 1 position lot(s)
+2026-05-27 01:12:16,582 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:16,582 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:16,588 [INFO]   [삼성전자(005930)] 신호 없음 | Lv1 매수 KRW 53,453 -> 현재 KRW 54,300 (+1.58%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:16,588 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:16,590 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:16,590 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:16,590 [INFO] Portfolio: Cash=KRW 999,035,433, Value=KRW 1,000,002,033
+2026-05-27 01:12:16,590 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:16,590 [INFO] Loaded 1 position lot(s)
+2026-05-27 01:12:16,591 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:16,591 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:16,597 [INFO]   [삼성전자(005930)] 신호 없음 | Lv1 매수 KRW 53,453 -> 현재 KRW 53,700 (+0.46%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:16,597 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:16,599 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:16,599 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:16,599 [INFO] Portfolio: Cash=KRW 999,035,433, Value=KRW 999,996,633
+2026-05-27 01:12:16,599 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:16,599 [INFO] Loaded 1 position lot(s)
+2026-05-27 01:12:16,599 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:16,599 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:16,605 [INFO]   [삼성전자(005930)] 신호 없음 | Lv1 매수 KRW 53,453 -> 현재 KRW 53,400 (-0.10%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:16,606 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:16,608 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:16,608 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:16,608 [INFO] Portfolio: Cash=KRW 999,035,433, Value=KRW 999,998,433
+2026-05-27 01:12:16,609 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:16,609 [INFO] Loaded 1 position lot(s)
+2026-05-27 01:12:16,609 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:16,609 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:16,616 [INFO]   [삼성전자(005930)] 신호 없음 | Lv1 매수 KRW 53,453 -> 현재 KRW 53,500 (+0.09%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:16,617 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:16,619 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:16,619 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:16,619 [INFO] Portfolio: Cash=KRW 999,035,433, Value=KRW 1,000,012,833
+2026-05-27 01:12:16,619 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:16,619 [INFO] Loaded 1 position lot(s)
+2026-05-27 01:12:16,619 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:16,619 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:16,627 [INFO]   [삼성전자(005930)] 신호 없음 | Lv1 매수 KRW 53,453 -> 현재 KRW 54,300 (+1.58%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:16,627 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:16,629 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:16,629 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:16,630 [INFO] Portfolio: Cash=KRW 999,035,433, Value=KRW 1,000,002,033
+2026-05-27 01:12:16,630 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:16,630 [INFO] Loaded 1 position lot(s)
+2026-05-27 01:12:16,630 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:16,630 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:16,638 [INFO]   [삼성전자(005930)] 신호 없음 | Lv1 매수 KRW 53,453 -> 현재 KRW 53,700 (+0.46%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:16,638 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:16,641 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:16,641 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:16,641 [INFO] Portfolio: Cash=KRW 999,035,433, Value=KRW 1,000,002,033
+2026-05-27 01:12:16,641 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:16,641 [INFO] Loaded 1 position lot(s)
+2026-05-27 01:12:16,641 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:16,642 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:16,649 [INFO]   [삼성전자(005930)] 신호 없음 | Lv1 매수 KRW 53,453 -> 현재 KRW 53,700 (+0.46%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:16,649 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:16,651 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:16,651 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:16,651 [INFO] Portfolio: Cash=KRW 999,035,433, Value=KRW 999,978,633
+2026-05-27 01:12:16,651 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:16,652 [INFO] Loaded 1 position lot(s)
+2026-05-27 01:12:16,652 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:16,652 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:16,658 [INFO]   [삼성전자(005930)] 신호 없음 | Lv1 매수 KRW 53,453 -> 현재 KRW 52,400 (-1.97%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:16,658 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:16,660 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:16,660 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:16,660 [INFO] Portfolio: Cash=KRW 999,035,433, Value=KRW 999,953,433
+2026-05-27 01:12:16,660 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:16,660 [INFO] Loaded 1 position lot(s)
+2026-05-27 01:12:16,661 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:16,661 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:16,667 [INFO]   [삼성전자(005930)] 신호 없음 | Lv1 매수 KRW 53,453 -> 현재 KRW 51,000 (-4.59%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:16,667 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:16,668 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:16,668 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:16,669 [INFO] Portfolio: Cash=KRW 999,035,433, Value=KRW 999,984,033
+2026-05-27 01:12:16,669 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:16,669 [INFO] Loaded 1 position lot(s)
+2026-05-27 01:12:16,669 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:16,669 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:16,675 [INFO]   [삼성전자(005930)] 신호 없음 | Lv1 매수 KRW 53,453 -> 현재 KRW 52,700 (-1.41%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:16,675 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:16,676 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:16,676 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:16,676 [INFO] Portfolio: Cash=KRW 999,035,433, Value=KRW 999,987,633
+2026-05-27 01:12:16,677 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:16,677 [INFO] Loaded 1 position lot(s)
+2026-05-27 01:12:16,677 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:16,677 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:16,682 [INFO]   [삼성전자(005930)] 신호 없음 | Lv1 매수 KRW 53,453 -> 현재 KRW 52,900 (-1.04%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:16,682 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:16,684 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:16,684 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:16,684 [INFO] Portfolio: Cash=KRW 999,035,433, Value=KRW 1,000,007,433
+2026-05-27 01:12:16,684 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:16,684 [INFO] Loaded 1 position lot(s)
+2026-05-27 01:12:16,684 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:16,685 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:16,690 [INFO]   [삼성전자(005930)] 신호 없음 | Lv1 매수 KRW 53,453 -> 현재 KRW 54,000 (+1.02%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:16,690 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:16,692 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:16,692 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:16,692 [INFO] Portfolio: Cash=KRW 999,035,433, Value=KRW 1,000,002,033
+2026-05-27 01:12:16,692 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:16,692 [INFO] Loaded 1 position lot(s)
+2026-05-27 01:12:16,692 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:16,692 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:16,698 [INFO]   [삼성전자(005930)] 신호 없음 | Lv1 매수 KRW 53,453 -> 현재 KRW 53,700 (+0.46%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:16,698 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:16,699 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:16,700 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:16,700 [INFO] Portfolio: Cash=KRW 999,035,433, Value=KRW 1,000,036,233
+2026-05-27 01:12:16,700 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:16,700 [INFO] Loaded 1 position lot(s)
+2026-05-27 01:12:16,700 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:16,700 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:16,705 [INFO]   [삼성전자(005930)] 신호 없음 | Lv1 매수 KRW 53,453 -> 현재 KRW 55,600 (+4.02%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:16,705 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:16,707 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:16,707 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:16,707 [INFO] Portfolio: Cash=KRW 999,035,433, Value=KRW 1,000,038,033
+2026-05-27 01:12:16,707 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:16,707 [INFO] Loaded 1 position lot(s)
+2026-05-27 01:12:16,708 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:16,708 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:16,713 [INFO]   [삼성전자(005930)] 신호 없음 | Lv1 매수 KRW 53,453 -> 현재 KRW 55,700 (+4.20%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:16,713 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:16,715 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:16,715 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:16,715 [INFO] Portfolio: Cash=KRW 999,035,433, Value=KRW 1,000,039,833
+2026-05-27 01:12:16,715 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:16,715 [INFO] Loaded 1 position lot(s)
+2026-05-27 01:12:16,715 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:16,716 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:16,721 [INFO]   [삼성전자(005930)] 신호 없음 | Lv1 매수 KRW 53,453 -> 현재 KRW 55,800 (+4.39%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:16,721 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:16,722 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:16,723 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:16,723 [INFO] Portfolio: Cash=KRW 999,035,433, Value=KRW 1,000,039,833
+2026-05-27 01:12:16,723 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:16,723 [INFO] Loaded 1 position lot(s)
+2026-05-27 01:12:16,723 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:16,723 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:16,729 [INFO]   [삼성전자(005930)] 신호 없음 | Lv1 매수 KRW 53,453 -> 현재 KRW 55,800 (+4.39%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:16,729 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:16,730 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:16,731 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:16,731 [INFO] Portfolio: Cash=KRW 999,035,433, Value=KRW 1,000,043,433
+2026-05-27 01:12:16,731 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:16,731 [INFO] Loaded 1 position lot(s)
+2026-05-27 01:12:16,731 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:16,731 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:16,736 [INFO]   [삼성전자(005930)] 신호 없음 | Lv1 매수 KRW 53,453 -> 현재 KRW 56,000 (+4.76%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:16,737 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:16,738 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:16,738 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:16,738 [INFO] Portfolio: Cash=KRW 999,035,433, Value=KRW 1,000,043,433
+2026-05-27 01:12:16,738 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:16,738 [INFO] Loaded 1 position lot(s)
+2026-05-27 01:12:16,739 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:16,739 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:16,744 [INFO]   [삼성전자(005930)] 신호 없음 | Lv1 매수 KRW 53,453 -> 현재 KRW 56,000 (+4.76%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:16,744 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:16,746 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:16,746 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:16,746 [INFO] Portfolio: Cash=KRW 999,035,433, Value=KRW 1,000,059,633
+2026-05-27 01:12:16,746 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:16,746 [INFO] Loaded 1 position lot(s)
+2026-05-27 01:12:16,746 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:16,747 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:16,752 [INFO]   [삼성전자(005930)] 신호 없음 | Lv1 매수 KRW 53,453 -> 현재 KRW 56,900 (+6.45%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:16,752 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:16,754 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:16,754 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:16,754 [INFO] Portfolio: Cash=KRW 999,035,433, Value=KRW 1,000,092,033
+2026-05-27 01:12:16,754 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:16,754 [INFO] Loaded 1 position lot(s)
+2026-05-27 01:12:16,754 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:16,754 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:16,760 [INFO]   [삼성전자(005930)] 신호 없음 | Lv1 매수 KRW 53,453 -> 현재 KRW 58,700 (+9.82%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:16,760 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:16,761 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:16,762 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:16,762 [INFO] Portfolio: Cash=KRW 999,035,433, Value=KRW 1,000,086,633
+2026-05-27 01:12:16,762 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:16,762 [INFO] Loaded 1 position lot(s)
+2026-05-27 01:12:16,762 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:16,762 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:16,767 [INFO]   [삼성전자(005930)] 신호 없음 | Lv1 매수 KRW 53,453 -> 현재 KRW 58,400 (+9.25%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:16,767 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:16,769 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:16,769 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:16,769 [INFO] Portfolio: Cash=KRW 999,035,433, Value=KRW 1,000,083,033
+2026-05-27 01:12:16,769 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:16,769 [INFO] Loaded 1 position lot(s)
+2026-05-27 01:12:16,770 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:16,770 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:16,775 [INFO]   [삼성전자(005930)] 신호 없음 | Lv1 매수 KRW 53,453 -> 현재 KRW 58,200 (+8.88%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:16,775 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:16,777 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:16,777 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:16,777 [INFO] Portfolio: Cash=KRW 999,035,433, Value=KRW 1,000,066,833
+2026-05-27 01:12:16,777 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:16,777 [INFO] Loaded 1 position lot(s)
+2026-05-27 01:12:16,777 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:16,777 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:16,783 [INFO]   [삼성전자(005930)] 신호 없음 | Lv1 매수 KRW 53,453 -> 현재 KRW 57,300 (+7.20%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:16,783 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:16,784 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:16,784 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:16,785 [INFO] Portfolio: Cash=KRW 999,035,433, Value=KRW 1,000,065,033
+2026-05-27 01:12:16,785 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:16,785 [INFO] Loaded 1 position lot(s)
+2026-05-27 01:12:16,785 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:16,785 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:16,790 [INFO]   [삼성전자(005930)] 신호 없음 | Lv1 매수 KRW 53,453 -> 현재 KRW 57,200 (+7.01%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:16,790 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:16,792 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:16,792 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:16,792 [INFO] Portfolio: Cash=KRW 999,035,433, Value=KRW 1,000,054,233
+2026-05-27 01:12:16,792 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:16,792 [INFO] Loaded 1 position lot(s)
+2026-05-27 01:12:16,793 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:16,793 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:16,798 [INFO]   [삼성전자(005930)] 신호 없음 | Lv1 매수 KRW 53,453 -> 현재 KRW 56,600 (+5.89%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:16,798 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:16,800 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:16,800 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:16,800 [INFO] Portfolio: Cash=KRW 999,035,433, Value=KRW 1,000,048,833
+2026-05-27 01:12:16,800 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:16,800 [INFO] Loaded 1 position lot(s)
+2026-05-27 01:12:16,800 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:16,800 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:16,806 [INFO]   [삼성전자(005930)] 신호 없음 | Lv1 매수 KRW 53,453 -> 현재 KRW 56,300 (+5.33%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:16,806 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:16,807 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:16,808 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:16,808 [INFO] Portfolio: Cash=KRW 999,035,433, Value=KRW 1,000,016,433
+2026-05-27 01:12:16,808 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:16,808 [INFO] Loaded 1 position lot(s)
+2026-05-27 01:12:16,808 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:16,808 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:16,813 [INFO]   [삼성전자(005930)] 신호 없음 | Lv1 매수 KRW 53,453 -> 현재 KRW 54,500 (+1.96%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:16,813 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:16,815 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:16,815 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:16,815 [INFO] Portfolio: Cash=KRW 999,035,433, Value=KRW 1,000,016,433
+2026-05-27 01:12:16,815 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:16,815 [INFO] Loaded 1 position lot(s)
+2026-05-27 01:12:16,816 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:16,816 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:16,821 [INFO]   [삼성전자(005930)] 신호 없음 | Lv1 매수 KRW 53,453 -> 현재 KRW 54,500 (+1.96%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:16,821 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:16,823 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:16,823 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:16,823 [INFO] Portfolio: Cash=KRW 999,035,433, Value=KRW 1,000,007,433
+2026-05-27 01:12:16,823 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:16,823 [INFO] Loaded 1 position lot(s)
+2026-05-27 01:12:16,823 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:16,823 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:16,829 [INFO]   [삼성전자(005930)] 신호 없음 | Lv1 매수 KRW 53,453 -> 현재 KRW 54,000 (+1.02%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:16,829 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:16,830 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:16,831 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:16,831 [INFO] Portfolio: Cash=KRW 999,035,433, Value=KRW 1,000,012,833
+2026-05-27 01:12:16,831 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:16,831 [INFO] Loaded 1 position lot(s)
+2026-05-27 01:12:16,831 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:16,831 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:16,836 [INFO]   [삼성전자(005930)] 신호 없음 | Lv1 매수 KRW 53,453 -> 현재 KRW 54,300 (+1.58%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:16,836 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:16,838 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:16,838 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:16,838 [INFO] Portfolio: Cash=KRW 999,035,433, Value=KRW 1,000,002,033
+2026-05-27 01:12:16,838 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:16,838 [INFO] Loaded 1 position lot(s)
+2026-05-27 01:12:16,839 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:16,839 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:16,844 [INFO]   [삼성전자(005930)] 신호 없음 | Lv1 매수 KRW 53,453 -> 현재 KRW 53,700 (+0.46%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:16,844 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:16,846 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:16,846 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:16,846 [INFO] Portfolio: Cash=KRW 999,035,433, Value=KRW 1,000,002,033
+2026-05-27 01:12:16,846 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:16,846 [INFO] Loaded 1 position lot(s)
+2026-05-27 01:12:16,846 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:16,846 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:16,852 [INFO]   [삼성전자(005930)] 신호 없음 | Lv1 매수 KRW 53,453 -> 현재 KRW 53,700 (+0.46%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:16,852 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:16,854 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:16,854 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:16,854 [INFO] Portfolio: Cash=KRW 999,035,433, Value=KRW 1,000,000,233
+2026-05-27 01:12:16,854 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:16,854 [INFO] Loaded 1 position lot(s)
+2026-05-27 01:12:16,854 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:16,854 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:16,859 [INFO]   [삼성전자(005930)] 신호 없음 | Lv1 매수 KRW 53,453 -> 현재 KRW 53,600 (+0.27%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:16,860 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:16,861 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:16,861 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:16,861 [INFO] Portfolio: Cash=KRW 999,035,433, Value=KRW 1,000,023,633
+2026-05-27 01:12:16,861 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:16,861 [INFO] Loaded 1 position lot(s)
+2026-05-27 01:12:16,862 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:16,862 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:16,867 [INFO]   [삼성전자(005930)] 신호 없음 | Lv1 매수 KRW 53,453 -> 현재 KRW 54,900 (+2.71%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:16,867 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:16,869 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:16,869 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:16,869 [INFO] Portfolio: Cash=KRW 999,035,433, Value=KRW 1,000,020,033
+2026-05-27 01:12:16,869 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:16,869 [INFO] Loaded 1 position lot(s)
+2026-05-27 01:12:16,869 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:16,870 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:16,875 [INFO]   [삼성전자(005930)] 신호 없음 | Lv1 매수 KRW 53,453 -> 현재 KRW 54,700 (+2.33%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:16,875 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:16,876 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:16,877 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:16,877 [INFO] Portfolio: Cash=KRW 999,035,433, Value=KRW 1,000,020,033
+2026-05-27 01:12:16,877 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:16,877 [INFO] Loaded 1 position lot(s)
+2026-05-27 01:12:16,877 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:16,877 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:16,882 [INFO]   [삼성전자(005930)] 신호 없음 | Lv1 매수 KRW 53,453 -> 현재 KRW 54,700 (+2.33%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:16,883 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:16,884 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:16,884 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:16,884 [INFO] Portfolio: Cash=KRW 999,035,433, Value=KRW 1,000,072,233
+2026-05-27 01:12:16,884 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:16,884 [INFO] Loaded 1 position lot(s)
+2026-05-27 01:12:16,885 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:16,885 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:16,890 [INFO]   [삼성전자(005930)] 신호 없음 | Lv1 매수 KRW 53,453 -> 현재 KRW 57,600 (+7.76%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:16,890 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:16,892 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:16,892 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:16,892 [INFO] Portfolio: Cash=KRW 999,035,433, Value=KRW 1,000,072,233
+2026-05-27 01:12:16,892 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:16,892 [INFO] Loaded 1 position lot(s)
+2026-05-27 01:12:16,892 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:16,893 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:16,898 [INFO]   [삼성전자(005930)] 신호 없음 | Lv1 매수 KRW 53,453 -> 현재 KRW 57,600 (+7.76%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:16,898 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:16,899 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:16,900 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:16,900 [INFO] Portfolio: Cash=KRW 999,035,433, Value=KRW 1,000,088,433
+2026-05-27 01:12:16,900 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:16,900 [INFO] Loaded 1 position lot(s)
+2026-05-27 01:12:16,900 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:16,900 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:16,906 [INFO]   [삼성전자(005930)] 신호 없음 | Lv1 매수 KRW 53,453 -> 현재 KRW 58,500 (+9.44%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:16,906 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:16,908 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:16,908 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:16,908 [INFO] Portfolio: Cash=KRW 999,035,433, Value=KRW 1,000,119,033
+2026-05-27 01:12:16,908 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:16,908 [INFO] Loaded 1 position lot(s)
+2026-05-27 01:12:16,908 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:16,908 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:16,913 [INFO] [삼성전자(005930)] Lv1: 트레일링 스톱 활성화 (매도조건 +10% 도달, 현재가 KRW 60,200, 스톱가 KRW 57,190, 하락허용 5.0%)
+2026-05-27 01:12:16,914 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:16,916 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:16,916 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:16,916 [INFO] Portfolio: Cash=KRW 999,035,433, Value=KRW 1,000,146,033
+2026-05-27 01:12:16,916 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:16,916 [INFO] Loaded 1 position lot(s)
+2026-05-27 01:12:16,916 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:16,916 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:16,922 [INFO] [삼성전자(005930)] Lv1: 트레일링 고점 갱신 KRW 60,200 -> KRW 61,700 (매수가 대비 +15.4%, 스톱가 KRW 58,615)
+2026-05-27 01:12:16,922 [INFO]   [삼성전자(005930)] 신호 없음 | Lv1 매수 KRW 53,453 -> 현재 KRW 61,700 (+15.43%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:16,922 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:16,924 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:16,924 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:16,924 [INFO] Portfolio: Cash=KRW 999,035,433, Value=KRW 1,000,124,433
+2026-05-27 01:12:16,924 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:16,924 [INFO] Loaded 1 position lot(s)
+2026-05-27 01:12:16,924 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:16,924 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:16,930 [INFO] [삼성전자(005930)] Lv1: 트레일링 추적 중 (현재가 KRW 60,500, 고점 KRW 61,700, 고점대비 -1.9%, 스톱가 KRW 58,615)
+2026-05-27 01:12:16,930 [INFO]   [삼성전자(005930)] 신호 없음 | Lv1 매수 KRW 53,453 -> 현재 KRW 60,500 (+13.18%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:16,930 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:16,932 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:16,932 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:16,932 [INFO] Portfolio: Cash=KRW 999,035,433, Value=KRW 1,000,111,833
+2026-05-27 01:12:16,932 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:16,932 [INFO] Loaded 1 position lot(s)
+2026-05-27 01:12:16,932 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:16,932 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:16,937 [INFO] [삼성전자(005930)] Lv1: 트레일링 추적 중 (현재가 KRW 59,800, 고점 KRW 61,700, 고점대비 -3.1%, 스톱가 KRW 58,615)
+2026-05-27 01:12:16,938 [INFO]   [삼성전자(005930)] 신호 없음 | Lv1 매수 KRW 53,453 -> 현재 KRW 59,800 (+11.87%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:16,938 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:16,940 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:16,940 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:16,940 [INFO] Portfolio: Cash=KRW 999,035,433, Value=KRW 1,000,140,633
+2026-05-27 01:12:16,940 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:16,940 [INFO] Loaded 1 position lot(s)
+2026-05-27 01:12:16,940 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:16,940 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:16,946 [INFO] [삼성전자(005930)] Lv1: 트레일링 추적 중 (현재가 KRW 61,400, 고점 KRW 61,700, 고점대비 -0.5%, 스톱가 KRW 58,615)
+2026-05-27 01:12:16,946 [INFO]   [삼성전자(005930)] 신호 없음 | Lv1 매수 KRW 53,453 -> 현재 KRW 61,400 (+14.87%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:16,946 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:16,948 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:16,948 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:16,948 [INFO] Portfolio: Cash=KRW 999,035,433, Value=KRW 1,000,147,833
+2026-05-27 01:12:16,948 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:16,948 [INFO] Loaded 1 position lot(s)
+2026-05-27 01:12:16,948 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:16,948 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:16,953 [INFO] [삼성전자(005930)] Lv1: 트레일링 고점 갱신 KRW 61,700 -> KRW 61,800 (매수가 대비 +15.6%, 스톱가 KRW 58,710)
+2026-05-27 01:12:16,954 [INFO]   [삼성전자(005930)] 신호 없음 | Lv1 매수 KRW 53,453 -> 현재 KRW 61,800 (+15.61%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:16,954 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:16,955 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:16,956 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:16,956 [INFO] Portfolio: Cash=KRW 999,035,433, Value=KRW 1,000,119,033
+2026-05-27 01:12:16,956 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:16,956 [INFO] Loaded 1 position lot(s)
+2026-05-27 01:12:16,956 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:16,956 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:16,961 [INFO] [삼성전자(005930)] Lv1: 트레일링 추적 중 (현재가 KRW 60,200, 고점 KRW 61,800, 고점대비 -2.6%, 스톱가 KRW 58,710)
+2026-05-27 01:12:16,962 [INFO]   [삼성전자(005930)] 신호 없음 | Lv1 매수 KRW 53,453 -> 현재 KRW 60,200 (+12.62%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:16,962 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:16,963 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:16,963 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:16,964 [INFO] Portfolio: Cash=KRW 999,035,433, Value=KRW 1,000,075,833
+2026-05-27 01:12:16,964 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:16,964 [INFO] Loaded 1 position lot(s)
+2026-05-27 01:12:16,964 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:16,964 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:16,969 [INFO] [삼성전자(005930)] Lv1: 트레일링 추적 중 (현재가 KRW 57,800, 고점 KRW 61,800, 고점대비 -6.5%, 스톱가 KRW 58,710)
+2026-05-27 01:12:16,970 [INFO] [삼성전자(005930)] Lv1: 트레일링 스톱 매도 (매수가 KRW 53,453 -> 고점 KRW 61,800 -> 현재가 KRW 57,800, 고점대비 -6.5%, 수익률 +8.1%)
+2026-05-27 01:12:16,970 [INFO] Executing 1 order(s)...
+2026-05-27 01:12:16,970 [INFO] [FILLED] SELL 005930: 18 @ $57742.20 (Fee: $2598.40)
+2026-05-27 01:12:16,970 [INFO] [Position] Remove lot: lot_20260527_011216_005930_001 Lv1 (18주 전량 매도)
+2026-05-27 01:12:16,970 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:16,972 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:16,972 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:16,972 [INFO] Portfolio: Cash=KRW 1,000,072,195, Value=KRW 1,000,072,195
+2026-05-27 01:12:16,972 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:16,972 [INFO] Loaded 0 position lot(s)
+2026-05-27 01:12:16,972 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:16,972 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:16,973 [INFO] [삼성전자(005930)] 보유 lot 없음 -> 초기 매수 Lv1 17주 @KRW 58,800
+2026-05-27 01:12:16,973 [INFO] Executing 1 order(s)...
+2026-05-27 01:12:16,973 [INFO] [FILLED] BUY 005930: 17 @ $58858.80 (Fee: $2501.50)
+2026-05-27 01:12:16,974 [INFO] [삼성전자(005930)] 동적 재매수 기준 초기화 (매도가 KRW 57,742 -> 소비됨)
+2026-05-27 01:12:16,974 [INFO] [Position] New lot: lot_20260527_011216_005930_001 Lv1 삼성전자(005930) 17주 @KRW 58,859
+2026-05-27 01:12:16,974 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:16,976 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:16,976 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:16,976 [INFO] Portfolio: Cash=KRW 999,069,093, Value=KRW 1,000,068,693
+2026-05-27 01:12:16,976 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:16,977 [INFO] Loaded 1 position lot(s)
+2026-05-27 01:12:16,977 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:16,977 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:16,982 [INFO]   [삼성전자(005930)] 신호 없음 | Lv1 매수 KRW 58,859 -> 현재 KRW 58,800 (-0.10%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:16,982 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:16,984 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:16,984 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:16,984 [INFO] Portfolio: Cash=KRW 999,069,093, Value=KRW 1,000,048,293
+2026-05-27 01:12:16,984 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:16,984 [INFO] Loaded 1 position lot(s)
+2026-05-27 01:12:16,985 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:16,985 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:16,990 [INFO]   [삼성전자(005930)] 신호 없음 | Lv1 매수 KRW 58,859 -> 현재 KRW 57,600 (-2.14%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:16,990 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:16,992 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:16,992 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:16,992 [INFO] Portfolio: Cash=KRW 999,069,093, Value=KRW 1,000,022,793
+2026-05-27 01:12:16,992 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:16,992 [INFO] Loaded 1 position lot(s)
+2026-05-27 01:12:16,992 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:16,992 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:16,998 [INFO]   [삼성전자(005930)] 신호 없음 | Lv1 매수 KRW 58,859 -> 현재 KRW 56,100 (-4.69%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:16,998 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,000 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,000 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,000 [INFO] Portfolio: Cash=KRW 999,069,093, Value=KRW 999,973,493
+2026-05-27 01:12:17,000 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,000 [INFO] Loaded 1 position lot(s)
+2026-05-27 01:12:17,000 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,000 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:17,005 [INFO] [삼성전자(005930)] Lv1 매수가 KRW 58,859 대비 -9.6% -> 추가 매수 Lv2 9주 @KRW 53,200
+2026-05-27 01:12:17,006 [INFO] Executing 1 order(s)...
+2026-05-27 01:12:17,006 [INFO] [FILLED] BUY 005930: 9 @ $53253.20 (Fee: $1198.20)
+2026-05-27 01:12:17,006 [INFO] [Position] New lot: lot_20260527_011217_005930_002 Lv2 삼성전자(005930) 9주 @KRW 53,253
+2026-05-27 01:12:17,006 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,010 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,010 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,010 [INFO] Portfolio: Cash=KRW 998,588,617, Value=KRW 999,979,617
+2026-05-27 01:12:17,010 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,010 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:17,010 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,011 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:17,019 [INFO]   [삼성전자(005930)] 신호 없음 | Lv2 매수 KRW 53,253 -> 현재 KRW 53,500 (+0.46%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:17,020 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,022 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,022 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,022 [INFO] Portfolio: Cash=KRW 998,588,617, Value=KRW 999,966,617
+2026-05-27 01:12:17,022 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,023 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:17,023 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,023 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:17,032 [INFO]   [삼성전자(005930)] 신호 없음 | Lv2 매수 KRW 53,253 -> 현재 KRW 53,000 (-0.48%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:17,032 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,034 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,034 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,034 [INFO] Portfolio: Cash=KRW 998,588,617, Value=KRW 1,000,055,017
+2026-05-27 01:12:17,034 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,034 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:17,035 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,035 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:17,040 [INFO]   [삼성전자(005930)] 신호 없음 | Lv2 매수 KRW 53,253 -> 현재 KRW 56,400 (+5.91%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:17,040 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,042 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,042 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,042 [INFO] Portfolio: Cash=KRW 998,588,617, Value=KRW 1,000,023,817
+2026-05-27 01:12:17,042 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,042 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:17,043 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,043 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:17,048 [INFO]   [삼성전자(005930)] 신호 없음 | Lv2 매수 KRW 53,253 -> 현재 KRW 55,200 (+3.66%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:17,048 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,050 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,050 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,050 [INFO] Portfolio: Cash=KRW 998,588,617, Value=KRW 1,000,049,817
+2026-05-27 01:12:17,050 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,050 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:17,051 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,051 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:17,056 [INFO]   [삼성전자(005930)] 신호 없음 | Lv2 매수 KRW 53,253 -> 현재 KRW 56,200 (+5.53%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:17,056 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,058 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,058 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,058 [INFO] Portfolio: Cash=KRW 998,588,617, Value=KRW 1,000,060,217
+2026-05-27 01:12:17,058 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,058 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:17,059 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,059 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:17,064 [INFO]   [삼성전자(005930)] 신호 없음 | Lv2 매수 KRW 53,253 -> 현재 KRW 56,600 (+6.28%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:17,064 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,066 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,066 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,066 [INFO] Portfolio: Cash=KRW 998,588,617, Value=KRW 1,000,010,817
+2026-05-27 01:12:17,066 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,066 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:17,067 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,067 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:17,072 [INFO]   [삼성전자(005930)] 신호 없음 | Lv2 매수 KRW 53,253 -> 현재 KRW 54,700 (+2.72%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:17,072 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,074 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,074 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,074 [INFO] Portfolio: Cash=KRW 998,588,617, Value=KRW 1,000,021,217
+2026-05-27 01:12:17,074 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,074 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:17,075 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,075 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:17,080 [INFO]   [삼성전자(005930)] 신호 없음 | Lv2 매수 KRW 53,253 -> 현재 KRW 55,100 (+3.47%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:17,080 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,082 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,082 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,082 [INFO] Portfolio: Cash=KRW 998,588,617, Value=KRW 1,000,026,417
+2026-05-27 01:12:17,082 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,082 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:17,082 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,083 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:17,088 [INFO]   [삼성전자(005930)] 신호 없음 | Lv2 매수 KRW 53,253 -> 현재 KRW 55,300 (+3.84%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:17,088 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,090 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,090 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,090 [INFO] Portfolio: Cash=KRW 998,588,617, Value=KRW 1,000,029,017
+2026-05-27 01:12:17,090 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,090 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:17,090 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,091 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:17,096 [INFO]   [삼성전자(005930)] 신호 없음 | Lv2 매수 KRW 53,253 -> 현재 KRW 55,400 (+4.03%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:17,096 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,098 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,098 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,098 [INFO] Portfolio: Cash=KRW 998,588,617, Value=KRW 1,000,018,617
+2026-05-27 01:12:17,098 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,098 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:17,098 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,099 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:17,104 [INFO]   [삼성전자(005930)] 신호 없음 | Lv2 매수 KRW 53,253 -> 현재 KRW 55,000 (+3.28%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:17,104 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,106 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,106 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,106 [INFO] Portfolio: Cash=KRW 998,588,617, Value=KRW 1,000,036,817
+2026-05-27 01:12:17,106 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,106 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:17,107 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,107 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:17,112 [INFO]   [삼성전자(005930)] 신호 없음 | Lv2 매수 KRW 53,253 -> 현재 KRW 55,700 (+4.59%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:17,112 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,114 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,114 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,114 [INFO] Portfolio: Cash=KRW 998,588,617, Value=KRW 1,000,036,817
+2026-05-27 01:12:17,114 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,114 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:17,114 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,115 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:17,120 [INFO]   [삼성전자(005930)] 신호 없음 | Lv2 매수 KRW 53,253 -> 현재 KRW 55,700 (+4.59%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:17,120 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,122 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,122 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,123 [INFO] Portfolio: Cash=KRW 998,588,617, Value=KRW 1,000,036,817
+2026-05-27 01:12:17,123 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,123 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:17,123 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,123 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:17,129 [INFO]   [삼성전자(005930)] 신호 없음 | Lv2 매수 KRW 53,253 -> 현재 KRW 55,700 (+4.59%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:17,129 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,131 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,131 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,131 [INFO] Portfolio: Cash=KRW 998,588,617, Value=KRW 1,000,039,417
+2026-05-27 01:12:17,131 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,131 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:17,131 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,132 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:17,137 [INFO]   [삼성전자(005930)] 신호 없음 | Lv2 매수 KRW 53,253 -> 현재 KRW 55,800 (+4.78%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:17,137 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,139 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,139 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,139 [INFO] Portfolio: Cash=KRW 998,588,617, Value=KRW 1,000,039,417
+2026-05-27 01:12:17,139 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,139 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:17,140 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,140 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:17,145 [INFO]   [삼성전자(005930)] 신호 없음 | Lv2 매수 KRW 53,253 -> 현재 KRW 55,800 (+4.78%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:17,145 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,147 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,147 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,147 [INFO] Portfolio: Cash=KRW 998,588,617, Value=KRW 1,000,031,617
+2026-05-27 01:12:17,147 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,147 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:17,148 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,148 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:17,153 [INFO]   [삼성전자(005930)] 신호 없음 | Lv2 매수 KRW 53,253 -> 현재 KRW 55,500 (+4.22%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:17,153 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,155 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,155 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,156 [INFO] Portfolio: Cash=KRW 998,588,617, Value=KRW 1,000,000,417
+2026-05-27 01:12:17,156 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,156 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:17,156 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,156 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:17,162 [INFO]   [삼성전자(005930)] 신호 없음 | Lv2 매수 KRW 53,253 -> 현재 KRW 54,300 (+1.97%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:17,162 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,164 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,164 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,164 [INFO] Portfolio: Cash=KRW 998,588,617, Value=KRW 1,000,008,217
+2026-05-27 01:12:17,164 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,164 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:17,164 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,165 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:17,170 [INFO]   [삼성전자(005930)] 신호 없음 | Lv2 매수 KRW 53,253 -> 현재 KRW 54,600 (+2.53%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:17,170 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,172 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,172 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,172 [INFO] Portfolio: Cash=KRW 998,588,617, Value=KRW 1,000,008,217
+2026-05-27 01:12:17,172 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,172 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:17,173 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,173 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:17,178 [INFO]   [삼성전자(005930)] 신호 없음 | Lv2 매수 KRW 53,253 -> 현재 KRW 54,600 (+2.53%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:17,178 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,180 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,180 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,181 [INFO] Portfolio: Cash=KRW 998,588,617, Value=KRW 1,000,013,417
+2026-05-27 01:12:17,181 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,181 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:17,181 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,181 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:17,187 [INFO]   [삼성전자(005930)] 신호 없음 | Lv2 매수 KRW 53,253 -> 현재 KRW 54,800 (+2.90%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:17,187 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,189 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,189 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,189 [INFO] Portfolio: Cash=KRW 998,588,617, Value=KRW 1,000,086,217
+2026-05-27 01:12:17,189 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,189 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:17,189 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,189 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:17,195 [INFO]   [삼성전자(005930)] 신호 없음 | Lv2 매수 KRW 53,253 -> 현재 KRW 57,600 (+8.16%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:17,195 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,197 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,197 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,197 [INFO] Portfolio: Cash=KRW 998,588,617, Value=KRW 1,000,068,017
+2026-05-27 01:12:17,197 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,197 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:17,197 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,198 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:17,203 [INFO]   [삼성전자(005930)] 신호 없음 | Lv2 매수 KRW 53,253 -> 현재 KRW 56,900 (+6.85%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:17,203 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,206 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,206 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,206 [INFO] Portfolio: Cash=KRW 998,588,617, Value=KRW 1,000,081,017
+2026-05-27 01:12:17,206 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,206 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:17,206 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,207 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:17,213 [INFO]   [삼성전자(005930)] 신호 없음 | Lv2 매수 KRW 53,253 -> 현재 KRW 57,400 (+7.79%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:17,213 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,216 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,216 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,216 [INFO] Portfolio: Cash=KRW 998,588,617, Value=KRW 1,000,078,417
+2026-05-27 01:12:17,216 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,216 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:17,216 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,216 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:17,224 [INFO]   [삼성전자(005930)] 신호 없음 | Lv2 매수 KRW 53,253 -> 현재 KRW 57,300 (+7.60%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:17,224 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,227 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,227 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,227 [INFO] Portfolio: Cash=KRW 998,588,617, Value=KRW 1,000,065,417
+2026-05-27 01:12:17,227 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,227 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:17,227 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,228 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:17,236 [INFO]   [삼성전자(005930)] 신호 없음 | Lv2 매수 KRW 53,253 -> 현재 KRW 56,800 (+6.66%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:17,236 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,239 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,239 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,239 [INFO] Portfolio: Cash=KRW 998,588,617, Value=KRW 1,000,039,417
+2026-05-27 01:12:17,239 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,239 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:17,240 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,240 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:17,246 [INFO]   [삼성전자(005930)] 신호 없음 | Lv2 매수 KRW 53,253 -> 현재 KRW 55,800 (+4.78%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:17,246 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,248 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,248 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,248 [INFO] Portfolio: Cash=KRW 998,588,617, Value=KRW 1,000,042,017
+2026-05-27 01:12:17,248 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,248 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:17,248 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,249 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:17,254 [INFO]   [삼성전자(005930)] 신호 없음 | Lv2 매수 KRW 53,253 -> 현재 KRW 55,900 (+4.97%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:17,254 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,256 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,256 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,256 [INFO] Portfolio: Cash=KRW 998,588,617, Value=KRW 1,000,036,817
+2026-05-27 01:12:17,256 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,256 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:17,257 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,257 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:17,262 [INFO]   [삼성전자(005930)] 신호 없음 | Lv2 매수 KRW 53,253 -> 현재 KRW 55,700 (+4.59%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:17,262 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,264 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,264 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,264 [INFO] Portfolio: Cash=KRW 998,588,617, Value=KRW 1,000,010,817
+2026-05-27 01:12:17,265 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,265 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:17,265 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,265 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:17,270 [INFO]   [삼성전자(005930)] 신호 없음 | Lv2 매수 KRW 53,253 -> 현재 KRW 54,700 (+2.72%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:17,270 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,272 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,273 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,273 [INFO] Portfolio: Cash=KRW 998,588,617, Value=KRW 999,997,817
+2026-05-27 01:12:17,273 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,273 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:17,273 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,273 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:17,279 [INFO]   [삼성전자(005930)] 신호 없음 | Lv2 매수 KRW 53,253 -> 현재 KRW 54,200 (+1.78%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:17,279 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,281 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,281 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,281 [INFO] Portfolio: Cash=KRW 998,588,617, Value=KRW 1,000,010,817
+2026-05-27 01:12:17,281 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,281 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:17,281 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,281 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:17,286 [INFO]   [삼성전자(005930)] 신호 없음 | Lv2 매수 KRW 53,253 -> 현재 KRW 54,700 (+2.72%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:17,287 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,288 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,289 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,289 [INFO] Portfolio: Cash=KRW 998,588,617, Value=KRW 999,990,017
+2026-05-27 01:12:17,289 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,289 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:17,289 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,289 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:17,294 [INFO]   [삼성전자(005930)] 신호 없음 | Lv2 매수 KRW 53,253 -> 현재 KRW 53,900 (+1.21%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:17,294 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,296 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,297 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,297 [INFO] Portfolio: Cash=KRW 998,588,617, Value=KRW 1,000,042,017
+2026-05-27 01:12:17,297 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,297 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:17,297 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,297 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:17,302 [INFO]   [삼성전자(005930)] 신호 없음 | Lv2 매수 KRW 53,253 -> 현재 KRW 55,900 (+4.97%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:17,303 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,305 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,305 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,305 [INFO] Portfolio: Cash=KRW 998,588,617, Value=KRW 1,000,047,217
+2026-05-27 01:12:17,305 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,305 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:17,305 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,305 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:17,311 [INFO]   [삼성전자(005930)] 신호 없음 | Lv2 매수 KRW 53,253 -> 현재 KRW 56,100 (+5.35%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:17,312 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,314 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,314 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,314 [INFO] Portfolio: Cash=KRW 998,588,617, Value=KRW 1,000,049,817
+2026-05-27 01:12:17,314 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,314 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:17,315 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,315 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:17,321 [INFO]   [삼성전자(005930)] 신호 없음 | Lv2 매수 KRW 53,253 -> 현재 KRW 56,200 (+5.53%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:17,321 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,323 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,323 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,323 [INFO] Portfolio: Cash=KRW 998,588,617, Value=KRW 1,000,065,417
+2026-05-27 01:12:17,323 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,324 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:17,324 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,324 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:17,330 [INFO]   [삼성전자(005930)] 신호 없음 | Lv2 매수 KRW 53,253 -> 현재 KRW 56,800 (+6.66%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:17,330 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,332 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,332 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,332 [INFO] Portfolio: Cash=KRW 998,588,617, Value=KRW 1,000,091,417
+2026-05-27 01:12:17,332 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,332 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:17,332 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,333 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:17,338 [INFO]   [삼성전자(005930)] 신호 없음 | Lv2 매수 KRW 53,253 -> 현재 KRW 57,800 (+8.54%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:17,338 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,341 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,341 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,341 [INFO] Portfolio: Cash=KRW 998,588,617, Value=KRW 1,000,125,217
+2026-05-27 01:12:17,341 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,341 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:17,341 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,341 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:17,347 [INFO] [삼성전자(005930)] Lv2: 트레일링 스톱 활성화 (매도조건 +10% 도달, 현재가 KRW 59,100, 스톱가 KRW 56,145, 하락허용 5.0%)
+2026-05-27 01:12:17,348 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,350 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,350 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,350 [INFO] Portfolio: Cash=KRW 998,588,617, Value=KRW 1,000,143,417
+2026-05-27 01:12:17,350 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,351 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:17,351 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,351 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:17,357 [INFO] [삼성전자(005930)] Lv2: 트레일링 고점 갱신 KRW 59,100 -> KRW 59,800 (매수가 대비 +12.3%, 스톱가 KRW 56,810)
+2026-05-27 01:12:17,357 [INFO]   [삼성전자(005930)] 신호 없음 | Lv2 매수 KRW 53,253 -> 현재 KRW 59,800 (+12.29%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:17,357 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,360 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,360 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,360 [INFO] Portfolio: Cash=KRW 998,588,617, Value=KRW 1,000,127,817
+2026-05-27 01:12:17,360 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,360 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:17,360 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,360 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:17,366 [INFO] [삼성전자(005930)] Lv2: 트레일링 추적 중 (현재가 KRW 59,200, 고점 KRW 59,800, 고점대비 -1.0%, 스톱가 KRW 56,810)
+2026-05-27 01:12:17,366 [INFO]   [삼성전자(005930)] 신호 없음 | Lv2 매수 KRW 53,253 -> 현재 KRW 59,200 (+11.17%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:17,367 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,369 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,369 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,369 [INFO] Portfolio: Cash=KRW 998,588,617, Value=KRW 1,000,146,017
+2026-05-27 01:12:17,369 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,369 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:17,369 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,370 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:17,375 [INFO] [삼성전자(005930)] Lv2: 트레일링 고점 갱신 KRW 59,800 -> KRW 59,900 (매수가 대비 +12.5%, 스톱가 KRW 56,905)
+2026-05-27 01:12:17,376 [INFO]   [삼성전자(005930)] 신호 없음 | Lv2 매수 KRW 53,253 -> 현재 KRW 59,900 (+12.48%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:17,376 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,378 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,378 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,378 [INFO] Portfolio: Cash=KRW 998,588,617, Value=KRW 1,000,135,617
+2026-05-27 01:12:17,378 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,378 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:17,378 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,379 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:17,384 [INFO] [삼성전자(005930)] Lv2: 트레일링 추적 중 (현재가 KRW 59,500, 고점 KRW 59,900, 고점대비 -0.7%, 스톱가 KRW 56,905)
+2026-05-27 01:12:17,385 [INFO]   [삼성전자(005930)] 신호 없음 | Lv2 매수 KRW 53,253 -> 현재 KRW 59,500 (+11.73%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:17,385 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,387 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,387 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,387 [INFO] Portfolio: Cash=KRW 998,588,617, Value=KRW 1,000,104,417
+2026-05-27 01:12:17,387 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,387 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:17,388 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,388 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:17,394 [INFO] [삼성전자(005930)] Lv2: 트레일링 추적 중 (현재가 KRW 58,300, 고점 KRW 59,900, 고점대비 -2.7%, 스톱가 KRW 56,905)
+2026-05-27 01:12:17,394 [INFO]   [삼성전자(005930)] 신호 없음 | Lv2 매수 KRW 53,253 -> 현재 KRW 58,300 (+9.48%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:17,394 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,396 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,396 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,397 [INFO] Portfolio: Cash=KRW 998,588,617, Value=KRW 1,000,075,817
+2026-05-27 01:12:17,397 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,397 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:17,397 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,397 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:17,404 [INFO] [삼성전자(005930)] Lv2: 트레일링 추적 중 (현재가 KRW 57,200, 고점 KRW 59,900, 고점대비 -4.5%, 스톱가 KRW 56,905)
+2026-05-27 01:12:17,405 [INFO]   [삼성전자(005930)] 신호 없음 | Lv2 매수 KRW 53,253 -> 현재 KRW 57,200 (+7.41%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:17,405 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,408 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,408 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,408 [INFO] Portfolio: Cash=KRW 998,588,617, Value=KRW 1,000,099,217
+2026-05-27 01:12:17,408 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,408 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:17,408 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,408 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:17,414 [INFO] [삼성전자(005930)] Lv2: 트레일링 추적 중 (현재가 KRW 58,100, 고점 KRW 59,900, 고점대비 -3.0%, 스톱가 KRW 56,905)
+2026-05-27 01:12:17,415 [INFO]   [삼성전자(005930)] 신호 없음 | Lv2 매수 KRW 53,253 -> 현재 KRW 58,100 (+9.10%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:17,415 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,417 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,417 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,417 [INFO] Portfolio: Cash=KRW 998,588,617, Value=KRW 1,000,143,417
+2026-05-27 01:12:17,417 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,417 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:17,418 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,418 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:17,424 [INFO] [삼성전자(005930)] Lv2: 트레일링 추적 중 (현재가 KRW 59,800, 고점 KRW 59,900, 고점대비 -0.2%, 스톱가 KRW 56,905)
+2026-05-27 01:12:17,424 [INFO]   [삼성전자(005930)] 신호 없음 | Lv2 매수 KRW 53,253 -> 현재 KRW 59,800 (+12.29%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:17,424 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,426 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,426 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,426 [INFO] Portfolio: Cash=KRW 998,588,617, Value=KRW 1,000,127,817
+2026-05-27 01:12:17,426 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,426 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:17,427 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,427 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:17,433 [INFO] [삼성전자(005930)] Lv2: 트레일링 추적 중 (현재가 KRW 59,200, 고점 KRW 59,900, 고점대비 -1.2%, 스톱가 KRW 56,905)
+2026-05-27 01:12:17,433 [INFO]   [삼성전자(005930)] 신호 없음 | Lv2 매수 KRW 53,253 -> 현재 KRW 59,200 (+11.17%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:17,433 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,435 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,435 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,435 [INFO] Portfolio: Cash=KRW 998,588,617, Value=KRW 1,000,135,617
+2026-05-27 01:12:17,435 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,436 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:17,436 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,436 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:17,442 [INFO] [삼성전자(005930)] Lv2: 트레일링 추적 중 (현재가 KRW 59,500, 고점 KRW 59,900, 고점대비 -0.7%, 스톱가 KRW 56,905)
+2026-05-27 01:12:17,442 [INFO]   [삼성전자(005930)] 신호 없음 | Lv2 매수 KRW 53,253 -> 현재 KRW 59,500 (+11.73%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:17,442 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,444 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,445 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,445 [INFO] Portfolio: Cash=KRW 998,588,617, Value=KRW 1,000,096,617
+2026-05-27 01:12:17,445 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,445 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:17,445 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,445 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:17,451 [INFO] [삼성전자(005930)] Lv2: 트레일링 추적 중 (현재가 KRW 58,000, 고점 KRW 59,900, 고점대비 -3.2%, 스톱가 KRW 56,905)
+2026-05-27 01:12:17,451 [INFO]   [삼성전자(005930)] 신호 없음 | Lv2 매수 KRW 53,253 -> 현재 KRW 58,000 (+8.91%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:17,451 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,454 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,454 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,454 [INFO] Portfolio: Cash=KRW 998,588,617, Value=KRW 1,000,161,617
+2026-05-27 01:12:17,454 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,454 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:17,454 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,454 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:17,460 [INFO] [삼성전자(005930)] Lv2: 트레일링 고점 갱신 KRW 59,900 -> KRW 60,500 (매수가 대비 +13.6%, 스톱가 KRW 57,475)
+2026-05-27 01:12:17,461 [INFO]   [삼성전자(005930)] 신호 없음 | Lv2 매수 KRW 53,253 -> 현재 KRW 60,500 (+13.61%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:17,461 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,463 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,463 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,463 [INFO] Portfolio: Cash=KRW 998,588,617, Value=KRW 1,000,182,417
+2026-05-27 01:12:17,463 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,463 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:17,463 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,464 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:17,469 [INFO] [삼성전자(005930)] Lv2: 트레일링 고점 갱신 KRW 60,500 -> KRW 61,300 (매수가 대비 +15.1%, 스톱가 KRW 58,235)
+2026-05-27 01:12:17,470 [INFO]   [삼성전자(005930)] 신호 없음 | Lv2 매수 KRW 53,253 -> 현재 KRW 61,300 (+15.11%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:17,470 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,472 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,472 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,472 [INFO] Portfolio: Cash=KRW 998,588,617, Value=KRW 1,000,153,817
+2026-05-27 01:12:17,472 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,472 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:17,473 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,473 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:17,479 [INFO] [삼성전자(005930)] Lv2: 트레일링 추적 중 (현재가 KRW 60,200, 고점 KRW 61,300, 고점대비 -1.8%, 스톱가 KRW 58,235)
+2026-05-27 01:12:17,479 [INFO]   [삼성전자(005930)] 신호 없음 | Lv2 매수 KRW 53,253 -> 현재 KRW 60,200 (+13.04%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:17,479 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,481 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,481 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,481 [INFO] Portfolio: Cash=KRW 998,588,617, Value=KRW 1,000,169,417
+2026-05-27 01:12:17,482 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,482 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:17,482 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,482 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:17,489 [INFO] [삼성전자(005930)] Lv2: 트레일링 추적 중 (현재가 KRW 60,800, 고점 KRW 61,300, 고점대비 -0.8%, 스톱가 KRW 58,235)
+2026-05-27 01:12:17,490 [INFO]   [삼성전자(005930)] 신호 없음 | Lv2 매수 KRW 53,253 -> 현재 KRW 60,800 (+14.17%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:17,490 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,493 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,493 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,493 [INFO] Portfolio: Cash=KRW 998,588,617, Value=KRW 1,000,143,417
+2026-05-27 01:12:17,493 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,493 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:17,493 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,493 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:17,500 [INFO] [삼성전자(005930)] Lv2: 트레일링 추적 중 (현재가 KRW 59,800, 고점 KRW 61,300, 고점대비 -2.4%, 스톱가 KRW 58,235)
+2026-05-27 01:12:17,500 [INFO]   [삼성전자(005930)] 신호 없음 | Lv2 매수 KRW 53,253 -> 현재 KRW 59,800 (+12.29%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:17,500 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,503 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,503 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,503 [INFO] Portfolio: Cash=KRW 998,588,617, Value=KRW 1,000,153,817
+2026-05-27 01:12:17,503 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,503 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:17,503 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,504 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:17,511 [INFO] [삼성전자(005930)] Lv2: 트레일링 추적 중 (현재가 KRW 60,200, 고점 KRW 61,300, 고점대비 -1.8%, 스톱가 KRW 58,235)
+2026-05-27 01:12:17,512 [INFO]   [삼성전자(005930)] 신호 없음 | Lv2 매수 KRW 53,253 -> 현재 KRW 60,200 (+13.04%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:17,512 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,515 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,515 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,515 [INFO] Portfolio: Cash=KRW 998,588,617, Value=KRW 1,000,169,417
+2026-05-27 01:12:17,515 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,515 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:17,515 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,516 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:17,523 [INFO] [삼성전자(005930)] Lv2: 트레일링 추적 중 (현재가 KRW 60,800, 고점 KRW 61,300, 고점대비 -0.8%, 스톱가 KRW 58,235)
+2026-05-27 01:12:17,523 [INFO]   [삼성전자(005930)] 신호 없음 | Lv2 매수 KRW 53,253 -> 현재 KRW 60,800 (+14.17%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:17,524 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,526 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,527 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,527 [INFO] Portfolio: Cash=KRW 998,588,617, Value=KRW 1,000,247,417
+2026-05-27 01:12:17,527 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,527 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:17,527 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,527 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:17,534 [INFO] [삼성전자(005930)] Lv2: 트레일링 고점 갱신 KRW 61,300 -> KRW 63,800 (매수가 대비 +19.8%, 스톱가 KRW 60,610)
+2026-05-27 01:12:17,535 [INFO]   [삼성전자(005930)] 신호 없음 | Lv2 매수 KRW 53,253 -> 현재 KRW 63,800 (+19.81%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:17,535 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,537 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,537 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,537 [INFO] Portfolio: Cash=KRW 998,588,617, Value=KRW 1,000,234,417
+2026-05-27 01:12:17,537 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,537 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:17,538 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,538 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:17,544 [INFO] [삼성전자(005930)] Lv2: 트레일링 추적 중 (현재가 KRW 63,300, 고점 KRW 63,800, 고점대비 -0.8%, 스톱가 KRW 60,610)
+2026-05-27 01:12:17,544 [INFO]   [삼성전자(005930)] 신호 없음 | Lv2 매수 KRW 53,253 -> 현재 KRW 63,300 (+18.87%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:17,544 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,546 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,546 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,547 [INFO] Portfolio: Cash=KRW 998,588,617, Value=KRW 1,000,192,817
+2026-05-27 01:12:17,547 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,547 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:17,547 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,547 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:17,553 [INFO] [삼성전자(005930)] Lv2: 트레일링 추적 중 (현재가 KRW 61,700, 고점 KRW 63,800, 고점대비 -3.3%, 스톱가 KRW 60,610)
+2026-05-27 01:12:17,553 [INFO]   [삼성전자(005930)] 신호 없음 | Lv2 매수 KRW 53,253 -> 현재 KRW 61,700 (+15.86%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:17,553 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,555 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,555 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,555 [INFO] Portfolio: Cash=KRW 998,588,617, Value=KRW 1,000,185,017
+2026-05-27 01:12:17,555 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,555 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:17,555 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,556 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:17,561 [INFO] [삼성전자(005930)] Lv2: 트레일링 추적 중 (현재가 KRW 61,400, 고점 KRW 63,800, 고점대비 -3.8%, 스톱가 KRW 60,610)
+2026-05-27 01:12:17,561 [INFO]   [삼성전자(005930)] 신호 없음 | Lv2 매수 KRW 53,253 -> 현재 KRW 61,400 (+15.30%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:17,561 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,563 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,563 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,564 [INFO] Portfolio: Cash=KRW 998,588,617, Value=KRW 1,000,159,017
+2026-05-27 01:12:17,564 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,564 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:17,564 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,564 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:17,570 [INFO] [삼성전자(005930)] Lv2: 트레일링 추적 중 (현재가 KRW 60,400, 고점 KRW 63,800, 고점대비 -5.3%, 스톱가 KRW 60,610)
+2026-05-27 01:12:17,570 [INFO] [삼성전자(005930)] Lv2: 트레일링 스톱 매도 (매수가 KRW 53,253 -> 고점 KRW 63,800 -> 현재가 KRW 60,400, 고점대비 -5.3%, 수익률 +13.4%)
+2026-05-27 01:12:17,570 [INFO] Executing 1 order(s)...
+2026-05-27 01:12:17,570 [INFO] [FILLED] SELL 005930: 9 @ $60339.60 (Fee: $1357.64)
+2026-05-27 01:12:17,570 [INFO] [Position] Remove lot: lot_20260527_011217_005930_002 Lv2 (9주 전량 매도)
+2026-05-27 01:12:17,570 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,573 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,573 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,573 [INFO] Portfolio: Cash=KRW 999,130,315, Value=KRW 1,000,167,315
+2026-05-27 01:12:17,573 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,573 [INFO] Loaded 1 position lot(s)
+2026-05-27 01:12:17,574 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,574 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:17,579 [INFO]   [삼성전자(005930)] 신호 없음 | Lv1 매수 KRW 58,859 -> 현재 KRW 61,000 (+3.64%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:17,579 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,581 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,581 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,581 [INFO] Portfolio: Cash=KRW 999,130,315, Value=KRW 1,000,194,515
+2026-05-27 01:12:17,581 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,581 [INFO] Loaded 1 position lot(s)
+2026-05-27 01:12:17,582 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,582 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:17,587 [INFO]   [삼성전자(005930)] 신호 없음 | Lv1 매수 KRW 58,859 -> 현재 KRW 62,600 (+6.36%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:17,587 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,589 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,589 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,589 [INFO] Portfolio: Cash=KRW 999,130,315, Value=KRW 1,000,192,815
+2026-05-27 01:12:17,589 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,589 [INFO] Loaded 1 position lot(s)
+2026-05-27 01:12:17,589 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,590 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:17,595 [INFO]   [삼성전자(005930)] 신호 없음 | Lv1 매수 KRW 58,859 -> 현재 KRW 62,500 (+6.19%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:17,595 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,597 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,597 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,597 [INFO] Portfolio: Cash=KRW 999,130,315, Value=KRW 1,000,213,215
+2026-05-27 01:12:17,597 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,597 [INFO] Loaded 1 position lot(s)
+2026-05-27 01:12:17,598 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,598 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:17,603 [INFO]   [삼성전자(005930)] 신호 없음 | Lv1 매수 KRW 58,859 -> 현재 KRW 63,700 (+8.23%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:17,603 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,606 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,606 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,606 [INFO] Portfolio: Cash=KRW 999,130,315, Value=KRW 1,000,230,215
+2026-05-27 01:12:17,606 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,606 [INFO] Loaded 1 position lot(s)
+2026-05-27 01:12:17,606 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,607 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:17,612 [INFO]   [삼성전자(005930)] 신호 없음 | Lv1 매수 KRW 58,859 -> 현재 KRW 64,700 (+9.92%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:17,612 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,614 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,614 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,614 [INFO] Portfolio: Cash=KRW 999,130,315, Value=KRW 1,000,264,215
+2026-05-27 01:12:17,614 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,614 [INFO] Loaded 1 position lot(s)
+2026-05-27 01:12:17,614 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,615 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:17,620 [INFO] [삼성전자(005930)] Lv1: 트레일링 스톱 활성화 (매도조건 +10% 도달, 현재가 KRW 66,700, 스톱가 KRW 63,365, 하락허용 5.0%)
+2026-05-27 01:12:17,620 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,623 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,623 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,623 [INFO] Portfolio: Cash=KRW 999,130,315, Value=KRW 1,000,271,015
+2026-05-27 01:12:17,623 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,623 [INFO] Loaded 1 position lot(s)
+2026-05-27 01:12:17,623 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,623 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:17,629 [INFO] [삼성전자(005930)] Lv1: 트레일링 고점 갱신 KRW 66,700 -> KRW 67,100 (매수가 대비 +14.0%, 스톱가 KRW 63,745)
+2026-05-27 01:12:17,629 [INFO]   [삼성전자(005930)] 신호 없음 | Lv1 매수 KRW 58,859 -> 현재 KRW 67,100 (+14.00%) | 익절 +10.0% / 추매 -5.0%
+2026-05-27 01:12:17,629 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,631 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,631 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,631 [INFO] Portfolio: Cash=KRW 999,130,315, Value=KRW 1,000,282,915
+2026-05-27 01:12:17,631 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,631 [INFO] Loaded 1 position lot(s)
+2026-05-27 01:12:17,631 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,632 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:17,637 [INFO] [삼성전자(005930)] 🔥 강한 상승 추세 진입 확정! (ADX 28.1 돌파, 20EMA/50MA/200MA 정배열 정렬 상승 국면)
+2026-05-27 01:12:17,642 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv1 매수 KRW 58,859 -> 현재 KRW 67,800 (+15.19%) | 50MA(이탈선) KRW 59,064 | 20EMA(눌림) KRW 62,400 (이격 +8.65%) | adds 0/3
+2026-05-27 01:12:17,642 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,644 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,644 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,644 [INFO] Portfolio: Cash=KRW 999,130,315, Value=KRW 1,000,252,315
+2026-05-27 01:12:17,644 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,644 [INFO] Loaded 1 position lot(s)
+2026-05-27 01:12:17,644 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,644 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:17,654 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv1 매수 KRW 58,859 -> 현재 KRW 66,000 (+12.13%) | 50MA(이탈선) KRW 59,328 | 20EMA(눌림) KRW 62,914 (이격 +4.90%) | adds 0/3
+2026-05-27 01:12:17,654 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,656 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,656 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,656 [INFO] Portfolio: Cash=KRW 999,130,315, Value=KRW 1,000,259,115
+2026-05-27 01:12:17,656 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,656 [INFO] Loaded 1 position lot(s)
+2026-05-27 01:12:17,656 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,657 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:17,666 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv1 매수 KRW 58,859 -> 현재 KRW 66,400 (+12.81%) | 50MA(이탈선) KRW 59,552 | 20EMA(눌림) KRW 63,208 (이격 +5.05%) | adds 0/3
+2026-05-27 01:12:17,666 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,668 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,668 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,668 [INFO] Portfolio: Cash=KRW 999,130,315, Value=KRW 1,000,252,315
+2026-05-27 01:12:17,668 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,668 [INFO] Loaded 1 position lot(s)
+2026-05-27 01:12:17,669 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,669 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:17,678 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv1 매수 KRW 58,859 -> 현재 KRW 66,000 (+12.13%) | 50MA(이탈선) KRW 59,728 | 20EMA(눌림) KRW 63,512 (이격 +3.92%) | adds 0/3
+2026-05-27 01:12:17,678 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,680 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,680 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,680 [INFO] Portfolio: Cash=KRW 999,130,315, Value=KRW 1,000,250,615
+2026-05-27 01:12:17,680 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,681 [INFO] Loaded 1 position lot(s)
+2026-05-27 01:12:17,681 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,681 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:17,690 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv1 매수 KRW 58,859 -> 현재 KRW 65,900 (+11.96%) | 50MA(이탈선) KRW 59,910 | 20EMA(눌림) KRW 63,749 (이격 +3.37%) | adds 0/3
+2026-05-27 01:12:17,691 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,692 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,692 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,693 [INFO] Portfolio: Cash=KRW 999,130,315, Value=KRW 1,000,327,115
+2026-05-27 01:12:17,693 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,693 [INFO] Loaded 1 position lot(s)
+2026-05-27 01:12:17,693 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,693 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:17,703 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv1 매수 KRW 58,859 -> 현재 KRW 70,400 (+19.61%) | 50MA(이탈선) KRW 60,080 | 20EMA(눌림) KRW 63,954 (이격 +10.08%) | adds 0/3
+2026-05-27 01:12:17,703 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,705 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,705 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,705 [INFO] Portfolio: Cash=KRW 999,130,315, Value=KRW 1,000,330,515
+2026-05-27 01:12:17,705 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,705 [INFO] Loaded 1 position lot(s)
+2026-05-27 01:12:17,705 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,705 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:17,715 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv1 매수 KRW 58,859 -> 현재 KRW 70,600 (+19.95%) | 50MA(이탈선) KRW 60,342 | 20EMA(눌림) KRW 64,568 (이격 +9.34%) | adds 0/3
+2026-05-27 01:12:17,715 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,717 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,717 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,717 [INFO] Portfolio: Cash=KRW 999,130,315, Value=KRW 1,000,364,515
+2026-05-27 01:12:17,717 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,717 [INFO] Loaded 1 position lot(s)
+2026-05-27 01:12:17,717 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,717 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:17,727 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv1 매수 KRW 58,859 -> 현재 KRW 72,600 (+23.35%) | 50MA(이탈선) KRW 60,618 | 20EMA(눌림) KRW 65,142 (이격 +11.45%) | adds 0/3
+2026-05-27 01:12:17,727 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,729 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,729 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,729 [INFO] Portfolio: Cash=KRW 999,130,315, Value=KRW 1,000,344,115
+2026-05-27 01:12:17,729 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,729 [INFO] Loaded 1 position lot(s)
+2026-05-27 01:12:17,729 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,730 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:17,739 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv1 매수 KRW 58,859 -> 현재 KRW 71,400 (+21.31%) | 50MA(이탈선) KRW 60,954 | 20EMA(눌림) KRW 65,852 (이격 +8.42%) | adds 0/3
+2026-05-27 01:12:17,739 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,741 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,741 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,741 [INFO] Portfolio: Cash=KRW 999,130,315, Value=KRW 1,000,301,615
+2026-05-27 01:12:17,741 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,741 [INFO] Loaded 1 position lot(s)
+2026-05-27 01:12:17,741 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,742 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:17,751 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv1 매수 KRW 58,859 -> 현재 KRW 68,900 (+17.06%) | 50MA(이탈선) KRW 61,264 | 20EMA(눌림) KRW 66,381 (이격 +3.80%) | adds 0/3
+2026-05-27 01:12:17,751 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,753 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,753 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,753 [INFO] Portfolio: Cash=KRW 999,130,315, Value=KRW 1,000,315,215
+2026-05-27 01:12:17,753 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,754 [INFO] Loaded 1 position lot(s)
+2026-05-27 01:12:17,754 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,754 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:17,764 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv1 매수 KRW 58,859 -> 현재 KRW 69,700 (+18.42%) | 50MA(이탈선) KRW 61,528 | 20EMA(눌림) KRW 66,621 (이격 +4.62%) | adds 0/3
+2026-05-27 01:12:17,764 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,766 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,766 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,766 [INFO] Portfolio: Cash=KRW 999,130,315, Value=KRW 1,000,318,615
+2026-05-27 01:12:17,766 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,766 [INFO] Loaded 1 position lot(s)
+2026-05-27 01:12:17,766 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,766 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:17,776 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv1 매수 KRW 58,859 -> 현재 KRW 69,900 (+18.76%) | 50MA(이탈선) KRW 61,828 | 20EMA(눌림) KRW 66,914 (이격 +4.46%) | adds 0/3
+2026-05-27 01:12:17,776 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,778 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,778 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,778 [INFO] Portfolio: Cash=KRW 999,130,315, Value=KRW 1,000,299,915
+2026-05-27 01:12:17,778 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,778 [INFO] Loaded 1 position lot(s)
+2026-05-27 01:12:17,778 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,778 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:17,788 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv1 매수 KRW 58,859 -> 현재 KRW 68,800 (+16.89%) | 50MA(이탈선) KRW 62,142 | 20EMA(눌림) KRW 67,198 (이격 +2.38%) | adds 0/3
+2026-05-27 01:12:17,788 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,790 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,790 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,790 [INFO] Portfolio: Cash=KRW 999,130,315, Value=KRW 1,000,328,815
+2026-05-27 01:12:17,790 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,790 [INFO] Loaded 1 position lot(s)
+2026-05-27 01:12:17,790 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,791 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:17,800 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv1 매수 KRW 58,859 -> 현재 KRW 70,500 (+19.78%) | 50MA(이탈선) KRW 62,424 | 20EMA(눌림) KRW 67,351 (이격 +4.68%) | adds 0/3
+2026-05-27 01:12:17,800 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,802 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,802 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,802 [INFO] Portfolio: Cash=KRW 999,130,315, Value=KRW 1,000,350,915
+2026-05-27 01:12:17,802 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,802 [INFO] Loaded 1 position lot(s)
+2026-05-27 01:12:17,802 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,803 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:17,812 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv1 매수 KRW 58,859 -> 현재 KRW 71,800 (+21.99%) | 50MA(이탈선) KRW 62,756 | 20EMA(눌림) KRW 67,651 (이격 +6.13%) | adds 0/3
+2026-05-27 01:12:17,812 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,814 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,814 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,814 [INFO] Portfolio: Cash=KRW 999,130,315, Value=KRW 1,000,337,315
+2026-05-27 01:12:17,814 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,814 [INFO] Loaded 1 position lot(s)
+2026-05-27 01:12:17,815 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,815 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:17,825 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv1 매수 KRW 58,859 -> 현재 KRW 71,000 (+20.63%) | 50MA(이탈선) KRW 63,074 | 20EMA(눌림) KRW 68,046 (이격 +4.34%) | adds 0/3
+2026-05-27 01:12:17,825 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,826 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,827 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,827 [INFO] Portfolio: Cash=KRW 999,130,315, Value=KRW 1,000,339,015
+2026-05-27 01:12:17,827 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,827 [INFO] Loaded 1 position lot(s)
+2026-05-27 01:12:17,827 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,827 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:17,837 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv1 매수 KRW 58,859 -> 현재 KRW 71,100 (+20.80%) | 50MA(이탈선) KRW 63,372 | 20EMA(눌림) KRW 68,327 (이격 +4.06%) | adds 0/3
+2026-05-27 01:12:17,837 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,839 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,839 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,839 [INFO] Portfolio: Cash=KRW 999,130,315, Value=KRW 1,000,352,615
+2026-05-27 01:12:17,839 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,839 [INFO] Loaded 1 position lot(s)
+2026-05-27 01:12:17,839 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,840 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:17,849 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv1 매수 KRW 58,859 -> 현재 KRW 71,900 (+22.16%) | 50MA(이탈선) KRW 63,670 | 20EMA(눌림) KRW 68,591 (이격 +4.82%) | adds 0/3
+2026-05-27 01:12:17,849 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,851 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,851 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,852 [INFO] Portfolio: Cash=KRW 999,130,315, Value=KRW 1,000,347,515
+2026-05-27 01:12:17,852 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,852 [INFO] Loaded 1 position lot(s)
+2026-05-27 01:12:17,852 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,852 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:17,862 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv1 매수 KRW 58,859 -> 현재 KRW 71,600 (+21.65%) | 50MA(이탈선) KRW 63,972 | 20EMA(눌림) KRW 68,906 (이격 +3.91%) | adds 0/3
+2026-05-27 01:12:17,862 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,864 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,864 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,864 [INFO] Portfolio: Cash=KRW 999,130,315, Value=KRW 1,000,320,315
+2026-05-27 01:12:17,864 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,864 [INFO] Loaded 1 position lot(s)
+2026-05-27 01:12:17,864 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,865 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:17,870 [INFO] [삼성전자(005930)] 상승장 누적 매수 Lv2 14주 @KRW 70,000 (20EMA KRW 69,163 눌림, add 1/3)
+2026-05-27 01:12:17,870 [INFO] Executing 1 order(s)...
+2026-05-27 01:12:17,870 [INFO] [FILLED] BUY 005930: 14 @ $70070.00 (Fee: $2452.45)
+2026-05-27 01:12:17,870 [INFO] [삼성전자(005930)] 동적 재매수 기준 초기화 (매도가 KRW 60,340 -> 소비됨)
+2026-05-27 01:12:17,871 [INFO] [Position] New lot: lot_20260527_011217_005930_002 Lv2 삼성전자(005930) 14주 @KRW 70,070
+2026-05-27 01:12:17,871 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,874 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,874 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,874 [INFO] Portfolio: Cash=KRW 998,146,883, Value=KRW 1,000,316,883
+2026-05-27 01:12:17,874 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,874 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:17,874 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,875 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:17,884 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv2 매수 KRW 70,070 -> 현재 KRW 70,000 (-0.10%) | 50MA(이탈선) KRW 64,466 | 20EMA(눌림) KRW 69,243 (이격 +1.09%) | adds 1/3
+2026-05-27 01:12:17,885 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,887 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,887 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,887 [INFO] Portfolio: Cash=KRW 998,146,883, Value=KRW 1,000,332,383
+2026-05-27 01:12:17,887 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,887 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:17,887 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,888 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:17,897 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv2 매수 KRW 70,070 -> 현재 KRW 70,500 (+0.61%) | 50MA(이탈선) KRW 64,670 | 20EMA(눌림) KRW 69,315 (이격 +1.71%) | adds 1/3
+2026-05-27 01:12:17,897 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,900 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,900 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,900 [INFO] Portfolio: Cash=KRW 998,146,883, Value=KRW 1,000,335,483
+2026-05-27 01:12:17,900 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,900 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:17,900 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,900 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:17,910 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv2 매수 KRW 70,070 -> 현재 KRW 70,600 (+0.76%) | 50MA(이탈선) KRW 64,896 | 20EMA(눌림) KRW 69,428 (이격 +1.69%) | adds 1/3
+2026-05-27 01:12:17,910 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,913 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,913 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,913 [INFO] Portfolio: Cash=KRW 998,146,883, Value=KRW 1,000,360,283
+2026-05-27 01:12:17,913 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,913 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:17,913 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,913 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:17,923 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv2 매수 KRW 70,070 -> 현재 KRW 71,400 (+1.90%) | 50MA(이탈선) KRW 65,110 | 20EMA(눌림) KRW 69,539 (이격 +2.68%) | adds 1/3
+2026-05-27 01:12:17,923 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,926 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,926 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,926 [INFO] Portfolio: Cash=KRW 998,146,883, Value=KRW 1,000,363,383
+2026-05-27 01:12:17,926 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,926 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:17,926 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,926 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:17,936 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv2 매수 KRW 70,070 -> 현재 KRW 71,500 (+2.04%) | 50MA(이탈선) KRW 65,348 | 20EMA(눌림) KRW 69,717 (이격 +2.56%) | adds 1/3
+2026-05-27 01:12:17,936 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,939 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,939 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,939 [INFO] Portfolio: Cash=KRW 998,146,883, Value=KRW 1,000,326,183
+2026-05-27 01:12:17,939 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,939 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:17,939 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,939 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:17,949 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv2 매수 KRW 70,070 -> 현재 KRW 70,300 (+0.33%) | 50MA(이탈선) KRW 65,612 | 20EMA(눌림) KRW 69,886 (이격 +0.59%) | adds 1/3
+2026-05-27 01:12:17,949 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,951 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,951 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,951 [INFO] Portfolio: Cash=KRW 998,146,883, Value=KRW 1,000,335,483
+2026-05-27 01:12:17,951 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,951 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:17,952 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,952 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:17,962 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv2 매수 KRW 70,070 -> 현재 KRW 70,600 (+0.76%) | 50MA(이탈선) KRW 65,874 | 20EMA(눌림) KRW 69,926 (이격 +0.96%) | adds 1/3
+2026-05-27 01:12:17,962 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,964 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,964 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,964 [INFO] Portfolio: Cash=KRW 998,146,883, Value=KRW 1,000,304,483
+2026-05-27 01:12:17,964 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,964 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:17,964 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,965 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:17,974 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv2 매수 KRW 70,070 -> 현재 KRW 69,600 (-0.67%) | 50MA(이탈선) KRW 66,124 | 20EMA(눌림) KRW 69,990 (이격 -0.56%) | adds 1/3
+2026-05-27 01:12:17,974 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,977 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,977 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,977 [INFO] Portfolio: Cash=KRW 998,146,883, Value=KRW 1,000,307,583
+2026-05-27 01:12:17,977 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,977 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:17,977 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,977 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:17,987 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv2 매수 KRW 70,070 -> 현재 KRW 69,700 (-0.53%) | 50MA(이탈선) KRW 66,320 | 20EMA(눌림) KRW 69,953 (이격 -0.36%) | adds 1/3
+2026-05-27 01:12:17,987 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:17,989 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:17,989 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:17,989 [INFO] Portfolio: Cash=KRW 998,146,883, Value=KRW 1,000,242,483
+2026-05-27 01:12:17,990 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:17,990 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:17,990 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:17,990 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:18,000 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv2 매수 KRW 70,070 -> 현재 KRW 67,600 (-3.53%) | 50MA(이탈선) KRW 66,530 | 20EMA(눌림) KRW 69,929 (이격 -3.33%) | adds 1/3
+2026-05-27 01:12:18,000 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:18,002 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:18,002 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:18,002 [INFO] Portfolio: Cash=KRW 998,146,883, Value=KRW 1,000,288,983
+2026-05-27 01:12:18,002 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:18,002 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:18,003 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:18,003 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:18,013 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv2 매수 KRW 70,070 -> 현재 KRW 69,100 (-1.38%) | 50MA(이탈선) KRW 66,692 | 20EMA(눌림) KRW 69,707 (이격 -0.87%) | adds 1/3
+2026-05-27 01:12:18,013 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:18,015 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:18,015 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:18,015 [INFO] Portfolio: Cash=KRW 998,146,883, Value=KRW 1,000,310,683
+2026-05-27 01:12:18,015 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:18,015 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:18,015 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:18,016 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:18,025 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv2 매수 KRW 70,070 -> 현재 KRW 69,800 (-0.39%) | 50MA(이탈선) KRW 66,914 | 20EMA(눌림) KRW 69,649 (이격 +0.22%) | adds 1/3
+2026-05-27 01:12:18,025 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:18,028 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:18,028 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:18,028 [INFO] Portfolio: Cash=KRW 998,146,883, Value=KRW 1,000,319,983
+2026-05-27 01:12:18,028 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:18,028 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:18,028 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:18,028 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:18,038 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv2 매수 KRW 70,070 -> 현재 KRW 70,100 (+0.04%) | 50MA(이탈선) KRW 67,100 | 20EMA(눌림) KRW 69,664 (이격 +0.63%) | adds 1/3
+2026-05-27 01:12:18,038 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:18,040 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:18,040 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:18,040 [INFO] Portfolio: Cash=KRW 998,146,883, Value=KRW 1,000,301,383
+2026-05-27 01:12:18,040 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:18,041 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:18,041 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:18,041 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:18,051 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv2 매수 KRW 70,070 -> 현재 KRW 69,500 (-0.81%) | 50MA(이탈선) KRW 67,276 | 20EMA(눌림) KRW 69,705 (이격 -0.29%) | adds 1/3
+2026-05-27 01:12:18,051 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:18,053 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:18,053 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:18,053 [INFO] Portfolio: Cash=KRW 998,146,883, Value=KRW 1,000,319,983
+2026-05-27 01:12:18,053 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:18,053 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:18,054 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:18,054 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:18,064 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv2 매수 KRW 70,070 -> 현재 KRW 70,100 (+0.04%) | 50MA(이탈선) KRW 67,462 | 20EMA(눌림) KRW 69,686 (이격 +0.59%) | adds 1/3
+2026-05-27 01:12:18,064 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:18,066 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:18,066 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:18,066 [INFO] Portfolio: Cash=KRW 998,146,883, Value=KRW 1,000,363,383
+2026-05-27 01:12:18,066 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:18,066 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:18,067 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:18,067 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:18,076 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv2 매수 KRW 70,070 -> 현재 KRW 71,500 (+2.04%) | 50MA(이탈선) KRW 67,648 | 20EMA(눌림) KRW 69,725 (이격 +2.55%) | adds 1/3
+2026-05-27 01:12:18,076 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:18,079 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:18,079 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:18,079 [INFO] Portfolio: Cash=KRW 998,146,883, Value=KRW 1,000,397,483
+2026-05-27 01:12:18,079 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:18,079 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:18,079 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:18,080 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:18,089 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv2 매수 KRW 70,070 -> 현재 KRW 72,600 (+3.61%) | 50MA(이탈선) KRW 67,882 | 20EMA(눌림) KRW 69,894 (이격 +3.87%) | adds 1/3
+2026-05-27 01:12:18,089 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:18,092 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:18,092 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:18,092 [INFO] Portfolio: Cash=KRW 998,146,883, Value=KRW 1,000,422,283
+2026-05-27 01:12:18,092 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:18,092 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:18,092 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:18,092 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:18,103 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv2 매수 KRW 70,070 -> 현재 KRW 73,400 (+4.75%) | 50MA(이탈선) KRW 68,130 | 20EMA(눌림) KRW 70,152 (이격 +4.63%) | adds 1/3
+2026-05-27 01:12:18,103 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:18,106 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:18,106 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:18,106 [INFO] Portfolio: Cash=KRW 998,146,883, Value=KRW 1,000,484,283
+2026-05-27 01:12:18,106 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:18,106 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:18,106 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:18,107 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:18,119 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv2 매수 KRW 70,070 -> 현재 KRW 75,400 (+7.61%) | 50MA(이탈선) KRW 68,382 | 20EMA(눌림) KRW 70,461 (이격 +7.01%) | adds 1/3
+2026-05-27 01:12:18,119 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:18,123 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:18,123 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:18,123 [INFO] Portfolio: Cash=KRW 998,146,883, Value=KRW 1,000,518,383
+2026-05-27 01:12:18,123 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:18,123 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:18,124 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:18,124 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:18,138 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv2 매수 KRW 70,070 -> 현재 KRW 76,500 (+9.18%) | 50MA(이탈선) KRW 68,614 | 20EMA(눌림) KRW 70,932 (이격 +7.85%) | adds 1/3
+2026-05-27 01:12:18,138 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:18,141 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:18,141 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:18,141 [INFO] Portfolio: Cash=KRW 998,146,883, Value=KRW 1,000,608,283
+2026-05-27 01:12:18,141 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:18,141 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:18,141 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:18,142 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:18,152 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv2 매수 KRW 70,070 -> 현재 KRW 79,400 (+13.32%) | 50MA(이탈선) KRW 68,878 | 20EMA(눌림) KRW 71,462 (이격 +11.11%) | adds 1/3
+2026-05-27 01:12:18,152 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:18,154 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:18,154 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:18,154 [INFO] Portfolio: Cash=KRW 998,146,883, Value=KRW 1,000,571,083
+2026-05-27 01:12:18,154 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:18,154 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:18,155 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:18,155 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:18,165 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv2 매수 KRW 70,070 -> 현재 KRW 78,200 (+11.60%) | 50MA(이탈선) KRW 69,232 | 20EMA(눌림) KRW 72,218 (이격 +8.28%) | adds 1/3
+2026-05-27 01:12:18,165 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:18,167 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:18,167 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:18,167 [INFO] Portfolio: Cash=KRW 998,146,883, Value=KRW 1,000,636,183
+2026-05-27 01:12:18,167 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:18,168 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:18,168 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:18,168 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:18,178 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv2 매수 KRW 70,070 -> 현재 KRW 80,300 (+14.60%) | 50MA(이탈선) KRW 69,568 | 20EMA(눌림) KRW 72,788 (이격 +10.32%) | adds 1/3
+2026-05-27 01:12:18,178 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:18,180 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:18,180 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:18,180 [INFO] Portfolio: Cash=KRW 998,146,883, Value=KRW 1,000,735,383
+2026-05-27 01:12:18,180 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:18,180 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:18,181 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:18,181 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:18,191 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv2 매수 KRW 70,070 -> 현재 KRW 83,500 (+19.17%) | 50MA(이탈선) KRW 69,966 | 20EMA(눌림) KRW 73,503 (이격 +13.60%) | adds 1/3
+2026-05-27 01:12:18,191 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:18,193 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:18,193 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:18,193 [INFO] Portfolio: Cash=KRW 998,146,883, Value=KRW 1,000,772,583
+2026-05-27 01:12:18,193 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:18,193 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:18,194 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:18,194 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:18,204 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv2 매수 KRW 70,070 -> 현재 KRW 84,700 (+20.88%) | 50MA(이탈선) KRW 70,416 | 20EMA(눌림) KRW 74,455 (이격 +13.76%) | adds 1/3
+2026-05-27 01:12:18,204 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:18,206 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:18,207 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:18,207 [INFO] Portfolio: Cash=KRW 998,146,883, Value=KRW 1,000,794,283
+2026-05-27 01:12:18,207 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:18,207 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:18,207 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:18,207 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:18,219 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv2 매수 KRW 70,070 -> 현재 KRW 85,400 (+21.88%) | 50MA(이탈선) KRW 70,858 | 20EMA(눌림) KRW 75,431 (이격 +13.22%) | adds 1/3
+2026-05-27 01:12:18,219 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:18,222 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:18,222 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:18,222 [INFO] Portfolio: Cash=KRW 998,146,883, Value=KRW 1,000,815,983
+2026-05-27 01:12:18,222 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:18,222 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:18,222 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:18,223 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:18,233 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv2 매수 KRW 70,070 -> 현재 KRW 86,100 (+22.88%) | 50MA(이탈선) KRW 71,316 | 20EMA(눌림) KRW 76,380 (이격 +12.73%) | adds 1/3
+2026-05-27 01:12:18,233 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:18,236 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:18,236 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:18,236 [INFO] Portfolio: Cash=KRW 998,146,883, Value=KRW 1,000,729,183
+2026-05-27 01:12:18,236 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:18,236 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:18,236 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:18,237 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:18,247 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv2 매수 KRW 70,070 -> 현재 KRW 83,300 (+18.88%) | 50MA(이탈선) KRW 71,764 | 20EMA(눌림) KRW 77,306 (이격 +7.75%) | adds 1/3
+2026-05-27 01:12:18,247 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:18,249 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:18,250 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:18,250 [INFO] Portfolio: Cash=KRW 998,146,883, Value=KRW 1,000,757,083
+2026-05-27 01:12:18,250 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:18,250 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:18,250 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:18,250 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:18,260 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv2 매수 KRW 70,070 -> 현재 KRW 84,200 (+20.17%) | 50MA(이탈선) KRW 72,136 | 20EMA(눌림) KRW 77,877 (이격 +8.12%) | adds 1/3
+2026-05-27 01:12:18,261 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:18,263 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:18,263 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:18,263 [INFO] Portfolio: Cash=KRW 998,146,883, Value=KRW 1,000,747,783
+2026-05-27 01:12:18,264 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:18,264 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:18,264 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:18,264 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:18,274 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv2 매수 KRW 70,070 -> 현재 KRW 83,900 (+19.74%) | 50MA(이탈선) KRW 72,486 | 20EMA(눌림) KRW 78,479 (이격 +6.91%) | adds 1/3
+2026-05-27 01:12:18,274 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:18,277 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:18,277 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:18,277 [INFO] Portfolio: Cash=KRW 998,146,883, Value=KRW 1,000,812,883
+2026-05-27 01:12:18,277 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:18,277 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:18,278 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:18,278 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:18,288 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv2 매수 KRW 70,070 -> 현재 KRW 86,000 (+22.73%) | 50MA(이탈선) KRW 72,822 | 20EMA(눌림) KRW 78,995 (이격 +8.87%) | adds 1/3
+2026-05-27 01:12:18,288 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:18,291 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:18,291 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:18,291 [INFO] Portfolio: Cash=KRW 998,146,883, Value=KRW 1,000,929,133
+2026-05-27 01:12:18,291 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:18,291 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:18,292 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:18,292 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:18,304 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv2 매수 KRW 70,070 -> 현재 KRW 89,750 (+28.09%) | 50MA(이탈선) KRW 73,186 | 20EMA(눌림) KRW 79,662 (이격 +12.66%) | adds 1/3
+2026-05-27 01:12:18,304 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:18,307 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:18,307 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:18,307 [INFO] Portfolio: Cash=KRW 998,146,883, Value=KRW 1,001,073,283
+2026-05-27 01:12:18,307 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:18,307 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:18,308 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:18,308 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:18,318 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv2 매수 KRW 70,070 -> 현재 KRW 94,400 (+34.72%) | 50MA(이탈선) KRW 73,661 | 20EMA(눌림) KRW 80,623 (이격 +17.09%) | adds 1/3
+2026-05-27 01:12:18,318 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:18,321 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:18,321 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:18,321 [INFO] Portfolio: Cash=KRW 998,146,883, Value=KRW 1,001,039,183
+2026-05-27 01:12:18,321 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:18,321 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:18,322 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:18,322 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:18,332 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv2 매수 KRW 70,070 -> 현재 KRW 93,300 (+33.15%) | 50MA(이탈선) KRW 74,221 | 20EMA(눌림) KRW 81,935 (이격 +13.87%) | adds 1/3
+2026-05-27 01:12:18,332 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:18,335 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:18,335 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:18,335 [INFO] Portfolio: Cash=KRW 998,146,883, Value=KRW 1,000,986,483
+2026-05-27 01:12:18,335 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:18,336 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:18,336 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:18,336 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:18,347 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv2 매수 KRW 70,070 -> 현재 KRW 91,600 (+30.73%) | 50MA(이탈선) KRW 74,767 | 20EMA(눌림) KRW 83,018 (이격 +10.34%) | adds 1/3
+2026-05-27 01:12:18,347 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:18,349 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:18,350 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:18,350 [INFO] Portfolio: Cash=KRW 998,146,883, Value=KRW 1,001,091,883
+2026-05-27 01:12:18,350 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:18,350 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:18,350 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:18,350 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:18,361 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv2 매수 KRW 70,070 -> 현재 KRW 95,000 (+35.58%) | 50MA(이탈선) KRW 75,281 | 20EMA(눌림) KRW 83,835 (이격 +13.32%) | adds 1/3
+2026-05-27 01:12:18,361 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:18,364 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:18,364 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:18,364 [INFO] Portfolio: Cash=KRW 998,146,883, Value=KRW 1,001,175,583
+2026-05-27 01:12:18,364 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:18,364 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:18,364 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:18,365 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:18,375 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv2 매수 KRW 70,070 -> 현재 KRW 97,700 (+39.43%) | 50MA(이탈선) KRW 75,773 | 20EMA(눌림) KRW 84,898 (이격 +15.08%) | adds 1/3
+2026-05-27 01:12:18,375 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:18,378 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:18,378 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:18,378 [INFO] Portfolio: Cash=KRW 998,146,883, Value=KRW 1,001,181,783
+2026-05-27 01:12:18,378 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:18,378 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:18,379 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:18,379 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:18,391 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv2 매수 KRW 70,070 -> 현재 KRW 97,900 (+39.72%) | 50MA(이탈선) KRW 76,315 | 20EMA(눌림) KRW 86,118 (이격 +13.68%) | adds 1/3
+2026-05-27 01:12:18,391 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:18,395 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:18,395 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:18,395 [INFO] Portfolio: Cash=KRW 998,146,883, Value=KRW 1,001,187,983
+2026-05-27 01:12:18,395 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:18,395 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:18,395 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:18,396 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:18,410 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv2 매수 KRW 70,070 -> 현재 KRW 98,100 (+40.00%) | 50MA(이탈선) KRW 76,821 | 20EMA(눌림) KRW 87,240 (이격 +12.45%) | adds 1/3
+2026-05-27 01:12:18,410 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:18,414 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:18,414 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:18,414 [INFO] Portfolio: Cash=KRW 998,146,883, Value=KRW 1,001,169,383
+2026-05-27 01:12:18,414 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:18,414 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:18,414 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:18,415 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:18,428 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv2 매수 KRW 70,070 -> 현재 KRW 97,500 (+39.15%) | 50MA(이탈선) KRW 77,355 | 20EMA(눌림) KRW 88,274 (이격 +10.45%) | adds 1/3
+2026-05-27 01:12:18,428 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:18,431 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:18,431 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:18,431 [INFO] Portfolio: Cash=KRW 998,146,883, Value=KRW 1,001,203,483
+2026-05-27 01:12:18,431 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:18,431 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:18,432 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:18,432 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:18,442 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv2 매수 KRW 70,070 -> 현재 KRW 98,600 (+40.72%) | 50MA(이탈선) KRW 77,927 | 20EMA(눌림) KRW 89,153 (이격 +10.60%) | adds 1/3
+2026-05-27 01:12:18,443 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:18,445 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:18,445 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:18,445 [INFO] Portfolio: Cash=KRW 998,146,883, Value=KRW 1,001,138,383
+2026-05-27 01:12:18,445 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:18,446 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:18,446 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:18,446 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:18,456 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv2 매수 KRW 70,070 -> 현재 KRW 96,500 (+37.72%) | 50MA(이탈선) KRW 78,505 | 20EMA(눌림) KRW 90,052 (이격 +7.16%) | adds 1/3
+2026-05-27 01:12:18,456 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:18,458 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:18,458 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:18,459 [INFO] Portfolio: Cash=KRW 998,146,883, Value=KRW 1,001,209,683
+2026-05-27 01:12:18,459 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:18,459 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:18,459 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:18,459 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:18,469 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv2 매수 KRW 70,070 -> 현재 KRW 98,800 (+41.00%) | 50MA(이탈선) KRW 79,037 | 20EMA(눌림) KRW 90,666 (이격 +8.97%) | adds 1/3
+2026-05-27 01:12:18,469 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:18,471 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:18,471 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:18,471 [INFO] Portfolio: Cash=KRW 998,146,883, Value=KRW 1,001,308,883
+2026-05-27 01:12:18,471 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:18,472 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:18,472 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:18,472 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:18,482 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv2 매수 KRW 70,070 -> 현재 KRW 102,000 (+45.57%) | 50MA(이탈선) KRW 79,637 | 20EMA(눌림) KRW 91,441 (이격 +11.55%) | adds 1/3
+2026-05-27 01:12:18,482 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:18,484 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:18,484 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:18,484 [INFO] Portfolio: Cash=KRW 998,146,883, Value=KRW 1,001,231,383
+2026-05-27 01:12:18,484 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:18,484 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:18,485 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:18,485 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:18,495 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv2 매수 KRW 70,070 -> 현재 KRW 99,500 (+42.00%) | 50MA(이탈선) KRW 80,267 | 20EMA(눌림) KRW 92,447 (이격 +7.63%) | adds 1/3
+2026-05-27 01:12:18,495 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:18,497 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:18,497 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:18,497 [INFO] Portfolio: Cash=KRW 998,146,883, Value=KRW 1,001,262,383
+2026-05-27 01:12:18,497 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:18,497 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:18,498 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:18,498 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:18,507 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv2 매수 KRW 70,070 -> 현재 KRW 100,500 (+43.43%) | 50MA(이탈선) KRW 80,821 | 20EMA(눌림) KRW 93,118 (이격 +7.93%) | adds 1/3
+2026-05-27 01:12:18,508 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:18,510 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:18,510 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:18,510 [INFO] Portfolio: Cash=KRW 998,146,883, Value=KRW 1,001,373,983
+2026-05-27 01:12:18,510 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:18,510 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:18,510 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:18,511 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:18,520 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv2 매수 KRW 70,070 -> 현재 KRW 104,100 (+48.57%) | 50MA(이탈선) KRW 81,411 | 20EMA(눌림) KRW 93,821 (이격 +10.96%) | adds 1/3
+2026-05-27 01:12:18,520 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:18,523 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:18,523 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:18,523 [INFO] Portfolio: Cash=KRW 998,146,883, Value=KRW 1,001,479,383
+2026-05-27 01:12:18,523 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:18,523 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:18,523 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:18,523 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:18,533 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv2 매수 KRW 70,070 -> 현재 KRW 107,500 (+53.42%) | 50MA(이탈선) KRW 82,071 | 20EMA(눌림) KRW 94,800 (이격 +13.40%) | adds 1/3
+2026-05-27 01:12:18,533 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:18,535 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:18,535 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:18,535 [INFO] Portfolio: Cash=KRW 998,146,883, Value=KRW 1,001,590,983
+2026-05-27 01:12:18,535 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:18,535 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:18,536 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:18,536 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:18,545 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv2 매수 KRW 70,070 -> 현재 KRW 111,100 (+58.56%) | 50MA(이탈선) KRW 82,783 | 20EMA(눌림) KRW 96,010 (이격 +15.72%) | adds 1/3
+2026-05-27 01:12:18,546 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:18,548 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:18,548 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:18,548 [INFO] Portfolio: Cash=KRW 998,146,883, Value=KRW 1,001,398,783
+2026-05-27 01:12:18,548 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:18,548 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:18,548 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:18,549 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:18,558 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv2 매수 KRW 70,070 -> 현재 KRW 104,900 (+49.71%) | 50MA(이탈선) KRW 83,573 | 20EMA(눌림) KRW 97,447 (이격 +7.65%) | adds 1/3
+2026-05-27 01:12:18,558 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:18,561 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:18,561 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:18,561 [INFO] Portfolio: Cash=KRW 998,146,883, Value=KRW 1,001,265,483
+2026-05-27 01:12:18,561 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:18,561 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:18,561 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:18,561 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:18,571 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv2 매수 KRW 70,070 -> 현재 KRW 100,600 (+43.57%) | 50MA(이탈선) KRW 84,271 | 20EMA(눌림) KRW 98,157 (이격 +2.49%) | adds 1/3
+2026-05-27 01:12:18,571 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:18,573 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:18,573 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:18,573 [INFO] Portfolio: Cash=KRW 998,146,883, Value=KRW 1,001,222,083
+2026-05-27 01:12:18,573 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:18,573 [INFO] Loaded 2 position lot(s)
+2026-05-27 01:12:18,574 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:18,574 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:18,579 [INFO] [삼성전자(005930)] 상승장 누적 매수 Lv3 10주 @KRW 99,200 (20EMA KRW 98,389 눌림, add 2/3)
+2026-05-27 01:12:18,579 [INFO] Executing 1 order(s)...
+2026-05-27 01:12:18,579 [INFO] [FILLED] BUY 005930: 10 @ $99299.20 (Fee: $2482.48)
+2026-05-27 01:12:18,580 [INFO] [Position] New lot: lot_20260527_011218_005930_003 Lv3 삼성전자(005930) 10주 @KRW 99,299
+2026-05-27 01:12:18,580 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:18,583 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:18,583 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:18,583 [INFO] Portfolio: Cash=KRW 997,151,408, Value=KRW 1,001,165,308
+2026-05-27 01:12:18,583 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:18,583 [INFO] Loaded 3 position lot(s)
+2026-05-27 01:12:18,584 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:18,584 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:18,593 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv3 매수 KRW 99,299 -> 현재 KRW 97,900 (-1.41%) | 50MA(이탈선) KRW 85,457 | 20EMA(눌림) KRW 98,467 (이격 -0.58%) | adds 2/3
+2026-05-27 01:12:18,594 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:18,596 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:18,596 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:18,596 [INFO] Portfolio: Cash=KRW 997,151,408, Value=KRW 1,001,276,008
+2026-05-27 01:12:18,596 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:18,596 [INFO] Loaded 3 position lot(s)
+2026-05-27 01:12:18,597 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:18,597 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:18,606 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv3 매수 KRW 99,299 -> 현재 KRW 100,600 (+1.31%) | 50MA(이탈선) KRW 86,003 | 20EMA(눌림) KRW 98,413 (이격 +2.22%) | adds 2/3
+2026-05-27 01:12:18,606 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:18,609 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:18,609 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:18,609 [INFO] Portfolio: Cash=KRW 997,151,408, Value=KRW 1,001,394,908
+2026-05-27 01:12:18,609 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:18,609 [INFO] Loaded 3 position lot(s)
+2026-05-27 01:12:18,609 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:18,610 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:18,619 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv3 매수 KRW 99,299 -> 현재 KRW 103,500 (+4.23%) | 50MA(이탈선) KRW 86,587 | 20EMA(눌림) KRW 98,621 (이격 +4.95%) | adds 2/3
+2026-05-27 01:12:18,619 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:18,622 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:18,622 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:18,622 [INFO] Portfolio: Cash=KRW 997,151,408, Value=KRW 1,001,378,508
+2026-05-27 01:12:18,622 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:18,622 [INFO] Loaded 3 position lot(s)
+2026-05-27 01:12:18,622 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:18,622 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:18,632 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv3 매수 KRW 99,299 -> 현재 KRW 103,100 (+3.83%) | 50MA(이탈선) KRW 87,227 | 20EMA(눌림) KRW 99,086 (이격 +4.05%) | adds 2/3
+2026-05-27 01:12:18,632 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:18,634 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:18,635 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:18,635 [INFO] Portfolio: Cash=KRW 997,151,408, Value=KRW 1,001,366,208
+2026-05-27 01:12:18,635 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:18,635 [INFO] Loaded 3 position lot(s)
+2026-05-27 01:12:18,635 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:18,635 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:18,645 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv3 매수 KRW 99,299 -> 현재 KRW 102,800 (+3.53%) | 50MA(이탈선) KRW 87,883 | 20EMA(눌림) KRW 99,468 (이격 +3.35%) | adds 2/3
+2026-05-27 01:12:18,645 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:18,647 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:18,647 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:18,647 [INFO] Portfolio: Cash=KRW 997,151,408, Value=KRW 1,001,136,608
+2026-05-27 01:12:18,647 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:18,647 [INFO] Loaded 3 position lot(s)
+2026-05-27 01:12:18,648 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:18,648 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:18,658 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv3 매수 KRW 99,299 -> 현재 KRW 97,200 (-2.11%) | 50MA(이탈선) KRW 88,527 | 20EMA(눌림) KRW 99,785 (이격 -2.59%) | adds 2/3
+2026-05-27 01:12:18,658 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:18,660 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:18,660 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:18,660 [INFO] Portfolio: Cash=KRW 997,151,408, Value=KRW 1,001,276,008
+2026-05-27 01:12:18,660 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:18,660 [INFO] Loaded 3 position lot(s)
+2026-05-27 01:12:18,661 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:18,661 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:18,671 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv3 매수 KRW 99,299 -> 현재 KRW 100,600 (+1.31%) | 50MA(이탈선) KRW 89,079 | 20EMA(눌림) KRW 99,539 (이격 +1.07%) | adds 2/3
+2026-05-27 01:12:18,671 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:18,673 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:18,674 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:18,674 [INFO] Portfolio: Cash=KRW 997,151,408, Value=KRW 1,001,161,208
+2026-05-27 01:12:18,674 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:18,674 [INFO] Loaded 3 position lot(s)
+2026-05-27 01:12:18,674 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:18,674 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:18,684 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv3 매수 KRW 99,299 -> 현재 KRW 97,800 (-1.51%) | 50MA(이탈선) KRW 89,697 | 20EMA(눌림) KRW 99,640 (이격 -1.85%) | adds 2/3
+2026-05-27 01:12:18,684 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:18,686 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:18,687 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:18,687 [INFO] Portfolio: Cash=KRW 997,151,408, Value=KRW 1,001,107,908
+2026-05-27 01:12:18,687 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:18,687 [INFO] Loaded 3 position lot(s)
+2026-05-27 01:12:18,687 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:18,687 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:18,697 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv3 매수 KRW 99,299 -> 현재 KRW 96,500 (-2.82%) | 50MA(이탈선) KRW 90,301 | 20EMA(눌림) KRW 99,465 (이격 -2.98%) | adds 2/3
+2026-05-27 01:12:18,697 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:18,699 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:18,699 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:18,699 [INFO] Portfolio: Cash=KRW 997,151,408, Value=KRW 1,001,276,008
+2026-05-27 01:12:18,699 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:18,700 [INFO] Loaded 3 position lot(s)
+2026-05-27 01:12:18,700 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:18,700 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:18,710 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv3 매수 KRW 99,299 -> 현재 KRW 100,600 (+1.31%) | 50MA(이탈선) KRW 90,849 | 20EMA(눌림) KRW 99,183 (이격 +1.43%) | adds 2/3
+2026-05-27 01:12:18,710 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:18,712 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:18,712 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:18,712 [INFO] Portfolio: Cash=KRW 997,151,408, Value=KRW 1,001,038,208
+2026-05-27 01:12:18,712 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:18,712 [INFO] Loaded 3 position lot(s)
+2026-05-27 01:12:18,713 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:18,713 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:18,722 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv3 매수 KRW 99,299 -> 현재 KRW 94,800 (-4.53%) | 50MA(이탈선) KRW 91,465 | 20EMA(눌림) KRW 99,318 (이격 -4.55%) | adds 2/3
+2026-05-27 01:12:18,722 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:18,725 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:18,725 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:18,725 [INFO] Portfolio: Cash=KRW 997,151,408, Value=KRW 1,001,116,108
+2026-05-27 01:12:18,725 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:18,725 [INFO] Loaded 3 position lot(s)
+2026-05-27 01:12:18,725 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:18,726 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:18,735 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv3 매수 KRW 99,299 -> 현재 KRW 96,700 (-2.62%) | 50MA(이탈선) KRW 91,959 | 20EMA(눌림) KRW 98,887 (이격 -2.21%) | adds 2/3
+2026-05-27 01:12:18,735 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:18,738 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:18,738 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:18,738 [INFO] Portfolio: Cash=KRW 997,151,408, Value=KRW 1,001,222,708
+2026-05-27 01:12:18,738 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:18,738 [INFO] Loaded 3 position lot(s)
+2026-05-27 01:12:18,738 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:18,739 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:18,748 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv3 매수 KRW 99,299 -> 현재 KRW 99,300 (+0.00%) | 50MA(이탈선) KRW 92,503 | 20EMA(눌림) KRW 98,679 (이격 +0.63%) | adds 2/3
+2026-05-27 01:12:18,748 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:18,751 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:18,751 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:18,751 [INFO] Portfolio: Cash=KRW 997,151,408, Value=KRW 1,001,366,208
+2026-05-27 01:12:18,751 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:18,751 [INFO] Loaded 3 position lot(s)
+2026-05-27 01:12:18,751 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:18,751 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:18,761 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv3 매수 KRW 99,299 -> 현재 KRW 102,800 (+3.53%) | 50MA(이탈선) KRW 93,087 | 20EMA(눌림) KRW 98,738 (이격 +4.11%) | adds 2/3
+2026-05-27 01:12:18,761 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:18,763 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:18,764 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:18,764 [INFO] Portfolio: Cash=KRW 997,151,408, Value=KRW 1,001,394,908
+2026-05-27 01:12:18,764 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:18,764 [INFO] Loaded 3 position lot(s)
+2026-05-27 01:12:18,764 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:18,764 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:18,774 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv3 매수 KRW 99,299 -> 현재 KRW 103,500 (+4.23%) | 50MA(이탈선) KRW 93,713 | 20EMA(눌림) KRW 99,125 (이격 +4.41%) | adds 2/3
+2026-05-27 01:12:18,774 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:18,776 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:18,776 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:18,776 [INFO] Portfolio: Cash=KRW 997,151,408, Value=KRW 1,001,271,908
+2026-05-27 01:12:18,776 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:18,776 [INFO] Loaded 3 position lot(s)
+2026-05-27 01:12:18,777 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:18,777 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:18,786 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv3 매수 KRW 99,299 -> 현재 KRW 100,500 (+1.21%) | 50MA(이탈선) KRW 94,331 | 20EMA(눌림) KRW 99,542 (이격 +0.96%) | adds 2/3
+2026-05-27 01:12:18,786 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:18,789 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:18,789 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:18,789 [INFO] Portfolio: Cash=KRW 997,151,408, Value=KRW 1,001,284,208
+2026-05-27 01:12:18,789 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:18,789 [INFO] Loaded 3 position lot(s)
+2026-05-27 01:12:18,789 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:18,790 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:18,799 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv3 매수 KRW 99,299 -> 현재 KRW 100,800 (+1.51%) | 50MA(이탈선) KRW 94,873 | 20EMA(눌림) KRW 99,633 (이격 +1.17%) | adds 2/3
+2026-05-27 01:12:18,799 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:18,802 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:18,802 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:18,802 [INFO] Portfolio: Cash=KRW 997,151,408, Value=KRW 1,001,390,808
+2026-05-27 01:12:18,802 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:18,802 [INFO] Loaded 3 position lot(s)
+2026-05-27 01:12:18,802 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:18,802 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:18,812 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv3 매수 KRW 99,299 -> 현재 KRW 103,400 (+4.13%) | 50MA(이탈선) KRW 95,381 | 20EMA(눌림) KRW 99,744 (이격 +3.67%) | adds 2/3
+2026-05-27 01:12:18,812 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:18,815 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:18,815 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:18,815 [INFO] Portfolio: Cash=KRW 997,151,408, Value=KRW 1,001,435,908
+2026-05-27 01:12:18,815 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:18,815 [INFO] Loaded 3 position lot(s)
+2026-05-27 01:12:18,815 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:18,815 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:18,825 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv3 매수 KRW 99,299 -> 현재 KRW 104,500 (+5.24%) | 50MA(이탈선) KRW 95,919 | 20EMA(눌림) KRW 100,092 (이격 +4.40%) | adds 2/3
+2026-05-27 01:12:18,825 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:18,827 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:18,828 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:18,828 [INFO] Portfolio: Cash=KRW 997,151,408, Value=KRW 1,001,460,508
+2026-05-27 01:12:18,828 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:18,828 [INFO] Loaded 3 position lot(s)
+2026-05-27 01:12:18,828 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:18,828 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:18,838 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv3 매수 KRW 99,299 -> 현재 KRW 105,100 (+5.84%) | 50MA(이탈선) KRW 96,421 | 20EMA(눌림) KRW 100,512 (이격 +4.56%) | adds 2/3
+2026-05-27 01:12:18,838 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:18,840 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:18,840 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:18,840 [INFO] Portfolio: Cash=KRW 997,151,408, Value=KRW 1,001,595,808
+2026-05-27 01:12:18,841 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:18,841 [INFO] Loaded 3 position lot(s)
+2026-05-27 01:12:18,841 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:18,841 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:18,851 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv3 매수 KRW 99,299 -> 현재 KRW 108,400 (+9.17%) | 50MA(이탈선) KRW 96,959 | 20EMA(눌림) KRW 100,949 (이격 +7.38%) | adds 2/3
+2026-05-27 01:12:18,851 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:18,853 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:18,853 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:18,853 [INFO] Portfolio: Cash=KRW 997,151,408, Value=KRW 1,001,640,908
+2026-05-27 01:12:18,853 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:18,854 [INFO] Loaded 3 position lot(s)
+2026-05-27 01:12:18,854 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:18,854 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:18,864 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv3 매수 KRW 99,299 -> 현재 KRW 109,500 (+10.27%) | 50MA(이탈선) KRW 97,521 | 20EMA(눌림) KRW 101,659 (이격 +7.71%) | adds 2/3
+2026-05-27 01:12:18,864 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:18,866 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:18,866 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:18,866 [INFO] Portfolio: Cash=KRW 997,151,408, Value=KRW 1,001,595,808
+2026-05-27 01:12:18,866 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:18,866 [INFO] Loaded 3 position lot(s)
+2026-05-27 01:12:18,867 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:18,867 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:18,877 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv3 매수 KRW 99,299 -> 현재 KRW 108,400 (+9.17%) | 50MA(이탈선) KRW 98,041 | 20EMA(눌림) KRW 102,405 (이격 +5.85%) | adds 2/3
+2026-05-27 01:12:18,877 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:18,879 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:18,879 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:18,879 [INFO] Portfolio: Cash=KRW 997,151,408, Value=KRW 1,001,579,408
+2026-05-27 01:12:18,879 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:18,879 [INFO] Loaded 3 position lot(s)
+2026-05-27 01:12:18,880 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:18,880 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:18,890 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv3 매수 KRW 99,299 -> 현재 KRW 108,000 (+8.76%) | 50MA(이탈선) KRW 98,515 | 20EMA(눌림) KRW 102,976 (이격 +4.88%) | adds 2/3
+2026-05-27 01:12:18,890 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:18,892 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:18,892 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:18,892 [INFO] Portfolio: Cash=KRW 997,151,408, Value=KRW 1,001,550,708
+2026-05-27 01:12:18,892 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:18,892 [INFO] Loaded 3 position lot(s)
+2026-05-27 01:12:18,893 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:18,893 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:18,903 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv3 매수 KRW 99,299 -> 현재 KRW 107,300 (+8.06%) | 50MA(이탈선) KRW 98,967 | 20EMA(눌림) KRW 103,455 (이격 +3.72%) | adds 2/3
+2026-05-27 01:12:18,903 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:18,905 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:18,905 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:18,905 [INFO] Portfolio: Cash=KRW 997,151,408, Value=KRW 1,001,616,308
+2026-05-27 01:12:18,905 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:18,905 [INFO] Loaded 3 position lot(s)
+2026-05-27 01:12:18,906 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:18,906 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:18,916 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv3 매수 KRW 99,299 -> 현재 KRW 108,900 (+9.67%) | 50MA(이탈선) KRW 99,391 | 20EMA(눌림) KRW 103,821 (이격 +4.89%) | adds 2/3
+2026-05-27 01:12:18,916 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:18,918 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:18,918 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:18,918 [INFO] Portfolio: Cash=KRW 997,151,408, Value=KRW 1,001,448,208
+2026-05-27 01:12:18,919 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:18,919 [INFO] Loaded 3 position lot(s)
+2026-05-27 01:12:18,919 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:18,919 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:18,929 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv3 매수 KRW 99,299 -> 현재 KRW 104,800 (+5.54%) | 50MA(이탈선) KRW 99,903 | 20EMA(눌림) KRW 104,305 (이격 +0.47%) | adds 2/3
+2026-05-27 01:12:18,929 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:18,931 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:18,931 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:18,931 [INFO] Portfolio: Cash=KRW 997,151,408, Value=KRW 1,001,366,208
+2026-05-27 01:12:18,931 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:18,931 [INFO] Loaded 3 position lot(s)
+2026-05-27 01:12:18,932 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:18,932 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:18,942 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv3 매수 KRW 99,299 -> 현재 KRW 102,800 (+3.53%) | 50MA(이탈선) KRW 100,315 | 20EMA(눌림) KRW 104,352 (이격 -1.49%) | adds 2/3
+2026-05-27 01:12:18,942 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:18,944 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:18,944 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:18,944 [INFO] Portfolio: Cash=KRW 997,151,408, Value=KRW 1,001,575,308
+2026-05-27 01:12:18,944 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:18,944 [INFO] Loaded 3 position lot(s)
+2026-05-27 01:12:18,945 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:18,945 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:18,955 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv3 매수 KRW 99,299 -> 현재 KRW 107,900 (+8.66%) | 50MA(이탈선) KRW 100,693 | 20EMA(눌림) KRW 104,204 (이격 +3.55%) | adds 2/3
+2026-05-27 01:12:18,955 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:18,957 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:18,957 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:18,957 [INFO] Portfolio: Cash=KRW 997,151,408, Value=KRW 1,001,563,008
+2026-05-27 01:12:18,957 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:18,957 [INFO] Loaded 3 position lot(s)
+2026-05-27 01:12:18,958 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:18,958 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:18,967 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv3 매수 KRW 99,299 -> 현재 KRW 107,600 (+8.36%) | 50MA(이탈선) KRW 101,131 | 20EMA(눌림) KRW 104,556 (이격 +2.91%) | adds 2/3
+2026-05-27 01:12:18,967 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:18,970 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:18,970 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:18,970 [INFO] Portfolio: Cash=KRW 997,151,408, Value=KRW 1,001,509,708
+2026-05-27 01:12:18,970 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:18,970 [INFO] Loaded 3 position lot(s)
+2026-05-27 01:12:18,970 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:18,971 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:18,980 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv3 매수 KRW 99,299 -> 현재 KRW 106,300 (+7.05%) | 50MA(이탈선) KRW 101,488 | 20EMA(눌림) KRW 104,846 (이격 +1.39%) | adds 2/3
+2026-05-27 01:12:18,980 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:18,983 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:18,983 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:18,983 [INFO] Portfolio: Cash=KRW 997,151,408, Value=KRW 1,001,681,908
+2026-05-27 01:12:18,983 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:18,983 [INFO] Loaded 3 position lot(s)
+2026-05-27 01:12:18,984 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:18,984 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:18,995 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv3 매수 KRW 99,299 -> 현재 KRW 110,500 (+11.28%) | 50MA(이탈선) KRW 101,726 | 20EMA(눌림) KRW 104,984 (이격 +5.25%) | adds 2/3
+2026-05-27 01:12:18,996 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:18,999 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:18,999 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:18,999 [INFO] Portfolio: Cash=KRW 997,151,408, Value=KRW 1,001,722,908
+2026-05-27 01:12:18,999 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:18,999 [INFO] Loaded 3 position lot(s)
+2026-05-27 01:12:19,000 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:19,000 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:19,014 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv3 매수 KRW 99,299 -> 현재 KRW 111,500 (+12.29%) | 50MA(이탈선) KRW 102,070 | 20EMA(눌림) KRW 105,510 (이격 +5.68%) | adds 2/3
+2026-05-27 01:12:19,014 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:19,018 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:19,018 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:19,018 [INFO] Portfolio: Cash=KRW 997,151,408, Value=KRW 1,001,706,508
+2026-05-27 01:12:19,018 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:19,018 [INFO] Loaded 3 position lot(s)
+2026-05-27 01:12:19,019 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:19,019 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:19,029 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv3 매수 KRW 99,299 -> 현재 KRW 111,100 (+11.88%) | 50MA(이탈선) KRW 102,468 | 20EMA(눌림) KRW 106,080 (이격 +4.73%) | adds 2/3
+2026-05-27 01:12:19,030 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:19,032 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:19,032 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:19,033 [INFO] Portfolio: Cash=KRW 997,151,408, Value=KRW 1,001,948,408
+2026-05-27 01:12:19,033 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:19,033 [INFO] Loaded 3 position lot(s)
+2026-05-27 01:12:19,033 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:19,033 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:19,043 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv3 매수 KRW 99,299 -> 현재 KRW 117,000 (+17.83%) | 50MA(이탈선) KRW 102,790 | 20EMA(눌림) KRW 106,558 (이격 +9.80%) | adds 2/3
+2026-05-27 01:12:19,043 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:19,046 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:19,046 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:19,046 [INFO] Portfolio: Cash=KRW 997,151,408, Value=KRW 1,002,050,908
+2026-05-27 01:12:19,046 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:19,046 [INFO] Loaded 3 position lot(s)
+2026-05-27 01:12:19,046 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:19,047 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:19,056 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv3 매수 KRW 99,299 -> 현재 KRW 119,500 (+20.34%) | 50MA(이탈선) KRW 103,176 | 20EMA(눌림) KRW 107,553 (이격 +11.11%) | adds 2/3
+2026-05-27 01:12:19,056 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:19,059 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-27 01:12:19,059 [INFO] Fetching real-time prices from Broker...
+2026-05-27 01:12:19,059 [INFO] Portfolio: Cash=KRW 997,151,408, Value=KRW 1,002,067,308
+2026-05-27 01:12:19,059 [INFO] >>> Step 2: Load Positions
+2026-05-27 01:12:19,059 [INFO] Loaded 3 position lot(s)
+2026-05-27 01:12:19,059 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-27 01:12:19,059 [INFO] >>> Processing 삼성전자(005930)
+2026-05-27 01:12:19,069 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv3 매수 KRW 99,299 -> 현재 KRW 119,900 (+20.75%) | 50MA(이탈선) KRW 103,608 | 20EMA(눌림) KRW 108,691 (이격 +10.31%) | adds 2/3
+2026-05-27 01:12:19,069 [INFO] >>> Step 6: Persist
+2026-05-27 01:12:19,072 [INFO] --- 백테스트 완료 ---
+2026-05-27 01:12:19,072 [INFO] 최종: Cash=KRW 997,151,408, Value=KRW 1,002,067,308
