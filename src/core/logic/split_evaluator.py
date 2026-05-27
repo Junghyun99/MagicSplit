@@ -708,18 +708,25 @@ class SplitEvaluator:
         # 0. 가격 레벨업 기반 카운트 리셋 판정
         reset_pct = rule.uptrend_add_reset_pct
         last_add_price = st.get("last_add_price")
+        
+        # 하위 호환 폴백: last_add_price가 없는데 기존 포지션이 존재할 경우 최고 차수 매수가로 복구
+        if last_add_price is None and ticker_lots:
+            last_lot = max(ticker_lots, key=lambda l: l.level)
+            last_add_price = last_lot.buy_price
+            st["last_add_price"] = last_add_price
+
         if reset_pct is not None and reset_pct > 0 and last_add_price is not None:
             if current_price >= last_add_price * (1 + reset_pct / 100):
                 old_adds = st.get("adds", 0)
                 st["adds"] = 0
                 st["last_add_price"] = current_price
-                st["last_add_swing_high"] = reading.swing_high
+                st["last_add_swing_high"] = None  # None으로 리셋하여 새 고점 게이트 오픈!
                 if self._logger:
                     self._logger.info(
                         f"[{display_ticker(rule.ticker)}] 📈 주가 레벨업 감지! "
                         f"마지막 매수가 {format_money(last_add_price, rule.market_type)} 대비 +{reset_pct}% 돌파 "
                         f"(현재 {format_money(current_price, rule.market_type)}) "
-                        f"-> adds 횟수({old_adds}회) 및 매수금액 초기화"
+                        f"-> adds 횟수({old_adds}회) 및 매수금액 초기화 (게이트 오픈)"
                     )
 
         # 1. 추세 이탈 우선 판정 -> 전량 청산.
