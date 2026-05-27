@@ -62,6 +62,7 @@ class StockRule:
     uptrend_add_amount: Optional[float] = None          # 회차 공통 금액 (scalar fallback)
     uptrend_add_amounts: Optional[List[float]] = None   # 회차별 금액 (점감 권장)
     uptrend_swing_lookback: int = 10         # 새 고점 게이트용 스윙 룩백
+    uptrend_add_reset_pct: Optional[float] = None  # 마지막 매수가 대비 레벨업 판정 상승률(%)
     # 추세 이탈 (전량 청산). 눌림 밴드보다 깊어야 정상 눌림에 안 털린다.
     trendbreak_chandelier_k: float = 3.0     # 고점 - k*ATR
     trendbreak_chandelier_lookback: int = 22
@@ -103,6 +104,10 @@ class StockRule:
             if self.uptrend_max_adds < 0:
                 raise ValueError(
                     f"StockRule({self.ticker}): uptrend_max_adds는 음수일 수 없습니다."
+                )
+            if self.uptrend_add_reset_pct is not None and self.uptrend_add_reset_pct < 0:
+                raise ValueError(
+                    f"StockRule({self.ticker}): uptrend_add_reset_pct는 음수일 수 없습니다."
                 )
 
     @staticmethod

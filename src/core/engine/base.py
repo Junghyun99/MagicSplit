@@ -704,6 +704,7 @@ class MagicSplitEngine:
                     st = regime_state.setdefault(exe.ticker, {})
                     st["adds"] = st.get("adds", 0) + 1
                     st["last_add_swing_high"] = sig.regime_add_swing_high
+                    st["last_add_price"] = exe.price
                 # 동적 재매수 소비: 매수 체결 시 직전 매도가 초기화
                 if last_sell_prices is not None and exe.ticker in last_sell_prices:
                     self.logger.info(
