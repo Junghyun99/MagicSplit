@@ -4,7 +4,9 @@
             "ticker": "005930",
             "enabled": true,
             "market_type": "domestic",
-            "preset": "large_cap_ks"
+            "preset": "large_cap_ks",
+            "uptrend_add_reset_pct": 20.0,
+            "uptrend_add_amounts": [1000000, 500000, 250000]
         }
     ],
     "global": {

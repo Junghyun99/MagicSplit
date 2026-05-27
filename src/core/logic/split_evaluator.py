@@ -118,7 +118,7 @@ class SplitEvaluator:
                 min_bars=rule.regime_min_bars,
             )
             st = regime_state.setdefault(rule.ticker, {}) if regime_state is not None else {}
-            if self._resolve_regime(reading, st, rule.ticker) == Regime.UPTREND:
+            if self._resolve_regime(reading, st, rule.ticker, current_price) == Regime.UPTREND:
                 return self._evaluate_uptrend(
                     rule, ticker_lots, current_price, reading, st, portfolio
                 )
@@ -665,7 +665,7 @@ class SplitEvaluator:
 
     # ── 레짐(상승장) 분기 ──────────────────────────────────────
 
-    def _resolve_regime(self, reading, st: dict, ticker: str) -> Regime:
+    def _resolve_regime(self, reading, st: dict, ticker: str, current_price: float) -> Regime:
         """레짐 히스테리시스를 적용해 유효 레짐을 반환한다 (st를 in-place 변이).
 
         - 상승 진입은 REGIME_CONFIRM_BARS 연속 UPTREND 판정 후에만.
@@ -684,6 +684,7 @@ class SplitEvaluator:
             st["regime"] = "uptrend"
             st["adds"] = 0
             st["last_add_swing_high"] = reading.swing_high
+            st["last_add_price"] = current_price
             st["uptrend_streak"] = 0
             if self._logger:
                 self._logger.info(
@@ -704,6 +705,30 @@ class SplitEvaluator:
     ) -> List[SplitSignal]:
         """상승 레짐: 차수별 매도를 잠그고 추세 눌림에 누적 매수하며,
         추세 이탈 시 전 차수를 전량 청산한다."""
+        # 0. 가격 레벨업 기반 카운트 리셋 판정
+        reset_pct = rule.uptrend_add_reset_pct
+        last_add_price = st.get("last_add_price")
+        
+        # 하위 호환 폴백: last_add_price가 없는데 기존 포지션이 존재할 경우 최고 차수 매수가로 복구
+        if last_add_price is None and ticker_lots:
+            last_lot = max(ticker_lots, key=lambda l: l.level)
+            last_add_price = last_lot.buy_price
+            st["last_add_price"] = last_add_price
+
+        if reset_pct is not None and reset_pct > 0 and last_add_price is not None:
+            if current_price >= last_add_price * (1 + reset_pct / 100):
+                old_adds = st.get("adds", 0)
+                st["adds"] = 0
+                st["last_add_price"] = current_price
+                st["last_add_swing_high"] = None  # None으로 리셋하여 새 고점 게이트 오픈!
+                if self._logger:
+                    self._logger.info(
+                        f"[{display_ticker(rule.ticker)}] 📈 주가 레벨업 감지! "
+                        f"마지막 매수가 {format_money(last_add_price, rule.market_type)} 대비 +{reset_pct}% 돌파 "
+                        f"(현재 {format_money(current_price, rule.market_type)}) "
+                        f"-> adds 횟수({old_adds}회) 및 매수금액 초기화 (게이트 오픈)"
+                    )
+
         # 1. 추세 이탈 우선 판정 -> 전량 청산.
         # 기본(use_sma50)은 50MA 하향 이탈을 쓴다. 50MA는 상승 정렬에서 항상 20EMA보다
         # 아래이므로, 20EMA로의 정상 눌림이 이탈로 오인되지 않는 버퍼가 보장된다.

@@ -236,3 +236,63 @@ class TestResolveRegimeHysteresis:
             rule, [lot], _pf(price=r.ema20 * 1.005), ohlc_window=window, regime_state=state,
         )
         assert state["AAPL"]["regime"] == "uptrend"
+
+
+class TestUptrendAddReset:
+    def test_adds_reset_on_price_levelup(self, evaluator):
+        rule = _regime_rule(uptrend_max_adds=3, uptrend_add_reset_pct=20.0)
+        window = _uptrend_window()
+        r = _reading(window, rule)
+        lot = _lot(level=1, buy_price=100.0)
+
+        # 1. adds가 3회 꽉 차있고, last_add_price가 100.0인 상태
+        state = {
+            "AAPL": {
+                "regime": "uptrend",
+                "adds": 3,
+                "last_add_price": 100.0,
+                "last_add_swing_high": r.swing_high - 10
+            }
+        }
+
+        # 주가가 110.0 (+10%) 으로 상승 -> 아직 20% 상승 기준에 미달하여 리셋되지 않음
+        evaluator.evaluate_stock(
+            rule, [lot], _pf(price=110.0), ohlc_window=window, regime_state=state,
+        )
+        assert state["AAPL"]["adds"] == 3
+
+        # 주가가 120.0 (+20%) 으로 상승 -> 리셋 트리거 발동해야 함
+        evaluator.evaluate_stock(
+            rule, [lot], _pf(price=120.0), ohlc_window=window, regime_state=state,
+        )
+        assert state["AAPL"]["adds"] == 0
+        assert state["AAPL"]["last_add_price"] == 120.0
+        assert state["AAPL"]["last_add_swing_high"] is None  # [리뷰 1 반영] 게이트 열림 확인!
+
+    def test_adds_reset_fallback_from_lots(self, evaluator):
+        rule = _regime_rule(uptrend_max_adds=3, uptrend_add_reset_pct=20.0)
+        window = _uptrend_window()
+        r = _reading(window, rule)
+        # 2차수 최고 차수 매수가 80.0
+        lots = [
+            _lot(level=1, buy_price=50.0),
+            _lot(level=2, buy_price=80.0),
+        ]
+
+        # 2. st에 last_add_price가 없는 레거시 상태 (adds = 3)
+        state = {
+            "AAPL": {
+                "regime": "uptrend",
+                "adds": 3,
+                "last_add_swing_high": r.swing_high - 10
+            }
+        }
+
+        # 주가가 96.0 (+20% of 80.0) 으로 상승 -> 리셋 트리거 발동 (last_add_price 폴백 복구 후 20% 상승 판단)
+        evaluator.evaluate_stock(
+            rule, lots, _pf(price=96.0, qty=10), ohlc_window=window, regime_state=state,
+        )
+        assert state["AAPL"]["adds"] == 0
+        assert state["AAPL"]["last_add_price"] == 96.0
+        assert state["AAPL"]["last_add_swing_high"] is None
+
