@@ -1,18 +1,18 @@
 [
     {
-        "id": "tx_20250102",
-        "date": "2025-01-02",
-        "portfolio_value": 999996633.397,
-        "total_trade_amount": 962161.2000000001,
+        "id": "tx_20200102",
+        "date": "2020-01-02",
+        "portfolio_value": 99996519.916,
+        "total_trade_amount": 994593.6,
         "reason": "삼성전자(005930):BUY(초기 매수 Lv1)",
         "executions": [
             {
                 "ticker": "005930",
                 "action": "BUY",
                 "quantity": 18,
-                "price": 53453.4,
-                "fee": 2405.4,
-                "date": "2025-01-02",
+                "price": 55255.2,
+                "fee": 2486.48,
+                "date": "2020-01-02",
                 "status": "FILLED",
                 "reason": "",
                 "level": 1,
@@ -21,11 +21,299 @@
         ]
     },
     {
-        "id": "tx_20250331",
-        "date": "2025-03-31",
-        "portfolio_value": 1000072194.5979999,
+        "id": "tx_20200129",
+        "date": "2020-01-29",
+        "portfolio_value": 100063407.95199999,
+        "total_trade_amount": 946545.6,
+        "reason": "삼성전자(005930):BUY(상승장 누적 매수 Lv2 (20EMA 눌림, add 1))",
+        "executions": [
+            {
+                "ticker": "005930",
+                "action": "BUY",
+                "quantity": 16,
+                "price": 59159.1,
+                "fee": 2366.36,
+                "date": "2020-01-29",
+                "status": "FILLED",
+                "reason": "",
+                "level": 2,
+                "alias": "삼성전자"
+            }
+        ]
+    },
+    {
+        "id": "tx_20200224",
+        "date": "2020-02-24",
+        "portfolio_value": 99978453.58,
+        "total_trade_amount": 1929268.7999999998,
+        "reason": "삼성전자(005930):SELL(추세 이탈 통합 전량 청산(Bulk Sell, 34주 -0.5%))",
+        "executions": [
+            {
+                "ticker": "005930",
+                "action": "SELL",
+                "quantity": 16,
+                "price": 56743.2,
+                "fee": 4823.17,
+                "date": "2020-02-24",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260527_015719_005930_002",
+                "level": 2,
+                "buy_price": 59159.1,
+                "realized_pnl": -40924.13,
+                "alias": "삼성전자"
+            },
+            {
+                "ticker": "005930",
+                "action": "SELL",
+                "quantity": 18,
+                "price": 56743.2,
+                "fee": 4823.17,
+                "date": "2020-02-24",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260527_015719_005930_001",
+                "level": 1,
+                "buy_price": 55255.2,
+                "realized_pnl": 24230.56,
+                "alias": "삼성전자"
+            }
+        ]
+    },
+    {
+        "id": "tx_20200225",
+        "date": "2020-02-25",
+        "portfolio_value": 99975006.06925,
+        "total_trade_amount": 985284.3,
+        "reason": "삼성전자(005930):BUY(초기 매수 Lv1)",
+        "executions": [
+            {
+                "ticker": "005930",
+                "action": "BUY",
+                "quantity": 17,
+                "price": 57957.9,
+                "fee": 2463.21,
+                "date": "2020-02-25",
+                "status": "FILLED",
+                "reason": "",
+                "level": 1,
+                "alias": "삼성전자"
+            }
+        ]
+    },
+    {
+        "id": "tx_20200228",
+        "date": "2020-02-28",
+        "portfolio_value": 99910397.54975,
+        "total_trade_amount": 488287.8,
+        "reason": "삼성전자(005930):BUY(추가 매수 Lv2 (Lv1 대비 -6.5%))",
+        "executions": [
+            {
+                "ticker": "005930",
+                "action": "BUY",
+                "quantity": 9,
+                "price": 54254.2,
+                "fee": 1220.72,
+                "date": "2020-02-28",
+                "status": "FILLED",
+                "reason": "",
+                "level": 2,
+                "alias": "삼성전자"
+            }
+        ]
+    },
+    {
+        "id": "tx_20200313",
+        "date": "2020-03-13",
+        "portfolio_value": 99798148.051,
+        "total_trade_amount": 499999.5,
+        "reason": "삼성전자(005930):BUY(추가 매수 Lv3 (Lv2 대비 -7.9%))",
+        "executions": [
+            {
+                "ticker": "005930",
+                "action": "BUY",
+                "quantity": 10,
+                "price": 49999.95,
+                "fee": 1250.0,
+                "date": "2020-03-13",
+                "status": "FILLED",
+                "reason": "",
+                "level": 3,
+                "alias": "삼성전자"
+            }
+        ]
+    },
+    {
+        "id": "tx_20200317",
+        "date": "2020-03-17",
+        "portfolio_value": 99701091.3685,
+        "total_trade_amount": 473473.0,
+        "reason": "삼성전자(005930):BUY(추가 매수 Lv4 (Lv3 대비 -5.4%))",
+        "executions": [
+            {
+                "ticker": "005930",
+                "action": "BUY",
+                "quantity": 10,
+                "price": 47347.3,
+                "fee": 1183.68,
+                "date": "2020-03-17",
+                "status": "FILLED",
+                "reason": "",
+                "level": 4,
+                "alias": "삼성전자"
+            }
+        ]
+    },
+    {
+        "id": "tx_20200319",
+        "date": "2020-03-19",
+        "portfolio_value": 99499336.61237499,
+        "total_trade_amount": 472922.44999999995,
+        "reason": "삼성전자(005930):BUY(추가 매수 Lv5 (Lv4 대비 -9.3%))",
+        "executions": [
+            {
+                "ticker": "005930",
+                "action": "BUY",
+                "quantity": 11,
+                "price": 42992.95,
+                "fee": 1182.31,
+                "date": "2020-03-19",
+                "status": "FILLED",
+                "reason": "",
+                "level": 5,
+                "alias": "삼성전자"
+            }
+        ]
+    },
+    {
+        "id": "tx_20200401",
+        "date": "2020-04-01",
+        "portfolio_value": 99660024.57187499,
+        "total_trade_amount": 503296.19999999995,
+        "reason": "삼성전자(005930):SELL(Lv5 트레일링 스톱 매도 (고점 대비 -5.86%))",
+        "executions": [
+            {
+                "ticker": "005930",
+                "action": "SELL",
+                "quantity": 11,
+                "price": 45754.2,
+                "fee": 1258.24,
+                "date": "2020-04-01",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260527_015720_005930_005",
+                "level": 5,
+                "buy_price": 42992.95,
+                "realized_pnl": 29115.51,
+                "alias": "삼성전자"
+            }
+        ]
+    },
+    {
+        "id": "tx_20200612",
+        "date": "2020-06-12",
+        "portfolio_value": 99957195.379375,
+        "total_trade_amount": 522477.0,
+        "reason": "삼성전자(005930):SELL(Lv4 트레일링 스톱 매도 (고점 대비 -5.77%))",
+        "executions": [
+            {
+                "ticker": "005930",
+                "action": "SELL",
+                "quantity": 10,
+                "price": 52247.7,
+                "fee": 1306.19,
+                "date": "2020-06-12",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260527_015720_005930_004",
+                "level": 4,
+                "buy_price": 47347.3,
+                "realized_pnl": 47697.81,
+                "alias": "삼성전자"
+            }
+        ]
+    },
+    {
+        "id": "tx_20200831",
+        "date": "2020-08-31",
+        "portfolio_value": 100011596.239375,
+        "total_trade_amount": 1942056.0,
+        "reason": "삼성전자(005930):SELL(추세 이탈 통합 전량 청산(Bulk Sell, 36주 -1.5%))",
+        "executions": [
+            {
+                "ticker": "005930",
+                "action": "SELL",
+                "quantity": 10,
+                "price": 53946.0,
+                "fee": 4855.14,
+                "date": "2020-08-31",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260527_015720_005930_003",
+                "level": 3,
+                "buy_price": 49999.95,
+                "realized_pnl": 38111.85,
+                "alias": "삼성전자"
+            },
+            {
+                "ticker": "005930",
+                "action": "SELL",
+                "quantity": 9,
+                "price": 53946.0,
+                "fee": 4855.14,
+                "date": "2020-08-31",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260527_015720_005930_002",
+                "level": 2,
+                "buy_price": 54254.2,
+                "realized_pnl": -3987.58,
+                "alias": "삼성전자"
+            },
+            {
+                "ticker": "005930",
+                "action": "SELL",
+                "quantity": 17,
+                "price": 53946.0,
+                "fee": 4855.14,
+                "date": "2020-08-31",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260527_015720_005930_001",
+                "level": 1,
+                "buy_price": 57957.9,
+                "realized_pnl": -70495.01,
+                "alias": "삼성전자"
+            }
+        ]
+    },
+    {
+        "id": "tx_20200901",
+        "date": "2020-09-01",
+        "portfolio_value": 100008179.20037499,
+        "total_trade_amount": 976575.6,
+        "reason": "삼성전자(005930):BUY(초기 매수 Lv1)",
+        "executions": [
+            {
+                "ticker": "005930",
+                "action": "BUY",
+                "quantity": 18,
+                "price": 54254.2,
+                "fee": 2441.44,
+                "date": "2020-09-01",
+                "status": "FILLED",
+                "reason": "",
+                "level": 1,
+                "alias": "삼성전자"
+            }
+        ]
+    },
+    {
+        "id": "tx_20200924",
+        "date": "2020-09-24",
+        "portfolio_value": 100069340.401375,
         "total_trade_amount": 1039359.6,
-        "reason": "삼성전자(005930):SELL(Lv1 트레일링 스톱 매도 (고점 대비 -6.47%))",
+        "reason": "삼성전자(005930):SELL(Lv1 트레일링 스톱 매도 (고점 대비 -5.25%))",
         "executions": [
             {
                 "ticker": "005930",
@@ -33,34 +321,1609 @@
                 "quantity": 18,
                 "price": 57742.2,
                 "fee": 2598.4,
-                "date": "2025-03-31",
+                "date": "2020-09-24",
                 "status": "FILLED",
                 "reason": "",
-                "lot_id": "lot_20260527_011216_005930_001",
+                "lot_id": "lot_20260527_015721_005930_001",
                 "level": 1,
-                "buy_price": 53453.4,
-                "realized_pnl": 74600.0,
+                "buy_price": 54254.2,
+                "realized_pnl": 60185.6,
                 "alias": "삼성전자"
             }
         ]
     },
     {
-        "id": "tx_20250401",
-        "date": "2025-04-01",
-        "portfolio_value": 1000068693.499,
-        "total_trade_amount": 1000599.6000000001,
+        "id": "tx_20200925",
+        "date": "2020-09-25",
+        "portfolio_value": 100065892.890625,
+        "total_trade_amount": 985284.3,
         "reason": "삼성전자(005930):BUY(초기 매수 Lv1)",
         "executions": [
             {
                 "ticker": "005930",
                 "action": "BUY",
                 "quantity": 17,
-                "price": 58858.8,
-                "fee": 2501.5,
-                "date": "2025-04-01",
+                "price": 57957.9,
+                "fee": 2463.21,
+                "date": "2020-09-25",
                 "status": "FILLED",
                 "reason": "",
                 "level": 1,
+                "alias": "삼성전자"
+            }
+        ]
+    },
+    {
+        "id": "tx_20210127",
+        "date": "2021-01-27",
+        "portfolio_value": 100533494.936625,
+        "total_trade_amount": 942541.6000000001,
+        "reason": "삼성전자(005930):BUY(상승장 누적 매수 Lv2 (20EMA 눌림, add 1))",
+        "executions": [
+            {
+                "ticker": "005930",
+                "action": "BUY",
+                "quantity": 11,
+                "price": 85685.6,
+                "fee": 2356.35,
+                "date": "2021-01-27",
+                "status": "FILLED",
+                "reason": "",
+                "level": 2,
+                "alias": "삼성전자"
+            }
+        ]
+    },
+    {
+        "id": "tx_20210224",
+        "date": "2021-02-24",
+        "portfolio_value": 100424664.676625,
+        "total_trade_amount": 2293704.0,
+        "reason": "삼성전자(005930):SELL(추세 이탈 통합 전량 청산(Bulk Sell, 28주 +19.1%))",
+        "executions": [
+            {
+                "ticker": "005930",
+                "action": "SELL",
+                "quantity": 11,
+                "price": 81918.0,
+                "fee": 5734.26,
+                "date": "2021-02-24",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260527_015722_005930_002",
+                "level": 2,
+                "buy_price": 85685.6,
+                "realized_pnl": -43696.35,
+                "alias": "삼성전자"
+            },
+            {
+                "ticker": "005930",
+                "action": "SELL",
+                "quantity": 17,
+                "price": 81918.0,
+                "fee": 5734.26,
+                "date": "2021-02-24",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260527_015721_005930_001",
+                "level": 1,
+                "buy_price": 57957.9,
+                "realized_pnl": 403840.18,
+                "alias": "삼성전자"
+            }
+        ]
+    },
+    {
+        "id": "tx_20210225",
+        "date": "2021-02-25",
+        "portfolio_value": 100421378.280875,
+        "total_trade_amount": 939238.3,
+        "reason": "삼성전자(005930):BUY(초기 매수 Lv1)",
+        "executions": [
+            {
+                "ticker": "005930",
+                "action": "BUY",
+                "quantity": 11,
+                "price": 85385.3,
+                "fee": 2348.1,
+                "date": "2021-02-25",
+                "status": "FILLED",
+                "reason": "",
+                "level": 1,
+                "alias": "삼성전자"
+            }
+        ]
+    },
+    {
+        "id": "tx_20210310",
+        "date": "2021-03-10",
+        "portfolio_value": 100371278.167375,
+        "total_trade_amount": 485885.39999999997,
+        "reason": "삼성전자(005930):BUY(추가 매수 Lv2 (Lv1 대비 -5.3%))",
+        "executions": [
+            {
+                "ticker": "005930",
+                "action": "BUY",
+                "quantity": 6,
+                "price": 80980.9,
+                "fee": 1214.71,
+                "date": "2021-03-10",
+                "status": "FILLED",
+                "reason": "",
+                "level": 2,
+                "alias": "삼성전자"
+            }
+        ]
+    },
+    {
+        "id": "tx_20210813",
+        "date": "2021-08-13",
+        "portfolio_value": 100259214.651375,
+        "total_trade_amount": 446846.39999999997,
+        "reason": "삼성전자(005930):BUY(추가 매수 Lv3 (Lv2 대비 -8.1%))",
+        "executions": [
+            {
+                "ticker": "005930",
+                "action": "BUY",
+                "quantity": 6,
+                "price": 74474.4,
+                "fee": 1117.12,
+                "date": "2021-08-13",
+                "status": "FILLED",
+                "reason": "",
+                "level": 3,
+                "alias": "삼성전자"
+            }
+        ]
+    },
+    {
+        "id": "tx_20211012",
+        "date": "2021-10-12",
+        "portfolio_value": 100133322.943875,
+        "total_trade_amount": 483483.0,
+        "reason": "삼성전자(005930):BUY(추가 매수 Lv4 (Lv3 대비 -7.4%))",
+        "executions": [
+            {
+                "ticker": "005930",
+                "action": "BUY",
+                "quantity": 7,
+                "price": 69069.0,
+                "fee": 1208.71,
+                "date": "2021-10-12",
+                "status": "FILLED",
+                "reason": "",
+                "level": 4,
+                "alias": "삼성전자"
+            }
+        ]
+    },
+    {
+        "id": "tx_20220119",
+        "date": "2022-01-19",
+        "portfolio_value": 100350454.929125,
+        "total_trade_amount": 533565.9,
+        "reason": "삼성전자(005930):SELL(Lv4 트레일링 스톱 매도 (고점 대비 -5.22%))",
+        "executions": [
+            {
+                "ticker": "005930",
+                "action": "SELL",
+                "quantity": 7,
+                "price": 76223.7,
+                "fee": 1333.91,
+                "date": "2022-01-19",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260527_015724_005930_004",
+                "level": 4,
+                "buy_price": 69069.0,
+                "realized_pnl": 48748.99,
+                "alias": "삼성전자"
+            }
+        ]
+    },
+    {
+        "id": "tx_20220127",
+        "date": "2022-01-27",
+        "portfolio_value": 100233706.831375,
+        "total_trade_amount": 499599.10000000003,
+        "reason": "삼성전자(005930):BUY(동적 재매수 Lv4 (매도가 KRW 76,224 대비 -6.5%))",
+        "executions": [
+            {
+                "ticker": "005930",
+                "action": "BUY",
+                "quantity": 7,
+                "price": 71371.3,
+                "fee": 1249.0,
+                "date": "2022-01-27",
+                "status": "FILLED",
+                "reason": "",
+                "level": 4,
+                "alias": "삼성전자"
+            }
+        ]
+    },
+    {
+        "id": "tx_20220408",
+        "date": "2022-04-08",
+        "portfolio_value": 100127044.544875,
+        "total_trade_amount": 475074.60000000003,
+        "reason": "삼성전자(005930):BUY(추가 매수 Lv5 (Lv4 대비 -5.0%))",
+        "executions": [
+            {
+                "ticker": "005930",
+                "action": "BUY",
+                "quantity": 7,
+                "price": 67867.8,
+                "fee": 1187.69,
+                "date": "2022-04-08",
+                "status": "FILLED",
+                "reason": "",
+                "level": 5,
+                "alias": "삼성전자"
+            }
+        ]
+    },
+    {
+        "id": "tx_20220610",
+        "date": "2022-06-10",
+        "portfolio_value": 99977480.328375,
+        "total_trade_amount": 447046.60000000003,
+        "reason": "삼성전자(005930):BUY(추가 매수 Lv6 (Lv5 대비 -6.0%))",
+        "executions": [
+            {
+                "ticker": "005930",
+                "action": "BUY",
+                "quantity": 7,
+                "price": 63863.8,
+                "fee": 1117.62,
+                "date": "2022-06-10",
+                "status": "FILLED",
+                "reason": "",
+                "level": 6,
+                "alias": "삼성전자"
+            }
+        ]
+    },
+    {
+        "id": "tx_20220617",
+        "date": "2022-06-17",
+        "portfolio_value": 99799804.732375,
+        "total_trade_amount": 478878.4,
+        "reason": "삼성전자(005930):BUY(추가 매수 Lv7 (Lv6 대비 -6.4%))",
+        "executions": [
+            {
+                "ticker": "005930",
+                "action": "BUY",
+                "quantity": 8,
+                "price": 59859.8,
+                "fee": 1197.2,
+                "date": "2022-06-17",
+                "status": "FILLED",
+                "reason": "",
+                "level": 7,
+                "alias": "삼성전자"
+            }
+        ]
+    },
+    {
+        "id": "tx_20220701",
+        "date": "2022-07-01",
+        "portfolio_value": 99611030.00837499,
+        "total_trade_amount": 450049.6,
+        "reason": "삼성전자(005930):BUY(추가 매수 Lv8 (Lv7 대비 -6.1%))",
+        "executions": [
+            {
+                "ticker": "005930",
+                "action": "BUY",
+                "quantity": 8,
+                "price": 56256.2,
+                "fee": 1125.12,
+                "date": "2022-07-01",
+                "status": "FILLED",
+                "reason": "",
+                "level": 8,
+                "alias": "삼성전자"
+            }
+        ]
+    },
+    {
+        "id": "tx_20220829",
+        "date": "2022-08-29",
+        "portfolio_value": 99753390.38037498,
+        "total_trade_amount": 468331.2,
+        "reason": "삼성전자(005930):SELL(Lv8 트레일링 스톱 매도 (고점 대비 -5.33%))",
+        "executions": [
+            {
+                "ticker": "005930",
+                "action": "SELL",
+                "quantity": 8,
+                "price": 58541.4,
+                "fee": 1170.83,
+                "date": "2022-08-29",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260527_015726_005930_008",
+                "level": 8,
+                "buy_price": 56256.2,
+                "realized_pnl": 17110.77,
+                "alias": "삼성전자"
+            }
+        ]
+    },
+    {
+        "id": "tx_20220907",
+        "date": "2022-09-07",
+        "portfolio_value": 99616621.26037498,
+        "total_trade_amount": 448448.0,
+        "reason": "삼성전자(005930):BUY(추가 매수 Lv8 (Lv7 대비 -6.4%))",
+        "executions": [
+            {
+                "ticker": "005930",
+                "action": "BUY",
+                "quantity": 8,
+                "price": 56056.0,
+                "fee": 1121.12,
+                "date": "2022-09-07",
+                "status": "FILLED",
+                "reason": "",
+                "level": 8,
+                "alias": "삼성전자"
+            }
+        ]
+    },
+    {
+        "id": "tx_20220928",
+        "date": "2022-09-28",
+        "portfolio_value": 99428953.72012497,
+        "total_trade_amount": 476576.10000000003,
+        "reason": "삼성전자(005930):BUY(추가 매수 Lv9 (Lv8 대비 -5.6%))",
+        "executions": [
+            {
+                "ticker": "005930",
+                "action": "BUY",
+                "quantity": 9,
+                "price": 52952.9,
+                "fee": 1191.44,
+                "date": "2022-09-28",
+                "status": "FILLED",
+                "reason": "",
+                "level": 9,
+                "alias": "삼성전자"
+            }
+        ]
+    },
+    {
+        "id": "tx_20221206",
+        "date": "2022-12-06",
+        "portfolio_value": 99861790.25212498,
+        "total_trade_amount": 532267.2000000001,
+        "reason": "삼성전자(005930):SELL(Lv9 트레일링 스톱 매도 (고점 대비 -5.88%))",
+        "executions": [
+            {
+                "ticker": "005930",
+                "action": "SELL",
+                "quantity": 9,
+                "price": 59140.8,
+                "fee": 1330.67,
+                "date": "2022-12-06",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260527_015727_005930_009",
+                "level": 9,
+                "buy_price": 52952.9,
+                "realized_pnl": 54360.43,
+                "alias": "삼성전자"
+            }
+        ]
+    },
+    {
+        "id": "tx_20221229",
+        "date": "2022-12-29",
+        "portfolio_value": 99626047.05787498,
+        "total_trade_amount": 498197.7,
+        "reason": "삼성전자(005930):BUY(동적 재매수 Lv9 (매도가 KRW 59,141 대비 -6.5%))",
+        "executions": [
+            {
+                "ticker": "005930",
+                "action": "BUY",
+                "quantity": 9,
+                "price": 55355.3,
+                "fee": 1245.49,
+                "date": "2022-12-29",
+                "status": "FILLED",
+                "reason": "",
+                "level": 9,
+                "alias": "삼성전자"
+            }
+        ]
+    },
+    {
+        "id": "tx_20230201",
+        "date": "2023-02-01",
+        "portfolio_value": 100017426.93037498,
+        "total_trade_amount": 548451.0,
+        "reason": "삼성전자(005930):SELL(Lv9 트레일링 스톱 매도 (고점 대비 -5.57%))",
+        "executions": [
+            {
+                "ticker": "005930",
+                "action": "SELL",
+                "quantity": 9,
+                "price": 60939.0,
+                "fee": 1371.13,
+                "date": "2023-02-01",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260527_015728_005930_009",
+                "level": 9,
+                "buy_price": 55355.3,
+                "realized_pnl": 48882.17,
+                "alias": "삼성전자"
+            }
+        ]
+    },
+    {
+        "id": "tx_20230227",
+        "date": "2023-02-27",
+        "portfolio_value": 99985734.14037497,
+        "total_trade_amount": 483516.0,
+        "reason": "삼성전자(005930):SELL(Lv8 트레일링 스톱 매도 (고점 대비 -5.02%))",
+        "executions": [
+            {
+                "ticker": "005930",
+                "action": "SELL",
+                "quantity": 8,
+                "price": 60439.5,
+                "fee": 1208.79,
+                "date": "2023-02-27",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260527_015727_005930_008",
+                "level": 8,
+                "buy_price": 56056.0,
+                "realized_pnl": 33859.21,
+                "alias": "삼성전자"
+            }
+        ]
+    },
+    {
+        "id": "tx_20230619",
+        "date": "2023-06-19",
+        "portfolio_value": 100538642.84837498,
+        "total_trade_amount": 997796.7999999999,
+        "reason": "삼성전자(005930):BUY(상승장 누적 매수 Lv8 (20EMA 눌림, add 1))",
+        "executions": [
+            {
+                "ticker": "005930",
+                "action": "BUY",
+                "quantity": 14,
+                "price": 71271.2,
+                "fee": 2494.49,
+                "date": "2023-06-19",
+                "status": "FILLED",
+                "reason": "",
+                "level": 8,
+                "alias": "삼성전자"
+            }
+        ]
+    },
+    {
+        "id": "tx_20230630",
+        "date": "2023-06-30",
+        "portfolio_value": 100601355.40187497,
+        "total_trade_amount": 939538.6,
+        "reason": "삼성전자(005930):BUY(상승장 누적 매수 Lv9 (20EMA 눌림, add 2))",
+        "executions": [
+            {
+                "ticker": "005930",
+                "action": "BUY",
+                "quantity": 13,
+                "price": 72272.2,
+                "fee": 2348.85,
+                "date": "2023-06-30",
+                "status": "FILLED",
+                "reason": "",
+                "level": 9,
+                "alias": "삼성전자"
+            }
+        ]
+    },
+    {
+        "id": "tx_20230705",
+        "date": "2023-07-05",
+        "portfolio_value": 100582277.06187497,
+        "total_trade_amount": 936936.0,
+        "reason": "삼성전자(005930):BUY(상승장 누적 매수 Lv10 (20EMA 눌림, add 3))",
+        "executions": [
+            {
+                "ticker": "005930",
+                "action": "BUY",
+                "quantity": 13,
+                "price": 72072.0,
+                "fee": 2342.34,
+                "date": "2023-07-05",
+                "status": "FILLED",
+                "reason": "",
+                "level": 10,
+                "alias": "삼성전자"
+            }
+        ]
+    },
+    {
+        "id": "tx_20230721",
+        "date": "2023-07-21",
+        "portfolio_value": 100403256.63087498,
+        "total_trade_amount": 6461132.399999999,
+        "reason": "삼성전자(005930):SELL(추세 이탈 통합 전량 청산(Bulk Sell, 92주 -2.7%))",
+        "executions": [
+            {
+                "ticker": "005930",
+                "action": "SELL",
+                "quantity": 13,
+                "price": 70229.7,
+                "fee": 16152.83,
+                "date": "2023-07-21",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260527_015729_005930_010",
+                "level": 10,
+                "buy_price": 72072.0,
+                "realized_pnl": -26232.37,
+                "alias": "삼성전자"
+            },
+            {
+                "ticker": "005930",
+                "action": "SELL",
+                "quantity": 13,
+                "price": 70229.7,
+                "fee": 16152.83,
+                "date": "2023-07-21",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260527_015729_005930_009",
+                "level": 9,
+                "buy_price": 72272.2,
+                "realized_pnl": -28834.97,
+                "alias": "삼성전자"
+            },
+            {
+                "ticker": "005930",
+                "action": "SELL",
+                "quantity": 14,
+                "price": 70229.7,
+                "fee": 16152.83,
+                "date": "2023-07-21",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260527_015729_005930_008",
+                "level": 8,
+                "buy_price": 71271.2,
+                "realized_pnl": -17039.04,
+                "alias": "삼성전자"
+            },
+            {
+                "ticker": "005930",
+                "action": "SELL",
+                "quantity": 8,
+                "price": 70229.7,
+                "fee": 16152.83,
+                "date": "2023-07-21",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260527_015726_005930_007",
+                "level": 7,
+                "buy_price": 59859.8,
+                "realized_pnl": 81554.61,
+                "alias": "삼성전자"
+            },
+            {
+                "ticker": "005930",
+                "action": "SELL",
+                "quantity": 7,
+                "price": 70229.7,
+                "fee": 16152.83,
+                "date": "2023-07-21",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260527_015726_005930_006",
+                "level": 6,
+                "buy_price": 63863.8,
+                "realized_pnl": 43332.28,
+                "alias": "삼성전자"
+            },
+            {
+                "ticker": "005930",
+                "action": "SELL",
+                "quantity": 7,
+                "price": 70229.7,
+                "fee": 16152.83,
+                "date": "2023-07-21",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260527_015726_005930_005",
+                "level": 5,
+                "buy_price": 67867.8,
+                "realized_pnl": 15304.28,
+                "alias": "삼성전자"
+            },
+            {
+                "ticker": "005930",
+                "action": "SELL",
+                "quantity": 7,
+                "price": 70229.7,
+                "fee": 16152.83,
+                "date": "2023-07-21",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260527_015725_005930_004",
+                "level": 4,
+                "buy_price": 71371.3,
+                "realized_pnl": -9220.22,
+                "alias": "삼성전자"
+            },
+            {
+                "ticker": "005930",
+                "action": "SELL",
+                "quantity": 6,
+                "price": 70229.7,
+                "fee": 16152.83,
+                "date": "2023-07-21",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260527_015724_005930_003",
+                "level": 3,
+                "buy_price": 74474.4,
+                "realized_pnl": -26521.65,
+                "alias": "삼성전자"
+            },
+            {
+                "ticker": "005930",
+                "action": "SELL",
+                "quantity": 6,
+                "price": 70229.7,
+                "fee": 16152.83,
+                "date": "2023-07-21",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260527_015723_005930_002",
+                "level": 2,
+                "buy_price": 80980.9,
+                "realized_pnl": -65560.65,
+                "alias": "삼성전자"
+            },
+            {
+                "ticker": "005930",
+                "action": "SELL",
+                "quantity": 11,
+                "price": 70229.7,
+                "fee": 16152.83,
+                "date": "2023-07-21",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260527_015723_005930_001",
+                "level": 1,
+                "buy_price": 85385.3,
+                "realized_pnl": -168642.92,
+                "alias": "삼성전자"
+            }
+        ]
+    },
+    {
+        "id": "tx_20230724",
+        "date": "2023-07-24",
+        "portfolio_value": 100399804.56687498,
+        "total_trade_amount": 986585.5999999999,
+        "reason": "삼성전자(005930):BUY(초기 매수 Lv1)",
+        "executions": [
+            {
+                "ticker": "005930",
+                "action": "BUY",
+                "quantity": 14,
+                "price": 70470.4,
+                "fee": 2466.46,
+                "date": "2023-07-24",
+                "status": "FILLED",
+                "reason": "",
+                "level": 1,
+                "alias": "삼성전자"
+            }
+        ]
+    },
+    {
+        "id": "tx_20230817",
+        "date": "2023-08-17",
+        "portfolio_value": 100346369.24962498,
+        "total_trade_amount": 467366.89999999997,
+        "reason": "삼성전자(005930):BUY(추가 매수 Lv2 (Lv1 대비 -5.4%))",
+        "executions": [
+            {
+                "ticker": "005930",
+                "action": "BUY",
+                "quantity": 7,
+                "price": 66766.7,
+                "fee": 1168.42,
+                "date": "2023-08-17",
+                "status": "FILLED",
+                "reason": "",
+                "level": 2,
+                "alias": "삼성전자"
+            }
+        ]
+    },
+    {
+        "id": "tx_20230921",
+        "date": "2023-09-21",
+        "portfolio_value": 100387508.71687499,
+        "total_trade_amount": 1445453.1,
+        "reason": "삼성전자(005930):SELL(추세 이탈 통합 전량 청산(Bulk Sell, 21주 -0.5%))",
+        "executions": [
+            {
+                "ticker": "005930",
+                "action": "SELL",
+                "quantity": 7,
+                "price": 68831.1,
+                "fee": 3613.63,
+                "date": "2023-09-21",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260527_015730_005930_002",
+                "level": 2,
+                "buy_price": 66766.7,
+                "realized_pnl": 13246.26,
+                "alias": "삼성전자"
+            },
+            {
+                "ticker": "005930",
+                "action": "SELL",
+                "quantity": 14,
+                "price": 68831.1,
+                "fee": 3613.63,
+                "date": "2023-09-21",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260527_015730_005930_001",
+                "level": 1,
+                "buy_price": 70470.4,
+                "realized_pnl": -25359.29,
+                "alias": "삼성전자"
+            }
+        ]
+    },
+    {
+        "id": "tx_20230922",
+        "date": "2023-09-22",
+        "portfolio_value": 100384135.10887499,
+        "total_trade_amount": 964163.2000000001,
+        "reason": "삼성전자(005930):BUY(초기 매수 Lv1)",
+        "executions": [
+            {
+                "ticker": "005930",
+                "action": "BUY",
+                "quantity": 14,
+                "price": 68868.8,
+                "fee": 2410.41,
+                "date": "2023-09-22",
+                "status": "FILLED",
+                "reason": "",
+                "level": 1,
+                "alias": "삼성전자"
+            }
+        ]
+    },
+    {
+        "id": "tx_20231213",
+        "date": "2023-12-13",
+        "portfolio_value": 100436820.34287499,
+        "total_trade_amount": 947346.4,
+        "reason": "삼성전자(005930):BUY(상승장 누적 매수 Lv2 (20EMA 눌림, add 1))",
+        "executions": [
+            {
+                "ticker": "005930",
+                "action": "BUY",
+                "quantity": 13,
+                "price": 72872.8,
+                "fee": 2368.37,
+                "date": "2023-12-13",
+                "status": "FILLED",
+                "reason": "",
+                "level": 2,
+                "alias": "삼성전자"
+            }
+        ]
+    },
+    {
+        "id": "tx_20231218",
+        "date": "2023-12-18",
+        "portfolio_value": 100436201.02362499,
+        "total_trade_amount": 948647.7,
+        "reason": "삼성전자(005930):BUY(상승장 누적 매수 Lv3 (20EMA 눌림, add 2))",
+        "executions": [
+            {
+                "ticker": "005930",
+                "action": "BUY",
+                "quantity": 13,
+                "price": 72972.9,
+                "fee": 2371.62,
+                "date": "2023-12-18",
+                "status": "FILLED",
+                "reason": "",
+                "level": 3,
+                "alias": "삼성전자"
+            }
+        ]
+    },
+    {
+        "id": "tx_20240115",
+        "date": "2024-01-15",
+        "portfolio_value": 100472836.17187499,
+        "total_trade_amount": 961660.7,
+        "reason": "삼성전자(005930):BUY(상승장 누적 매수 Lv4 (20EMA 눌림, add 3))",
+        "executions": [
+            {
+                "ticker": "005930",
+                "action": "BUY",
+                "quantity": 13,
+                "price": 73973.9,
+                "fee": 2404.15,
+                "date": "2024-01-15",
+                "status": "FILLED",
+                "reason": "",
+                "level": 4,
+                "alias": "삼성전자"
+            }
+        ]
+    },
+    {
+        "id": "tx_20240116",
+        "date": "2024-01-16",
+        "portfolio_value": 100390478.49137498,
+        "total_trade_amount": 3843952.1999999997,
+        "reason": "삼성전자(005930):SELL(추세 이탈 통합 전량 청산(Bulk Sell, 53주 +0.7%))",
+        "executions": [
+            {
+                "ticker": "005930",
+                "action": "SELL",
+                "quantity": 13,
+                "price": 72527.4,
+                "fee": 9609.88,
+                "date": "2024-01-16",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260527_015731_005930_004",
+                "level": 4,
+                "buy_price": 73973.9,
+                "realized_pnl": -21161.64,
+                "alias": "삼성전자"
+            },
+            {
+                "ticker": "005930",
+                "action": "SELL",
+                "quantity": 13,
+                "price": 72527.4,
+                "fee": 9609.88,
+                "date": "2024-01-16",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260527_015731_005930_003",
+                "level": 3,
+                "buy_price": 72972.9,
+                "realized_pnl": -8148.64,
+                "alias": "삼성전자"
+            },
+            {
+                "ticker": "005930",
+                "action": "SELL",
+                "quantity": 13,
+                "price": 72527.4,
+                "fee": 9609.88,
+                "date": "2024-01-16",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260527_015731_005930_002",
+                "level": 2,
+                "buy_price": 72872.8,
+                "realized_pnl": -6847.34,
+                "alias": "삼성전자"
+            },
+            {
+                "ticker": "005930",
+                "action": "SELL",
+                "quantity": 14,
+                "price": 72527.4,
+                "fee": 9609.88,
+                "date": "2024-01-16",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260527_015730_005930_001",
+                "level": 1,
+                "buy_price": 68868.8,
+                "realized_pnl": 48681.94,
+                "alias": "삼성전자"
+            }
+        ]
+    },
+    {
+        "id": "tx_20240117",
+        "date": "2024-01-17",
+        "portfolio_value": 100386997.00637498,
+        "total_trade_amount": 994994.0,
+        "reason": "삼성전자(005930):BUY(초기 매수 Lv1)",
+        "executions": [
+            {
+                "ticker": "005930",
+                "action": "BUY",
+                "quantity": 14,
+                "price": 71071.0,
+                "fee": 2487.48,
+                "date": "2024-01-17",
+                "status": "FILLED",
+                "reason": "",
+                "level": 1,
+                "alias": "삼성전자"
+            }
+        ]
+    },
+    {
+        "id": "tx_20240415",
+        "date": "2024-04-15",
+        "portfolio_value": 100540342.14037499,
+        "total_trade_amount": 987386.3999999999,
+        "reason": "삼성전자(005930):BUY(상승장 누적 매수 Lv2 (20EMA 눌림, add 1))",
+        "executions": [
+            {
+                "ticker": "005930",
+                "action": "BUY",
+                "quantity": 12,
+                "price": 82282.2,
+                "fee": 2468.47,
+                "date": "2024-04-15",
+                "status": "FILLED",
+                "reason": "",
+                "level": 2,
+                "alias": "삼성전자"
+            }
+        ]
+    },
+    {
+        "id": "tx_20240422",
+        "date": "2024-04-22",
+        "portfolio_value": 100374821.98687498,
+        "total_trade_amount": 1976621.4,
+        "reason": "삼성전자(005930):SELL(추세 이탈 통합 전량 청산(Bulk Sell, 26주 -0.2%))",
+        "executions": [
+            {
+                "ticker": "005930",
+                "action": "SELL",
+                "quantity": 12,
+                "price": 76023.9,
+                "fee": 4941.55,
+                "date": "2024-04-22",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260527_015732_005930_002",
+                "level": 2,
+                "buy_price": 82282.2,
+                "realized_pnl": -77380.32,
+                "alias": "삼성전자"
+            },
+            {
+                "ticker": "005930",
+                "action": "SELL",
+                "quantity": 14,
+                "price": 76023.9,
+                "fee": 4941.55,
+                "date": "2024-04-22",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260527_015731_005930_001",
+                "level": 1,
+                "buy_price": 71071.0,
+                "realized_pnl": 66679.77,
+                "alias": "삼성전자"
+            }
+        ]
+    },
+    {
+        "id": "tx_20240423",
+        "date": "2024-04-23",
+        "portfolio_value": 100371384.28312498,
+        "total_trade_amount": 982481.5,
+        "reason": "삼성전자(005930):BUY(초기 매수 Lv1)",
+        "executions": [
+            {
+                "ticker": "005930",
+                "action": "BUY",
+                "quantity": 13,
+                "price": 75575.5,
+                "fee": 2456.2,
+                "date": "2024-04-23",
+                "status": "FILLED",
+                "reason": "",
+                "level": 1,
+                "alias": "삼성전자"
+            }
+        ]
+    },
+    {
+        "id": "tx_20240425",
+        "date": "2024-04-25",
+        "portfolio_value": 100378315.11287498,
+        "total_trade_amount": 990908.1,
+        "reason": "삼성전자(005930):SELL(추세 이탈 통합 전량 청산(Bulk Sell, 13주 +1.0%))",
+        "executions": [
+            {
+                "ticker": "005930",
+                "action": "SELL",
+                "quantity": 13,
+                "price": 76223.7,
+                "fee": 2477.27,
+                "date": "2024-04-25",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260527_015732_005930_001",
+                "level": 1,
+                "buy_price": 75575.5,
+                "realized_pnl": 5949.33,
+                "alias": "삼성전자"
+            }
+        ]
+    },
+    {
+        "id": "tx_20240426",
+        "date": "2024-04-26",
+        "portfolio_value": 100374822.77012499,
+        "total_trade_amount": 998097.1,
+        "reason": "삼성전자(005930):BUY(초기 매수 Lv1)",
+        "executions": [
+            {
+                "ticker": "005930",
+                "action": "BUY",
+                "quantity": 13,
+                "price": 76776.7,
+                "fee": 2495.24,
+                "date": "2024-04-26",
+                "status": "FILLED",
+                "reason": "",
+                "level": 1,
+                "alias": "삼성전자"
+            }
+        ]
+    },
+    {
+        "id": "tx_20240509",
+        "date": "2024-05-09",
+        "portfolio_value": 100410472.979125,
+        "total_trade_amount": 957356.3999999999,
+        "reason": "삼성전자(005930):BUY(상승장 누적 매수 Lv2 (20EMA 눌림, add 1))",
+        "executions": [
+            {
+                "ticker": "005930",
+                "action": "BUY",
+                "quantity": 12,
+                "price": 79779.7,
+                "fee": 2393.39,
+                "date": "2024-05-09",
+                "status": "FILLED",
+                "reason": "",
+                "level": 2,
+                "alias": "삼성전자"
+            }
+        ]
+    },
+    {
+        "id": "tx_20240510",
+        "date": "2024-05-10",
+        "portfolio_value": 100394644.203125,
+        "total_trade_amount": 951350.3999999999,
+        "reason": "삼성전자(005930):BUY(상승장 누적 매수 Lv3 (20EMA 눌림, add 2))",
+        "executions": [
+            {
+                "ticker": "005930",
+                "action": "BUY",
+                "quantity": 12,
+                "price": 79279.2,
+                "fee": 2378.38,
+                "date": "2024-05-10",
+                "status": "FILLED",
+                "reason": "",
+                "level": 3,
+                "alias": "삼성전자"
+            }
+        ]
+    },
+    {
+        "id": "tx_20240516",
+        "date": "2024-05-16",
+        "portfolio_value": 100347524.536625,
+        "total_trade_amount": 2890506.6,
+        "reason": "삼성전자(005930):SELL(추세 이탈 통합 전량 청산(Bulk Sell, 37주 -0.5%))",
+        "executions": [
+            {
+                "ticker": "005930",
+                "action": "SELL",
+                "quantity": 12,
+                "price": 78121.8,
+                "fee": 7226.27,
+                "date": "2024-05-16",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260527_015732_005930_003",
+                "level": 3,
+                "buy_price": 79279.2,
+                "realized_pnl": -16232.46,
+                "alias": "삼성전자"
+            },
+            {
+                "ticker": "005930",
+                "action": "SELL",
+                "quantity": 12,
+                "price": 78121.8,
+                "fee": 7226.27,
+                "date": "2024-05-16",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260527_015732_005930_002",
+                "level": 2,
+                "buy_price": 79779.7,
+                "realized_pnl": -22238.46,
+                "alias": "삼성전자"
+            },
+            {
+                "ticker": "005930",
+                "action": "SELL",
+                "quantity": 13,
+                "price": 78121.8,
+                "fee": 7226.27,
+                "date": "2024-05-16",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260527_015732_005930_001",
+                "level": 1,
+                "buy_price": 76776.7,
+                "realized_pnl": 14947.34,
+                "alias": "삼성전자"
+            }
+        ]
+    },
+    {
+        "id": "tx_20240517",
+        "date": "2024-05-17",
+        "portfolio_value": 100344271.414625,
+        "total_trade_amount": 929728.7999999999,
+        "reason": "삼성전자(005930):BUY(초기 매수 Lv1)",
+        "executions": [
+            {
+                "ticker": "005930",
+                "action": "BUY",
+                "quantity": 12,
+                "price": 77477.4,
+                "fee": 2324.32,
+                "date": "2024-05-17",
+                "status": "FILLED",
+                "reason": "",
+                "level": 1,
+                "alias": "삼성전자"
+            }
+        ]
+    },
+    {
+        "id": "tx_20240530",
+        "date": "2024-05-30",
+        "portfolio_value": 100295926.812125,
+        "total_trade_amount": 441441.0,
+        "reason": "삼성전자(005930):BUY(추가 매수 Lv2 (Lv1 대비 -5.1%))",
+        "executions": [
+            {
+                "ticker": "005930",
+                "action": "BUY",
+                "quantity": 6,
+                "price": 73573.5,
+                "fee": 1103.6,
+                "date": "2024-05-30",
+                "status": "FILLED",
+                "reason": "",
+                "level": 2,
+                "alias": "삼성전자"
+            }
+        ]
+    },
+    {
+        "id": "tx_20240712",
+        "date": "2024-07-12",
+        "portfolio_value": 100488875.091125,
+        "total_trade_amount": 929328.3999999999,
+        "reason": "삼성전자(005930):BUY(상승장 누적 매수 Lv3 (20EMA 눌림, add 1))",
+        "executions": [
+            {
+                "ticker": "005930",
+                "action": "BUY",
+                "quantity": 11,
+                "price": 84484.4,
+                "fee": 2323.32,
+                "date": "2024-07-12",
+                "status": "FILLED",
+                "reason": "",
+                "level": 3,
+                "alias": "삼성전자"
+            }
+        ]
+    },
+    {
+        "id": "tx_20240725",
+        "date": "2024-07-25",
+        "portfolio_value": 100364720.320125,
+        "total_trade_amount": 2329268.4000000004,
+        "reason": "삼성전자(005930):SELL(추세 이탈 통합 전량 청산(Bulk Sell, 29주 +1.4%))",
+        "executions": [
+            {
+                "ticker": "005930",
+                "action": "SELL",
+                "quantity": 11,
+                "price": 80319.6,
+                "fee": 5823.17,
+                "date": "2024-07-25",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260527_015733_005930_003",
+                "level": 3,
+                "buy_price": 84484.4,
+                "realized_pnl": -48021.59,
+                "alias": "삼성전자"
+            },
+            {
+                "ticker": "005930",
+                "action": "SELL",
+                "quantity": 6,
+                "price": 80319.6,
+                "fee": 5823.17,
+                "date": "2024-07-25",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260527_015732_005930_002",
+                "level": 2,
+                "buy_price": 73573.5,
+                "realized_pnl": 39271.81,
+                "alias": "삼성전자"
+            },
+            {
+                "ticker": "005930",
+                "action": "SELL",
+                "quantity": 12,
+                "price": 80319.6,
+                "fee": 5823.17,
+                "date": "2024-07-25",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260527_015732_005930_001",
+                "level": 1,
+                "buy_price": 77477.4,
+                "realized_pnl": 31696.81,
+                "alias": "삼성전자"
+            }
+        ]
+    },
+    {
+        "id": "tx_20240726",
+        "date": "2024-07-26",
+        "portfolio_value": 100361320.093125,
+        "total_trade_amount": 971770.7999999999,
+        "reason": "삼성전자(005930):BUY(초기 매수 Lv1)",
+        "executions": [
+            {
+                "ticker": "005930",
+                "action": "BUY",
+                "quantity": 12,
+                "price": 80980.9,
+                "fee": 2429.43,
+                "date": "2024-07-26",
+                "status": "FILLED",
+                "reason": "",
+                "level": 1,
+                "alias": "삼성전자"
+            }
+        ]
+    },
+    {
+        "id": "tx_20240805",
+        "date": "2024-08-05",
+        "portfolio_value": 100245569.543625,
+        "total_trade_amount": 500299.79999999993,
+        "reason": "삼성전자(005930):BUY(추가 매수 Lv2 (Lv1 대비 -11.8%))",
+        "executions": [
+            {
+                "ticker": "005930",
+                "action": "BUY",
+                "quantity": 7,
+                "price": 71471.4,
+                "fee": 1250.75,
+                "date": "2024-08-05",
+                "status": "FILLED",
+                "reason": "",
+                "level": 2,
+                "alias": "삼성전자"
+            }
+        ]
+    },
+    {
+        "id": "tx_20240826",
+        "date": "2024-08-26",
+        "portfolio_value": 100333006.425375,
+        "total_trade_amount": 532167.2999999999,
+        "reason": "삼성전자(005930):SELL(Lv2 트레일링 스톱 매도 (고점 대비 -5.11%))",
+        "executions": [
+            {
+                "ticker": "005930",
+                "action": "SELL",
+                "quantity": 7,
+                "price": 76023.9,
+                "fee": 1330.42,
+                "date": "2024-08-26",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260527_015733_005930_002",
+                "level": 2,
+                "buy_price": 71471.4,
+                "realized_pnl": 30537.08,
+                "alias": "삼성전자"
+            }
+        ]
+    },
+    {
+        "id": "tx_20240827",
+        "date": "2024-08-27",
+        "portfolio_value": 100327813.488375,
+        "total_trade_amount": 455254.80000000005,
+        "reason": "삼성전자(005930):BUY(추가 매수 Lv2 (Lv1 대비 -6.4%))",
+        "executions": [
+            {
+                "ticker": "005930",
+                "action": "BUY",
+                "quantity": 6,
+                "price": 75875.8,
+                "fee": 1138.14,
+                "date": "2024-08-27",
+                "status": "FILLED",
+                "reason": "",
+                "level": 2,
+                "alias": "삼성전자"
+            }
+        ]
+    },
+    {
+        "id": "tx_20240904",
+        "date": "2024-09-04",
+        "portfolio_value": 100221697.263375,
+        "total_trade_amount": 490490.0,
+        "reason": "삼성전자(005930):BUY(추가 매수 Lv3 (Lv2 대비 -7.7%))",
+        "executions": [
+            {
+                "ticker": "005930",
+                "action": "BUY",
+                "quantity": 7,
+                "price": 70070.0,
+                "fee": 1226.22,
+                "date": "2024-09-04",
+                "status": "FILLED",
+                "reason": "",
+                "level": 3,
+                "alias": "삼성전자"
+            }
+        ]
+    },
+    {
+        "id": "tx_20240910",
+        "date": "2024-09-10",
+        "portfolio_value": 100125074.20487499,
+        "total_trade_amount": 463863.39999999997,
+        "reason": "삼성전자(005930):BUY(추가 매수 Lv4 (Lv3 대비 -5.5%))",
+        "executions": [
+            {
+                "ticker": "005930",
+                "action": "BUY",
+                "quantity": 7,
+                "price": 66266.2,
+                "fee": 1159.66,
+                "date": "2024-09-10",
+                "status": "FILLED",
+                "reason": "",
+                "level": 4,
+                "alias": "삼성전자"
+            }
+        ]
+    },
+    {
+        "id": "tx_20240923",
+        "date": "2024-09-23",
+        "portfolio_value": 100008339.409375,
+        "total_trade_amount": 438638.2,
+        "reason": "삼성전자(005930):BUY(추가 매수 Lv5 (Lv4 대비 -5.5%))",
+        "executions": [
+            {
+                "ticker": "005930",
+                "action": "BUY",
+                "quantity": 7,
+                "price": 62662.6,
+                "fee": 1096.6,
+                "date": "2024-09-23",
+                "status": "FILLED",
+                "reason": "",
+                "level": 5,
+                "alias": "삼성전자"
+            }
+        ]
+    },
+    {
+        "id": "tx_20241010",
+        "date": "2024-10-10",
+        "portfolio_value": 99862389.03137499,
+        "total_trade_amount": 471671.2,
+        "reason": "삼성전자(005930):BUY(추가 매수 Lv6 (Lv5 대비 -6.0%))",
+        "executions": [
+            {
+                "ticker": "005930",
+                "action": "BUY",
+                "quantity": 8,
+                "price": 58958.9,
+                "fee": 1179.18,
+                "date": "2024-10-10",
+                "status": "FILLED",
+                "reason": "",
+                "level": 6,
+                "alias": "삼성전자"
+            }
+        ]
+    },
+    {
+        "id": "tx_20241025",
+        "date": "2024-10-25",
+        "portfolio_value": 99719822.71337499,
+        "total_trade_amount": 447647.2,
+        "reason": "삼성전자(005930):BUY(추가 매수 Lv7 (Lv6 대비 -5.2%))",
+        "executions": [
+            {
+                "ticker": "005930",
+                "action": "BUY",
+                "quantity": 8,
+                "price": 55955.9,
+                "fee": 1119.12,
+                "date": "2024-10-25",
+                "status": "FILLED",
+                "reason": "",
+                "level": 7,
+                "alias": "삼성전자"
+            }
+        ]
+    },
+    {
+        "id": "tx_20241112",
+        "date": "2024-11-12",
+        "portfolio_value": 99558652.02087499,
+        "total_trade_amount": 477477.0,
+        "reason": "삼성전자(005930):BUY(추가 매수 Lv8 (Lv7 대비 -5.3%))",
+        "executions": [
+            {
+                "ticker": "005930",
+                "action": "BUY",
+                "quantity": 9,
+                "price": 53053.0,
+                "fee": 1193.69,
+                "date": "2024-11-12",
+                "status": "FILLED",
+                "reason": "",
+                "level": 8,
+                "alias": "삼성전자"
+            }
+        ]
+    },
+    {
+        "id": "tx_20241114",
+        "date": "2024-11-14",
+        "portfolio_value": 99358504.27337499,
+        "total_trade_amount": 499499.0,
+        "reason": "삼성전자(005930):BUY(추가 매수 Lv9 (Lv8 대비 -5.9%))",
+        "executions": [
+            {
+                "ticker": "005930",
+                "action": "BUY",
+                "quantity": 10,
+                "price": 49949.9,
+                "fee": 1248.75,
+                "date": "2024-11-14",
+                "status": "FILLED",
+                "reason": "",
+                "level": 9,
+                "alias": "삼성전자"
+            }
+        ]
+    },
+    {
+        "id": "tx_20241129",
+        "date": "2024-11-29",
+        "portfolio_value": 99674808.628375,
+        "total_trade_amount": 541458.0,
+        "reason": "삼성전자(005930):SELL(Lv9 트레일링 스톱 매도 (고점 대비 -7.03%))",
+        "executions": [
+            {
+                "ticker": "005930",
+                "action": "SELL",
+                "quantity": 10,
+                "price": 54145.8,
+                "fee": 1353.64,
+                "date": "2024-11-29",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260527_015734_005930_009",
+                "level": 9,
+                "buy_price": 49949.9,
+                "realized_pnl": 40605.36,
+                "alias": "삼성전자"
+            }
+        ]
+    },
+    {
+        "id": "tx_20250203",
+        "date": "2025-02-03",
+        "portfolio_value": 99468400.980875,
+        "total_trade_amount": 459459.0,
+        "reason": "삼성전자(005930):BUY(동적 재매수 Lv9 (매도가 KRW 54,146 대비 -5.8%))",
+        "executions": [
+            {
+                "ticker": "005930",
+                "action": "BUY",
+                "quantity": 9,
+                "price": 51051.0,
+                "fee": 1148.65,
+                "date": "2025-02-03",
+                "status": "FILLED",
+                "reason": "",
+                "level": 9,
+                "alias": "삼성전자"
+            }
+        ]
+    },
+    {
+        "id": "tx_20250228",
+        "date": "2025-02-28",
+        "portfolio_value": 99722185.457125,
+        "total_trade_amount": 490009.5,
+        "reason": "삼성전자(005930):SELL(Lv9 트레일링 스톱 매도 (고점 대비 -7.16%))",
+        "executions": [
+            {
+                "ticker": "005930",
+                "action": "SELL",
+                "quantity": 9,
+                "price": 54445.5,
+                "fee": 1225.02,
+                "date": "2025-02-28",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260527_015734_005930_009",
+                "level": 9,
+                "buy_price": 51051.0,
+                "realized_pnl": 29325.48,
+                "alias": "삼성전자"
+            }
+        ]
+    },
+    {
+        "id": "tx_20250331",
+        "date": "2025-03-31",
+        "portfolio_value": 99931566.057625,
+        "total_trade_amount": 519679.8,
+        "reason": "삼성전자(005930):SELL(Lv8 트레일링 스톱 매도 (고점 대비 -6.47%))",
+        "executions": [
+            {
+                "ticker": "005930",
+                "action": "SELL",
+                "quantity": 9,
+                "price": 57742.2,
+                "fee": 1299.2,
+                "date": "2025-03-31",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260527_015734_005930_008",
+                "level": 8,
+                "buy_price": 53053.0,
+                "realized_pnl": 40903.6,
                 "alias": "삼성전자"
             }
         ]
@@ -68,9 +1931,9 @@
     {
         "id": "tx_20250407",
         "date": "2025-04-07",
-        "portfolio_value": 999971816.502,
+        "portfolio_value": 99676889.060625,
         "total_trade_amount": 479278.8,
-        "reason": "삼성전자(005930):BUY(추가 매수 Lv2 (Lv1 대비 -9.6%))",
+        "reason": "삼성전자(005930):BUY(동적 재매수 Lv8 (매도가 KRW 57,742 대비 -7.9%))",
         "executions": [
             {
                 "ticker": "005930",
@@ -81,7 +1944,7 @@
                 "date": "2025-04-07",
                 "status": "FILLED",
                 "reason": "",
-                "level": 2,
+                "level": 8,
                 "alias": "삼성전자"
             }
         ]
@@ -89,9 +1952,9 @@
     {
         "id": "tx_20250709",
         "date": "2025-07-09",
-        "portfolio_value": 1000157115.2609999,
+        "portfolio_value": 100135787.819625,
         "total_trade_amount": 543056.4,
-        "reason": "삼성전자(005930):SELL(Lv2 트레일링 스톱 매도 (고점 대비 -5.33%))",
+        "reason": "삼성전자(005930):SELL(Lv8 트레일링 스톱 매도 (고점 대비 -5.33%))",
         "executions": [
             {
                 "ticker": "005930",
@@ -102,8 +1965,8 @@
                 "date": "2025-07-09",
                 "status": "FILLED",
                 "reason": "",
-                "lot_id": "lot_20260527_011217_005930_002",
-                "level": 2,
+                "lot_id": "lot_20260527_015735_005930_008",
+                "level": 8,
                 "buy_price": 53253.2,
                 "realized_pnl": 62419.96,
                 "alias": "삼성전자"
@@ -113,9 +1976,9 @@
     {
         "id": "tx_20250818",
         "date": "2025-08-18",
-        "portfolio_value": 1000316882.8109999,
+        "portfolio_value": 100660355.369625,
         "total_trade_amount": 980980.0,
-        "reason": "삼성전자(005930):BUY(상승장 누적 매수 Lv2 (20EMA 눌림, add 1))",
+        "reason": "삼성전자(005930):BUY(상승장 누적 매수 Lv8 (20EMA 눌림, add 1))",
         "executions": [
             {
                 "ticker": "005930",
@@ -126,7 +1989,7 @@
                 "date": "2025-08-18",
                 "status": "FILLED",
                 "reason": "",
-                "level": 2,
+                "level": 8,
                 "alias": "삼성전자"
             }
         ]
@@ -134,9 +1997,9 @@
     {
         "id": "tx_20251106",
         "date": "2025-11-06",
-        "portfolio_value": 1001218608.3309999,
+        "portfolio_value": 102671680.889625,
         "total_trade_amount": 992992.0,
-        "reason": "삼성전자(005930):BUY(상승장 누적 매수 Lv3 (20EMA 눌림, add 2))",
+        "reason": "삼성전자(005930):BUY(상승장 누적 매수 Lv9 (20EMA 눌림, add 2))",
         "executions": [
             {
                 "ticker": "005930",
@@ -147,7 +2010,187 @@
                 "date": "2025-11-06",
                 "status": "FILLED",
                 "reason": "",
+                "level": 9,
+                "alias": "삼성전자"
+            }
+        ]
+    },
+    {
+        "id": "tx_20260324",
+        "date": "2026-03-24",
+        "portfolio_value": 109817858.768375,
+        "total_trade_amount": 949448.5,
+        "reason": "삼성전자(005930):BUY(상승장 누적 매수 Lv10 (20EMA 눌림, add 3))",
+        "executions": [
+            {
+                "ticker": "005930",
+                "action": "BUY",
+                "quantity": 5,
+                "price": 189889.7,
+                "fee": 2373.62,
+                "date": "2026-03-24",
+                "status": "FILLED",
+                "reason": "",
+                "level": 10,
+                "alias": "삼성전자"
+            }
+        ]
+    },
+    {
+        "id": "tx_20260331",
+        "date": "2026-03-31",
+        "portfolio_value": 107878737.08037499,
+        "total_trade_amount": 14030755.2,
+        "reason": "삼성전자(005930):SELL(추세 이탈 통합 전량 청산(Bulk Sell, 84주 +110.8%))",
+        "executions": [
+            {
+                "ticker": "005930",
+                "action": "SELL",
+                "quantity": 5,
+                "price": 167032.8,
+                "fee": 35076.89,
+                "date": "2026-03-31",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260527_015739_005930_010",
+                "level": 10,
+                "buy_price": 189889.7,
+                "realized_pnl": -116372.41,
+                "alias": "삼성전자"
+            },
+            {
+                "ticker": "005930",
+                "action": "SELL",
+                "quantity": 10,
+                "price": 167032.8,
+                "fee": 35076.89,
+                "date": "2026-03-31",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260527_015738_005930_009",
+                "level": 9,
+                "buy_price": 99299.2,
+                "realized_pnl": 673160.18,
+                "alias": "삼성전자"
+            },
+            {
+                "ticker": "005930",
+                "action": "SELL",
+                "quantity": 14,
+                "price": 167032.8,
+                "fee": 35076.89,
+                "date": "2026-03-31",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260527_015737_005930_008",
+                "level": 8,
+                "buy_price": 70070.0,
+                "realized_pnl": 1351633.05,
+                "alias": "삼성전자"
+            },
+            {
+                "ticker": "005930",
+                "action": "SELL",
+                "quantity": 8,
+                "price": 167032.8,
+                "fee": 35076.89,
+                "date": "2026-03-31",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260527_015734_005930_007",
+                "level": 7,
+                "buy_price": 55955.9,
+                "realized_pnl": 885274.54,
+                "alias": "삼성전자"
+            },
+            {
+                "ticker": "005930",
+                "action": "SELL",
+                "quantity": 8,
+                "price": 167032.8,
+                "fee": 35076.89,
+                "date": "2026-03-31",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260527_015733_005930_006",
+                "level": 6,
+                "buy_price": 58958.9,
+                "realized_pnl": 861250.54,
+                "alias": "삼성전자"
+            },
+            {
+                "ticker": "005930",
+                "action": "SELL",
+                "quantity": 7,
+                "price": 167032.8,
+                "fee": 35076.89,
+                "date": "2026-03-31",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260527_015733_005930_005",
+                "level": 5,
+                "buy_price": 62662.6,
+                "realized_pnl": 727668.33,
+                "alias": "삼성전자"
+            },
+            {
+                "ticker": "005930",
+                "action": "SELL",
+                "quantity": 7,
+                "price": 167032.8,
+                "fee": 35076.89,
+                "date": "2026-03-31",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260527_015733_005930_004",
+                "level": 4,
+                "buy_price": 66266.2,
+                "realized_pnl": 702443.13,
+                "alias": "삼성전자"
+            },
+            {
+                "ticker": "005930",
+                "action": "SELL",
+                "quantity": 7,
+                "price": 167032.8,
+                "fee": 35076.89,
+                "date": "2026-03-31",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260527_015733_005930_003",
                 "level": 3,
+                "buy_price": 70070.0,
+                "realized_pnl": 675816.53,
+                "alias": "삼성전자"
+            },
+            {
+                "ticker": "005930",
+                "action": "SELL",
+                "quantity": 6,
+                "price": 167032.8,
+                "fee": 35076.89,
+                "date": "2026-03-31",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260527_015733_005930_002",
+                "level": 2,
+                "buy_price": 75875.8,
+                "realized_pnl": 544436.51,
+                "alias": "삼성전자"
+            },
+            {
+                "ticker": "005930",
+                "action": "SELL",
+                "quantity": 12,
+                "price": 167032.8,
+                "fee": 35076.89,
+                "date": "2026-03-31",
+                "status": "FILLED",
+                "reason": "",
+                "lot_id": "lot_20260527_015733_005930_001",
+                "level": 1,
+                "buy_price": 80980.9,
+                "realized_pnl": 1027611.82,
                 "alias": "삼성전자"
             }
         ]

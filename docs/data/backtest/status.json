@@ -1,98 +1,28 @@
 {
-    "last_updated": "2025-12-30",
-    "last_run_date": "2025-12-30",
+    "last_updated": "2026-03-31",
+    "last_run_date": "2026-03-31",
     "market_type": "domestic",
-    "reason": "모니터링 - 신호 없음",
+    "reason": "삼성전자(005930):SELL(추세 이탈 통합 전량 청산(Bulk Sell, 84주 +110.8%))",
     "portfolio": {
-        "total_value": 1002067308.3309999,
-        "cash_balance": 997151408.3309999,
-        "holdings": [
-            {
-                "ticker": "005930",
-                "alias": "삼성전자",
-                "qty": 41,
-                "price": 119900.0,
-                "value": 4915900.0
-            }
-        ]
+        "total_value": 107878737.08037499,
+        "cash_balance": 107878737.08037499,
+        "holdings": []
     },
-    "positions": {
-        "005930": {
-            "total_qty": 41,
-            "lot_count": 3,
-            "total_invested": 2974571.6,
-            "current_value": 4915900.0,
-            "lots": [
-                {
-                    "lot_id": "lot_20260527_011216_005930_001",
-                    "buy_price": 58858.8,
-                    "quantity": 17,
-                    "buy_date": "2025-04-01",
-                    "level": 1,
-                    "current_price": 119900.0,
-                    "pct_change": 103.71
-                },
-                {
-                    "lot_id": "lot_20260527_011217_005930_002",
-                    "buy_price": 70070.0,
-                    "quantity": 14,
-                    "buy_date": "2025-08-18",
-                    "level": 2,
-                    "current_price": 119900.0,
-                    "pct_change": 71.11
-                },
-                {
-                    "lot_id": "lot_20260527_011218_005930_003",
-                    "buy_price": 99299.2,
-                    "quantity": 10,
-                    "buy_date": "2025-11-06",
-                    "level": 3,
-                    "current_price": 119900.0,
-                    "pct_change": 20.75
-                }
-            ],
-            "current_price": 119900.0,
-            "alias": "삼성전자",
-            "avg_buy_price": 72550.5268,
-            "unrealized_pnl": 1941328.4,
-            "unrealized_pnl_pct": 65.26,
-            "realized_pnl": 137019.96,
-            "total_pnl": 2078348.36
-        }
-    },
+    "positions": {},
     "realized_pnl_by_ticker": {
-        "005930": 137019.96
+        "005930": 7976976.61
     },
-    "regime_state_by_ticker": {
-        "005930": {
-            "uptrend_streak": 0,
-            "regime": "uptrend",
-            "adds": 2,
-            "last_add_swing_high": 112400.0
-        }
-    },
+    "regime_state_by_ticker": {},
     "enabled_tickers": ["005930"],
     "risk_summary": {
-        "next_level_needs": 500000.0,
+        "next_level_needs": 0,
         "max_potential_exposure": 50500000.0,
-        "stale_info": [
-            {
-                "ticker": "005930",
-                "alias": "삼성전자",
-                "last_trade_date": "2025-11-06",
-                "days_stale": 54
-            }
-        ],
-        "risk_score": 96,
-        "deductions": [
-            {
-                "reason": "장기 정체 종목",
-                "points": 4
-            }
-        ],
+        "stale_info": [],
+        "risk_score": 100,
+        "deductions": [],
         "sync_error": false,
         "alerts": [],
-        "max_ticker_concentration": 0.49,
-        "high_level_ratio": 0.0
+        "max_ticker_concentration": 0,
+        "high_level_ratio": 0
     }
 }
