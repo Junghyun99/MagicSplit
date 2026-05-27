@@ -176,7 +176,7 @@ window.ConfigController = (function () {
             }
 
             // 현재 편집 중인 설정 파일에 맞춰 필터링
-            const isDomesticFile = ConfigModel.getPath() === 'config_domestic.json';
+            const isDomesticFile = ConfigModel.getPath().includes('domestic.json');
 
             const results = allTickers.filter(t => {
                 const ticker = t[0];
