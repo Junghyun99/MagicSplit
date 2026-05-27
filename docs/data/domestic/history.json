@@ -325,5 +325,80 @@
                 "alias": "KoAct 글로벌AI메모리반도체액티브"
             }
         ]
+    },
+    {
+        "id": "tx_20260527_150559",
+        "date": "2026-05-27 15:05:59",
+        "portfolio_value": 32190319.0,
+        "total_trade_amount": 3575775.0,
+        "reason": "미래에셋증권(006800):SELL(Lv2 트레일링 스톱 매도 (고점 대비 -5.01%)), KODEX 미국S&P500에너지(합성)(218420):BUY(추가 매수 Lv2 (Lv1 대비 -6.0%)), SOL 반도체전공정(475300):SELL(Lv1 트레일링 스톱 매도 (고점 대비 -7.42%)), 테스(095610):BUY(추가 매수 Lv3 (Lv2 대비 -6.3%)), SOL 미국양자컴퓨팅TOP10(0023A0):BUY(초기 매수 Lv1)",
+        "executions": [
+            {
+                "ticker": "006800",
+                "action": "SELL",
+                "quantity": 8,
+                "price": 64500.0,
+                "fee": 77.39999999999999,
+                "date": "2026-05-27 15:05:27",
+                "status": "FILLED",
+                "reason": "ODNO=0040537500",
+                "lot_id": "lot_20260520_145428_006800_002",
+                "level": 2,
+                "buy_price": 61200.0,
+                "realized_pnl": 26322.6,
+                "alias": "미래에셋증권"
+            },
+            {
+                "ticker": "218420",
+                "action": "BUY",
+                "quantity": 25,
+                "price": 19905.0,
+                "fee": 74.64375,
+                "date": "2026-05-27 15:05:33",
+                "status": "FILLED",
+                "reason": "ODNO=0040545700",
+                "level": 2,
+                "alias": "KODEX 미국S&P500에너지(합성)"
+            },
+            {
+                "ticker": "475300",
+                "action": "SELL",
+                "quantity": 44,
+                "price": 25000.0,
+                "fee": 164.99999999999997,
+                "date": "2026-05-27 15:05:43",
+                "status": "FILLED",
+                "reason": "ODNO=0040553800",
+                "lot_id": "lot_20260519_143402_475300_001",
+                "level": 1,
+                "buy_price": 22475.0,
+                "realized_pnl": 110935.0,
+                "alias": "SOL 반도체전공정"
+            },
+            {
+                "ticker": "095610",
+                "action": "BUY",
+                "quantity": 4,
+                "price": 119500.0,
+                "fee": 71.69999999999999,
+                "date": "2026-05-27 15:05:49",
+                "status": "FILLED",
+                "reason": "ODNO=0040565900",
+                "level": 3,
+                "alias": "테스"
+            },
+            {
+                "ticker": "0023A0",
+                "action": "BUY",
+                "quantity": 27,
+                "price": 36450.0,
+                "fee": 147.62249999999997,
+                "date": "2026-05-27 15:05:55",
+                "status": "FILLED",
+                "reason": "ODNO=0040572700",
+                "level": 1,
+                "alias": "SOL 미국양자컴퓨팅TOP10"
+            }
+        ]
     }
 ]
