@@ -62,9 +62,9 @@ window.ConfigModel = (function () {
     function addStock() {
         if (!currentConfigObj) return;
         const stock = { ticker: '', enabled: true, max_lots: 10 };
-        if (currentConfigPath === 'config_domestic.json') {
+        if (currentConfigPath === 'config_domestic.json' || currentConfigPath === 'config_test_domestic.json') {
             stock.market_type = 'domestic';
-        } else if (currentConfigPath === 'config_overseas.json') {
+        } else if (currentConfigPath === 'config_overseas.json' || currentConfigPath === 'config_test_overseas.json') {
             stock.market_type = 'overseas';
         }
         currentConfigObj.stocks.push(stock);
