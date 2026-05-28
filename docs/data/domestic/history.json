@@ -400,5 +400,50 @@
                 "alias": "SOL 미국양자컴퓨팅TOP10"
             }
         ]
+    },
+    {
+        "id": "tx_20260528_094547",
+        "date": "2026-05-28 09:45:47",
+        "portfolio_value": 32115199.0,
+        "total_trade_amount": 1835705.0,
+        "reason": "미래에셋증권(006800):BUY(추가 매수 Lv2 (Lv1 대비 -5.7%)), 메리츠금융지주(138040):BUY(추가 매수 Lv2 (Lv1 대비 -6.2%)), SOL 반도체전공정(475300):BUY(초기 매수 Lv1)",
+        "executions": [
+            {
+                "ticker": "006800",
+                "action": "BUY",
+                "quantity": 7,
+                "price": 62600.0,
+                "fee": 65.72999999999999,
+                "date": "2026-05-28 09:45:32",
+                "status": "FILLED",
+                "reason": "ODNO=0013638900",
+                "level": 2,
+                "alias": "미래에셋증권"
+            },
+            {
+                "ticker": "138040",
+                "action": "BUY",
+                "quantity": 4,
+                "price": 102300.0,
+                "fee": 61.379999999999995,
+                "date": "2026-05-28 09:45:38",
+                "status": "FILLED",
+                "reason": "ODNO=0013654000",
+                "level": 2,
+                "alias": "메리츠금융지주"
+            },
+            {
+                "ticker": "475300",
+                "action": "BUY",
+                "quantity": 41,
+                "price": 24105.0,
+                "fee": 148.24575,
+                "date": "2026-05-28 09:45:43",
+                "status": "FILLED",
+                "reason": "ODNO=0013669500",
+                "level": 1,
+                "alias": "SOL 반도체전공정"
+            }
+        ]
     }
 ]
