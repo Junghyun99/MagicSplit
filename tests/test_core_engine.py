@@ -1150,6 +1150,52 @@ class TestBulkLiquidation:
         assert regime_state["AAPL"]["regime"] == "uptrend"
 
 
+class TestPartialLiquidation:
+    """추세이탈 분할청산(Partial Liquidation): 50% 매도를 고차수부터 차감하고 trailing_lock 상태를 활성화한다."""
+
+    def _positions(self):
+        return [
+            PositionLot("lotA", "AAPL", 50.0, 5, "2024-01-01", level=1),
+            PositionLot("lotB", "AAPL", 60.0, 5, "2024-01-01", level=2),
+            PositionLot("lotC", "AAPL", 70.0, 5, "2024-01-01", level=3),
+        ]
+
+    def _partial_signal(self, total_qty=7, price=90.0):
+        # lot_id=None + regime_partial_liquidation=True -> 통합 분할 청산
+        return SplitSignal("AAPL", None, OrderAction.SELL, total_qty, price,
+                           "분할 청산", 0.0, 3, regime_partial_liquidation=True)
+
+    def _exe(self, qty, price=90.0, status=ExecutionStatus.FILLED):
+        return TradeExecution("AAPL", OrderAction.SELL, qty, price, 0.0, "2024-01-01", status)
+
+    def test_partial_fill_removes_high_level_first_and_activates_trailing_lock(self, engine):
+        regime_state = {"AAPL": {"regime": "uptrend", "adds": 3, "last_add_swing_high": 200.0}}
+        last_sell = {}
+        
+        # 7주 체결 -> Lv3(5) 전량 + Lv2(2) 부분 차감
+        result = engine._update_positions(
+            self._positions(), [self._partial_signal(7)], [self._exe(7)],
+            "2024-01-02", last_sell_prices=last_sell, regime_state=regime_state,
+        )
+        
+        # lotC(Lv3) 제거, lotB(Lv2) 수량 3개로 차감, lotA(Lv1) 유지
+        ids = sorted(l.lot_id for l in result)
+        assert ids == ["lotA", "lotB"]
+        lotB = next(l for l in result if l.lot_id == "lotB")
+        assert lotB.quantity == 3
+        
+        # 평단 및 last_sell_prices 기록 확인
+        assert last_sell["AAPL"] == 90.0
+        
+        # trailing_lock 상태가 regime_state에 제대로 세팅되었는지 검증!
+        assert "trailing_lock" in regime_state["AAPL"]
+        lock = regime_state["AAPL"]["trailing_lock"]
+        assert lock["active"] is True
+        assert lock["lock_price"] == 90.0
+        # 기본 3.0% 설정 확인
+        assert lock["drop_pct"] == 3.0
+
+
 class TestNormalSingleSell:
     """일반(평균회귀) 단건 매도는 lot_id로 해당 lot만 제거한다."""
 

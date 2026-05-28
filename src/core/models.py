@@ -57,7 +57,7 @@ class StockRule:
     regime_adx_range: float = 20.0      # ADX 미만이면 횡보장 (히스테리시스 하단)
     regime_min_bars: int = 200          # 레짐 판정에 필요한 최소 봉 수
     # 상승 레짐: 차수 매도를 잠그고 추세 눌림에 누적 매수
-    uptrend_pullback_band_pct: float = 1.5   # 상승 20EMA 위 +band% 이내면 눌림 매수
+    uptrend_pullback_band_pct: float = 1.5   # 눌림 매수 상한: 20EMA + band% 이하면 허용 (하단 제한 없음)
     uptrend_max_adds: int = 3                # 상승장 1사이클 최대 추가매수 횟수
     uptrend_add_amount: Optional[float] = None          # 회차 공통 금액 (scalar fallback)
     uptrend_add_amounts: Optional[List[float]] = None   # 회차별 금액 (점감 권장)
@@ -67,6 +67,9 @@ class StockRule:
     trendbreak_chandelier_k: float = 3.0     # 고점 - k*ATR
     trendbreak_chandelier_lookback: int = 22
     trendbreak_use_sma50: bool = True        # 이탈 = close<sma50 OR close<chandelier_stop
+    # 추세 이탈 분할 매도 + 추종 데드라인(Trailing Lock)
+    trendbreak_partial_sell_pct: float = 100.0  # 이탈 시 즉시 매도 비율(%). 100=전량(기존), 50=절반
+    trendbreak_trailing_drop_pct: float = 3.0   # 잔량 추종 데드라인 하락 허용치(%)
 
     def __post_init__(self):
         if self.buy_threshold_pct is None and not self.buy_threshold_pcts:
@@ -108,6 +111,14 @@ class StockRule:
             if self.uptrend_add_reset_pct is not None and self.uptrend_add_reset_pct < 0:
                 raise ValueError(
                     f"StockRule({self.ticker}): uptrend_add_reset_pct는 음수일 수 없습니다."
+                )
+            if not (0 <= self.trendbreak_partial_sell_pct <= 100):
+                raise ValueError(
+                    f"StockRule({self.ticker}): trendbreak_partial_sell_pct는 0~100 범위여야 합니다."
+                )
+            if self.trendbreak_trailing_drop_pct < 0:
+                raise ValueError(
+                    f"StockRule({self.ticker}): trendbreak_trailing_drop_pct는 음수일 수 없습니다."
                 )
 
     @staticmethod
@@ -228,6 +239,9 @@ class SplitSignal:
     regime_add_swing_high: Optional[float] = None
     # 추세이탈 전량청산 매도 표식. 매도 체결이 확정될 때 regime_state를 리셋(flat 재시작)한다.
     regime_liquidation: bool = False
+    # 추세이탈 분할청산(Trailing Lock 1단계) 매도 표식.
+    # 체결 시 잔량은 유지하고 trailing_lock 상태를 활성화한다.
+    regime_partial_liquidation: bool = False
 
 
 @dataclass

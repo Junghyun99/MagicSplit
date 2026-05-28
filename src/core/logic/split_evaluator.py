@@ -704,7 +704,7 @@ class SplitEvaluator:
         portfolio: Optional[Portfolio],
     ) -> List[SplitSignal]:
         """상승 레짐: 차수별 매도를 잠그고 추세 눌림에 누적 매수하며,
-        추세 이탈 시 전 차수를 전량 청산한다."""
+        추세 이탈 시 분할 청산 또는 전량 청산한다."""
         # 0. 가격 레벨업 기반 카운트 리셋 판정
         reset_pct = rule.uptrend_add_reset_pct
         last_add_price = st.get("last_add_price")
@@ -729,7 +729,14 @@ class SplitEvaluator:
                         f"-> adds 횟수({old_adds}회) 및 매수금액 초기화 (게이트 오픈)"
                     )
 
-        # 1. 추세 이탈 우선 판정 -> 전량 청산.
+        # 0-1. 추종 데드라인(Trailing Lock) 활성 상태이면 전용 평가로 분기
+        trailing_lock = st.get("trailing_lock")
+        if trailing_lock is not None:
+            return self._evaluate_trailing_lock(
+                rule, ticker_lots, current_price, reading, st, portfolio
+            )
+
+        # 1. 추세 이탈 판정
         # 기본(use_sma50)은 50MA 하향 이탈을 쓴다. 50MA는 상승 정렬에서 항상 20EMA보다
         # 아래이므로, 20EMA로의 정상 눌림이 이탈로 오인되지 않는 버퍼가 보장된다.
         # use_sma50=False면 변동성 기반 Chandelier 스톱을 쓴다(버퍼는 사용자 책임).
@@ -750,16 +757,36 @@ class SplitEvaluator:
         else:
             broke = current_price < reading.chandelier_stop
         if broke:
-            # regime_state 리셋은 여기서 하지 않는다. 매도 체결이 확정될 때
-            # (엔진 _update_positions)에서 리셋해야 백테스트/라이브가 동일하다.
-            # 청산 매도가 거절되면 다음 사이클에 다시 청산을 시도한다.
-            # 통합 매도(Bulk Sell): 차수별 N건이 아니라 총 보유 수량 1건으로 청산한다.
-            # (라이브 API 호출/수수료 최소화. 손익은 엔진이 고차수부터 차감하며 계산.)
-            total_qty = sum(l.quantity for l in ticker_lots)
-            total_cost = sum(l.buy_price * l.quantity for l in ticker_lots)
-            avg_buy = total_cost / total_qty if total_qty else 0.0
-            pct = (current_price - avg_buy) / avg_buy * 100 if avg_buy else 0.0
-            max_level = max(l.level for l in ticker_lots)
+            return self._handle_trendbreak(
+                rule, ticker_lots, current_price, reading, st
+            )
+
+        # 2. 매도 잠금 -> 추세 눌림 누적 매수만 평가
+        last_lot = max(ticker_lots, key=lambda l: l.level)
+        add_signal = self._evaluate_uptrend_add(
+            rule, ticker_lots, last_lot, current_price, reading, st, portfolio
+        )
+        return [add_signal] if add_signal else []
+
+    def _handle_trendbreak(
+        self,
+        rule: StockRule,
+        ticker_lots: List[PositionLot],
+        current_price: float,
+        reading,
+        st: dict,
+    ) -> List[SplitSignal]:
+        """추세 이탈 감지 시 전량 청산 또는 분할 매도+추종 데드라인 활성화를 결정한다."""
+        total_qty = sum(l.quantity for l in ticker_lots)
+        total_cost = sum(l.buy_price * l.quantity for l in ticker_lots)
+        avg_buy = total_cost / total_qty if total_qty else 0.0
+        pct = (current_price - avg_buy) / avg_buy * 100 if avg_buy else 0.0
+        max_level = max(l.level for l in ticker_lots)
+
+        partial_pct = rule.trendbreak_partial_sell_pct
+
+        # 100%이면 기존 전량 청산 (하위 호환)
+        if partial_pct >= 100.0:
             if self._logger:
                 self._logger.info(
                     f"[{display_ticker(rule.ticker)}] 추세 이탈 -> 통합 전량 청산(Bulk) "
@@ -770,7 +797,7 @@ class SplitEvaluator:
                 )
             return [SplitSignal(
                 ticker=rule.ticker,
-                lot_id=None,  # 개별 lot이 아닌 합산 -> 엔진이 고차수부터 차감
+                lot_id=None,
                 action=OrderAction.SELL,
                 quantity=total_qty,
                 price=current_price,
@@ -780,12 +807,163 @@ class SplitEvaluator:
                 regime_liquidation=True,
             )]
 
-        # 2. 매도 잠금 -> 추세 눌림 누적 매수만 평가
-        last_lot = max(ticker_lots, key=lambda l: l.level)
-        add_signal = self._evaluate_uptrend_add(
-            rule, ticker_lots, last_lot, current_price, reading, st, portfolio
-        )
-        return [add_signal] if add_signal else []
+        # 분할 매도: partial_pct% 만큼 즉시 매도, 나머지는 추종 데드라인
+        sell_qty = math.ceil(total_qty * partial_pct / 100) if partial_pct > 0 else 0
+
+        # ceil 올림으로 sell_qty가 total_qty 이상이 되면 전량 청산으로 처리 (상태 오염 방지)
+        if sell_qty >= total_qty:
+            if self._logger:
+                self._logger.info(
+                    f"[{display_ticker(rule.ticker)}] 추세 이탈 -> 수량 부족으로 전량 청산(Bulk) "
+                    f"{total_qty}주 (평단 {format_money(avg_buy, rule.market_type)}, "
+                    f"현재가 {format_money(current_price, rule.market_type)})"
+                )
+            return [SplitSignal(
+                ticker=rule.ticker,
+                lot_id=None,
+                action=OrderAction.SELL,
+                quantity=total_qty,
+                price=current_price,
+                reason=f"추세 이탈 전량 청산(수량 부족, {total_qty}주 {pct:+.1f}%)",
+                pct_change=pct,
+                level=max_level,
+                regime_liquidation=True,
+            )]
+
+        if sell_qty <= 0:
+            # 0%: 즉시 매도 없이 전량 추종 데드라인만 활성화
+            # 상태 갱신은 여기서 직접 수행 (매도 체결이 없으므로 엔진 경유 불가)
+            st["trailing_lock"] = {
+                "active": True,
+                "lock_price": current_price,
+                "drop_pct": rule.trendbreak_trailing_drop_pct,
+            }
+            if self._logger:
+                stop_price = current_price * (1 - rule.trendbreak_trailing_drop_pct / 100)
+                self._logger.info(
+                    f"[{display_ticker(rule.ticker)}] 추세 이탈 -> 추종 데드라인 활성화 "
+                    f"(즉시 매도 0%, 전량 {total_qty}주 추적, "
+                    f"기준가 {format_money(current_price, rule.market_type)}, "
+                    f"청산선 {format_money(stop_price, rule.market_type)})"
+                )
+            return []
+
+        if self._logger:
+            remain_qty = total_qty - sell_qty
+            stop_price = current_price * (1 - rule.trendbreak_trailing_drop_pct / 100)
+            self._logger.info(
+                f"[{display_ticker(rule.ticker)}] 추세 이탈 -> 분할 청산 "
+                f"{sell_qty}주/{total_qty}주 ({partial_pct:.0f}%) 즉시 매도, "
+                f"잔량 {remain_qty}주 추종 데드라인 "
+                f"(기준가 {format_money(current_price, rule.market_type)}, "
+                f"청산선 {format_money(stop_price, rule.market_type)}, "
+                f"평단 {format_money(avg_buy, rule.market_type)}, "
+                f"50MA {format_money(reading.sma50, rule.market_type)})"
+            )
+        return [SplitSignal(
+            ticker=rule.ticker,
+            lot_id=None,
+            action=OrderAction.SELL,
+            quantity=sell_qty,
+            price=current_price,
+            reason=f"추세 이탈 분할 청산({sell_qty}/{total_qty}주, {pct:+.1f}%)",
+            pct_change=pct,
+            level=max_level,
+            regime_partial_liquidation=True,
+        )]
+
+    def _evaluate_trailing_lock(
+        self,
+        rule: StockRule,
+        ticker_lots: List[PositionLot],
+        current_price: float,
+        reading,
+        st: dict,
+        portfolio: Optional[Portfolio],
+    ) -> List[SplitSignal]:
+        """추종 데드라인(Trailing Lock) 활성 상태에서 잔량을 평가한다.
+
+        - 이탈 기준선 위로 회복 -> 데드라인 해제, 정상 상승 레짐 복귀
+        - lock_price 대비 추가 하락 -> 잔량 전량 청산
+        - 그 외 -> 대기 (매수/매도 없음)
+        """
+        lock = st["trailing_lock"]
+        lock_price = lock["lock_price"]
+        drop_pct = lock["drop_pct"]
+
+        # 지표 결손 안전 필터
+        target_indicator = reading.sma50 if rule.trendbreak_use_sma50 else reading.chandelier_stop
+        if math.isnan(target_indicator):
+            if self._logger:
+                self._logger.warning(
+                    f"[{display_ticker(rule.ticker)}] ⚠️ 추종 데드라인: 지표 결손(NaN) "
+                    "-> 매매 평가 보류"
+                )
+            return []
+
+        # 1. 회복 판정: 이탈 기준선 위로 복귀?
+        if rule.trendbreak_use_sma50:
+            recovered = current_price >= reading.sma50
+        else:
+            recovered = current_price >= reading.chandelier_stop
+
+        if recovered:
+            del st["trailing_lock"]
+            if self._logger:
+                self._logger.info(
+                    f"[{display_ticker(rule.ticker)}] ✅ 추종 데드라인 해제! "
+                    f"가격 {format_money(current_price, rule.market_type)}이 "
+                    f"이탈 기준선 위로 회복 -> 상승 레짐 복귀 "
+                    f"(잔량 {sum(l.quantity for l in ticker_lots)}주 보유 유지)"
+                )
+            return []
+
+        # 2. 추가 하락 판정: lock_price 대비 X% 이상 하락?
+        if lock_price is None or lock_price <= 0:
+            if self._logger:
+                self._logger.error(
+                    f"[{display_ticker(rule.ticker)}] 추종 데드라인: 기준가 오류"
+                    f"(lock_price={lock_price}) -> 매매 평가 보류"
+                )
+            return []
+        drop = (lock_price - current_price) / lock_price * 100
+        if drop >= drop_pct:
+            total_qty = sum(l.quantity for l in ticker_lots)
+            total_cost = sum(l.buy_price * l.quantity for l in ticker_lots)
+            avg_buy = total_cost / total_qty if total_qty else 0.0
+            pct = (current_price - avg_buy) / avg_buy * 100 if avg_buy else 0.0
+            max_level = max(l.level for l in ticker_lots)
+            if self._logger:
+                self._logger.info(
+                    f"[{display_ticker(rule.ticker)}] 🔻 추종 데드라인 발동! "
+                    f"기준가 {format_money(lock_price, rule.market_type)} 대비 "
+                    f"-{drop:.1f}% (허용 -{drop_pct}%) "
+                    f"-> 잔량 {total_qty}주 전량 청산"
+                )
+            # trailing_lock 상태 리셋은 엔진에서 체결 확정 시 수행
+            return [SplitSignal(
+                ticker=rule.ticker,
+                lot_id=None,
+                action=OrderAction.SELL,
+                quantity=total_qty,
+                price=current_price,
+                reason=f"추종 데드라인 발동 잔량 청산({total_qty}주, 기준가 대비 -{drop:.1f}%)",
+                pct_change=pct,
+                level=max_level,
+                regime_liquidation=True,  # 전량 청산 -> 레짐 리셋
+            )]
+
+        # 3. 대기 (매수/매도 없음)
+        if self._logger:
+            stop_price = lock_price * (1 - drop_pct / 100)
+            self._logger.info(
+                f"[{display_ticker(rule.ticker)}] 추종 데드라인 추적 중 "
+                f"(현재가 {format_money(current_price, rule.market_type)}, "
+                f"기준가 {format_money(lock_price, rule.market_type)}, "
+                f"대비 -{drop:.1f}%, "
+                f"청산선 {format_money(stop_price, rule.market_type)})"
+            )
+        return []
 
     def _evaluate_uptrend_add(
         self,
@@ -816,21 +994,25 @@ class SplitEvaluator:
             return None
 
         # 새 고점 게이트: 직전 add(또는 진입) 이후 새 스윙 고점이 나와야 추가
-        last_high = st.get("last_add_swing_high")
-        if last_high is not None and not (reading.swing_high > last_high):
-            if self._logger:
-                self._logger.debug(
-                    f"  [{display_ticker(rule.ticker)}] 불타기 대기 | "
-                    f"고점 게이트 미갱신 (현재 swing_high {format_money(reading.swing_high, rule.market_type)} "
-                    f"<= 직전 고점 {format_money(last_high, rule.market_type)})"
-                )
-            return None
+        # (테스트: 게이트 우회 - 횟수(uptrend_max_adds)로만 제어)
+        # last_high = st.get("last_add_swing_high")
+        # if last_high is not None and not (reading.swing_high > last_high):
+        #     if self._logger:
+        #         self._logger.debug(
+        #             f"  [{display_ticker(rule.ticker)}] 불타기 대기 | "
+        #             f"고점 게이트 미갱신 (현재 swing_high {format_money(reading.swing_high, rule.market_type)} "
+        #             f"<= 직전 고점 {format_money(last_high, rule.market_type)})"
+        #         )
+        #     return None
 
-        # 눌림(20EMA 근처) + 반등 확인.
+        # 눌림 + 반등 확인.
+        # 상한: 20EMA + band% 초과 시 추격 매수 차단. 하단 제한 없음(EMA30 수준 깊은 눌림도 허용).
         # 윈도우는 "어제까지"이므로 reading.close = 직전 완성봉(어제) 종가.
         # 반등 = 현재가가 어제 종가 위 또는 20EMA 위.
         ema20 = reading.ema20
-        in_band = abs(current_price - ema20) <= ema20 * rule.uptrend_pullback_band_pct / 100
+        band_pct = rule.uptrend_pullback_band_pct
+        upper = ema20 * (1 + band_pct / 100)
+        in_band = current_price <= upper
         bounced = current_price > reading.close or current_price > ema20
         if not (in_band and bounced):
             if self._logger:
@@ -838,8 +1020,8 @@ class SplitEvaluator:
                     f"  [{display_ticker(rule.ticker)}] 불타기 대기 | "
                     f"눌림목 조건 미충족 (현재 {format_money(current_price, rule.market_type)} vs "
                     f"20EMA {format_money(ema20, rule.market_type)}, "
-                    f"이격 {abs(current_price - ema20)/ema20*100:.2f}% (임계 {rule.uptrend_pullback_band_pct}%), "
-                    f"bounced={bounced})"
+                    f"상한 {format_money(upper, rule.market_type)} (+{band_pct}%), "
+                    f"초과={current_price > upper}, bounced={bounced})"
                 )
             return None
 

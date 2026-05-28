@@ -116,6 +116,7 @@ class StrategyConfig:
         "regime_adx_trend", "regime_adx_range",
         "uptrend_pullback_band_pct", "uptrend_add_amount",
         "trendbreak_chandelier_k", "uptrend_add_reset_pct",
+        "trendbreak_partial_sell_pct", "trendbreak_trailing_drop_pct",
     )
     _REGIME_KEYS_LIST = ("uptrend_add_amounts",)
 
