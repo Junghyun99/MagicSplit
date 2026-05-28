@@ -919,7 +919,7 @@ class SplitEvaluator:
             return []
 
         # 2. 추가 하락 판정: lock_price 대비 X% 이상 하락?
-        if lock_price <= 0:
+        if lock_price is None or lock_price <= 0:
             if self._logger:
                 self._logger.error(
                     f"[{display_ticker(rule.ticker)}] 추종 데드라인: 기준가 오류"
