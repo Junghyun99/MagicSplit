@@ -10,9 +10,14 @@ window.DashboardController = (function () {
         const urlParams = new URLSearchParams(window.location.search);
         const modeParam = urlParams.get('mode') || '';
         DashboardModel.setMode(modeParam);
-        
+
         DashboardView.applyModeUI(DashboardModel.getMode());
-        
+
+        // Enforce initial view visibility before first data load
+        const initialViewBtn = document.querySelector('.view-link.active');
+        const initialView = initialViewBtn ? initialViewBtn.dataset.view : 'risk';
+        DashboardView.showView(initialView);
+
         await doRefresh();
         
         initRefreshControls();
@@ -52,6 +57,13 @@ window.DashboardController = (function () {
             
             const buckets = DashboardModel.buildLevelBuckets();
             ChartsView.renderLevelHeatmap(buckets, mode, onHeatmapSelect);
+            // Heatmap belongs only to the positions view; hide it in all other views
+            const activeViewBtn = document.querySelector('.view-link.active');
+            const currentView = activeViewBtn ? activeViewBtn.dataset.view : 'risk';
+            if (currentView !== 'positions') {
+                const heatmapSection = document.getElementById('level-heatmap-section');
+                if (heatmapSection) heatmapSection.style.display = 'none';
+            }
             
             const decData = await DataRepository.loadDecisions(mode);
             DecisionModel.setDecisions(decData);

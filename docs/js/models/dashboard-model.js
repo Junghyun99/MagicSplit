@@ -165,7 +165,10 @@ window.DashboardModel = (function () {
         }
 
         const firstMonth = monthKey(execs[0].date);
-        const lastMonth = monthKey(execs[execs.length - 1].date);
+        const historyLastMonth = monthKey(execs[execs.length - 1].date);
+        // Always extend to today's month so heatmap stays current for open positions
+        const todayMonth = new Date().toISOString().slice(0, 7);
+        const lastMonth = historyLastMonth < todayMonth ? todayMonth : historyLastMonth;
         const months = enumerateMonths(firstMonth, lastMonth);
 
         const grid = {};
@@ -186,7 +189,21 @@ window.DashboardModel = (function () {
             }
         }
 
-        const tickers = Array.from(tickersSeen).sort();
+        // Supplement aliases from current status positions
+        if (statusData) {
+            for (const [t, info] of Object.entries(statusData.positions || {})) {
+                if (info.alias && !aliasMap[t]) aliasMap[t] = info.alias;
+            }
+        }
+
+        // Only show tickers currently held; sold-out tickers are excluded
+        const currentPositionSet = statusData ? new Set(Object.keys(statusData.positions || {})) : null;
+        let tickers = Array.from(tickersSeen);
+        if (currentPositionSet && currentPositionSet.size > 0) {
+            tickers = tickers.filter(t => currentPositionSet.has(t));
+        }
+        tickers.sort();
+
         return { months, tickers, grid, trades, aliasMap };
     }
 

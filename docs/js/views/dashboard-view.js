@@ -179,9 +179,10 @@ window.DashboardView = (function () {
 
             let lotsHtml = '';
             for (const lot of lots) {
-                const isPositive = lot.pct_change >= 0;
+                const pctVal = lot.pct_change != null ? Number(lot.pct_change) : 0;
+                const isPositive = pctVal >= 0;
                 const pctClass = isPositive ? 'pct-positive' : 'pct-negative';
-                const pctStr = (isPositive ? '+' : '') + lot.pct_change.toFixed(1) + '%';
+                const pctStr = (isPositive ? '+' : '') + pctVal.toFixed(1) + '%';
                 const indicator = isPositive ? '▲' : '▼';
                 const lvLabel = lot.level != null ? `<span class="lot-level">Lv${lot.level}</span>` : '<span class="lot-level"></span>';
                 lotsHtml += `
