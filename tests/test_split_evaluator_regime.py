@@ -651,3 +651,22 @@ class TestDowntrendBuyBlock:
         assert state["AAPL"]["downtrend_exit_streak"] == 0
         assert state["AAPL"]["downtrend"] == "active"
 
+    def test_downtrend_streak_accumulates_during_uptrend_mode(self, evaluator):
+        """UPTREND 모드 중에도 downtrend_streak이 누적돼 레짐 탈출 후 즉시 래치 가능."""
+        rule = _regime_rule(buy_threshold_pct=-5.0, sell_threshold_pct=50.0)
+        window = _downtrend_window()
+        r = _reading(window, rule)
+        if r.regime != Regime.DOWNTREND:
+            pytest.skip("window did not produce DOWNTREND regime")
+
+        lot = _lot(level=1, buy_price=200.0)
+        # st["regime"]="uptrend"으로 UPTREND 모드 시뮬레이션 (lots 있음)
+        state = {"AAPL": {"regime": "uptrend", "adds": 0,
+                          "last_add_price": 200.0,
+                          "last_add_swing_high": r.swing_high}}
+        evaluator.evaluate_stock(
+            rule, [lot], _pf(price=100.0), ohlc_window=window, regime_state=state
+        )
+        # UPTREND 분기로 조기 반환됐지만 downtrend_streak은 누적돼야 함
+        assert state["AAPL"].get("downtrend_streak", 0) >= 1
+

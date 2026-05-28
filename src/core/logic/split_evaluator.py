@@ -14,8 +14,9 @@ from src.core.models import (
 from src.utils.ticker_reader import display_ticker
 from src.utils.currency import format_money
 
-# 레짐 진입/탈출 확정에 필요한 연속 판정 횟수 (휩쏘 완화)
+# 상승 레짐 진입 확정에 필요한 연속 UPTREND 판정 횟수 (독립 조정 가능)
 REGIME_CONFIRM_BARS = 2
+# 하락 추세 래치 진입/탈출 확정에 필요한 연속 판정 횟수 (독립 조정 가능)
 DOWNTREND_CONFIRM_BARS = 2
 
 
@@ -109,6 +110,7 @@ class SplitEvaluator:
         # 레짐 분류: regime_enabled이면 ticker_lots 유무와 무관하게 reading/regime_st 확보.
         reading = None
         regime_st: dict = {}
+        downtrend_blocked = False
         if rule.regime_enabled and ohlc_window is not None:
             reading = classify(
                 ohlc_window,
@@ -120,17 +122,13 @@ class SplitEvaluator:
                 min_bars=rule.regime_min_bars,
             )
             regime_st = regime_state.setdefault(rule.ticker, {}) if regime_state is not None else {}
+            # 하락 래치 갱신: UPTREND 모드 중에도 항상 실행해 레짐 탈출 후 즉시 차단 가능하게 함
+            downtrend_blocked = self._resolve_downtrend_block(reading, regime_st, rule.ticker)
             # 상승 레짐: 보유 lot이 있을 때만 누적 매수/이탈 청산 경로
             if ticker_lots and self._resolve_regime(reading, regime_st, rule.ticker, current_price) == Regime.UPTREND:
                 return self._evaluate_uptrend(
                     rule, ticker_lots, current_price, reading, regime_st, portfolio
                 )
-
-        # 하락 레짐 매수 차단 (regime_enabled=True + reading 있는 경우에만 평가)
-        downtrend_blocked = (
-            reading is not None
-            and self._resolve_downtrend_block(reading, regime_st, rule.ticker)
-        )
 
         # 보유 lot이 없으면 -> 1차수 초기 매수
         if not ticker_lots:
