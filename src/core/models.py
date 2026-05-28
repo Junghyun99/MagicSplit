@@ -57,7 +57,7 @@ class StockRule:
     regime_adx_range: float = 20.0      # ADX 미만이면 횡보장 (히스테리시스 하단)
     regime_min_bars: int = 200          # 레짐 판정에 필요한 최소 봉 수
     # 상승 레짐: 차수 매도를 잠그고 추세 눌림에 누적 매수
-    uptrend_pullback_band_pct: float = 1.5   # 상승 20EMA 위 +band% 이내면 눌림 매수
+    uptrend_pullback_band_pct: float = 1.5   # 눌림 매수 상한: 20EMA + band% 이하면 허용 (하단 제한 없음)
     uptrend_max_adds: int = 3                # 상승장 1사이클 최대 추가매수 횟수
     uptrend_add_amount: Optional[float] = None          # 회차 공통 금액 (scalar fallback)
     uptrend_add_amounts: Optional[List[float]] = None   # 회차별 금액 (점감 권장)

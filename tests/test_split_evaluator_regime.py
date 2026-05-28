@@ -21,6 +21,18 @@ def _uptrend_window(n=250, start=100.0, step=1.0, spread=0.5):
     )
 
 
+def _pullback_window(n=250, start=100.0, step=1.0, spread=0.5, dip_bars=5, dip_step=2.0):
+    """상승 후 마지막 dip_bars봉이 하락하는 창 (깊은 눌림 테스트용)."""
+    closes = np.array([start + i * step for i in range(n)], dtype=float)
+    peak = closes[n - dip_bars - 1]
+    for i in range(dip_bars):
+        closes[n - dip_bars + i] = peak - (i + 1) * dip_step
+    idx = pd.date_range("2024-01-01", periods=n, freq="D")
+    return pd.DataFrame(
+        {"High": closes + spread, "Low": closes - spread, "Close": closes}, index=idx
+    )
+
+
 def _regime_rule(**over):
     base = dict(
         ticker="AAPL", buy_threshold_pct=-5.0, sell_threshold_pct=10.0,
@@ -121,6 +133,37 @@ class TestUptrendPullbackAdd:
             rule, [lot], _pf(price=price), ohlc_window=window, regime_state=state,
         )
         assert signals == []
+
+    def test_deep_pullback_below_ema20_emits_buy(self, evaluator):
+        rule = _regime_rule()
+        # 마지막 5봉이 하락한 창: reading.close는 dip 저점, EMA20은 상승 추세 반영
+        window = _pullback_window()
+        r = _reading(window, rule)
+        # 어제 종가(dip 저점)보다 살짝 위 = 반등 + EMA20보다 낮음 = 깊은 눌림
+        price = r.close * 1.005
+        lot = _lot(level=1, buy_price=50.0)
+        state = {"AAPL": {"regime": "uptrend", "adds": 0,
+                          "last_add_swing_high": r.swing_high - 5}}
+        signals = evaluator.evaluate_stock(
+            rule, [lot], _pf(price=price), ohlc_window=window, regime_state=state,
+        )
+        buys = [s for s in signals if s.action == OrderAction.BUY and not s.is_blocked]
+        assert len(buys) == 1, "EMA20 아래 깊은 눌림 반등에서 매수 신호가 나와야 한다"
+
+    def test_above_band_blocks_add(self, evaluator):
+        rule = _regime_rule()
+        window = _uptrend_window()
+        r = _reading(window, rule)
+        # EMA20 +2% (상한 1.5% 초과) -> 추격 매수 차단
+        price = r.ema20 * 1.02
+        lot = _lot(level=1, buy_price=50.0)
+        state = {"AAPL": {"regime": "uptrend", "adds": 0,
+                          "last_add_swing_high": r.swing_high - 5}}
+        signals = evaluator.evaluate_stock(
+            rule, [lot], _pf(price=price), ohlc_window=window, regime_state=state,
+        )
+        buys = [s for s in signals if s.action == OrderAction.BUY and not s.is_blocked]
+        assert buys == [], "EMA20 +2% 추격 구간에서는 매수 신호가 없어야 한다"
 
     def test_add_blocked_by_exposure(self, evaluator):
         rule = _regime_rule(max_exposure_pct=0.001)  # 사실상 어떤 매수도 비중 초과

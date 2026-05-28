@@ -1005,11 +1005,14 @@ class SplitEvaluator:
         #         )
         #     return None
 
-        # 눌림(20EMA 근처) + 반등 확인.
+        # 눌림 + 반등 확인.
+        # 상한: 20EMA + band% 초과 시 추격 매수 차단. 하단 제한 없음(EMA30 수준 깊은 눌림도 허용).
         # 윈도우는 "어제까지"이므로 reading.close = 직전 완성봉(어제) 종가.
         # 반등 = 현재가가 어제 종가 위 또는 20EMA 위.
         ema20 = reading.ema20
-        in_band = abs(current_price - ema20) <= ema20 * rule.uptrend_pullback_band_pct / 100
+        band_pct = rule.uptrend_pullback_band_pct
+        upper = ema20 * (1 + band_pct / 100)
+        in_band = current_price <= upper
         bounced = current_price > reading.close or current_price > ema20
         if not (in_band and bounced):
             if self._logger:
@@ -1017,8 +1020,8 @@ class SplitEvaluator:
                     f"  [{display_ticker(rule.ticker)}] 불타기 대기 | "
                     f"눌림목 조건 미충족 (현재 {format_money(current_price, rule.market_type)} vs "
                     f"20EMA {format_money(ema20, rule.market_type)}, "
-                    f"이격 {abs(current_price - ema20)/ema20*100:.2f}% (임계 {rule.uptrend_pullback_band_pct}%), "
-                    f"bounced={bounced})"
+                    f"상한 {format_money(upper, rule.market_type)} (+{band_pct}%), "
+                    f"초과={current_price > upper}, bounced={bounced})"
                 )
             return None
 
