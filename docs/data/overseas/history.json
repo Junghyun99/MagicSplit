@@ -244,5 +244,29 @@
                 "alias": "코닝"
             }
         ]
+    },
+    {
+        "id": "tx_20260529_025415",
+        "date": "2026-05-29 02:54:15",
+        "portfolio_value": 7627.955999999999,
+        "total_trade_amount": 369.68,
+        "reason": "코닝(GLW):SELL(Lv2 트레일링 스톱 매도 (고점 대비 -6.84%)), IBM:BUY(현금 부족: 보유 현금 USD 584.13 < 매수 예정 금액 USD 786.48 (3주)), 포엣 테크놀로지스(POET):BUY(현금 부족: 보유 현금 USD 584.13 < 매수 예정 금액 USD 999.40 (76주)), 루멘텀 홀딩스(LITE):BUY(현금 부족: 보유 현금 USD 584.13 < 현재가 USD 871.50 (1주도 매수 불가)), 리게티 컴퓨팅(RGTI):BUY(현금 부족: 보유 현금 USD 584.13 < 매수 예정 금액 USD 998.83 (38주))",
+        "executions": [
+            {
+                "ticker": "GLW",
+                "action": "SELL",
+                "quantity": 2,
+                "price": 184.84,
+                "fee": 0.0,
+                "date": "2026-05-29 02:54:09",
+                "status": "FILLED",
+                "reason": "ODNO=0031381434",
+                "lot_id": "lot_20260519_022227_GLW_002",
+                "level": 2,
+                "buy_price": 177.85,
+                "realized_pnl": 13.98,
+                "alias": "코닝"
+            }
+        ]
     }
 ]
