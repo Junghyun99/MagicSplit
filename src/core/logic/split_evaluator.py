@@ -810,6 +810,26 @@ class SplitEvaluator:
         # 분할 매도: partial_pct% 만큼 즉시 매도, 나머지는 추종 데드라인
         sell_qty = math.ceil(total_qty * partial_pct / 100) if partial_pct > 0 else 0
 
+        # ceil 올림으로 sell_qty가 total_qty 이상이 되면 전량 청산으로 처리 (상태 오염 방지)
+        if sell_qty >= total_qty:
+            if self._logger:
+                self._logger.info(
+                    f"[{display_ticker(rule.ticker)}] 추세 이탈 -> 수량 부족으로 전량 청산(Bulk) "
+                    f"{total_qty}주 (평단 {format_money(avg_buy, rule.market_type)}, "
+                    f"현재가 {format_money(current_price, rule.market_type)})"
+                )
+            return [SplitSignal(
+                ticker=rule.ticker,
+                lot_id=None,
+                action=OrderAction.SELL,
+                quantity=total_qty,
+                price=current_price,
+                reason=f"추세 이탈 전량 청산(수량 부족, {total_qty}주 {pct:+.1f}%)",
+                pct_change=pct,
+                level=max_level,
+                regime_liquidation=True,
+            )]
+
         if sell_qty <= 0:
             # 0%: 즉시 매도 없이 전량 추종 데드라인만 활성화
             # 상태 갱신은 여기서 직접 수행 (매도 체결이 없으므로 엔진 경유 불가)
@@ -899,6 +919,13 @@ class SplitEvaluator:
             return []
 
         # 2. 추가 하락 판정: lock_price 대비 X% 이상 하락?
+        if lock_price <= 0:
+            if self._logger:
+                self._logger.error(
+                    f"[{display_ticker(rule.ticker)}] 추종 데드라인: 기준가 오류"
+                    f"(lock_price={lock_price}) -> 매매 평가 보류"
+                )
+            return []
         drop = (lock_price - current_price) / lock_price * 100
         if drop >= drop_pct:
             total_qty = sum(l.quantity for l in ticker_lots)

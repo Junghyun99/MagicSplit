@@ -916,26 +916,30 @@ class MagicSplitEngine:
             )
 
         # 체결 확정 시 regime_state에 trailing_lock 상태를 활성화한다.
+        # 잔량이 없으면 trailing_lock 대신 레짐 상태를 완전히 초기화한다.
         if regime_state is not None:
-            st = regime_state.setdefault(exe.ticker, {})
-            
-            # rule 정보 조회
-            rule = next((r for r in self.stock_rules if r.ticker == exe.ticker), None)
-            if rule is None:
-                rule = next((r for r in self.all_stock_rules if r.ticker == exe.ticker), None)
-            
-            drop_pct = rule.trendbreak_trailing_drop_pct if rule is not None else 3.0
-            
-            st["trailing_lock"] = {
-                "active": True,
-                "lock_price": exe.price,
-                "drop_pct": drop_pct,
-            }
-            self.logger.info(
-                f"[{disp}] 추종 데드라인(Trailing Lock) 상태 활성화 "
-                f"(기준가 {format_money(exe.price, self.market_type)}, "
-                f"하락 허용치 {drop_pct}%)"
-            )
+            if not remaining:
+                regime_state.pop(exe.ticker, None)
+                self.logger.info(f"[{disp}] 분할 청산 후 잔량 없음 -> 레짐 상태 초기화")
+            else:
+                st = regime_state.setdefault(exe.ticker, {})
+
+                rule = next((r for r in self.stock_rules if r.ticker == exe.ticker), None)
+                if rule is None:
+                    rule = next((r for r in self.all_stock_rules if r.ticker == exe.ticker), None)
+
+                drop_pct = rule.trendbreak_trailing_drop_pct if rule is not None else 3.0
+
+                st["trailing_lock"] = {
+                    "active": True,
+                    "lock_price": exe.price,
+                    "drop_pct": drop_pct,
+                }
+                self.logger.info(
+                    f"[{disp}] 추종 데드라인(Trailing Lock) 상태 활성화 "
+                    f"(기준가 {format_money(exe.price, self.market_type)}, "
+                    f"하락 허용치 {drop_pct}%)"
+                )
 
         return updated
 
