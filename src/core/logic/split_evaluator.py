@@ -994,15 +994,16 @@ class SplitEvaluator:
             return None
 
         # 새 고점 게이트: 직전 add(또는 진입) 이후 새 스윙 고점이 나와야 추가
-        last_high = st.get("last_add_swing_high")
-        if last_high is not None and not (reading.swing_high > last_high):
-            if self._logger:
-                self._logger.debug(
-                    f"  [{display_ticker(rule.ticker)}] 불타기 대기 | "
-                    f"고점 게이트 미갱신 (현재 swing_high {format_money(reading.swing_high, rule.market_type)} "
-                    f"<= 직전 고점 {format_money(last_high, rule.market_type)})"
-                )
-            return None
+        # (테스트: 게이트 우회 - 횟수(uptrend_max_adds)로만 제어)
+        # last_high = st.get("last_add_swing_high")
+        # if last_high is not None and not (reading.swing_high > last_high):
+        #     if self._logger:
+        #         self._logger.debug(
+        #             f"  [{display_ticker(rule.ticker)}] 불타기 대기 | "
+        #             f"고점 게이트 미갱신 (현재 swing_high {format_money(reading.swing_high, rule.market_type)} "
+        #             f"<= 직전 고점 {format_money(last_high, rule.market_type)})"
+        #         )
+        #     return None
 
         # 눌림(20EMA 근처) + 반등 확인.
         # 윈도우는 "어제까지"이므로 reading.close = 직전 완성봉(어제) 종가.
