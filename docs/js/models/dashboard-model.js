@@ -167,7 +167,8 @@ window.DashboardModel = (function () {
         const firstMonth = monthKey(execs[0].date);
         const historyLastMonth = monthKey(execs[execs.length - 1].date);
         // Always extend to today's month so heatmap stays current for open positions
-        const todayMonth = new Date().toISOString().slice(0, 7);
+        const _today = new Date();
+        const todayMonth = _today.getFullYear() + '-' + String(_today.getMonth() + 1).padStart(2, '0');
         const lastMonth = historyLastMonth < todayMonth ? todayMonth : historyLastMonth;
         const months = enumerateMonths(firstMonth, lastMonth);
 
@@ -199,7 +200,7 @@ window.DashboardModel = (function () {
         // Only show tickers currently held; sold-out tickers are excluded
         const currentPositionSet = statusData ? new Set(Object.keys(statusData.positions || {})) : null;
         let tickers = Array.from(tickersSeen);
-        if (currentPositionSet && currentPositionSet.size > 0) {
+        if (currentPositionSet) {
             tickers = tickers.filter(t => currentPositionSet.has(t));
         }
         tickers.sort();

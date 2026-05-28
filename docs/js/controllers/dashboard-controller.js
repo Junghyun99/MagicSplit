@@ -57,13 +57,10 @@ window.DashboardController = (function () {
             
             const buckets = DashboardModel.buildLevelBuckets();
             ChartsView.renderLevelHeatmap(buckets, mode, onHeatmapSelect);
-            // Heatmap belongs only to the positions view; hide it in all other views
+            // Re-apply view visibility so heatmap doesn't bleed into non-positions views
             const activeViewBtn = document.querySelector('.view-link.active');
             const currentView = activeViewBtn ? activeViewBtn.dataset.view : 'risk';
-            if (currentView !== 'positions') {
-                const heatmapSection = document.getElementById('level-heatmap-section');
-                if (heatmapSection) heatmapSection.style.display = 'none';
-            }
+            DashboardView.showView(currentView);
             
             const decData = await DataRepository.loadDecisions(mode);
             DecisionModel.setDecisions(decData);
