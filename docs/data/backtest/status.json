@@ -1,28 +1,81 @@
 {
-    "last_updated": "2026-03-31",
-    "last_run_date": "2026-03-31",
+    "last_updated": "2026-04-30",
+    "last_run_date": "2026-04-30",
     "market_type": "domestic",
-    "reason": "삼성전자(005930):SELL(추세 이탈 통합 전량 청산(Bulk Sell, 84주 +110.8%))",
+    "reason": "모니터링 - 신호 없음",
     "portfolio": {
-        "total_value": 17950606.608875006,
-        "cash_balance": 17950606.608875006,
-        "holdings": []
+        "total_value": 1003680125.441125,
+        "cash_balance": 1002136625.441125,
+        "holdings": [
+            {
+                "ticker": "005930",
+                "alias": "삼성전자",
+                "qty": 7,
+                "price": 220500.0,
+                "value": 1543500.0
+            }
+        ]
     },
-    "positions": {},
+    "positions": {
+        "005930": {
+            "total_qty": 7,
+            "lot_count": 2,
+            "total_invested": 1310008.7,
+            "current_value": 1543500.0,
+            "lots": [
+                {
+                    "lot_id": "lot_20260528_142505_005930_001",
+                    "buy_price": 189889.7,
+                    "quantity": 5,
+                    "buy_date": "2026-03-24",
+                    "level": 1,
+                    "current_price": 220500.0,
+                    "pct_change": 16.12
+                },
+                {
+                    "lot_id": "lot_20260528_142505_005930_002",
+                    "buy_price": 180280.1,
+                    "quantity": 2,
+                    "buy_date": "2026-03-26",
+                    "level": 2,
+                    "current_price": 220500.0,
+                    "pct_change": 22.31
+                }
+            ],
+            "current_price": 220500.0,
+            "alias": "삼성전자",
+            "avg_buy_price": 187144.1,
+            "unrealized_pnl": 233491.3,
+            "unrealized_pnl_pct": 17.82,
+            "realized_pnl": 3547212.52,
+            "total_pnl": 3780703.82
+        }
+    },
     "realized_pnl_by_ticker": {
-        "005930": 8041464.01
+        "005930": 3547212.52
     },
-    "regime_state_by_ticker": {},
+    "regime_state_by_ticker": {
+        "005930": {
+            "uptrend_streak": 0
+        }
+    },
     "enabled_tickers": ["005930"],
     "risk_summary": {
-        "next_level_needs": 0,
+        "next_level_needs": 500000.0,
         "max_potential_exposure": 50500000.0,
-        "stale_info": [],
+        "stale_info": [
+            {
+                "ticker": "005930",
+                "alias": "삼성전자",
+                "last_trade_date": "2026-04-02",
+                "days_stale": 28
+            }
+        ],
         "risk_score": 100,
         "deductions": [],
         "sync_error": false,
         "alerts": [],
-        "max_ticker_concentration": 0,
-        "high_level_ratio": 0
+        "max_ticker_concentration": 0.15,
+        "high_level_ratio": 0.0
     }
 }
