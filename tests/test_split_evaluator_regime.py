@@ -3,8 +3,8 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from src.core.logic.split_evaluator import SplitEvaluator
-from src.core.logic.regime import classify
+from src.core.logic.split_evaluator import SplitEvaluator, DOWNTREND_CONFIRM_BARS
+from src.core.logic.regime import Regime, classify
 from src.core.models import StockRule, PositionLot, Portfolio, OrderAction
 
 
@@ -515,4 +515,239 @@ class TestUptrendTrailingLock:
         
         # 신호가 아예 없어야 함
         assert len(signals) == 0
+
+
+def _downtrend_window(n=250, start=250.0, step=-1.0, spread=0.5):
+    """지속 하락 창 - EMA20 < SMA50 < SMA200 역배열 + 강한 ADX 유도."""
+    closes = np.array([max(start + i * step, 1.0) for i in range(n)], dtype=float)
+    idx = pd.date_range("2024-01-01", periods=n, freq="D")
+    return pd.DataFrame(
+        {"High": closes + spread, "Low": closes - spread, "Close": closes}, index=idx
+    )
+
+
+class TestDowntrendBuyBlock:
+    """DOWNTREND 매수 차단 래치 동작 검증."""
+
+    def test_regime_disabled_no_block(self, evaluator):
+        """regime_enabled=False -> DOWNTREND 상태여도 매수 차단 없음."""
+        rule = _regime_rule(regime_enabled=False, buy_threshold_pct=-5.0, sell_threshold_pct=50.0)
+        lot = _lot(level=1, buy_price=200.0)
+        state = {"AAPL": {"downtrend": "active"}}
+        window = _downtrend_window()
+        signals = evaluator.evaluate_stock(
+            rule, [lot], _pf(price=100.0, cash=500000), ohlc_window=window, regime_state=state
+        )
+        buys = [s for s in signals if s.action == OrderAction.BUY and not s.is_blocked]
+        assert len(buys) == 1
+
+    def test_one_downtrend_bar_no_latch(self, evaluator):
+        """DOWNTREND 1봉 - streak=1, 래치 미확정 (차단 없음)."""
+        rule = _regime_rule(buy_threshold_pct=-5.0, sell_threshold_pct=50.0)
+        window = _downtrend_window()
+        r = _reading(window, rule)
+        if r.regime != Regime.DOWNTREND:
+            pytest.skip("window did not produce DOWNTREND regime")
+
+        lot = _lot(level=1, buy_price=200.0)
+        state = {"AAPL": {}}
+        evaluator.evaluate_stock(
+            rule, [lot], _pf(price=100.0, cash=500000), ohlc_window=window, regime_state=state
+        )
+        assert state["AAPL"].get("downtrend_streak") == 1
+        assert state["AAPL"].get("downtrend") != "active"
+
+    def test_two_downtrend_bars_latch_active(self, evaluator):
+        """DOWNTREND 2봉 연속 -> 래치 확정, 추가 매수 차단."""
+        rule = _regime_rule(buy_threshold_pct=-5.0, sell_threshold_pct=50.0)
+        window = _downtrend_window()
+        r = _reading(window, rule)
+        if r.regime != Regime.DOWNTREND:
+            pytest.skip("window did not produce DOWNTREND regime")
+
+        lot = _lot(level=1, buy_price=200.0)
+        state = {"AAPL": {"downtrend_streak": 1}}
+        signals = evaluator.evaluate_stock(
+            rule, [lot], _pf(price=100.0, cash=500000), ohlc_window=window, regime_state=state
+        )
+        assert state["AAPL"].get("downtrend") == "active"
+        buys = [s for s in signals if s.action == OrderAction.BUY]
+        assert len(buys) >= 1
+        assert all(b.is_blocked for b in buys)
+
+    def test_downtrend_blocks_initial_buy_no_lots(self, evaluator):
+        """DOWNTREND active, 보유 lot 없음 -> 신규 진입 차단."""
+        rule = _regime_rule(buy_threshold_pct=-5.0, sell_threshold_pct=50.0)
+        window = _downtrend_window()
+        r = _reading(window, rule)
+        if r.regime != Regime.DOWNTREND:
+            pytest.skip("window did not produce DOWNTREND regime")
+
+        state = {"AAPL": {"downtrend": "active"}}
+        signals = evaluator.evaluate_stock(
+            rule, [], _pf(price=100.0, cash=500000), ohlc_window=window, regime_state=state
+        )
+        buys = [s for s in signals if s.action == OrderAction.BUY]
+        assert len(buys) == 1
+        assert buys[0].is_blocked
+
+    def test_downtrend_does_not_block_sell(self, evaluator):
+        """DOWNTREND active 중 이익실현 조건 충족 -> 매도 정상 작동."""
+        rule = _regime_rule(sell_threshold_pct=10.0)
+        window = _downtrend_window()
+        r = _reading(window, rule)
+        if r.regime != Regime.DOWNTREND:
+            pytest.skip("window did not produce DOWNTREND regime")
+
+        lot = _lot(level=1, buy_price=10.0)  # +1900% 평가익
+        state = {"AAPL": {"downtrend": "active"}}
+        signals = evaluator.evaluate_stock(
+            rule, [lot], _pf(price=200.0), ohlc_window=window, regime_state=state
+        )
+        sells = [s for s in signals if s.action == OrderAction.SELL and not s.is_info]
+        assert len(sells) == 1
+
+    def test_latch_survives_one_non_downtrend_bar(self, evaluator):
+        """DOWNTREND active 중 비-DOWNTREND 1봉 -> 래치 유지 (exit_streak=1)."""
+        rule = _regime_rule(buy_threshold_pct=-5.0, sell_threshold_pct=50.0)
+        window = _uptrend_window()  # non-DOWNTREND window
+        lot = _lot(level=1, buy_price=300.0)
+        state = {"AAPL": {"downtrend": "active", "downtrend_exit_streak": 0}}
+        signals = evaluator.evaluate_stock(
+            rule, [lot], _pf(price=250.0, cash=500000), ohlc_window=window, regime_state=state
+        )
+        assert state["AAPL"]["downtrend_exit_streak"] == 1
+        assert state["AAPL"]["downtrend"] == "active"
+        buys = [s for s in signals if s.action == OrderAction.BUY]
+        assert all(b.is_blocked for b in buys)
+
+    def test_latch_releases_after_two_non_downtrend_bars(self, evaluator):
+        """비-DOWNTREND 2봉 연속 -> 래치 해제, state 초기화."""
+        rule = _regime_rule(buy_threshold_pct=-5.0, sell_threshold_pct=50.0)
+        window = _uptrend_window()
+        lot = _lot(level=1, buy_price=300.0)
+        # 이미 exit_streak=1 상태에서 한 봉 더 -> 총 2봉 -> 해제
+        state = {"AAPL": {"downtrend": "active", "downtrend_exit_streak": 1}}
+        evaluator.evaluate_stock(
+            rule, [lot], _pf(price=250.0, cash=500000), ohlc_window=window, regime_state=state
+        )
+        assert state["AAPL"].get("downtrend") is None
+        assert state["AAPL"]["downtrend_exit_streak"] == 0
+        assert state["AAPL"]["downtrend_streak"] == 0
+
+    def test_downtrend_block_resets_on_downtrend_bar_during_exit(self, evaluator):
+        """탈출 카운트 중 DOWNTREND 봉 -> exit_streak 리셋, 래치 유지."""
+        rule = _regime_rule(buy_threshold_pct=-5.0, sell_threshold_pct=50.0)
+        window = _downtrend_window()
+        r = _reading(window, rule)
+        if r.regime != Regime.DOWNTREND:
+            pytest.skip("window did not produce DOWNTREND regime")
+
+        lot = _lot(level=1, buy_price=200.0)
+        state = {"AAPL": {"downtrend": "active", "downtrend_exit_streak": 1}}
+        evaluator.evaluate_stock(
+            rule, [lot], _pf(price=100.0, cash=500000), ohlc_window=window, regime_state=state
+        )
+        assert state["AAPL"]["downtrend_exit_streak"] == 0
+        assert state["AAPL"]["downtrend"] == "active"
+
+    def test_downtrend_streak_accumulates_during_uptrend_mode(self, evaluator):
+        """UPTREND 모드 중에도 downtrend_streak이 누적돼 레짐 탈출 후 즉시 래치 가능."""
+        rule = _regime_rule(buy_threshold_pct=-5.0, sell_threshold_pct=50.0)
+        window = _downtrend_window()
+        r = _reading(window, rule)
+        if r.regime != Regime.DOWNTREND:
+            pytest.skip("window did not produce DOWNTREND regime")
+
+        lot = _lot(level=1, buy_price=200.0)
+        # st["regime"]="uptrend"으로 UPTREND 모드 시뮬레이션 (lots 있음)
+        state = {"AAPL": {"regime": "uptrend", "adds": 0,
+                          "last_add_price": 200.0,
+                          "last_add_swing_high": r.swing_high}}
+        evaluator.evaluate_stock(
+            rule, [lot], _pf(price=100.0), ohlc_window=window, regime_state=state
+        )
+        # UPTREND 분기로 조기 반환됐지만 downtrend_streak은 누적돼야 함
+        assert state["AAPL"].get("downtrend_streak", 0) >= 1
+
+
+class TestRegimeOnly:
+    """regime_only=True: UPTREND 경로로만 진입, 평균회귀 완전 차단."""
+
+    def _rule(self, **kw):
+        base = dict(
+            ticker="AAPL", buy_threshold_pct=-5.0, sell_threshold_pct=20.0,
+            buy_amount=500, max_lots=5,
+            regime_enabled=True, regime_only=True,
+        )
+        base.update(kw)
+        return StockRule(**base)
+
+    def test_no_uptrend_blocks_initial_buy(self, evaluator):
+        """UPTREND 미확정 + lot 없음 -> 초기 매수 차단 (빈 리스트 반환)."""
+        rule = self._rule()
+        window = _downtrend_window()  # DOWNTREND -> inverse ETF는 SIDEWAYS/DOWNTREND
+        state = {"AAPL": {}}
+        signals = evaluator.evaluate_stock(
+            rule, [], _pf(price=100.0, cash=500000), ohlc_window=window, regime_state=state
+        )
+        # 빈 리스트 또는 blocked 신호만 허용 (is_blocked=True인 DOWNTREND 래치 차단은 가능)
+        buys = [s for s in signals if s.action == OrderAction.BUY and not s.is_blocked]
+        assert len(buys) == 0
+
+    def test_uptrend_confirmed_allows_initial_buy(self, evaluator):
+        """UPTREND 확정 + lot 없음 -> 초기 매수 허용."""
+        rule = self._rule()
+        window = _uptrend_window()
+        # UPTREND 이미 확정 상태 (st["regime"]="uptrend")
+        state = {"AAPL": {"regime": "uptrend", "adds": 0,
+                          "last_add_price": None, "last_add_swing_high": None}}
+        signals = evaluator.evaluate_stock(
+            rule, [], _pf(price=200.0, cash=500000), ohlc_window=window, regime_state=state
+        )
+        buys = [s for s in signals if s.action == OrderAction.BUY and not s.is_blocked]
+        assert len(buys) == 1
+        assert buys[0].level == 1
+
+    def test_no_uptrend_blocks_additional_buy_with_lots(self, evaluator):
+        """UPTREND 미확정 + lot 있음 -> 추가 매수 차단."""
+        rule = self._rule()
+        window = _downtrend_window()
+        r = _reading(window, rule)
+        if r.regime != Regime.DOWNTREND:
+            pytest.skip("window did not produce DOWNTREND regime")
+        lot = _lot(level=1, buy_price=200.0)
+        state = {"AAPL": {}}
+        signals = evaluator.evaluate_stock(
+            rule, [lot], _pf(price=100.0, cash=500000), ohlc_window=window, regime_state=state
+        )
+        buys = [s for s in signals if s.action == OrderAction.BUY and not s.is_blocked]
+        assert len(buys) == 0
+
+    def test_regime_disabled_ignores_regime_only(self, evaluator):
+        """regime_enabled=False이면 regime_only는 무시 -> 평균회귀 초기 매수 동작."""
+        rule = self._rule(regime_enabled=False)
+        window = _downtrend_window()
+        state = {"AAPL": {}}
+        signals = evaluator.evaluate_stock(
+            rule, [], _pf(price=100.0, cash=500000), ohlc_window=window, regime_state=state
+        )
+        buys = [s for s in signals if s.action == OrderAction.BUY and not s.is_blocked]
+        assert len(buys) == 1
+
+    def test_uptrend_streak_accumulates_without_lots(self, evaluator):
+        """regime_only=True + lot 없음 -> _resolve_regime 실행되어 uptrend_streak 누적."""
+        rule = self._rule()
+        window = _uptrend_window()
+        r = _reading(window, rule)
+        if r.regime != Regime.UPTREND:
+            pytest.skip("window did not produce UPTREND regime")
+        state = {"AAPL": {}}
+        evaluator.evaluate_stock(
+            rule, [], _pf(price=200.0, cash=500000), ohlc_window=window, regime_state=state
+        )
+        # uptrend_streak이 누적됐거나 이미 "uptrend"로 확정
+        confirmed = state["AAPL"].get("regime") == "uptrend"
+        streak = state["AAPL"].get("uptrend_streak", 0)
+        assert confirmed or streak >= 1
 

@@ -14,8 +14,10 @@ from src.core.models import (
 from src.utils.ticker_reader import display_ticker
 from src.utils.currency import format_money
 
-# 상승 레짐 진입 확정에 필요한 연속 UPTREND 판정 횟수 (휩쏘 완화)
+# 상승 레짐 진입 확정에 필요한 연속 UPTREND 판정 횟수 (독립 조정 가능)
 REGIME_CONFIRM_BARS = 2
+# 하락 추세 래치 진입/탈출 확정에 필요한 연속 판정 횟수 (독립 조정 가능)
+DOWNTREND_CONFIRM_BARS = 2
 
 
 class SplitEvaluator:
@@ -105,9 +107,11 @@ class SplitEvaluator:
                 is_blocked=True,
             )]
 
-        # 레짐 분기: 상승 레짐 + 보유 lot이 있을 때만 누적/추세이탈 로직으로 분기.
-        # (OFF / 윈도우 없음 / UNKNOWN / SIDEWAYS / DOWNTREND / flat -> 기존 경로)
-        if rule.regime_enabled and ohlc_window is not None and ticker_lots:
+        # 레짐 분류: regime_enabled이면 ticker_lots 유무와 무관하게 reading/regime_st 확보.
+        reading = None
+        regime_st: dict = {}
+        downtrend_blocked = False
+        if rule.regime_enabled and ohlc_window is not None:
             reading = classify(
                 ohlc_window,
                 adx_trend_threshold=rule.regime_adx_trend,
@@ -117,14 +121,46 @@ class SplitEvaluator:
                 swing_lookback=rule.uptrend_swing_lookback,
                 min_bars=rule.regime_min_bars,
             )
-            st = regime_state.setdefault(rule.ticker, {}) if regime_state is not None else {}
-            if self._resolve_regime(reading, st, rule.ticker, current_price) == Regime.UPTREND:
-                return self._evaluate_uptrend(
-                    rule, ticker_lots, current_price, reading, st, portfolio
+            regime_st = regime_state.setdefault(rule.ticker, {}) if regime_state is not None else {}
+            # 하락 래치 갱신: UPTREND 모드 중에도 항상 실행해 레짐 탈출 후 즉시 차단 가능하게 함
+            downtrend_blocked = self._resolve_downtrend_block(reading, regime_st, rule.ticker)
+            # 상승 레짐 평가:
+            # regime_only=True면 lot이 없어도 _resolve_regime 실행 (Chandelier Exit 후 재진입 streak 유지)
+            if ticker_lots or rule.regime_only:
+                uptrend_resolved = (
+                    self._resolve_regime(reading, regime_st, rule.ticker, current_price) == Regime.UPTREND
                 )
+                if uptrend_resolved and ticker_lots:
+                    return self._evaluate_uptrend(
+                        rule, ticker_lots, current_price, reading, regime_st, portfolio
+                    )
+            else:
+                uptrend_resolved = False
+        else:
+            uptrend_resolved = False
+
+        # regime_only: UPTREND 미확정 시 평균회귀 경로 차단 (초기 진입 및 추가 매수 모두)
+        # regime_enabled=False이면 uptrend_resolved가 항상 False이므로 함께 확인
+        regime_only_blocked = rule.regime_enabled and rule.regime_only and not uptrend_resolved
 
         # 보유 lot이 없으면 -> 1차수 초기 매수
         if not ticker_lots:
+            if downtrend_blocked:
+                reason = "DOWNTREND 확정 - 신규 진입 차단"
+                if self._logger:
+                    self._logger.info(f"[{display_ticker(rule.ticker)}] {reason}")
+                return [SplitSignal(
+                    ticker=rule.ticker,
+                    lot_id=None,
+                    action=OrderAction.BUY,
+                    quantity=0,
+                    price=current_price,
+                    reason=reason,
+                    pct_change=0.0,
+                    is_blocked=True,
+                )]
+            if regime_only_blocked:
+                return []  # UPTREND 미확정, 진입 대기 (정상 상태, 로그 없음)
             last_sell_price = (
                 last_sell_prices.get(rule.ticker) if last_sell_prices else None
             )
@@ -137,7 +173,7 @@ class SplitEvaluator:
         # 마지막 차수(가장 높은 level) lot 찾기
         last_lot = max(ticker_lots, key=lambda l: l.level)
 
-        # 매도 확인 (우선)
+        # 매도 확인 (우선 - 하락 중에도 이익실현/트레일링 매도는 정상 작동)
         self._trailing_info_signal = None
         sell_signal = self._evaluate_sell(rule, last_lot, current_price)
         if sell_signal is not None:
@@ -148,6 +184,27 @@ class SplitEvaluator:
         if self._trailing_info_signal is not None:
             result.append(self._trailing_info_signal)
             self._trailing_info_signal = None
+
+        # regime_only: UPTREND 미확정 시 추가 매수 차단 (lot은 존재, 레짐 전환 중)
+        if regime_only_blocked:
+            return result
+
+        # 하락 레짐 추가 매수 차단
+        if downtrend_blocked:
+            reason = "DOWNTREND 확정 - 추가 매수 차단"
+            if self._logger:
+                self._logger.info(f"[{display_ticker(rule.ticker)}] {reason}")
+            result.append(SplitSignal(
+                ticker=rule.ticker,
+                lot_id=None,
+                action=OrderAction.BUY,
+                quantity=0,
+                price=current_price,
+                reason=reason,
+                pct_change=0.0,
+                is_blocked=True,
+            ))
+            return result
 
         # 매수 확인 (동적 재매수 기준 적용)
         last_sell_price = (
@@ -688,11 +745,51 @@ class SplitEvaluator:
             st["uptrend_streak"] = 0
             if self._logger:
                 self._logger.info(
-                    f"[{display_ticker(ticker)}] 🔥 강한 상승 추세 진입 확정! "
+                    f"[{display_ticker(ticker)}] 강한 상승 추세 진입 확정! "
                     f"(ADX {reading.adx:.1f} 돌파, 20EMA/50MA/200MA 정배열 정렬 상승 국면)"
                 )
             return Regime.UPTREND
         return Regime.SIDEWAYS
+
+    def _resolve_downtrend_block(self, reading, st: dict, ticker: str) -> bool:
+        """DOWNTREND 매수 차단 래치를 관리한다 (st in-place 변이).
+
+        진입: DOWNTREND_CONFIRM_BARS 연속 DOWNTREND -> "active" 래치
+        유지: SIDEWAYS 1봉으로 해제되지 않음 (UPTREND 래치와 대칭)
+        탈출: 비-DOWNTREND DOWNTREND_CONFIRM_BARS 연속 -> 래치 해제
+        """
+        if st.get("downtrend") == "active":
+            if reading.regime != Regime.DOWNTREND:
+                st["downtrend_exit_streak"] = st.get("downtrend_exit_streak", 0) + 1
+                if st["downtrend_exit_streak"] >= DOWNTREND_CONFIRM_BARS:
+                    st["downtrend"] = None
+                    st["downtrend_streak"] = 0
+                    st["downtrend_exit_streak"] = 0
+                    if self._logger:
+                        self._logger.info(
+                            f"[{display_ticker(ticker)}] 하락 추세 해제 - 매수 차단 해제"
+                        )
+                    return False
+            else:
+                st["downtrend_exit_streak"] = 0
+            return True
+
+        if reading.regime == Regime.DOWNTREND:
+            st["downtrend_streak"] = st.get("downtrend_streak", 0) + 1
+        else:
+            st["downtrend_streak"] = 0
+            st["downtrend_exit_streak"] = 0
+
+        if st.get("downtrend_streak", 0) >= DOWNTREND_CONFIRM_BARS:
+            st["downtrend"] = "active"
+            st["downtrend_streak"] = 0
+            if self._logger:
+                self._logger.info(
+                    f"[{display_ticker(ticker)}] DOWNTREND {DOWNTREND_CONFIRM_BARS}봉 확정 - 매수 차단"
+                )
+            return True
+
+        return False
 
     def _evaluate_uptrend(
         self,
