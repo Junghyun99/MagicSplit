@@ -53,6 +53,7 @@ class StockRule:
 
     # --- 레짐 필터 (전부 기본값 => OFF => 오늘과 완전히 동일 동작) ---
     regime_enabled: bool = False
+    regime_only: bool = False          # True: UPTREND 경로로만 진입, 평균회귀 경로 완전 차단 (인버스 ETF용)
     regime_adx_trend: float = 25.0      # ADX 이상이면 추세장으로 간주
     regime_adx_range: float = 20.0      # ADX 미만이면 횡보장 (히스테리시스 하단)
     regime_min_bars: int = 200          # 레짐 판정에 필요한 최소 봉 수
