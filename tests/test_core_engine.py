@@ -1240,3 +1240,76 @@ class TestRegimeStateEngine:
         regime_state = {"AAPL": {"regime": "uptrend", "adds": 3}}
         engine._handle_state_transitions([], {}, regime_state)
         assert "AAPL" not in regime_state
+
+
+class TestTrailingBulk:
+    """횡보장 trailing 벌크 매도 체결 반영."""
+
+    def _positions(self):
+        return [
+            PositionLot("lot1", "AAPL", 50.0, 5, "2024-01-01", level=1),
+            PositionLot("lot2", "AAPL", 60.0, 5, "2024-01-01", level=2),
+            PositionLot("lot3", "AAPL", 70.0, 5, "2024-01-01", level=3),
+            PositionLot("lot4", "AAPL", 80.0, 5, "2024-01-01", level=4),
+        ]
+
+    def _bulk_sig(self, qty, price=90.0):
+        return SplitSignal("AAPL", None, OrderAction.SELL, qty, price,
+                           "trailing 벌크 매도", 0.0, 4, trailing_bulk=True)
+
+    def _exe(self, qty, price=90.0, status=ExecutionStatus.FILLED):
+        return TradeExecution("AAPL", OrderAction.SELL, qty, price, 0.0, "2024-01-01", status)
+
+    def test_partial_fire_removes_high_levels_only(self, engine):
+        # Lv4+Lv3(10주)만 발동
+        result = engine._update_positions(
+            self._positions(), [self._bulk_sig(10)], [self._exe(10)],
+            "2024-01-02", last_sell_prices={}, regime_state={},
+        )
+        ids = sorted(l.lot_id for l in result)
+        assert ids == ["lot1", "lot2"]
+
+    def test_full_fire_removes_all_lots(self, engine):
+        result = engine._update_positions(
+            self._positions(), [self._bulk_sig(20)], [self._exe(20)],
+            "2024-01-02", last_sell_prices={}, regime_state={},
+        )
+        assert result == []
+
+    def test_regime_state_not_modified(self, engine):
+        regime_state = {"AAPL": {"regime": "sideways", "some_key": 42}}
+        engine._update_positions(
+            self._positions(), [self._bulk_sig(10)], [self._exe(10)],
+            "2024-01-02", last_sell_prices={}, regime_state=regime_state,
+        )
+        # trailing_lock 미생성, 기존 키 유지
+        assert regime_state["AAPL"]["regime"] == "sideways"
+        assert "trailing_lock" not in regime_state["AAPL"]
+
+    def test_last_sell_prices_updated(self, engine):
+        last_sell = {}
+        engine._update_positions(
+            self._positions(), [self._bulk_sig(10)], [self._exe(10)],
+            "2024-01-02", last_sell_prices=last_sell, regime_state={},
+        )
+        assert last_sell["AAPL"] == 90.0
+
+    def test_realized_pnl_and_breakdown(self, engine):
+        exe = self._exe(10, 90.0)  # Lv4(5주 @80) + Lv3(5주 @70)
+        engine._update_positions(
+            self._positions(), [self._bulk_sig(10)], [exe],
+            "2024-01-02", last_sell_prices={}, regime_state={},
+        )
+        # (90-80)*5 + (90-70)*5 = 50 + 100 = 150
+        assert exe.realized_pnl == 150.0
+        bd = exe.liquidation_lots
+        assert bd is not None and len(bd) == 2
+        assert [x["level"] for x in bd] == [4, 3]
+
+    def test_regime_state_cleaned_when_all_lots_removed(self, engine):
+        regime_state = {"AAPL": {"regime": "sideways"}}
+        engine._update_positions(
+            self._positions(), [self._bulk_sig(20)], [self._exe(20)],
+            "2024-01-02", last_sell_prices={}, regime_state=regime_state,
+        )
+        assert "AAPL" not in regime_state

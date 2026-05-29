@@ -242,6 +242,9 @@ class SplitSignal:
     # 추세이탈 분할청산(Trailing Lock 1단계) 매도 표식.
     # 체결 시 잔량은 유지하고 trailing_lock 상태를 활성화한다.
     regime_partial_liquidation: bool = False
+    # 횡보장 trailing 벌크 매도 표식. 엔진이 _apply_trailing_bulk()로 라우팅.
+    # regime_state 변경 없이 fired lot만 고차수부터 차감한다.
+    trailing_bulk: bool = False
 
 
 @dataclass

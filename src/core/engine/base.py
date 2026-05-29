@@ -737,6 +737,13 @@ class MagicSplitEngine:
                     )
                     continue
 
+                # 횡보장 trailing 벌크 매도
+                if sig is not None and sig.trailing_bulk and sig.lot_id is None:
+                    updated = self._apply_trailing_bulk(
+                        updated, exe, disp, last_sell_prices, regime_state
+                    )
+                    continue
+
                 # 일반 단건 매도: 신호의 lot_id로 해당 차수 lot 제거
                 target_lot = None
                 if sig and sig.lot_id:
@@ -781,29 +788,28 @@ class MagicSplitEngine:
 
         return updated
 
-    def _apply_bulk_liquidation(
+    def _drain_lots_by_qty(
         self,
         updated: List[PositionLot],
+        ticker: str,
+        qty: int,
         exe: TradeExecution,
-        disp: str,
-        last_sell_prices: Optional[dict],
-        regime_state: Optional[dict],
-    ) -> List[PositionLot]:
-        """통합 전량청산 체결을 고차수부터 순차 차감하여 반영한다.
+    ) -> tuple:
+        """고차수부터 qty만큼 lot을 차감하고, exe에 손익을 기록한다.
 
-        - 체결 수량만큼 고레벨 lot부터 소진(전량 소진 lot은 제거, 마지막은 부분 잔량).
-        - 실현 손익은 소진한 각 lot의 매수가 기준으로 합산해 exe에 기록.
-        - 잔여 포지션이 0이 될 때만 레짐 상태를 리셋(부분체결/거절 시 모드 유지).
+        Returns: (updated_positions, consumed)
+        exe.buy_price, exe.realized_pnl, exe.liquidation_lots 를 in-place 갱신.
+        last_sell_prices 갱신 및 regime_state 처리는 호출부 책임.
         """
-        qty_left = exe.quantity
+        qty_left = qty
         lots_desc = sorted(
-            [l for l in updated if l.ticker == exe.ticker],
+            [l for l in updated if l.ticker == ticker],
             key=lambda l: l.level, reverse=True,
         )
         total_pnl = 0.0
         total_cost = 0.0
         consumed = 0
-        breakdown = []  # 소진 lot별 분해(차수별 손익 기록용)
+        breakdown = []
         for lot in lots_desc:
             if qty_left <= 0:
                 break
@@ -825,13 +831,31 @@ class MagicSplitEngine:
         if consumed > 0:
             exe.buy_price = round(total_cost / consumed, 4)
             exe.realized_pnl = round(total_pnl - exe.fee, 2)
-            # 수수료를 소진 수량 비례로 배분해 lot별 실현손익을 확정(합 = 순실현손익).
             for item in breakdown:
                 lot_fee = exe.fee * (item["quantity"] / consumed)
                 item["realized_pnl"] = round(item.pop("_gross") - lot_fee, 2)
             exe.liquidation_lots = breakdown
-            if last_sell_prices is not None:
-                last_sell_prices[exe.ticker] = exe.price
+
+        return updated, consumed
+
+    def _apply_bulk_liquidation(
+        self,
+        updated: List[PositionLot],
+        exe: TradeExecution,
+        disp: str,
+        last_sell_prices: Optional[dict],
+        regime_state: Optional[dict],
+    ) -> List[PositionLot]:
+        """통합 전량청산 체결을 고차수부터 순차 차감하여 반영한다.
+
+        - 체결 수량만큼 고레벨 lot부터 소진(전량 소진 lot은 제거, 마지막은 부분 잔량).
+        - 실현 손익은 소진한 각 lot의 매수가 기준으로 합산해 exe에 기록.
+        - 잔여 포지션이 0이 될 때만 레짐 상태를 리셋(부분체결/거절 시 모드 유지).
+        """
+        updated, consumed = self._drain_lots_by_qty(updated, exe.ticker, exe.quantity, exe)
+        qty_left = exe.quantity - consumed
+        if consumed > 0 and last_sell_prices is not None:
+            last_sell_prices[exe.ticker] = exe.price
 
         remaining = [l for l in updated if l.ticker == exe.ticker]
         self.logger.info(
@@ -865,43 +889,10 @@ class MagicSplitEngine:
         - 체결 확정 시 regime_state에 trailing_lock 상태를 활성화한다.
         - 잔량이 남아 있으므로 레짐 상태를 리셋(pop)하지 않는다.
         """
-        qty_left = exe.quantity
-        lots_desc = sorted(
-            [l for l in updated if l.ticker == exe.ticker],
-            key=lambda l: l.level, reverse=True,
-        )
-        total_pnl = 0.0
-        total_cost = 0.0
-        consumed = 0
-        breakdown = []  # 소진 lot별 분해(차수별 손익 기록용)
-        for lot in lots_desc:
-            if qty_left <= 0:
-                break
-            take = min(qty_left, lot.quantity)
-            gross = (exe.price - lot.buy_price) * take
-            total_pnl += gross
-            total_cost += lot.buy_price * take
-            consumed += take
-            breakdown.append({
-                "lot_id": lot.lot_id, "level": lot.level,
-                "buy_price": lot.buy_price, "quantity": take, "_gross": gross,
-            })
-            if take >= lot.quantity:
-                updated.remove(lot)
-            else:
-                updated[updated.index(lot)] = replace(lot, quantity=lot.quantity - take)
-            qty_left -= take
-
-        if consumed > 0:
-            exe.buy_price = round(total_cost / consumed, 4)
-            exe.realized_pnl = round(total_pnl - exe.fee, 2)
-            # 수수료를 소진 수량 비례로 배분해 lot별 실현손익을 확정(합 = 순실현손익).
-            for item in breakdown:
-                lot_fee = exe.fee * (item["quantity"] / consumed)
-                item["realized_pnl"] = round(item.pop("_gross") - lot_fee, 2)
-            exe.liquidation_lots = breakdown
-            if last_sell_prices is not None:
-                last_sell_prices[exe.ticker] = exe.price
+        updated, consumed = self._drain_lots_by_qty(updated, exe.ticker, exe.quantity, exe)
+        qty_left = exe.quantity - consumed
+        if consumed > 0 and last_sell_prices is not None:
+            last_sell_prices[exe.ticker] = exe.price
 
         remaining = [l for l in updated if l.ticker == exe.ticker]
         self.logger.info(
@@ -941,6 +932,41 @@ class MagicSplitEngine:
                     f"하락 허용치 {drop_pct}%)"
                 )
 
+        return updated
+
+    def _apply_trailing_bulk(
+        self,
+        updated: List[PositionLot],
+        exe: TradeExecution,
+        disp: str,
+        last_sell_prices: Optional[dict],
+        regime_state: Optional[dict],
+    ) -> List[PositionLot]:
+        """횡보장 trailing 벌크 매도 체결 반영.
+
+        - 고차수부터 exe.quantity만큼 lot 차감 (_drain_lots_by_qty 재사용)
+        - last_sell_prices 갱신
+        - regime_state 변경 없음 (trailing_lock 미생성, 레짐 리셋 없음)
+        - 잔여 lot 없을 시 regime_state 잔재 정리
+        """
+        updated, consumed = self._drain_lots_by_qty(updated, exe.ticker, exe.quantity, exe)
+        qty_left = exe.quantity - consumed
+        if consumed > 0 and last_sell_prices is not None:
+            last_sell_prices[exe.ticker] = exe.price
+
+        remaining = [l for l in updated if l.ticker == exe.ticker]
+        self.logger.info(
+            f"[Position] Trailing 벌크 청산: {disp} {consumed}주 소진 "
+            f"(잔여 {sum(l.quantity for l in remaining)}주), "
+            f"실현손익 {format_money(exe.realized_pnl, self.market_type)}"
+        )
+        if qty_left > 0:
+            self.logger.warning(
+                f"[Position] Trailing 벌크 청산 초과 체결: {disp} 미차감 {qty_left}주 -- "
+                f"scripts/reconcile_positions.py 로 정합성 확인 권장."
+            )
+        if regime_state is not None and not remaining:
+            regime_state.pop(exe.ticker, None)
         return updated
 
     def _enrich_executions(self, executions: List[TradeExecution], signals: List[SplitSignal]) -> None:
