@@ -127,3 +127,74 @@
 2026-05-29 13:04:24,344 [WARNING] [KisBroker] 호가 조회 실패 — 팔란티어 테크(PLTR) 현재가 기반 주문 진행
 2026-05-29 13:04:24,934 [ERROR] [KisBroker] Order Failed: 장운영시간이 아닙니다.(단,주간거래시간이면 전용화면 주문가능, 주문시간 외 불가)
 2026-05-29 13:04:25,403 [INFO] >>> Step 6: Persist
+2026-05-29 21:20:09,335 [INFO] === Initializing MagicSplit Bot (overseas) ===
+2026-05-29 21:20:09,335 [INFO] Loaded 19 stock rule(s) from config_overseas.json
+2026-05-29 21:20:09,335 [INFO] [overseas] 17 rule(s), mode=LIVE
+2026-05-29 21:20:09,335 [INFO] [KisBroker] 캐시에서 토큰 로드 (API 호출 생략)
+2026-05-29 21:20:09,335 [INFO] [KisOverseasLiveBroker] Mode: LIVE TRADING
+2026-05-29 21:20:09,336 [INFO] === Running overseas engine ===
+2026-05-29 21:20:09,336 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-05-29 21:20:11,253 [INFO] Fetching real-time prices from Broker...
+2026-05-29 21:20:17,337 [INFO] Portfolio: Cash=USD 5,870.03, Value=USD 12,904.10
+2026-05-29 21:20:17,338 [INFO] >>> Step 2: Load Positions
+2026-05-29 21:20:17,338 [INFO] Loaded 15 position lot(s)
+2026-05-29 21:20:17,339 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-05-29 21:20:17,339 [INFO] >>> Processing 애플(AAPL)
+2026-05-29 21:20:17,339 [INFO]   [애플(AAPL)] 신호 없음 | Lv1 매수 USD 291.90 -> 현재 USD 311.59 (+6.75%) | 익절 +10.0% / 추매 -5.0%
+2026-05-29 21:20:17,340 [INFO] >>> Processing 리얼티 인컴(O)
+2026-05-29 21:20:17,340 [INFO]   [리얼티 인컴(O)] 신호 없음 | Lv1 매수 USD 62.37 -> 현재 USD 61.56 (-1.30%) | 익절 +10.0% / 추매 -5.0%
+2026-05-29 21:20:17,340 [INFO] >>> Processing 프록터 앤드 갬블(PG)
+2026-05-29 21:20:17,341 [INFO]   [프록터 앤드 갬블(PG)] 신호 없음 | Lv1 매수 USD 142.81 -> 현재 USD 146.64 (+2.68%) | 익절 +10.0% / 추매 -5.0%
+2026-05-29 21:20:17,341 [INFO] >>> Processing 펩시코(PEP)
+2026-05-29 21:20:17,341 [INFO]   [펩시코(PEP)] 신호 없음 | Lv1 매수 USD 150.05 -> 현재 USD 145.74 (-2.87%) | 익절 +10.0% / 추매 -5.0%
+2026-05-29 21:20:17,341 [INFO] >>> Processing 듀크 에너지(DUK)
+2026-05-29 21:20:17,342 [INFO]   [듀크 에너지(DUK)] 신호 없음 | Lv1 매수 USD 124.92 -> 현재 USD 124.50 (-0.34%) | 익절 +10.0% / 추매 -5.0%
+2026-05-29 21:20:17,342 [INFO] >>> Processing ARK INNOVATION(ARKK)
+2026-05-29 21:20:17,342 [INFO]   [ARK INNOVATION(ARKK)] 신호 없음 | Lv2 매수 USD 75.28 -> 현재 USD 81.15 (+7.80%) | 익절 +10.0% / 추매 -5.0%
+2026-05-29 21:20:17,343 [INFO] >>> Processing SCHWAB US DIVIDEND EQUITY(SCHD)
+2026-05-29 21:20:17,343 [INFO]   [SCHWAB US DIVIDEND EQUITY(SCHD)] 신호 없음 | Lv1 매수 USD 31.74 -> 현재 USD 32.67 (+2.93%) | 익절 +10.0% / 추매 -5.0%
+2026-05-29 21:20:17,343 [INFO] >>> Processing ISHARES GLOBAL CLEAN ENERGY(ICLN)
+2026-05-29 21:20:17,344 [INFO]   [ISHARES GLOBAL CLEAN ENERGY(ICLN)] 신호 없음 | Lv1 매수 USD 22.01 -> 현재 USD 23.50 (+6.78%) | 익절 +10.0% / 추매 -5.0%
+2026-05-29 21:20:17,344 [INFO] >>> Processing 알파벳 A(GOOGL)
+2026-05-29 21:20:17,344 [INFO]   [알파벳 A(GOOGL)] 신호 없음 | Lv1 매수 USD 393.85 -> 현재 USD 385.58 (-2.10%) | 익절 +10.0% / 추매 -5.0%
+2026-05-29 21:20:17,344 [INFO] >>> Processing 브로드컴(AVGO)
+2026-05-29 21:20:17,345 [INFO]   [브로드컴(AVGO)] 신호 없음 | Lv1 매수 USD 429.80 -> 현재 USD 433.36 (+0.83%) | 익절 +10.0% / 추매 -5.0%
+2026-05-29 21:20:17,345 [INFO] >>> Processing 테슬라(TSLA)
+2026-05-29 21:20:17,345 [INFO]   [테슬라(TSLA)] 신호 없음 | Lv3 매수 USD 409.90 -> 현재 USD 439.53 (+7.23%) | 익절 +10.0% / 추매 -5.0%
+2026-05-29 21:20:17,346 [INFO] >>> Processing 코닝(GLW)
+2026-05-29 21:20:17,346 [INFO] [코닝(GLW)] Lv1 매수가 USD 202.75 대비 -9.2% -> 추가 매수 Lv2 2주 @USD 184.10
+2026-05-29 21:20:17,346 [INFO] Executing 1 order(s)...
+2026-05-29 21:20:18,790 [INFO] [KisBroker] Available Cash for BUY: 5,870
+2026-05-29 21:20:19,995 [INFO] [KisBroker] Order Sent: BUY 코닝(GLW) 2 @ 184.6 (ODNO=0031553448)
+2026-05-29 21:20:22,472 [INFO] [KisBroker] Order FILLED: 코닝(GLW) ODNO=0031553448 price=184.6 qty=2 fee=0.0
+2026-05-29 21:20:22,673 [INFO] [코닝(GLW)] 동적 재매수 기준 초기화 (매도가 USD 184.84 -> 소비됨)
+2026-05-29 21:20:22,674 [INFO] [Position] New lot: lot_20260529_212022_GLW_002 Lv2 코닝(GLW) 2주 @USD 184.60
+2026-05-29 21:20:27,132 [INFO] >>> Processing IBM
+2026-05-29 21:20:27,133 [INFO] [IBM] 보유 lot 없음 -> 초기 매수 Lv1 3주 @USD 275.38
+2026-05-29 21:20:27,133 [INFO] Executing 1 order(s)...
+2026-05-29 21:20:28,588 [INFO] [KisBroker] Available Cash for BUY: 5,501
+2026-05-29 21:20:29,834 [INFO] [KisBroker] Order Sent: BUY IBM 3 @ 275.38 (ODNO=0031553509)
+2026-05-29 21:20:32,314 [INFO] [KisBroker] Order FILLED: IBM ODNO=0031553509 price=275.38 qty=3 fee=0.0
+2026-05-29 21:20:32,515 [INFO] [Position] New lot: lot_20260529_212032_IBM_001 Lv1 IBM 3주 @USD 275.38
+2026-05-29 21:20:36,970 [INFO] >>> Processing 포엣 테크놀로지스(POET)
+2026-05-29 21:20:36,970 [INFO] [포엣 테크놀로지스(POET)] 보유 lot 없음 -> 초기 매수 Lv1 75주 @USD 13.16
+2026-05-29 21:20:36,970 [INFO] Executing 1 order(s)...
+2026-05-29 21:20:38,279 [INFO] [KisBroker] Available Cash for BUY: 4,675
+2026-05-29 21:20:38,534 [WARNING] [KisBroker] 스프레드 비정상 — 포엣 테크놀로지스(POET) 매수 건너뜀 bid=13.15 ask=13.22 spread=0.53%
+2026-05-29 21:20:38,929 [INFO] >>> Processing 루멘텀 홀딩스(LITE)
+2026-05-29 21:20:38,930 [INFO] [루멘텀 홀딩스(LITE)] 보유 lot 없음 -> 초기 매수 Lv1 1주 @USD 867.00
+2026-05-29 21:20:38,930 [INFO] Executing 1 order(s)...
+2026-05-29 21:20:40,386 [INFO] [KisBroker] Available Cash for BUY: 4,675
+2026-05-29 21:20:41,594 [INFO] [KisBroker] Order Sent: BUY 루멘텀 홀딩스(LITE) 1 @ 868.0 (ODNO=0031553591)
+2026-05-29 21:20:44,074 [INFO] [KisBroker] Order FILLED: 루멘텀 홀딩스(LITE) ODNO=0031553591 price=868.0 qty=1 fee=0.0
+2026-05-29 21:20:44,275 [INFO] [Position] New lot: lot_20260529_212044_LITE_001 Lv1 루멘텀 홀딩스(LITE) 1주 @USD 868.00
+2026-05-29 21:20:48,728 [INFO] >>> Processing 리게티 컴퓨팅(RGTI)
+2026-05-29 21:20:48,728 [INFO] [리게티 컴퓨팅(RGTI)] 보유 lot 없음 -> 초기 매수 Lv1 37주 @USD 26.66
+2026-05-29 21:20:48,728 [INFO] Executing 1 order(s)...
+2026-05-29 21:20:50,183 [INFO] [KisBroker] Available Cash for BUY: 3,808
+2026-05-29 21:20:51,409 [INFO] [KisBroker] Order Sent: BUY 리게티 컴퓨팅(RGTI) 37 @ 26.58 (ODNO=0031553654)
+2026-05-29 21:20:53,897 [INFO] [KisBroker] Order FILLED: 리게티 컴퓨팅(RGTI) ODNO=0031553654 price=26.58 qty=37 fee=0.0
+2026-05-29 21:20:54,098 [INFO] [Position] New lot: lot_20260529_212054_RGTI_001 Lv1 리게티 컴퓨팅(RGTI) 37주 @USD 26.58
+2026-05-29 21:20:58,555 [INFO] >>> Processing 팔란티어 테크(PLTR)
+2026-05-29 21:20:58,555 [INFO] [팔란티어 테크(PLTR)] 현금 부족: 보유 현금 USD 2,824.04 < 매수 예정 금액 USD 2,963.80 (20주) -> 매수 보류
+2026-05-29 21:20:59,229 [INFO] >>> Step 6: Persist

@@ -268,5 +268,62 @@
                 "alias": "코닝"
             }
         ]
+    },
+    {
+        "id": "tx_20260529_212059",
+        "date": "2026-05-29 21:20:59",
+        "portfolio_value": 12902.196499999998,
+        "total_trade_amount": 3046.8,
+        "reason": "코닝(GLW):BUY(추가 매수 Lv2 (Lv1 대비 -9.2%)), IBM:BUY(초기 매수 Lv1), 포엣 테크놀로지스(POET):BUY(초기 매수 Lv1), 루멘텀 홀딩스(LITE):BUY(초기 매수 Lv1), 리게티 컴퓨팅(RGTI):BUY(초기 매수 Lv1), 팔란티어 테크(PLTR):BUY(현금 부족: 보유 현금 USD 2,824.04 < 매수 예정 금액 USD 2,963.80 (20주))",
+        "executions": [
+            {
+                "ticker": "GLW",
+                "action": "BUY",
+                "quantity": 2,
+                "price": 184.6,
+                "fee": 0.0,
+                "date": "2026-05-29 21:20:22",
+                "status": "FILLED",
+                "reason": "ODNO=0031553448",
+                "level": 2,
+                "alias": "코닝"
+            },
+            {
+                "ticker": "IBM",
+                "action": "BUY",
+                "quantity": 3,
+                "price": 275.38,
+                "fee": 0.0,
+                "date": "2026-05-29 21:20:32",
+                "status": "FILLED",
+                "reason": "ODNO=0031553509",
+                "level": 1,
+                "alias": "IBM"
+            },
+            {
+                "ticker": "LITE",
+                "action": "BUY",
+                "quantity": 1,
+                "price": 868.0,
+                "fee": 0.0,
+                "date": "2026-05-29 21:20:44",
+                "status": "FILLED",
+                "reason": "ODNO=0031553591",
+                "level": 1,
+                "alias": "루멘텀 홀딩스"
+            },
+            {
+                "ticker": "RGTI",
+                "action": "BUY",
+                "quantity": 37,
+                "price": 26.58,
+                "fee": 0.0,
+                "date": "2026-05-29 21:20:53",
+                "status": "FILLED",
+                "reason": "ODNO=0031553654",
+                "level": 1,
+                "alias": "리게티 컴퓨팅"
+            }
+        ]
     }
 ]
