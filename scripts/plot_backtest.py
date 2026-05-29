@@ -1,334 +1,222 @@
-"""
-Backtest result visualizer.
-
-Reads log/backtest/2026-05-29_32_domestic.log and docs/data/backtest/history.json,
-then produces a two-panel chart (Samsung + KODEX Inverse) saved to
-docs/data/backtest/backtest_chart.png.
-
-Price series are extracted directly from the log file (no yfinance required).
-Dates are approximated by mapping 1552 trading steps evenly across 2020-01-02
-to 2026-04-30; trade markers use exact dates from history.json.
-"""
-
-import re
 import sys
-import json
-from pathlib import Path
-
 import pandas as pd
+import json
 import matplotlib
-matplotlib.use("Agg")
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
-import matplotlib.patches as mpatches
+import numpy as np
+from pathlib import Path
 
-# ---------------------------------------------------------------------------
-# Paths
-# ---------------------------------------------------------------------------
+# workspace 경로를 sys.path에 추가
 workspace = Path(__file__).resolve().parent.parent
-HISTORY_PATH = workspace / "docs" / "data" / "backtest" / "history.json"
-LOG_PATH = workspace / "logs" / "backtest" / "2026-05-29_32_domestic.log"
-OUTPUT_IMAGE = workspace / "docs" / "data" / "backtest" / "backtest_chart.png"
+sys.path.append(str(workspace))
 
-# Use a Latin font to avoid missing-glyph boxes on Linux
-plt.rcParams["font.family"] = "DejaVu Sans"
-plt.rcParams["axes.unicode_minus"] = False
+from src.backtest.cache import BacktestDataCache
+from src.utils.logger import TradeLogger
 
-# ---------------------------------------------------------------------------
-# 1. Parse the log to extract per-step prices and inverse block state
-# ---------------------------------------------------------------------------
-# Log structure: each trading day starts with ">>> Step 1: Portfolio & Price Fetch"
-# Prices appear as "current KRW X,XXX" (Korean) or "@KRW X,XXX" (order) within
-# the same step block.
+# 한글 폰트 설정 (Windows 맑은 고딕)
+plt.rcParams['font.family'] = 'Malgun Gothic'
+plt.rcParams['axes.unicode_minus'] = False
 
-PRICE_PATTERNS = [
-    re.compile(r"이제 KRW ([\d,]+)"),          # 현재 KRW
-    re.compile(r"현재 KRW ([\d,]+)"),          # 현재 KRW (alternate encoding)
-    re.compile(r"@KRW ([\d,]+)"),                       # @KRW (order price)
-    re.compile(r"현재KRW[\s]*([\d,]+)"),       # edge-case no space
-    re.compile(r"KRW ([\d,]+)"),                        # generic KRW fallback
-]
+# 1. 파일 경로 정의
+history_path = workspace / "docs" / "data" / "backtest" / "history.json"
+output_image = workspace / "docs" / "data" / "backtest" / "backtest_chart.png"
 
-# Simpler byte-level approach: use re on raw text
-_PRICE_RE = re.compile(r"(?:현재\s*KRW|현재가\s*KRW|@KRW)\s*([\d,]+)")
-_STEP_MARKER = ">>> Step 1: Portfolio & Price Fetch"
+# 2. 주가 데이터 로드 (2020년 1월 1일 이전 지표 계산을 위해 2018-10-01부터 로드)
+cache = BacktestDataCache(logger=TradeLogger())
+df = cache.get_ohlc(["005930"], "2018-10-01", "2026-05-01")
+close_series = df[("Close", "005930")]
 
-step_prices_005930: dict[int, int] = {}
-step_prices_114800: dict[int, int] = {}
-# inv_block_state[step] -> "blocked" | "unblocked"
-inv_block_state: dict[int, str] = {}
+# 3. 보조 지표 계산
+ema20 = close_series.ewm(span=20, adjust=False).mean()
+ma50 = close_series.rolling(window=50).mean()
+ma200 = close_series.rolling(window=200).mean()
 
-step_idx = -1
+# 4. 차트 필터링 범위 (2020-01-01 ~ 2026-04-30)
+start_date = "2020-01-01"
+end_date = "2026-04-30"
 
-with open(LOG_PATH, "r", encoding="utf-8") as fh:
-    for raw_line in fh:
-        line = raw_line.rstrip()
+close_plt = close_series.loc[start_date:end_date]
+ema20_plt = ema20.loc[start_date:end_date]
+ma50_plt = ma50.loc[start_date:end_date]
+ma200_plt = ma200.loc[start_date:end_date]
 
-        if _STEP_MARKER in line:
-            step_idx += 1
-            continue
+# 5. 거래 내역 로드
+with open(history_path, "r", encoding="utf-8") as f:
+    history = json.load(f)
 
-        if step_idx < 0:
-            continue
+normal_buys_x, normal_buys_y = [], []
+regime_buys_x, regime_buys_y = [], []
+sells_x, sells_y = [], []
+bulk_sells_x, bulk_sells_y = [], []
 
-        # ------------------------------------------------------------------
-        # Samsung (005930) price extraction
-        # ------------------------------------------------------------------
-        if "005930" in line or "삼성전자" in line:  # 삼성전자
-            m = _PRICE_RE.search(line)
-            if m and step_idx not in step_prices_005930:
-                step_prices_005930[step_idx] = int(m.group(1).replace(",", ""))
-
-        # ------------------------------------------------------------------
-        # Inverse ETF (114800) price extraction + block state
-        # ------------------------------------------------------------------
-        if "114800" in line or "KODEX" in line:
-            m = _PRICE_RE.search(line)
-            if m and step_idx not in step_prices_114800:
-                step_prices_114800[step_idx] = int(m.group(1).replace(",", ""))
-
-            # Block / unblock events
-            if ("DOWNTREND" in line and "차단" in line):  # 차단
-                inv_block_state[step_idx] = "blocked"
-            elif "하락 추세 해제" in line:  # 하락 추세 해제
-                inv_block_state[step_idx] = "unblocked"
-            elif "강한 상승 추세 진입 확정" in line:  # 강한 상승 추세 진입 확정
-                inv_block_state[step_idx] = "unblocked"
-
-total_steps = step_idx + 1
-print(f"Total steps parsed: {total_steps}")
-print(f"005930 prices: {len(step_prices_005930)}, 114800 prices: {len(step_prices_114800)}")
-print(f"Block state events: {len(inv_block_state)}")
-
-# ---------------------------------------------------------------------------
-# 2. Build approximate date index
-#    Map 1552 trading steps evenly from 2020-01-02 to 2026-04-30.
-#    Both endpoints are anchored; mid-point error < 2 weeks.
-# ---------------------------------------------------------------------------
-approx_dates = pd.date_range("2020-01-02", "2026-04-30", periods=total_steps)
-
-# ---------------------------------------------------------------------------
-# 3. Build price Series with forward-fill for missing steps
-# ---------------------------------------------------------------------------
-
-def make_price_series(step_dict: dict, total: int, date_idx: pd.DatetimeIndex) -> pd.Series:
-    raw = pd.Series(
-        {date_idx[i]: v for i, v in step_dict.items() if i < len(date_idx)},
-        dtype=float,
-    )
-    full = raw.reindex(date_idx).ffill().bfill()
-    return full
-
-
-close_005930 = make_price_series(step_prices_005930, total_steps, approx_dates)
-close_114800 = make_price_series(step_prices_114800, total_steps, approx_dates)
-
-# ---------------------------------------------------------------------------
-# 4. Compute moving averages
-# ---------------------------------------------------------------------------
-ema20_005930 = close_005930.ewm(span=20, adjust=False).mean()
-ma50_005930  = close_005930.rolling(50).mean()
-ma200_005930 = close_005930.rolling(200).mean()
-
-ema20_114800 = close_114800.ewm(span=20, adjust=False).mean()
-ma50_114800  = close_114800.rolling(50).mean()
-
-# ---------------------------------------------------------------------------
-# 5. Build continuous block-state series for inverse (forward-filled)
-# ---------------------------------------------------------------------------
-block_raw = pd.Series(dtype=object, index=approx_dates)
-for step, state in inv_block_state.items():
-    if step < len(approx_dates):
-        block_raw.iloc[step] = state
-
-# Forward-fill; initial state assumed "blocked" (early 2020 = market uptrend)
-block_series = block_raw.ffill().fillna("blocked")
-
-# ---------------------------------------------------------------------------
-# 6. Load trade history
-# ---------------------------------------------------------------------------
-with open(HISTORY_PATH, "r", encoding="utf-8") as fh:
-    history = json.load(fh)
-
-# Samsung
-sam_buys_x,       sam_buys_y       = [], []
-sam_regime_x,     sam_regime_y     = [], []
-sam_sells_x,      sam_sells_y      = [], []
-sam_bulk_x,       sam_bulk_y       = [], []
-
-# Inverse
-inv_buys_x,       inv_buys_y       = [], []
-inv_regime_x,     inv_regime_y     = [], []
-inv_bulk_x,       inv_bulk_y       = [], []
-inv_normal_sell_x, inv_normal_sell_y = [], []
-
-CHART_START = pd.Timestamp("2020-01-01")
-CHART_END   = pd.Timestamp("2026-04-30")
+# 3세대 분할청산 및 데드라인 청산 마커 리스트
+split_sells_x, split_sells_y = [], []
+lock_triggered_sells_x, lock_triggered_sells_y = [], []
 
 for tx in history:
     tx_date = pd.to_datetime(tx["date"])
-    if tx_date < CHART_START or tx_date > CHART_END:
+    # 차트 범위 내의 거래만 필터링
+    if tx_date < pd.Timestamp(start_date) or tx_date > pd.Timestamp(end_date):
         continue
-
-    reason  = tx["reason"]
-    is_bulk = any(k in reason for k in ("Bulk Sell", "일괄 청산", "전량 청산(Bulk)"))
-    is_regime = any(k in reason for k in ("상승장 누적 매수", "20EMA 눈림"))
-
-    for ex in tx["executions"]:
-        ticker = ex["ticker"]
-        action = ex["action"]
-        price  = float(ex["price"])
-
-        if ticker == "005930":
+        
+    reason = tx["reason"]
+    is_bulk = "Bulk Sell" in reason or "일괄 청산" in reason or "일괄청산" in reason or "전량 청산(Bulk)" in reason
+    is_regime_buy = "상승장 누적 매수" in reason or "20EMA 눌림" in reason or "add" in reason
+    
+    # 3세대 추가 기능 분할청산 및 데드라인 청산 감지
+    is_split_sell = "분할 청산" in reason or "분할청산" in reason or "추세 이탈 분할" in reason
+    is_lock_triggered = "데드라인 발동" in reason or "데드라인 이탈" in reason or "추종 데드라인 발동" in reason
+    
+    for exec in tx["executions"]:
+        if exec["ticker"] == "005930":
+            action = exec["action"]
+            price = exec["price"]
+            
             if action == "BUY":
-                if is_regime:
-                    sam_regime_x.append(tx_date); sam_regime_y.append(price)
+                if is_regime_buy:
+                    regime_buys_x.append(tx_date)
+                    regime_buys_y.append(price)
                 else:
-                    sam_buys_x.append(tx_date);   sam_buys_y.append(price)
+                    normal_buys_x.append(tx_date)
+                    normal_buys_y.append(price)
             elif action == "SELL":
                 if is_bulk:
-                    sam_bulk_x.append(tx_date);   sam_bulk_y.append(price)
+                    bulk_sells_x.append(tx_date)
+                    bulk_sells_y.append(price)
+                elif is_split_sell:
+                    split_sells_x.append(tx_date)
+                    split_sells_y.append(price)
+                elif is_lock_triggered:
+                    lock_triggered_sells_x.append(tx_date)
+                    lock_triggered_sells_y.append(price)
                 else:
-                    sam_sells_x.append(tx_date);  sam_sells_y.append(price)
+                    sells_x.append(tx_date)
+                    sells_y.append(price)
 
-        elif ticker == "114800":
-            if action == "BUY":
-                if is_regime:
-                    inv_regime_x.append(tx_date); inv_regime_y.append(price)
-                else:
-                    inv_buys_x.append(tx_date);   inv_buys_y.append(price)
-            elif action == "SELL":
-                if is_bulk:
-                    inv_bulk_x.append(tx_date);   inv_bulk_y.append(price)
-                else:
-                    inv_normal_sell_x.append(tx_date); inv_normal_sell_y.append(price)
+# 6. 로그 파일 파싱을 통한 3세대 Trailing Lock 활성화 및 해제(정상복귀) 날짜 추출
+log_path = workspace / "logs" / "backtest" / "2026-05-28_31_domestic.log"
+lock_active_dates = []
+lock_recovery_dates = []
 
-print(f"Samsung - buys:{len(sam_buys_x)}, regime:{len(sam_regime_x)}, sells:{len(sam_sells_x)}, bulk:{len(sam_bulk_x)}")
-print(f"Inverse - buys:{len(inv_buys_x)}, regime:{len(inv_regime_x)}, bulk_sell:{len(inv_bulk_x)}")
+if log_path.exists():
+    full_trading_days = df.index.tolist()
+    current_day_idx = -1
+    
+    with open(log_path, "r", encoding="utf-8") as f:
+        for line in f:
+            if ">>> Step 1: Portfolio & Price Fetch" in line:
+                current_day_idx += 1
+            if current_day_idx < 0 or current_day_idx >= len(full_trading_days):
+                continue
+            
+            sim_date = full_trading_days[current_day_idx]
+            if sim_date < pd.Timestamp(start_date) or sim_date > pd.Timestamp(end_date):
+                continue
+                
+            if "추종 데드라인(Trailing Lock) 상태 활성화" in line:
+                lock_active_dates.append(sim_date)
+            elif "✅ 추종 데드라인 해제" in line:
+                lock_recovery_dates.append(sim_date)
 
-# ---------------------------------------------------------------------------
-# 7. Plotting: two-panel chart
-# ---------------------------------------------------------------------------
+# 락 활성화 지점 주가 추출
+lock_active_x = []
+lock_active_y = []
+for d in lock_active_dates:
+    if d in close_series.index:
+        lock_active_x.append(d)
+        lock_active_y.append(close_series.loc[d])
 
-def shade_regions(ax, mask_series: pd.Series, color: str, alpha: float = 0.4):
-    """Shade background where mask_series is True."""
-    in_region = False
-    region_start = None
-    for dt, val in mask_series.items():
-        if val and not in_region:
-            region_start = dt
-            in_region = True
-        elif not val and in_region:
-            ax.axvspan(region_start, dt, color=color, alpha=alpha, zorder=0)
-            in_region = False
-    if in_region and region_start is not None:
-        ax.axvspan(region_start, mask_series.index[-1], color=color, alpha=alpha, zorder=0)
+# 락 해제 지점 주가 추출
+lock_recovery_x = []
+lock_recovery_y = []
+for d in lock_recovery_dates:
+    if d in close_series.index:
+        lock_recovery_x.append(d)
+        lock_recovery_y.append(close_series.loc[d])
 
 
-fig, (ax1, ax2) = plt.subplots(
-    2, 1, figsize=(22, 16), dpi=130,
-    gridspec_kw={"height_ratios": [1.1, 1]},
-)
-fig.suptitle(
-    "Samsung(005930) vs KODEX Inverse(114800) Hedge Backtest  2020-2026",
-    fontsize=16, fontweight="bold", y=0.99,
-)
+# 7. 차트 그리기
+plt.figure(figsize=(18, 10), dpi=150)
 
-# ---- Panel 1: Samsung Electronics ----------------------------------------
+# 7.1. 상승 레짐 영역 배경 하이라이트 (20EMA > 50MA > 200MA 조건)
+regime_mask = (ema20_plt > ma50_plt) & (ma50_plt > ma200_plt)
+in_regime = False
+regime_start = None
 
-# Regime background (EMA20 > MA50 > MA200 = uptrend = green)
-regime_005930 = (ema20_005930 > ma50_005930) & (ma50_005930 > ma200_005930)
-shade_regions(ax1, regime_005930, "#c8e6c9", alpha=0.45)
+for idx, val in regime_mask.items():
+    if val and not in_regime:
+        regime_start = idx
+        in_regime = True
+    elif not val and in_regime:
+        plt.axvspan(regime_start, idx, color="#e2f0d9", alpha=0.5, zorder=0)
+        in_regime = False
+if in_regime: 
+    plt.axvspan(regime_start, regime_mask.index[-1], color="#e2f0d9", alpha=0.5, zorder=0)
 
-ax1.plot(close_005930.index,  close_005930.values,  label="Samsung Close",   color="#1565c0", linewidth=2.2, zorder=2)
-ax1.plot(ema20_005930.index,  ema20_005930.values,  label="EMA20",           color="#f57c00", linestyle="--", linewidth=1.2, alpha=0.85)
-ax1.plot(ma50_005930.index,   ma50_005930.values,   label="MA50",            color="#c62828", linestyle="-.", linewidth=1.2, alpha=0.85)
-ax1.plot(ma200_005930.index,  ma200_005930.values,  label="MA200",           color="#757575", linestyle=":",  linewidth=1.2, alpha=0.65)
+# 7.2. 주가 및 이평선 플롯
+plt.plot(close_plt.index, close_plt.values, label="삼성전자 종가 (Close)", color="#1f77b4", linewidth=2.5, zorder=2)
+plt.plot(ema20_plt.index, ema20_plt.values, label="20 EMA (눌림목 기준선)", color="#ff7f0e", linestyle="--", linewidth=1.2, alpha=0.8, zorder=2)
+plt.plot(ma50_plt.index, ma50_plt.values, label="50 MA (추세 이탈선)", color="#d62728", linestyle="-.", linewidth=1.2, alpha=0.8, zorder=2)
+plt.plot(ma200_plt.index, ma200_plt.values, label="200 MA (장기 이평선)", color="#7f7f7f", linestyle=":", linewidth=1.2, alpha=0.6, zorder=2)
 
-if sam_buys_x:
-    ax1.scatter(sam_buys_x,   sam_buys_y,   color="#43a047", edgecolor="darkgreen", marker="^", s=90,  zorder=4, label="Buy (initial/split)")
-if sam_regime_x:
-    ax1.scatter(sam_regime_x, sam_regime_y, color="#8e24aa", edgecolor="indigo",    marker="D", s=80,  zorder=4, label="Buy (regime add)")
-if sam_sells_x:
-    ax1.scatter(sam_sells_x,  sam_sells_y,  color="#e53935",                        marker="v", s=70,  zorder=4, label="Partial sell", alpha=0.75)
-if sam_bulk_x:
-    ax1.scatter(sam_bulk_x,   sam_bulk_y,   color="gold",    edgecolor="darkorange",marker="*", s=260, zorder=5, label="Bulk sell (trend break)")
+# 7.3. 거래 마커 플롯
+# 횡보장 일반 매수 마커 (녹색 얇은 삼각형)
+if normal_buys_x:
+    plt.scatter(normal_buys_x, normal_buys_y, color="#2ca02c", edgecolor="darkgreen", marker="^", s=90, zorder=4, label="횡보장 일반 매수 (BUY)", alpha=0.9)
 
-up_patch = mpatches.Patch(color="#c8e6c9", label="Uptrend zone (EMA20>MA50>MA200)")
-h1, l1 = ax1.get_legend_handles_labels()
-ax1.legend([*h1, up_patch], [*l1, "Uptrend zone"], loc="upper left", fontsize=8.5, ncol=2)
+# 상승레짐 눌림목 추가매수 마커 (보라색 다이아몬드)
+if regime_buys_x:
+    plt.scatter(regime_buys_x, regime_buys_y, color="#9467bd", edgecolor="indigo", marker="D", s=80, zorder=4, label="상승레짐 눌림 매수 (ADD)", alpha=0.9)
 
-ax1.set_title("Samsung Electronics (005930)", fontsize=13, fontweight="bold")
-ax1.set_ylabel("Price (KRW)", fontsize=10)
-ax1.grid(True, linestyle="--", alpha=0.3)
-ax1.xaxis.set_major_formatter(mdates.DateFormatter("%Y-%m"))
-ax1.xaxis.set_major_locator(mdates.YearLocator())
-plt.setp(ax1.xaxis.get_majorticklabels(), rotation=20)
+# 일반 분할 매도 마커 (적색 역삼각형)
+if sells_x:
+    plt.scatter(sells_x, sells_y, color="red", marker="v", s=70, zorder=4, label="분할 매도 (SELL)", alpha=0.7)
 
-# ---- Panel 2: KODEX Inverse ETF ------------------------------------------
+# 일괄 청산 (Bulk Sell) 마커
+if bulk_sells_x:
+    plt.scatter(bulk_sells_x, bulk_sells_y, color="gold", edgecolor="darkorange", marker="*", s=250, zorder=5, label="추세이탈 일괄 청산 (Bulk Sell)")
 
-# Background strategy:
-#   Green  = Samsung uptrend (EMA20>MA50>MA200) -> inverse expected to be blocked
-#   Orange = Samsung downtrend                 -> hedge opportunity, inverse should be active
-#
-# This lets you visually check: do inverse buy markers fall in ORANGE zones?
-# Explicit DOWNTREND-block events for the inverse are shown as thin red bars.
+# 7.4. 3세대 추가 기능 데드라인 락 관련 상태 플로팅
+# 7.4.1. 데드라인 락 활성화 (주황색 테두리가 있는 원형 홀 마커)
+if lock_active_x:
+    plt.scatter(lock_active_x, lock_active_y, color="darkorange", edgecolor="orangered", marker="o", facecolors='none', s=130, linewidths=2.5, zorder=3, label="데드라인 락 활성화 (Lock Active)")
 
-shade_regions(ax2, regime_005930,   "#c8e6c9", alpha=0.35)  # green = Samsung uptrend
-shade_regions(ax2, ~regime_005930,  "#ffe0b2", alpha=0.35)  # orange = Samsung downtrend
+# 7.4.2. 락 해제 (초록색 P 플러스형 마커)
+if lock_recovery_x:
+    plt.scatter(lock_recovery_x, lock_recovery_y, color="lime", edgecolor="darkgreen", marker="P", s=140, zorder=4, label="데드라인 락 해제 (Recovery)")
 
-# Explicit inverse-ETF downtrend blocks: thin red line at the top of the panel
-blocked_mask = (block_series == "blocked")
-ymin2, ymax2 = close_114800.min() * 0.98, close_114800.max() * 1.02
-bar_h = (ymax2 - ymin2) * 0.025
-in_block = False
-b_start = None
-for dt, val in blocked_mask.items():
-    if val and not in_block:
-        b_start = dt
-        in_block = True
-    elif not val and in_block:
-        ax2.axvspan(b_start, dt, ymin=0.97, ymax=1.0, color="#c62828", alpha=0.85, zorder=3, clip_on=False)
-        in_block = False
-if in_block and b_start is not None:
-    ax2.axvspan(b_start, blocked_mask.index[-1], ymin=0.97, ymax=1.0, color="#c62828", alpha=0.85, zorder=3, clip_on=False)
+# 7.4.3. 분할 청산 (주황색 역삼각형 마커)
+if split_sells_x:
+    plt.scatter(split_sells_x, split_sells_y, color="orange", edgecolor="chocolate", marker="v", s=110, zorder=4, label="추세이탈 분할 청산 (Split Sell)")
 
-ax2.plot(close_114800.index,  close_114800.values,  label="KODEX Inverse Close", color="#b71c1c", linewidth=2.2, zorder=2)
-ax2.plot(ema20_114800.index,  ema20_114800.values,  label="EMA20",               color="#f57c00", linestyle="--", linewidth=1.2, alpha=0.85)
-ax2.plot(ma50_114800.index,   ma50_114800.values,   label="MA50",                color="#4e342e", linestyle="-.", linewidth=1.2, alpha=0.80)
+# 7.4.4. 데드라인 최종 이탈 청산 (빨간색 굵은 X 마커)
+if lock_triggered_sells_x:
+    plt.scatter(lock_triggered_sells_x, lock_triggered_sells_y, color="crimson", marker="x", s=160, linewidths=3.5, zorder=5, label="데드라인 이탈 청산 (Lock Triggered)")
 
-if inv_buys_x:
-    ax2.scatter(inv_buys_x,   inv_buys_y,   color="#43a047", edgecolor="darkgreen", marker="^", s=120, zorder=5, label="Inverse BUY (initial Lv1)")
-if inv_regime_x:
-    ax2.scatter(inv_regime_x, inv_regime_y, color="#8e24aa", edgecolor="indigo",    marker="D", s=100, zorder=5, label="Inverse BUY (regime add)")
-if inv_bulk_x:
-    ax2.scatter(inv_bulk_x,   inv_bulk_y,   color="gold",    edgecolor="darkorange",marker="*", s=280, zorder=6, label="Inverse SELL (bulk)")
-if inv_normal_sell_x:
-    ax2.scatter(inv_normal_sell_x, inv_normal_sell_y, color="red",               marker="v", s=80,  zorder=5, label="Inverse SELL (partial)", alpha=0.7)
 
-green_patch  = mpatches.Patch(color="#c8e6c9", label="Samsung uptrend zone  (inverse expected blocked)")
-orange_patch = mpatches.Patch(color="#ffe0b2", label="Samsung downtrend zone (hedge opportunity)")
-red_patch    = mpatches.Patch(color="#c62828", label="Inverse DOWNTREND confirmed (top bar = entry blocked)")
-h2, l2 = ax2.get_legend_handles_labels()
-ax2.legend([*h2, green_patch, orange_patch, red_patch],
-           [*l2, "Samsung uptrend", "Samsung downtrend", "Inv DOWNTREND block"],
-           loc="upper right", fontsize=8.5, ncol=2)
+# 레짐 하이라이트 범례 임의 추가 (배경색 범례 표시용)
+import matplotlib.patches as mpatches
+regime_patch = mpatches.Patch(color='#e2f0d9', label='상승 레짐 가동 구간 (EMA20 > MA50 > MA200)')
 
-ax2.set_title("KODEX Inverse ETF (114800) - Downtrend Hedge", fontsize=13, fontweight="bold")
-ax2.set_ylabel("Price (KRW)", fontsize=10)
-ax2.set_xlabel("Date (approximate)", fontsize=10)
-ax2.grid(True, linestyle="--", alpha=0.3)
-ax2.xaxis.set_major_formatter(mdates.DateFormatter("%Y-%m"))
-ax2.xaxis.set_major_locator(mdates.YearLocator())
-plt.setp(ax2.xaxis.get_majorticklabels(), rotation=20)
+# 차트 데코레이션
+plt.title("삼성전자(005930) 3세대 백테스트 분석 차트 - 분할청산 및 데드라인 락 적용 (2020년 ~ 2026년)", fontsize=18, fontweight="bold", pad=25)
+plt.xlabel("날짜", fontsize=12)
+plt.ylabel("주가 (KRW)", fontsize=12)
+plt.grid(True, linestyle="--", alpha=0.3)
 
-# shared x-range
-for ax in (ax1, ax2):
-    ax.set_xlim(pd.Timestamp("2020-01-01"), pd.Timestamp("2026-05-01"))
+# 범례 처리 (마커 우선순위 및 가독성 고려)
+handles, labels = plt.gca().get_legend_handles_labels()
+handles.append(regime_patch)
+plt.legend(handles=handles, loc="upper left", fontsize=10, shadow=True)
 
-fig.align_ylabels([ax1, ax2])
-plt.tight_layout(rect=[0, 0, 1, 0.99])
+# x축 연도별 정렬
+plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m'))
+plt.gca().xaxis.set_major_locator(mdates.YearLocator())
+plt.gcf().autofmt_xdate()
 
-OUTPUT_IMAGE.parent.mkdir(parents=True, exist_ok=True)
-plt.savefig(OUTPUT_IMAGE, bbox_inches="tight")
-print(f"Chart saved: {OUTPUT_IMAGE}")
+# 이미지 저장
+output_image.parent.mkdir(parents=True, exist_ok=True)
+plt.savefig(output_image, bbox_inches="tight")
+print(f"차트 저장 완료: {output_image}")
