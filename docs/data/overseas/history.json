@@ -325,5 +325,26 @@
                 "alias": "리게티 컴퓨팅"
             }
         ]
+    },
+    {
+        "id": "tx_20260529_212304",
+        "date": "2026-05-29 21:23:04",
+        "portfolio_value": 12890.032099999999,
+        "total_trade_amount": 2662.38,
+        "reason": "포엣 테크놀로지스(POET):BUY(초기 매수 Lv1), 루멘텀 홀딩스(LITE):BUY(buy_amount(USD 500.00) < 현재가(USD 866.00) -> 1주도 매수 불가. buy_amount 상향 조정 필요), 팔란티어 테크(PLTR):BUY(초기 매수 Lv1)",
+        "executions": [
+            {
+                "ticker": "PLTR",
+                "action": "BUY",
+                "quantity": 18,
+                "price": 147.91,
+                "fee": 0.0,
+                "date": "2026-05-29 21:22:59",
+                "status": "FILLED",
+                "reason": "ODNO=0031555202",
+                "level": 1,
+                "alias": "팔란티어 테크"
+            }
+        ]
     }
 ]
