@@ -164,18 +164,23 @@ class SplitEvaluator:
 
         # 마지막 차수(가장 높은 level) lot 찾기
         last_lot = max(ticker_lots, key=lambda l: l.level)
-
-        # 매도 확인 (우선 - 하락 중에도 이익실현/트레일링 매도는 정상 작동)
-        self._trailing_info_signal = None
-        sell_signal = self._evaluate_sell(rule, last_lot, current_price)
-        if sell_signal is not None:
-            return [sell_signal]
-
-        # 트레일링 스톱 활성화 시 info 신호 수집
         result: List[SplitSignal] = []
-        if self._trailing_info_signal is not None:
-            result.append(self._trailing_info_signal)
+
+        if rule.trailing_drop_at(last_lot.level) is not None:
+            # 새 경로: 멀티-lot trailing 동시 추적
+            trailing_signals = self._evaluate_trailing_multi(rule, ticker_lots, current_price)
+            if trailing_signals is not None:
+                return trailing_signals
+            # None -> last_lot 미활성화 -> buy eval로 진행
+        else:
+            # 기존 경로: 단건 고정 익절 (trailing OFF)
             self._trailing_info_signal = None
+            sell_signal = self._evaluate_sell(rule, last_lot, current_price)
+            if sell_signal is not None:
+                return [sell_signal]
+            if self._trailing_info_signal is not None:
+                result.append(self._trailing_info_signal)
+                self._trailing_info_signal = None
 
         # 하락 레짐 추가 매수 차단
         if downtrend_blocked:
@@ -207,6 +212,120 @@ class SplitEvaluator:
             result.append(buy_signal)
 
         return result
+
+    def _evaluate_trailing_multi(
+        self,
+        rule: StockRule,
+        ticker_lots: List[PositionLot],
+        current_price: float,
+    ) -> Optional[List[SplitSignal]]:
+        """모든 활성화된 lot을 동시 추적하여 drop 조건 충족 lot을 벌크 매도 신호로 반환한다.
+
+        Returns:
+            None  -> last_lot 미활성화, 호출부가 buy eval로 진행
+            []    -> 활성화됐지만 미발동, buy eval skip
+            [sig] -> 활성화 info 신호 또는 벌크 매도 신호
+        """
+        sorted_lots = sorted(ticker_lots, key=lambda l: l.level, reverse=True)
+        last_lot = sorted_lots[0]
+
+        # 1단계: last_lot 활성화 확인
+        pct = (current_price - last_lot.buy_price) / last_lot.buy_price * 100
+        if (last_lot.trailing_highest_price is None
+                and pct < rule.sell_threshold_at(last_lot.level)):
+            return None
+
+        # 2단계: 고차수->저차수 순차 탐색
+        fired_lots: List[PositionLot] = []
+        info_signals: List[SplitSignal] = []
+
+        for lot in sorted_lots:
+            t_drop = rule.trailing_drop_at(lot.level)
+            if t_drop is None:
+                break
+
+            pct_lot = (current_price - lot.buy_price) / lot.buy_price * 100
+            s_thr = rule.sell_threshold_at(lot.level)
+            lot_activated = lot.trailing_highest_price is not None or pct_lot >= s_thr
+
+            if not lot_activated:
+                break
+
+            was_inactive = lot.trailing_highest_price is None
+            updated_high = was_inactive or current_price > lot.trailing_highest_price
+
+            if updated_high:
+                lot.trailing_highest_price = current_price
+
+            stop_price = lot.trailing_highest_price * (1 - t_drop / 100)
+
+            if self._logger:
+                if was_inactive:
+                    self._logger.info(
+                        f"[{display_ticker(rule.ticker)}] Lv{lot.level}: "
+                        f"trailing 활성화 "
+                        f"(매수가 대비 {pct_lot:+.1f}%, "
+                        f"스톱가 {format_money(stop_price, rule.market_type)})"
+                    )
+                elif updated_high:
+                    self._logger.info(
+                        f"[{display_ticker(rule.ticker)}] Lv{lot.level}: "
+                        f"trailing 고점 갱신 -> "
+                        f"{format_money(current_price, rule.market_type)} "
+                        f"(스톱가 {format_money(stop_price, rule.market_type)})"
+                    )
+
+            if was_inactive:
+                info_signals.append(SplitSignal(
+                    ticker=rule.ticker,
+                    lot_id=lot.lot_id,
+                    action=OrderAction.SELL,
+                    quantity=0,
+                    price=current_price,
+                    reason=(
+                        f"Lv{lot.level}: trailing 활성화 "
+                        f"(매수가 대비 {pct_lot:+.1f}%, "
+                        f"스톱가 {format_money(stop_price, rule.market_type)})"
+                    ),
+                    pct_change=pct_lot,
+                    level=lot.level,
+                    is_info=True,
+                ))
+
+            drop = (lot.trailing_highest_price - current_price) / lot.trailing_highest_price * 100
+            if drop >= t_drop:
+                fired_lots.append(lot)
+
+        # 3단계: 결과 반환
+        if not fired_lots:
+            return info_signals
+
+        fired_qty = sum(l.quantity for l in fired_lots)
+        total_cost = sum(l.buy_price * l.quantity for l in fired_lots)
+        avg_buy = total_cost / fired_qty
+        pct_change = (current_price - avg_buy) / avg_buy * 100
+        min_lv = min(l.level for l in fired_lots)
+        max_lv = max(l.level for l in fired_lots)
+
+        if self._logger:
+            self._logger.info(
+                f"[{display_ticker(rule.ticker)}] trailing 벌크 매도 발동: "
+                f"Lv{min_lv}~Lv{max_lv} {fired_qty}주 ({pct_change:+.1f}%)"
+            )
+
+        bulk_signal = SplitSignal(
+            ticker=rule.ticker,
+            lot_id=None,
+            action=OrderAction.SELL,
+            quantity=fired_qty,
+            price=current_price,
+            reason=f"trailing 벌크 매도 Lv{min_lv}~Lv{max_lv} ({fired_qty}주 {pct_change:+.1f}%)",
+            pct_change=pct_change,
+            level=max_lv,
+            buy_price=avg_buy,
+            trailing_bulk=True,
+        )
+        return info_signals + [bulk_signal]
 
     def _evaluate_sell(
         self,
