@@ -124,13 +124,11 @@ class SplitEvaluator:
             regime_st = regime_state.setdefault(rule.ticker, {}) if regime_state is not None else {}
             # 하락 래치 갱신: UPTREND 모드 중에도 항상 실행해 레짐 탈출 후 즉시 차단 가능하게 함
             downtrend_blocked = self._resolve_downtrend_block(reading, regime_st, rule.ticker)
-            # 상승 레짐 평가:
-            # regime_only=True면 lot이 없어도 _resolve_regime 실행 (Chandelier Exit 후 재진입 streak 유지)
-            if ticker_lots or rule.regime_only:
+            if ticker_lots:
                 uptrend_resolved = (
                     self._resolve_regime(reading, regime_st, rule.ticker, current_price) == Regime.UPTREND
                 )
-                if uptrend_resolved and ticker_lots:
+                if uptrend_resolved:
                     return self._evaluate_uptrend(
                         rule, ticker_lots, current_price, reading, regime_st, portfolio
                     )
@@ -138,10 +136,6 @@ class SplitEvaluator:
                 uptrend_resolved = False
         else:
             uptrend_resolved = False
-
-        # regime_only: UPTREND 미확정 시 평균회귀 경로 차단 (초기 진입 및 추가 매수 모두)
-        # regime_enabled=False이면 uptrend_resolved가 항상 False이므로 함께 확인
-        regime_only_blocked = rule.regime_enabled and rule.regime_only and not uptrend_resolved
 
         # 보유 lot이 없으면 -> 1차수 초기 매수
         if not ticker_lots:
@@ -159,8 +153,6 @@ class SplitEvaluator:
                     pct_change=0.0,
                     is_blocked=True,
                 )]
-            if regime_only_blocked:
-                return []  # UPTREND 미확정, 진입 대기 (정상 상태, 로그 없음)
             last_sell_price = (
                 last_sell_prices.get(rule.ticker) if last_sell_prices else None
             )
@@ -184,10 +176,6 @@ class SplitEvaluator:
         if self._trailing_info_signal is not None:
             result.append(self._trailing_info_signal)
             self._trailing_info_signal = None
-
-        # regime_only: UPTREND 미확정 시 추가 매수 차단 (lot은 존재, 레짐 전환 중)
-        if regime_only_blocked:
-            return result
 
         # 하락 레짐 추가 매수 차단
         if downtrend_blocked:
