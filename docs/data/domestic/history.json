@@ -469,5 +469,38 @@
                 "alias": "TIGER 지주회사"
             }
         ]
+    },
+    {
+        "id": "tx_20260529_090500",
+        "date": "2026-05-29 09:05:00",
+        "portfolio_value": 33994254.0,
+        "total_trade_amount": 1864000.0,
+        "reason": "TIGER 지주회사(307520):BUY(초기 매수 Lv1), NAVER(035420):BUY(초기 매수 Lv1)",
+        "executions": [
+            {
+                "ticker": "307520",
+                "action": "BUY",
+                "quantity": 38,
+                "price": 26000.0,
+                "fee": 148.2,
+                "date": "2026-05-29 09:04:50",
+                "status": "FILLED",
+                "reason": "ODNO=0006144900",
+                "level": 1,
+                "alias": "TIGER 지주회사"
+            },
+            {
+                "ticker": "035420",
+                "action": "BUY",
+                "quantity": 4,
+                "price": 219000.0,
+                "fee": 131.39999999999998,
+                "date": "2026-05-29 09:04:56",
+                "status": "FILLED",
+                "reason": "ODNO=0006179300",
+                "level": 1,
+                "alias": "NAVER"
+            }
+        ]
     }
 ]
