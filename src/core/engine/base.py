@@ -1120,10 +1120,8 @@ class MagicSplitEngine:
             return REASON_NO_SIGNAL
         reasons = []
         for s in signals:
-            if s.is_blocked:
+            if s.is_blocked or s.is_info:
                 label = "SKIP"
-            elif s.is_info:
-                label = "INFO"
             else:
                 label = s.action.value
             reasons.append(f"{display_ticker(s.ticker)}:{label}({s.reason})")
