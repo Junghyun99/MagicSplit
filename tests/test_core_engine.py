@@ -766,6 +766,46 @@ class TestRunManualTrade:
         assert new_lot.quantity == 5
         assert new_lot.buy_price == 100.0
 
+    def test_buy_resets_trailing_on_lower_lots(
+        self, mock_broker, mock_repo, mock_logger,
+    ):
+        """수동 불타기 매수 시 하위 lot의 trailing_highest_price가 초기화되어야 한다.
+
+        시나리오: Lv3 trailing 추적 중 -> 수동 매수 Lv4 -> Lv3 trailing 초기화.
+        트레일링 게이트는 new last_lot(Lv4) 기준으로 재시작해야 한다.
+        """
+        rules = [StockRule("AAPL", -5.0, 10.0, 500, 10, trailing_drop_pct=3.0)]
+        mock_broker.get_portfolio.return_value = Portfolio(
+            total_cash=10000.0, holdings={"AAPL": 10},
+            current_prices={"AAPL": 115.0},
+        )
+        mock_broker.fetch_current_prices.return_value = {"AAPL": 115.0}
+        mock_repo.load_positions.return_value = [
+            PositionLot("lot_lv1", "AAPL", 100.0, 5, "2026-04-01", level=1,
+                        trailing_highest_price=None),
+            PositionLot("lot_lv2", "AAPL", 95.0, 3, "2026-04-05", level=2,
+                        trailing_highest_price=None),
+            PositionLot("lot_lv3", "AAPL", 90.0, 3, "2026-04-08", level=3,
+                        trailing_highest_price=112.0),  # trailing 추적 중
+        ]
+        mock_repo.load_last_sell_prices.return_value = {}
+        mock_broker.execute_orders.return_value = [
+            TradeExecution("AAPL", OrderAction.BUY, 4, 115.0, 0.5,
+                           "2026-04-10", ExecutionStatus.FILLED),
+        ]
+
+        eng = self._make_engine(mock_broker, mock_repo, mock_logger, rules)
+        eng.run_manual_trade(ticker="AAPL", action=OrderAction.BUY, sim_date="2026-04-10")
+
+        saved = mock_repo.save_positions.call_args[0][0]
+        assert len(saved) == 4  # Lv1, Lv2, Lv3, Lv4
+        lv3 = next(l for l in saved if l.level == 3)
+        lv4 = next(l for l in saved if l.level == 4)
+        # Lv3 trailing이 초기화되어야 함
+        assert lv3.trailing_highest_price is None
+        # Lv4는 새 lot이므로 trailing 없음
+        assert lv4.trailing_highest_price is None
+
     def test_sell_auto_derives_qty_from_highest_lot_and_updates_last_sell_prices(
         self, mock_broker, mock_repo, mock_logger,
     ):
