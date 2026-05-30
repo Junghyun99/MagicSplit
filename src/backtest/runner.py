@@ -128,6 +128,7 @@ def run_backtest(
     last_result: Optional[DayResult] = None
 
     for today in sim_days:
+        logger.info(f"{today.strftime('%Y-%m-%d')} 시뮬시작")
         # 종가 추출
         try:
             row = close_df.loc[today]
