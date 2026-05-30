@@ -1118,10 +1118,15 @@ class MagicSplitEngine:
         """신호 목록에서 사유 문자열을 생성한다."""
         if not signals:
             return REASON_NO_SIGNAL
-        reasons = [
-            f"{display_ticker(s.ticker)}:{s.action.value}({s.reason})"
-            for s in signals
-        ]
+        reasons = []
+        for s in signals:
+            if s.is_blocked:
+                label = "SKIP"
+            elif s.is_info:
+                label = "INFO"
+            else:
+                label = s.action.value
+            reasons.append(f"{display_ticker(s.ticker)}:{label}({s.reason})")
         return ", ".join(reasons)
 
     def _notify_message(self, msg: str, detail: Optional[str] = None) -> None:
