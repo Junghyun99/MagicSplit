@@ -700,7 +700,7 @@ class MagicSplitEngine:
                 # 신규 lot이 last_lot이 되므로 동일 종목 기존 lot들의 trailing 상태 초기화.
                 # 수동 불타기 등으로 상위 차수가 추가되면 트레일링 게이트가 새 last_lot으로
                 # 이전되어야 하므로, 하위 lot들의 trailing_highest_price를 리셋한다.
-                for existing_lot in updated:
+                for i, existing_lot in enumerate(updated):
                     if (existing_lot.ticker == exe.ticker
                             and existing_lot.lot_id != lot_id
                             and existing_lot.trailing_highest_price is not None):
@@ -708,7 +708,7 @@ class MagicSplitEngine:
                             f"[{disp}] Lv{existing_lot.level} trailing 초기화 "
                             f"(Lv{level} 신규 매수 -> trailing 게이트 재시작)"
                         )
-                        existing_lot.trailing_highest_price = None
+                        updated[i] = replace(existing_lot, trailing_highest_price=None)
                 # 상승장 누적매수(add) 체결 확정 시에만 regime_state를 갱신한다.
                 # (신호 생성이 아닌 실제 체결 기준 -> 백테스트/라이브 동일 동작)
                 if (regime_state is not None and sig is not None
