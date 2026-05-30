@@ -128,7 +128,8 @@ def run_backtest(
     last_result: Optional[DayResult] = None
 
     for today in sim_days:
-        logger.info(f"{today.strftime('%Y-%m-%d')} 시뮬시작")
+        sim_date = f"{today:%Y-%m-%d}"
+        logger.info(f"{sim_date} 시뮬시작")
         # 종가 추출
         try:
             row = close_df.loc[today]
@@ -141,10 +142,8 @@ def run_backtest(
             }
             prev_prices = current_prices
         except Exception as e:
-            logger.warning(f"[{today.date()}] 종가 추출 실패, 건너뜀: {e}")
+            logger.warning(f"[{sim_date}] 종가 추출 실패, 건너뜀: {e}")
             continue
-
-        sim_date = today.strftime("%Y-%m-%d")
 
         broker.set_date(today)
         broker.set_prices(current_prices)
