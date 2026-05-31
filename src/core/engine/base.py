@@ -226,8 +226,8 @@ class MagicSplitEngine:
                 price_str = format_money(exe.price, self.market_type)
                 line = f"  {action_str} {name} {exe.quantity}주 @{price_str} [Lv{exe.level}]"
                 if exe.action == OrderAction.SELL and exe.realized_pnl != 0:
-                    pnl_str = format_money(exe.realized_pnl, self.market_type)
-                    sign = "+" if exe.realized_pnl > 0 else ""
+                    sign = "+" if exe.realized_pnl > 0 else "-"
+                    pnl_str = format_money(abs(exe.realized_pnl), self.market_type)
                     line += f" ({sign}{pnl_str})"
                 exec_lines.append(line)
             exec_summary = "\n".join(exec_lines)
