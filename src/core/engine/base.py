@@ -219,9 +219,21 @@ class MagicSplitEngine:
         rejected_count = len(all_executions) - len(filled_execs)
         reject_suffix = f" (거절: {rejected_count}건)" if rejected_count > 0 else ""
         if filled_execs:
+            exec_lines = []
+            for exe in filled_execs:
+                name = display_ticker(exe.ticker)
+                action_str = "BUY" if exe.action == OrderAction.BUY else "SELL"
+                price_str = format_money(exe.price, self.market_type)
+                line = f"  {action_str} {name} {exe.quantity}주 @{price_str} [Lv{exe.level}]"
+                if exe.action == OrderAction.SELL and exe.realized_pnl != 0:
+                    sign = "+" if exe.realized_pnl > 0 else "-"
+                    pnl_str = format_money(abs(exe.realized_pnl), self.market_type)
+                    line += f" ({sign}{pnl_str})"
+                exec_lines.append(line)
+            exec_summary = "\n".join(exec_lines)
             self._notify_message(
                 f"Orders Executed. Count: {len(filled_execs)}"
-                f"{reject_suffix}{fail_suffix}",
+                f"{reject_suffix}{fail_suffix}\n{exec_summary}",
                 detail=all_detail
             )
         elif portfolio is not None:
