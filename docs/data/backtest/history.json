@@ -2,9 +2,9 @@
     {
         "id": "tx_20200102",
         "date": "2020-01-02",
-        "portfolio_value": 99993031.86381249,
-        "total_trade_amount": 1991463.7,
-        "reason": "삼성전자(005930):BUY(초기 매수 Lv1), KODEX 인버스(114800):BUY(초기 매수 Lv1)",
+        "portfolio_value": 9996519.916,
+        "total_trade_amount": 994593.6,
+        "reason": "삼성전자(005930):BUY(초기 매수 Lv1), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -17,27 +17,15 @@
                 "reason": "",
                 "level": 1,
                 "alias": "삼성전자"
-            },
-            {
-                "ticker": "114800",
-                "action": "BUY",
-                "quantity": 155,
-                "price": 6431.42,
-                "fee": 2492.18,
-                "date": "2020-01-02",
-                "status": "FILLED",
-                "reason": "",
-                "level": 1,
-                "alias": "KODEX 인버스"
             }
         ]
     },
     {
         "id": "tx_20200128",
         "date": "2020-01-28",
-        "portfolio_value": 100047455.98681249,
+        "portfolio_value": 10059469.038999999,
         "total_trade_amount": 528670.7999999999,
-        "reason": "삼성전자(005930):SELL(추세 이탈 분할 청산(9/18주, +6.4%)), KODEX 인버스(114800):BUY(DOWNTREND 확정 - 추가 매수 차단)",
+        "reason": "삼성전자(005930):SELL(추세 이탈 분할 청산(9/18주, +6.4%)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -48,7 +36,7 @@
                 "date": "2020-01-28",
                 "status": "FILLED",
                 "reason": "",
-                "lot_id": "lot_20260530_162837_005930_001",
+                "lot_id": "lot_20260531_065639_005930_001",
                 "level": 1,
                 "buy_price": 55255.2,
                 "realized_pnl": 30052.32,
@@ -59,9 +47,9 @@
     {
         "id": "tx_20200130",
         "date": "2020-01-30",
-        "portfolio_value": 100049105.70181249,
+        "portfolio_value": 10044068.753999999,
         "total_trade_amount": 285714.0,
-        "reason": "삼성전자(005930):SELL(추세 이탈 분할 청산(5/9주, +3.5%)), KODEX 인버스(114800):BUY(DOWNTREND 확정 - 추가 매수 차단)",
+        "reason": "삼성전자(005930):SELL(추세 이탈 분할 청산(5/9주, +3.5%)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -72,7 +60,7 @@
                 "date": "2020-01-30",
                 "status": "FILLED",
                 "reason": "",
-                "lot_id": "lot_20260530_162837_005930_001",
+                "lot_id": "lot_20260531_065639_005930_001",
                 "level": 1,
                 "buy_price": 55255.2,
                 "realized_pnl": 8723.72,
@@ -83,9 +71,9 @@
     {
         "id": "tx_20200210",
         "date": "2020-02-10",
-        "portfolio_value": 100025535.11381249,
+        "portfolio_value": 10050723.166,
         "total_trade_amount": 956155.2,
-        "reason": "삼성전자(005930):BUY(상승장 누적 매수 Lv2 (20EMA 눌림, add 1))",
+        "reason": "삼성전자(005930):BUY(상승장 누적 매수 Lv2 (20EMA 눌림, add 1)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -104,9 +92,9 @@
     {
         "id": "tx_20200218",
         "date": "2020-02-18",
-        "portfolio_value": 100021209.51781249,
+        "portfolio_value": 10051047.57,
         "total_trade_amount": 478878.4,
-        "reason": "삼성전자(005930):BUY(상승장 누적 매수 Lv3 (20EMA 눌림, add 2))",
+        "reason": "삼성전자(005930):BUY(상승장 누적 매수 Lv3 (20EMA 눌림, add 2)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -125,9 +113,9 @@
     {
         "id": "tx_20200219",
         "date": "2020-02-19",
-        "portfolio_value": 100030016.1158125,
+        "portfolio_value": 10061404.168,
         "total_trade_amount": 241040.8,
-        "reason": "삼성전자(005930):BUY(상승장 누적 매수 Lv4 (20EMA 눌림, add 3))",
+        "reason": "삼성전자(005930):BUY(상승장 누적 매수 Lv4 (20EMA 눌림, add 3)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -146,9 +134,9 @@
     {
         "id": "tx_20200224",
         "date": "2020-02-24",
-        "portfolio_value": 99975387.5878125,
+        "portfolio_value": 9949425.639999999,
         "total_trade_amount": 907891.2,
-        "reason": "삼성전자(005930):SELL(추세 이탈 분할 청산(16/32주, -4.2%))",
+        "reason": "삼성전자(005930):SELL(추세 이탈 분할 청산(16/32주, -4.2%)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -159,7 +147,7 @@
                 "date": "2020-02-24",
                 "status": "FILLED",
                 "reason": "",
-                "lot_id": "lot_20260530_162838_005930_004",
+                "lot_id": "lot_20260531_065639_005930_004",
                 "level": 4,
                 "buy_price": 60260.2,
                 "realized_pnl": -14635.43,
@@ -174,7 +162,7 @@
                 "date": "2020-02-24",
                 "status": "FILLED",
                 "reason": "",
-                "lot_id": "lot_20260530_162838_005930_003",
+                "lot_id": "lot_20260531_065639_005930_003",
                 "level": 3,
                 "buy_price": 59859.8,
                 "realized_pnl": -26067.67,
@@ -189,7 +177,7 @@
                 "date": "2020-02-24",
                 "status": "FILLED",
                 "reason": "",
-                "lot_id": "lot_20260530_162838_005930_002",
+                "lot_id": "lot_20260531_065639_005930_002",
                 "level": 2,
                 "buy_price": 59759.7,
                 "realized_pnl": -12633.43,
@@ -200,9 +188,9 @@
     {
         "id": "tx_20200228",
         "date": "2020-02-28",
-        "portfolio_value": 99979579.5558125,
+        "portfolio_value": 9904792.608,
         "total_trade_amount": 866332.8,
-        "reason": "삼성전자(005930):SELL(추종 데드라인 발동 잔량 청산(16주, 기준가 대비 -4.5%))",
+        "reason": "삼성전자(005930):SELL(추종 데드라인 발동 잔량 청산(16주, 기준가 대비 -4.5%)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -213,7 +201,7 @@
                 "date": "2020-02-28",
                 "status": "FILLED",
                 "reason": "",
-                "lot_id": "lot_20260530_162838_005930_002",
+                "lot_id": "lot_20260531_065639_005930_002",
                 "level": 2,
                 "buy_price": 59759.7,
                 "realized_pnl": -68991.17,
@@ -228,7 +216,7 @@
                 "date": "2020-02-28",
                 "status": "FILLED",
                 "reason": "",
-                "lot_id": "lot_20260530_162837_005930_001",
+                "lot_id": "lot_20260531_065639_005930_001",
                 "level": 1,
                 "buy_price": 55255.2,
                 "realized_pnl": -4979.06,
@@ -239,9 +227,9 @@
     {
         "id": "tx_20200302",
         "date": "2020-03-02",
-        "portfolio_value": 99964487.0808125,
+        "portfolio_value": 9901325.133,
         "total_trade_amount": 990990.0,
-        "reason": "삼성전자(005930):BUY(초기 매수 Lv1)",
+        "reason": "삼성전자(005930):BUY(초기 매수 Lv1), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -260,9 +248,9 @@
     {
         "id": "tx_20200311",
         "date": "2020-03-11",
-        "portfolio_value": 99964894.7585625,
+        "portfolio_value": 9847482.81075,
         "total_trade_amount": 469368.89999999997,
-        "reason": "삼성전자(005930):BUY(추가 매수 Lv2 (Lv1 대비 -5.4%)), KODEX 인버스(114800):SELL(Lv1: trailing 활성화 (매수가 대비 +12.0%, 스톱가 KRW 6,845))",
+        "reason": "삼성전자(005930):BUY(추가 매수 Lv2 (Lv1 대비 -5.4%)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -281,9 +269,9 @@
     {
         "id": "tx_20200316",
         "date": "2020-03-16",
-        "portfolio_value": 99989932.03606251,
+        "portfolio_value": 9759370.08825,
         "total_trade_amount": 489489.0,
-        "reason": "삼성전자(005930):BUY(추가 매수 Lv3 (Lv2 대비 -6.2%))",
+        "reason": "삼성전자(005930):BUY(추가 매수 Lv3 (Lv2 대비 -6.2%)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -302,9 +290,9 @@
     {
         "id": "tx_20200318",
         "date": "2020-03-18",
-        "portfolio_value": 99965434.89606251,
+        "portfolio_value": 9635672.94825,
         "total_trade_amount": 456456.0,
-        "reason": "삼성전자(005930):BUY(추가 매수 Lv4 (Lv3 대비 -6.8%))",
+        "reason": "삼성전자(005930):BUY(추가 매수 Lv4 (Lv3 대비 -6.8%)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -323,9 +311,9 @@
     {
         "id": "tx_20200319",
         "date": "2020-03-19",
-        "portfolio_value": 99933005.1399375,
+        "portfolio_value": 9509468.192125,
         "total_trade_amount": 472922.44999999995,
-        "reason": "삼성전자(005930):BUY(추가 매수 Lv5 (Lv4 대비 -5.9%))",
+        "reason": "삼성전자(005930):BUY(추가 매수 Lv5 (Lv4 대비 -5.9%)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -342,98 +330,11 @@
         ]
     },
     {
-        "id": "tx_20200320",
-        "date": "2020-03-20",
-        "portfolio_value": 99959691.157625,
-        "total_trade_amount": 1310762.1500000001,
-        "reason": "KODEX 인버스(114800):SELL(trailing 벌크 매도 Lv1~Lv1 (155주 +31.6%))",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "SELL",
-                "quantity": 155,
-                "price": 8456.53,
-                "fee": 3276.91,
-                "date": "2020-03-20",
-                "status": "FILLED",
-                "reason": "",
-                "lot_id": "lot_20260530_162837_114800_001",
-                "level": 1,
-                "buy_price": 6431.42,
-                "realized_pnl": 310615.14,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
-        "id": "tx_20200323",
-        "date": "2020-03-23",
-        "portfolio_value": 99788013.54288751,
-        "total_trade_amount": 993887.3400000001,
-        "reason": "KODEX 인버스(114800):BUY(초기 매수 Lv1)",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "BUY",
-                "quantity": 111,
-                "price": 8953.94,
-                "fee": 2484.72,
-                "date": "2020-03-23",
-                "status": "FILLED",
-                "reason": "",
-                "level": 1,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
-        "id": "tx_20200324",
-        "date": "2020-03-24",
-        "portfolio_value": 99949480.09416251,
-        "total_trade_amount": 493983.49,
-        "reason": "KODEX 인버스(114800):BUY(추가 매수 Lv2 (Lv1 대비 -9.6%))",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "BUY",
-                "quantity": 61,
-                "price": 8098.09,
-                "fee": 1234.96,
-                "date": "2020-03-24",
-                "status": "FILLED",
-                "reason": "",
-                "level": 2,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
-        "id": "tx_20200327",
-        "date": "2020-03-27",
-        "portfolio_value": 99943487.5825375,
-        "total_trade_amount": 495144.64999999997,
-        "reason": "KODEX 인버스(114800):BUY(추가 매수 Lv3 (Lv2 대비 -6.0%))",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "BUY",
-                "quantity": 65,
-                "price": 7617.61,
-                "fee": 1237.86,
-                "date": "2020-03-27",
-                "status": "FILLED",
-                "reason": "",
-                "level": 3,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
         "id": "tx_20200401",
         "date": "2020-04-01",
-        "portfolio_value": 99854790.5420375,
+        "portfolio_value": 9673006.151625,
         "total_trade_amount": 503296.19999999995,
-        "reason": "삼성전자(005930):SELL(trailing 벌크 매도 Lv5~Lv5 (11주 +6.5%))",
+        "reason": "삼성전자(005930):SELL(trailing 벌크 매도 Lv5~Lv5 (11주 +6.5%)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -444,7 +345,7 @@
                 "date": "2020-04-01",
                 "status": "FILLED",
                 "reason": "",
-                "lot_id": "lot_20260530_162838_005930_005",
+                "lot_id": "lot_20260531_065639_005930_005",
                 "level": 5,
                 "buy_price": 42992.95,
                 "realized_pnl": 29115.51,
@@ -453,197 +354,11 @@
         ]
     },
     {
-        "id": "tx_20200402",
-        "date": "2020-04-02",
-        "portfolio_value": 99839779.2668875,
-        "total_trade_amount": 1804134.06,
-        "reason": "KODEX 인버스(114800):SELL(추세 이탈 통합 전량 청산(Bulk Sell, 237주 -8.9%))",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "SELL",
-                "quantity": 65,
-                "price": 7612.38,
-                "fee": 4510.34,
-                "date": "2020-04-02",
-                "status": "FILLED",
-                "reason": "",
-                "lot_id": "lot_20260530_162838_114800_003",
-                "level": 3,
-                "buy_price": 7617.61,
-                "realized_pnl": -1576.96,
-                "alias": "KODEX 인버스"
-            },
-            {
-                "ticker": "114800",
-                "action": "SELL",
-                "quantity": 61,
-                "price": 7612.38,
-                "fee": 4510.34,
-                "date": "2020-04-02",
-                "status": "FILLED",
-                "reason": "",
-                "lot_id": "lot_20260530_162838_114800_002",
-                "level": 2,
-                "buy_price": 8098.09,
-                "realized_pnl": -30789.2,
-                "alias": "KODEX 인버스"
-            },
-            {
-                "ticker": "114800",
-                "action": "SELL",
-                "quantity": 111,
-                "price": 7612.38,
-                "fee": 4510.34,
-                "date": "2020-04-02",
-                "status": "FILLED",
-                "reason": "",
-                "lot_id": "lot_20260530_162838_114800_001",
-                "level": 1,
-                "buy_price": 8953.94,
-                "realized_pnl": -151025.6,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
-        "id": "tx_20200403",
-        "date": "2020-04-03",
-        "portfolio_value": 99845678.4130625,
-        "total_trade_amount": 1000529.53,
-        "reason": "KODEX 인버스(114800):BUY(초기 매수 Lv1)",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "BUY",
-                "quantity": 131,
-                "price": 7637.63,
-                "fee": 2501.32,
-                "date": "2020-04-03",
-                "status": "FILLED",
-                "reason": "",
-                "level": 1,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
-        "id": "tx_20200407",
-        "date": "2020-04-07",
-        "portfolio_value": 99905638.7345125,
-        "total_trade_amount": 939639.4199999999,
-        "reason": "KODEX 인버스(114800):SELL(추세 이탈 통합 전량 청산(Bulk Sell, 131주 -6.0%))",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "SELL",
-                "quantity": 131,
-                "price": 7172.82,
-                "fee": 2349.1,
-                "date": "2020-04-07",
-                "status": "FILLED",
-                "reason": "",
-                "lot_id": "lot_20260530_162839_114800_001",
-                "level": 1,
-                "buy_price": 7637.63,
-                "realized_pnl": -63239.21,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
-        "id": "tx_20200408",
-        "date": "2020-04-08",
-        "portfolio_value": 99855138.283475,
-        "total_trade_amount": 1000413.73,
-        "reason": "KODEX 인버스(114800):BUY(초기 매수 Lv1)",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "BUY",
-                "quantity": 137,
-                "price": 7302.29,
-                "fee": 2501.04,
-                "date": "2020-04-08",
-                "status": "FILLED",
-                "reason": "",
-                "level": 1,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
-        "id": "tx_20200410",
-        "date": "2020-04-10",
-        "portfolio_value": 99859666.8905,
-        "total_trade_amount": 975833.19,
-        "reason": "KODEX 인버스(114800):SELL(추세 이탈 통합 전량 청산(Bulk Sell, 137주 -2.4%))",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "SELL",
-                "quantity": 137,
-                "price": 7122.87,
-                "fee": 2439.58,
-                "date": "2020-04-10",
-                "status": "FILLED",
-                "reason": "",
-                "lot_id": "lot_20260530_162839_114800_001",
-                "level": 1,
-                "buy_price": 7302.29,
-                "realized_pnl": -27020.12,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
-        "id": "tx_20200413",
-        "date": "2020-04-13",
-        "portfolio_value": 99811533.23394999,
-        "total_trade_amount": 995614.62,
-        "reason": "KODEX 인버스(114800):BUY(초기 매수 Lv1)",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "BUY",
-                "quantity": 137,
-                "price": 7267.26,
-                "fee": 2489.04,
-                "date": "2020-04-13",
-                "status": "FILLED",
-                "reason": "",
-                "level": 1,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
-        "id": "tx_20200417",
-        "date": "2020-04-17",
-        "portfolio_value": 99904805.71374999,
-        "total_trade_amount": 496576.08,
-        "reason": "삼성전자(005930):SELL(Lv4: trailing 활성화 (매수가 대비 +12.6%, 스톱가 KRW 48,830)), KODEX 인버스(114800):BUY(추가 매수 Lv2 (Lv1 대비 -5.2%))",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "BUY",
-                "quantity": 72,
-                "price": 6896.89,
-                "fee": 1241.44,
-                "date": "2020-04-17",
-                "status": "FILLED",
-                "reason": "",
-                "level": 2,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
         "id": "tx_20200504",
         "date": "2020-05-04",
-        "portfolio_value": 99791889.42625,
+        "portfolio_value": 9798209.864125,
         "total_trade_amount": 484515.0,
-        "reason": "삼성전자(005930):SELL(trailing 벌크 매도 Lv4~Lv4 (10주 +6.3%))",
+        "reason": "삼성전자(005930):SELL(trailing 벌크 매도 Lv4~Lv4 (10주 +6.3%)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -654,7 +369,7 @@
                 "date": "2020-05-04",
                 "status": "FILLED",
                 "reason": "",
-                "lot_id": "lot_20260530_162838_005930_004",
+                "lot_id": "lot_20260531_065639_005930_004",
                 "level": 4,
                 "buy_price": 45645.6,
                 "realized_pnl": 26847.71,
@@ -663,53 +378,11 @@
         ]
     },
     {
-        "id": "tx_20200526",
-        "date": "2020-05-26",
-        "portfolio_value": 99718624.8746,
-        "total_trade_amount": 497156.27999999997,
-        "reason": "KODEX 인버스(114800):BUY(추가 매수 Lv3 (Lv2 대비 -5.2%))",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "BUY",
-                "quantity": 76,
-                "price": 6541.53,
-                "fee": 1242.89,
-                "date": "2020-05-26",
-                "status": "FILLED",
-                "reason": "",
-                "level": 3,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
-        "id": "tx_20200603",
-        "date": "2020-06-03",
-        "portfolio_value": 99785724.36012499,
-        "total_trade_amount": 500289.38,
-        "reason": "삼성전자(005930):SELL(Lv3: trailing 활성화 (매수가 대비 +11.3%, 스톱가 KRW 51,775)), KODEX 인버스(114800):BUY(추가 매수 Lv4 (Lv3 대비 -6.8%))",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "BUY",
-                "quantity": 82,
-                "price": 6101.09,
-                "fee": 1250.72,
-                "date": "2020-06-03",
-                "status": "FILLED",
-                "reason": "",
-                "level": 4,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
         "id": "tx_20200612",
         "date": "2020-06-12",
-        "portfolio_value": 99735525.167625,
+        "portfolio_value": 9936980.671625,
         "total_trade_amount": 522477.0,
-        "reason": "삼성전자(005930):SELL(trailing 벌크 매도 Lv3~Lv3 (10주 +6.8%))",
+        "reason": "삼성전자(005930):SELL(trailing 벌크 매도 Lv3~Lv3 (10주 +6.8%)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -720,7 +393,7 @@
                 "date": "2020-06-12",
                 "status": "FILLED",
                 "reason": "",
-                "lot_id": "lot_20260530_162838_005930_003",
+                "lot_id": "lot_20260531_065639_005930_003",
                 "level": 3,
                 "buy_price": 48948.9,
                 "realized_pnl": 31681.81,
@@ -729,32 +402,11 @@
         ]
     },
     {
-        "id": "tx_20200728",
-        "date": "2020-07-28",
-        "portfolio_value": 99738727.6127625,
-        "total_trade_amount": 499443.50999999995,
-        "reason": "삼성전자(005930):SELL(Lv2: trailing 활성화 (매수가 대비 +12.4%, 스톱가 KRW 55,670)), KODEX 인버스(114800):BUY(추가 매수 Lv5 (Lv4 대비 -6.0%))",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "BUY",
-                "quantity": 87,
-                "price": 5740.73,
-                "fee": 1248.61,
-                "date": "2020-07-28",
-                "status": "FILLED",
-                "reason": "",
-                "level": 5,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
         "id": "tx_20200819",
         "date": "2020-08-19",
-        "portfolio_value": 99591106.0562625,
+        "portfolio_value": 10082039.115125,
         "total_trade_amount": 983582.6000000001,
-        "reason": "삼성전자(005930):BUY(상승장 누적 매수 Lv3 (20EMA 눌림, add 1)), KODEX 인버스(114800):BUY(DOWNTREND 확정 - 추가 매수 차단)",
+        "reason": "삼성전자(005930):BUY(상승장 누적 매수 Lv3 (20EMA 눌림, add 1)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -773,9 +425,9 @@
     {
         "id": "tx_20200820",
         "date": "2020-08-20",
-        "portfolio_value": 99581123.30326249,
+        "portfolio_value": 9972176.362125,
         "total_trade_amount": 1217581.2,
-        "reason": "삼성전자(005930):SELL(추세 이탈 분할 청산(22/44주, -0.3%)), KODEX 인버스(114800):BUY(DOWNTREND 확정 - 추가 매수 차단)",
+        "reason": "삼성전자(005930):SELL(추세 이탈 분할 청산(22/44주, -0.3%)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -786,7 +438,7 @@
                 "date": "2020-08-20",
                 "status": "FILLED",
                 "reason": "",
-                "lot_id": "lot_20260530_162840_005930_003",
+                "lot_id": "lot_20260531_065641_005930_003",
                 "level": 3,
                 "buy_price": 57857.8,
                 "realized_pnl": -45076.54,
@@ -801,7 +453,7 @@
                 "date": "2020-08-20",
                 "status": "FILLED",
                 "reason": "",
-                "lot_id": "lot_20260530_162838_005930_002",
+                "lot_id": "lot_20260531_065639_005930_002",
                 "level": 2,
                 "buy_price": 52152.1,
                 "realized_pnl": 15270.69,
@@ -812,9 +464,9 @@
     {
         "id": "tx_20200825",
         "date": "2020-08-25",
-        "portfolio_value": 99497122.9752625,
+        "portfolio_value": 9992596.034125,
         "total_trade_amount": 451651.2,
-        "reason": "삼성전자(005930):BUY(상승장 누적 매수 Lv3 (20EMA 눌림, add 2)), KODEX 인버스(114800):BUY(DOWNTREND 확정 - 추가 매수 차단)",
+        "reason": "삼성전자(005930):BUY(상승장 누적 매수 Lv3 (20EMA 눌림, add 2)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -833,9 +485,9 @@
     {
         "id": "tx_20200827",
         "date": "2020-08-27",
-        "portfolio_value": 99492906.06026249,
+        "portfolio_value": 9965679.119125001,
         "total_trade_amount": 833166.0,
-        "reason": "삼성전자(005930):SELL(추세 이탈 분할 청산(15/30주, +1.0%)), KODEX 인버스(114800):BUY(DOWNTREND 확정 - 추가 매수 차단)",
+        "reason": "삼성전자(005930):SELL(추세 이탈 분할 청산(15/30주, +1.0%)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -846,7 +498,7 @@
                 "date": "2020-08-27",
                 "status": "FILLED",
                 "reason": "",
-                "lot_id": "lot_20260530_162840_005930_003",
+                "lot_id": "lot_20260531_065641_005930_003",
                 "level": 3,
                 "buy_price": 56456.4,
                 "realized_pnl": -8406.89,
@@ -861,7 +513,7 @@
                 "date": "2020-08-27",
                 "status": "FILLED",
                 "reason": "",
-                "lot_id": "lot_20260530_162838_005930_002",
+                "lot_id": "lot_20260531_065639_005930_002",
                 "level": 2,
                 "buy_price": 52152.1,
                 "realized_pnl": 13013.76,
@@ -876,7 +528,7 @@
                 "date": "2020-08-27",
                 "status": "FILLED",
                 "reason": "",
-                "lot_id": "lot_20260530_162838_005930_001",
+                "lot_id": "lot_20260531_065639_005930_001",
                 "level": 1,
                 "buy_price": 55055.0,
                 "realized_pnl": 1051.62,
@@ -885,32 +537,11 @@
         ]
     },
     {
-        "id": "tx_20200903",
-        "date": "2020-09-03",
-        "portfolio_value": 99457764.40711248,
-        "total_trade_amount": 497756.8,
-        "reason": "KODEX 인버스(114800):BUY(추가 매수 Lv6 (Lv5 대비 -5.8%))",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "BUY",
-                "quantity": 92,
-                "price": 5410.4,
-                "fee": 1244.39,
-                "date": "2020-09-03",
-                "status": "FILLED",
-                "reason": "",
-                "level": 6,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
         "id": "tx_20200904",
         "date": "2020-09-04",
-        "portfolio_value": 99485158.71911249,
+        "portfolio_value": 9964123.431125002,
         "total_trade_amount": 444355.2,
-        "reason": "삼성전자(005930):SELL(추세 이탈 분할 청산(8/15주, +1.0%))",
+        "reason": "삼성전자(005930):SELL(추세 이탈 분할 청산(8/15주, +1.0%)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -921,7 +552,7 @@
                 "date": "2020-09-04",
                 "status": "FILLED",
                 "reason": "",
-                "lot_id": "lot_20260530_162838_005930_001",
+                "lot_id": "lot_20260531_065639_005930_001",
                 "level": 1,
                 "buy_price": 55055.0,
                 "realized_pnl": 2804.31,
@@ -932,9 +563,9 @@
     {
         "id": "tx_20200923",
         "date": "2020-09-23",
-        "portfolio_value": 99521717.73311248,
+        "portfolio_value": 9984302.445125002,
         "total_trade_amount": 234634.4,
-        "reason": "삼성전자(005930):BUY(상승장 누적 매수 Lv2 (20EMA 눌림, add 3))",
+        "reason": "삼성전자(005930):BUY(상승장 누적 매수 Lv2 (20EMA 눌림, add 3)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -953,9 +584,9 @@
     {
         "id": "tx_20201029",
         "date": "2020-10-29",
-        "portfolio_value": 99498618.50461249,
+        "portfolio_value": 9977583.216625003,
         "total_trade_amount": 348251.4,
-        "reason": "삼성전자(005930):SELL(추세 이탈 분할 청산(6/11주, +3.1%))",
+        "reason": "삼성전자(005930):SELL(추세 이탈 분할 청산(6/11주, +3.1%)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -966,7 +597,7 @@
                 "date": "2020-10-29",
                 "status": "FILLED",
                 "reason": "",
-                "lot_id": "lot_20260530_162841_005930_002",
+                "lot_id": "lot_20260531_065641_005930_002",
                 "level": 2,
                 "buy_price": 58658.6,
                 "realized_pnl": -3047.22,
@@ -981,7 +612,7 @@
                 "date": "2020-10-29",
                 "status": "FILLED",
                 "reason": "",
-                "lot_id": "lot_20260530_162838_005930_001",
+                "lot_id": "lot_20260531_065639_005930_001",
                 "level": 1,
                 "buy_price": 55055.0,
                 "realized_pnl": 5683.59,
@@ -990,32 +621,11 @@
         ]
     },
     {
-        "id": "tx_20201111",
-        "date": "2020-11-11",
-        "portfolio_value": 99313590.72172499,
-        "total_trade_amount": 496650.67,
-        "reason": "KODEX 인버스(114800):BUY(추가 매수 Lv7 (Lv6 대비 -5.5%))",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "BUY",
-                "quantity": 97,
-                "price": 5120.11,
-                "fee": 1241.63,
-                "date": "2020-11-11",
-                "status": "FILLED",
-                "reason": "",
-                "level": 7,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
         "id": "tx_20210115",
         "date": "2021-01-15",
-        "portfolio_value": 98690642.38172498,
+        "portfolio_value": 10126159.876625003,
         "total_trade_amount": 263736.0,
-        "reason": "삼성전자(005930):SELL(추세 이탈 분할 청산(3/5주, +59.8%)), KODEX 인버스(114800):BUY(DOWNTREND 확정 - 추가 매수 차단)",
+        "reason": "삼성전자(005930):SELL(추세 이탈 분할 청산(3/5주, +59.8%)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -1026,7 +636,7 @@
                 "date": "2021-01-15",
                 "status": "FILLED",
                 "reason": "",
-                "lot_id": "lot_20260530_162838_005930_001",
+                "lot_id": "lot_20260531_065639_005930_001",
                 "level": 1,
                 "buy_price": 55055.0,
                 "realized_pnl": 97911.66,
@@ -1037,9 +647,9 @@
     {
         "id": "tx_20210118",
         "date": "2021-01-18",
-        "portfolio_value": 98738702.80672498,
+        "portfolio_value": 10119565.301625004,
         "total_trade_amount": 169830.0,
-        "reason": "삼성전자(005930):SELL(추종 데드라인 발동 잔량 청산(2주, 기준가 대비 -3.3%)), KODEX 인버스(114800):BUY(DOWNTREND 확정 - 추가 매수 차단)",
+        "reason": "삼성전자(005930):SELL(추종 데드라인 발동 잔량 청산(2주, 기준가 대비 -3.3%)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -1050,7 +660,7 @@
                 "date": "2021-01-18",
                 "status": "FILLED",
                 "reason": "",
-                "lot_id": "lot_20260530_162838_005930_001",
+                "lot_id": "lot_20260531_065639_005930_001",
                 "level": 1,
                 "buy_price": 55055.0,
                 "realized_pnl": 59295.43,
@@ -1061,9 +671,9 @@
     {
         "id": "tx_20210119",
         "date": "2021-01-19",
-        "portfolio_value": 98667835.91422498,
+        "portfolio_value": 10116213.409125004,
         "total_trade_amount": 957957.0,
-        "reason": "삼성전자(005930):BUY(초기 매수 Lv1), KODEX 인버스(114800):BUY(DOWNTREND 확정 - 추가 매수 차단)",
+        "reason": "삼성전자(005930):BUY(초기 매수 Lv1), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -1082,9 +692,9 @@
     {
         "id": "tx_20210122",
         "date": "2021-01-22",
-        "portfolio_value": 98628449.41622499,
+        "portfolio_value": 10112191.911125004,
         "total_trade_amount": 520279.19999999995,
-        "reason": "삼성전자(005930):SELL(추세 이탈 분할 청산(6/11주, -0.3%)), KODEX 인버스(114800):BUY(DOWNTREND 확정 - 추가 매수 차단)",
+        "reason": "삼성전자(005930):SELL(추세 이탈 분할 청산(6/11주, -0.3%)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -1095,7 +705,7 @@
                 "date": "2021-01-22",
                 "status": "FILLED",
                 "reason": "",
-                "lot_id": "lot_20260530_162843_005930_001",
+                "lot_id": "lot_20260531_065643_005930_001",
                 "level": 1,
                 "buy_price": 87087.0,
                 "realized_pnl": -3543.5,
@@ -1106,9 +716,9 @@
     {
         "id": "tx_20210126",
         "date": "2021-01-26",
-        "portfolio_value": 98636684.71647498,
+        "portfolio_value": 10110782.211375004,
         "total_trade_amount": 259839.90000000002,
-        "reason": "삼성전자(005930):SELL(추세 이탈 분할 청산(3/5주, -0.4%)), KODEX 인버스(114800):BUY(DOWNTREND 확정 - 추가 매수 차단)",
+        "reason": "삼성전자(005930):SELL(추세 이탈 분할 청산(3/5주, -0.4%)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -1119,7 +729,7 @@
                 "date": "2021-01-26",
                 "status": "FILLED",
                 "reason": "",
-                "lot_id": "lot_20260530_162843_005930_001",
+                "lot_id": "lot_20260531_065643_005930_001",
                 "level": 1,
                 "buy_price": 87087.0,
                 "realized_pnl": -2070.7,
@@ -1130,9 +740,9 @@
     {
         "id": "tx_20210128",
         "date": "2021-01-28",
-        "portfolio_value": 98687969.23497498,
+        "portfolio_value": 10104196.729875004,
         "total_trade_amount": 167232.6,
-        "reason": "삼성전자(005930):SELL(추종 데드라인 발동 잔량 청산(2주, 기준가 대비 -3.4%)), KODEX 인버스(114800):BUY(DOWNTREND 확정 - 추가 매수 차단)",
+        "reason": "삼성전자(005930):SELL(추종 데드라인 발동 잔량 청산(2주, 기준가 대비 -3.4%)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -1143,7 +753,7 @@
                 "date": "2021-01-28",
                 "status": "FILLED",
                 "reason": "",
-                "lot_id": "lot_20260530_162843_005930_001",
+                "lot_id": "lot_20260531_065643_005930_001",
                 "level": 1,
                 "buy_price": 87087.0,
                 "realized_pnl": -7359.48,
@@ -1154,9 +764,9 @@
     {
         "id": "tx_20210129",
         "date": "2021-01-29",
-        "portfolio_value": 98748822.77497499,
+        "portfolio_value": 10100750.269875005,
         "total_trade_amount": 984984.0,
-        "reason": "삼성전자(005930):BUY(초기 매수 Lv1), KODEX 인버스(114800):BUY(DOWNTREND 확정 - 추가 매수 차단)",
+        "reason": "삼성전자(005930):BUY(초기 매수 Lv1), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -1175,9 +785,9 @@
     {
         "id": "tx_20210202",
         "date": "2021-02-02",
-        "portfolio_value": 98666541.64097498,
+        "portfolio_value": 10127779.135875005,
         "total_trade_amount": 505893.60000000003,
-        "reason": "삼성전자(005930):SELL(추세 이탈 분할 청산(6/12주, +2.8%)), KODEX 인버스(114800):BUY(DOWNTREND 확정 - 추가 매수 차단)",
+        "reason": "삼성전자(005930):SELL(추세 이탈 분할 청산(6/12주, +2.8%)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -1188,7 +798,7 @@
                 "date": "2021-02-02",
                 "status": "FILLED",
                 "reason": "",
-                "lot_id": "lot_20260530_162843_005930_001",
+                "lot_id": "lot_20260531_065643_005930_001",
                 "level": 1,
                 "buy_price": 82082.0,
                 "realized_pnl": 12136.87,
@@ -1199,9 +809,9 @@
     {
         "id": "tx_20210210",
         "date": "2021-02-10",
-        "portfolio_value": 98651244.26497498,
+        "portfolio_value": 10109266.759875005,
         "total_trade_amount": 489110.39999999997,
-        "reason": "삼성전자(005930):SELL(추종 데드라인 발동 잔량 청산(6주, 기준가 대비 -3.2%)), KODEX 인버스(114800):BUY(DOWNTREND 확정 - 추가 매수 차단)",
+        "reason": "삼성전자(005930):SELL(추종 데드라인 발동 잔량 청산(6주, 기준가 대비 -3.2%)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -1212,7 +822,7 @@
                 "date": "2021-02-10",
                 "status": "FILLED",
                 "reason": "",
-                "lot_id": "lot_20260530_162843_005930_001",
+                "lot_id": "lot_20260531_065643_005930_001",
                 "level": 1,
                 "buy_price": 82082.0,
                 "realized_pnl": -4604.38,
@@ -1223,9 +833,9 @@
     {
         "id": "tx_20210215",
         "date": "2021-02-15",
-        "portfolio_value": 98609420.24947499,
+        "portfolio_value": 10106022.744375005,
         "total_trade_amount": 927126.2,
-        "reason": "삼성전자(005930):BUY(초기 매수 Lv1), KODEX 인버스(114800):BUY(DOWNTREND 확정 - 추가 매수 차단)",
+        "reason": "삼성전자(005930):BUY(초기 매수 Lv1), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -1244,9 +854,9 @@
     {
         "id": "tx_20210217",
         "date": "2021-02-17",
-        "portfolio_value": 98615964.29747498,
+        "portfolio_value": 10093276.792375006,
         "total_trade_amount": 498700.80000000005,
-        "reason": "삼성전자(005930):SELL(추세 이탈 분할 청산(6/11주, -1.3%)), KODEX 인버스(114800):BUY(DOWNTREND 확정 - 추가 매수 차단)",
+        "reason": "삼성전자(005930):SELL(추세 이탈 분할 청산(6/11주, -1.3%)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -1257,7 +867,7 @@
                 "date": "2021-02-17",
                 "status": "FILLED",
                 "reason": "",
-                "lot_id": "lot_20260530_162843_005930_001",
+                "lot_id": "lot_20260531_065643_005930_001",
                 "level": 1,
                 "buy_price": 84284.2,
                 "realized_pnl": -8251.15,
@@ -1266,32 +876,11 @@
         ]
     },
     {
-        "id": "tx_20210222",
-        "date": "2021-02-22",
-        "portfolio_value": 98654233.30979998,
-        "total_trade_amount": 497566.44,
-        "reason": "KODEX 인버스(114800):BUY(추가 매수 Lv8 (Lv7 대비 -23.0%))",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "BUY",
-                "quantity": 126,
-                "price": 3948.94,
-                "fee": 1243.92,
-                "date": "2021-02-22",
-                "status": "FILLED",
-                "reason": "",
-                "level": 8,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
         "id": "tx_20210226",
         "date": "2021-02-26",
-        "portfolio_value": 98693317.67854999,
+        "portfolio_value": 10088911.161125006,
         "total_trade_amount": 247252.5,
-        "reason": "삼성전자(005930):SELL(추세 이탈 분할 청산(3/5주, -2.1%))",
+        "reason": "삼성전자(005930):SELL(추세 이탈 분할 청산(3/5주, -2.1%)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -1302,7 +891,7 @@
                 "date": "2021-02-26",
                 "status": "FILLED",
                 "reason": "",
-                "lot_id": "lot_20260530_162843_005930_001",
+                "lot_id": "lot_20260531_065643_005930_001",
                 "level": 1,
                 "buy_price": 84284.2,
                 "realized_pnl": -6218.23,
@@ -1313,9 +902,9 @@
     {
         "id": "tx_20210303",
         "date": "2021-03-03",
-        "portfolio_value": 98616181.36854999,
+        "portfolio_value": 10088674.851125006,
         "total_trade_amount": 924924.0,
-        "reason": "삼성전자(005930):BUY(상승장 누적 매수 Lv2 (20EMA 눌림, add 1))",
+        "reason": "삼성전자(005930):BUY(상승장 누적 매수 Lv2 (20EMA 눌림, add 1)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -1334,9 +923,9 @@
     {
         "id": "tx_20210311",
         "date": "2021-03-11",
-        "portfolio_value": 98638443.13854998,
+        "portfolio_value": 10060951.621125005,
         "total_trade_amount": 492492.0,
-        "reason": "삼성전자(005930):BUY(상승장 누적 매수 Lv3 (20EMA 눌림, add 2))",
+        "reason": "삼성전자(005930):BUY(상승장 누적 매수 Lv3 (20EMA 눌림, add 2)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -1355,9 +944,9 @@
     {
         "id": "tx_20210312",
         "date": "2021-03-12",
-        "portfolio_value": 98625858.11754999,
+        "portfolio_value": 10075281.600125005,
         "total_trade_amount": 248648.40000000002,
-        "reason": "삼성전자(005930):BUY(상승장 누적 매수 Lv4 (20EMA 눌림, add 3))",
+        "reason": "삼성전자(005930):BUY(상승장 누적 매수 Lv4 (20EMA 눌림, add 3)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -1374,32 +963,11 @@
         ]
     },
     {
-        "id": "tx_20210420",
-        "date": "2021-04-20",
-        "portfolio_value": 98513736.24567498,
-        "total_trade_amount": 499248.75,
-        "reason": "KODEX 인버스(114800):BUY(추가 매수 Lv9 (Lv8 대비 -5.0%))",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "BUY",
-                "quantity": 133,
-                "price": 3753.75,
-                "fee": 1248.12,
-                "date": "2021-04-20",
-                "status": "FILLED",
-                "reason": "",
-                "level": 9,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
         "id": "tx_20210428",
         "date": "2021-04-28",
-        "portfolio_value": 98525097.65342498,
+        "portfolio_value": 10056723.007875005,
         "total_trade_amount": 902196.8999999999,
-        "reason": "삼성전자(005930):SELL(추세 이탈 분할 청산(11/22주, -1.5%))",
+        "reason": "삼성전자(005930):SELL(추세 이탈 분할 청산(11/22주, -1.5%)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -1410,7 +978,7 @@
                 "date": "2021-04-28",
                 "status": "FILLED",
                 "reason": "",
-                "lot_id": "lot_20260530_162844_005930_004",
+                "lot_id": "lot_20260531_065643_005930_004",
                 "level": 4,
                 "buy_price": 82882.8,
                 "realized_pnl": -3209.83,
@@ -1425,7 +993,7 @@
                 "date": "2021-04-28",
                 "status": "FILLED",
                 "reason": "",
-                "lot_id": "lot_20260530_162844_005930_003",
+                "lot_id": "lot_20260531_065643_005930_003",
                 "level": 3,
                 "buy_price": 82082.0,
                 "realized_pnl": -1614.87,
@@ -1440,7 +1008,7 @@
                 "date": "2021-04-28",
                 "status": "FILLED",
                 "reason": "",
-                "lot_id": "lot_20260530_162843_005930_002",
+                "lot_id": "lot_20260531_065643_005930_002",
                 "level": 2,
                 "buy_price": 84084.0,
                 "realized_pnl": -4542.29,
@@ -1451,9 +1019,9 @@
     {
         "id": "tx_20210511",
         "date": "2021-05-11",
-        "portfolio_value": 98504473.67142498,
+        "portfolio_value": 10045119.025875004,
         "total_trade_amount": 486712.80000000005,
-        "reason": "삼성전자(005930):SELL(추세 이탈 분할 청산(6/11주, -3.5%))",
+        "reason": "삼성전자(005930):SELL(추세 이탈 분할 청산(6/11주, -3.5%)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -1464,7 +1032,7 @@
                 "date": "2021-05-11",
                 "status": "FILLED",
                 "reason": "",
-                "lot_id": "lot_20260530_162843_005930_002",
+                "lot_id": "lot_20260531_065643_005930_002",
                 "level": 2,
                 "buy_price": 84084.0,
                 "realized_pnl": -19007.98,
@@ -1475,9 +1043,9 @@
     {
         "id": "tx_20210513",
         "date": "2021-05-13",
-        "portfolio_value": 98579800.90267499,
+        "portfolio_value": 10030246.257125003,
         "total_trade_amount": 392107.5,
-        "reason": "삼성전자(005930):SELL(추종 데드라인 발동 잔량 청산(5주, 기준가 대비 -3.2%))",
+        "reason": "삼성전자(005930):SELL(추종 데드라인 발동 잔량 청산(5주, 기준가 대비 -3.2%)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -1488,7 +1056,7 @@
                 "date": "2021-05-13",
                 "status": "FILLED",
                 "reason": "",
-                "lot_id": "lot_20260530_162843_005930_002",
+                "lot_id": "lot_20260531_065643_005930_002",
                 "level": 2,
                 "buy_price": 84084.0,
                 "realized_pnl": -17575.66,
@@ -1503,7 +1071,7 @@
                 "date": "2021-05-13",
                 "status": "FILLED",
                 "reason": "",
-                "lot_id": "lot_20260530_162843_005930_001",
+                "lot_id": "lot_20260531_065643_005930_001",
                 "level": 1,
                 "buy_price": 84284.2,
                 "realized_pnl": -12117.51,
@@ -1514,9 +1082,9 @@
     {
         "id": "tx_20210514",
         "date": "2021-05-14",
-        "portfolio_value": 98544864.29967499,
+        "portfolio_value": 10026879.654125003,
         "total_trade_amount": 962161.2000000001,
-        "reason": "삼성전자(005930):BUY(초기 매수 Lv1)",
+        "reason": "삼성전자(005930):BUY(초기 매수 Lv1), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -1535,9 +1103,9 @@
     {
         "id": "tx_20210813",
         "date": "2021-08-13",
-        "portfolio_value": 98483920.78367499,
+        "portfolio_value": 9956916.138125002,
         "total_trade_amount": 446846.39999999997,
-        "reason": "삼성전자(005930):BUY(추가 매수 Lv2 (Lv1 대비 -7.2%))",
+        "reason": "삼성전자(005930):BUY(추가 매수 Lv2 (Lv1 대비 -7.2%)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -1556,9 +1124,9 @@
     {
         "id": "tx_20211012",
         "date": "2021-10-12",
-        "portfolio_value": 98687199.07617499,
+        "portfolio_value": 9858024.430625003,
         "total_trade_amount": 483483.0,
-        "reason": "삼성전자(005930):BUY(추가 매수 Lv3 (Lv2 대비 -7.4%))",
+        "reason": "삼성전자(005930):BUY(추가 매수 Lv3 (Lv2 대비 -7.4%)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -1575,536 +1143,11 @@
         ]
     },
     {
-        "id": "tx_20211015",
-        "date": "2021-10-15",
-        "portfolio_value": 98584926.55829999,
-        "total_trade_amount": 998147.15,
-        "reason": "삼성전자(005930):BUY(DOWNTREND 확정 - 추가 매수 차단), KODEX 인버스(114800):BUY(상승장 누적 매수 Lv10 (20EMA 눌림, add 1))",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "BUY",
-                "quantity": 245,
-                "price": 4074.07,
-                "fee": 2495.37,
-                "date": "2021-10-15",
-                "status": "FILLED",
-                "reason": "",
-                "level": 10,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
-        "id": "tx_20211019",
-        "date": "2021-10-19",
-        "portfolio_value": 98552524.50483748,
-        "total_trade_amount": 4634969.649999999,
-        "reason": "삼성전자(005930):BUY(DOWNTREND 확정 - 추가 매수 차단), KODEX 인버스(114800):SELL(추세 이탈 통합 전량 청산(Bulk Sell, 1147주 -22.4%))",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "SELL",
-                "quantity": 245,
-                "price": 4040.95,
-                "fee": 11587.44,
-                "date": "2021-10-19",
-                "status": "FILLED",
-                "reason": "",
-                "lot_id": "lot_20260530_162847_114800_010",
-                "level": 10,
-                "buy_price": 4074.07,
-                "realized_pnl": -10589.49,
-                "alias": "KODEX 인버스"
-            },
-            {
-                "ticker": "114800",
-                "action": "SELL",
-                "quantity": 133,
-                "price": 4040.95,
-                "fee": 11587.44,
-                "date": "2021-10-19",
-                "status": "FILLED",
-                "reason": "",
-                "lot_id": "lot_20260530_162844_114800_009",
-                "level": 9,
-                "buy_price": 3753.75,
-                "realized_pnl": 36853.98,
-                "alias": "KODEX 인버스"
-            },
-            {
-                "ticker": "114800",
-                "action": "SELL",
-                "quantity": 126,
-                "price": 4040.95,
-                "fee": 11587.44,
-                "date": "2021-10-19",
-                "status": "FILLED",
-                "reason": "",
-                "lot_id": "lot_20260530_162843_114800_008",
-                "level": 8,
-                "buy_price": 3948.94,
-                "realized_pnl": 10320.36,
-                "alias": "KODEX 인버스"
-            },
-            {
-                "ticker": "114800",
-                "action": "SELL",
-                "quantity": 97,
-                "price": 4040.95,
-                "fee": 11587.44,
-                "date": "2021-10-19",
-                "status": "FILLED",
-                "reason": "",
-                "lot_id": "lot_20260530_162842_114800_007",
-                "level": 7,
-                "buy_price": 5120.11,
-                "realized_pnl": -105658.45,
-                "alias": "KODEX 인버스"
-            },
-            {
-                "ticker": "114800",
-                "action": "SELL",
-                "quantity": 92,
-                "price": 4040.95,
-                "fee": 11587.44,
-                "date": "2021-10-19",
-                "status": "FILLED",
-                "reason": "",
-                "lot_id": "lot_20260530_162841_114800_006",
-                "level": 6,
-                "buy_price": 5410.4,
-                "realized_pnl": -126918.82,
-                "alias": "KODEX 인버스"
-            },
-            {
-                "ticker": "114800",
-                "action": "SELL",
-                "quantity": 87,
-                "price": 4040.95,
-                "fee": 11587.44,
-                "date": "2021-10-19",
-                "status": "FILLED",
-                "reason": "",
-                "lot_id": "lot_20260530_162840_114800_005",
-                "level": 5,
-                "buy_price": 5740.73,
-                "realized_pnl": -148759.77,
-                "alias": "KODEX 인버스"
-            },
-            {
-                "ticker": "114800",
-                "action": "SELL",
-                "quantity": 82,
-                "price": 4040.95,
-                "fee": 11587.44,
-                "date": "2021-10-19",
-                "status": "FILLED",
-                "reason": "",
-                "lot_id": "lot_20260530_162839_114800_004",
-                "level": 4,
-                "buy_price": 6101.09,
-                "realized_pnl": -169759.88,
-                "alias": "KODEX 인버스"
-            },
-            {
-                "ticker": "114800",
-                "action": "SELL",
-                "quantity": 76,
-                "price": 4040.95,
-                "fee": 11587.44,
-                "date": "2021-10-19",
-                "status": "FILLED",
-                "reason": "",
-                "lot_id": "lot_20260530_162839_114800_003",
-                "level": 3,
-                "buy_price": 6541.53,
-                "realized_pnl": -190811.86,
-                "alias": "KODEX 인버스"
-            },
-            {
-                "ticker": "114800",
-                "action": "SELL",
-                "quantity": 72,
-                "price": 4040.95,
-                "fee": 11587.44,
-                "date": "2021-10-19",
-                "status": "FILLED",
-                "reason": "",
-                "lot_id": "lot_20260530_162839_114800_002",
-                "level": 2,
-                "buy_price": 6896.89,
-                "realized_pnl": -206355.05,
-                "alias": "KODEX 인버스"
-            },
-            {
-                "ticker": "114800",
-                "action": "SELL",
-                "quantity": 137,
-                "price": 4040.95,
-                "fee": 11587.44,
-                "date": "2021-10-19",
-                "status": "FILLED",
-                "reason": "",
-                "lot_id": "lot_20260530_162839_114800_001",
-                "level": 1,
-                "buy_price": 7267.26,
-                "realized_pnl": -443388.5,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
-        "id": "tx_20211020",
-        "date": "2021-10-20",
-        "portfolio_value": 98541531.98696248,
-        "total_trade_amount": 998147.15,
-        "reason": "삼성전자(005930):BUY(DOWNTREND 확정 - 추가 매수 차단), KODEX 인버스(114800):BUY(초기 매수 Lv1)",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "BUY",
-                "quantity": 245,
-                "price": 4074.07,
-                "fee": 2495.37,
-                "date": "2021-10-20",
-                "status": "FILLED",
-                "reason": "",
-                "level": 1,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
-        "id": "tx_20211022",
-        "date": "2021-10-22",
-        "portfolio_value": 98539304.52198748,
-        "total_trade_amount": 1000988.76,
-        "reason": "삼성전자(005930):BUY(DOWNTREND 확정 - 추가 매수 차단), KODEX 인버스(114800):BUY(상승장 누적 매수 Lv2 (20EMA 눌림, add 1))",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "BUY",
-                "quantity": 246,
-                "price": 4069.06,
-                "fee": 2502.47,
-                "date": "2021-10-22",
-                "status": "FILLED",
-                "reason": "",
-                "level": 2,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
-        "id": "tx_20211025",
-        "date": "2021-10-25",
-        "portfolio_value": 98519984.56836249,
-        "total_trade_amount": 1986561.45,
-        "reason": "삼성전자(005930):BUY(DOWNTREND 확정 - 추가 매수 차단), KODEX 인버스(114800):SELL(추세 이탈 통합 전량 청산(Bulk Sell, 491주 -0.5%))",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "SELL",
-                "quantity": 246,
-                "price": 4045.95,
-                "fee": 4966.4,
-                "date": "2021-10-25",
-                "status": "FILLED",
-                "reason": "",
-                "lot_id": "lot_20260530_162847_114800_002",
-                "level": 2,
-                "buy_price": 4069.06,
-                "realized_pnl": -8173.32,
-                "alias": "KODEX 인버스"
-            },
-            {
-                "ticker": "114800",
-                "action": "SELL",
-                "quantity": 245,
-                "price": 4045.95,
-                "fee": 4966.4,
-                "date": "2021-10-25",
-                "status": "FILLED",
-                "reason": "",
-                "lot_id": "lot_20260530_162847_114800_001",
-                "level": 1,
-                "buy_price": 4074.07,
-                "realized_pnl": -9367.54,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
-        "id": "tx_20211026",
-        "date": "2021-10-26",
-        "portfolio_value": 98538987.35713749,
-        "total_trade_amount": 999488.4900000001,
-        "reason": "삼성전자(005930):BUY(DOWNTREND 확정 - 추가 매수 차단), KODEX 인버스(114800):BUY(초기 매수 Lv1)",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "BUY",
-                "quantity": 249,
-                "price": 4014.01,
-                "fee": 2498.72,
-                "date": "2021-10-26",
-                "status": "FILLED",
-                "reason": "",
-                "level": 1,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
-        "id": "tx_20211028",
-        "date": "2021-10-28",
-        "portfolio_value": 98536660.94887498,
-        "total_trade_amount": 1008686.5499999999,
-        "reason": "삼성전자(005930):BUY(DOWNTREND 확정 - 추가 매수 차단), KODEX 인버스(114800):SELL(추세 이탈 통합 전량 청산(Bulk Sell, 249주 +1.0%))",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "SELL",
-                "quantity": 249,
-                "price": 4050.95,
-                "fee": 2521.71,
-                "date": "2021-10-28",
-                "status": "FILLED",
-                "reason": "",
-                "lot_id": "lot_20260530_162847_114800_001",
-                "level": 1,
-                "buy_price": 4014.01,
-                "realized_pnl": 6676.35,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
-        "id": "tx_20211029",
-        "date": "2021-10-29",
-        "portfolio_value": 98510664.57824998,
-        "total_trade_amount": 999247.0399999999,
-        "reason": "삼성전자(005930):BUY(DOWNTREND 확정 - 추가 매수 차단), KODEX 인버스(114800):BUY(초기 매수 Lv1)",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "BUY",
-                "quantity": 242,
-                "price": 4129.12,
-                "fee": 2498.12,
-                "date": "2021-10-29",
-                "status": "FILLED",
-                "reason": "",
-                "level": 1,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
-        "id": "tx_20211102",
-        "date": "2021-11-02",
-        "portfolio_value": 98531586.67849998,
-        "total_trade_amount": 979119.8999999999,
-        "reason": "삼성전자(005930):BUY(DOWNTREND 확정 - 추가 매수 차단), KODEX 인버스(114800):SELL(추세 이탈 통합 전량 청산(Bulk Sell, 242주 -1.9%))",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "SELL",
-                "quantity": 242,
-                "price": 4045.95,
-                "fee": 2447.8,
-                "date": "2021-11-02",
-                "status": "FILLED",
-                "reason": "",
-                "lot_id": "lot_20260530_162847_114800_001",
-                "level": 1,
-                "buy_price": 4129.12,
-                "realized_pnl": -22574.94,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
-        "id": "tx_20211103",
-        "date": "2021-11-03",
-        "portfolio_value": 98500584.37113748,
-        "total_trade_amount": 1000943.7299999999,
-        "reason": "삼성전자(005930):BUY(DOWNTREND 확정 - 추가 매수 차단), KODEX 인버스(114800):BUY(초기 매수 Lv1)",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "BUY",
-                "quantity": 243,
-                "price": 4119.11,
-                "fee": 2502.36,
-                "date": "2021-11-03",
-                "status": "FILLED",
-                "reason": "",
-                "level": 1,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
-        "id": "tx_20211105",
-        "date": "2021-11-05",
-        "portfolio_value": 98488449.83038749,
-        "total_trade_amount": 997296.3,
-        "reason": "KODEX 인버스(114800):BUY(상승장 누적 매수 Lv2 (20EMA 눌림, add 1))",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "BUY",
-                "quantity": 243,
-                "price": 4104.1,
-                "fee": 2493.24,
-                "date": "2021-11-05",
-                "status": "FILLED",
-                "reason": "",
-                "level": 2,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
-        "id": "tx_20211108",
-        "date": "2021-11-08",
-        "portfolio_value": 98499140.12112498,
-        "total_trade_amount": 497201.10000000003,
-        "reason": "KODEX 인버스(114800):BUY(상승장 누적 매수 Lv3 (20EMA 눌림, add 2))",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "BUY",
-                "quantity": 121,
-                "price": 4109.1,
-                "fee": 1243.0,
-                "date": "2021-11-08",
-                "status": "FILLED",
-                "reason": "",
-                "level": 3,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
-        "id": "tx_20211109",
-        "date": "2021-11-09",
-        "portfolio_value": 98489695.21413748,
-        "total_trade_amount": 250044.49000000002,
-        "reason": "KODEX 인버스(114800):BUY(상승장 누적 매수 Lv4 (20EMA 눌림, add 3))",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "BUY",
-                "quantity": 61,
-                "price": 4099.09,
-                "fee": 625.11,
-                "date": "2021-11-09",
-                "status": "FILLED",
-                "reason": "",
-                "level": 4,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
-        "id": "tx_20211122",
-        "date": "2021-11-22",
-        "portfolio_value": 98526889.89413749,
-        "total_trade_amount": 2669328.0,
-        "reason": "KODEX 인버스(114800):SELL(추세 이탈 통합 전량 청산(Bulk Sell, 668주 -2.7%))",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "SELL",
-                "quantity": 61,
-                "price": 3996.0,
-                "fee": 6673.32,
-                "date": "2021-11-22",
-                "status": "FILLED",
-                "reason": "",
-                "lot_id": "lot_20260530_162847_114800_004",
-                "level": 4,
-                "buy_price": 4099.09,
-                "realized_pnl": -6897.88,
-                "alias": "KODEX 인버스"
-            },
-            {
-                "ticker": "114800",
-                "action": "SELL",
-                "quantity": 121,
-                "price": 3996.0,
-                "fee": 6673.32,
-                "date": "2021-11-22",
-                "status": "FILLED",
-                "reason": "",
-                "lot_id": "lot_20260530_162847_114800_003",
-                "level": 3,
-                "buy_price": 4109.1,
-                "realized_pnl": -14893.89,
-                "alias": "KODEX 인버스"
-            },
-            {
-                "ticker": "114800",
-                "action": "SELL",
-                "quantity": 243,
-                "price": 3996.0,
-                "fee": 6673.32,
-                "date": "2021-11-22",
-                "status": "FILLED",
-                "reason": "",
-                "lot_id": "lot_20260530_162847_114800_002",
-                "level": 2,
-                "buy_price": 4104.1,
-                "realized_pnl": -28695.87,
-                "alias": "KODEX 인버스"
-            },
-            {
-                "ticker": "114800",
-                "action": "SELL",
-                "quantity": 243,
-                "price": 3996.0,
-                "fee": 6673.32,
-                "date": "2021-11-22",
-                "status": "FILLED",
-                "reason": "",
-                "lot_id": "lot_20260530_162847_114800_001",
-                "level": 1,
-                "buy_price": 4119.11,
-                "realized_pnl": -32343.3,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
-        "id": "tx_20211123",
-        "date": "2021-11-23",
-        "portfolio_value": 98533389.35553749,
-        "total_trade_amount": 1000439.4400000001,
-        "reason": "KODEX 인버스(114800):BUY(초기 매수 Lv1)",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "BUY",
-                "quantity": 248,
-                "price": 4034.03,
-                "fee": 2501.1,
-                "date": "2021-11-23",
-                "status": "FILLED",
-                "reason": "",
-                "level": 1,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
         "id": "tx_20220119",
         "date": "2022-01-19",
-        "portfolio_value": 98590001.34078749,
+        "portfolio_value": 10038656.415875003,
         "total_trade_amount": 533565.9,
-        "reason": "삼성전자(005930):SELL(trailing 벌크 매도 Lv3~Lv3 (7주 +10.5%))",
+        "reason": "삼성전자(005930):SELL(trailing 벌크 매도 Lv3~Lv3 (7주 +10.5%)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -2115,7 +1158,7 @@
                 "date": "2022-01-19",
                 "status": "FILLED",
                 "reason": "",
-                "lot_id": "lot_20260530_162847_005930_003",
+                "lot_id": "lot_20260531_065646_005930_003",
                 "level": 3,
                 "buy_price": 69069.0,
                 "realized_pnl": 48748.99,
@@ -2126,9 +1169,9 @@
     {
         "id": "tx_20220127",
         "date": "2022-01-27",
-        "portfolio_value": 98582573.24303749,
+        "portfolio_value": 9946908.318125002,
         "total_trade_amount": 499599.10000000003,
-        "reason": "삼성전자(005930):BUY(동적 재매수 Lv3 (매도가 KRW 76,224 대비 -6.5%)), KODEX 인버스(114800):SELL(Lv1: trailing 활성화 (매수가 대비 +11.7%, 스톱가 KRW 4,280))",
+        "reason": "삼성전자(005930):BUY(동적 재매수 Lv3 (매도가 KRW 76,224 대비 -6.5%)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -2145,497 +1188,11 @@
         ]
     },
     {
-        "id": "tx_20220204",
-        "date": "2022-02-04",
-        "portfolio_value": 98593032.18283749,
-        "total_trade_amount": 1062856.08,
-        "reason": "삼성전자(005930):BUY(DOWNTREND 확정 - 추가 매수 차단), KODEX 인버스(114800):SELL(추세 이탈 통합 전량 청산(Bulk Sell, 248주 +6.3%))",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "SELL",
-                "quantity": 248,
-                "price": 4285.71,
-                "fee": 2657.14,
-                "date": "2022-02-04",
-                "status": "FILLED",
-                "reason": "",
-                "lot_id": "lot_20260530_162847_114800_001",
-                "level": 1,
-                "buy_price": 4034.03,
-                "realized_pnl": 59759.5,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
-        "id": "tx_20220207",
-        "date": "2022-02-07",
-        "portfolio_value": 98564544.04308748,
-        "total_trade_amount": 996895.9,
-        "reason": "삼성전자(005930):BUY(DOWNTREND 확정 - 추가 매수 차단), KODEX 인버스(114800):BUY(초기 매수 Lv1)",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "BUY",
-                "quantity": 230,
-                "price": 4334.33,
-                "fee": 2492.24,
-                "date": "2022-02-07",
-                "status": "FILLED",
-                "reason": "",
-                "level": 1,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
-        "id": "tx_20220209",
-        "date": "2022-02-09",
-        "portfolio_value": 98545017.19258748,
-        "total_trade_amount": 978820.2,
-        "reason": "삼성전자(005930):BUY(DOWNTREND 확정 - 추가 매수 차단), KODEX 인버스(114800):SELL(추세 이탈 통합 전량 청산(Bulk Sell, 230주 -1.7%))",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "SELL",
-                "quantity": 230,
-                "price": 4255.74,
-                "fee": 2447.05,
-                "date": "2022-02-09",
-                "status": "FILLED",
-                "reason": "",
-                "lot_id": "lot_20260530_162848_114800_001",
-                "level": 1,
-                "buy_price": 4334.33,
-                "realized_pnl": -20522.75,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
-        "id": "tx_20220210",
-        "date": "2022-02-10",
-        "portfolio_value": 98601524.84983748,
-        "total_trade_amount": 998095.92,
-        "reason": "삼성전자(005930):BUY(DOWNTREND 확정 - 추가 매수 차단), KODEX 인버스(114800):BUY(초기 매수 Lv1)",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "BUY",
-                "quantity": 236,
-                "price": 4229.22,
-                "fee": 2495.24,
-                "date": "2022-02-10",
-                "status": "FILLED",
-                "reason": "",
-                "level": 1,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
-        "id": "tx_20220214",
-        "date": "2022-02-14",
-        "portfolio_value": 98564944.47618748,
-        "total_trade_amount": 1005532.2799999999,
-        "reason": "삼성전자(005930):BUY(DOWNTREND 확정 - 추가 매수 차단), KODEX 인버스(114800):SELL(추세 이탈 통합 전량 청산(Bulk Sell, 236주 +0.8%))",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "SELL",
-                "quantity": 236,
-                "price": 4260.73,
-                "fee": 2513.83,
-                "date": "2022-02-14",
-                "status": "FILLED",
-                "reason": "",
-                "lot_id": "lot_20260530_162848_114800_001",
-                "level": 1,
-                "buy_price": 4229.22,
-                "realized_pnl": 4922.53,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
-        "id": "tx_20220215",
-        "date": "2022-02-15",
-        "portfolio_value": 98561455.46081248,
-        "total_trade_amount": 997146.1500000001,
-        "reason": "삼성전자(005930):BUY(DOWNTREND 확정 - 추가 매수 차단), KODEX 인버스(114800):BUY(초기 매수 Lv1)",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "BUY",
-                "quantity": 229,
-                "price": 4354.35,
-                "fee": 2492.87,
-                "date": "2022-02-15",
-                "status": "FILLED",
-                "reason": "",
-                "level": 1,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
-        "id": "tx_20220217",
-        "date": "2022-02-17",
-        "portfolio_value": 98566510.52357498,
-        "total_trade_amount": 971134.04,
-        "reason": "삼성전자(005930):BUY(DOWNTREND 확정 - 추가 매수 차단), KODEX 인버스(114800):SELL(추세 이탈 통합 전량 청산(Bulk Sell, 229주 -2.5%))",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "SELL",
-                "quantity": 229,
-                "price": 4240.76,
-                "fee": 2427.83,
-                "date": "2022-02-17",
-                "status": "FILLED",
-                "reason": "",
-                "lot_id": "lot_20260530_162848_114800_001",
-                "level": 1,
-                "buy_price": 4354.35,
-                "realized_pnl": -28439.94,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
-        "id": "tx_20220218",
-        "date": "2022-02-18",
-        "portfolio_value": 98545519.09147498,
-        "total_trade_amount": 997836.8400000001,
-        "reason": "삼성전자(005930):BUY(DOWNTREND 확정 - 추가 매수 차단), KODEX 인버스(114800):BUY(초기 매수 Lv1)",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "BUY",
-                "quantity": 234,
-                "price": 4264.26,
-                "fee": 2494.59,
-                "date": "2022-02-18",
-                "status": "FILLED",
-                "reason": "",
-                "level": 1,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
-        "id": "tx_20220223",
-        "date": "2022-02-23",
-        "portfolio_value": 98551384.99747498,
-        "total_trade_amount": 998597.6000000001,
-        "reason": "KODEX 인버스(114800):BUY(상승장 누적 매수 Lv2 (20EMA 눌림, add 1))",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "BUY",
-                "quantity": 232,
-                "price": 4304.3,
-                "fee": 2496.49,
-                "date": "2022-02-23",
-                "status": "FILLED",
-                "reason": "",
-                "level": 2,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
-        "id": "tx_20220228",
-        "date": "2022-02-28",
-        "portfolio_value": 98505948.91366248,
-        "total_trade_amount": 499022.95,
-        "reason": "KODEX 인버스(114800):BUY(상승장 누적 매수 Lv3 (20EMA 눌림, add 2))",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "BUY",
-                "quantity": 115,
-                "price": 4339.33,
-                "fee": 1247.56,
-                "date": "2022-02-28",
-                "status": "FILLED",
-                "reason": "",
-                "level": 3,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
-        "id": "tx_20220302",
-        "date": "2022-03-02",
-        "portfolio_value": 98508795.46878748,
-        "total_trade_amount": 248197.95,
-        "reason": "KODEX 인버스(114800):BUY(상승장 누적 매수 Lv4 (20EMA 눌림, add 3))",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "BUY",
-                "quantity": 57,
-                "price": 4354.35,
-                "fee": 620.49,
-                "date": "2022-03-02",
-                "status": "FILLED",
-                "reason": "",
-                "level": 4,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
-        "id": "tx_20220303",
-        "date": "2022-03-03",
-        "portfolio_value": 98478227.36943747,
-        "total_trade_amount": 2721535.7399999998,
-        "reason": "KODEX 인버스(114800):SELL(추세 이탈 통합 전량 청산(Bulk Sell, 638주 -0.7%))",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "SELL",
-                "quantity": 57,
-                "price": 4265.73,
-                "fee": 6803.84,
-                "date": "2022-03-03",
-                "status": "FILLED",
-                "reason": "",
-                "lot_id": "lot_20260530_162849_114800_004",
-                "level": 4,
-                "buy_price": 4354.35,
-                "realized_pnl": -5659.21,
-                "alias": "KODEX 인버스"
-            },
-            {
-                "ticker": "114800",
-                "action": "SELL",
-                "quantity": 115,
-                "price": 4265.73,
-                "fee": 6803.84,
-                "date": "2022-03-03",
-                "status": "FILLED",
-                "reason": "",
-                "lot_id": "lot_20260530_162849_114800_003",
-                "level": 3,
-                "buy_price": 4339.33,
-                "realized_pnl": -9690.4,
-                "alias": "KODEX 인버스"
-            },
-            {
-                "ticker": "114800",
-                "action": "SELL",
-                "quantity": 232,
-                "price": 4265.73,
-                "fee": 6803.84,
-                "date": "2022-03-03",
-                "status": "FILLED",
-                "reason": "",
-                "lot_id": "lot_20260530_162848_114800_002",
-                "level": 2,
-                "buy_price": 4304.3,
-                "realized_pnl": -11422.36,
-                "alias": "KODEX 인버스"
-            },
-            {
-                "ticker": "114800",
-                "action": "SELL",
-                "quantity": 234,
-                "price": 4265.73,
-                "fee": 6803.84,
-                "date": "2022-03-03",
-                "status": "FILLED",
-                "reason": "",
-                "lot_id": "lot_20260530_162848_114800_001",
-                "level": 1,
-                "buy_price": 4264.26,
-                "realized_pnl": -2151.47,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
-        "id": "tx_20220304",
-        "date": "2022-03-04",
-        "portfolio_value": 98474731.17393747,
-        "total_trade_amount": 999198.2000000001,
-        "reason": "KODEX 인버스(114800):BUY(초기 매수 Lv1)",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "BUY",
-                "quantity": 230,
-                "price": 4344.34,
-                "fee": 2498.0,
-                "date": "2022-03-04",
-                "status": "FILLED",
-                "reason": "",
-                "level": 1,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
-        "id": "tx_20220310",
-        "date": "2022-03-10",
-        "portfolio_value": 98397740.82761247,
-        "total_trade_amount": 997526.53,
-        "reason": "KODEX 인버스(114800):BUY(상승장 누적 매수 Lv2 (20EMA 눌림, add 1))",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "BUY",
-                "quantity": 227,
-                "price": 4394.39,
-                "fee": 2493.82,
-                "date": "2022-03-10",
-                "status": "FILLED",
-                "reason": "",
-                "level": 2,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
-        "id": "tx_20220316",
-        "date": "2022-03-16",
-        "portfolio_value": 98420786.36352497,
-        "total_trade_amount": 497131.07000000007,
-        "reason": "삼성전자(005930):BUY(DOWNTREND 확정 - 추가 매수 차단), KODEX 인버스(114800):BUY(상승장 누적 매수 Lv3 (20EMA 눌림, add 2))",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "BUY",
-                "quantity": 113,
-                "price": 4399.39,
-                "fee": 1242.83,
-                "date": "2022-03-16",
-                "status": "FILLED",
-                "reason": "",
-                "level": 3,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
-        "id": "tx_20220321",
-        "date": "2022-03-21",
-        "portfolio_value": 98390314.92401247,
-        "total_trade_amount": 249053.52,
-        "reason": "삼성전자(005930):BUY(DOWNTREND 확정 - 추가 매수 차단), KODEX 인버스(114800):BUY(상승장 누적 매수 Lv4 (20EMA 눌림, add 3))",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "BUY",
-                "quantity": 57,
-                "price": 4369.36,
-                "fee": 622.63,
-                "date": "2022-03-21",
-                "status": "FILLED",
-                "reason": "",
-                "level": 4,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
-        "id": "tx_20220323",
-        "date": "2022-03-23",
-        "portfolio_value": 98345758.20824997,
-        "total_trade_amount": 2684011.44,
-        "reason": "삼성전자(005930):BUY(DOWNTREND 확정 - 추가 매수 차단), KODEX 인버스(114800):SELL(추세 이탈 통합 전량 청산(Bulk Sell, 627주 -2.0%))",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "SELL",
-                "quantity": 57,
-                "price": 4280.72,
-                "fee": 6710.02,
-                "date": "2022-03-23",
-                "status": "FILLED",
-                "reason": "",
-                "lot_id": "lot_20260530_162849_114800_004",
-                "level": 4,
-                "buy_price": 4369.36,
-                "realized_pnl": -5662.48,
-                "alias": "KODEX 인버스"
-            },
-            {
-                "ticker": "114800",
-                "action": "SELL",
-                "quantity": 113,
-                "price": 4280.72,
-                "fee": 6710.02,
-                "date": "2022-03-23",
-                "status": "FILLED",
-                "reason": "",
-                "lot_id": "lot_20260530_162849_114800_003",
-                "level": 3,
-                "buy_price": 4399.39,
-                "realized_pnl": -14619.01,
-                "alias": "KODEX 인버스"
-            },
-            {
-                "ticker": "114800",
-                "action": "SELL",
-                "quantity": 227,
-                "price": 4280.72,
-                "fee": 6710.02,
-                "date": "2022-03-23",
-                "status": "FILLED",
-                "reason": "",
-                "lot_id": "lot_20260530_162849_114800_002",
-                "level": 2,
-                "buy_price": 4394.39,
-                "realized_pnl": -28232.4,
-                "alias": "KODEX 인버스"
-            },
-            {
-                "ticker": "114800",
-                "action": "SELL",
-                "quantity": 230,
-                "price": 4280.72,
-                "fee": 6710.02,
-                "date": "2022-03-23",
-                "status": "FILLED",
-                "reason": "",
-                "lot_id": "lot_20260530_162849_114800_001",
-                "level": 1,
-                "buy_price": 4344.34,
-                "realized_pnl": -17094.01,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
-        "id": "tx_20220324",
-        "date": "2022-03-24",
-        "portfolio_value": 98324760.05134997,
-        "total_trade_amount": 999757.6000000001,
-        "reason": "삼성전자(005930):BUY(DOWNTREND 확정 - 추가 매수 차단), KODEX 인버스(114800):BUY(초기 매수 Lv1)",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "BUY",
-                "quantity": 232,
-                "price": 4309.3,
-                "fee": 2499.4,
-                "date": "2022-03-24",
-                "status": "FILLED",
-                "reason": "",
-                "level": 1,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
         "id": "tx_20220506",
         "date": "2022-05-06",
-        "portfolio_value": 98280069.63759997,
+        "portfolio_value": 9825277.904375002,
         "total_trade_amount": 465965.5,
-        "reason": "삼성전자(005930):BUY(추가 매수 Lv4 (Lv3 대비 -6.8%))",
+        "reason": "삼성전자(005930):BUY(추가 매수 Lv4 (Lv3 대비 -6.8%)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -2654,9 +1211,9 @@
     {
         "id": "tx_20220613",
         "date": "2022-06-13",
-        "portfolio_value": 98192049.59559998,
+        "portfolio_value": 9682737.862375002,
         "total_trade_amount": 497296.8,
-        "reason": "삼성전자(005930):BUY(추가 매수 Lv5 (Lv4 대비 -6.7%))",
+        "reason": "삼성전자(005930):BUY(추가 매수 Lv5 (Lv4 대비 -6.7%)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -2675,9 +1232,9 @@
     {
         "id": "tx_20220620",
         "date": "2022-06-20",
-        "portfolio_value": 98105444.82159998,
+        "portfolio_value": 9545093.088375002,
         "total_trade_amount": 470069.6,
-        "reason": "삼성전자(005930):BUY(추가 매수 Lv6 (Lv5 대비 -5.6%))",
+        "reason": "삼성전자(005930):BUY(추가 매수 Lv6 (Lv5 대비 -5.6%)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -2694,209 +1251,11 @@
         ]
     },
     {
-        "id": "tx_20220708",
-        "date": "2022-07-08",
-        "portfolio_value": 98111225.92917497,
-        "total_trade_amount": 999968.9700000001,
-        "reason": "삼성전자(005930):BUY(DOWNTREND 확정 - 추가 매수 차단), KODEX 인버스(114800):BUY(상승장 누적 매수 Lv2 (20EMA 눌림, add 1))",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "BUY",
-                "quantity": 201,
-                "price": 4974.97,
-                "fee": 2499.92,
-                "date": "2022-07-08",
-                "status": "FILLED",
-                "reason": "",
-                "level": 2,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
-        "id": "tx_20220715",
-        "date": "2022-07-15",
-        "portfolio_value": 98189208.72419998,
-        "total_trade_amount": 496485.99000000005,
-        "reason": "삼성전자(005930):BUY(DOWNTREND 확정 - 추가 매수 차단), KODEX 인버스(114800):BUY(상승장 누적 매수 Lv3 (20EMA 눌림, add 2))",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "BUY",
-                "quantity": 99,
-                "price": 5015.01,
-                "fee": 1241.21,
-                "date": "2022-07-15",
-                "status": "FILLED",
-                "reason": "",
-                "level": 3,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
-        "id": "tx_20220719",
-        "date": "2022-07-19",
-        "portfolio_value": 98181007.98482499,
-        "total_trade_amount": 245995.5,
-        "reason": "삼성전자(005930):BUY(DOWNTREND 확정 - 추가 매수 차단), KODEX 인버스(114800):BUY(상승장 누적 매수 Lv4 (20EMA 눌림, add 3))",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "BUY",
-                "quantity": 50,
-                "price": 4919.91,
-                "fee": 614.99,
-                "date": "2022-07-19",
-                "status": "FILLED",
-                "reason": "",
-                "level": 4,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
-        "id": "tx_20220721",
-        "date": "2022-07-21",
-        "portfolio_value": 98162006.4802,
-        "total_trade_amount": 2805344.7600000002,
-        "reason": "삼성전자(005930):BUY(DOWNTREND 확정 - 추가 매수 차단), KODEX 인버스(114800):SELL(추세 이탈 통합 전량 청산(Bulk Sell, 582주 +2.4%))",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "SELL",
-                "quantity": 50,
-                "price": 4820.18,
-                "fee": 7013.35,
-                "date": "2022-07-21",
-                "status": "FILLED",
-                "reason": "",
-                "lot_id": "lot_20260530_162851_114800_004",
-                "level": 4,
-                "buy_price": 4919.91,
-                "realized_pnl": -5589.02,
-                "alias": "KODEX 인버스"
-            },
-            {
-                "ticker": "114800",
-                "action": "SELL",
-                "quantity": 99,
-                "price": 4820.18,
-                "fee": 7013.35,
-                "date": "2022-07-21",
-                "status": "FILLED",
-                "reason": "",
-                "lot_id": "lot_20260530_162851_114800_003",
-                "level": 3,
-                "buy_price": 5015.01,
-                "realized_pnl": -20481.16,
-                "alias": "KODEX 인버스"
-            },
-            {
-                "ticker": "114800",
-                "action": "SELL",
-                "quantity": 201,
-                "price": 4820.18,
-                "fee": 7013.35,
-                "date": "2022-07-21",
-                "status": "FILLED",
-                "reason": "",
-                "lot_id": "lot_20260530_162851_114800_002",
-                "level": 2,
-                "buy_price": 4974.97,
-                "realized_pnl": -33534.93,
-                "alias": "KODEX 인버스"
-            },
-            {
-                "ticker": "114800",
-                "action": "SELL",
-                "quantity": 232,
-                "price": 4820.18,
-                "fee": 7013.35,
-                "date": "2022-07-21",
-                "status": "FILLED",
-                "reason": "",
-                "lot_id": "lot_20260530_162849_114800_001",
-                "level": 1,
-                "buy_price": 4309.3,
-                "realized_pnl": 115728.46,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
-        "id": "tx_20220722",
-        "date": "2022-07-22",
-        "portfolio_value": 98134516.93945,
-        "total_trade_amount": 997296.2999999999,
-        "reason": "삼성전자(005930):BUY(DOWNTREND 확정 - 추가 매수 차단), KODEX 인버스(114800):BUY(초기 매수 Lv1)",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "BUY",
-                "quantity": 205,
-                "price": 4864.86,
-                "fee": 2493.24,
-                "date": "2022-07-22",
-                "status": "FILLED",
-                "reason": "",
-                "level": 1,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
-        "id": "tx_20220726",
-        "date": "2022-07-26",
-        "portfolio_value": 98142061.0597,
-        "total_trade_amount": 987111.9,
-        "reason": "삼성전자(005930):BUY(DOWNTREND 확정 - 추가 매수 차단), KODEX 인버스(114800):SELL(추세 이탈 통합 전량 청산(Bulk Sell, 205주 -0.9%))",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "SELL",
-                "quantity": 205,
-                "price": 4815.18,
-                "fee": 2467.78,
-                "date": "2022-07-26",
-                "status": "FILLED",
-                "reason": "",
-                "lot_id": "lot_20260530_162851_114800_001",
-                "level": 1,
-                "buy_price": 4864.86,
-                "realized_pnl": -12652.18,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
-        "id": "tx_20220727",
-        "date": "2022-07-27",
-        "portfolio_value": 98143362.8502625,
-        "total_trade_amount": 999772.74,
-        "reason": "삼성전자(005930):BUY(DOWNTREND 확정 - 추가 매수 차단), KODEX 인버스(114800):BUY(초기 매수 Lv1)",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "BUY",
-                "quantity": 207,
-                "price": 4829.82,
-                "fee": 2499.43,
-                "date": "2022-07-27",
-                "status": "FILLED",
-                "reason": "",
-                "level": 1,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
         "id": "tx_20220908",
         "date": "2022-09-08",
-        "portfolio_value": 97877324.93826249,
+        "portfolio_value": 9394735.176375002,
         "total_trade_amount": 445244.8,
-        "reason": "삼성전자(005930):BUY(추가 매수 Lv7 (Lv6 대비 -5.4%))",
+        "reason": "삼성전자(005930):BUY(추가 매수 Lv7 (Lv6 대비 -5.4%)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -2915,9 +1274,9 @@
     {
         "id": "tx_20220929",
         "date": "2022-09-29",
-        "portfolio_value": 97797711.8547625,
+        "portfolio_value": 9225077.092875004,
         "total_trade_amount": 473873.39999999997,
-        "reason": "삼성전자(005930):BUY(추가 매수 Lv8 (Lv7 대비 -5.5%))",
+        "reason": "삼성전자(005930):BUY(추가 매수 Lv8 (Lv7 대비 -5.5%)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -2934,185 +1293,11 @@
         ]
     },
     {
-        "id": "tx_20221014",
-        "date": "2022-10-14",
-        "portfolio_value": 98008850.2561125,
-        "total_trade_amount": 996454.52,
-        "reason": "KODEX 인버스(114800):BUY(상승장 누적 매수 Lv2 (20EMA 눌림, add 1))",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "BUY",
-                "quantity": 188,
-                "price": 5300.29,
-                "fee": 2491.14,
-                "date": "2022-10-14",
-                "status": "FILLED",
-                "reason": "",
-                "level": 2,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
-        "id": "tx_20221017",
-        "date": "2022-10-17",
-        "portfolio_value": 98026606.9567875,
-        "total_trade_amount": 498227.26,
-        "reason": "KODEX 인버스(114800):BUY(상승장 누적 매수 Lv3 (20EMA 눌림, add 2))",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "BUY",
-                "quantity": 94,
-                "price": 5300.29,
-                "fee": 1245.57,
-                "date": "2022-10-17",
-                "status": "FILLED",
-                "reason": "",
-                "level": 3,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
-        "id": "tx_20221019",
-        "date": "2022-10-19",
-        "portfolio_value": 97961514.4225625,
-        "total_trade_amount": 247937.69000000003,
-        "reason": "KODEX 인버스(114800):BUY(상승장 누적 매수 Lv4 (20EMA 눌림, add 3))",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "BUY",
-                "quantity": 47,
-                "price": 5275.27,
-                "fee": 619.84,
-                "date": "2022-10-19",
-                "status": "FILLED",
-                "reason": "",
-                "level": 4,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
-        "id": "tx_20221026",
-        "date": "2022-10-26",
-        "portfolio_value": 98156258.0706625,
-        "total_trade_amount": 2792442.08,
-        "reason": "삼성전자(005930):SELL(Lv8: trailing 활성화 (매수가 대비 +12.8%, 스톱가 KRW 56,430)), KODEX 인버스(114800):SELL(추세 이탈 통합 전량 청산(Bulk Sell, 536주 +1.9%))",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "SELL",
-                "quantity": 47,
-                "price": 5209.78,
-                "fee": 6981.11,
-                "date": "2022-10-26",
-                "status": "FILLED",
-                "reason": "",
-                "lot_id": "lot_20260530_162852_114800_004",
-                "level": 4,
-                "buy_price": 5275.27,
-                "realized_pnl": -3690.18,
-                "alias": "KODEX 인버스"
-            },
-            {
-                "ticker": "114800",
-                "action": "SELL",
-                "quantity": 94,
-                "price": 5209.78,
-                "fee": 6981.11,
-                "date": "2022-10-26",
-                "status": "FILLED",
-                "reason": "",
-                "lot_id": "lot_20260530_162852_114800_003",
-                "level": 3,
-                "buy_price": 5300.29,
-                "realized_pnl": -9732.24,
-                "alias": "KODEX 인버스"
-            },
-            {
-                "ticker": "114800",
-                "action": "SELL",
-                "quantity": 188,
-                "price": 5209.78,
-                "fee": 6981.11,
-                "date": "2022-10-26",
-                "status": "FILLED",
-                "reason": "",
-                "lot_id": "lot_20260530_162852_114800_002",
-                "level": 2,
-                "buy_price": 5300.29,
-                "realized_pnl": -19464.48,
-                "alias": "KODEX 인버스"
-            },
-            {
-                "ticker": "114800",
-                "action": "SELL",
-                "quantity": 207,
-                "price": 5209.78,
-                "fee": 6981.11,
-                "date": "2022-10-26",
-                "status": "FILLED",
-                "reason": "",
-                "lot_id": "lot_20260530_162851_114800_001",
-                "level": 1,
-                "buy_price": 4829.82,
-                "realized_pnl": 75955.66,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
-        "id": "tx_20221027",
-        "date": "2022-10-27",
-        "portfolio_value": 98159261.1746625,
-        "total_trade_amount": 999398.4,
-        "reason": "KODEX 인버스(114800):BUY(초기 매수 Lv1)",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "BUY",
-                "quantity": 195,
-                "price": 5125.12,
-                "fee": 2498.5,
-                "date": "2022-10-27",
-                "status": "FILLED",
-                "reason": "",
-                "level": 1,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
-        "id": "tx_20221109",
-        "date": "2022-11-09",
-        "portfolio_value": 98268351.7016375,
-        "total_trade_amount": 495704.7,
-        "reason": "KODEX 인버스(114800):BUY(추가 매수 Lv2 (Lv1 대비 -5.3%))",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "BUY",
-                "quantity": 102,
-                "price": 4859.85,
-                "fee": 1239.26,
-                "date": "2022-11-09",
-                "status": "FILLED",
-                "reason": "",
-                "level": 2,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
         "id": "tx_20221206",
         "date": "2022-12-06",
-        "portfolio_value": 98106591.8176375,
+        "portfolio_value": 9650557.208875004,
         "total_trade_amount": 1005393.6000000001,
-        "reason": "삼성전자(005930):SELL(trailing 벌크 매도 Lv7~Lv8 (17주 +9.5%))",
+        "reason": "삼성전자(005930):SELL(trailing 벌크 매도 Lv7~Lv8 (17주 +9.5%)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -3123,7 +1308,7 @@
                 "date": "2022-12-06",
                 "status": "FILLED",
                 "reason": "",
-                "lot_id": "lot_20260530_162852_005930_008",
+                "lot_id": "lot_20260531_065650_005930_008",
                 "level": 8,
                 "buy_price": 52652.6,
                 "realized_pnl": 57063.13,
@@ -3138,7 +1323,7 @@
                 "date": "2022-12-06",
                 "status": "FILLED",
                 "reason": "",
-                "lot_id": "lot_20260530_162852_005930_007",
+                "lot_id": "lot_20260531_065650_005930_007",
                 "level": 7,
                 "buy_price": 55655.6,
                 "realized_pnl": 26698.79,
@@ -3149,9 +1334,9 @@
     {
         "id": "tx_20221229",
         "date": "2022-12-29",
-        "portfolio_value": 97994868.6233875,
+        "portfolio_value": 9461614.014625004,
         "total_trade_amount": 498197.7,
-        "reason": "삼성전자(005930):BUY(동적 재매수 Lv7 (매도가 KRW 59,141 대비 -6.5%))",
+        "reason": "삼성전자(005930):BUY(동적 재매수 Lv7 (매도가 KRW 59,141 대비 -6.5%)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -3170,9 +1355,9 @@
     {
         "id": "tx_20230201",
         "date": "2023-02-01",
-        "portfolio_value": 98178258.4958875,
+        "portfolio_value": 9784593.887125004,
         "total_trade_amount": 548451.0,
-        "reason": "삼성전자(005930):SELL(trailing 벌크 매도 Lv7~Lv7 (9주 +10.2%))",
+        "reason": "삼성전자(005930):SELL(trailing 벌크 매도 Lv7~Lv7 (9주 +10.2%)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -3183,7 +1368,7 @@
                 "date": "2023-02-01",
                 "status": "FILLED",
                 "reason": "",
-                "lot_id": "lot_20260530_162853_005930_007",
+                "lot_id": "lot_20260531_065652_005930_007",
                 "level": 7,
                 "buy_price": 55355.3,
                 "realized_pnl": 48882.17,
@@ -3192,32 +1377,11 @@
         ]
     },
     {
-        "id": "tx_20230411",
-        "date": "2023-04-11",
-        "portfolio_value": 98373110.34523751,
-        "total_trade_amount": 496755.72000000003,
-        "reason": "KODEX 인버스(114800):BUY(추가 매수 Lv3 (Lv2 대비 -5.4%))",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "BUY",
-                "quantity": 108,
-                "price": 4599.59,
-                "fee": 1241.89,
-                "date": "2023-04-11",
-                "status": "FILLED",
-                "reason": "",
-                "level": 3,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
         "id": "tx_20230619",
         "date": "2023-06-19",
-        "portfolio_value": 98569344.05323751,
+        "portfolio_value": 10270702.595125005,
         "total_trade_amount": 997796.7999999999,
-        "reason": "삼성전자(005930):BUY(상승장 누적 매수 Lv7 (20EMA 눌림, add 1)), KODEX 인버스(114800):BUY(DOWNTREND 확정 - 추가 매수 차단)",
+        "reason": "삼성전자(005930):BUY(상승장 누적 매수 Lv7 (20EMA 눌림, add 1)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -3236,9 +1400,9 @@
     {
         "id": "tx_20230620",
         "date": "2023-06-20",
-        "portfolio_value": 98582018.50373751,
+        "portfolio_value": 10281352.045625005,
         "total_trade_amount": 500299.79999999993,
-        "reason": "삼성전자(005930):BUY(상승장 누적 매수 Lv8 (20EMA 눌림, add 2)), KODEX 인버스(114800):BUY(DOWNTREND 확정 - 추가 매수 차단)",
+        "reason": "삼성전자(005930):BUY(상승장 누적 매수 Lv8 (20EMA 눌림, add 2)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -3257,9 +1421,9 @@
     {
         "id": "tx_20230621",
         "date": "2023-06-21",
-        "portfolio_value": 98537402.7249875,
+        "portfolio_value": 10218511.266875006,
         "total_trade_amount": 211711.5,
-        "reason": "삼성전자(005930):BUY(상승장 누적 매수 Lv9 (20EMA 눌림, add 3)), KODEX 인버스(114800):BUY(DOWNTREND 확정 - 추가 매수 차단)",
+        "reason": "삼성전자(005930):BUY(상승장 누적 매수 Lv9 (20EMA 눌림, add 3)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -3278,9 +1442,9 @@
     {
         "id": "tx_20230707",
         "date": "2023-07-07",
-        "portfolio_value": 98527926.61598751,
+        "portfolio_value": 10166510.157875005,
         "total_trade_amount": 2513883.6,
-        "reason": "삼성전자(005930):SELL(추세 이탈 분할 청산(36/72주, -0.4%))",
+        "reason": "삼성전자(005930):SELL(추세 이탈 분할 청산(36/72주, -0.4%)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -3291,7 +1455,7 @@
                 "date": "2023-07-07",
                 "status": "FILLED",
                 "reason": "",
-                "lot_id": "lot_20260530_162856_005930_009",
+                "lot_id": "lot_20260531_065655_005930_009",
                 "level": 9,
                 "buy_price": 70570.5,
                 "realized_pnl": -2744.93,
@@ -3306,7 +1470,7 @@
                 "date": "2023-07-07",
                 "status": "FILLED",
                 "reason": "",
-                "lot_id": "lot_20260530_162856_005930_008",
+                "lot_id": "lot_20260531_065655_005930_008",
                 "level": 8,
                 "buy_price": 71471.4,
                 "realized_pnl": -12711.13,
@@ -3321,7 +1485,7 @@
                 "date": "2023-07-07",
                 "status": "FILLED",
                 "reason": "",
-                "lot_id": "lot_20260530_162856_005930_007",
+                "lot_id": "lot_20260531_065655_005930_007",
                 "level": 7,
                 "buy_price": 71271.2,
                 "realized_pnl": -22619.45,
@@ -3336,7 +1500,7 @@
                 "date": "2023-07-07",
                 "status": "FILLED",
                 "reason": "",
-                "lot_id": "lot_20260530_162850_005930_006",
+                "lot_id": "lot_20260531_065649_005930_006",
                 "level": 6,
                 "buy_price": 58758.7,
                 "realized_pnl": 87174.6,
@@ -3351,7 +1515,7 @@
                 "date": "2023-07-07",
                 "status": "FILLED",
                 "reason": "",
-                "lot_id": "lot_20260530_162850_005930_005",
+                "lot_id": "lot_20260531_065649_005930_005",
                 "level": 5,
                 "buy_price": 62162.1,
                 "realized_pnl": 29973.7,
@@ -3362,9 +1526,9 @@
     {
         "id": "tx_20230725",
         "date": "2023-07-25",
-        "portfolio_value": 98460294.76598752,
+        "portfolio_value": 10165703.307875006,
         "total_trade_amount": 1258740.0,
-        "reason": "삼성전자(005930):SELL(추세 이탈 분할 청산(18/36주, -3.9%))",
+        "reason": "삼성전자(005930):SELL(추세 이탈 분할 청산(18/36주, -3.9%)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -3375,7 +1539,7 @@
                 "date": "2023-07-25",
                 "status": "FILLED",
                 "reason": "",
-                "lot_id": "lot_20260530_162850_005930_005",
+                "lot_id": "lot_20260531_065649_005930_005",
                 "level": 5,
                 "buy_price": 62162.1,
                 "realized_pnl": 30372.3,
@@ -3390,7 +1554,7 @@
                 "date": "2023-07-25",
                 "status": "FILLED",
                 "reason": "",
-                "lot_id": "lot_20260530_162850_005930_004",
+                "lot_id": "lot_20260531_065648_005930_004",
                 "level": 4,
                 "buy_price": 66566.5,
                 "realized_pnl": 22320.72,
@@ -3405,7 +1569,7 @@
                 "date": "2023-07-25",
                 "status": "FILLED",
                 "reason": "",
-                "lot_id": "lot_20260530_162848_005930_003",
+                "lot_id": "lot_20260531_065647_005930_003",
                 "level": 3,
                 "buy_price": 71371.3,
                 "realized_pnl": -11312.88,
@@ -3416,9 +1580,9 @@
     {
         "id": "tx_20230803",
         "date": "2023-08-03",
-        "portfolio_value": 98452729.11398752,
+        "portfolio_value": 10141937.655875005,
         "total_trade_amount": 618580.7999999999,
-        "reason": "삼성전자(005930):SELL(추세 이탈 분할 청산(9/18주, -12.1%))",
+        "reason": "삼성전자(005930):SELL(추세 이탈 분할 청산(9/18주, -12.1%)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -3429,7 +1593,7 @@
                 "date": "2023-08-03",
                 "status": "FILLED",
                 "reason": "",
-                "lot_id": "lot_20260530_162846_005930_002",
+                "lot_id": "lot_20260531_065645_005930_002",
                 "level": 2,
                 "buy_price": 74474.4,
                 "realized_pnl": -35490.17,
@@ -3444,7 +1608,7 @@
                 "date": "2023-08-03",
                 "status": "FILLED",
                 "reason": "",
-                "lot_id": "lot_20260530_162845_005930_001",
+                "lot_id": "lot_20260531_065644_005930_001",
                 "level": 1,
                 "buy_price": 80180.1,
                 "realized_pnl": -34862.18,
@@ -3455,9 +1619,9 @@
     {
         "id": "tx_20230818",
         "date": "2023-08-18",
-        "portfolio_value": 98505092.15573752,
+        "portfolio_value": 10117350.697625006,
         "total_trade_amount": 596103.2999999999,
-        "reason": "삼성전자(005930):SELL(추종 데드라인 발동 잔량 청산(9주, 기준가 대비 -3.5%))",
+        "reason": "삼성전자(005930):SELL(추종 데드라인 발동 잔량 청산(9주, 기준가 대비 -3.5%)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -3468,7 +1632,7 @@
                 "date": "2023-08-18",
                 "status": "FILLED",
                 "reason": "",
-                "lot_id": "lot_20260530_162845_005930_001",
+                "lot_id": "lot_20260531_065644_005930_001",
                 "level": 1,
                 "buy_price": 80180.1,
                 "realized_pnl": -127007.86,
@@ -3479,9 +1643,9 @@
     {
         "id": "tx_20230821",
         "date": "2023-08-21",
-        "portfolio_value": 98499568.15823752,
+        "portfolio_value": 10113851.700125005,
         "total_trade_amount": 999999.0000000001,
-        "reason": "삼성전자(005930):BUY(초기 매수 Lv1)",
+        "reason": "삼성전자(005930):BUY(초기 매수 Lv1), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -3500,9 +1664,9 @@
     {
         "id": "tx_20230918",
         "date": "2023-09-18",
-        "portfolio_value": 98483300.90123752,
+        "portfolio_value": 10164409.443125006,
         "total_trade_amount": 983782.7999999999,
-        "reason": "삼성전자(005930):BUY(상승장 누적 매수 Lv2 (20EMA 눌림, add 1))",
+        "reason": "삼성전자(005930):BUY(상승장 누적 매수 Lv2 (20EMA 눌림, add 1)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -3521,9 +1685,9 @@
     {
         "id": "tx_20230921",
         "date": "2023-09-21",
-        "portfolio_value": 98488561.23498751,
+        "portfolio_value": 10123094.776875004,
         "total_trade_amount": 1032466.5000000001,
-        "reason": "삼성전자(005930):SELL(추세 이탈 분할 청산(15/29주, +0.7%))",
+        "reason": "삼성전자(005930):SELL(추세 이탈 분할 청산(15/29주, +0.7%)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -3534,7 +1698,7 @@
                 "date": "2023-09-21",
                 "status": "FILLED",
                 "reason": "",
-                "lot_id": "lot_20260530_162857_005930_002",
+                "lot_id": "lot_20260531_065656_005930_002",
                 "level": 2,
                 "buy_price": 70270.2,
                 "realized_pnl": -22556.49,
@@ -3549,7 +1713,7 @@
                 "date": "2023-09-21",
                 "status": "FILLED",
                 "reason": "",
-                "lot_id": "lot_20260530_162857_005930_001",
+                "lot_id": "lot_20260531_065656_005930_001",
                 "level": 1,
                 "buy_price": 66666.6,
                 "realized_pnl": 1992.42,
@@ -3560,9 +1724,9 @@
     {
         "id": "tx_20231005",
         "date": "2023-10-05",
-        "portfolio_value": 98539545.26948752,
+        "portfolio_value": 10089028.811375003,
         "total_trade_amount": 932866.2000000001,
-        "reason": "삼성전자(005930):SELL(추종 데드라인 발동 잔량 청산(14주, 기준가 대비 -3.1%))",
+        "reason": "삼성전자(005930):SELL(추종 데드라인 발동 잔량 청산(14주, 기준가 대비 -3.1%)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -3573,7 +1737,7 @@
                 "date": "2023-10-05",
                 "status": "FILLED",
                 "reason": "",
-                "lot_id": "lot_20260530_162857_005930_001",
+                "lot_id": "lot_20260531_065656_005930_001",
                 "level": 1,
                 "buy_price": 66666.6,
                 "realized_pnl": -2798.37,
@@ -3584,9 +1748,9 @@
     {
         "id": "tx_20231006",
         "date": "2023-10-06",
-        "portfolio_value": 98532027.79448752,
+        "portfolio_value": 10085561.336375004,
         "total_trade_amount": 990990.0,
-        "reason": "삼성전자(005930):BUY(초기 매수 Lv1)",
+        "reason": "삼성전자(005930):BUY(초기 매수 Lv1), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -3603,212 +1767,11 @@
         ]
     },
     {
-        "id": "tx_20231102",
-        "date": "2023-11-02",
-        "portfolio_value": 98610358.84058753,
-        "total_trade_amount": 998557.56,
-        "reason": "KODEX 인버스(114800):BUY(상승장 누적 매수 Lv4 (20EMA 눌림, add 1))",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "BUY",
-                "quantity": 204,
-                "price": 4894.89,
-                "fee": 2496.39,
-                "date": "2023-11-02",
-                "status": "FILLED",
-                "reason": "",
-                "level": 4,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
-        "id": "tx_20231106",
-        "date": "2023-11-06",
-        "portfolio_value": 98448019.64431253,
-        "total_trade_amount": 2804682.5100000002,
-        "reason": "KODEX 인버스(114800):SELL(추세 이탈 통합 전량 청산(Bulk Sell, 609주 -6.1%))",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "SELL",
-                "quantity": 204,
-                "price": 4605.39,
-                "fee": 7011.71,
-                "date": "2023-11-06",
-                "status": "FILLED",
-                "reason": "",
-                "lot_id": "lot_20260530_162858_114800_004",
-                "level": 4,
-                "buy_price": 4894.89,
-                "realized_pnl": -61406.75,
-                "alias": "KODEX 인버스"
-            },
-            {
-                "ticker": "114800",
-                "action": "SELL",
-                "quantity": 108,
-                "price": 4605.39,
-                "fee": 7011.71,
-                "date": "2023-11-06",
-                "status": "FILLED",
-                "reason": "",
-                "lot_id": "lot_20260530_162855_114800_003",
-                "level": 3,
-                "buy_price": 4599.59,
-                "realized_pnl": -617.06,
-                "alias": "KODEX 인버스"
-            },
-            {
-                "ticker": "114800",
-                "action": "SELL",
-                "quantity": 102,
-                "price": 4605.39,
-                "fee": 7011.71,
-                "date": "2023-11-06",
-                "status": "FILLED",
-                "reason": "",
-                "lot_id": "lot_20260530_162852_114800_002",
-                "level": 2,
-                "buy_price": 4859.85,
-                "realized_pnl": -27129.3,
-                "alias": "KODEX 인버스"
-            },
-            {
-                "ticker": "114800",
-                "action": "SELL",
-                "quantity": 195,
-                "price": 4605.39,
-                "fee": 7011.71,
-                "date": "2023-11-06",
-                "status": "FILLED",
-                "reason": "",
-                "lot_id": "lot_20260530_162852_114800_001",
-                "level": 1,
-                "buy_price": 5125.12,
-                "realized_pnl": -103592.48,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
-        "id": "tx_20231107",
-        "date": "2023-11-07",
-        "portfolio_value": 98444520.75188753,
-        "total_trade_amount": 999968.97,
-        "reason": "KODEX 인버스(114800):BUY(초기 매수 Lv1)",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "BUY",
-                "quantity": 213,
-                "price": 4694.69,
-                "fee": 2499.92,
-                "date": "2023-11-07",
-                "status": "FILLED",
-                "reason": "",
-                "level": 1,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
-        "id": "tx_20231109",
-        "date": "2023-11-09",
-        "portfolio_value": 98437333.23012502,
-        "total_trade_amount": 1003289.6399999999,
-        "reason": "KODEX 인버스(114800):SELL(추세 이탈 통합 전량 청산(Bulk Sell, 213주 +0.4%))",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "SELL",
-                "quantity": 213,
-                "price": 4710.28,
-                "fee": 2508.23,
-                "date": "2023-11-09",
-                "status": "FILLED",
-                "reason": "",
-                "lot_id": "lot_20260530_162858_114800_001",
-                "level": 1,
-                "buy_price": 4694.69,
-                "realized_pnl": 812.44,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
-        "id": "tx_20231110",
-        "date": "2023-11-10",
-        "portfolio_value": 98436843.16400002,
-        "total_trade_amount": 997445.3999999999,
-        "reason": "KODEX 인버스(114800):BUY(초기 매수 Lv1)",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "BUY",
-                "quantity": 210,
-                "price": 4749.74,
-                "fee": 2493.62,
-                "date": "2023-11-10",
-                "status": "FILLED",
-                "reason": "",
-                "level": 1,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
-        "id": "tx_20231114",
-        "date": "2023-11-14",
-        "portfolio_value": 98428441.13150002,
-        "total_trade_amount": 986013.0,
-        "reason": "KODEX 인버스(114800):SELL(추세 이탈 통합 전량 청산(Bulk Sell, 210주 -1.0%))",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "SELL",
-                "quantity": 210,
-                "price": 4695.3,
-                "fee": 2465.03,
-                "date": "2023-11-14",
-                "status": "FILLED",
-                "reason": "",
-                "lot_id": "lot_20260530_162858_114800_001",
-                "level": 1,
-                "buy_price": 4749.74,
-                "realized_pnl": -13897.43,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
-        "id": "tx_20231115",
-        "date": "2023-11-15",
-        "portfolio_value": 98445944.93600002,
-        "total_trade_amount": 999198.2000000001,
-        "reason": "KODEX 인버스(114800):BUY(초기 매수 Lv1)",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "BUY",
-                "quantity": 217,
-                "price": 4604.6,
-                "fee": 2498.0,
-                "date": "2023-11-15",
-                "status": "FILLED",
-                "reason": "",
-                "level": 1,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
         "id": "tx_20231124",
         "date": "2023-11-24",
-        "portfolio_value": 98436265.25575002,
+        "portfolio_value": 10167796.656125003,
         "total_trade_amount": 933032.1,
-        "reason": "삼성전자(005930):BUY(상승장 누적 매수 Lv2 (20EMA 눌림, add 1))",
+        "reason": "삼성전자(005930):BUY(상승장 누적 매수 Lv2 (20EMA 눌림, add 1)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -3827,9 +1790,9 @@
     {
         "id": "tx_20231127",
         "date": "2023-11-27",
-        "portfolio_value": 98425487.15800002,
+        "portfolio_value": 10154848.558375005,
         "total_trade_amount": 499599.10000000003,
-        "reason": "삼성전자(005930):BUY(상승장 누적 매수 Lv3 (20EMA 눌림, add 2))",
+        "reason": "삼성전자(005930):BUY(상승장 누적 매수 Lv3 (20EMA 눌림, add 2)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -3848,9 +1811,9 @@
     {
         "id": "tx_20231201",
         "date": "2023-12-01",
-        "portfolio_value": 98447060.61800002,
+        "portfolio_value": 10178592.018375004,
         "total_trade_amount": 216216.0,
-        "reason": "삼성전자(005930):BUY(상승장 누적 매수 Lv4 (20EMA 눌림, add 3))",
+        "reason": "삼성전자(005930):BUY(상승장 누적 매수 Lv4 (20EMA 눌림, add 3)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -3867,32 +1830,11 @@
         ]
     },
     {
-        "id": "tx_20231227",
-        "date": "2023-12-27",
-        "portfolio_value": 98613641.54812501,
-        "total_trade_amount": 498447.95,
-        "reason": "KODEX 인버스(114800):BUY(추가 매수 Lv2 (Lv1 대비 -6.0%))",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "BUY",
-                "quantity": 115,
-                "price": 4334.33,
-                "fee": 1246.12,
-                "date": "2023-12-27",
-                "status": "FILLED",
-                "reason": "",
-                "level": 2,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
         "id": "tx_20240109",
         "date": "2024-01-09",
-        "portfolio_value": 98521457.546375,
+        "portfolio_value": 10276228.016625004,
         "total_trade_amount": 1417880.7,
-        "reason": "삼성전자(005930):SELL(추세 이탈 분할 청산(19/38주, +7.5%)), KODEX 인버스(114800):BUY(DOWNTREND 확정 - 추가 매수 차단)",
+        "reason": "삼성전자(005930):SELL(추세 이탈 분할 청산(19/38주, +7.5%)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -3903,7 +1845,7 @@
                 "date": "2024-01-09",
                 "status": "FILLED",
                 "reason": "",
-                "lot_id": "lot_20260530_162859_005930_004",
+                "lot_id": "lot_20260531_065658_005930_004",
                 "level": 4,
                 "buy_price": 72072.0,
                 "realized_pnl": 7100.21,
@@ -3918,7 +1860,7 @@
                 "date": "2024-01-09",
                 "status": "FILLED",
                 "reason": "",
-                "lot_id": "lot_20260530_162858_005930_003",
+                "lot_id": "lot_20260531_065658_005930_003",
                 "level": 3,
                 "buy_price": 71371.3,
                 "realized_pnl": 21472.06,
@@ -3933,7 +1875,7 @@
                 "date": "2024-01-09",
                 "status": "FILLED",
                 "reason": "",
-                "lot_id": "lot_20260530_162858_005930_002",
+                "lot_id": "lot_20260531_065658_005930_002",
                 "level": 2,
                 "buy_price": 71771.7,
                 "realized_pnl": 24003.33,
@@ -3944,9 +1886,9 @@
     {
         "id": "tx_20240117",
         "date": "2024-01-17",
-        "portfolio_value": 98531099.41887501,
+        "portfolio_value": 10201209.889125004,
         "total_trade_amount": 1347651.0,
-        "reason": "삼성전자(005930):SELL(추종 데드라인 발동 잔량 청산(19주, 기준가 대비 -4.9%))",
+        "reason": "삼성전자(005930):SELL(추종 데드라인 발동 잔량 청산(19주, 기준가 대비 -4.9%)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -3957,7 +1899,7 @@
                 "date": "2024-01-17",
                 "status": "FILLED",
                 "reason": "",
-                "lot_id": "lot_20260530_162858_005930_002",
+                "lot_id": "lot_20260531_065658_005930_002",
                 "level": 2,
                 "buy_price": 71771.7,
                 "realized_pnl": -4080.09,
@@ -3972,7 +1914,7 @@
                 "date": "2024-01-17",
                 "status": "FILLED",
                 "reason": "",
-                "lot_id": "lot_20260530_162858_005930_001",
+                "lot_id": "lot_20260531_065657_005930_001",
                 "level": 1,
                 "buy_price": 66066.0,
                 "realized_pnl": 70285.16,
@@ -3983,9 +1925,9 @@
     {
         "id": "tx_20240118",
         "date": "2024-01-18",
-        "portfolio_value": 98527834.738625,
+        "portfolio_value": 10197945.208875004,
         "total_trade_amount": 933032.1,
-        "reason": "삼성전자(005930):BUY(초기 매수 Lv1)",
+        "reason": "삼성전자(005930):BUY(초기 매수 Lv1), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -4004,9 +1946,9 @@
     {
         "id": "tx_20240415",
         "date": "2024-04-15",
-        "portfolio_value": 98496539.87262501,
+        "portfolio_value": 10330990.342875004,
         "total_trade_amount": 987386.3999999999,
-        "reason": "삼성전자(005930):BUY(상승장 누적 매수 Lv2 (20EMA 눌림, add 1)), KODEX 인버스(114800):BUY(DOWNTREND 확정 - 추가 매수 차단)",
+        "reason": "삼성전자(005930):BUY(상승장 누적 매수 Lv2 (20EMA 눌림, add 1)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -4025,9 +1967,9 @@
     {
         "id": "tx_20240416",
         "date": "2024-04-16",
-        "portfolio_value": 98469442.472625,
+        "portfolio_value": 10272352.942875003,
         "total_trade_amount": 1038960.0,
-        "reason": "삼성전자(005930):SELL(추세 이탈 분할 청산(13/25주, +4.1%))",
+        "reason": "삼성전자(005930):SELL(추세 이탈 분할 청산(13/25주, +4.1%)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -4038,7 +1980,7 @@
                 "date": "2024-04-16",
                 "status": "FILLED",
                 "reason": "",
-                "lot_id": "lot_20260530_162901_005930_002",
+                "lot_id": "lot_20260531_065700_005930_002",
                 "level": 2,
                 "buy_price": 82282.2,
                 "realized_pnl": -30744.0,
@@ -4053,7 +1995,7 @@
                 "date": "2024-04-16",
                 "status": "FILLED",
                 "reason": "",
-                "lot_id": "lot_20260530_162859_005930_001",
+                "lot_id": "lot_20260531_065659_005930_001",
                 "level": 1,
                 "buy_price": 71771.7,
                 "realized_pnl": 7948.5,
@@ -4064,9 +2006,9 @@
     {
         "id": "tx_20240422",
         "date": "2024-04-22",
-        "portfolio_value": 98421108.555625,
+        "portfolio_value": 10222359.025875004,
         "total_trade_amount": 912286.7999999999,
-        "reason": "삼성전자(005930):SELL(추종 데드라인 발동 잔량 청산(12주, 기준가 대비 -4.8%))",
+        "reason": "삼성전자(005930):SELL(추종 데드라인 발동 잔량 청산(12주, 기준가 대비 -4.8%)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -4077,7 +2019,7 @@
                 "date": "2024-04-22",
                 "status": "FILLED",
                 "reason": "",
-                "lot_id": "lot_20260530_162859_005930_001",
+                "lot_id": "lot_20260531_065659_005930_001",
                 "level": 1,
                 "buy_price": 71771.7,
                 "realized_pnl": 48745.68,
@@ -4088,9 +2030,9 @@
     {
         "id": "tx_20240423",
         "date": "2024-04-23",
-        "portfolio_value": 98417670.851875,
+        "portfolio_value": 10218921.322125005,
         "total_trade_amount": 982481.5,
-        "reason": "삼성전자(005930):BUY(초기 매수 Lv1), KODEX 인버스(114800):BUY(DOWNTREND 확정 - 추가 매수 차단)",
+        "reason": "삼성전자(005930):BUY(초기 매수 Lv1), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -4109,9 +2051,9 @@
     {
         "id": "tx_20240425",
         "date": "2024-04-25",
-        "portfolio_value": 98424542.837125,
+        "portfolio_value": 10227453.307375005,
         "total_trade_amount": 533565.9,
-        "reason": "삼성전자(005930):SELL(추세 이탈 분할 청산(7/13주, +1.0%)), KODEX 인버스(114800):BUY(DOWNTREND 확정 - 추가 매수 차단)",
+        "reason": "삼성전자(005930):SELL(추세 이탈 분할 청산(7/13주, +1.0%)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -4122,7 +2064,7 @@
                 "date": "2024-04-25",
                 "status": "FILLED",
                 "reason": "",
-                "lot_id": "lot_20260530_162901_005930_001",
+                "lot_id": "lot_20260531_065701_005930_001",
                 "level": 1,
                 "buy_price": 75575.5,
                 "realized_pnl": 3203.49,
@@ -4131,32 +2073,11 @@
         ]
     },
     {
-        "id": "tx_20240508",
-        "date": "2024-05-08",
-        "portfolio_value": 98389721.00885001,
-        "total_trade_amount": 497807.30999999994,
-        "reason": "KODEX 인버스(114800):BUY(추가 매수 Lv3 (Lv2 대비 -5.2%))",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "BUY",
-                "quantity": 121,
-                "price": 4114.11,
-                "fee": 1244.52,
-                "date": "2024-05-08",
-                "status": "FILLED",
-                "reason": "",
-                "level": 3,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
         "id": "tx_20240509",
         "date": "2024-05-09",
-        "portfolio_value": 98401934.7566,
+        "portfolio_value": 10247017.055125004,
         "total_trade_amount": 238860.90000000002,
-        "reason": "삼성전자(005930):SELL(추세 이탈 분할 청산(3/6주, +5.5%))",
+        "reason": "삼성전자(005930):SELL(추세 이탈 분할 청산(3/6주, +5.5%)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -4167,7 +2088,7 @@
                 "date": "2024-05-09",
                 "status": "FILLED",
                 "reason": "",
-                "lot_id": "lot_20260530_162901_005930_001",
+                "lot_id": "lot_20260531_065701_005930_001",
                 "level": 1,
                 "buy_price": 75575.5,
                 "realized_pnl": 11537.25,
@@ -4178,9 +2099,9 @@
     {
         "id": "tx_20240523",
         "date": "2024-05-23",
-        "portfolio_value": 98383118.8076,
+        "portfolio_value": 10239526.106125005,
         "total_trade_amount": 940539.6000000001,
-        "reason": "삼성전자(005930):BUY(상승장 누적 매수 Lv2 (20EMA 눌림, add 1))",
+        "reason": "삼성전자(005930):BUY(상승장 누적 매수 Lv2 (20EMA 눌림, add 1)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -4199,9 +2120,9 @@
     {
         "id": "tx_20240524",
         "date": "2024-05-24",
-        "portfolio_value": 98378970.12560001,
+        "portfolio_value": 10201402.424125005,
         "total_trade_amount": 606592.8,
-        "reason": "삼성전자(005930):SELL(추세 이탈 분할 청산(8/15주, -2.5%))",
+        "reason": "삼성전자(005930):SELL(추세 이탈 분할 청산(8/15주, -2.5%)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -4212,7 +2133,7 @@
                 "date": "2024-05-24",
                 "status": "FILLED",
                 "reason": "",
-                "lot_id": "lot_20260530_162902_005930_002",
+                "lot_id": "lot_20260531_065701_005930_002",
                 "level": 2,
                 "buy_price": 78378.3,
                 "realized_pnl": -21950.08,
@@ -4223,9 +2144,9 @@
     {
         "id": "tx_20240528",
         "date": "2024-05-28",
-        "portfolio_value": 98357529.36160001,
+        "portfolio_value": 10211671.660125004,
         "total_trade_amount": 466065.60000000003,
-        "reason": "삼성전자(005930):BUY(상승장 누적 매수 Lv3 (20EMA 눌림, add 2))",
+        "reason": "삼성전자(005930):BUY(상승장 누적 매수 Lv3 (20EMA 눌림, add 2)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -4244,9 +2165,9 @@
     {
         "id": "tx_20240529",
         "date": "2024-05-29",
-        "portfolio_value": 98353933.2776,
+        "portfolio_value": 10178630.576125003,
         "total_trade_amount": 525873.6,
-        "reason": "삼성전자(005930):SELL(추세 이탈 분할 청산(7/13주, -2.9%))",
+        "reason": "삼성전자(005930):SELL(추세 이탈 분할 청산(7/13주, -2.9%)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -4257,7 +2178,7 @@
                 "date": "2024-05-29",
                 "status": "FILLED",
                 "reason": "",
-                "lot_id": "lot_20260530_162902_005930_003",
+                "lot_id": "lot_20260531_065701_005930_003",
                 "level": 3,
                 "buy_price": 77677.6,
                 "realized_pnl": -16443.67,
@@ -4272,7 +2193,7 @@
                 "date": "2024-05-29",
                 "status": "FILLED",
                 "reason": "",
-                "lot_id": "lot_20260530_162902_005930_002",
+                "lot_id": "lot_20260531_065701_005930_002",
                 "level": 2,
                 "buy_price": 78378.3,
                 "realized_pnl": -3441.31,
@@ -4283,9 +2204,9 @@
     {
         "id": "tx_20240604",
         "date": "2024-06-04",
-        "portfolio_value": 98369598.19235,
+        "portfolio_value": 10178440.490875004,
         "total_trade_amount": 225674.09999999998,
-        "reason": "삼성전자(005930):SELL(추세 이탈 분할 청산(3/6주, -2.2%))",
+        "reason": "삼성전자(005930):SELL(추세 이탈 분할 청산(3/6주, -2.2%)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -4296,7 +2217,7 @@
                 "date": "2024-06-04",
                 "status": "FILLED",
                 "reason": "",
-                "lot_id": "lot_20260530_162902_005930_002",
+                "lot_id": "lot_20260531_065701_005930_002",
                 "level": 2,
                 "buy_price": 78378.3,
                 "realized_pnl": -10024.99,
@@ -4307,9 +2228,9 @@
     {
         "id": "tx_20240607",
         "date": "2024-06-07",
-        "portfolio_value": 98334015.9626,
+        "portfolio_value": 10183628.261125004,
         "total_trade_amount": 232131.90000000002,
-        "reason": "삼성전자(005930):BUY(상승장 누적 매수 Lv2 (20EMA 눌림, add 3))",
+        "reason": "삼성전자(005930):BUY(상승장 누적 매수 Lv2 (20EMA 눌림, add 3)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -4328,9 +2249,9 @@
     {
         "id": "tx_20240611",
         "date": "2024-06-11",
-        "portfolio_value": 98336481.9266,
+        "portfolio_value": 10170239.225125004,
         "total_trade_amount": 225374.40000000002,
-        "reason": "삼성전자(005930):SELL(추세 이탈 분할 청산(3/6주, -1.7%))",
+        "reason": "삼성전자(005930):SELL(추세 이탈 분할 청산(3/6주, -1.7%)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -4341,7 +2262,7 @@
                 "date": "2024-06-11",
                 "status": "FILLED",
                 "reason": "",
-                "lot_id": "lot_20260530_162902_005930_002",
+                "lot_id": "lot_20260531_065702_005930_002",
                 "level": 2,
                 "buy_price": 77377.3,
                 "realized_pnl": -7320.94,
@@ -4350,32 +2271,11 @@
         ]
     },
     {
-        "id": "tx_20240705",
-        "date": "2024-07-05",
-        "portfolio_value": 98236802.9618,
-        "total_trade_amount": 498417.92,
-        "reason": "KODEX 인버스(114800):BUY(추가 매수 Lv4 (Lv3 대비 -5.4%))",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "BUY",
-                "quantity": 128,
-                "price": 3893.89,
-                "fee": 1246.04,
-                "date": "2024-07-05",
-                "status": "FILLED",
-                "reason": "",
-                "level": 4,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
         "id": "tx_20240724",
         "date": "2024-07-24",
-        "portfolio_value": 98328414.37179999,
+        "portfolio_value": 10190065.635125004,
         "total_trade_amount": 163836.0,
-        "reason": "삼성전자(005930):SELL(추세 이탈 분할 청산(2/3주, +8.5%)), KODEX 인버스(114800):BUY(DOWNTREND 확정 - 추가 매수 차단)",
+        "reason": "삼성전자(005930):SELL(추세 이탈 분할 청산(2/3주, +8.5%)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -4386,7 +2286,7 @@
                 "date": "2024-07-24",
                 "status": "FILLED",
                 "reason": "",
-                "lot_id": "lot_20260530_162901_005930_001",
+                "lot_id": "lot_20260531_065701_005930_001",
                 "level": 1,
                 "buy_price": 75575.5,
                 "realized_pnl": 12275.41,
@@ -4397,9 +2297,9 @@
     {
         "id": "tx_20240801",
         "date": "2024-08-01",
-        "portfolio_value": 98320508.72954999,
+        "portfolio_value": 10190874.992875004,
         "total_trade_amount": 83016.9,
-        "reason": "삼성전자(005930):SELL(추세 이탈 전량 청산(수량 부족, 1주 +10.0%))",
+        "reason": "삼성전자(005930):SELL(추세 이탈 전량 청산(수량 부족, 1주 +10.0%)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -4410,7 +2310,7 @@
                 "date": "2024-08-01",
                 "status": "FILLED",
                 "reason": "",
-                "lot_id": "lot_20260530_162901_005930_001",
+                "lot_id": "lot_20260531_065701_005930_001",
                 "level": 1,
                 "buy_price": 75575.5,
                 "realized_pnl": 7233.86,
@@ -4421,9 +2321,9 @@
     {
         "id": "tx_20240802",
         "date": "2024-08-02",
-        "portfolio_value": 98413028.14154999,
+        "portfolio_value": 10187529.404875005,
         "total_trade_amount": 956155.2000000001,
-        "reason": "삼성전자(005930):BUY(초기 매수 Lv1)",
+        "reason": "삼성전자(005930):BUY(초기 매수 Lv1), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -4442,9 +2342,9 @@
     {
         "id": "tx_20240805",
         "date": "2024-08-05",
-        "portfolio_value": 98542372.59204999,
+        "portfolio_value": 10087378.855375005,
         "total_trade_amount": 500299.79999999993,
-        "reason": "삼성전자(005930):BUY(추가 매수 Lv2 (Lv1 대비 -10.4%)), KODEX 인버스(114800):SELL(Lv4: trailing 활성화 (매수가 대비 +18.6%, 스톱가 KRW 4,389)), KODEX 인버스(114800):SELL(Lv3: trailing 활성화 (매수가 대비 +12.3%, 스톱가 KRW 4,389))",
+        "reason": "삼성전자(005930):BUY(추가 매수 Lv2 (Lv1 대비 -10.4%)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -4461,50 +2361,11 @@
         ]
     },
     {
-        "id": "tx_20240809",
-        "date": "2024-08-09",
-        "portfolio_value": 98450215.56614998,
-        "total_trade_amount": 1084554.36,
-        "reason": "KODEX 인버스(114800):SELL(trailing 벌크 매도 Lv3~Lv4 (249주 +9.0%))",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "SELL",
-                "quantity": 128,
-                "price": 4355.64,
-                "fee": 2711.39,
-                "date": "2024-08-09",
-                "status": "FILLED",
-                "reason": "",
-                "lot_id": "lot_20260530_162903_114800_004",
-                "level": 4,
-                "buy_price": 3893.89,
-                "realized_pnl": 57710.19,
-                "alias": "KODEX 인버스"
-            },
-            {
-                "ticker": "114800",
-                "action": "SELL",
-                "quantity": 121,
-                "price": 4355.64,
-                "fee": 2711.39,
-                "date": "2024-08-09",
-                "status": "FILLED",
-                "reason": "",
-                "lot_id": "lot_20260530_162901_114800_003",
-                "level": 3,
-                "buy_price": 4114.11,
-                "realized_pnl": 27907.55,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
         "id": "tx_20240826",
         "date": "2024-08-26",
-        "portfolio_value": 98413532.44789998,
+        "portfolio_value": 10174815.737125006,
         "total_trade_amount": 532167.2999999999,
-        "reason": "삼성전자(005930):SELL(trailing 벌크 매도 Lv2~Lv2 (7주 +6.5%))",
+        "reason": "삼성전자(005930):SELL(trailing 벌크 매도 Lv2~Lv2 (7주 +6.5%)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -4515,7 +2376,7 @@
                 "date": "2024-08-26",
                 "status": "FILLED",
                 "reason": "",
-                "lot_id": "lot_20260530_162903_005930_002",
+                "lot_id": "lot_20260531_065703_005930_002",
                 "level": 2,
                 "buy_price": 71471.4,
                 "realized_pnl": 30537.08,
@@ -4526,9 +2387,9 @@
     {
         "id": "tx_20240829",
         "date": "2024-08-29",
-        "portfolio_value": 98410017.33789998,
+        "portfolio_value": 10148060.627125006,
         "total_trade_amount": 444444.0,
-        "reason": "삼성전자(005930):BUY(추가 매수 Lv2 (Lv1 대비 -7.1%))",
+        "reason": "삼성전자(005930):BUY(추가 매수 Lv2 (Lv1 대비 -7.1%)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -4547,9 +2408,9 @@
     {
         "id": "tx_20240904",
         "date": "2024-09-04",
-        "portfolio_value": 98392741.11289999,
+        "portfolio_value": 10074344.402125007,
         "total_trade_amount": 490490.0,
-        "reason": "삼성전자(005930):BUY(추가 매수 Lv3 (Lv2 대비 -5.5%))",
+        "reason": "삼성전자(005930):BUY(추가 매수 Lv3 (Lv2 대비 -5.5%)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -4568,9 +2429,9 @@
     {
         "id": "tx_20240910",
         "date": "2024-09-10",
-        "portfolio_value": 98330978.05439998,
+        "portfolio_value": 9977721.343625005,
         "total_trade_amount": 463863.39999999997,
-        "reason": "삼성전자(005930):BUY(추가 매수 Lv4 (Lv3 대비 -5.5%))",
+        "reason": "삼성전자(005930):BUY(추가 매수 Lv4 (Lv3 대비 -5.5%)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -4589,9 +2450,9 @@
     {
         "id": "tx_20240923",
         "date": "2024-09-23",
-        "portfolio_value": 98184363.25889999,
+        "portfolio_value": 9860986.548125006,
         "total_trade_amount": 438638.2,
-        "reason": "삼성전자(005930):BUY(추가 매수 Lv5 (Lv4 대비 -5.5%))",
+        "reason": "삼성전자(005930):BUY(추가 매수 Lv5 (Lv4 대비 -5.5%)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -4608,260 +2469,11 @@
         ]
     },
     {
-        "id": "tx_20241007",
-        "date": "2024-10-07",
-        "portfolio_value": 98108504.96189998,
-        "total_trade_amount": 999798.7999999999,
-        "reason": "삼성전자(005930):BUY(DOWNTREND 확정 - 추가 매수 차단), KODEX 인버스(114800):BUY(상승장 누적 매수 Lv3 (20EMA 눌림, add 1))",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "BUY",
-                "quantity": 227,
-                "price": 4404.4,
-                "fee": 2499.5,
-                "date": "2024-10-07",
-                "status": "FILLED",
-                "reason": "",
-                "level": 3,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
-        "id": "tx_20241008",
-        "date": "2024-10-08",
-        "portfolio_value": 98099030.20009997,
-        "total_trade_amount": 497216.16000000003,
-        "reason": "삼성전자(005930):BUY(DOWNTREND 확정 - 추가 매수 차단), KODEX 인버스(114800):BUY(상승장 누적 매수 Lv4 (20EMA 눌림, add 2))",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "BUY",
-                "quantity": 112,
-                "price": 4439.43,
-                "fee": 1243.04,
-                "date": "2024-10-08",
-                "status": "FILLED",
-                "reason": "",
-                "level": 4,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
-        "id": "tx_20241010",
-        "date": "2024-10-10",
-        "portfolio_value": 98040206.29989998,
-        "total_trade_amount": 248328.08000000002,
-        "reason": "삼성전자(005930):BUY(DOWNTREND 확정 - 추가 매수 차단), KODEX 인버스(114800):BUY(상승장 누적 매수 Lv5 (20EMA 눌림, add 3))",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "BUY",
-                "quantity": 56,
-                "price": 4434.43,
-                "fee": 620.82,
-                "date": "2024-10-10",
-                "status": "FILLED",
-                "reason": "",
-                "level": 5,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
-        "id": "tx_20241015",
-        "date": "2024-10-15",
-        "portfolio_value": 98056507.91761248,
-        "total_trade_amount": 3162922.55,
-        "reason": "삼성전자(005930):BUY(DOWNTREND 확정 - 추가 매수 차단), KODEX 인버스(114800):SELL(추세 이탈 통합 전량 청산(Bulk Sell, 727주 -2.4%))",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "SELL",
-                "quantity": 56,
-                "price": 4350.65,
-                "fee": 7907.3,
-                "date": "2024-10-15",
-                "status": "FILLED",
-                "reason": "",
-                "lot_id": "lot_20260530_162904_114800_005",
-                "level": 5,
-                "buy_price": 4434.43,
-                "realized_pnl": -5300.77,
-                "alias": "KODEX 인버스"
-            },
-            {
-                "ticker": "114800",
-                "action": "SELL",
-                "quantity": 112,
-                "price": 4350.65,
-                "fee": 7907.3,
-                "date": "2024-10-15",
-                "status": "FILLED",
-                "reason": "",
-                "lot_id": "lot_20260530_162904_114800_004",
-                "level": 4,
-                "buy_price": 4439.43,
-                "realized_pnl": -11161.54,
-                "alias": "KODEX 인버스"
-            },
-            {
-                "ticker": "114800",
-                "action": "SELL",
-                "quantity": 227,
-                "price": 4350.65,
-                "fee": 7907.3,
-                "date": "2024-10-15",
-                "status": "FILLED",
-                "reason": "",
-                "lot_id": "lot_20260530_162904_114800_003",
-                "level": 3,
-                "buy_price": 4404.4,
-                "realized_pnl": -14670.24,
-                "alias": "KODEX 인버스"
-            },
-            {
-                "ticker": "114800",
-                "action": "SELL",
-                "quantity": 115,
-                "price": 4350.65,
-                "fee": 7907.3,
-                "date": "2024-10-15",
-                "status": "FILLED",
-                "reason": "",
-                "lot_id": "lot_20260530_162859_114800_002",
-                "level": 2,
-                "buy_price": 4334.33,
-                "realized_pnl": 625.99,
-                "alias": "KODEX 인버스"
-            },
-            {
-                "ticker": "114800",
-                "action": "SELL",
-                "quantity": 217,
-                "price": 4350.65,
-                "fee": 7907.3,
-                "date": "2024-10-15",
-                "status": "FILLED",
-                "reason": "",
-                "lot_id": "lot_20260530_162858_114800_001",
-                "level": 1,
-                "buy_price": 4604.6,
-                "realized_pnl": -57467.38,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
-        "id": "tx_20241016",
-        "date": "2024-10-16",
-        "portfolio_value": 97994509.62061247,
-        "total_trade_amount": 999798.7999999999,
-        "reason": "삼성전자(005930):BUY(DOWNTREND 확정 - 추가 매수 차단), KODEX 인버스(114800):BUY(초기 매수 Lv1)",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "BUY",
-                "quantity": 227,
-                "price": 4404.4,
-                "fee": 2499.5,
-                "date": "2024-10-16",
-                "status": "FILLED",
-                "reason": "",
-                "level": 1,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
-        "id": "tx_20241121",
-        "date": "2024-11-21",
-        "portfolio_value": 97925726.76142497,
-        "total_trade_amount": 999672.6000000001,
-        "reason": "삼성전자(005930):BUY(DOWNTREND 확정 - 추가 매수 차단), KODEX 인버스(114800):BUY(상승장 누적 매수 Lv2 (20EMA 눌림, add 1))",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "BUY",
-                "quantity": 215,
-                "price": 4649.64,
-                "fee": 2499.18,
-                "date": "2024-11-21",
-                "status": "FILLED",
-                "reason": "",
-                "level": 2,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
-        "id": "tx_20241122",
-        "date": "2024-11-22",
-        "portfolio_value": 97885327.91494997,
-        "total_trade_amount": 2033376.7999999998,
-        "reason": "삼성전자(005930):BUY(DOWNTREND 확정 - 추가 매수 차단), KODEX 인버스(114800):SELL(추세 이탈 통합 전량 청산(Bulk Sell, 442주 +1.8%))",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "SELL",
-                "quantity": 215,
-                "price": 4600.4,
-                "fee": 5083.44,
-                "date": "2024-11-22",
-                "status": "FILLED",
-                "reason": "",
-                "lot_id": "lot_20260530_162905_114800_002",
-                "level": 2,
-                "buy_price": 4649.64,
-                "realized_pnl": -13059.31,
-                "alias": "KODEX 인버스"
-            },
-            {
-                "ticker": "114800",
-                "action": "SELL",
-                "quantity": 227,
-                "price": 4600.4,
-                "fee": 5083.44,
-                "date": "2024-11-22",
-                "status": "FILLED",
-                "reason": "",
-                "lot_id": "lot_20260530_162904_114800_001",
-                "level": 1,
-                "buy_price": 4404.4,
-                "realized_pnl": 41881.27,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
-        "id": "tx_20241125",
-        "date": "2024-11-25",
-        "portfolio_value": 97955937.84882496,
-        "total_trade_amount": 997446.4500000001,
-        "reason": "삼성전자(005930):BUY(DOWNTREND 확정 - 추가 매수 차단), KODEX 인버스(114800):BUY(초기 매수 Lv1)",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "BUY",
-                "quantity": 219,
-                "price": 4554.55,
-                "fee": 2493.62,
-                "date": "2024-11-25",
-                "status": "FILLED",
-                "reason": "",
-                "level": 1,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
         "id": "tx_20241126",
         "date": "2024-11-26",
-        "portfolio_value": 97975379.28282496,
+        "portfolio_value": 9691652.982125007,
         "total_trade_amount": 466866.4,
-        "reason": "삼성전자(005930):BUY(추가 매수 Lv6 (Lv5 대비 -7.0%))",
+        "reason": "삼성전자(005930):BUY(추가 매수 Lv6 (Lv5 대비 -7.0%)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -4880,9 +2492,9 @@
     {
         "id": "tx_20241129",
         "date": "2024-11-29",
-        "portfolio_value": 97809440.76332496,
+        "portfolio_value": 9497244.462625006,
         "total_trade_amount": 488287.8,
-        "reason": "삼성전자(005930):BUY(추가 매수 Lv7 (Lv6 대비 -7.1%))",
+        "reason": "삼성전자(005930):BUY(추가 매수 Lv7 (Lv6 대비 -7.1%)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -4899,164 +2511,11 @@
         ]
     },
     {
-        "id": "tx_20241211",
-        "date": "2024-12-11",
-        "portfolio_value": 97799128.85838746,
-        "total_trade_amount": 997970.92,
-        "reason": "KODEX 인버스(114800):BUY(상승장 누적 매수 Lv2 (20EMA 눌림, add 1))",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "BUY",
-                "quantity": 211,
-                "price": 4729.72,
-                "fee": 2494.93,
-                "date": "2024-12-11",
-                "status": "FILLED",
-                "reason": "",
-                "level": 2,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
-        "id": "tx_20241216",
-        "date": "2024-12-16",
-        "portfolio_value": 97856884.31567496,
-        "total_trade_amount": 498582.55,
-        "reason": "KODEX 인버스(114800):BUY(상승장 누적 매수 Lv3 (20EMA 눌림, add 2))",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "BUY",
-                "quantity": 107,
-                "price": 4659.65,
-                "fee": 1246.46,
-                "date": "2024-12-16",
-                "status": "FILLED",
-                "reason": "",
-                "level": 3,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
-        "id": "tx_20241217",
-        "date": "2024-12-17",
-        "portfolio_value": 97809829.05843747,
-        "total_trade_amount": 250144.63,
-        "reason": "KODEX 인버스(114800):BUY(상승장 누적 매수 Lv4 (20EMA 눌림, add 3))",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "BUY",
-                "quantity": 53,
-                "price": 4719.71,
-                "fee": 625.36,
-                "date": "2024-12-17",
-                "status": "FILLED",
-                "reason": "",
-                "level": 4,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
-        "id": "tx_20250106",
-        "date": "2025-01-06",
-        "portfolio_value": 97836505.89056246,
-        "total_trade_amount": 2720130.1,
-        "reason": "KODEX 인버스(114800):SELL(추세 이탈 통합 전량 청산(Bulk Sell, 590주 -0.8%))",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "SELL",
-                "quantity": 53,
-                "price": 4610.39,
-                "fee": 6800.32,
-                "date": "2025-01-06",
-                "status": "FILLED",
-                "reason": "",
-                "lot_id": "lot_20260530_162906_114800_004",
-                "level": 4,
-                "buy_price": 4719.71,
-                "realized_pnl": -6404.84,
-                "alias": "KODEX 인버스"
-            },
-            {
-                "ticker": "114800",
-                "action": "SELL",
-                "quantity": 107,
-                "price": 4610.39,
-                "fee": 6800.32,
-                "date": "2025-01-06",
-                "status": "FILLED",
-                "reason": "",
-                "lot_id": "lot_20260530_162906_114800_003",
-                "level": 3,
-                "buy_price": 4659.65,
-                "realized_pnl": -6504.1,
-                "alias": "KODEX 인버스"
-            },
-            {
-                "ticker": "114800",
-                "action": "SELL",
-                "quantity": 211,
-                "price": 4610.39,
-                "fee": 6800.32,
-                "date": "2025-01-06",
-                "status": "FILLED",
-                "reason": "",
-                "lot_id": "lot_20260530_162906_114800_002",
-                "level": 2,
-                "buy_price": 4729.72,
-                "realized_pnl": -27610.61,
-                "alias": "KODEX 인버스"
-            },
-            {
-                "ticker": "114800",
-                "action": "SELL",
-                "quantity": 219,
-                "price": 4610.39,
-                "fee": 6800.32,
-                "date": "2025-01-06",
-                "status": "FILLED",
-                "reason": "",
-                "lot_id": "lot_20260530_162905_114800_001",
-                "level": 1,
-                "buy_price": 4554.55,
-                "realized_pnl": 9704.77,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
-        "id": "tx_20250107",
-        "date": "2025-01-07",
-        "portfolio_value": 97805018.24116246,
-        "total_trade_amount": 996755.7599999999,
-        "reason": "KODEX 인버스(114800):BUY(초기 매수 Lv1)",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "BUY",
-                "quantity": 216,
-                "price": 4614.61,
-                "fee": 2491.89,
-                "date": "2025-01-07",
-                "status": "FILLED",
-                "reason": "",
-                "level": 1,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
         "id": "tx_20250203",
         "date": "2025-02-03",
-        "portfolio_value": 97582930.59366247,
+        "portfolio_value": 9316436.815125007,
         "total_trade_amount": 459459.0,
-        "reason": "삼성전자(005930):BUY(추가 매수 Lv8 (Lv7 대비 -6.0%))",
+        "reason": "삼성전자(005930):BUY(추가 매수 Lv8 (Lv7 대비 -6.0%)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -5073,32 +2532,11 @@
         ]
     },
     {
-        "id": "tx_20250219",
-        "date": "2025-02-19",
-        "portfolio_value": 97993130.55166247,
-        "total_trade_amount": 497296.8,
-        "reason": "KODEX 인버스(114800):BUY(추가 매수 Lv2 (Lv1 대비 -6.4%))",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "BUY",
-                "quantity": 115,
-                "price": 4324.32,
-                "fee": 1243.24,
-                "date": "2025-02-19",
-                "status": "FILLED",
-                "reason": "",
-                "level": 2,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
         "id": "tx_20250228",
         "date": "2025-02-28",
-        "portfolio_value": 97799510.02791247,
+        "portfolio_value": 9542221.291375007,
         "total_trade_amount": 490009.5,
-        "reason": "삼성전자(005930):SELL(trailing 벌크 매도 Lv8~Lv8 (9주 +6.8%))",
+        "reason": "삼성전자(005930):SELL(trailing 벌크 매도 Lv8~Lv8 (9주 +6.8%)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -5109,7 +2547,7 @@
                 "date": "2025-02-28",
                 "status": "FILLED",
                 "reason": "",
-                "lot_id": "lot_20260530_162907_005930_008",
+                "lot_id": "lot_20260531_065706_005930_008",
                 "level": 8,
                 "buy_price": 51051.0,
                 "realized_pnl": 29325.48,
@@ -5120,9 +2558,9 @@
     {
         "id": "tx_20250331",
         "date": "2025-03-31",
-        "portfolio_value": 97979180.62841247,
+        "portfolio_value": 9725201.891875006,
         "total_trade_amount": 519679.8,
-        "reason": "삼성전자(005930):SELL(trailing 벌크 매도 Lv7~Lv7 (9주 +6.5%))",
+        "reason": "삼성전자(005930):SELL(trailing 벌크 매도 Lv7~Lv7 (9주 +6.5%)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -5133,7 +2571,7 @@
                 "date": "2025-03-31",
                 "status": "FILLED",
                 "reason": "",
-                "lot_id": "lot_20260530_162905_005930_007",
+                "lot_id": "lot_20260531_065705_005930_007",
                 "level": 7,
                 "buy_price": 54254.2,
                 "realized_pnl": 30092.8,
@@ -5144,9 +2582,9 @@
     {
         "id": "tx_20250407",
         "date": "2025-04-07",
-        "portfolio_value": 97870533.63141248,
+        "portfolio_value": 9507324.894875007,
         "total_trade_amount": 479278.8,
-        "reason": "삼성전자(005930):BUY(추가 매수 Lv7 (Lv6 대비 -8.8%)), KODEX 인버스(114800):SELL(Lv2: trailing 활성화 (매수가 대비 +13.0%, 스톱가 KRW 4,641))",
+        "reason": "삼성전자(005930):BUY(추가 매수 Lv7 (Lv6 대비 -8.8%)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -5163,77 +2601,11 @@
         ]
     },
     {
-        "id": "tx_20250410",
-        "date": "2025-04-10",
-        "portfolio_value": 97970078.34328748,
-        "total_trade_amount": 534215.25,
-        "reason": "KODEX 인버스(114800):SELL(trailing 벌크 매도 Lv2~Lv2 (115주 +7.5%))",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "SELL",
-                "quantity": 115,
-                "price": 4645.35,
-                "fee": 1335.54,
-                "date": "2025-04-10",
-                "status": "FILLED",
-                "reason": "",
-                "lot_id": "lot_20260530_162907_114800_002",
-                "level": 2,
-                "buy_price": 4324.32,
-                "realized_pnl": 35582.91,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
-        "id": "tx_20250512",
-        "date": "2025-05-12",
-        "portfolio_value": 97970741.45353748,
-        "total_trade_amount": 496395.9,
-        "reason": "KODEX 인버스(114800):BUY(동적 재매수 Lv2 (매도가 KRW 4,645 대비 -6.4%))",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "BUY",
-                "quantity": 114,
-                "price": 4354.35,
-                "fee": 1240.99,
-                "date": "2025-05-12",
-                "status": "FILLED",
-                "reason": "",
-                "level": 2,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
-        "id": "tx_20250604",
-        "date": "2025-06-04",
-        "portfolio_value": 97891098.04913747,
-        "total_trade_amount": 498257.76,
-        "reason": "KODEX 인버스(114800):BUY(추가 매수 Lv3 (Lv2 대비 -6.3%))",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "BUY",
-                "quantity": 122,
-                "price": 4084.08,
-                "fee": 1245.64,
-                "date": "2025-06-04",
-                "status": "FILLED",
-                "reason": "",
-                "level": 3,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
         "id": "tx_20250709",
         "date": "2025-07-09",
-        "portfolio_value": 97799756.80813748,
+        "portfolio_value": 9908623.653875006,
         "total_trade_amount": 543056.4,
-        "reason": "삼성전자(005930):SELL(trailing 벌크 매도 Lv7~Lv7 (9주 +13.4%)), KODEX 인버스(114800):BUY(DOWNTREND 확정 - 추가 매수 차단)",
+        "reason": "삼성전자(005930):SELL(trailing 벌크 매도 Lv7~Lv7 (9주 +13.4%)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -5244,7 +2616,7 @@
                 "date": "2025-07-09",
                 "status": "FILLED",
                 "reason": "",
-                "lot_id": "lot_20260530_162908_005930_007",
+                "lot_id": "lot_20260531_065708_005930_007",
                 "level": 7,
                 "buy_price": 53253.2,
                 "realized_pnl": 62419.96,
@@ -5255,9 +2627,9 @@
     {
         "id": "tx_20250818",
         "date": "2025-08-18",
-        "portfolio_value": 98220404.35813747,
+        "portfolio_value": 10356391.203875007,
         "total_trade_amount": 980980.0,
-        "reason": "삼성전자(005930):BUY(상승장 누적 매수 Lv7 (20EMA 눌림, add 1)), KODEX 인버스(114800):BUY(DOWNTREND 확정 - 추가 매수 차단)",
+        "reason": "삼성전자(005930):BUY(상승장 누적 매수 Lv7 (20EMA 눌림, add 1)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -5276,9 +2648,9 @@
     {
         "id": "tx_20250819",
         "date": "2025-08-19",
-        "portfolio_value": 98229988.13313748,
+        "portfolio_value": 10354674.978875007,
         "total_trade_amount": 490490.0,
-        "reason": "삼성전자(005930):BUY(상승장 누적 매수 Lv8 (20EMA 눌림, add 2)), KODEX 인버스(114800):BUY(DOWNTREND 확정 - 추가 매수 차단)",
+        "reason": "삼성전자(005930):BUY(상승장 누적 매수 Lv8 (20EMA 눌림, add 2)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -5295,32 +2667,11 @@
         ]
     },
     {
-        "id": "tx_20250825",
-        "date": "2025-08-25",
-        "portfolio_value": 98303120.52573748,
-        "total_trade_amount": 499458.24,
-        "reason": "KODEX 인버스(114800):BUY(추가 매수 Lv4 (Lv3 대비 -15.2%))",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "BUY",
-                "quantity": 144,
-                "price": 3468.46,
-                "fee": 1248.65,
-                "date": "2025-08-25",
-                "status": "FILLED",
-                "reason": "",
-                "level": 4,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
         "id": "tx_20250826",
         "date": "2025-08-26",
-        "portfolio_value": 98238661.84848748,
+        "portfolio_value": 10374336.301625008,
         "total_trade_amount": 211110.90000000002,
-        "reason": "삼성전자(005930):BUY(상승장 누적 매수 Lv9 (20EMA 눌림, add 3))",
+        "reason": "삼성전자(005930):BUY(상승장 누적 매수 Lv9 (20EMA 눌림, add 3)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -5339,9 +2690,9 @@
     {
         "id": "tx_20250901",
         "date": "2025-09-01",
-        "portfolio_value": 98074210.33248748,
+        "portfolio_value": 10174124.785625007,
         "total_trade_amount": 2431166.4,
-        "reason": "삼성전자(005930):SELL(추세 이탈 분할 청산(36/71주, -2.9%))",
+        "reason": "삼성전자(005930):SELL(추세 이탈 분할 청산(36/71주, -2.9%)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -5352,7 +2703,7 @@
                 "date": "2025-09-01",
                 "status": "FILLED",
                 "reason": "",
-                "lot_id": "lot_20260530_162911_005930_009",
+                "lot_id": "lot_20260531_065711_005930_009",
                 "level": 9,
                 "buy_price": 70370.3,
                 "realized_pnl": -9020.19,
@@ -5367,7 +2718,7 @@
                 "date": "2025-09-01",
                 "status": "FILLED",
                 "reason": "",
-                "lot_id": "lot_20260530_162910_005930_008",
+                "lot_id": "lot_20260531_065711_005930_008",
                 "level": 8,
                 "buy_price": 70070.0,
                 "realized_pnl": -18945.02,
@@ -5382,7 +2733,7 @@
                 "date": "2025-09-01",
                 "status": "FILLED",
                 "reason": "",
-                "lot_id": "lot_20260530_162910_005930_007",
+                "lot_id": "lot_20260531_065711_005930_007",
                 "level": 7,
                 "buy_price": 70070.0,
                 "realized_pnl": -37890.04,
@@ -5397,7 +2748,7 @@
                 "date": "2025-09-01",
                 "status": "FILLED",
                 "reason": "",
-                "lot_id": "lot_20260530_162905_005930_006",
+                "lot_id": "lot_20260531_065705_005930_006",
                 "level": 6,
                 "buy_price": 58358.3,
                 "realized_pnl": 72042.15,
@@ -5412,7 +2763,7 @@
                 "date": "2025-09-01",
                 "status": "FILLED",
                 "reason": "",
-                "lot_id": "lot_20260530_162904_005930_005",
+                "lot_id": "lot_20260531_065704_005930_005",
                 "level": 5,
                 "buy_price": 62662.6,
                 "realized_pnl": 18803.88,
@@ -5421,32 +2772,11 @@
         ]
     },
     {
-        "id": "tx_20250912",
-        "date": "2025-09-12",
-        "portfolio_value": 98160700.02816248,
-        "total_trade_amount": 500228.95999999996,
-        "reason": "KODEX 인버스(114800):BUY(추가 매수 Lv5 (Lv4 대비 -6.4%))",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "BUY",
-                "quantity": 154,
-                "price": 3248.24,
-                "fee": 1250.57,
-                "date": "2025-09-12",
-                "status": "FILLED",
-                "reason": "",
-                "level": 5,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
         "id": "tx_20251105",
         "date": "2025-11-05",
-        "portfolio_value": 98578866.75516248,
+        "portfolio_value": 11322791.512625007,
         "total_trade_amount": 1808989.2,
-        "reason": "삼성전자(005930):SELL(추세 이탈 분할 청산(18/35주, +38.5%)), KODEX 인버스(114800):BUY(DOWNTREND 확정 - 추가 매수 차단)",
+        "reason": "삼성전자(005930):SELL(추세 이탈 분할 청산(18/35주, +38.5%)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -5457,7 +2787,7 @@
                 "date": "2025-11-05",
                 "status": "FILLED",
                 "reason": "",
-                "lot_id": "lot_20260530_162904_005930_005",
+                "lot_id": "lot_20260531_065704_005930_005",
                 "level": 5,
                 "buy_price": 62662.6,
                 "realized_pnl": 112756.65,
@@ -5472,7 +2802,7 @@
                 "date": "2025-11-05",
                 "status": "FILLED",
                 "reason": "",
-                "lot_id": "lot_20260530_162904_005930_004",
+                "lot_id": "lot_20260531_065704_005930_004",
                 "level": 4,
                 "buy_price": 66266.2,
                 "realized_pnl": 237873.66,
@@ -5487,7 +2817,7 @@
                 "date": "2025-11-05",
                 "status": "FILLED",
                 "reason": "",
-                "lot_id": "lot_20260530_162904_005930_003",
+                "lot_id": "lot_20260531_065703_005930_003",
                 "level": 3,
                 "buy_price": 70070.0,
                 "realized_pnl": 211247.06,
@@ -5502,7 +2832,7 @@
                 "date": "2025-11-05",
                 "status": "FILLED",
                 "reason": "",
-                "lot_id": "lot_20260530_162904_005930_002",
+                "lot_id": "lot_20260531_065703_005930_002",
                 "level": 2,
                 "buy_price": 74074.0,
                 "realized_pnl": 26174.15,
@@ -5513,9 +2843,9 @@
     {
         "id": "tx_20251114",
         "date": "2025-11-14",
-        "portfolio_value": 98525507.14216247,
+        "portfolio_value": 11261931.899625007,
         "total_trade_amount": 873925.2000000001,
-        "reason": "삼성전자(005930):SELL(추세 이탈 분할 청산(9/17주, +24.6%)), KODEX 인버스(114800):BUY(DOWNTREND 확정 - 추가 매수 차단)",
+        "reason": "삼성전자(005930):SELL(추세 이탈 분할 청산(9/17주, +24.6%)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -5526,7 +2856,7 @@
                 "date": "2025-11-14",
                 "status": "FILLED",
                 "reason": "",
-                "lot_id": "lot_20260530_162904_005930_002",
+                "lot_id": "lot_20260531_065703_005930_002",
                 "level": 2,
                 "buy_price": 74074.0,
                 "realized_pnl": 113930.22,
@@ -5541,7 +2871,7 @@
                 "date": "2025-11-14",
                 "status": "FILLED",
                 "reason": "",
-                "lot_id": "lot_20260530_162903_005930_001",
+                "lot_id": "lot_20260531_065703_005930_001",
                 "level": 1,
                 "buy_price": 79679.6,
                 "realized_pnl": 68721.77,
@@ -5552,9 +2882,9 @@
     {
         "id": "tx_20251128",
         "date": "2025-11-28",
-        "portfolio_value": 98567489.13091247,
+        "portfolio_value": 11285163.888375007,
         "total_trade_amount": 905404.5,
-        "reason": "삼성전자(005930):BUY(상승장 누적 매수 Lv2 (20EMA 눌림, add 1)), KODEX 인버스(114800):BUY(DOWNTREND 확정 - 추가 매수 차단)",
+        "reason": "삼성전자(005930):BUY(상승장 누적 매수 Lv2 (20EMA 눌림, add 1)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -5573,9 +2903,9 @@
     {
         "id": "tx_20251201",
         "date": "2025-12-01",
-        "portfolio_value": 98573184.25403747,
-        "total_trade_amount": 901649.8200000001,
-        "reason": "삼성전자(005930):BUY(상승장 누적 매수 Lv3 (20EMA 눌림, add 2)), KODEX 인버스(114800):BUY(추가 매수 Lv6 (Lv5 대비 -17.6%))",
+        "portfolio_value": 11288851.680375006,
+        "total_trade_amount": 403603.2,
+        "reason": "삼성전자(005930):BUY(상승장 누적 매수 Lv3 (20EMA 눌림, add 2)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -5588,48 +2918,15 @@
                 "reason": "",
                 "level": 3,
                 "alias": "삼성전자"
-            },
-            {
-                "ticker": "114800",
-                "action": "BUY",
-                "quantity": 186,
-                "price": 2677.67,
-                "fee": 1245.12,
-                "date": "2025-12-01",
-                "status": "FILLED",
-                "reason": "",
-                "level": 6,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
-        "id": "tx_20251208",
-        "date": "2025-12-08",
-        "portfolio_value": 98604380.11411247,
-        "total_trade_amount": 498466.98000000004,
-        "reason": "KODEX 인버스(114800):BUY(추가 매수 Lv7 (Lv6 대비 -6.1%))",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "BUY",
-                "quantity": 198,
-                "price": 2517.51,
-                "fee": 1246.17,
-                "date": "2025-12-08",
-                "status": "FILLED",
-                "reason": "",
-                "level": 7,
-                "alias": "KODEX 인버스"
             }
         ]
     },
     {
         "id": "tx_20251215",
         "date": "2025-12-15",
-        "portfolio_value": 98572985.99011247,
+        "portfolio_value": 11372117.556375006,
         "total_trade_amount": 209809.6,
-        "reason": "삼성전자(005930):BUY(상승장 누적 매수 Lv4 (20EMA 눌림, add 3))",
+        "reason": "삼성전자(005930):BUY(상승장 누적 매수 Lv4 (20EMA 눌림, add 3)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -5646,53 +2943,11 @@
         ]
     },
     {
-        "id": "tx_20260102",
-        "date": "2026-01-02",
-        "portfolio_value": 98872531.88521247,
-        "total_trade_amount": 498457.96,
-        "reason": "KODEX 인버스(114800):BUY(추가 매수 Lv8 (Lv7 대비 -6.3%))",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "BUY",
-                "quantity": 211,
-                "price": 2362.36,
-                "fee": 1246.14,
-                "date": "2026-01-02",
-                "status": "FILLED",
-                "reason": "",
-                "level": 8,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
-        "id": "tx_20260106",
-        "date": "2026-01-06",
-        "portfolio_value": 98941861.22169997,
-        "total_trade_amount": 498902.29,
-        "reason": "KODEX 인버스(114800):BUY(추가 매수 Lv9 (Lv8 대비 -5.4%))",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "BUY",
-                "quantity": 223,
-                "price": 2237.23,
-                "fee": 1247.26,
-                "date": "2026-01-06",
-                "status": "FILLED",
-                "reason": "",
-                "level": 9,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
         "id": "tx_20260303",
         "date": "2026-03-03",
-        "portfolio_value": 99332512.87469997,
+        "portfolio_value": 13440829.209375005,
         "total_trade_amount": 2338858.8,
-        "reason": "삼성전자(005930):SELL(추세 이탈 분할 청산(12/23주, +108.1%)), KODEX 인버스(114800):BUY(DOWNTREND 확정 - 추가 매수 차단)",
+        "reason": "삼성전자(005930):SELL(추세 이탈 분할 청산(12/23주, +108.1%)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -5703,7 +2958,7 @@
                 "date": "2026-03-03",
                 "status": "FILLED",
                 "reason": "",
-                "lot_id": "lot_20260530_162913_005930_004",
+                "lot_id": "lot_20260531_065714_005930_004",
                 "level": 4,
                 "buy_price": 104904.8,
                 "realized_pnl": 179025.67,
@@ -5718,7 +2973,7 @@
                 "date": "2026-03-03",
                 "status": "FILLED",
                 "reason": "",
-                "lot_id": "lot_20260530_162913_005930_003",
+                "lot_id": "lot_20260531_065713_005930_003",
                 "level": 3,
                 "buy_price": 100900.8,
                 "realized_pnl": 374067.35,
@@ -5733,7 +2988,7 @@
                 "date": "2026-03-03",
                 "status": "FILLED",
                 "reason": "",
-                "lot_id": "lot_20260530_162913_005930_002",
+                "lot_id": "lot_20260531_065713_005930_002",
                 "level": 2,
                 "buy_price": 100600.5,
                 "realized_pnl": 562902.82,
@@ -5744,9 +2999,9 @@
     {
         "id": "tx_20260304",
         "date": "2026-03-04",
-        "portfolio_value": 99396995.91019997,
+        "portfolio_value": 13182304.244875005,
         "total_trade_amount": 1892305.7999999998,
-        "reason": "삼성전자(005930):SELL(추종 데드라인 발동 잔량 청산(11주, 기준가 대비 -11.6%)), KODEX 인버스(114800):BUY(DOWNTREND 확정 - 추가 매수 차단)",
+        "reason": "삼성전자(005930):SELL(추종 데드라인 발동 잔량 청산(11주, 기준가 대비 -11.6%)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -5757,7 +3012,7 @@
                 "date": "2026-03-04",
                 "status": "FILLED",
                 "reason": "",
-                "lot_id": "lot_20260530_162913_005930_002",
+                "lot_id": "lot_20260531_065713_005930_002",
                 "level": 2,
                 "buy_price": 100600.5,
                 "realized_pnl": 212991.69,
@@ -5772,7 +3027,7 @@
                 "date": "2026-03-04",
                 "status": "FILLED",
                 "reason": "",
-                "lot_id": "lot_20260530_162903_005930_001",
+                "lot_id": "lot_20260531_065703_005930_001",
                 "level": 1,
                 "buy_price": 79679.6,
                 "realized_pnl": 735345.05,
@@ -5783,9 +3038,9 @@
     {
         "id": "tx_20260305",
         "date": "2026-03-05",
-        "portfolio_value": 99111400.51519997,
+        "portfolio_value": 13178948.849875005,
         "total_trade_amount": 958958.0,
-        "reason": "삼성전자(005930):BUY(초기 매수 Lv1), KODEX 인버스(114800):BUY(DOWNTREND 확정 - 추가 매수 차단)",
+        "reason": "삼성전자(005930):BUY(초기 매수 Lv1), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -5804,9 +3059,9 @@
     {
         "id": "tx_20260309",
         "date": "2026-03-09",
-        "portfolio_value": 99191560.06644997,
+        "portfolio_value": 13086628.401125005,
         "total_trade_amount": 519979.5,
-        "reason": "삼성전자(005930):SELL(추세 이탈 분할 청산(3/5주, -9.5%)), KODEX 인버스(114800):BUY(DOWNTREND 확정 - 추가 매수 차단)",
+        "reason": "삼성전자(005930):SELL(추세 이탈 분할 청산(3/5주, -9.5%)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -5817,7 +3072,7 @@
                 "date": "2026-03-09",
                 "status": "FILLED",
                 "reason": "",
-                "lot_id": "lot_20260530_162915_005930_001",
+                "lot_id": "lot_20260531_065716_005930_001",
                 "level": 1,
                 "buy_price": 191791.6,
                 "realized_pnl": -56695.25,
@@ -5828,9 +3083,9 @@
     {
         "id": "tx_20260313",
         "date": "2026-03-13",
-        "portfolio_value": 99069798.27519996,
+        "portfolio_value": 13105986.609875005,
         "total_trade_amount": 183316.5,
-        "reason": "삼성전자(005930):SELL(추세 이탈 분할 청산(1/2주, -4.3%)), KODEX 인버스(114800):BUY(DOWNTREND 확정 - 추가 매수 차단)",
+        "reason": "삼성전자(005930):SELL(추세 이탈 분할 청산(1/2주, -4.3%)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -5841,7 +3096,7 @@
                 "date": "2026-03-13",
                 "status": "FILLED",
                 "reason": "",
-                "lot_id": "lot_20260530_162915_005930_001",
+                "lot_id": "lot_20260531_065716_005930_001",
                 "level": 1,
                 "buy_price": 191791.6,
                 "realized_pnl": -8933.39,
@@ -5850,32 +3105,11 @@
         ]
     },
     {
-        "id": "tx_20260319",
-        "date": "2026-03-19",
-        "portfolio_value": 98917275.07408996,
-        "total_trade_amount": 499341.6,
-        "reason": "KODEX 인버스(114800):BUY(추가 매수 Lv10 (Lv9 대비 -28.3%))",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "BUY",
-                "quantity": 311,
-                "price": 1605.6,
-                "fee": 1248.36,
-                "date": "2026-03-19",
-                "status": "FILLED",
-                "reason": "",
-                "level": 10,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
         "id": "tx_20260323",
         "date": "2026-03-23",
-        "portfolio_value": 99109113.48983996,
+        "portfolio_value": 13108135.025625005,
         "total_trade_amount": 186113.7,
-        "reason": "삼성전자(005930):SELL(추세 이탈 전량 청산(수량 부족, 1주 -2.9%)), KODEX 인버스(114800):BUY(max_lots(10) 도달: 현재가 KRW 1,714 (Lv10 대비 +6.8%) -> 추가 하락 대응 불가)",
+        "reason": "삼성전자(005930):SELL(추세 이탈 전량 청산(수량 부족, 1주 -2.9%)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -5886,7 +3120,7 @@
                 "date": "2026-03-23",
                 "status": "FILLED",
                 "reason": "",
-                "lot_id": "lot_20260530_162915_005930_001",
+                "lot_id": "lot_20260531_065716_005930_001",
                 "level": 1,
                 "buy_price": 191791.6,
                 "realized_pnl": -6143.18,
@@ -5897,9 +3131,9 @@
     {
         "id": "tx_20260324",
         "date": "2026-03-24",
-        "portfolio_value": 99004325.36858995,
+        "portfolio_value": 13104812.904375006,
         "total_trade_amount": 949448.5,
-        "reason": "삼성전자(005930):BUY(초기 매수 Lv1), KODEX 인버스(114800):BUY(max_lots(10) 도달: 현재가 KRW 1,660 (Lv10 대비 +3.4%) -> 추가 하락 대응 불가)",
+        "reason": "삼성전자(005930):BUY(초기 매수 Lv1), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -5918,9 +3152,9 @@
     {
         "id": "tx_20260326",
         "date": "2026-03-26",
-        "portfolio_value": 99020828.76808995,
+        "portfolio_value": 13055551.303875005,
         "total_trade_amount": 360560.2,
-        "reason": "삼성전자(005930):BUY(추가 매수 Lv2 (Lv1 대비 -5.2%)), KODEX 인버스(114800):BUY(max_lots(10) 도달: 현재가 KRW 1,695 (Lv10 대비 +5.6%) -> 추가 하락 대응 불가)",
+        "reason": "삼성전자(005930):BUY(추가 매수 Lv2 (Lv1 대비 -5.2%)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -5939,9 +3173,9 @@
     {
         "id": "tx_20260331",
         "date": "2026-03-31",
-        "portfolio_value": 99190538.53208995,
+        "portfolio_value": 12964080.067875005,
         "total_trade_amount": 334734.4,
-        "reason": "삼성전자(005930):BUY(추가 매수 Lv3 (Lv2 대비 -7.3%)), KODEX 인버스(114800):SELL(Lv10: trailing 활성화 (매수가 대비 +14.2%, 스톱가 KRW 1,742))",
+        "reason": "삼성전자(005930):BUY(추가 매수 Lv3 (Lv2 대비 -7.3%)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -5958,35 +3192,11 @@
         ]
     },
     {
-        "id": "tx_20260401",
-        "date": "2026-04-01",
-        "portfolio_value": 99075104.38640495,
-        "total_trade_amount": 517606.63,
-        "reason": "삼성전자(005930):SELL(Lv3: trailing 활성화 (매수가 대비 +13.3%, 스톱가 KRW 180,168)), KODEX 인버스(114800):SELL(trailing 벌크 매도 Lv10~Lv10 (311주 +3.8%))",
-        "executions": [
-            {
-                "ticker": "114800",
-                "action": "SELL",
-                "quantity": 311,
-                "price": 1664.33,
-                "fee": 1294.02,
-                "date": "2026-04-01",
-                "status": "FILLED",
-                "reason": "",
-                "lot_id": "lot_20260530_162916_114800_010",
-                "level": 10,
-                "buy_price": 1605.6,
-                "realized_pnl": 16971.01,
-                "alias": "KODEX 인버스"
-            }
-        ]
-    },
-    {
         "id": "tx_20260402",
         "date": "2026-04-02",
-        "portfolio_value": 99101004.60474244,
-        "total_trade_amount": 855406.95,
-        "reason": "삼성전자(005930):SELL(trailing 벌크 매도 Lv3~Lv3 (2주 +6.6%)), KODEX 인버스(114800):BUY(추가 매수 Lv10 (Lv9 대비 -21.8%))",
+        "portfolio_value": 13063632.159875005,
+        "total_trade_amount": 356443.2,
+        "reason": "삼성전자(005930):SELL(trailing 벌크 매도 Lv3~Lv3 (2주 +6.6%)), KODEX 인버스(114800):SKIP(현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요)",
         "executions": [
             {
                 "ticker": "005930",
@@ -5997,23 +3207,11 @@
                 "date": "2026-04-02",
                 "status": "FILLED",
                 "reason": "",
-                "lot_id": "lot_20260530_162916_005930_003",
+                "lot_id": "lot_20260531_065716_005930_003",
                 "level": 3,
                 "buy_price": 167367.2,
                 "realized_pnl": 20817.69,
                 "alias": "삼성전자"
-            },
-            {
-                "ticker": "114800",
-                "action": "BUY",
-                "quantity": 285,
-                "price": 1750.75,
-                "fee": 1247.41,
-                "date": "2026-04-02",
-                "status": "FILLED",
-                "reason": "",
-                "level": 10,
-                "alias": "KODEX 인버스"
             }
         ]
     }
