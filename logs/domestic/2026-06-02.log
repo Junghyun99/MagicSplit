@@ -65,3 +65,23 @@
 2026-06-02 09:06:27,283 [INFO] [KisDomestic] Order FILLED: HANARO 글로벌금채굴기업(473640) ODNO=0009414100 price=34080.0 qty=29 fee=148.248
 2026-06-02 09:06:27,484 [INFO] [Position] New lot: lot_20260602_090627_473640_001 Lv1 HANARO 글로벌금채굴기업(473640) 29주 @KRW 34,080
 2026-06-02 09:06:31,029 [INFO] >>> Step 6: Persist
+2026-06-02 02:43:27,144 [INFO] === Manual Trade CLI: 475300 BUY amount=2000000.0 ===
+2026-06-02 02:43:27,144 [INFO] [KisBroker] 캐시에서 토큰 로드 (API 호출 생략)
+2026-06-02 02:43:27,144 [INFO] [KisDomesticLiveBroker] Mode: LIVE TRADING
+2026-06-02 02:43:27,145 [INFO] === Manual Trade: SOL 반도체전공정(475300) BUY ===
+2026-06-02 02:43:27,145 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-06-02 02:43:28,067 [ERROR] [KisDomestic] Error getting portfolio: 500 Server Error: Internal Server Error for url: https://openapi.koreainvestment.com:9443/uapi/domestic-stock/v1/trading/inquire-balance?CANO=73297247&ACNT_PRDT_CD=01&AFHR_FLPR_YN=N&OFL_YN=&INQR_DVSN=01&UNPR_DVSN=01&FUND_STTL_ICLD_YN=N&FNCG_AMT_AUTO_RDPT_YN=N&PRCS_DVSN=00&CTX_AREA_FK100=&CTX_AREA_NK100=
+2026-06-02 02:43:28,068 [INFO] Fetching real-time prices from Broker...
+2026-06-02 02:43:32,952 [INFO] Portfolio: Cash=KRW 0, Value=KRW 0
+2026-06-02 02:43:32,952 [INFO] >>> Step 2: Load Positions
+2026-06-02 02:43:32,952 [INFO] Loaded 25 position lot(s)
+2026-06-02 02:43:32,953 [INFO] 매수 금액 수동 지정: KRW 2,000,000
+2026-06-02 02:43:32,953 [INFO] 매수 수량 도출: Lv4 buy_amount=KRW 2,000,000 / 현재가=KRW 21,665 = 92주
+2026-06-02 02:43:32,953 [INFO] [SOL 반도체전공정(475300)] 수동 신호 생성: BUY Lv4 92주 @KRW 21,665
+2026-06-02 02:43:32,953 [INFO] Executing 1 order(s)...
+2026-06-02 02:43:33,503 [INFO] [KisBroker] Available Cash for BUY: 4,302,604
+2026-06-02 02:43:34,694 [INFO] [KisDomestic] Order Sent: BUY SOL 반도체전공정(475300) 92 @ 21720 (ODNO=0034181900)
+2026-06-02 02:43:35,017 [INFO] [KisDomestic] Order FILLED: SOL 반도체전공정(475300) ODNO=0034181900 price=21720.0 qty=92 fee=299.736
+2026-06-02 02:43:35,218 [INFO] [Position] New lot: lot_20260602_024335_475300_004 Lv4 SOL 반도체전공정(475300) 92주 @KRW 21,720
+2026-06-02 02:43:38,761 [INFO] >>> Step 6: Persist
+2026-06-02 02:43:39,324 [INFO] === Manual Trade 완료 ===
