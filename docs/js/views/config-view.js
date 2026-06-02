@@ -17,6 +17,8 @@ window.ConfigView = (function () {
         document.getElementById('global-trailing-drop').value = globalConfig?.trailing_drop_pct !== undefined ? globalConfig.trailing_drop_pct : '';
         document.getElementById('global-regime-enabled').checked = globalConfig?.regime_enabled === true;
         document.getElementById('global-uptrend-add-reset-pct').value = globalConfig?.uptrend_add_reset_pct !== undefined ? globalConfig.uptrend_add_reset_pct : '';
+        document.getElementById('global-trendbreak-use-sma50').checked = globalConfig?.trendbreak_use_sma50 !== false;
+        document.getElementById('global-trendbreak-chandelier-k').value = globalConfig?.trendbreak_chandelier_k !== undefined ? globalConfig.trendbreak_chandelier_k : '';
     }
 
     function renderTickerList(stocks, activeIndex, onSelect, getDisplayName) {
@@ -55,6 +57,8 @@ window.ConfigView = (function () {
         document.getElementById('edit-uptrend-max-adds').value = stock.uptrend_max_adds !== undefined ? stock.uptrend_max_adds : '';
         document.getElementById('edit-uptrend-pullback-band-pct').value = stock.uptrend_pullback_band_pct !== undefined ? stock.uptrend_pullback_band_pct : '';
         document.getElementById('edit-uptrend-add-reset-pct').value = stock.uptrend_add_reset_pct !== undefined ? stock.uptrend_add_reset_pct : '';
+        document.getElementById('edit-trendbreak-partial-sell-pct').value = stock.trendbreak_partial_sell_pct !== undefined ? stock.trendbreak_partial_sell_pct : '';
+        document.getElementById('edit-trendbreak-trailing-drop-pct').value = stock.trendbreak_trailing_drop_pct !== undefined ? stock.trendbreak_trailing_drop_pct : '';
 
         renderLevelsTable(stock);
         renderUptrendAmountsTable(stock);
@@ -205,6 +209,8 @@ window.ConfigView = (function () {
             uptrend_max_adds: document.getElementById('edit-uptrend-max-adds').value,
             uptrend_pullback_band_pct: document.getElementById('edit-uptrend-pullback-band-pct').value,
             uptrend_add_reset_pct: document.getElementById('edit-uptrend-add-reset-pct').value,
+            trendbreak_partial_sell_pct: document.getElementById('edit-trendbreak-partial-sell-pct').value,
+            trendbreak_trailing_drop_pct: document.getElementById('edit-trendbreak-trailing-drop-pct').value,
             buyPcts,
             buyAmts,
             sellPcts,
@@ -221,7 +227,9 @@ window.ConfigView = (function () {
             max_exposure_pct: document.getElementById('global-max-exposure').value,
             trailing_drop_pct: document.getElementById('global-trailing-drop').value,
             regime_enabled: document.getElementById('global-regime-enabled').checked,
-            uptrend_add_reset_pct: document.getElementById('global-uptrend-add-reset-pct').value
+            uptrend_add_reset_pct: document.getElementById('global-uptrend-add-reset-pct').value,
+            trendbreak_use_sma50: document.getElementById('global-trendbreak-use-sma50').checked,
+            trendbreak_chandelier_k: document.getElementById('global-trendbreak-chandelier-k').value
         };
     }
 

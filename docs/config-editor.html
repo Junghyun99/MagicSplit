@@ -73,10 +73,19 @@
                     <label>레짐 리셋 상승률 (%)</label>
                     <input type="number" step="0.1" id="global-uptrend-add-reset-pct" class="form-control" placeholder="20.0">
                 </div>
+                <div class="form-group">
+                    <label>Chandelier K</label>
+                    <input type="number" step="0.1" id="global-trendbreak-chandelier-k" class="form-control" placeholder="3.0">
+                </div>
                 <div class="form-group"
                     style="display:flex; flex-direction:column; justify-content:center; align-items:center;">
                     <label>Regime Enabled</label>
                     <input type="checkbox" id="global-regime-enabled" style="width:20px; height:20px;">
+                </div>
+                <div class="form-group"
+                    style="display:flex; flex-direction:column; justify-content:center; align-items:center;">
+                    <label>Use SMA50</label>
+                    <input type="checkbox" id="global-trendbreak-use-sma50" style="width:20px; height:20px;" checked>
                 </div>
                 <div class="form-group"
                     style="display:flex; flex-direction:column; justify-content:center; align-items:center;">
@@ -193,6 +202,14 @@
                         <label>레벨업 리셋 (%)</label>
                         <input type="number" step="0.1" id="edit-uptrend-add-reset-pct" class="form-control" placeholder="20.0">
                     </div>
+                    <div class="form-group">
+                        <label>이탈 즉시 매도 (%)</label>
+                        <input type="number" step="0.1" id="edit-trendbreak-partial-sell-pct" class="form-control" placeholder="50.0">
+                    </div>
+                    <div class="form-group">
+                        <label>잔량 추종 하락 (%)</label>
+                        <input type="number" step="0.1" id="edit-trendbreak-trailing-drop-pct" class="form-control" placeholder="3.0">
+                    </div>
                 </div>
                 <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px;">
                     <small style="color: var(--text-muted);">회차별 추가매수 금액 (미입력 시 기본 매수 금액 사용)</small>
@@ -225,8 +242,8 @@
     <script src="js/services/data-repository.js?v=20260508-1"></script>
     <script src="js/services/github-api.js?v=20260508-1"></script>
     <script src="js/models/config-model.js?v=20260508-1"></script>
-    <script src="js/views/config-view.js?v=20260602-2"></script>
-    <script src="js/controllers/config-controller.js?v=20260602-2"></script>
+    <script src="js/views/config-view.js?v=20260602-3"></script>
+    <script src="js/controllers/config-controller.js?v=20260602-3"></script>
     <script src="js/config-editor.js?v=20260508-1"></script>
 </body>
 

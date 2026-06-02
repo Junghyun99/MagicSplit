@@ -126,6 +126,8 @@ window.ConfigController = (function () {
         document.getElementById('global-max-exposure').addEventListener('input', saveGlobalConfigToModel);
         document.getElementById('global-trailing-drop').addEventListener('input', saveGlobalConfigToModel);
         document.getElementById('global-uptrend-add-reset-pct').addEventListener('input', saveGlobalConfigToModel);
+        document.getElementById('global-trendbreak-use-sma50').addEventListener('change', saveGlobalConfigToModel);
+        document.getElementById('global-trendbreak-chandelier-k').addEventListener('input', saveGlobalConfigToModel);
 
         document.getElementById('add-stock-btn').addEventListener('click', () => {
             if (!ConfigModel.getConfig()) return;
@@ -275,6 +277,8 @@ window.ConfigController = (function () {
             if (vals.trailing_drop_pct) config.global.trailing_drop_pct = parseFloat(vals.trailing_drop_pct); else delete config.global.trailing_drop_pct;
             config.global.regime_enabled = vals.regime_enabled;
             if (vals.uptrend_add_reset_pct !== '') config.global.uptrend_add_reset_pct = parseFloat(vals.uptrend_add_reset_pct); else delete config.global.uptrend_add_reset_pct;
+            config.global.trendbreak_use_sma50 = vals.trendbreak_use_sma50;
+            if (vals.trendbreak_chandelier_k !== '') config.global.trendbreak_chandelier_k = parseFloat(vals.trendbreak_chandelier_k); else delete config.global.trendbreak_chandelier_k;
             ConfigView.updateDiffPreview(ConfigModel.getDiff());
         }
     }
@@ -319,6 +323,8 @@ window.ConfigController = (function () {
         if (vals.uptrend_max_adds !== '') stock.uptrend_max_adds = parseInt(vals.uptrend_max_adds, 10); else delete stock.uptrend_max_adds;
         if (vals.uptrend_pullback_band_pct !== '') stock.uptrend_pullback_band_pct = parseFloat(vals.uptrend_pullback_band_pct); else delete stock.uptrend_pullback_band_pct;
         if (vals.uptrend_add_reset_pct !== '') stock.uptrend_add_reset_pct = parseFloat(vals.uptrend_add_reset_pct); else delete stock.uptrend_add_reset_pct;
+        if (vals.trendbreak_partial_sell_pct !== '') stock.trendbreak_partial_sell_pct = parseFloat(vals.trendbreak_partial_sell_pct); else delete stock.trendbreak_partial_sell_pct;
+        if (vals.trendbreak_trailing_drop_pct !== '') stock.trendbreak_trailing_drop_pct = parseFloat(vals.trendbreak_trailing_drop_pct); else delete stock.trendbreak_trailing_drop_pct;
 
         const cleanUptrendAmounts = filterNaNs(vals.uptrendAmounts);
         if (cleanUptrendAmounts !== undefined) stock.uptrend_add_amounts = cleanUptrendAmounts; else delete stock.uptrend_add_amounts;
