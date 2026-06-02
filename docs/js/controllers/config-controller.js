@@ -116,6 +116,7 @@ window.ConfigController = (function () {
         if (stock) {
             ConfigView.showTickerEditor(stock, ConfigModel.isPresetMode(), getTickerDisplayName(stock.ticker));
             bindLevelEvents();
+            bindUptrendEvents();
         }
     }
 
@@ -151,6 +152,12 @@ window.ConfigController = (function () {
         document.getElementById('add-level-btn').addEventListener('click', () => {
             ConfigView.addLevelRow();
             bindLevelEvents();
+            saveCurrentTickerToModel();
+        });
+
+        document.getElementById('add-uptrend-amount-btn').addEventListener('click', () => {
+            ConfigView.addUptrendAmountRow();
+            bindUptrendEvents();
             saveCurrentTickerToModel();
         });
 
@@ -214,6 +221,26 @@ window.ConfigController = (function () {
                 ConfigView.hideTickerSearchResults();
             }
         });
+    }
+
+    function bindUptrendEvents() {
+        const inputs = document.getElementById('uptrend-amounts-tbody').querySelectorAll('input');
+        inputs.forEach(input => {
+            input.removeEventListener('input', saveCurrentTickerToModel);
+            input.addEventListener('input', saveCurrentTickerToModel);
+        });
+
+        const removeBtns = document.getElementById('uptrend-amounts-tbody').querySelectorAll('.remove-uptrend-btn');
+        removeBtns.forEach(btn => {
+            btn.removeEventListener('click', onRemoveUptrendAmount);
+            btn.addEventListener('click', onRemoveUptrendAmount);
+        });
+    }
+
+    function onRemoveUptrendAmount(e) {
+        e.target.closest('tr').remove();
+        ConfigView.reindexUptrendAmounts();
+        saveCurrentTickerToModel();
     }
 
     function bindLevelEvents() {
@@ -288,6 +315,13 @@ window.ConfigController = (function () {
         if (cleanBuyAmts !== undefined) stock.buy_amounts = cleanBuyAmts; else delete stock.buy_amounts;
         if (cleanSellPcts !== undefined) stock.sell_threshold_pcts = cleanSellPcts; else delete stock.sell_threshold_pcts;
         if (cleanTrailingDrops !== undefined) stock.trailing_drop_pcts = cleanTrailingDrops; else delete stock.trailing_drop_pcts;
+
+        if (vals.uptrend_max_adds !== '') stock.uptrend_max_adds = parseInt(vals.uptrend_max_adds, 10); else delete stock.uptrend_max_adds;
+        if (vals.uptrend_pullback_band_pct !== '') stock.uptrend_pullback_band_pct = parseFloat(vals.uptrend_pullback_band_pct); else delete stock.uptrend_pullback_band_pct;
+        if (vals.uptrend_add_reset_pct !== '') stock.uptrend_add_reset_pct = parseFloat(vals.uptrend_add_reset_pct); else delete stock.uptrend_add_reset_pct;
+
+        const cleanUptrendAmounts = filterNaNs(vals.uptrendAmounts);
+        if (cleanUptrendAmounts !== undefined) stock.uptrend_add_amounts = cleanUptrendAmounts; else delete stock.uptrend_add_amounts;
 
         const activeIdx = ConfigModel.getActiveStockIndex();
         const lis = document.getElementById('ticker-list').querySelectorAll('li');

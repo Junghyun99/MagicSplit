@@ -52,7 +52,12 @@ window.ConfigView = (function () {
         document.getElementById('edit-max-exposure').value = stock.max_exposure_pct !== undefined ? stock.max_exposure_pct : '';
         document.getElementById('edit-trailing-drop').value = stock.trailing_drop_pct !== undefined ? stock.trailing_drop_pct : '';
 
+        document.getElementById('edit-uptrend-max-adds').value = stock.uptrend_max_adds !== undefined ? stock.uptrend_max_adds : '';
+        document.getElementById('edit-uptrend-pullback-band-pct').value = stock.uptrend_pullback_band_pct !== undefined ? stock.uptrend_pullback_band_pct : '';
+        document.getElementById('edit-uptrend-add-reset-pct').value = stock.uptrend_add_reset_pct !== undefined ? stock.uptrend_add_reset_pct : '';
+
         renderLevelsTable(stock);
+        renderUptrendAmountsTable(stock);
     }
 
     function hideTickerEditor() {
@@ -92,6 +97,34 @@ window.ConfigView = (function () {
         `;
 
         tbody.appendChild(tr);
+    }
+
+    function renderUptrendAmountsTable(stock) {
+        const tbody = document.getElementById('uptrend-amounts-tbody');
+        tbody.innerHTML = '';
+        const amounts = stock.uptrend_add_amounts || [];
+        const rowCount = Math.max(amounts.length, 1);
+        for (let i = 0; i < rowCount; i++) {
+            addUptrendAmountRow(i + 1, amounts[i]);
+        }
+    }
+
+    function addUptrendAmountRow(rowNum, amount) {
+        const tbody = document.getElementById('uptrend-amounts-tbody');
+        const tr = document.createElement('tr');
+        const num = rowNum || (tbody.children.length + 1);
+        tr.innerHTML = `
+            <td class="uptrend-row-num" style="font-weight:bold; color:var(--text-muted); text-align:center;">${num}</td>
+            <td><input type="number" class="level-table-input u-add-amt" value="${amount !== undefined ? amount : ''}"></td>
+            <td style="text-align:right;"><button type="button" class="btn remove-uptrend-btn" style="background: var(--danger); color: white; padding: 2px 8px;">X</button></td>
+        `;
+        tbody.appendChild(tr);
+    }
+
+    function reindexUptrendAmounts() {
+        document.getElementById('uptrend-amounts-tbody').querySelectorAll('tr').forEach((row, i) => {
+            row.querySelector('.uptrend-row-num').textContent = `${i + 1}`;
+        });
     }
 
     function reindexLevels() {
@@ -152,6 +185,12 @@ window.ConfigView = (function () {
             trailingDrops.push(rowTrailingDrop !== '' ? parseFloat(rowTrailingDrop) : NaN);
         });
 
+        const uptrendAmounts = [];
+        document.getElementById('uptrend-amounts-tbody').querySelectorAll('tr').forEach(row => {
+            const v = row.querySelector('.u-add-amt').value;
+            uptrendAmounts.push(v !== '' ? parseFloat(v) : NaN);
+        });
+
         return {
             ticker: document.getElementById('edit-ticker').value.trim(),
             preset: document.getElementById('edit-preset').value.trim(),
@@ -163,10 +202,14 @@ window.ConfigView = (function () {
             max_exposure_pct: document.getElementById('edit-max-exposure').value,
             trailing_drop_pct: document.getElementById('edit-trailing-drop').value,
             enabled: document.getElementById('edit-enabled').checked,
+            uptrend_max_adds: document.getElementById('edit-uptrend-max-adds').value,
+            uptrend_pullback_band_pct: document.getElementById('edit-uptrend-pullback-band-pct').value,
+            uptrend_add_reset_pct: document.getElementById('edit-uptrend-add-reset-pct').value,
             buyPcts,
             buyAmts,
             sellPcts,
-            trailingDrops
+            trailingDrops,
+            uptrendAmounts
         };
     }
 
@@ -221,6 +264,8 @@ window.ConfigView = (function () {
         hideTickerEditor,
         addLevelRow,
         reindexLevels,
+        addUptrendAmountRow,
+        reindexUptrendAmounts,
         updateDiffPreview,
         setSaveButtonState,
         showConfigSection,
