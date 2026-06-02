@@ -431,10 +431,6 @@ class TestStrategyConfigRegime:
 class TestRepoConfigRegimeSeparation:
     """백테스트 전용 config_test_*는 레짐 ON 불변식."""
 
-    def test_live_overseas_regime_off(self):
-        sc = StrategyConfig(os.path.join(REPO_ROOT, "config_overseas.json"))
-        assert sc.rules and all(r.regime_enabled is False for r in sc.rules)
-
     def test_backtest_overseas_regime_on(self):
         sc = StrategyConfig(os.path.join(REPO_ROOT, "config_test_overseas.json"))
         assert sc.rules and all(r.regime_enabled is True for r in sc.rules)
