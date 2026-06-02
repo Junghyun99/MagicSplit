@@ -69,6 +69,15 @@
                     <label>트레일링 드랍 (%)</label>
                     <input type="number" step="0.1" id="global-trailing-drop" class="form-control" placeholder="2.0">
                 </div>
+                <div class="form-group">
+                    <label>레짐 리셋 상승률 (%)</label>
+                    <input type="number" step="0.1" id="global-uptrend-add-reset-pct" class="form-control" placeholder="20.0">
+                </div>
+                <div class="form-group"
+                    style="display:flex; flex-direction:column; justify-content:center; align-items:center;">
+                    <label>Regime Enabled</label>
+                    <input type="checkbox" id="global-regime-enabled" style="width:20px; height:20px;">
+                </div>
                 <div class="form-group"
                     style="display:flex; flex-direction:column; justify-content:center; align-items:center;">
                     <label>Notification Enabled</label>
@@ -182,8 +191,8 @@
     <script src="js/services/data-repository.js?v=20260508-1"></script>
     <script src="js/services/github-api.js?v=20260508-1"></script>
     <script src="js/models/config-model.js?v=20260508-1"></script>
-    <script src="js/views/config-view.js?v=20260508-1"></script>
-    <script src="js/controllers/config-controller.js?v=20260508-1"></script>
+    <script src="js/views/config-view.js?v=20260602-1"></script>
+    <script src="js/controllers/config-controller.js?v=20260602-1"></script>
     <script src="js/config-editor.js?v=20260508-1"></script>
 </body>
 

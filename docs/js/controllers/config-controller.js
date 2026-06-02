@@ -121,6 +121,7 @@ window.ConfigController = (function () {
 
     function bindGlobalEvents() {
         document.getElementById('global-notification').addEventListener('change', saveGlobalConfigToModel);
+        document.getElementById('global-regime-enabled').addEventListener('change', saveGlobalConfigToModel);
 
         document.getElementById('add-stock-btn').addEventListener('click', () => {
             if (!ConfigModel.getConfig()) return;
@@ -242,6 +243,8 @@ window.ConfigController = (function () {
             config.global.notification_enabled = vals.notification_enabled;
             if (vals.max_exposure_pct) config.global.max_exposure_pct = parseFloat(vals.max_exposure_pct); else delete config.global.max_exposure_pct;
             if (vals.trailing_drop_pct) config.global.trailing_drop_pct = parseFloat(vals.trailing_drop_pct); else delete config.global.trailing_drop_pct;
+            config.global.regime_enabled = vals.regime_enabled;
+            if (vals.uptrend_add_reset_pct !== '') config.global.uptrend_add_reset_pct = parseFloat(vals.uptrend_add_reset_pct); else delete config.global.uptrend_add_reset_pct;
             ConfigView.updateDiffPreview(ConfigModel.getDiff());
         }
     }
