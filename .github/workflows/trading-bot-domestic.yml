@@ -2,7 +2,7 @@ name: MagicSplit Trading Bot (Domestic)
 
 on:
   schedule:
-    - cron: '58 1 * * 1-5'
+    - cron: '58 0 * * 1-5'
   workflow_dispatch:
     inputs:
       skip_holiday_check:
