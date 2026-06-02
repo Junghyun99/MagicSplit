@@ -69,6 +69,24 @@
                     <label>트레일링 드랍 (%)</label>
                     <input type="number" step="0.1" id="global-trailing-drop" class="form-control" placeholder="2.0">
                 </div>
+                <div class="form-group">
+                    <label>레짐 리셋 상승률 (%)</label>
+                    <input type="number" step="0.1" id="global-uptrend-add-reset-pct" class="form-control" placeholder="20.0">
+                </div>
+                <div class="form-group">
+                    <label>Chandelier K</label>
+                    <input type="number" step="0.1" id="global-trendbreak-chandelier-k" class="form-control" placeholder="3.0">
+                </div>
+                <div class="form-group"
+                    style="display:flex; flex-direction:column; justify-content:center; align-items:center;">
+                    <label>Regime Enabled</label>
+                    <input type="checkbox" id="global-regime-enabled" style="width:20px; height:20px;">
+                </div>
+                <div class="form-group"
+                    style="display:flex; flex-direction:column; justify-content:center; align-items:center;">
+                    <label>Use SMA50</label>
+                    <input type="checkbox" id="global-trendbreak-use-sma50" style="width:20px; height:20px;" checked>
+                </div>
                 <div class="form-group"
                     style="display:flex; flex-direction:column; justify-content:center; align-items:center;">
                     <label>Notification Enabled</label>
@@ -168,6 +186,48 @@
                 </div>
                 <button id="add-level-btn" class="btn"
                     style="border: 1px dashed var(--border); background: var(--bg); width: 100%;">+ 차수 추가</button>
+
+                <h3 style="margin-top: 24px; margin-bottom: 8px;">Uptrend 설정</h3>
+                <div class="form-row"
+                    style="background: #f0fdf4; padding: 12px; border: 1px solid var(--border); border-radius: 6px; margin-bottom: 12px;">
+                    <div class="form-group">
+                        <label>최대 추가매수 횟수</label>
+                        <input type="number" id="edit-uptrend-max-adds" class="form-control" placeholder="3">
+                    </div>
+                    <div class="form-group">
+                        <label>눌림 밴드 (%)</label>
+                        <input type="number" step="0.1" id="edit-uptrend-pullback-band-pct" class="form-control" placeholder="1.5">
+                    </div>
+                    <div class="form-group">
+                        <label>레벨업 리셋 (%)</label>
+                        <input type="number" step="0.1" id="edit-uptrend-add-reset-pct" class="form-control" placeholder="20.0">
+                    </div>
+                    <div class="form-group">
+                        <label>이탈 즉시 매도 (%)</label>
+                        <input type="number" step="0.1" id="edit-trendbreak-partial-sell-pct" class="form-control" placeholder="50.0">
+                    </div>
+                    <div class="form-group">
+                        <label>잔량 추종 하락 (%)</label>
+                        <input type="number" step="0.1" id="edit-trendbreak-trailing-drop-pct" class="form-control" placeholder="3.0">
+                    </div>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px;">
+                    <small style="color: var(--text-muted);">회차별 추가매수 금액 (미입력 시 기본 매수 금액 사용)</small>
+                </div>
+                <div style="overflow-x: auto;">
+                    <table class="history-table" style="margin-bottom: 12px; min-width: 260px;">
+                        <thead>
+                            <tr>
+                                <th>회차</th>
+                                <th>추가매수 금액</th>
+                                <th style="width: 40px;"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="uptrend-amounts-tbody"></tbody>
+                    </table>
+                </div>
+                <button id="add-uptrend-amount-btn" class="btn"
+                    style="border: 1px dashed var(--border); background: var(--bg); width: 100%;">+ 회차 추가</button>
             </div>
         </div>
 
@@ -182,8 +242,8 @@
     <script src="js/services/data-repository.js?v=20260508-1"></script>
     <script src="js/services/github-api.js?v=20260508-1"></script>
     <script src="js/models/config-model.js?v=20260508-1"></script>
-    <script src="js/views/config-view.js?v=20260508-1"></script>
-    <script src="js/controllers/config-controller.js?v=20260508-1"></script>
+    <script src="js/views/config-view.js?v=20260602-3"></script>
+    <script src="js/controllers/config-controller.js?v=20260602-3"></script>
     <script src="js/config-editor.js?v=20260508-1"></script>
 </body>
 

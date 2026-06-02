@@ -116,11 +116,18 @@ window.ConfigController = (function () {
         if (stock) {
             ConfigView.showTickerEditor(stock, ConfigModel.isPresetMode(), getTickerDisplayName(stock.ticker));
             bindLevelEvents();
+            bindUptrendEvents();
         }
     }
 
     function bindGlobalEvents() {
         document.getElementById('global-notification').addEventListener('change', saveGlobalConfigToModel);
+        document.getElementById('global-regime-enabled').addEventListener('change', saveGlobalConfigToModel);
+        document.getElementById('global-max-exposure').addEventListener('input', saveGlobalConfigToModel);
+        document.getElementById('global-trailing-drop').addEventListener('input', saveGlobalConfigToModel);
+        document.getElementById('global-uptrend-add-reset-pct').addEventListener('input', saveGlobalConfigToModel);
+        document.getElementById('global-trendbreak-use-sma50').addEventListener('change', saveGlobalConfigToModel);
+        document.getElementById('global-trendbreak-chandelier-k').addEventListener('input', saveGlobalConfigToModel);
 
         document.getElementById('add-stock-btn').addEventListener('click', () => {
             if (!ConfigModel.getConfig()) return;
@@ -147,6 +154,12 @@ window.ConfigController = (function () {
         document.getElementById('add-level-btn').addEventListener('click', () => {
             ConfigView.addLevelRow();
             bindLevelEvents();
+            saveCurrentTickerToModel();
+        });
+
+        document.getElementById('add-uptrend-amount-btn').addEventListener('click', () => {
+            ConfigView.addUptrendAmountRow();
+            bindUptrendEvents();
             saveCurrentTickerToModel();
         });
 
@@ -212,6 +225,26 @@ window.ConfigController = (function () {
         });
     }
 
+    function bindUptrendEvents() {
+        const inputs = document.getElementById('uptrend-amounts-tbody').querySelectorAll('input');
+        inputs.forEach(input => {
+            input.removeEventListener('input', saveCurrentTickerToModel);
+            input.addEventListener('input', saveCurrentTickerToModel);
+        });
+
+        const removeBtns = document.getElementById('uptrend-amounts-tbody').querySelectorAll('.remove-uptrend-btn');
+        removeBtns.forEach(btn => {
+            btn.removeEventListener('click', onRemoveUptrendAmount);
+            btn.addEventListener('click', onRemoveUptrendAmount);
+        });
+    }
+
+    function onRemoveUptrendAmount(e) {
+        e.target.closest('tr').remove();
+        ConfigView.reindexUptrendAmounts();
+        saveCurrentTickerToModel();
+    }
+
     function bindLevelEvents() {
         const inputs = document.getElementById('levels-tbody').querySelectorAll('input');
         inputs.forEach(input => {
@@ -242,6 +275,10 @@ window.ConfigController = (function () {
             config.global.notification_enabled = vals.notification_enabled;
             if (vals.max_exposure_pct) config.global.max_exposure_pct = parseFloat(vals.max_exposure_pct); else delete config.global.max_exposure_pct;
             if (vals.trailing_drop_pct) config.global.trailing_drop_pct = parseFloat(vals.trailing_drop_pct); else delete config.global.trailing_drop_pct;
+            config.global.regime_enabled = vals.regime_enabled;
+            if (vals.uptrend_add_reset_pct !== '') config.global.uptrend_add_reset_pct = parseFloat(vals.uptrend_add_reset_pct); else delete config.global.uptrend_add_reset_pct;
+            config.global.trendbreak_use_sma50 = vals.trendbreak_use_sma50;
+            if (vals.trendbreak_chandelier_k !== '') config.global.trendbreak_chandelier_k = parseFloat(vals.trendbreak_chandelier_k); else delete config.global.trendbreak_chandelier_k;
             ConfigView.updateDiffPreview(ConfigModel.getDiff());
         }
     }
@@ -282,6 +319,15 @@ window.ConfigController = (function () {
         if (cleanBuyAmts !== undefined) stock.buy_amounts = cleanBuyAmts; else delete stock.buy_amounts;
         if (cleanSellPcts !== undefined) stock.sell_threshold_pcts = cleanSellPcts; else delete stock.sell_threshold_pcts;
         if (cleanTrailingDrops !== undefined) stock.trailing_drop_pcts = cleanTrailingDrops; else delete stock.trailing_drop_pcts;
+
+        if (vals.uptrend_max_adds !== '') stock.uptrend_max_adds = parseInt(vals.uptrend_max_adds, 10); else delete stock.uptrend_max_adds;
+        if (vals.uptrend_pullback_band_pct !== '') stock.uptrend_pullback_band_pct = parseFloat(vals.uptrend_pullback_band_pct); else delete stock.uptrend_pullback_band_pct;
+        if (vals.uptrend_add_reset_pct !== '') stock.uptrend_add_reset_pct = parseFloat(vals.uptrend_add_reset_pct); else delete stock.uptrend_add_reset_pct;
+        if (vals.trendbreak_partial_sell_pct !== '') stock.trendbreak_partial_sell_pct = parseFloat(vals.trendbreak_partial_sell_pct); else delete stock.trendbreak_partial_sell_pct;
+        if (vals.trendbreak_trailing_drop_pct !== '') stock.trendbreak_trailing_drop_pct = parseFloat(vals.trendbreak_trailing_drop_pct); else delete stock.trendbreak_trailing_drop_pct;
+
+        const cleanUptrendAmounts = filterNaNs(vals.uptrendAmounts);
+        if (cleanUptrendAmounts !== undefined) stock.uptrend_add_amounts = cleanUptrendAmounts; else delete stock.uptrend_add_amounts;
 
         const activeIdx = ConfigModel.getActiveStockIndex();
         const lis = document.getElementById('ticker-list').querySelectorAll('li');

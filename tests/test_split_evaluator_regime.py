@@ -220,7 +220,7 @@ class TestUptrendPullbackAdd:
 
 class TestTrendBreakLiquidation:
     def test_full_liquidation_emits_bulk_sell(self, evaluator):
-        rule = _regime_rule()
+        rule = _regime_rule(trendbreak_partial_sell_pct=100.0)
         window = _uptrend_window()
         r = _reading(window, rule)
         price = r.sma50 * 0.9  # 50MA 하향 이탈 -> 전량 청산

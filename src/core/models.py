@@ -68,7 +68,7 @@ class StockRule:
     trendbreak_chandelier_lookback: int = 22
     trendbreak_use_sma50: bool = True        # 이탈 = close<sma50 OR close<chandelier_stop
     # 추세 이탈 분할 매도 + 추종 데드라인(Trailing Lock)
-    trendbreak_partial_sell_pct: float = 100.0  # 이탈 시 즉시 매도 비율(%). 100=전량(기존), 50=절반
+    trendbreak_partial_sell_pct: float = 50.0  # 이탈 시 즉시 매도 비율(%). 100=전량, 50=절반
     trendbreak_trailing_drop_pct: float = 3.0   # 잔량 추종 데드라인 하락 허용치(%)
 
     def __post_init__(self):
