@@ -523,5 +523,50 @@
                 "alias": "SOL 반도체전공정"
             }
         ]
+    },
+    {
+        "id": "tx_20260602_090631",
+        "date": "2026-06-02 09:06:31",
+        "portfolio_value": 25205644.0,
+        "total_trade_amount": 1957005.0,
+        "reason": "미래에셋증권(006800):BUY(추가 매수 Lv3 (Lv2 대비 -5.9%)), SOL 반도체전공정(475300):BUY(추가 매수 Lv3 (Lv2 대비 -5.7%)), 테스(095610):BUY(추가 매수 Lv4 (Lv3 대비 -9.5%)), HANARO 글로벌금채굴기업(473640):BUY(초기 매수 Lv1)",
+        "executions": [
+            {
+                "ticker": "006800",
+                "action": "BUY",
+                "quantity": 8,
+                "price": 59000.0,
+                "fee": 70.8,
+                "date": "2026-06-02 09:06:07",
+                "status": "FILLED",
+                "reason": "ODNO=0009286400",
+                "level": 3,
+                "alias": "미래에셋증권"
+            },
+            {
+                "ticker": "475300",
+                "action": "BUY",
+                "quantity": 23,
+                "price": 21595.0,
+                "fee": 74.50274999999999,
+                "date": "2026-06-02 09:06:19",
+                "status": "FILLED",
+                "reason": "ODNO=0009336300",
+                "level": 3,
+                "alias": "SOL 반도체전공정"
+            },
+            {
+                "ticker": "473640",
+                "action": "BUY",
+                "quantity": 29,
+                "price": 34080.0,
+                "fee": 148.248,
+                "date": "2026-06-02 09:06:27",
+                "status": "FILLED",
+                "reason": "ODNO=0009414100",
+                "level": 1,
+                "alias": "HANARO 글로벌금채굴기업"
+            }
+        ]
     }
 ]
