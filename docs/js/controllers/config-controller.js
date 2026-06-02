@@ -122,6 +122,9 @@ window.ConfigController = (function () {
     function bindGlobalEvents() {
         document.getElementById('global-notification').addEventListener('change', saveGlobalConfigToModel);
         document.getElementById('global-regime-enabled').addEventListener('change', saveGlobalConfigToModel);
+        document.getElementById('global-max-exposure').addEventListener('input', saveGlobalConfigToModel);
+        document.getElementById('global-trailing-drop').addEventListener('input', saveGlobalConfigToModel);
+        document.getElementById('global-uptrend-add-reset-pct').addEventListener('input', saveGlobalConfigToModel);
 
         document.getElementById('add-stock-btn').addEventListener('click', () => {
             if (!ConfigModel.getConfig()) return;
