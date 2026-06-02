@@ -43,6 +43,7 @@
         <button class="view-link" data-view="positions">Positions</button>
         <button class="view-link" data-view="decisions">Decisions</button>
         <button class="view-link" data-view="history">History</button>
+        <button class="view-link" data-view="earnings">Earnings</button>
     </nav>
 
     <div id="reason-banner" class="reason-banner" style="display:none"></div>
@@ -68,6 +69,20 @@
 
     <div id="decisions-section" style="display:none">
         <div id="decisions-list"></div>
+    </div>
+
+    <div id="earnings-section" style="display:none">
+        <div id="earnings-year-filter" class="earnings-filter-bar"></div>
+        <div id="earnings-month-filter" class="earnings-filter-bar"></div>
+        <div id="earnings-summary-cards" class="earnings-cards"></div>
+        <section class="heatmap-section">
+            <h2>월별 실현수익</h2>
+            <div id="earnings-bar-chart"></div>
+        </section>
+        <section class="heatmap-section">
+            <h2>종목별 실현수익</h2>
+            <div id="earnings-ticker-table"></div>
+        </section>
     </div>
 
     <div id="risk-section">
@@ -104,12 +119,14 @@
     <script src="js/models/dashboard-model.js?v=20260528-1"></script>
     <script src="js/models/history-model.js?v=20260512-1"></script>
     <script src="js/models/decision-model.js?v=20260512-1"></script>
-    <script src="js/views/dashboard-view.js?v=20260528-1"></script>
+    <script src="js/models/earnings-model.js?v=20260602-1"></script>
+    <script src="js/views/dashboard-view.js?v=20260602-1"></script>
     <script src="js/views/history-view.js?v=20260512-1"></script>
     <script src="js/views/decision-view.js?v=20260512-1"></script>
     <script src="js/views/charts-view.js?v=20260512-1"></script>
     <script src="js/views/risk-view.js?v=20260512-1"></script>
-    <script src="js/controllers/dashboard-controller.js?v=20260528-1"></script>
+    <script src="js/views/earnings-view.js?v=20260602-1"></script>
+    <script src="js/controllers/dashboard-controller.js?v=20260602-1"></script>
     <script src="js/controllers/risk-controller.js?v=20260512-1"></script>
     <script src="js/main.js?v=20260512-1"></script>
 </body>

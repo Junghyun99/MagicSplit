@@ -54,6 +54,8 @@ window.DashboardController = (function () {
             const histData = await DataRepository.loadHistory(mode);
             DashboardModel.setHistoryData(histData);
             HistoryModel.setHistoryData(histData || []);
+            EarningsModel.setHistoryData(histData || []);
+            EarningsModel.setStatusData(data);
             
             const buckets = DashboardModel.buildLevelBuckets();
             ChartsView.renderLevelHeatmap(buckets, mode, onHeatmapSelect);
@@ -71,11 +73,17 @@ window.DashboardController = (function () {
                 DecisionView.renderDecisions(DecisionModel.getDecisions());
             } else if (document.querySelector('.view-link[data-view="risk"]').classList.contains('active')) {
                 window.RiskController.renderRisk();
+            } else if (document.querySelector('.view-link[data-view="earnings"]').classList.contains('active')) {
+                renderEarningsView();
             }
 
         } finally {
             isRefreshing = false;
         }
+    }
+
+    function renderEarningsView() {
+        EarningsView.render(DashboardModel.getCurrencyMode());
     }
 
     function renderHistoryView() {
@@ -154,6 +162,8 @@ window.DashboardController = (function () {
                     DecisionView.renderDecisions(DecisionModel.getDecisions());
                 } else if (view === 'risk') {
                     window.RiskController.renderRisk();
+                } else if (view === 'earnings') {
+                    renderEarningsView();
                 }
             });
         });
