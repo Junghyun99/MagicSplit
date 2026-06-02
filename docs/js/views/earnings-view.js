@@ -4,7 +4,7 @@ window.EarningsView = (function () {
 
     const { escapeHtml, formatTickerLabel } = window.FormatUtils;
 
-    let selectedYear = null;  // "2026" or null (all)
+    let selectedYear = undefined;  // undefined=not init, null=all, "2026"=specific year
     let selectedMonth = null; // "05" or null (all)
     let _currencyMode = 'domestic';
 
@@ -139,7 +139,6 @@ window.EarningsView = (function () {
         const MONTH_SHORT = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 
         const values = months.map(m => m.realized_pnl);
-        const maxAbs = Math.max(...values.map(Math.abs), 1);
 
         const W = 560, H = 200;
         const PAD = { top: 24, right: 12, bottom: 36, left: 64 };
@@ -152,11 +151,8 @@ window.EarningsView = (function () {
         const DANGER = '#ef4444';
         const MUTED = '#6b7280';
 
-        // y-axis: zero line position
-        const allPositive = values.every(v => v >= 0);
-        const allNegative = values.every(v => v <= 0);
-        const yMin = allPositive ? 0 : (allNegative ? Math.min(...values) * 1.15 : Math.min(...values) * 1.15);
-        const yMax = allNegative ? 0 : (allPositive ? Math.max(...values) * 1.15 : Math.max(...values) * 1.15);
+        const yMin = Math.min(0, ...values) * 1.15;
+        const yMax = Math.max(0, ...values) * 1.15;
         const yRange = (yMax - yMin) || 1;
 
         function yPos(v) {
@@ -326,10 +322,5 @@ window.EarningsView = (function () {
             </div>`;
     }
 
-    function reset() {
-        selectedYear = undefined;
-        selectedMonth = null;
-    }
-
-    return { render, reset };
+    return { render };
 })();

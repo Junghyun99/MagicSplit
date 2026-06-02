@@ -56,7 +56,6 @@ window.DashboardController = (function () {
             HistoryModel.setHistoryData(histData || []);
             EarningsModel.setHistoryData(histData || []);
             EarningsModel.setStatusData(data);
-            EarningsView.reset();
             
             const buckets = DashboardModel.buildLevelBuckets();
             ChartsView.renderLevelHeatmap(buckets, mode, onHeatmapSelect);
