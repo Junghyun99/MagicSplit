@@ -327,6 +327,21 @@
         const isBuy = activeOrderParams.action === 'buy';
         const actionLabel = isBuy ? '매수' : '매도';
 
+        const inputs = {
+            market_type: activeOrderParams.marketType,
+            ticker: activeOrderParams.ticker,
+            action: activeOrderParams.action,
+        };
+
+        if (isBuy) {
+            const amountInput = document.getElementById('override-amount-input');
+            const enteredAmount = amountInput ? parseFloat(amountInput.value) : NaN;
+            if (!isNaN(enteredAmount) && enteredAmount > 0
+                    && enteredAmount !== activeOrderParams.configAmount) {
+                inputs.amount = String(enteredAmount);
+            }
+        }
+
         let confirmMsg = `${activeOrderParams.alias} 종목을 ${actionLabel} 하시겠습니까?`;
         if (isBuy && inputs.amount) {
             confirmMsg += `\n매수 금액: ${formatAmount(parseFloat(inputs.amount), activeOrderParams.marketType)}`;
@@ -339,21 +354,6 @@
         try {
             setLoading(true);
             showFeedback('GitHub Action 트리거 중...', 'info');
-
-            const inputs = {
-                market_type: activeOrderParams.marketType,
-                ticker: activeOrderParams.ticker,
-                action: activeOrderParams.action,
-            };
-
-            if (activeOrderParams.action === 'buy') {
-                const amountInput = document.getElementById('override-amount-input');
-                const enteredAmount = amountInput ? parseFloat(amountInput.value) : NaN;
-                if (!isNaN(enteredAmount) && enteredAmount > 0
-                        && enteredAmount !== activeOrderParams.configAmount) {
-                    inputs.amount = String(enteredAmount);
-                }
-            }
 
             await githubApi.triggerWorkflow('manual-trade.yml', inputs);
 
