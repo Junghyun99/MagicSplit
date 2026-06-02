@@ -5,11 +5,12 @@
 주문 -> 포지션 반영 -> 저장 파이프라인을 사용한다. 신호 평가(evaluate_stock)만
 우회하고, 사용자가 지정한 ticker/action으로 즉시 매매를 강제한다.
 수량은 자동매매와 동일하게 엔진이 도출한다:
-  - BUY: rule.buy_amount_at(next_level) / 현재가
+  - BUY: --amount 지정 시 해당 금액, 없으면 rule.buy_amount_at(next_level) / 현재가
   - SELL: 최고 차수 lot 전량
 
 사용법:
     python scripts/manual_trade.py --ticker 005930 --action buy
+    python scripts/manual_trade.py --ticker 005930 --action buy --amount 500000
     python scripts/manual_trade.py --ticker TSLA --action sell
 """
 import argparse
@@ -34,6 +35,10 @@ def parse_args():
     parser.add_argument(
         "--action", required=True, choices=["buy", "sell"],
         help="매수(buy) 또는 매도(sell). 수량은 자동 도출됨.",
+    )
+    parser.add_argument(
+        "--amount", type=float, default=None,
+        help="매수 금액 직접 지정 (원 또는 USD). 생략 시 config buy_amount 사용.",
     )
     return parser.parse_args()
 
@@ -64,8 +69,9 @@ def main():
 
     log_dir = os.path.join(config.LOG_PATH, market_type)
     logger = TradeLogger(log_dir)
+    amount_info = f" amount={args.amount}" if args.amount is not None else ""
     logger.info(
-        f"=== Manual Trade CLI: {args.ticker} {args.action.upper()} ==="
+        f"=== Manual Trade CLI: {args.ticker} {args.action.upper()}{amount_info} ==="
     )
 
     broker = _create_broker(
@@ -98,7 +104,11 @@ def main():
     action = OrderAction.BUY if args.action == "buy" else OrderAction.SELL
 
     try:
-        result = engine.run_manual_trade(ticker=args.ticker, action=action)
+        result = engine.run_manual_trade(
+            ticker=args.ticker,
+            action=action,
+            override_amount=args.amount,
+        )
     except Exception as e:
         logger.error(f"수동매매 중단: {e}")
         sys.exit(1)

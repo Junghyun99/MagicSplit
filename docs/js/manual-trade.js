@@ -24,7 +24,7 @@
     const cancelTradeBtn = document.getElementById('cancel-trade-btn');
     const statusFeedback = document.getElementById('status-feedback');
 
-    let activeOrderParams = null; // { ticker, alias, action, marketType }
+    let activeOrderParams = null; // { ticker, alias, action, marketType, configAmount }
 
     /** market_type에 맞춰 통화 단위와 함께 금액을 포매팅한다. */
     function formatAmount(value, marketType) {
@@ -263,15 +263,8 @@
     }
 
     function openOrderModal(tickerObj, action) {
-        activeOrderParams = {
-            ticker: tickerObj.ticker,
-            alias: tickerObj.alias,
-            action: action,
-            marketType: currentMarket,
-        };
-
-        const displayName = tickerObj.alias !== tickerObj.ticker 
-            ? `${tickerObj.alias} (${tickerObj.ticker})` 
+        const displayName = tickerObj.alias !== tickerObj.ticker
+            ? `${tickerObj.alias} (${tickerObj.ticker})`
             : tickerObj.ticker;
 
         modalTitle.textContent = `${displayName} ${action === 'buy' ? '매수' : '매도'}`;
@@ -279,15 +272,36 @@
         confirmTradeBtn.disabled = false;
         confirmTradeBtn.textContent = '실행';
 
+        // Remove previous amount input if any
+        const prevInput = document.getElementById('override-amount-group');
+        if (prevInput) prevInput.remove();
+
+        let configAmount = 0;
         if (action === 'buy') {
             const nextLv = tickerObj.currentLevel + 1;
             const lvAmount = tickerObj.config.buy_amounts && tickerObj.config.buy_amounts[nextLv - 1];
-            const cfgAmount = lvAmount || tickerObj.config.buy_amount || 0;
+            configAmount = lvAmount || tickerObj.config.buy_amount || 0;
+
             orderSummary.innerHTML =
-                `현재 <b>Lv${tickerObj.currentLevel}</b> -> <b>Lv${nextLv}</b> 매수<br>` +
-                `1회 매수 금액(설정): <b>${formatAmount(cfgAmount, currentMarket)}</b>`;
-            inputHint.textContent =
-                '실제 주문 수량은 엔진이 [설정 금액 / 현재가]로 자동 계산합니다 (자동매매와 동일).';
+                `현재 <b>Lv${tickerObj.currentLevel}</b> -> <b>Lv${nextLv}</b> 매수`;
+            inputHint.textContent = '실제 주문 수량은 엔진이 [입력 금액 / 현재가]로 자동 계산합니다.';
+
+            // Inject amount input field
+            const amountGroup = document.createElement('div');
+            amountGroup.id = 'override-amount-group';
+            amountGroup.className = 'form-group';
+            amountGroup.style.marginTop = '14px';
+            amountGroup.innerHTML = `
+                <label style="font-size:0.875rem; font-weight:600; display:block; margin-bottom:4px;">
+                    매수 금액 (${currentMarket === 'domestic' ? '원' : 'USD'})
+                </label>
+                <input type="number" id="override-amount-input" class="form-control"
+                    value="${configAmount}" min="1" step="1"
+                    style="width:100%; box-sizing:border-box;">
+                <small style="color:var(--text-muted); font-size:0.8rem; display:block; margin-top:4px;">
+                    설정값: ${formatAmount(configAmount, currentMarket)} — 변경하면 해당 금액으로 주문합니다.
+                </small>`;
+            inputHint.parentNode.insertBefore(amountGroup, inputHint);
         } else {
             const sellQty = tickerObj.highestLvQty || 0;
             orderSummary.innerHTML =
@@ -295,6 +309,14 @@
             inputHint.textContent =
                 '매도 수량은 엔진이 최고 차수 lot 전량으로 자동 결정합니다 (자동매매와 동일).';
         }
+
+        activeOrderParams = {
+            ticker: tickerObj.ticker,
+            alias: tickerObj.alias,
+            action: action,
+            marketType: currentMarket,
+            configAmount: configAmount,
+        };
 
         orderModal.style.display = 'flex';
     }
@@ -305,7 +327,12 @@
         const isBuy = activeOrderParams.action === 'buy';
         const actionLabel = isBuy ? '매수' : '매도';
 
-        if (!confirm(`${activeOrderParams.alias} 종목을 ${actionLabel} 하시겠습니까?\n(수량은 자동매매 정책에 따라 엔진이 결정합니다)`)) {
+        let confirmMsg = `${activeOrderParams.alias} 종목을 ${actionLabel} 하시겠습니까?`;
+        if (isBuy && inputs.amount) {
+            confirmMsg += `\n매수 금액: ${formatAmount(parseFloat(inputs.amount), activeOrderParams.marketType)}`;
+        }
+        confirmMsg += '\n(수량은 [금액 / 현재가]로 엔진이 자동 계산합니다)';
+        if (!confirm(confirmMsg)) {
             return;
         }
 
@@ -318,6 +345,15 @@
                 ticker: activeOrderParams.ticker,
                 action: activeOrderParams.action,
             };
+
+            if (activeOrderParams.action === 'buy') {
+                const amountInput = document.getElementById('override-amount-input');
+                const enteredAmount = amountInput ? parseFloat(amountInput.value) : NaN;
+                if (!isNaN(enteredAmount) && enteredAmount > 0
+                        && enteredAmount !== activeOrderParams.configAmount) {
+                    inputs.amount = String(enteredAmount);
+                }
+            }
 
             await githubApi.triggerWorkflow('manual-trade.yml', inputs);
 

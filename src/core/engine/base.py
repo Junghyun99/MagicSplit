@@ -262,11 +262,12 @@ class MagicSplitEngine:
         ticker: str,
         action: OrderAction,
         sim_date: Optional[str] = None,
+        override_amount: Optional[float] = None,
     ) -> DayResult:
         """수동매매 1건을 실행한다.
 
         evaluate_stock 단계만 우회하고, 자동매매와 동일한 방식으로 모든 수량을 도출한다.
-        - BUY: rule.buy_amount_at(next_level) / 현재가 -> 주문 수량 (사용자 입력 없음)
+        - BUY: override_amount 지정 시 해당 금액, 없으면 rule.buy_amount_at(next_level) / 현재가
         - SELL: 최고 차수 lot.quantity 전량 매도 (사용자 입력 없음)
 
         후반부 파이프라인(주문 실행 -> 포지션 반영 -> 저장)은 자동매매와 100% 동일.
@@ -277,6 +278,7 @@ class MagicSplitEngine:
                     SELL은 비활성 종목도 청산 목적으로 허용)
             action: OrderAction.BUY 또는 OrderAction.SELL
             sim_date: 시뮬레이션 날짜 ("YYYY-MM-DD")
+            override_amount: 매수 금액 직접 지정 (None이면 config buy_amount 사용)
         """
         today = sim_date or datetime.now().strftime("%Y-%m-%d")
         disp = display_ticker(ticker)
@@ -314,15 +316,19 @@ class MagicSplitEngine:
             target_buy_price: float = 0.0
 
             if action == OrderAction.BUY:
-                # 매수: 자동 evaluator와 동일하게 rule.buy_amount_at(next_level)에서 금액
-                # 도출 후 현재가로 수량 환산. 사용자 수량/금액 지정 없음.
                 level = highest_level + 1
                 if level > target_rule.max_lots:
                     raise RuntimeError(
                         f"{disp} max_lots({target_rule.max_lots}) 도달 — "
                         f"현재 최고 차수 Lv{highest_level}, 다음 차수 Lv{level}는 매수 불가."
                     )
-                buy_amount = target_rule.buy_amount_at(level)
+                if override_amount is not None:
+                    buy_amount = override_amount
+                    self.logger.info(
+                        f"매수 금액 수동 지정: {format_money(buy_amount, self.market_type)}"
+                    )
+                else:
+                    buy_amount = target_rule.buy_amount_at(level)
                 order_qty = int(buy_amount / current_price)
                 if order_qty <= 0:
                     raise RuntimeError(
@@ -331,7 +337,7 @@ class MagicSplitEngine:
                         f"현재가({format_money(current_price, self.market_type)})보다 작음."
                     )
                 self.logger.info(
-                    f"매수 수량 자동 도출: Lv{level} buy_amount="
+                    f"매수 수량 도출: Lv{level} buy_amount="
                     f"{format_money(buy_amount, self.market_type)} / 현재가="
                     f"{format_money(current_price, self.market_type)} = {order_qty}주"
                 )
