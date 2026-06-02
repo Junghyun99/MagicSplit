@@ -994,3 +994,67 @@ h2 { font-size: 1.1rem; margin-bottom: 8px; color: var(--text-muted); }
 .stale-name { font-weight: 700; font-size: 0.95rem; }
 .stale-date { font-size: 0.75rem; color: var(--text-muted); display: block; }
 .stale-days { font-weight: 800; font-size: 0.9rem; }
+
+/* Earnings Tab */
+.earnings-filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+.earnings-filter-label {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    min-width: 28px;
+}
+.filter-chip.dim {
+    opacity: 0.35;
+    cursor: default;
+}
+.earnings-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+}
+@media (max-width: 600px) {
+    .earnings-cards { grid-template-columns: 1fr; }
+}
+.earnings-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px 20px 16px;
+    box-shadow: var(--shadow-sm);
+}
+.earnings-card-label {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    margin-bottom: 6px;
+}
+.earnings-card-value {
+    font-size: 1.5rem;
+    font-weight: 800;
+    line-height: 1.2;
+    margin-bottom: 4px;
+}
+.earnings-card-note {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+}
+.earnings-bar-svg {
+    width: 100%;
+    display: block;
+}
+.earnings-bar-axis {
+    font-size: 11px;
+    fill: var(--text-muted);
+    font-family: 'Inter', sans-serif;
+}

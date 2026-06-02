@@ -252,7 +252,8 @@ window.DashboardView = (function () {
             'positions': ['positions-container', 'level-heatmap-section', 'reason-banner'],
             'history': ['history-section'],
             'decisions': ['decisions-section'],
-            'risk': ['risk-section']
+            'risk': ['risk-section'],
+            'earnings': ['earnings-section']
         };
 
         Object.keys(sections).forEach(key => {
