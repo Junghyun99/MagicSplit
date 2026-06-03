@@ -1,0 +1,67 @@
+2026-06-04 03:38:18,355 [INFO] === Initializing MagicSplit Bot (overseas) ===
+2026-06-04 03:38:18,355 [INFO] Loaded 19 stock rule(s) from config_overseas.json
+2026-06-04 03:38:18,355 [INFO] [overseas] 17 rule(s), mode=LIVE
+2026-06-04 03:38:18,355 [INFO] [KisBroker] 새 토큰 발급 중...
+2026-06-04 03:38:19,221 [INFO] [KisOverseasLiveBroker] Mode: LIVE TRADING
+2026-06-04 03:38:19,222 [INFO] === Running overseas engine ===
+2026-06-04 03:38:19,222 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-06-04 03:38:20,593 [INFO] Fetching real-time prices from Broker...
+2026-06-04 03:38:26,364 [INFO] Portfolio: Cash=USD 185.46, Value=USD 12,912.29
+2026-06-04 03:38:26,364 [INFO] >>> Step 2: Load Positions
+2026-06-04 03:38:26,364 [INFO] Loaded 20 position lot(s)
+2026-06-04 03:38:26,365 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-06-04 03:38:26,366 [INFO] >>> Processing 애플(AAPL)
+2026-06-04 03:38:26,366 [INFO]   [애플(AAPL)] 신호 없음 | Lv1 매수 USD 291.90 -> 현재 USD 309.50 (+6.03%) | 익절 +10.0% / 추매 -5.0%
+2026-06-04 03:38:26,366 [INFO] >>> Processing 리얼티 인컴(O)
+2026-06-04 03:38:26,367 [INFO]   [리얼티 인컴(O)] 신호 없음 | Lv1 매수 USD 62.37 -> 현재 USD 60.13 (-3.58%) | 익절 +10.0% / 추매 -5.0%
+2026-06-04 03:38:26,367 [INFO] >>> Processing 프록터 앤드 갬블(PG)
+2026-06-04 03:38:26,367 [INFO]   [프록터 앤드 갬블(PG)] 신호 없음 | Lv1 매수 USD 142.81 -> 현재 USD 141.32 (-1.04%) | 익절 +10.0% / 추매 -5.0%
+2026-06-04 03:38:26,367 [INFO] >>> Processing 펩시코(PEP)
+2026-06-04 03:38:26,368 [INFO]   [펩시코(PEP)] 신호 없음 | Lv1 매수 USD 150.05 -> 현재 USD 142.91 (-4.76%) | 익절 +10.0% / 추매 -5.0%
+2026-06-04 03:38:26,368 [INFO] >>> Processing 듀크 에너지(DUK)
+2026-06-04 03:38:26,368 [INFO]   [듀크 에너지(DUK)] 신호 없음 | Lv1 매수 USD 124.92 -> 현재 USD 121.82 (-2.48%) | 익절 +10.0% / 추매 -5.0%
+2026-06-04 03:38:26,368 [INFO] >>> Processing ARK INNOVATION(ARKK)
+2026-06-04 03:38:26,369 [INFO]   [ARK INNOVATION(ARKK)] 신호 없음 | Lv2 매수 USD 75.28 -> 현재 USD 78.52 (+4.30%) | 익절 +10.0% / 추매 -5.0%
+2026-06-04 03:38:26,369 [INFO] >>> Processing SCHWAB US DIVIDEND EQUITY(SCHD)
+2026-06-04 03:38:26,369 [INFO]   [SCHWAB US DIVIDEND EQUITY(SCHD)] 신호 없음 | Lv1 매수 USD 31.74 -> 현재 USD 32.38 (+2.03%) | 익절 +10.0% / 추매 -5.0%
+2026-06-04 03:38:26,369 [INFO] >>> Processing ISHARES GLOBAL CLEAN ENERGY(ICLN)
+2026-06-04 03:38:26,370 [INFO]   [ISHARES GLOBAL CLEAN ENERGY(ICLN)] 신호 없음 | Lv1 매수 USD 22.01 -> 현재 USD 23.12 (+5.04%) | 익절 +10.0% / 추매 -5.0%
+2026-06-04 03:38:26,370 [INFO] >>> Processing 알파벳 A(GOOGL)
+2026-06-04 03:38:26,370 [INFO] [알파벳 A(GOOGL)] 현금 부족: 보유 현금 USD 185.46 < 현재가 USD 360.24 (1주도 매수 불가) -> 매수 보류
+2026-06-04 03:38:26,862 [INFO] >>> Processing 브로드컴(AVGO)
+2026-06-04 03:38:26,862 [INFO] [브로드컴(AVGO)] Lv1: trailing 활성화 (매수가 대비 +13.6%, 스톱가 USD 463.69)
+2026-06-04 03:38:27,292 [INFO] >>> Processing 테슬라(TSLA)
+2026-06-04 03:38:27,292 [INFO]   [테슬라(TSLA)] 신호 없음 | Lv3 매수 USD 409.90 -> 현재 USD 423.95 (+3.43%) | 익절 +10.0% / 추매 -5.0%
+2026-06-04 03:38:27,293 [INFO] >>> Processing 코닝(GLW)
+2026-06-04 03:38:27,293 [INFO]   [코닝(GLW)] 신호 없음 | Lv2 매수 USD 184.60 -> 현재 USD 200.88 (+8.82%) | 익절 +10.0% / 추매 -5.0%
+2026-06-04 03:38:27,293 [INFO] >>> Processing IBM
+2026-06-04 03:38:27,293 [INFO] [IBM] trailing 벌크 매도 발동: Lv1~Lv1 3주 (+11.9%)
+2026-06-04 03:38:27,294 [INFO] Executing 1 order(s)...
+2026-06-04 03:38:27,294 [INFO] [KisBroker] Processing 1 SELL orders...
+2026-06-04 03:38:28,207 [INFO] [KisBroker] Order Sent: SELL IBM 3 @ 308.15 (ODNO=0031384090)
+2026-06-04 03:38:30,629 [INFO] [KisBroker] Order FILLED: IBM ODNO=0031384090 price=308.15 qty=3 fee=0.0
+2026-06-04 03:38:30,830 [INFO] [Position] Trailing 벌크 청산: IBM 3주 소진 (잔여 0주), 실현손익 USD 98.31
+2026-06-04 03:38:35,194 [INFO] >>> Processing 포엣 테크놀로지스(POET)
+2026-06-04 03:38:35,194 [INFO] [포엣 테크놀로지스(POET)] 보유 lot 없음 -> 초기 매수 Lv1 64주 @USD 15.46
+2026-06-04 03:38:35,194 [INFO] Executing 1 order(s)...
+2026-06-04 03:38:36,572 [INFO] [KisBroker] Available Cash for BUY: 1,100
+2026-06-04 03:38:37,696 [INFO] [KisBroker] Order Sent: BUY 포엣 테크놀로지스(POET) 64 @ 15.42 (ODNO=0031384105)
+2026-06-04 03:38:40,120 [INFO] [KisBroker] Order FILLED: 포엣 테크놀로지스(POET) ODNO=0031384105 price=15.42 qty=64 fee=0.0
+2026-06-04 03:38:40,321 [INFO] [Position] New lot: lot_20260604_033840_POET_001 Lv1 포엣 테크놀로지스(POET) 64주 @USD 15.42
+2026-06-04 03:38:44,692 [INFO] >>> Processing 루멘텀 홀딩스(LITE)
+2026-06-04 03:38:44,693 [INFO] [루멘텀 홀딩스(LITE)] trailing 벌크 매도 발동: Lv1~Lv1 1주 (+7.7%)
+2026-06-04 03:38:44,693 [INFO] Executing 1 order(s)...
+2026-06-04 03:38:44,693 [INFO] [KisBroker] Processing 1 SELL orders...
+2026-06-04 03:38:45,538 [INFO] [KisBroker] Order Sent: SELL 루멘텀 홀딩스(LITE) 1 @ 935.05 (ODNO=0031384124)
+2026-06-04 03:38:47,961 [INFO] [KisBroker] Order FILLED: 루멘텀 홀딩스(LITE) ODNO=0031384124 price=935.05 qty=1 fee=0.0
+2026-06-04 03:38:48,162 [INFO] [Position] Trailing 벌크 청산: 루멘텀 홀딩스(LITE) 1주 소진 (잔여 0주), 실현손익 USD 67.05
+2026-06-04 03:38:52,538 [INFO] >>> Processing 리게티 컴퓨팅(RGTI)
+2026-06-04 03:38:52,538 [INFO] [리게티 컴퓨팅(RGTI)] Lv1 매수가 USD 26.58 대비 -8.3% -> 추가 매수 Lv2 20주 @USD 24.39
+2026-06-04 03:38:52,539 [INFO] Executing 1 order(s)...
+2026-06-04 03:38:53,909 [INFO] [KisBroker] Available Cash for BUY: 1,038
+2026-06-04 03:38:54,999 [INFO] [KisBroker] Order Sent: BUY 리게티 컴퓨팅(RGTI) 20 @ 24.38 (ODNO=0031384148)
+2026-06-04 03:38:57,422 [INFO] [KisBroker] Order FILLED: 리게티 컴퓨팅(RGTI) ODNO=0031384148 price=24.38 qty=20 fee=0.0
+2026-06-04 03:38:57,623 [INFO] [Position] New lot: lot_20260604_033857_RGTI_002 Lv2 리게티 컴퓨팅(RGTI) 20주 @USD 24.38
+2026-06-04 03:39:02,036 [INFO] >>> Processing 팔란티어 테크(PLTR)
+2026-06-04 03:39:02,036 [INFO]   [팔란티어 테크(PLTR)] 신호 없음 | Lv1 매수 USD 147.91 -> 현재 USD 142.88 (-3.40%) | 익절 +10.0% / 추매 -5.0%
+2026-06-04 03:39:02,036 [INFO] >>> Step 6: Persist

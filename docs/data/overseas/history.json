@@ -346,5 +346,68 @@
                 "alias": "팔란티어 테크"
             }
         ]
+    },
+    {
+        "id": "tx_20260604_033902",
+        "date": "2026-06-04 03:39:02",
+        "portfolio_value": 12882.3913,
+        "total_trade_amount": 3333.98,
+        "reason": "알파벳 A(GOOGL):SKIP(현금 부족: 보유 현금 USD 185.46 < 현재가 USD 360.24 (1주도 매수 불가)), 브로드컴(AVGO):SKIP(Lv1: trailing 활성화 (매수가 대비 +13.6%, 스톱가 USD 463.69)), IBM:SELL(trailing 벌크 매도 Lv1~Lv1 (3주 +11.9%)), 포엣 테크놀로지스(POET):BUY(초기 매수 Lv1), 루멘텀 홀딩스(LITE):SELL(trailing 벌크 매도 Lv1~Lv1 (1주 +7.7%)), 리게티 컴퓨팅(RGTI):BUY(추가 매수 Lv2 (Lv1 대비 -8.3%))",
+        "executions": [
+            {
+                "ticker": "IBM",
+                "action": "SELL",
+                "quantity": 3,
+                "price": 308.15,
+                "fee": 0.0,
+                "date": "2026-06-04 03:38:30",
+                "status": "FILLED",
+                "reason": "ODNO=0031384090",
+                "lot_id": "lot_20260529_212032_IBM_001",
+                "level": 1,
+                "buy_price": 275.38,
+                "realized_pnl": 98.31,
+                "alias": "IBM"
+            },
+            {
+                "ticker": "POET",
+                "action": "BUY",
+                "quantity": 64,
+                "price": 15.42,
+                "fee": 0.0,
+                "date": "2026-06-04 03:38:40",
+                "status": "FILLED",
+                "reason": "ODNO=0031384105",
+                "level": 1,
+                "alias": "포엣 테크놀로지스"
+            },
+            {
+                "ticker": "LITE",
+                "action": "SELL",
+                "quantity": 1,
+                "price": 935.05,
+                "fee": 0.0,
+                "date": "2026-06-04 03:38:47",
+                "status": "FILLED",
+                "reason": "ODNO=0031384124",
+                "lot_id": "lot_20260529_212044_LITE_001",
+                "level": 1,
+                "buy_price": 868.0,
+                "realized_pnl": 67.05,
+                "alias": "루멘텀 홀딩스"
+            },
+            {
+                "ticker": "RGTI",
+                "action": "BUY",
+                "quantity": 20,
+                "price": 24.38,
+                "fee": 0.0,
+                "date": "2026-06-04 03:38:57",
+                "status": "FILLED",
+                "reason": "ODNO=0031384148",
+                "level": 2,
+                "alias": "리게티 컴퓨팅"
+            }
+        ]
     }
 ]

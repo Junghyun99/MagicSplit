@@ -96,7 +96,7 @@
         "quantity": 1,
         "buy_date": "2026-05-12",
         "level": 1,
-        "trailing_highest_price": null,
+        "trailing_highest_price": 488.1,
         "alias": "브로드컴"
     },
     {
@@ -160,26 +160,6 @@
         "alias": "코닝"
     },
     {
-        "lot_id": "lot_20260529_212032_IBM_001",
-        "ticker": "IBM",
-        "buy_price": 275.38,
-        "quantity": 3,
-        "buy_date": "2026-05-29",
-        "level": 1,
-        "trailing_highest_price": 327.455,
-        "alias": "IBM"
-    },
-    {
-        "lot_id": "lot_20260529_212044_LITE_001",
-        "ticker": "LITE",
-        "buy_price": 868.0,
-        "quantity": 1,
-        "buy_date": "2026-05-29",
-        "level": 1,
-        "trailing_highest_price": 1031.51,
-        "alias": "루멘텀 홀딩스"
-    },
-    {
         "lot_id": "lot_20260529_212054_RGTI_001",
         "ticker": "RGTI",
         "buy_price": 26.58,
@@ -198,5 +178,25 @@
         "level": 1,
         "trailing_highest_price": null,
         "alias": "팔란티어 테크"
+    },
+    {
+        "lot_id": "lot_20260604_033840_POET_001",
+        "ticker": "POET",
+        "buy_price": 15.42,
+        "quantity": 64,
+        "buy_date": "2026-06-04",
+        "level": 1,
+        "trailing_highest_price": null,
+        "alias": "포엣 테크놀로지스"
+    },
+    {
+        "lot_id": "lot_20260604_033857_RGTI_002",
+        "ticker": "RGTI",
+        "buy_price": 24.38,
+        "quantity": 20,
+        "buy_date": "2026-06-04",
+        "level": 2,
+        "trailing_highest_price": null,
+        "alias": "리게티 컴퓨팅"
     }
 ]
