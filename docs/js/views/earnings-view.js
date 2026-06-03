@@ -156,10 +156,11 @@ window.EarningsView = (function () {
         const sym = mode === 'domestic' ? '₩' : '$';
         const compactLabel = v => {
             const abs = Math.abs(v);
-            if (abs >= 1e9) return sym + (v / 1e9).toFixed(1) + 'B';
-            if (abs >= 1e6) return sym + (v / 1e6).toFixed(1) + 'M';
-            if (abs >= 1e3) return sym + (v / 1e3).toFixed(1) + 'K';
-            return sym + v.toFixed(0);
+            const sign = v < 0 ? '-' : '';
+            if (abs >= 1e9) return sign + sym + (abs / 1e9).toFixed(1) + 'B';
+            if (abs >= 1e6) return sign + sym + (abs / 1e6).toFixed(1) + 'M';
+            if (abs >= 1e3) return sign + sym + (abs / 1e3).toFixed(1) + 'K';
+            return sign + sym + abs.toFixed(0);
         };
 
         let barsHtml = '', xLabelsHtml = '';
@@ -396,13 +397,13 @@ window.EarningsView = (function () {
                 } else {
                     selectedTicker = ticker;
                     wrap.querySelectorAll('.ts-row').forEach(r => r.classList.toggle('ts-row-selected', r.dataset.ticker === ticker));
-                    renderTickerDetailPanel(ticker, mode);
+                    renderTickerDetailPanel(ticker, mode, true);
                 }
             });
         });
     }
 
-    function renderTickerDetailPanel(ticker, mode) {
+    function renderTickerDetailPanel(ticker, mode, shouldScroll = false) {
         const panel = document.getElementById('ticker-detail-panel');
         if (!panel) return;
 
@@ -493,7 +494,7 @@ window.EarningsView = (function () {
             if (wrap) wrap.querySelectorAll('.ts-row').forEach(r => r.classList.remove('ts-row-selected'));
         });
 
-        panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        if (shouldScroll) panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
 
     return { render };

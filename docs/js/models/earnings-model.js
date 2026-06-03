@@ -187,10 +187,14 @@ window.EarningsModel = (function () {
             // Prefer positions.alias, then tickerSellStats.alias
             const alias = (posInfo && posInfo.alias) || ts.alias || '';
 
-            // realized_pnl: prefer positions.realized_pnl (most accurate), fallback to realized_pnl_by_ticker
+            // realized_pnl: positions > realized_pnl_by_ticker > history trades sum (backtest/incomplete data fallback)
             const realized_pnl = posInfo
                 ? Number(posInfo.realized_pnl || 0)
-                : Number(realizedByTicker[ticker] || 0);
+                : (realizedByTicker[ticker] != null
+                    ? Number(realizedByTicker[ticker])
+                    : (tickerSellStats[ticker]
+                        ? tickerSellStats[ticker].trades.reduce((sum, t) => sum + t.realized_pnl, 0)
+                        : 0));
 
             const unrealized_pnl = posInfo ? Number(posInfo.unrealized_pnl || 0) : 0;
             const total_pnl = realized_pnl + unrealized_pnl;
@@ -210,7 +214,7 @@ window.EarningsModel = (function () {
 
         const monthly = Object.entries(ts.monthly)
             .map(([ym, d]) => ({ yearMonth: ym, pnl: d.pnl, count: d.count }))
-            .sort((a, b) => (a.yearMonth < b.yearMonth ? -1 : 1));
+            .sort((a, b) => a.yearMonth.localeCompare(b.yearMonth));
 
         const lots = posInfo ? (posInfo.lots || []) : [];
         const alias = (posInfo && posInfo.alias) || ts.alias || ticker;
