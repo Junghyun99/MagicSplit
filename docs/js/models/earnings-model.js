@@ -11,9 +11,13 @@ window.EarningsModel = (function () {
     let tickerSellStats = {};
     let _rawStatusData = null;
 
+    // { "YYYY-MM": { level: { total_pnl, sell_count, win_count, rates: [] } } }
+    let levelMonthlyData = {};
+
     function setHistoryData(histData) {
         monthlyData = {};
         tickerSellStats = {};
+        levelMonthlyData = {};
         if (!Array.isArray(histData)) {
             sortedYears = [];
             return;
@@ -74,6 +78,20 @@ window.EarningsModel = (function () {
                 if (!ts.monthly[yearMonth]) ts.monthly[yearMonth] = { pnl: 0, count: 0 };
                 ts.monthly[yearMonth].pnl += Number(ex.realized_pnl);
                 ts.monthly[yearMonth].count += 1;
+
+                // -- level monthly buckets --
+                const level = ex.level != null ? ex.level : null;
+                if (level != null) {
+                    if (!levelMonthlyData[yearMonth]) levelMonthlyData[yearMonth] = {};
+                    if (!levelMonthlyData[yearMonth][level]) {
+                        levelMonthlyData[yearMonth][level] = { total_pnl: 0, sell_count: 0, win_count: 0, rates: [] };
+                    }
+                    const lb = levelMonthlyData[yearMonth][level];
+                    lb.total_pnl += Number(ex.realized_pnl);
+                    lb.sell_count += 1;
+                    if (Number(ex.realized_pnl) > 0) lb.win_count += 1;
+                    if (profitRate != null) lb.rates.push(profitRate);
+                }
             }
         }
 
@@ -207,6 +225,36 @@ window.EarningsModel = (function () {
         return result.sort((a, b) => b.total_pnl - a.total_pnl);
     }
 
+    // Returns level-aggregated stats filtered by year/month
+    // Returns array sorted by level asc: [{ level, total_pnl, sell_count, win_count, win_rate, avg_profit_rate }]
+    function getLevelStats(year, month) {
+        const map = {};
+        for (const [ym, levels] of Object.entries(levelMonthlyData)) {
+            const keyYear = ym.slice(0, 4);
+            const keyMonth = ym.slice(5, 7);
+            if (year && keyYear !== year) continue;
+            if (month && keyMonth !== month) continue;
+            for (const [lv, lb] of Object.entries(levels)) {
+                const lvNum = Number(lv);
+                if (!map[lvNum]) map[lvNum] = { total_pnl: 0, sell_count: 0, win_count: 0, rates: [] };
+                map[lvNum].total_pnl += lb.total_pnl;
+                map[lvNum].sell_count += lb.sell_count;
+                map[lvNum].win_count += lb.win_count;
+                map[lvNum].rates = map[lvNum].rates.concat(lb.rates);
+            }
+        }
+        return Object.entries(map)
+            .map(([lv, d]) => ({
+                level: Number(lv),
+                total_pnl: d.total_pnl,
+                sell_count: d.sell_count,
+                win_count: d.win_count,
+                win_rate: d.sell_count > 0 ? (d.win_count / d.sell_count) * 100 : null,
+                avg_profit_rate: d.rates.length > 0 ? d.rates.reduce((s, r) => s + r, 0) / d.rates.length : null
+            }))
+            .sort((a, b) => a.level - b.level);
+    }
+
     // Returns sell trade history + monthly breakdown + current lots for a single ticker
     function getTickerDetail(ticker) {
         const ts = tickerSellStats[ticker] || { trades: [], monthly: {}, alias: '' };
@@ -231,6 +279,7 @@ window.EarningsModel = (function () {
         getMonthsWithData,
         getCurrentUnrealized,
         getTickerSummaries,
-        getTickerDetail
+        getTickerDetail,
+        getLevelStats
     };
 })();

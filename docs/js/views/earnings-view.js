@@ -8,6 +8,9 @@ window.EarningsView = (function () {
     let selectedMonth = null;      // "05" or null (all)
     let _currencyMode = 'domestic';
 
+    // Level analysis state
+    let levelMetric = 'total_pnl'; // 'total_pnl' | 'avg_profit_rate'
+
     // Ticker summary state
     let tickerSortKey = 'total_pnl';
     let tickerSortAsc = false;
@@ -42,6 +45,7 @@ window.EarningsView = (function () {
         renderBarChart();
         renderPeriodTickerTable();
         renderTickerSummarySection();
+        renderLevelAnalysisSection();
     }
 
     // ── Period filters ───────────────────────────────────────────────────────
@@ -495,6 +499,158 @@ window.EarningsView = (function () {
         });
 
         if (shouldScroll) panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    // ── Level analysis section ───────────────────────────────────────────────
+
+    function renderLevelAnalysisSection() {
+        const section = document.getElementById('earnings-level-section');
+        if (!section) return;
+
+        const stats = EarningsModel.getLevelStats(selectedYear, selectedMonth);
+        const mode = _currencyMode;
+
+        if (stats.length === 0) {
+            section.innerHTML = '<p class="empty-state">해당 기간에 차수별 매도 데이터가 없습니다.</p>';
+            return;
+        }
+
+        // metric toggle
+        const toggleHtml = `
+            <div class="earnings-filter-bar" style="margin-bottom:14px">
+                <span class="earnings-filter-label">지표</span>
+                <button class="filter-chip${levelMetric === 'total_pnl' ? ' active' : ''}" data-metric="total_pnl">총 실현수익</button>
+                <button class="filter-chip${levelMetric === 'avg_profit_rate' ? ' active' : ''}" data-metric="avg_profit_rate">평균 수익률</button>
+            </div>`;
+
+        section.innerHTML = toggleHtml +
+            '<div id="level-bar-chart"></div>' +
+            '<div id="level-stats-table" style="margin-top:16px"></div>';
+
+        section.querySelectorAll('[data-metric]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                levelMetric = btn.dataset.metric;
+                renderLevelAnalysisSection();
+            });
+        });
+
+        renderLevelBarChart(stats, mode);
+        renderLevelStatsTable(stats, mode);
+    }
+
+    function renderLevelBarChart(stats, mode) {
+        const container = document.getElementById('level-bar-chart');
+        if (!container) return;
+
+        const labels = stats.map(s => `Lv${s.level}`);
+        const values = levelMetric === 'total_pnl'
+            ? stats.map(s => s.total_pnl)
+            : stats.map(s => s.avg_profit_rate != null ? s.avg_profit_rate : 0);
+
+        const PAD = { top: 24, right: 12, bottom: 36, left: levelMetric === 'total_pnl' ? 64 : 44 };
+        const W = 560, H = 180;
+        const chartW = W - PAD.left - PAD.right;
+        const chartH = H - PAD.top - PAD.bottom;
+        const barW = Math.max(8, Math.floor(chartW / labels.length) - 6);
+
+        const SUCCESS = '#10b981', DANGER = '#ef4444';
+        const yMin = Math.min(0, ...values) * 1.15;
+        const yMax = Math.max(0, ...values) * 1.15;
+        const yRange = (yMax - yMin) || 1;
+
+        const yPos = v => PAD.top + chartH - ((v - yMin) / yRange) * chartH;
+        const zeroY = yPos(0).toFixed(1);
+
+        const sym = mode === 'domestic' ? '₩' : '$';
+        const fmtTick = v => {
+            if (levelMetric === 'avg_profit_rate') return (v >= 0 ? '+' : '') + v.toFixed(1) + '%';
+            const abs = Math.abs(v);
+            const sign = v < 0 ? '-' : '';
+            if (abs >= 1e9) return sign + sym + (abs / 1e9).toFixed(1) + 'B';
+            if (abs >= 1e6) return sign + sym + (abs / 1e6).toFixed(1) + 'M';
+            if (abs >= 1e3) return sign + sym + (abs / 1e3).toFixed(1) + 'K';
+            return sign + sym + abs.toFixed(0);
+        };
+
+        const fmtTooltip = (s) => levelMetric === 'total_pnl'
+            ? `총 실현수익: ${(s.total_pnl >= 0 ? '+' : '') + fmtTick(s.total_pnl)}`
+            : `평균 수익률: ${s.avg_profit_rate != null ? (s.avg_profit_rate >= 0 ? '+' : '') + s.avg_profit_rate.toFixed(2) + '%' : '-'}`;
+
+        let barsHtml = '', xLabelsHtml = '';
+        stats.forEach((s, i) => {
+            const v = values[i];
+            const x = PAD.left + i * (chartW / labels.length) + (chartW / labels.length - barW) / 2;
+            const color = v >= 0 ? SUCCESS : DANGER;
+            const barTop = Math.min(yPos(v), Number(zeroY));
+            const barH = Math.abs(yPos(v) - Number(zeroY));
+            barsHtml += `<rect x="${x.toFixed(1)}" y="${barTop.toFixed(1)}" width="${barW}" height="${Math.max(barH, 1).toFixed(1)}" fill="${color}" rx="2"><title>Lv${s.level} | ${fmtTooltip(s)} | ${s.sell_count}건 승률${s.win_rate != null ? s.win_rate.toFixed(0) + '%' : '-'}</title></rect>`;
+            xLabelsHtml += `<text x="${(x + barW / 2).toFixed(1)}" y="${(PAD.top + chartH + 14).toFixed(1)}" text-anchor="middle" class="earnings-bar-axis">Lv${escapeHtml(String(s.level))}</text>`;
+        });
+
+        const tickValues = [yMin, (yMin + yMax) / 2, yMax].filter((v, i, a) => a.indexOf(v) === i);
+        const yTicksHtml = tickValues.map(v =>
+            `<text x="${(PAD.left - 5).toFixed(1)}" y="${yPos(v).toFixed(1)}" text-anchor="end" dominant-baseline="middle" class="earnings-bar-axis">${escapeHtml(fmtTick(v))}</text>`
+        ).join('');
+
+        const ariaLabel = levelMetric === 'total_pnl' ? '차수별 총 실현수익' : '차수별 평균 수익률';
+        container.innerHTML = `<svg viewBox="0 0 ${W} ${H}" class="earnings-bar-svg" role="img" aria-label="${ariaLabel}">
+            <line x1="${PAD.left}" y1="${zeroY}" x2="${(PAD.left + chartW).toFixed(1)}" y2="${zeroY}" stroke="#d1d5db" stroke-width="1"/>
+            ${barsHtml}${yTicksHtml}${xLabelsHtml}
+        </svg>`;
+    }
+
+    function renderLevelStatsTable(stats, mode) {
+        const el = document.getElementById('level-stats-table');
+        if (!el) return;
+
+        const isDomestic = mode === 'domestic';
+
+        const rows = stats.map(s => {
+            const pnlCls = s.total_pnl >= 0 ? 'pct-positive' : 'pct-negative';
+            const pnlSign = s.total_pnl > 0 ? '+' : '';
+            const pnlStr = new Intl.NumberFormat(isDomestic ? 'ko-KR' : 'en-US', {
+                style: 'currency', currency: isDomestic ? 'KRW' : 'USD',
+                minimumFractionDigits: isDomestic ? 0 : 2, maximumFractionDigits: isDomestic ? 0 : 2
+            }).format(s.total_pnl);
+
+            const rateCls = s.avg_profit_rate != null ? (s.avg_profit_rate >= 0 ? 'pct-positive' : 'pct-negative') : '';
+            const rateStr = s.avg_profit_rate != null
+                ? `<span class="${rateCls}">${s.avg_profit_rate >= 0 ? '+' : ''}${s.avg_profit_rate.toFixed(2)}%</span>` : '-';
+
+            // win rate dot indicator (up to 5 dots)
+            const winDots = s.win_rate != null ? buildWinDots(s.win_rate) : '-';
+            const winRateStr = s.win_rate != null ? s.win_rate.toFixed(0) + '%' : '-';
+
+            return `<tr>
+                <td style="text-align:center"><span class="level-badge" data-level="${Math.min(s.level, 5)}">Lv${s.level}</span></td>
+                <td style="text-align:center;color:var(--text-muted)">${s.sell_count}건</td>
+                <td style="text-align:center"><span class="win-dots">${winDots}</span> ${winRateStr}</td>
+                <td style="text-align:right">${rateStr}</td>
+                <td class="${pnlCls}" style="text-align:right">${pnlSign}${escapeHtml(pnlStr)}</td>
+            </tr>`;
+        }).join('');
+
+        el.innerHTML = `
+            <div class="card" style="padding:0;overflow-x:auto">
+                <table class="history-table">
+                    <thead><tr>
+                        <th style="text-align:center">차수</th>
+                        <th style="text-align:center">매도건수</th>
+                        <th style="text-align:center">승률</th>
+                        <th style="text-align:right">평균 수익률</th>
+                        <th style="text-align:right">총 실현수익</th>
+                    </tr></thead>
+                    <tbody>${rows}</tbody>
+                </table>
+            </div>`;
+    }
+
+    function buildWinDots(winRate) {
+        // 5 dots: filled proportional to win rate
+        const filled = Math.round(winRate / 20); // 0-5
+        return Array.from({ length: 5 }, (_, i) =>
+            `<span class="win-dot${i < filled ? ' filled' : ''}"></span>`
+        ).join('');
     }
 
     return { render };

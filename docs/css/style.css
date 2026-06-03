@@ -1144,3 +1144,19 @@ h2 { font-size: 1.1rem; margin-bottom: 8px; color: var(--text-muted); }
     margin-bottom: 6px;
 }
 .ticker-detail-chart { margin-bottom: 8px; }
+
+/* Level win-rate dot indicator */
+.win-dots {
+    display: inline-flex;
+    gap: 3px;
+    vertical-align: middle;
+    margin-right: 4px;
+}
+.win-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--border);
+}
+.win-dot.filled { background: var(--success); }
