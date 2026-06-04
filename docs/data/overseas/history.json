@@ -409,5 +409,37 @@
                 "alias": "리게티 컴퓨팅"
             }
         ]
+    },
+    {
+        "id": "tx_20260605_023749",
+        "date": "2026-06-05 02:37:49",
+        "portfolio_value": 12730.6401,
+        "total_trade_amount": 426.99,
+        "reason": "펩시코(PEP):BUY(추가 매수 Lv2 (Lv1 대비 -5.2%)), 알파벳 A(GOOGL):SKIP(현금 부족: 보유 현금 USD 136.87 < 현재가 USD 371.85 (1주도 매수 불가)), 브로드컴(AVGO):SELL(trailing 벌크 매도 Lv1~Lv1 (1주 -1.7%)), IBM:SKIP(현금 부족: 보유 현금 USD 136.87 < 현재가 USD 302.11 (1주도 매수 불가)), 루멘텀 홀딩스(LITE):SKIP(현금 부족: 보유 현금 USD 136.87 < 현재가 USD 942.81 (1주도 매수 불가))",
+        "executions": [
+            {
+                "ticker": "PEP",
+                "action": "BUY",
+                "quantity": 3,
+                "price": 142.33,
+                "fee": 0.0,
+                "date": "2026-06-05 02:37:04",
+                "status": "FILLED",
+                "reason": "ODNO=0031813762",
+                "level": 2,
+                "alias": "펩시코"
+            },
+            {
+                "ticker": "AVGO",
+                "action": "SELL",
+                "quantity": 0,
+                "price": 422.5,
+                "fee": 0.0,
+                "date": "2026-06-05 02:37:43",
+                "status": "REJECTED",
+                "reason": "ODNO=0031813790",
+                "alias": "브로드컴"
+            }
+        ]
     }
 ]
