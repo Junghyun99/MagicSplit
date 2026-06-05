@@ -697,5 +697,26 @@
                 "alias": "NAVER"
             }
         ]
+    },
+    {
+        "id": "tx_20260605_140617",
+        "date": "2026-06-05 14:06:17",
+        "portfolio_value": 25093680.0,
+        "total_trade_amount": 1370000.0,
+        "reason": "삼성전자(005930):BUY(초기 매수 Lv1), 현대차(005380):BUY(초기 매수 Lv1), NAVER(035420):BUY(초기 매수 Lv1)",
+        "executions": [
+            {
+                "ticker": "005380",
+                "action": "BUY",
+                "quantity": 2,
+                "price": 685000.0,
+                "fee": 205.49999999999997,
+                "date": "2026-06-05 14:06:12",
+                "status": "FILLED",
+                "reason": "ODNO=0032735400",
+                "level": 1,
+                "alias": "현대차"
+            }
+        ]
     }
 ]
