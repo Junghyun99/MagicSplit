@@ -37,16 +37,15 @@ pytestmark = pytest.mark.skipif(
 
 # --- 상수 ---
 DEFAULT_TEST_TICKER = "069500"           # KODEX 200 ETF (~35,000원, 매우 유동성 높음)
-READONLY_PRICE_TICKERS = ["005930.KS", "069500.KS"]  # 삼성전자 + KODEX 200
+READONLY_PRICE_TICKERS = ["005930", "069500"]  # 삼성전자 + KODEX 200
 LIMIT_DROP_PCT = 0.95                    # 현재가 대비 -5% 지정가 (체결 안 되도록)
 ORDER_TIMEOUT_SHORT = 5                  # S8 타임아웃 시나리오용
 
 
 def _normalize_ticker(raw: str) -> str:
-    """입력이 6자리 코드든 yfinance 티커든 .KS suffix 형태로 통일."""
-    if "." in raw:
-        return raw
-    return f"{raw.zfill(6)}.KS"
+    """입력 티커를 KIS 6자리 코드로 정규화. .KS/.KQ suffix가 있으면 제거."""
+    code = raw.split(".")[0]
+    return code.zfill(6)
 
 
 def _floor_to_tick(price: int) -> int:
@@ -102,7 +101,6 @@ def broker(logger, test_ticker):
         app_secret=app_secret,
         acc_no=acc_no,
         logger=logger,
-        known_tickers=[test_ticker, "005930.KS", "069500.KS"],
     )
 
 
