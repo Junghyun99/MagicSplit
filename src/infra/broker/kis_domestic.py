@@ -86,41 +86,54 @@ class KisDomesticBrokerBase(KisBrokerCommon):
             "CTX_AREA_FK100": "",
             "CTX_AREA_NK100": ""
         }
-        headers = self._get_header(tr_id)
-        total_cash = 0.0
-        all_holdings: Dict[str, int] = {}
-        all_prices: Dict[str, float] = {}
 
-        time.sleep(0.2)
-        try:
-            res = self._request('GET', url, headers=headers, params=params, timeout=DEFAULT_HTTP_TIMEOUT)
-            res.raise_for_status()
-            data = res.json()
+        retry_delays = [2, 4, 8]
+        last_error = None
 
-            if data.get('rt_cd') != '0':
-                self.logger.warning(f"[KisDomestic] Get Portfolio Failed: {data.get('msg1')}")
-                return Portfolio(total_cash=0.0, holdings={}, current_prices={})
+        for attempt in range(len(retry_delays) + 1):
+            headers = self._get_header(tr_id)
+            time.sleep(0.2)
+            try:
+                res = self._request('GET', url, headers=headers, params=params, timeout=DEFAULT_HTTP_TIMEOUT)
+                res.raise_for_status()
+                data = res.json()
 
-            output2_list = data.get('output2', [])
-            summary = output2_list[0] if output2_list else {}
-            
-            total_cash = float(summary.get('prvs_rcdl_excc_amt', 0) or 0)
+                if data.get('rt_cd') != '0':
+                    self.logger.warning(f"[KisDomestic] Get Portfolio Failed: {data.get('msg1')}")
+                    return Portfolio(total_cash=0.0, holdings={}, current_prices={})
 
-            for item in data.get('output1', []):
-                qty = int(item.get('hldg_qty', 0) or 0)
-                if qty > 0:
-                    ticker = item.get('pdno', '').zfill(6)
-                    all_holdings[ticker] = qty
-                    all_prices[ticker] = float(item.get('prpr', 0) or 0)
+                output2_list = data.get('output2', [])
+                summary = output2_list[0] if output2_list else {}
+                total_cash = float(summary.get('prvs_rcdl_excc_amt', 0) or 0)
 
-        except Exception as e:
-            self.logger.error(f"[KisDomestic] Error getting portfolio: {e}")
+                all_holdings: Dict[str, int] = {}
+                all_prices: Dict[str, float] = {}
+                for item in data.get('output1', []):
+                    qty = int(item.get('hldg_qty', 0) or 0)
+                    if qty > 0:
+                        ticker = item.get('pdno', '').zfill(6)
+                        all_holdings[ticker] = qty
+                        all_prices[ticker] = float(item.get('prpr', 0) or 0)
 
-        return Portfolio(
-            total_cash=total_cash,
-            holdings=all_holdings,
-            current_prices=all_prices
-        )
+                return Portfolio(
+                    total_cash=total_cash,
+                    holdings=all_holdings,
+                    current_prices=all_prices
+                )
+
+            except Exception as e:
+                last_error = e
+                if attempt < len(retry_delays):
+                    delay = retry_delays[attempt]
+                    self.logger.warning(
+                        f"[KisDomestic] Portfolio fetch failed (attempt {attempt + 1}/{len(retry_delays) + 1}): {e}. "
+                        f"Retrying in {delay}s..."
+                    )
+                    time.sleep(delay)
+                else:
+                    self.logger.error(f"[KisDomestic] Error getting portfolio: {last_error}")
+
+        return Portfolio(total_cash=0.0, holdings={}, current_prices={})
 
     def _send_order_and_wait(self, order: Order, timeout: int = 30) -> Optional[TradeExecution]:
         """국내주식 주문 전송 후 체결 대기."""

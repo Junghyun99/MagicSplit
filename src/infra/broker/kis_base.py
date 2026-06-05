@@ -180,6 +180,21 @@ class KisBrokerCommon(IBrokerAdapter):
                 current_cash = pf.total_cash
                 self.logger.info(f"[KisBroker] Available Cash for BUY: {current_cash:,.0f}")
 
+                # 포트폴리오 조회 실패(cash=0) 시 예산 체크 없이 원래 수량으로 주문
+                # 자금 부족이면 브로커가 REJECTED 처리하므로 안전
+                if current_cash <= 0:
+                    disp = display_ticker(order.ticker)
+                    self.logger.warning(
+                        f"[KisBroker] Portfolio cash=0 (잔고 조회 실패). "
+                        f"{disp} {order.quantity}주 원래 수량으로 주문 진행 "
+                        f"(자금 부족 시 브로커 거절)"
+                    )
+                    res = self._send_order_and_wait(order, timeout=30)
+                    if res:
+                        executions.append(res)
+                    time.sleep(0.2)
+                    continue
+
                 # 안전 마진 (98%)
                 SAFE_MARGIN = 0.98
                 budget = current_cash * SAFE_MARGIN
