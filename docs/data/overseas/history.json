@@ -441,5 +441,29 @@
                 "alias": "브로드컴"
             }
         ]
+    },
+    {
+        "id": "tx_20260605_165724",
+        "date": "2026-06-05 16:57:24",
+        "portfolio_value": 12098.3873,
+        "total_trade_amount": 422.2,
+        "reason": "리게티 컴퓨팅(RGTI):SELL(수동 매매(Manual Trade))",
+        "executions": [
+            {
+                "ticker": "RGTI",
+                "action": "SELL",
+                "quantity": 20,
+                "price": 21.11,
+                "fee": 0.0,
+                "date": "2026-06-05 16:57:19",
+                "status": "FILLED",
+                "reason": "ODNO=0032224624",
+                "lot_id": "lot_20260604_033857_RGTI_002",
+                "level": 2,
+                "buy_price": 24.38,
+                "realized_pnl": -65.4,
+                "alias": "리게티 컴퓨팅"
+            }
+        ]
     }
 ]
