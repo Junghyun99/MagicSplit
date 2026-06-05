@@ -613,5 +613,89 @@
                 "alias": "현대차"
             }
         ]
+    },
+    {
+        "id": "tx_20260605_104902",
+        "date": "2026-06-05 10:49:02",
+        "portfolio_value": 0.0,
+        "total_trade_amount": 5348940.0,
+        "reason": "삼성전자(005930):SELL(trailing 벌크 매도 Lv1~Lv1 (3주 +22.3%)), 현대차(005380):SKIP(현금 부족: 보유 현금 KRW 0 < 현재가 KRW 665,000 (1주도 매수 불가)), TIGER 지주회사(307520):SKIP(현금 부족: 보유 현금 KRW 0 < 현재가 KRW 24,340 (1주도 매수 불가)), SOL 반도체전공정(475300):SELL(trailing 벌크 매도 Lv2~Lv4 (136주 +12.4%)), NAVER(035420):SELL(trailing 벌크 매도 Lv1~Lv1 (4주 +15.3%))",
+        "executions": [
+            {
+                "ticker": "005930",
+                "action": "SELL",
+                "quantity": 3,
+                "price": 334500.0,
+                "fee": 150.52499999999998,
+                "date": "2026-06-05 10:48:47",
+                "status": "FILLED",
+                "reason": "ODNO=0021013400",
+                "lot_id": "lot_20260518_095348_005930_001",
+                "level": 1,
+                "buy_price": 274000.0,
+                "realized_pnl": 181349.48,
+                "alias": "삼성전자"
+            },
+            {
+                "ticker": "475300",
+                "action": "SELL",
+                "quantity": 92,
+                "price": 24540.0,
+                "fee": 500.61599999999993,
+                "date": "2026-06-05 10:48:53",
+                "status": "FILLED",
+                "reason": "ODNO=0021022600",
+                "lot_id": "lot_20260602_024335_475300_004",
+                "level": 4,
+                "buy_price": 21720.0,
+                "realized_pnl": 259101.35,
+                "alias": "SOL 반도체전공정"
+            },
+            {
+                "ticker": "475300",
+                "action": "SELL",
+                "quantity": 23,
+                "price": 24540.0,
+                "fee": 500.61599999999993,
+                "date": "2026-06-05 10:48:53",
+                "status": "FILLED",
+                "reason": "ODNO=0021022600",
+                "lot_id": "lot_20260602_090619_475300_003",
+                "level": 3,
+                "buy_price": 21595.0,
+                "realized_pnl": 67650.34,
+                "alias": "SOL 반도체전공정"
+            },
+            {
+                "ticker": "475300",
+                "action": "SELL",
+                "quantity": 21,
+                "price": 24540.0,
+                "fee": 500.61599999999993,
+                "date": "2026-06-05 10:48:53",
+                "status": "FILLED",
+                "reason": "ODNO=0021022600",
+                "lot_id": "lot_20260529_150015_475300_002",
+                "level": 2,
+                "buy_price": 22885.0,
+                "realized_pnl": 34677.7,
+                "alias": "SOL 반도체전공정"
+            },
+            {
+                "ticker": "035420",
+                "action": "SELL",
+                "quantity": 4,
+                "price": 252000.0,
+                "fee": 151.2,
+                "date": "2026-06-05 10:48:58",
+                "status": "FILLED",
+                "reason": "ODNO=0021031400",
+                "lot_id": "lot_20260529_090456_035420_001",
+                "level": 1,
+                "buy_price": 219000.0,
+                "realized_pnl": 131848.8,
+                "alias": "NAVER"
+            }
+        ]
     }
 ]
