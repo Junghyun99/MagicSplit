@@ -73,3 +73,21 @@
 2026-06-05 16:57:20,024 [INFO] [Position] Remove lot: lot_20260604_033857_RGTI_002 Lv2 (20주 전량 매도)
 2026-06-05 16:57:24,449 [INFO] >>> Step 6: Persist
 2026-06-05 16:57:25,172 [INFO] === Manual Trade 완료 ===
+2026-06-05 16:59:42,964 [INFO] === Manual Trade CLI: RGTI SELL ===
+2026-06-05 16:59:42,965 [INFO] [KisBroker] 캐시에서 토큰 로드 (API 호출 생략)
+2026-06-05 16:59:42,965 [INFO] [KisOverseasLiveBroker] Mode: LIVE TRADING
+2026-06-05 16:59:42,965 [INFO] === Manual Trade: 리게티 컴퓨팅(RGTI) SELL ===
+2026-06-05 16:59:42,965 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-06-05 16:59:44,880 [INFO] Fetching real-time prices from Broker...
+2026-06-05 16:59:50,263 [INFO] Portfolio: Cash=USD 556.34, Value=USD 12,112.75
+2026-06-05 16:59:50,263 [INFO] >>> Step 2: Load Positions
+2026-06-05 16:59:50,263 [INFO] Loaded 20 position lot(s)
+2026-06-05 16:59:50,263 [INFO] 매도 수량 자동 도출: Lv1 lot 37주 전량
+2026-06-05 16:59:50,263 [INFO] [리게티 컴퓨팅(RGTI)] 수동 신호 생성: SELL Lv1 37주 @USD 21.16
+2026-06-05 16:59:50,263 [INFO] Executing 1 order(s)...
+2026-06-05 16:59:50,263 [INFO] [KisBroker] Processing 1 SELL orders...
+2026-06-05 16:59:51,112 [INFO] [KisBroker] Order Sent: SELL 리게티 컴퓨팅(RGTI) 37 @ 21.15 (ODNO=0032225779)
+2026-06-05 16:59:53,530 [INFO] [KisBroker] Order FILLED: 리게티 컴퓨팅(RGTI) ODNO=0032225779 price=21.15 qty=37 fee=0.0
+2026-06-05 16:59:53,731 [INFO] [Position] Remove lot: lot_20260529_212054_RGTI_001 Lv1 (37주 전량 매도)
+2026-06-05 16:59:58,080 [INFO] >>> Step 6: Persist
+2026-06-05 16:59:58,548 [INFO] === Manual Trade 완료 ===
