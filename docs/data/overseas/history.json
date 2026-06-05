@@ -489,5 +489,65 @@
                 "alias": "리게티 컴퓨팅"
             }
         ]
+    },
+    {
+        "id": "tx_20260606_020632",
+        "date": "2026-06-06 02:06:32",
+        "portfolio_value": 12070.7696,
+        "total_trade_amount": 2095.65,
+        "reason": "알파벳 A(GOOGL):BUY(추가 매수 Lv2 (Lv1 대비 -6.1%)), 브로드컴(AVGO):SELL(trailing 벌크 매도 Lv1~Lv1 (1주 -8.3%)), IBM:BUY(초기 매수 Lv1), 포엣 테크놀로지스(POET):BUY(추가 매수 Lv2 (Lv1 대비 -20.0%)), 루멘텀 홀딩스(LITE):SKIP(현금 부족: 보유 현금 USD 19.25 < 현재가 USD 882.19 (1주도 매수 불가)), 팔란티어 테크(PLTR):SKIP(현금 부족: 보유 현금 USD 19.25 < 현재가 USD 137.26 (1주도 매수 불가))",
+        "executions": [
+            {
+                "ticker": "GOOGL",
+                "action": "BUY",
+                "quantity": 1,
+                "price": 369.66,
+                "fee": 0.0,
+                "date": "2026-06-06 02:06:00",
+                "status": "FILLED",
+                "reason": "ODNO=0032228680",
+                "level": 2,
+                "alias": "알파벳 A"
+            },
+            {
+                "ticker": "AVGO",
+                "action": "SELL",
+                "quantity": 1,
+                "price": 394.08,
+                "fee": 0.0,
+                "date": "2026-06-06 02:06:07",
+                "status": "FILLED",
+                "reason": "ODNO=0032228737",
+                "lot_id": "lot_20260512_003622_AVGO_001",
+                "level": 1,
+                "buy_price": 429.8,
+                "realized_pnl": -35.72,
+                "alias": "브로드컴"
+            },
+            {
+                "ticker": "IBM",
+                "action": "BUY",
+                "quantity": 3,
+                "price": 283.55,
+                "fee": 0.0,
+                "date": "2026-06-06 02:06:17",
+                "status": "FILLED",
+                "reason": "ODNO=0032228806",
+                "level": 1,
+                "alias": "IBM"
+            },
+            {
+                "ticker": "POET",
+                "action": "BUY",
+                "quantity": 39,
+                "price": 12.34,
+                "fee": 0.0,
+                "date": "2026-06-06 02:06:26",
+                "status": "FILLED",
+                "reason": "ODNO=0032228879",
+                "level": 2,
+                "alias": "포엣 테크놀로지스"
+            }
+        ]
     }
 ]
