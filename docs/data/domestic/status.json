@@ -1,156 +1,19 @@
 {
-    "last_updated": "2026-06-08 00:37:12",
+    "last_updated": "2026-06-08 14:22:00",
     "last_run_date": "2026-06-08",
     "market_type": "domestic",
-    "reason": "현대차(005380):BUY(수동 매매(Manual Trade))",
+    "reason": "삼성전자(005930):BUY(초기 매수 Lv1), ACE 엔비디아밸류체인액티브(483320):SELL(trailing 벌크 매도 Lv1~Lv1 (39주 +13.6%)), 미래에셋증권(006800):BUY(추가 매수 Lv4 (Lv3 대비 -15.3%)), KODEX 증권(102970):BUY(추가 매수 Lv2 (Lv1 대비 -13.6%)), TIGER 지주회사(307520):BUY(추가 매수 Lv2 (Lv1 대비 -11.3%)), SOL 반도체전공정(475300):BUY(동적 재매수 Lv2 (매도가 KRW 24,540 대비 -10.3%)), 테스(095610):SELL(trailing 벌크 매도 Lv2~Lv3 (7주 +8.5%)), KoAct 글로벌AI메모리반도체액티브(0174B0):SELL(trailing 벌크 매도 Lv1~Lv1 (60주 -1.4%)), SOL 미국양자컴퓨팅TOP10(0023A0):BUY(추가 매수 Lv2 (Lv1 대비 -8.5%)), NAVER(035420):BUY(초기 매수 Lv1), HANARO 글로벌금채굴기업(473640):BUY(추가 매수 Lv2 (Lv1 대비 -6.2%))",
     "portfolio": {
-        "total_value": 28242088.0,
-        "cash_balance": 4211048.0,
-        "holdings": [
-            {
-                "ticker": "000660",
-                "alias": "SK하이닉스",
-                "qty": 3,
-                "price": 1985000.0,
-                "value": 5955000.0
-            },
-            {
-                "ticker": "0023A0",
-                "alias": "SOL 미국양자컴퓨팅TOP10",
-                "qty": 27,
-                "price": 34410.0,
-                "value": 929070.0
-            },
-            {
-                "ticker": "005380",
-                "alias": "현대차",
-                "qty": 3,
-                "price": 652000.0,
-                "value": 1956000.0
-            },
-            {
-                "ticker": "006800",
-                "alias": "미래에셋증권",
-                "qty": 30,
-                "price": 51700.0,
-                "value": 1551000.0
-            },
-            {
-                "ticker": "0174B0",
-                "alias": "KoAct 글로벌AI메모리반도체액티브",
-                "qty": 60,
-                "price": 16710.0,
-                "value": 1002600.0
-            },
-            {
-                "ticker": "095610",
-                "alias": "테스",
-                "qty": 14,
-                "price": 139400.0,
-                "value": 1951600.0
-            },
-            {
-                "ticker": "102970",
-                "alias": "KODEX 증권",
-                "qty": 37,
-                "price": 23610.0,
-                "value": 873570.0
-            },
-            {
-                "ticker": "138040",
-                "alias": "메리츠금융지주",
-                "qty": 13,
-                "price": 106000.0,
-                "value": 1378000.0
-            },
-            {
-                "ticker": "218420",
-                "alias": "KODEX 미국S&P500에너지(합성)",
-                "qty": 72,
-                "price": 20840.0,
-                "value": 1500480.0
-            },
-            {
-                "ticker": "307520",
-                "alias": "TIGER 지주회사",
-                "qty": 38,
-                "price": 23530.0,
-                "value": 894140.0
-            },
-            {
-                "ticker": "453630",
-                "alias": "KODEX 미국S&P500필수소비재",
-                "qty": 73,
-                "price": 13545.0,
-                "value": 988785.0
-            },
-            {
-                "ticker": "453650",
-                "alias": "KODEX 미국S&P500금융",
-                "qty": 52,
-                "price": 19830.0,
-                "value": 1031160.0
-            },
-            {
-                "ticker": "457480",
-                "alias": "ACE 테슬라밸류체인액티브",
-                "qty": 42,
-                "price": 22980.0,
-                "value": 965160.0
-            },
-            {
-                "ticker": "473640",
-                "alias": "HANARO 글로벌금채굴기업",
-                "qty": 29,
-                "price": 32855.0,
-                "value": 952795.0
-            },
-            {
-                "ticker": "475300",
-                "alias": "SOL 반도체전공정",
-                "qty": 41,
-                "price": 23385.0,
-                "value": 958785.0
-            },
-            {
-                "ticker": "483320",
-                "alias": "ACE 엔비디아밸류체인액티브",
-                "qty": 39,
-                "price": 29305.0,
-                "value": 1142895.0
-            }
-        ]
+        "total_value": 0.0,
+        "cash_balance": 0.0,
+        "holdings": []
     },
     "positions": {
-        "483320": {
-            "total_qty": 39,
-            "lot_count": 1,
-            "total_invested": 986310.0,
-            "current_value": 1142895.0,
-            "lots": [
-                {
-                    "lot_id": "lot_20260519_143302_483320_001",
-                    "buy_price": 25290.0,
-                    "quantity": 39,
-                    "buy_date": "2026-05-19",
-                    "level": 1,
-                    "current_price": 29305.0,
-                    "pct_change": 15.88
-                }
-            ],
-            "current_price": 29305.0,
-            "alias": "ACE 엔비디아밸류체인액티브",
-            "avg_buy_price": 25290.0,
-            "unrealized_pnl": 156585.0,
-            "unrealized_pnl_pct": 15.88,
-            "realized_pnl": -194.19,
-            "total_pnl": 156390.81
-        },
         "006800": {
             "total_qty": 30,
             "lot_count": 3,
             "total_invested": 1906200.0,
-            "current_value": 1551000.0,
+            "current_value": 1500000.0,
             "lots": [
                 {
                     "lot_id": "lot_20260519_143314_006800_001",
@@ -158,8 +21,8 @@
                     "quantity": 15,
                     "buy_date": "2026-05-19",
                     "level": 1,
-                    "current_price": 51700.0,
-                    "pct_change": -22.14
+                    "current_price": 50000.0,
+                    "pct_change": -24.7
                 },
                 {
                     "lot_id": "lot_20260528_094532_006800_002",
@@ -167,8 +30,8 @@
                     "quantity": 7,
                     "buy_date": "2026-05-28",
                     "level": 2,
-                    "current_price": 51700.0,
-                    "pct_change": -17.41
+                    "current_price": 50000.0,
+                    "pct_change": -20.13
                 },
                 {
                     "lot_id": "lot_20260602_090607_006800_003",
@@ -176,23 +39,23 @@
                     "quantity": 8,
                     "buy_date": "2026-06-02",
                     "level": 3,
-                    "current_price": 51700.0,
-                    "pct_change": -12.37
+                    "current_price": 50000.0,
+                    "pct_change": -15.25
                 }
             ],
-            "current_price": 51700.0,
+            "current_price": 50000.0,
             "alias": "미래에셋증권",
             "avg_buy_price": 63540.0,
-            "unrealized_pnl": -355200.0,
-            "unrealized_pnl_pct": -18.63,
+            "unrealized_pnl": -406200.0,
+            "unrealized_pnl_pct": -21.31,
             "realized_pnl": 26322.6,
-            "total_pnl": -328877.4
+            "total_pnl": -379877.4
         },
         "102970": {
-            "total_qty": 37,
-            "lot_count": 1,
-            "total_invested": 975135.0,
-            "current_value": 873570.0,
+            "total_qty": 58,
+            "lot_count": 2,
+            "total_invested": 1453200.0,
+            "current_value": 1321240.0,
             "lots": [
                 {
                     "lot_id": "lot_20260519_143320_102970_001",
@@ -200,23 +63,32 @@
                     "quantity": 37,
                     "buy_date": "2026-05-19",
                     "level": 1,
-                    "current_price": 23610.0,
-                    "pct_change": -10.42
+                    "current_price": 22780.0,
+                    "pct_change": -13.56
+                },
+                {
+                    "lot_id": "lot_20260608_142119_102970_002",
+                    "buy_price": 22765.0,
+                    "quantity": 21,
+                    "buy_date": "2026-06-08",
+                    "level": 2,
+                    "current_price": 22780.0,
+                    "pct_change": 0.07
                 }
             ],
-            "current_price": 23610.0,
+            "current_price": 22780.0,
             "alias": "KODEX 증권",
-            "avg_buy_price": 26355.0,
-            "unrealized_pnl": -101565.0,
-            "unrealized_pnl_pct": -10.42,
+            "avg_buy_price": 25055.1724,
+            "unrealized_pnl": -131960.0,
+            "unrealized_pnl_pct": -9.08,
             "realized_pnl": 0.0,
-            "total_pnl": -101565.0
+            "total_pnl": -131960.0
         },
         "138040": {
             "total_qty": 13,
             "lot_count": 2,
             "total_invested": 1391100.0,
-            "current_value": 1378000.0,
+            "current_value": 1345500.0,
             "lots": [
                 {
                     "lot_id": "lot_20260519_143332_138040_001",
@@ -224,8 +96,8 @@
                     "quantity": 9,
                     "buy_date": "2026-05-19",
                     "level": 1,
-                    "current_price": 106000.0,
-                    "pct_change": -2.84
+                    "current_price": 103500.0,
+                    "pct_change": -5.13
                 },
                 {
                     "lot_id": "lot_20260528_094538_138040_002",
@@ -233,23 +105,23 @@
                     "quantity": 4,
                     "buy_date": "2026-05-28",
                     "level": 2,
-                    "current_price": 106000.0,
-                    "pct_change": 3.62
+                    "current_price": 103500.0,
+                    "pct_change": 1.17
                 }
             ],
-            "current_price": 106000.0,
+            "current_price": 103500.0,
             "alias": "메리츠금융지주",
             "avg_buy_price": 107007.6923,
-            "unrealized_pnl": -13100.0,
-            "unrealized_pnl_pct": -0.94,
+            "unrealized_pnl": -45600.0,
+            "unrealized_pnl_pct": -3.28,
             "realized_pnl": 0.0,
-            "total_pnl": -13100.0
+            "total_pnl": -45600.0
         },
         "218420": {
             "total_qty": 72,
             "lot_count": 2,
             "total_invested": 1491910.0,
-            "current_value": 1500480.0,
+            "current_value": 1497960.0,
             "lots": [
                 {
                     "lot_id": "lot_20260519_143338_218420_001",
@@ -257,8 +129,8 @@
                     "quantity": 47,
                     "buy_date": "2026-05-19",
                     "level": 1,
-                    "current_price": 20840.0,
-                    "pct_change": -1.49
+                    "current_price": 20805.0,
+                    "pct_change": -1.65
                 },
                 {
                     "lot_id": "lot_20260527_150533_218420_002",
@@ -266,23 +138,23 @@
                     "quantity": 25,
                     "buy_date": "2026-05-27",
                     "level": 2,
-                    "current_price": 20840.0,
-                    "pct_change": 4.7
+                    "current_price": 20805.0,
+                    "pct_change": 4.52
                 }
             ],
-            "current_price": 20840.0,
+            "current_price": 20805.0,
             "alias": "KODEX 미국S&P500에너지(합성)",
             "avg_buy_price": 20720.9722,
-            "unrealized_pnl": 8570.0,
-            "unrealized_pnl_pct": 0.57,
+            "unrealized_pnl": 6050.0,
+            "unrealized_pnl_pct": 0.41,
             "realized_pnl": 0.0,
-            "total_pnl": 8570.0
+            "total_pnl": 6050.0
         },
         "453650": {
             "total_qty": 52,
             "lot_count": 1,
             "total_invested": 986700.0,
-            "current_value": 1031160.0,
+            "current_value": 1021540.0,
             "lots": [
                 {
                     "lot_id": "lot_20260519_143344_453650_001",
@@ -290,23 +162,23 @@
                     "quantity": 52,
                     "buy_date": "2026-05-19",
                     "level": 1,
-                    "current_price": 19830.0,
-                    "pct_change": 4.51
+                    "current_price": 19645.0,
+                    "pct_change": 3.53
                 }
             ],
-            "current_price": 19830.0,
+            "current_price": 19645.0,
             "alias": "KODEX 미국S&P500금융",
             "avg_buy_price": 18975.0,
-            "unrealized_pnl": 44460.0,
-            "unrealized_pnl_pct": 4.51,
+            "unrealized_pnl": 34840.0,
+            "unrealized_pnl_pct": 3.53,
             "realized_pnl": 0.0,
-            "total_pnl": 44460.0
+            "total_pnl": 34840.0
         },
         "453630": {
             "total_qty": 73,
             "lot_count": 1,
             "total_invested": 992800.0,
-            "current_value": 988785.0,
+            "current_value": 982945.0,
             "lots": [
                 {
                     "lot_id": "lot_20260519_143350_453630_001",
@@ -314,23 +186,23 @@
                     "quantity": 73,
                     "buy_date": "2026-05-19",
                     "level": 1,
-                    "current_price": 13545.0,
-                    "pct_change": -0.4
+                    "current_price": 13465.0,
+                    "pct_change": -0.99
                 }
             ],
-            "current_price": 13545.0,
+            "current_price": 13465.0,
             "alias": "KODEX 미국S&P500필수소비재",
             "avg_buy_price": 13600.0,
-            "unrealized_pnl": -4015.0,
-            "unrealized_pnl_pct": -0.4,
+            "unrealized_pnl": -9855.0,
+            "unrealized_pnl_pct": -0.99,
             "realized_pnl": 0.0,
-            "total_pnl": -4015.0
+            "total_pnl": -9855.0
         },
         "457480": {
             "total_qty": 42,
             "lot_count": 1,
             "total_invested": 992250.0,
-            "current_value": 965160.0,
+            "current_value": 953400.0,
             "lots": [
                 {
                     "lot_id": "lot_20260519_143356_457480_001",
@@ -338,23 +210,23 @@
                     "quantity": 42,
                     "buy_date": "2026-05-19",
                     "level": 1,
-                    "current_price": 22980.0,
-                    "pct_change": -2.73
+                    "current_price": 22700.0,
+                    "pct_change": -3.92
                 }
             ],
-            "current_price": 22980.0,
+            "current_price": 22700.0,
             "alias": "ACE 테슬라밸류체인액티브",
             "avg_buy_price": 23625.0,
-            "unrealized_pnl": -27090.0,
-            "unrealized_pnl_pct": -2.73,
+            "unrealized_pnl": -38850.0,
+            "unrealized_pnl_pct": -3.92,
             "realized_pnl": 0.0,
-            "total_pnl": -27090.0
+            "total_pnl": -38850.0
         },
         "095610": {
-            "total_qty": 14,
-            "lot_count": 3,
-            "total_invested": 1807700.0,
-            "current_value": 1951600.0,
+            "total_qty": 7,
+            "lot_count": 1,
+            "total_invested": 947800.0,
+            "current_value": 933100.0,
             "lots": [
                 {
                     "lot_id": "lot_20260526_101743_095610_001",
@@ -362,65 +234,23 @@
                     "quantity": 7,
                     "buy_date": "2026-05-26",
                     "level": 1,
-                    "current_price": 139400.0,
-                    "pct_change": 2.95
-                },
-                {
-                    "lot_id": "lot_20260526_145450_095610_002",
-                    "buy_price": 127300.0,
-                    "quantity": 3,
-                    "buy_date": "2026-05-26",
-                    "level": 2,
-                    "current_price": 139400.0,
-                    "pct_change": 9.51
-                },
-                {
-                    "lot_id": "lot_20260527_150549_095610_003",
-                    "buy_price": 119500.0,
-                    "quantity": 4,
-                    "buy_date": "2026-05-27",
-                    "level": 3,
-                    "current_price": 139400.0,
-                    "pct_change": 16.65
+                    "current_price": 133300.0,
+                    "pct_change": -1.55
                 }
             ],
-            "current_price": 139400.0,
+            "current_price": 133300.0,
             "alias": "테스",
-            "avg_buy_price": 129121.4286,
-            "unrealized_pnl": 143900.0,
-            "unrealized_pnl_pct": 7.96,
-            "realized_pnl": 0.0,
-            "total_pnl": 143900.0
-        },
-        "0174B0": {
-            "total_qty": 60,
-            "lot_count": 1,
-            "total_invested": 984600.0,
-            "current_value": 1002600.0,
-            "lots": [
-                {
-                    "lot_id": "lot_20260526_145455_0174B0_001",
-                    "buy_price": 16410.0,
-                    "quantity": 60,
-                    "buy_date": "2026-05-26",
-                    "level": 1,
-                    "current_price": 16710.0,
-                    "pct_change": 1.83
-                }
-            ],
-            "current_price": 16710.0,
-            "alias": "KoAct 글로벌AI메모리반도체액티브",
-            "avg_buy_price": 16410.0,
-            "unrealized_pnl": 18000.0,
-            "unrealized_pnl_pct": 1.83,
-            "realized_pnl": 0.0,
-            "total_pnl": 18000.0
+            "avg_buy_price": 135400.0,
+            "unrealized_pnl": -14700.0,
+            "unrealized_pnl_pct": -1.55,
+            "realized_pnl": 73060.04,
+            "total_pnl": 58360.04
         },
         "0023A0": {
-            "total_qty": 27,
-            "lot_count": 1,
-            "total_invested": 984150.0,
-            "current_value": 929070.0,
+            "total_qty": 41,
+            "lot_count": 2,
+            "total_invested": 1451120.0,
+            "current_value": 1367555.0,
             "lots": [
                 {
                     "lot_id": "lot_20260527_150555_0023A0_001",
@@ -428,23 +258,32 @@
                     "quantity": 27,
                     "buy_date": "2026-05-27",
                     "level": 1,
-                    "current_price": 34410.0,
-                    "pct_change": -5.6
+                    "current_price": 33355.0,
+                    "pct_change": -8.49
+                },
+                {
+                    "lot_id": "lot_20260608_142150_0023A0_002",
+                    "buy_price": 33355.0,
+                    "quantity": 14,
+                    "buy_date": "2026-06-08",
+                    "level": 2,
+                    "current_price": 33355.0,
+                    "pct_change": 0.0
                 }
             ],
-            "current_price": 34410.0,
+            "current_price": 33355.0,
             "alias": "SOL 미국양자컴퓨팅TOP10",
-            "avg_buy_price": 36450.0,
-            "unrealized_pnl": -55080.0,
-            "unrealized_pnl_pct": -5.6,
+            "avg_buy_price": 35393.1707,
+            "unrealized_pnl": -83565.0,
+            "unrealized_pnl_pct": -5.76,
             "realized_pnl": 0.0,
-            "total_pnl": -55080.0
+            "total_pnl": -83565.0
         },
         "475300": {
-            "total_qty": 41,
-            "lot_count": 1,
-            "total_invested": 988305.0,
-            "current_value": 958785.0,
+            "total_qty": 63,
+            "lot_count": 2,
+            "total_invested": 1473405.0,
+            "current_value": 1389150.0,
             "lots": [
                 {
                     "lot_id": "lot_20260528_094543_475300_001",
@@ -452,23 +291,32 @@
                     "quantity": 41,
                     "buy_date": "2026-05-28",
                     "level": 1,
-                    "current_price": 23385.0,
-                    "pct_change": -2.99
+                    "current_price": 22050.0,
+                    "pct_change": -8.53
+                },
+                {
+                    "lot_id": "lot_20260608_142130_475300_002",
+                    "buy_price": 22050.0,
+                    "quantity": 22,
+                    "buy_date": "2026-06-08",
+                    "level": 2,
+                    "current_price": 22050.0,
+                    "pct_change": 0.0
                 }
             ],
-            "current_price": 23385.0,
+            "current_price": 22050.0,
             "alias": "SOL 반도체전공정",
-            "avg_buy_price": 24105.0,
-            "unrealized_pnl": -29520.0,
-            "unrealized_pnl_pct": -2.99,
+            "avg_buy_price": 23387.381,
+            "unrealized_pnl": -84255.0,
+            "unrealized_pnl_pct": -5.72,
             "realized_pnl": 472364.38,
-            "total_pnl": 442844.38
+            "total_pnl": 388109.38
         },
         "307520": {
-            "total_qty": 38,
-            "lot_count": 1,
-            "total_invested": 988000.0,
-            "current_value": 894140.0,
+            "total_qty": 59,
+            "lot_count": 2,
+            "total_invested": 1472050.0,
+            "current_value": 1360245.0,
             "lots": [
                 {
                     "lot_id": "lot_20260529_090450_307520_001",
@@ -476,23 +324,32 @@
                     "quantity": 38,
                     "buy_date": "2026-05-29",
                     "level": 1,
-                    "current_price": 23530.0,
-                    "pct_change": -9.5
+                    "current_price": 23055.0,
+                    "pct_change": -11.33
+                },
+                {
+                    "lot_id": "lot_20260608_142124_307520_002",
+                    "buy_price": 23050.0,
+                    "quantity": 21,
+                    "buy_date": "2026-06-08",
+                    "level": 2,
+                    "current_price": 23055.0,
+                    "pct_change": 0.02
                 }
             ],
-            "current_price": 23530.0,
+            "current_price": 23055.0,
             "alias": "TIGER 지주회사",
-            "avg_buy_price": 26000.0,
-            "unrealized_pnl": -93860.0,
-            "unrealized_pnl_pct": -9.5,
+            "avg_buy_price": 24950.0,
+            "unrealized_pnl": -111805.0,
+            "unrealized_pnl_pct": -7.6,
             "realized_pnl": 39614.8,
-            "total_pnl": -54245.2
+            "total_pnl": -72190.2
         },
         "473640": {
-            "total_qty": 29,
-            "lot_count": 1,
-            "total_invested": 988320.0,
-            "current_value": 952795.0,
+            "total_qty": 44,
+            "lot_count": 2,
+            "total_invested": 1467645.0,
+            "current_value": 1406020.0,
             "lots": [
                 {
                     "lot_id": "lot_20260602_090627_473640_001",
@@ -500,23 +357,32 @@
                     "quantity": 29,
                     "buy_date": "2026-06-02",
                     "level": 1,
-                    "current_price": 32855.0,
-                    "pct_change": -3.59
+                    "current_price": 31955.0,
+                    "pct_change": -6.24
+                },
+                {
+                    "lot_id": "lot_20260608_142157_473640_002",
+                    "buy_price": 31955.0,
+                    "quantity": 15,
+                    "buy_date": "2026-06-08",
+                    "level": 2,
+                    "current_price": 31955.0,
+                    "pct_change": 0.0
                 }
             ],
-            "current_price": 32855.0,
+            "current_price": 31955.0,
             "alias": "HANARO 글로벌금채굴기업",
-            "avg_buy_price": 34080.0,
-            "unrealized_pnl": -35525.0,
-            "unrealized_pnl_pct": -3.59,
+            "avg_buy_price": 33355.5682,
+            "unrealized_pnl": -61625.0,
+            "unrealized_pnl_pct": -4.2,
             "realized_pnl": 0.0,
-            "total_pnl": -35525.0
+            "total_pnl": -61625.0
         },
         "005380": {
             "total_qty": 3,
             "lot_count": 2,
             "total_invested": 2021000.0,
-            "current_value": 1956000.0,
+            "current_value": 1941000.0,
             "lots": [
                 {
                     "lot_id": "lot_20260605_140613_005380_001",
@@ -524,8 +390,8 @@
                     "quantity": 2,
                     "buy_date": "2026-06-05",
                     "level": 1,
-                    "current_price": 652000.0,
-                    "pct_change": -4.82
+                    "current_price": 647000.0,
+                    "pct_change": -5.55
                 },
                 {
                     "lot_id": "lot_20260608_003708_005380_002",
@@ -533,46 +399,60 @@
                     "quantity": 1,
                     "buy_date": "2026-06-08",
                     "level": 2,
-                    "current_price": 652000.0,
-                    "pct_change": 0.15
+                    "current_price": 647000.0,
+                    "pct_change": -0.61
                 }
             ],
-            "current_price": 652000.0,
+            "current_price": 647000.0,
             "alias": "현대차",
             "avg_buy_price": 673666.6667,
-            "unrealized_pnl": -65000.0,
-            "unrealized_pnl_pct": -3.22,
+            "unrealized_pnl": -80000.0,
+            "unrealized_pnl_pct": -3.96,
             "realized_pnl": 101894.1,
-            "total_pnl": 36894.1
+            "total_pnl": 21894.1
+        },
+        "005930": {
+            "total_qty": 3,
+            "lot_count": 1,
+            "total_invested": 909000.0,
+            "current_value": 909000.0,
+            "lots": [
+                {
+                    "lot_id": "lot_20260608_142107_005930_001",
+                    "buy_price": 303000.0,
+                    "quantity": 3,
+                    "buy_date": "2026-06-08",
+                    "level": 1,
+                    "current_price": 303000.0,
+                    "pct_change": 0.0
+                }
+            ],
+            "current_price": 303000.0,
+            "alias": "삼성전자",
+            "avg_buy_price": 303000.0,
+            "unrealized_pnl": 0.0,
+            "unrealized_pnl_pct": 0.0,
+            "realized_pnl": 181349.48,
+            "total_pnl": 181349.48
         }
     },
     "realized_pnl_by_ticker": {
-        "483320": -194.19,
+        "483320": 133602.77,
         "006800": 26322.6,
         "475300": 472364.38,
         "307520": 39614.8,
         "005380": 101894.1,
         "005930": 181349.48,
-        "035420": 131848.8
+        "035420": 131848.8,
+        "095610": 73060.04,
+        "0174B0": -14245.58
     },
     "regime_state_by_ticker": {},
     "enabled_tickers": ["005930", "483320", "005380", "006800", "102970", "307520", "138040", "218420", "453650", "453630", "457480", "475300", "095610", "0174B0", "0023A0", "035420", "473640"],
     "risk_summary": {
-        "next_level_needs": 8000000.0,
+        "next_level_needs": 7500000.0,
         "max_potential_exposure": 869000000.0,
         "stale_info": [
-            {
-                "ticker": "483320",
-                "alias": "ACE 엔비디아밸류체인액티브",
-                "last_trade_date": "2026-05-19",
-                "days_stale": 20
-            },
-            {
-                "ticker": "102970",
-                "alias": "KODEX 증권",
-                "last_trade_date": "2026-05-19",
-                "days_stale": 20
-            },
             {
                 "ticker": "453650",
                 "alias": "KODEX 미국S&P500금융",
@@ -592,26 +472,8 @@
                 "days_stale": 20
             },
             {
-                "ticker": "0174B0",
-                "alias": "KoAct 글로벌AI메모리반도체액티브",
-                "last_trade_date": "2026-05-26",
-                "days_stale": 13
-            },
-            {
                 "ticker": "218420",
                 "alias": "KODEX 미국S&P500에너지(합성)",
-                "last_trade_date": "2026-05-27",
-                "days_stale": 12
-            },
-            {
-                "ticker": "095610",
-                "alias": "테스",
-                "last_trade_date": "2026-05-27",
-                "days_stale": 12
-            },
-            {
-                "ticker": "0023A0",
-                "alias": "SOL 미국양자컴퓨팅TOP10",
                 "last_trade_date": "2026-05-27",
                 "days_stale": 12
             },
@@ -622,46 +484,70 @@
                 "days_stale": 11
             },
             {
-                "ticker": "307520",
-                "alias": "TIGER 지주회사",
-                "last_trade_date": "2026-05-29",
-                "days_stale": 10
-            },
-            {
                 "ticker": "006800",
                 "alias": "미래에셋증권",
                 "last_trade_date": "2026-06-02",
                 "days_stale": 6
             },
             {
-                "ticker": "473640",
-                "alias": "HANARO 글로벌금채굴기업",
-                "last_trade_date": "2026-06-02",
-                "days_stale": 6
+                "ticker": "102970",
+                "alias": "KODEX 증권",
+                "last_trade_date": "2026-06-08",
+                "days_stale": 0
+            },
+            {
+                "ticker": "095610",
+                "alias": "테스",
+                "last_trade_date": "2026-06-08",
+                "days_stale": 0
+            },
+            {
+                "ticker": "0023A0",
+                "alias": "SOL 미국양자컴퓨팅TOP10",
+                "last_trade_date": "2026-06-08",
+                "days_stale": 0
             },
             {
                 "ticker": "475300",
                 "alias": "SOL 반도체전공정",
-                "last_trade_date": "2026-06-05",
-                "days_stale": 3
+                "last_trade_date": "2026-06-08",
+                "days_stale": 0
+            },
+            {
+                "ticker": "307520",
+                "alias": "TIGER 지주회사",
+                "last_trade_date": "2026-06-08",
+                "days_stale": 0
+            },
+            {
+                "ticker": "473640",
+                "alias": "HANARO 글로벌금채굴기업",
+                "last_trade_date": "2026-06-08",
+                "days_stale": 0
             },
             {
                 "ticker": "005380",
                 "alias": "현대차",
                 "last_trade_date": "2026-06-08",
                 "days_stale": 0
+            },
+            {
+                "ticker": "005930",
+                "alias": "삼성전자",
+                "last_trade_date": "2026-06-08",
+                "days_stale": 0
             }
         ],
-        "risk_score": 85,
+        "risk_score": 70,
         "deductions": [
             {
                 "reason": "현금 비중 부족",
-                "points": 15.1
+                "points": 30
             }
         ],
         "sync_error": true,
-        "alerts": ["⚠️ [SK하이닉스] 잔고 불일치 (봇: 0, 계좌: 3)"],
-        "max_ticker_concentration": 6.93,
+        "alerts": ["⚠️ [KODEX 증권] 잔고 불일치 (봇: 58, 계좌: 0)", "⚠️ [ACE 테슬라밸류체인액티브] 잔고 불일치 (봇: 42, 계좌: 0)", "⚠️ [메리츠금융지주] 잔고 불일치 (봇: 13, 계좌: 0)", "⚠️ [KODEX 미국S&P500에너지(합성)] 잔고 불일치 (봇: 72, 계좌: 0)", "⚠️ [SOL 미국양자컴퓨팅TOP10] 잔고 불일치 (봇: 41, 계좌: 0)", "⚠️ [SOL 반도체전공정] 잔고 불일치 (봇: 63, 계좌: 0)", "⚠️ [HANARO 글로벌금채굴기업] 잔고 불일치 (봇: 44, 계좌: 0)", "⚠️ [삼성전자] 잔고 불일치 (봇: 3, 계좌: 0)", "⚠️ [TIGER 지주회사] 잔고 불일치 (봇: 59, 계좌: 0)", "⚠️ [현대차] 잔고 불일치 (봇: 3, 계좌: 0)", "⚠️ [테스] 잔고 불일치 (봇: 7, 계좌: 0)", "⚠️ [미래에셋증권] 잔고 불일치 (봇: 30, 계좌: 0)", "⚠️ [KODEX 미국S&P500필수소비재] 잔고 불일치 (봇: 73, 계좌: 0)", "⚠️ [KODEX 미국S&P500금융] 잔고 불일치 (봇: 52, 계좌: 0)", "⚠️ 현금 비중 부족 (0.0%)"],
+        "max_ticker_concentration": 0,
         "high_level_ratio": 0.0
     }
 }

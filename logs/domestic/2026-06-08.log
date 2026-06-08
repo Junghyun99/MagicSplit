@@ -17,3 +17,106 @@
 2026-06-08 00:37:08,876 [INFO] [Position] New lot: lot_20260608_003708_005380_002 Lv2 현대차(005380) 1주 @KRW 651,000
 2026-06-08 00:37:12,507 [INFO] >>> Step 6: Persist
 2026-06-08 00:37:12,801 [INFO] === Manual Trade 완료 ===
+2026-06-08 14:20:58,559 [INFO] === Initializing MagicSplit Bot (domestic) ===
+2026-06-08 14:20:58,559 [INFO] Loaded 18 stock rule(s) from config_domestic.json
+2026-06-08 14:20:58,559 [INFO] [domestic] 17 rule(s), mode=LIVE
+2026-06-08 14:20:58,559 [INFO] [KisBroker] 캐시에서 토큰 로드 (API 호출 생략)
+2026-06-08 14:20:58,560 [INFO] [KisDomesticLiveBroker] Mode: LIVE TRADING
+2026-06-08 14:20:58,560 [INFO] === Running domestic engine ===
+2026-06-08 14:20:58,560 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-06-08 14:20:59,571 [INFO] Fetching real-time prices from Broker...
+2026-06-08 14:21:04,771 [INFO] Portfolio: Cash=KRW 3,559,958, Value=KRW 27,106,768
+2026-06-08 14:21:04,772 [INFO] >>> Step 2: Load Positions
+2026-06-08 14:21:04,772 [INFO] Loaded 22 position lot(s)
+2026-06-08 14:21:04,773 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-06-08 14:21:04,773 [INFO] >>> Processing 삼성전자(005930)
+2026-06-08 14:21:04,774 [INFO] [삼성전자(005930)] 보유 lot 없음 -> 초기 매수 Lv1 3주 @KRW 302,750
+2026-06-08 14:21:04,774 [INFO] Executing 1 order(s)...
+2026-06-08 14:21:05,333 [INFO] [KisBroker] Available Cash for BUY: 3,559,958
+2026-06-08 14:21:06,569 [INFO] [KisDomestic] Order Sent: BUY 삼성전자(005930) 3 @ 303000 (ODNO=0038104900)
+2026-06-08 14:21:06,911 [INFO] [KisDomestic] Order FILLED: 삼성전자(005930) ODNO=0038104900 price=303000.0 qty=3 fee=136.35
+2026-06-08 14:21:07,112 [INFO] [삼성전자(005930)] 동적 재매수 기준 초기화 (매도가 KRW 334,500 -> 소비됨)
+2026-06-08 14:21:07,112 [INFO] [Position] New lot: lot_20260608_142107_005930_001 Lv1 삼성전자(005930) 3주 @KRW 303,000
+2026-06-08 14:21:10,514 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-06-08 14:21:10,515 [INFO] [ACE 엔비디아밸류체인액티브(483320)] trailing 벌크 매도 발동: Lv1~Lv1 39주 (+13.6%)
+2026-06-08 14:21:10,515 [INFO] Executing 1 order(s)...
+2026-06-08 14:21:10,515 [INFO] [KisBroker] Processing 1 SELL orders...
+2026-06-08 14:21:11,489 [INFO] [KisDomestic] Order Sent: SELL ACE 엔비디아밸류체인액티브(483320) 39 @ 28725 (ODNO=0038110500)
+2026-06-08 14:21:11,820 [INFO] [KisDomestic] Order FILLED: ACE 엔비디아밸류체인액티브(483320) ODNO=0038110500 price=28725.0 qty=39 fee=168.04125
+2026-06-08 14:21:12,021 [INFO] [Position] Trailing 벌크 청산: ACE 엔비디아밸류체인액티브(483320) 39주 소진 (잔여 0주), 실현손익 KRW 133,797
+2026-06-08 14:21:15,576 [INFO] >>> Processing 현대차(005380)
+2026-06-08 14:21:15,576 [INFO]   [현대차(005380)] 신호 없음 | Lv2 매수 KRW 651,000 -> 현재 KRW 647,000 (-0.61%) | 익절 +10.0% / 추매 -5.0%
+2026-06-08 14:21:15,577 [INFO] >>> Processing 미래에셋증권(006800)
+2026-06-08 14:21:15,577 [INFO] [미래에셋증권(006800)] Lv3 매수가 KRW 59,000 대비 -15.3% -> 추가 매수 Lv4 10주 @KRW 50,000
+2026-06-08 14:21:15,577 [INFO] Executing 1 order(s)...
+2026-06-08 14:21:15,936 [ERROR] [KisDomestic] Error getting portfolio: 500 Server Error: Internal Server Error for url: https://openapi.koreainvestment.com:9443/uapi/domestic-stock/v1/trading/inquire-balance?CANO=73297247&ACNT_PRDT_CD=01&AFHR_FLPR_YN=N&OFL_YN=&INQR_DVSN=01&UNPR_DVSN=01&FUND_STTL_ICLD_YN=N&FNCG_AMT_AUTO_RDPT_YN=N&PRCS_DVSN=00&CTX_AREA_FK100=&CTX_AREA_NK100=
+2026-06-08 14:21:15,938 [INFO] [KisBroker] Available Cash for BUY: 0
+2026-06-08 14:21:16,575 [WARNING] Qty Adjusted: 미래에셋증권(006800) 10 -> 0
+2026-06-08 14:21:16,959 [INFO] >>> Processing KODEX 증권(102970)
+2026-06-08 14:21:16,959 [INFO] [KODEX 증권(102970)] Lv1 매수가 KRW 26,355 대비 -13.6% -> 추가 매수 Lv2 21주 @KRW 22,775
+2026-06-08 14:21:16,959 [INFO] Executing 1 order(s)...
+2026-06-08 14:21:17,479 [INFO] [KisBroker] Available Cash for BUY: 3,750,333
+2026-06-08 14:21:18,687 [INFO] [KisDomestic] Order Sent: BUY KODEX 증권(102970) 21 @ 22770 (ODNO=0038118200)
+2026-06-08 14:21:19,009 [INFO] [KisDomestic] Order FILLED: KODEX 증권(102970) ODNO=0038118200 price=22765.0 qty=21 fee=71.70975
+2026-06-08 14:21:19,210 [INFO] [Position] New lot: lot_20260608_142119_102970_002 Lv2 KODEX 증권(102970) 21주 @KRW 22,765
+2026-06-08 14:21:22,608 [INFO] >>> Processing TIGER 지주회사(307520)
+2026-06-08 14:21:22,609 [INFO] [TIGER 지주회사(307520)] Lv1 매수가 KRW 26,000 대비 -11.3% -> 추가 매수 Lv2 21주 @KRW 23,050
+2026-06-08 14:21:22,609 [INFO] Executing 1 order(s)...
+2026-06-08 14:21:23,160 [INFO] [KisBroker] Available Cash for BUY: 3,272,198
+2026-06-08 14:21:24,384 [INFO] [KisDomestic] Order Sent: BUY TIGER 지주회사(307520) 21 @ 23050 (ODNO=0038124900)
+2026-06-08 14:21:24,712 [INFO] [KisDomestic] Order FILLED: TIGER 지주회사(307520) ODNO=0038124900 price=23050.0 qty=21 fee=72.60749999999999
+2026-06-08 14:21:24,913 [INFO] [Position] New lot: lot_20260608_142124_307520_002 Lv2 TIGER 지주회사(307520) 21주 @KRW 23,050
+2026-06-08 14:21:28,317 [INFO] >>> Processing 메리츠금융지주(138040)
+2026-06-08 14:21:28,317 [INFO]   [메리츠금융지주(138040)] 신호 없음 | Lv2 매수 KRW 102,300 -> 현재 KRW 103,600 (+1.27%) | 익절 +10.0% / 추매 -5.0%
+2026-06-08 14:21:28,317 [INFO] >>> Processing KODEX 미국S&P500에너지(합성)(218420)
+2026-06-08 14:21:28,318 [INFO]   [KODEX 미국S&P500에너지(합성)(218420)] 신호 없음 | Lv2 매수 KRW 19,905 -> 현재 KRW 20,740 (+4.19%) | 익절 +10.0% / 추매 -5.0%
+2026-06-08 14:21:28,318 [INFO] >>> Processing KODEX 미국S&P500금융(453650)
+2026-06-08 14:21:28,318 [INFO]   [KODEX 미국S&P500금융(453650)] 신호 없음 | Lv1 매수 KRW 18,975 -> 현재 KRW 19,645 (+3.53%) | 익절 +10.0% / 추매 -5.0%
+2026-06-08 14:21:28,319 [INFO] >>> Processing KODEX 미국S&P500필수소비재(453630)
+2026-06-08 14:21:28,319 [INFO]   [KODEX 미국S&P500필수소비재(453630)] 신호 없음 | Lv1 매수 KRW 13,600 -> 현재 KRW 13,470 (-0.96%) | 익절 +10.0% / 추매 -5.0%
+2026-06-08 14:21:28,319 [INFO] >>> Processing ACE 테슬라밸류체인액티브(457480)
+2026-06-08 14:21:28,319 [INFO]   [ACE 테슬라밸류체인액티브(457480)] 신호 없음 | Lv1 매수 KRW 23,625 -> 현재 KRW 22,705 (-3.89%) | 익절 +10.0% / 추매 -5.0%
+2026-06-08 14:21:28,320 [INFO] >>> Processing SOL 반도체전공정(475300)
+2026-06-08 14:21:28,320 [INFO] [SOL 반도체전공정(475300)] 동적 재매수: 매도가 KRW 24,540 대비 -10.3% -> 추가 매수 Lv2 22주 @KRW 22,015 (원래 기준 Lv1 KRW 24,105)
+2026-06-08 14:21:28,320 [INFO] Executing 1 order(s)...
+2026-06-08 14:21:28,864 [INFO] [KisBroker] Available Cash for BUY: 2,788,078
+2026-06-08 14:21:30,035 [INFO] [KisDomestic] Order Sent: BUY SOL 반도체전공정(475300) 22 @ 22050 (ODNO=0038131500)
+2026-06-08 14:21:30,355 [INFO] [KisDomestic] Order FILLED: SOL 반도체전공정(475300) ODNO=0038131500 price=22050.0 qty=22 fee=72.765
+2026-06-08 14:21:30,556 [INFO] [SOL 반도체전공정(475300)] 동적 재매수 기준 초기화 (매도가 KRW 24,540 -> 소비됨)
+2026-06-08 14:21:30,557 [INFO] [Position] New lot: lot_20260608_142130_475300_002 Lv2 SOL 반도체전공정(475300) 22주 @KRW 22,050
+2026-06-08 14:21:33,953 [INFO] >>> Processing 테스(095610)
+2026-06-08 14:21:33,954 [INFO] [테스(095610)] trailing 벌크 매도 발동: Lv2~Lv3 7주 (+8.5%)
+2026-06-08 14:21:33,954 [INFO] Executing 1 order(s)...
+2026-06-08 14:21:33,954 [INFO] [KisBroker] Processing 1 SELL orders...
+2026-06-08 14:21:34,926 [INFO] [KisDomestic] Order Sent: SELL 테스(095610) 7 @ 133300 (ODNO=0038137900)
+2026-06-08 14:21:35,245 [INFO] [KisDomestic] Order FILLED: 테스(095610) ODNO=0038137900 price=133300.0 qty=7 fee=139.96499999999997
+2026-06-08 14:21:35,446 [INFO] [Position] Trailing 벌크 청산: 테스(095610) 7주 소진 (잔여 7주), 실현손익 KRW 73,060
+2026-06-08 14:21:38,993 [INFO] >>> Processing KoAct 글로벌AI메모리반도체액티브(0174B0)
+2026-06-08 14:21:38,994 [INFO] [KoAct 글로벌AI메모리반도체액티브(0174B0)] trailing 벌크 매도 발동: Lv1~Lv1 60주 (-1.4%)
+2026-06-08 14:21:38,994 [INFO] Executing 1 order(s)...
+2026-06-08 14:21:38,994 [INFO] [KisBroker] Processing 1 SELL orders...
+2026-06-08 14:21:39,923 [INFO] [KisDomestic] Order Sent: SELL KoAct 글로벌AI메모리반도체액티브(0174B0) 60 @ 16175 (ODNO=0038143400)
+2026-06-08 14:21:44,562 [INFO] [KisDomestic] Order FILLED: KoAct 글로벌AI메모리반도체액티브(0174B0) ODNO=0038143400 price=16175.0 qty=60 fee=145.575
+2026-06-08 14:21:44,763 [INFO] [Position] Trailing 벌크 청산: KoAct 글로벌AI메모리반도체액티브(0174B0) 60주 소진 (잔여 0주), 실현손익 KRW -14,246
+2026-06-08 14:21:48,173 [INFO] >>> Processing SOL 미국양자컴퓨팅TOP10(0023A0)
+2026-06-08 14:21:48,173 [INFO] [SOL 미국양자컴퓨팅TOP10(0023A0)] Lv1 매수가 KRW 36,450 대비 -8.5% -> 추가 매수 Lv2 14주 @KRW 33,355
+2026-06-08 14:21:48,174 [INFO] Executing 1 order(s)...
+2026-06-08 14:21:48,579 [INFO] [KisBroker] Available Cash for BUY: 4,204,372
+2026-06-08 14:21:49,762 [INFO] [KisDomestic] Order Sent: BUY SOL 미국양자컴퓨팅TOP10(0023A0) 14 @ 33355 (ODNO=0038155600)
+2026-06-08 14:21:50,089 [INFO] [KisDomestic] Order FILLED: SOL 미국양자컴퓨팅TOP10(0023A0) ODNO=0038155600 price=33355.0 qty=14 fee=70.04549999999999
+2026-06-08 14:21:50,290 [INFO] [Position] New lot: lot_20260608_142150_0023A0_002 Lv2 SOL 미국양자컴퓨팅TOP10(0023A0) 14주 @KRW 33,355
+2026-06-08 14:21:53,693 [INFO] >>> Processing NAVER(035420)
+2026-06-08 14:21:53,693 [INFO] [NAVER(035420)] 보유 lot 없음 -> 초기 매수 Lv1 3주 @KRW 286,000
+2026-06-08 14:21:53,693 [INFO] Executing 1 order(s)...
+2026-06-08 14:21:54,045 [ERROR] [KisDomestic] Error getting portfolio: 500 Server Error: Internal Server Error for url: https://openapi.koreainvestment.com:9443/uapi/domestic-stock/v1/trading/inquire-balance?CANO=73297247&ACNT_PRDT_CD=01&AFHR_FLPR_YN=N&OFL_YN=&INQR_DVSN=01&UNPR_DVSN=01&FUND_STTL_ICLD_YN=N&FNCG_AMT_AUTO_RDPT_YN=N&PRCS_DVSN=00&CTX_AREA_FK100=&CTX_AREA_NK100=
+2026-06-08 14:21:54,046 [INFO] [KisBroker] Available Cash for BUY: 0
+2026-06-08 14:21:54,718 [WARNING] Qty Adjusted: NAVER(035420) 3 -> 0
+2026-06-08 14:21:55,018 [INFO] >>> Processing HANARO 글로벌금채굴기업(473640)
+2026-06-08 14:21:55,019 [INFO] [HANARO 글로벌금채굴기업(473640)] Lv1 매수가 KRW 34,080 대비 -6.2% -> 추가 매수 Lv2 15주 @KRW 31,955
+2026-06-08 14:21:55,019 [INFO] Executing 1 order(s)...
+2026-06-08 14:21:55,575 [INFO] [KisBroker] Available Cash for BUY: 3,737,342
+2026-06-08 14:21:56,811 [INFO] [KisDomestic] Order Sent: BUY HANARO 글로벌금채굴기업(473640) 15 @ 31955 (ODNO=0038167500)
+2026-06-08 14:21:57,139 [INFO] [KisDomestic] Order FILLED: HANARO 글로벌금채굴기업(473640) ODNO=0038167500 price=31955.0 qty=15 fee=71.89874999999999
+2026-06-08 14:21:57,339 [INFO] [Position] New lot: lot_20260608_142157_473640_002 Lv2 HANARO 글로벌금채굴기업(473640) 15주 @KRW 31,955
+2026-06-08 14:22:00,698 [ERROR] [KisDomestic] Error getting portfolio: 500 Server Error: Internal Server Error for url: https://openapi.koreainvestment.com:9443/uapi/domestic-stock/v1/trading/inquire-balance?CANO=73297247&ACNT_PRDT_CD=01&AFHR_FLPR_YN=N&OFL_YN=&INQR_DVSN=01&UNPR_DVSN=01&FUND_STTL_ICLD_YN=N&FNCG_AMT_AUTO_RDPT_YN=N&PRCS_DVSN=00&CTX_AREA_FK100=&CTX_AREA_NK100=
+2026-06-08 14:22:00,699 [INFO] >>> Step 6: Persist

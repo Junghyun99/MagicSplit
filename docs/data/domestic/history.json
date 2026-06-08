@@ -739,5 +739,146 @@
                 "alias": "현대차"
             }
         ]
+    },
+    {
+        "id": "tx_20260608_142200",
+        "date": "2026-06-08 14:22:00",
+        "portfolio_value": 0.0,
+        "total_trade_amount": 6326385.0,
+        "reason": "삼성전자(005930):BUY(초기 매수 Lv1), ACE 엔비디아밸류체인액티브(483320):SELL(trailing 벌크 매도 Lv1~Lv1 (39주 +13.6%)), 미래에셋증권(006800):BUY(추가 매수 Lv4 (Lv3 대비 -15.3%)), KODEX 증권(102970):BUY(추가 매수 Lv2 (Lv1 대비 -13.6%)), TIGER 지주회사(307520):BUY(추가 매수 Lv2 (Lv1 대비 -11.3%)), SOL 반도체전공정(475300):BUY(동적 재매수 Lv2 (매도가 KRW 24,540 대비 -10.3%)), 테스(095610):SELL(trailing 벌크 매도 Lv2~Lv3 (7주 +8.5%)), KoAct 글로벌AI메모리반도체액티브(0174B0):SELL(trailing 벌크 매도 Lv1~Lv1 (60주 -1.4%)), SOL 미국양자컴퓨팅TOP10(0023A0):BUY(추가 매수 Lv2 (Lv1 대비 -8.5%)), NAVER(035420):BUY(초기 매수 Lv1), HANARO 글로벌금채굴기업(473640):BUY(추가 매수 Lv2 (Lv1 대비 -6.2%))",
+        "executions": [
+            {
+                "ticker": "005930",
+                "action": "BUY",
+                "quantity": 3,
+                "price": 303000.0,
+                "fee": 136.35,
+                "date": "2026-06-08 14:21:06",
+                "status": "FILLED",
+                "reason": "ODNO=0038104900",
+                "level": 1,
+                "alias": "삼성전자"
+            },
+            {
+                "ticker": "483320",
+                "action": "SELL",
+                "quantity": 39,
+                "price": 28725.0,
+                "fee": 168.04125,
+                "date": "2026-06-08 14:21:11",
+                "status": "FILLED",
+                "reason": "ODNO=0038110500",
+                "lot_id": "lot_20260519_143302_483320_001",
+                "level": 1,
+                "buy_price": 25290.0,
+                "realized_pnl": 133796.96,
+                "alias": "ACE 엔비디아밸류체인액티브"
+            },
+            {
+                "ticker": "102970",
+                "action": "BUY",
+                "quantity": 21,
+                "price": 22765.0,
+                "fee": 71.70975,
+                "date": "2026-06-08 14:21:19",
+                "status": "FILLED",
+                "reason": "ODNO=0038118200",
+                "level": 2,
+                "alias": "KODEX 증권"
+            },
+            {
+                "ticker": "307520",
+                "action": "BUY",
+                "quantity": 21,
+                "price": 23050.0,
+                "fee": 72.60749999999999,
+                "date": "2026-06-08 14:21:24",
+                "status": "FILLED",
+                "reason": "ODNO=0038124900",
+                "level": 2,
+                "alias": "TIGER 지주회사"
+            },
+            {
+                "ticker": "475300",
+                "action": "BUY",
+                "quantity": 22,
+                "price": 22050.0,
+                "fee": 72.765,
+                "date": "2026-06-08 14:21:30",
+                "status": "FILLED",
+                "reason": "ODNO=0038131500",
+                "level": 2,
+                "alias": "SOL 반도체전공정"
+            },
+            {
+                "ticker": "095610",
+                "action": "SELL",
+                "quantity": 4,
+                "price": 133300.0,
+                "fee": 139.96499999999997,
+                "date": "2026-06-08 14:21:35",
+                "status": "FILLED",
+                "reason": "ODNO=0038137900",
+                "lot_id": "lot_20260527_150549_095610_003",
+                "level": 3,
+                "buy_price": 119500.0,
+                "realized_pnl": 55120.02,
+                "alias": "테스"
+            },
+            {
+                "ticker": "095610",
+                "action": "SELL",
+                "quantity": 3,
+                "price": 133300.0,
+                "fee": 139.96499999999997,
+                "date": "2026-06-08 14:21:35",
+                "status": "FILLED",
+                "reason": "ODNO=0038137900",
+                "lot_id": "lot_20260526_145450_095610_002",
+                "level": 2,
+                "buy_price": 127300.0,
+                "realized_pnl": 17940.01,
+                "alias": "테스"
+            },
+            {
+                "ticker": "0174B0",
+                "action": "SELL",
+                "quantity": 60,
+                "price": 16175.0,
+                "fee": 145.575,
+                "date": "2026-06-08 14:21:44",
+                "status": "FILLED",
+                "reason": "ODNO=0038143400",
+                "lot_id": "lot_20260526_145455_0174B0_001",
+                "level": 1,
+                "buy_price": 16410.0,
+                "realized_pnl": -14245.58,
+                "alias": "KoAct 글로벌AI메모리반도체액티브"
+            },
+            {
+                "ticker": "0023A0",
+                "action": "BUY",
+                "quantity": 14,
+                "price": 33355.0,
+                "fee": 70.04549999999999,
+                "date": "2026-06-08 14:21:50",
+                "status": "FILLED",
+                "reason": "ODNO=0038155600",
+                "level": 2,
+                "alias": "SOL 미국양자컴퓨팅TOP10"
+            },
+            {
+                "ticker": "473640",
+                "action": "BUY",
+                "quantity": 15,
+                "price": 31955.0,
+                "fee": 71.89874999999999,
+                "date": "2026-06-08 14:21:57",
+                "status": "FILLED",
+                "reason": "ODNO=0038167500",
+                "level": 2,
+                "alias": "HANARO 글로벌금채굴기업"
+            }
+        ]
     }
 ]
