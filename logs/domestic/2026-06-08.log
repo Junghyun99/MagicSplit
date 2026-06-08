@@ -1,0 +1,19 @@
+2026-06-08 00:36:52,329 [INFO] === Manual Trade CLI: 005380 BUY ===
+2026-06-08 00:36:52,330 [INFO] [KisBroker] 새 토큰 발급 중...
+2026-06-08 00:36:53,469 [INFO] [KisDomesticLiveBroker] Mode: LIVE TRADING
+2026-06-08 00:36:53,469 [INFO] === Manual Trade: 현대차(005380) BUY ===
+2026-06-08 00:36:53,469 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-06-08 00:36:53,869 [ERROR] [KisDomestic] Error getting portfolio: 500 Server Error: Internal Server Error for url: https://openapi.koreainvestment.com:9443/uapi/domestic-stock/v1/trading/inquire-balance?CANO=73297247&ACNT_PRDT_CD=01&AFHR_FLPR_YN=N&OFL_YN=&INQR_DVSN=01&UNPR_DVSN=01&FUND_STTL_ICLD_YN=N&FNCG_AMT_AUTO_RDPT_YN=N&PRCS_DVSN=00&CTX_AREA_FK100=&CTX_AREA_NK100=
+2026-06-08 00:36:53,870 [INFO] Fetching real-time prices from Broker...
+2026-06-08 00:37:01,798 [INFO] Portfolio: Cash=KRW 0, Value=KRW 0
+2026-06-08 00:37:01,798 [INFO] >>> Step 2: Load Positions
+2026-06-08 00:37:01,799 [INFO] Loaded 21 position lot(s)
+2026-06-08 00:37:01,799 [INFO] 매수 수량 도출: Lv2 buy_amount=KRW 1,000,000 / 현재가=KRW 653,000 = 1주
+2026-06-08 00:37:01,799 [INFO] [현대차(005380)] 수동 신호 생성: BUY Lv2 1주 @KRW 653,000
+2026-06-08 00:37:01,799 [INFO] Executing 1 order(s)...
+2026-06-08 00:37:02,433 [INFO] [KisBroker] Available Cash for BUY: 4,211,048
+2026-06-08 00:37:03,883 [INFO] [KisDomestic] Order Sent: BUY 현대차(005380) 1 @ 651000 (ODNO=0011532600)
+2026-06-08 00:37:08,675 [INFO] [KisDomestic] Order FILLED: 현대차(005380) ODNO=0011532600 price=651000.0 qty=1 fee=97.64999999999999
+2026-06-08 00:37:08,876 [INFO] [Position] New lot: lot_20260608_003708_005380_002 Lv2 현대차(005380) 1주 @KRW 651,000
+2026-06-08 00:37:12,507 [INFO] >>> Step 6: Persist
+2026-06-08 00:37:12,801 [INFO] === Manual Trade 완료 ===
