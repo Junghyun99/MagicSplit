@@ -646,6 +646,15 @@ class MagicSplitEngine:
         for ticker, price in old_portfolio.current_prices.items():
             if ticker not in new_pf.current_prices or new_pf.current_prices[ticker] <= 0:
                 new_pf.current_prices[ticker] = price
+        # 브로커 API 오류로 holdings가 비어있는 경우 이전 holdings로 폴백.
+        # 빈 holdings를 그대로 쓰면 status_builder의 sync check가 모든 종목을
+        # "봇: N, 계좌: 0" 불일치로 잘못 판정한다.
+        if not new_pf.holdings and old_portfolio.holdings:
+            self.logger.warning(
+                "[_refresh_portfolio] Broker returned empty holdings — "
+                "falling back to pre-execution holdings to prevent false mismatch alerts."
+            )
+            new_pf.holdings = dict(old_portfolio.holdings)
         return new_pf
 
     def _update_positions(
