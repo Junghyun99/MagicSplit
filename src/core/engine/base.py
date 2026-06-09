@@ -81,6 +81,7 @@ class MagicSplitEngine:
         portfolio: Optional[Portfolio] = None
         positions: Optional[List[PositionLot]] = None
         regime_state: dict = {}
+        portfolio_refresh_failed: bool = False
 
         try:
             # Step 1+2: 포트폴리오 + 포지션 + 직전 매도가 (수동매매와 공유)
@@ -163,7 +164,6 @@ class MagicSplitEngine:
                                 last_sell_prices=last_sell_prices,
                                 regime_state=regime_state,
                             )
-                            portfolio = self._refresh_portfolio(portfolio)
                         except Exception as e:
                             disp = display_ticker(rule.ticker)
                             self.logger.error(
@@ -175,6 +175,22 @@ class MagicSplitEngine:
                                 f"(체결 {len(executions)}건 완료됨): {e}"
                             )
                             failed_tickers.append(rule.ticker)
+                        else:
+                            try:
+                                portfolio = self._refresh_portfolio(portfolio)
+                            except Exception as e:
+                                disp = display_ticker(rule.ticker)
+                                self.logger.error(
+                                    f"[{disp}] 포트폴리오 갱신 실패 — "
+                                    f"나머지 종목 처리 중단: {e}"
+                                )
+                                self._notify_alert(
+                                    f"[{disp}] 포트폴리오 갱신 실패 — "
+                                    f"이번 사이클 나머지 종목 처리 중단"
+                                )
+                                failed_tickers.append(rule.ticker)
+                                portfolio_refresh_failed = True
+                                break
                 except Exception as e:
                     disp = display_ticker(rule.ticker)
                     self.logger.error(f"[{disp}] 처리 실패: {e}")
@@ -189,10 +205,29 @@ class MagicSplitEngine:
             # Step 6: 저장 — 포트폴리오와 포지션 모두 정상 로드된 경우에만 저장
             if portfolio is not None and positions is not None:
                 self.logger.info(">>> Step 6: Persist")
-                self._persist(portfolio, all_signals, all_executions, positions,
+                persist_portfolio = portfolio
+                skip_status = False
+                if portfolio_refresh_failed:
+                    # 포트폴리오 갱신이 실패했으므로 persist 전에 재조회 시도.
+                    # 성공하면 정확한 포트폴리오로 status.json 기록.
+                    # 실패하면 스테일 포트폴리오로 status.json을 오염시키지 않고 생략.
+                    try:
+                        fresh_pf = self.broker.get_portfolio()
+                        for ticker, price in portfolio.current_prices.items():
+                            if ticker not in fresh_pf.current_prices or fresh_pf.current_prices[ticker] <= 0:
+                                fresh_pf.current_prices[ticker] = price
+                        persist_portfolio = fresh_pf
+                        self.logger.info("[Step 6] 포트폴리오 재조회 성공.")
+                    except Exception as e:
+                        self.logger.warning(
+                            f"[Step 6] 포트폴리오 재조회 실패 — status.json 갱신 생략: {e}"
+                        )
+                        skip_status = True
+                self._persist(persist_portfolio, all_signals, all_executions, positions,
                               sim_date=sim_date,
                               last_sell_prices=last_sell_prices,
-                              regime_state=regime_state)
+                              regime_state=regime_state,
+                              skip_status=skip_status)
             else:
                 missing = []
                 if portfolio is None:
@@ -640,20 +675,12 @@ class MagicSplitEngine:
     def _refresh_portfolio(self, old_portfolio: Portfolio) -> Portfolio:
         """종목 처리 후 포트폴리오(현금 잔고) 갱신.
 
-        브로커 API 오류 시 예외를 잡아 이전 포트폴리오로 폴백한다.
-        정상적으로 전량 매도한 경우 브로커가 빈 holdings를 성공 응답으로 반환하므로
-        예외 여부로만 실패를 판별한다.
+        브로커 API 오류 시 예외를 그대로 발생시킨다.
+        호출 측(run_one_cycle)에서 나머지 종목 중단 및 persist 전 재조회를 처리한다.
         """
         if self.is_live_trading:
             time.sleep(3)
-        try:
-            new_pf = self.broker.get_portfolio()
-        except Exception as e:
-            self.logger.warning(
-                f"[_refresh_portfolio] Broker portfolio fetch failed ({e}) — "
-                "falling back to pre-execution portfolio to prevent false mismatch alerts."
-            )
-            return old_portfolio
+        new_pf = self.broker.get_portfolio()
         # 이미 조회한 가격 유지, 추가 API 호출 최소화
         for ticker, price in old_portfolio.current_prices.items():
             if ticker not in new_pf.current_prices or new_pf.current_prices[ticker] <= 0:
@@ -1041,6 +1068,7 @@ class MagicSplitEngine:
         sim_date: Optional[str] = None,
         last_sell_prices: Optional[dict] = None,
         regime_state: Optional[dict] = None,
+        skip_status: bool = False,
     ) -> None:
         """Step 6: 저장 4종 호출."""
         reason = self._build_reason(signals)
@@ -1049,12 +1077,16 @@ class MagicSplitEngine:
         if last_sell_prices is not None:
             self.repo.save_last_sell_prices(last_sell_prices)
         self.repo.save_trade_history(executions, portfolio, reason, sim_date=sim_date)
-        
+
         # 판단 내역 저장 (신호가 있을 때만 기록하여 파일 비대화 방지)
         if reason != REASON_NO_SIGNAL:
             full_date = sim_date + " 23:59:59" if sim_date else datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             self.repo.save_decision_log(full_date, reason)
-        
+
+        if skip_status:
+            self.logger.info("[Step 6] status.json 갱신 생략 (포트폴리오 재조회 실패).")
+            return
+
         # 상태 조립 및 저장 (코어 계층 비즈니스 로직)
         old_realized_pnl = self.repo.get_realized_pnl_by_ticker()
         last_trade_dates = self.repo.get_last_trade_dates()
