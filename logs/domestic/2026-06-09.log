@@ -1,0 +1,49 @@
+2026-06-09 13:56:44,035 [INFO] === Initializing MagicSplit Bot (domestic) ===
+2026-06-09 13:56:44,035 [INFO] Loaded 18 stock rule(s) from config_domestic.json
+2026-06-09 13:56:44,035 [INFO] [domestic] 17 rule(s), mode=LIVE
+2026-06-09 13:56:44,035 [INFO] [KisBroker] 캐시에서 토큰 로드 (API 호출 생략)
+2026-06-09 13:56:44,035 [INFO] [KisDomesticLiveBroker] Mode: LIVE TRADING
+2026-06-09 13:56:44,035 [INFO] === Running domestic engine ===
+2026-06-09 13:56:44,035 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-06-09 13:56:45,043 [ERROR] [KisDomestic] Error getting portfolio: 500 Server Error: Internal Server Error for url: https://openapi.koreainvestment.com:9443/uapi/domestic-stock/v1/trading/inquire-balance?CANO=73297247&ACNT_PRDT_CD=01&AFHR_FLPR_YN=N&OFL_YN=&INQR_DVSN=01&UNPR_DVSN=01&FUND_STTL_ICLD_YN=N&FNCG_AMT_AUTO_RDPT_YN=N&PRCS_DVSN=00&CTX_AREA_FK100=&CTX_AREA_NK100=
+2026-06-09 13:56:45,044 [INFO] Fetching real-time prices from Broker...
+2026-06-09 13:56:50,528 [INFO] Portfolio: Cash=KRW 0, Value=KRW 0
+2026-06-09 13:56:50,528 [INFO] >>> Step 2: Load Positions
+2026-06-09 13:56:50,528 [INFO] Loaded 24 position lot(s)
+2026-06-09 13:56:50,531 [ERROR] >>> Step 2.5: 수량 불일치 14건 감지 — 해당 종목 매매 중단
+[SOL 미국양자컴퓨팅TOP10(0023A0)] Qty Mismatch: broker=0, positions=41 (lots=2, levels=[1, 2])
+[현대차(005380)] Qty Mismatch: broker=0, positions=3 (lots=2, levels=[1, 2])
+[삼성전자(005930)] Qty Mismatch: broker=0, positions=3 (lots=1, levels=[1])
+[미래에셋증권(006800)] Qty Mismatch: broker=0, positions=30 (lots=3, levels=[1, 2, 3])
+[테스(095610)] Qty Mismatch: broker=0, positions=7 (lots=1, levels=[1])
+[KODEX 증권(102970)] Qty Mismatch: broker=0, positions=58 (lots=2, levels=[1, 2])
+[메리츠금융지주(138040)] Qty Mismatch: broker=0, positions=13 (lots=2, levels=[1, 2])
+[KODEX 미국S&P500에너지(합성)(218420)] Qty Mismatch: broker=0, positions=72 (lots=2, levels=[1, 2])
+[TIGER 지주회사(307520)] Qty Mismatch: broker=0, positions=59 (lots=2, levels=[1, 2])
+[KODEX 미국S&P500필수소비재(453630)] Qty Mismatch: broker=0, positions=73 (lots=1, levels=[1])
+[KODEX 미국S&P500금융(453650)] Qty Mismatch: broker=0, positions=52 (lots=1, levels=[1])
+[ACE 테슬라밸류체인액티브(457480)] Qty Mismatch: broker=0, positions=42 (lots=1, levels=[1])
+[HANARO 글로벌금채굴기업(473640)] Qty Mismatch: broker=0, positions=44 (lots=2, levels=[1, 2])
+[SOL 반도체전공정(475300)] Qty Mismatch: broker=0, positions=63 (lots=2, levels=[1, 2])
+실행 권장: scripts/reconcile_positions.py
+2026-06-09 13:56:50,975 [WARNING] [삼성전자(005930)] 수량 불일치로 매매 중단. scripts/reconcile_positions.py 로 보정 후 재실행.
+2026-06-09 13:56:50,976 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-06-09 13:56:50,976 [INFO] [ACE 엔비디아밸류체인액티브(483320)] 현금 부족: 보유 현금 KRW 0 < 현재가 KRW 29,485 (1주도 매수 불가) -> 매수 보류
+2026-06-09 13:56:51,249 [WARNING] [현대차(005380)] 수량 불일치로 매매 중단. scripts/reconcile_positions.py 로 보정 후 재실행.
+2026-06-09 13:56:51,249 [WARNING] [미래에셋증권(006800)] 수량 불일치로 매매 중단. scripts/reconcile_positions.py 로 보정 후 재실행.
+2026-06-09 13:56:51,250 [WARNING] [KODEX 증권(102970)] 수량 불일치로 매매 중단. scripts/reconcile_positions.py 로 보정 후 재실행.
+2026-06-09 13:56:51,250 [WARNING] [TIGER 지주회사(307520)] 수량 불일치로 매매 중단. scripts/reconcile_positions.py 로 보정 후 재실행.
+2026-06-09 13:56:51,250 [WARNING] [메리츠금융지주(138040)] 수량 불일치로 매매 중단. scripts/reconcile_positions.py 로 보정 후 재실행.
+2026-06-09 13:56:51,250 [WARNING] [KODEX 미국S&P500에너지(합성)(218420)] 수량 불일치로 매매 중단. scripts/reconcile_positions.py 로 보정 후 재실행.
+2026-06-09 13:56:51,251 [WARNING] [KODEX 미국S&P500금융(453650)] 수량 불일치로 매매 중단. scripts/reconcile_positions.py 로 보정 후 재실행.
+2026-06-09 13:56:51,251 [WARNING] [KODEX 미국S&P500필수소비재(453630)] 수량 불일치로 매매 중단. scripts/reconcile_positions.py 로 보정 후 재실행.
+2026-06-09 13:56:51,251 [WARNING] [ACE 테슬라밸류체인액티브(457480)] 수량 불일치로 매매 중단. scripts/reconcile_positions.py 로 보정 후 재실행.
+2026-06-09 13:56:51,251 [WARNING] [SOL 반도체전공정(475300)] 수량 불일치로 매매 중단. scripts/reconcile_positions.py 로 보정 후 재실행.
+2026-06-09 13:56:51,252 [WARNING] [테스(095610)] 수량 불일치로 매매 중단. scripts/reconcile_positions.py 로 보정 후 재실행.
+2026-06-09 13:56:51,252 [INFO] >>> Processing KoAct 글로벌AI메모리반도체액티브(0174B0)
+2026-06-09 13:56:51,252 [INFO] [KoAct 글로벌AI메모리반도체액티브(0174B0)] 현금 부족: 보유 현금 KRW 0 < 현재가 KRW 17,250 (1주도 매수 불가) -> 매수 보류
+2026-06-09 13:56:51,516 [WARNING] [SOL 미국양자컴퓨팅TOP10(0023A0)] 수량 불일치로 매매 중단. scripts/reconcile_positions.py 로 보정 후 재실행.
+2026-06-09 13:56:51,517 [INFO] >>> Processing NAVER(035420)
+2026-06-09 13:56:51,517 [INFO] [NAVER(035420)] 현금 부족: 보유 현금 KRW 0 < 현재가 KRW 255,500 (1주도 매수 불가) -> 매수 보류
+2026-06-09 13:56:51,802 [WARNING] [HANARO 글로벌금채굴기업(473640)] 수량 불일치로 매매 중단. scripts/reconcile_positions.py 로 보정 후 재실행.
+2026-06-09 13:56:51,802 [INFO] >>> Step 6: Persist
