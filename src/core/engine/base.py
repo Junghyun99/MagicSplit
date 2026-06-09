@@ -638,23 +638,26 @@ class MagicSplitEngine:
         self.logger.info(msg)
 
     def _refresh_portfolio(self, old_portfolio: Portfolio) -> Portfolio:
-        """종목 처리 후 포트폴리오(현금 잔고) 갱신."""
+        """종목 처리 후 포트폴리오(현금 잔고) 갱신.
+
+        브로커 API 오류 시 예외를 잡아 이전 포트폴리오로 폴백한다.
+        정상적으로 전량 매도한 경우 브로커가 빈 holdings를 성공 응답으로 반환하므로
+        예외 여부로만 실패를 판별한다.
+        """
         if self.is_live_trading:
             time.sleep(3)
-        new_pf = self.broker.get_portfolio()
+        try:
+            new_pf = self.broker.get_portfolio()
+        except Exception as e:
+            self.logger.warning(
+                f"[_refresh_portfolio] Broker portfolio fetch failed ({e}) — "
+                "falling back to pre-execution portfolio to prevent false mismatch alerts."
+            )
+            return old_portfolio
         # 이미 조회한 가격 유지, 추가 API 호출 최소화
         for ticker, price in old_portfolio.current_prices.items():
             if ticker not in new_pf.current_prices or new_pf.current_prices[ticker] <= 0:
                 new_pf.current_prices[ticker] = price
-        # 브로커 API 오류로 holdings가 비어있는 경우 이전 holdings로 폴백.
-        # 빈 holdings를 그대로 쓰면 status_builder의 sync check가 모든 종목을
-        # "봇: N, 계좌: 0" 불일치로 잘못 판정한다.
-        if not new_pf.holdings and old_portfolio.holdings:
-            self.logger.warning(
-                "[_refresh_portfolio] Broker returned empty holdings — "
-                "falling back to pre-execution holdings to prevent false mismatch alerts."
-            )
-            new_pf.holdings = dict(old_portfolio.holdings)
         return new_pf
 
     def _update_positions(
