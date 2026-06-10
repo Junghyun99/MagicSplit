@@ -47,3 +47,66 @@
 2026-06-10 10:16:12,756 [INFO] [NAVER(035420)] 현금 부족: 보유 현금 KRW 0 < 현재가 KRW 236,500 (1주도 매수 불가) -> 매수 보류
 2026-06-10 10:16:13,046 [WARNING] [HANARO 글로벌금채굴기업(473640)] 수량 불일치로 매매 중단. scripts/reconcile_positions.py 로 보정 후 재실행.
 2026-06-10 10:16:13,046 [INFO] >>> Step 6: Persist
+2026-06-10 14:08:13,455 [INFO] === Initializing MagicSplit Bot (domestic) ===
+2026-06-10 14:08:13,455 [INFO] Loaded 18 stock rule(s) from config_domestic.json
+2026-06-10 14:08:13,455 [INFO] [domestic] 17 rule(s), mode=LIVE
+2026-06-10 14:08:13,455 [INFO] [KisBroker] 캐시에서 토큰 로드 (API 호출 생략)
+2026-06-10 14:08:13,455 [INFO] [KisDomesticLiveBroker] Mode: LIVE TRADING
+2026-06-10 14:08:13,455 [INFO] === Running domestic engine ===
+2026-06-10 14:08:13,455 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-06-10 14:08:14,657 [INFO] Fetching real-time prices from Broker...
+2026-06-10 14:08:19,724 [INFO] Portfolio: Cash=KRW 1,826,567, Value=KRW 27,321,867
+2026-06-10 14:08:19,724 [INFO] >>> Step 2: Load Positions
+2026-06-10 14:08:19,724 [INFO] Loaded 26 position lot(s)
+2026-06-10 14:08:19,725 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-06-10 14:08:19,726 [INFO] >>> Processing 삼성전자(005930)
+2026-06-10 14:08:19,726 [INFO]   [삼성전자(005930)] 신호 없음 | Lv1 매수 KRW 303,000 -> 현재 KRW 300,500 (-0.83%) | 익절 +10.0% / 추매 -5.0%
+2026-06-10 14:08:19,726 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-06-10 14:08:19,727 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv1 매수 KRW 29,460 -> 현재 KRW 28,315 (-3.89%) | 익절 +10.0% / 추매 -5.0%
+2026-06-10 14:08:19,727 [INFO] >>> Processing 현대차(005380)
+2026-06-10 14:08:19,727 [INFO] [현대차(005380)] Lv2 매수가 KRW 651,000 대비 -8.9% -> 추가 매수 Lv3 1주 @KRW 593,000
+2026-06-10 14:08:19,727 [INFO] Executing 1 order(s)...
+2026-06-10 14:08:20,155 [INFO] [KisBroker] Available Cash for BUY: 1,826,567
+2026-06-10 14:08:21,538 [INFO] [KisDomestic] Order Sent: BUY 현대차(005380) 1 @ 591000 (ODNO=0027277000)
+2026-06-10 14:08:21,933 [INFO] [KisDomestic] Order FILLED: 현대차(005380) ODNO=0027277000 price=591000.0 qty=1 fee=88.64999999999999
+2026-06-10 14:08:22,134 [INFO] [Position] New lot: lot_20260610_140822_005380_003 Lv3 현대차(005380) 1주 @KRW 591,000
+2026-06-10 14:08:25,568 [INFO] >>> Processing 미래에셋증권(006800)
+2026-06-10 14:08:25,568 [INFO]   [미래에셋증권(006800)] 신호 없음 | Lv4 매수 KRW 51,000 -> 현재 KRW 49,600 (-2.75%) | 익절 +10.0% / 추매 -5.0%
+2026-06-10 14:08:25,568 [INFO] >>> Processing KODEX 증권(102970)
+2026-06-10 14:08:25,569 [INFO]   [KODEX 증권(102970)] 신호 없음 | Lv2 매수 KRW 22,765 -> 현재 KRW 22,800 (+0.15%) | 익절 +10.0% / 추매 -5.0%
+2026-06-10 14:08:25,569 [INFO] >>> Processing TIGER 지주회사(307520)
+2026-06-10 14:08:25,569 [INFO]   [TIGER 지주회사(307520)] 신호 없음 | Lv2 매수 KRW 23,050 -> 현재 KRW 22,730 (-1.39%) | 익절 +10.0% / 추매 -5.0%
+2026-06-10 14:08:25,569 [INFO] >>> Processing 메리츠금융지주(138040)
+2026-06-10 14:08:25,570 [INFO]   [메리츠금융지주(138040)] 신호 없음 | Lv2 매수 KRW 102,300 -> 현재 KRW 106,800 (+4.40%) | 익절 +10.0% / 추매 -5.0%
+2026-06-10 14:08:25,570 [INFO] >>> Processing KODEX 미국S&P500에너지(합성)(218420)
+2026-06-10 14:08:25,570 [INFO]   [KODEX 미국S&P500에너지(합성)(218420)] 신호 없음 | Lv2 매수 KRW 19,905 -> 현재 KRW 20,250 (+1.73%) | 익절 +10.0% / 추매 -5.0%
+2026-06-10 14:08:25,571 [INFO] >>> Processing KODEX 미국S&P500금융(453650)
+2026-06-10 14:08:25,571 [INFO]   [KODEX 미국S&P500금융(453650)] 신호 없음 | Lv1 매수 KRW 18,975 -> 현재 KRW 19,435 (+2.42%) | 익절 +10.0% / 추매 -5.0%
+2026-06-10 14:08:25,571 [INFO] >>> Processing KODEX 미국S&P500필수소비재(453630)
+2026-06-10 14:08:25,571 [INFO]   [KODEX 미국S&P500필수소비재(453630)] 신호 없음 | Lv1 매수 KRW 13,600 -> 현재 KRW 13,410 (-1.40%) | 익절 +10.0% / 추매 -5.0%
+2026-06-10 14:08:25,572 [INFO] >>> Processing ACE 테슬라밸류체인액티브(457480)
+2026-06-10 14:08:25,572 [INFO]   [ACE 테슬라밸류체인액티브(457480)] 신호 없음 | Lv1 매수 KRW 23,625 -> 현재 KRW 22,845 (-3.30%) | 익절 +10.0% / 추매 -5.0%
+2026-06-10 14:08:25,572 [INFO] >>> Processing SOL 반도체전공정(475300)
+2026-06-10 14:08:25,572 [INFO]   [SOL 반도체전공정(475300)] 신호 없음 | Lv2 매수 KRW 22,050 -> 현재 KRW 24,250 (+9.98%) | 익절 +10.0% / 추매 -5.0%
+2026-06-10 14:08:25,573 [INFO] >>> Processing 테스(095610)
+2026-06-10 14:08:25,573 [INFO] [테스(095610)] Lv1: trailing 고점 갱신 -> KRW 174,200 (스톱가 KRW 165,490)
+2026-06-10 14:08:25,573 [INFO]   [테스(095610)] 신호 없음 | Lv1 매수 KRW 135,400 -> 현재 KRW 174,200 (+28.66%) | 익절 +10.0% / 추매 -5.0%
+2026-06-10 14:08:25,574 [INFO] >>> Processing KoAct 글로벌AI메모리반도체액티브(0174B0)
+2026-06-10 14:08:25,574 [INFO] [KoAct 글로벌AI메모리반도체액티브(0174B0)] 보유 lot 없음 -> 초기 매수 Lv1 60주 @KRW 16,605
+2026-06-10 14:08:25,574 [INFO] Executing 1 order(s)...
+2026-06-10 14:08:25,963 [ERROR] [KisDomestic] Error getting portfolio: 500 Server Error: Internal Server Error for url: https://openapi.koreainvestment.com:9443/uapi/domestic-stock/v1/trading/inquire-balance?CANO=73297247&ACNT_PRDT_CD=01&AFHR_FLPR_YN=N&OFL_YN=&INQR_DVSN=01&UNPR_DVSN=01&FUND_STTL_ICLD_YN=N&FNCG_AMT_AUTO_RDPT_YN=N&PRCS_DVSN=00&CTX_AREA_FK100=&CTX_AREA_NK100=
+2026-06-10 14:08:25,964 [INFO] [KisBroker] Available Cash for BUY: 0
+2026-06-10 14:08:26,753 [WARNING] Qty Adjusted: KoAct 글로벌AI메모리반도체액티브(0174B0) 60 -> 0
+2026-06-10 14:08:26,906 [INFO] >>> Processing SOL 미국양자컴퓨팅TOP10(0023A0)
+2026-06-10 14:08:26,906 [INFO]   [SOL 미국양자컴퓨팅TOP10(0023A0)] 신호 없음 | Lv2 매수 KRW 33,355 -> 현재 KRW 32,675 (-2.04%) | 익절 +10.0% / 추매 -5.0%
+2026-06-10 14:08:26,906 [INFO] >>> Processing NAVER(035420)
+2026-06-10 14:08:26,906 [INFO] [NAVER(035420)] 보유 lot 없음 -> 초기 매수 Lv1 4주 @KRW 226,250
+2026-06-10 14:08:26,907 [INFO] Executing 1 order(s)...
+2026-06-10 14:08:27,521 [INFO] [KisBroker] Available Cash for BUY: 1,235,487
+2026-06-10 14:08:29,198 [INFO] [KisDomestic] Order Sent: BUY NAVER(035420) 4 @ 226500 (ODNO=0027285000)
+2026-06-10 14:08:29,594 [INFO] [KisDomestic] Order FILLED: NAVER(035420) ODNO=0027285000 price=226500.0 qty=4 fee=135.89999999999998
+2026-06-10 14:08:29,795 [INFO] [NAVER(035420)] 동적 재매수 기준 초기화 (매도가 KRW 252,000 -> 소비됨)
+2026-06-10 14:08:29,795 [INFO] [Position] New lot: lot_20260610_140829_035420_001 Lv1 NAVER(035420) 4주 @KRW 226,500
+2026-06-10 14:08:33,229 [INFO] >>> Processing HANARO 글로벌금채굴기업(473640)
+2026-06-10 14:08:33,229 [INFO] [HANARO 글로벌금채굴기업(473640)] 현금 부족: 보유 현금 KRW 329,367 < 매수 예정 금액 KRW 482,080 (16주) -> 매수 보류
+2026-06-10 14:08:33,449 [INFO] >>> Step 6: Persist

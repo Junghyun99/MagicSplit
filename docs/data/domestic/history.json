@@ -913,5 +913,38 @@
                 "alias": "미래에셋증권"
             }
         ]
+    },
+    {
+        "id": "tx_20260610_140833",
+        "date": "2026-06-10 14:08:33",
+        "portfolio_value": 27281862.0,
+        "total_trade_amount": 1497000.0,
+        "reason": "현대차(005380):BUY(추가 매수 Lv3 (Lv2 대비 -8.9%)), KoAct 글로벌AI메모리반도체액티브(0174B0):BUY(초기 매수 Lv1), NAVER(035420):BUY(초기 매수 Lv1), HANARO 글로벌금채굴기업(473640):SKIP(현금 부족: 보유 현금 KRW 329,367 < 매수 예정 금액 KRW 482,080 (16주))",
+        "executions": [
+            {
+                "ticker": "005380",
+                "action": "BUY",
+                "quantity": 1,
+                "price": 591000.0,
+                "fee": 88.64999999999999,
+                "date": "2026-06-10 14:08:21",
+                "status": "FILLED",
+                "reason": "ODNO=0027277000",
+                "level": 3,
+                "alias": "현대차"
+            },
+            {
+                "ticker": "035420",
+                "action": "BUY",
+                "quantity": 4,
+                "price": 226500.0,
+                "fee": 135.89999999999998,
+                "date": "2026-06-10 14:08:29",
+                "status": "FILLED",
+                "reason": "ODNO=0027285000",
+                "level": 1,
+                "alias": "NAVER"
+            }
+        ]
     }
 ]
