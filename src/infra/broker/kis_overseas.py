@@ -17,9 +17,8 @@ class KisOverseasBrokerBase(KisBrokerCommon):
     """해외주식(미국) 전용 브로커 베이스 클래스."""
     ASKING_PRICE_TR_ID: str = "HHDFS76200100"  # 해외주식 호가 조회 (실전/모의 동일)
 
-    def __init__(self, app_key: str, app_secret: str, acc_no: str, logger,
-                 known_tickers: Optional[List[str]] = None):
-        super().__init__(app_key, app_secret, acc_no, logger, known_tickers=known_tickers)
+    def __init__(self, app_key: str, app_secret: str, acc_no: str, logger):
+        super().__init__(app_key, app_secret, acc_no, logger)
 
     def fetch_current_prices(self, tickers: List[str]) -> Dict[str, float]:
         """해외주식 현재가 조회 (반복 호출)"""
@@ -514,9 +513,8 @@ class KisOverseasPaperBroker(KisOverseasBrokerBase):
     CANCEL_TR_ID = "VTTT1004U"
     MARGIN_TR_ID = "VTTC2101R"
 
-    def __init__(self, app_key: str, app_secret: str, acc_no: str, logger,
-                 known_tickers: Optional[List[str]] = None):
-        super().__init__(app_key, app_secret, acc_no, logger, known_tickers=known_tickers)
+    def __init__(self, app_key: str, app_secret: str, acc_no: str, logger):
+        super().__init__(app_key, app_secret, acc_no, logger)
         self.logger.info("[KisOverseasPaperBroker] Mode: PAPER TRADING (Virtual)")
 
 
@@ -532,7 +530,6 @@ class KisOverseasLiveBroker(KisOverseasBrokerBase):
     CANCEL_TR_ID = "TTTT1004U"
     MARGIN_TR_ID = "TTTC2101R"
 
-    def __init__(self, app_key: str, app_secret: str, acc_no: str, logger,
-                 known_tickers: Optional[List[str]] = None):
-        super().__init__(app_key, app_secret, acc_no, logger, known_tickers=known_tickers)
+    def __init__(self, app_key: str, app_secret: str, acc_no: str, logger):
+        super().__init__(app_key, app_secret, acc_no, logger)
         self.logger.info("[KisOverseasLiveBroker] Mode: LIVE TRADING")

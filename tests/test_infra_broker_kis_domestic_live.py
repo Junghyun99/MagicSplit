@@ -102,7 +102,6 @@ def broker(logger, test_ticker):
         app_secret=app_secret,
         acc_no=acc_no,
         logger=logger,
-        known_tickers=[test_ticker, "005930.KS", "069500.KS"],
     )
 
 
