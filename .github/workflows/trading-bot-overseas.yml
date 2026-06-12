@@ -1,8 +1,8 @@
 name: MagicSplit Trading Bot (Overseas)
 
 on:
-  schedule:
-    - cron: '58 14 * * 1-5'
+  # schedule:
+  #  - cron: '58 14 * * 1-5'
   workflow_dispatch:
     inputs:
       skip_holiday_check:
