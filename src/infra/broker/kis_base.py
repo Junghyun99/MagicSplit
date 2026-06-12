@@ -33,11 +33,13 @@ class KisBrokerCommon(IBrokerAdapter):
 
     SPREAD_THRESHOLD_PCT: float = 0.5  # 스프레드 임계값 (%) — 초과 시 주문 보류
 
-    def __init__(self, app_key: str, app_secret: str, acc_no: str, logger):
+    def __init__(self, app_key: str, app_secret: str, acc_no: str, logger,
+                 known_tickers: Optional[List[str]] = None):
         self.app_key = app_key
         self.app_secret = app_secret
         self.acc_no = acc_no
         self.logger = logger
+        self.known_tickers: List[str] = known_tickers or []
 
         # 계좌번호 분리 (앞 8자리, 뒤 2자리)
         self.cano = acc_no[:8]
