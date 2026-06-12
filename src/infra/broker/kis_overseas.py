@@ -18,7 +18,7 @@ class KisOverseasBrokerBase(KisBrokerCommon):
     ASKING_PRICE_TR_ID: str = "HHDFS76200100"  # 해외주식 호가 조회 (실전/모의 동일)
 
     def __init__(self, app_key: str, app_secret: str, acc_no: str, logger,
-                 known_tickers=None):
+                 known_tickers: Optional[List[str]] = None):
         super().__init__(app_key, app_secret, acc_no, logger, known_tickers=known_tickers)
 
     def fetch_current_prices(self, tickers: List[str]) -> Dict[str, float]:
@@ -515,7 +515,7 @@ class KisOverseasPaperBroker(KisOverseasBrokerBase):
     MARGIN_TR_ID = "VTTC2101R"
 
     def __init__(self, app_key: str, app_secret: str, acc_no: str, logger,
-                 known_tickers=None):
+                 known_tickers: Optional[List[str]] = None):
         super().__init__(app_key, app_secret, acc_no, logger, known_tickers=known_tickers)
         self.logger.info("[KisOverseasPaperBroker] Mode: PAPER TRADING (Virtual)")
 
@@ -533,6 +533,6 @@ class KisOverseasLiveBroker(KisOverseasBrokerBase):
     MARGIN_TR_ID = "TTTC2101R"
 
     def __init__(self, app_key: str, app_secret: str, acc_no: str, logger,
-                 known_tickers=None):
+                 known_tickers: Optional[List[str]] = None):
         super().__init__(app_key, app_secret, acc_no, logger, known_tickers=known_tickers)
         self.logger.info("[KisOverseasLiveBroker] Mode: LIVE TRADING")

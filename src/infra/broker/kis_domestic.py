@@ -22,7 +22,7 @@ class KisDomesticBrokerBase(KisBrokerCommon):
     ASKING_PRICE_TR_ID: str = "FHKST01010200"  # 국내주식 호가 조회 (실전/모의 동일)
 
     def __init__(self, app_key: str, app_secret: str, acc_no: str, logger,
-                 known_tickers=None):
+                 known_tickers: Optional[List[str]] = None):
         super().__init__(app_key, app_secret, acc_no, logger, known_tickers=known_tickers)
 
     @staticmethod
@@ -445,7 +445,7 @@ class KisDomesticPaperBroker(KisDomesticBrokerBase):
     CANCEL_TR_ID = "VTTC0013U"
 
     def __init__(self, app_key: str, app_secret: str, acc_no: str, logger,
-                 known_tickers=None):
+                 known_tickers: Optional[List[str]] = None):
         super().__init__(app_key, app_secret, acc_no, logger, known_tickers=known_tickers)
         self.logger.info("[KisDomesticPaperBroker] Mode: PAPER TRADING (Virtual)")
 
@@ -462,6 +462,6 @@ class KisDomesticLiveBroker(KisDomesticBrokerBase):
     CANCEL_TR_ID = "TTTC0013U"
 
     def __init__(self, app_key: str, app_secret: str, acc_no: str, logger,
-                 known_tickers=None):
+                 known_tickers: Optional[List[str]] = None):
         super().__init__(app_key, app_secret, acc_no, logger, known_tickers=known_tickers)
         self.logger.info("[KisDomesticLiveBroker] Mode: LIVE TRADING")
