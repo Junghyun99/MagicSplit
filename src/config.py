@@ -11,7 +11,17 @@ EXCHANGE_CODE_SHORT_TO_FULL: dict[str, str] = {
     'AMS': 'AMEX',
 }
 
-DEFAULT_HTTP_TIMEOUT = 10
+def _parse_http_timeout(raw, default: float = 10.0) -> float:
+    """KIS_HTTP_TIMEOUT 환경변수 값을 검증한다. 숫자가 아니거나 0 이하면 기본값으로 폴백."""
+    try:
+        value = float(raw)
+    except (TypeError, ValueError):
+        return default
+    return value if value > 0 else default
+
+
+# KIS REST 호출 타임아웃 (초). 미설정 시 무한 대기 방지를 위해 항상 적용된다.
+DEFAULT_HTTP_TIMEOUT = _parse_http_timeout(os.getenv("KIS_HTTP_TIMEOUT", "10"))
 
 
 class Config:

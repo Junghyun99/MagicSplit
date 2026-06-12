@@ -1,7 +1,7 @@
 # tests/test_infra_notifier.py
 import pytest
 from unittest.mock import patch, MagicMock
-from src.infra.notifier import SlackNotifier, TelegramNotifier
+from src.infra.notifier import SlackNotifier
 
 
 @pytest.fixture
@@ -75,18 +75,3 @@ class TestSlackNotifier:
         second_call_args = mock_post.call_args_list[1]
         assert "Detail Log" in second_call_args.kwargs["json"]["text"]
         assert second_call_args.kwargs["json"]["thread_ts"] == "12345.6789"
-
-
-class TestTelegramNotifier:
-    def test_send_no_token(self, mock_logger):
-        """토큰 없으면 로거로만 출력"""
-        notifier = TelegramNotifier("", "", mock_logger)
-        notifier.send_message("test")
-        mock_logger.info.assert_called_once()
-
-    @patch("src.infra.notifier.requests.post")
-    def test_send_with_token(self, mock_post, mock_logger):
-        mock_post.return_value = MagicMock(status_code=200)
-        notifier = TelegramNotifier("token123", "chat456", mock_logger)
-        notifier.send_message("hello")
-        mock_post.assert_called_once()

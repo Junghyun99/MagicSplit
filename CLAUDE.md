@@ -34,7 +34,7 @@ src/
 ??  ?��??� broker/          # KIS domestic/overseas/mock 브로�?
 ??  ?��??� data.py          # YFinanceLoader (?�택??
 ??  ?��??� repo.py          # JsonRepository (positions.json, status.json, history.json)
-??  ?��??� notifier.py      # SlackNotifier, TelegramNotifier
+??  ?��??� notifier.py      # SlackNotifier
 ?��??� backtest/            # runner, cache (parquet), fetcher (yfinance), components
 ?��??� utils/               # TradeLogger
 scripts/
@@ -94,6 +94,7 @@ presets.json             # 차수�?배열 공유 ?�리??(?�택)
 - `config_overseas.json_PATH` - 매매 규칙 ?�일 경로 (기본�? `config_overseas.json`. �?��??`config_domestic.json` 지??
 - `PRESETS_JSON_PATH` - ?�리???�일 경로 (?�택, 기본?� config ?�일�?같�? ?�렉?�리??`presets.json`)
 - `PYTHONUTF8` - Windows ?�경?�서 ?��? 로그 ?�코???�류 방�???(?�수: `1` ?�정)
+- `KIS_HTTP_TIMEOUT` - KIS REST 호출 타임아웃 초 (기본값: `10`)
 
 ## 로컬 ?�경 ?�정
 1. `.env.example` ?�일??`.env`�?복사

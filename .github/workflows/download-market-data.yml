@@ -33,14 +33,19 @@ jobs:
         pip install -r requirements.txt
 
     - name: Download market data
+      env:
+        # 입력값은 코드 인젝션 방지를 위해 env 경유로만 전달한다 (스크립트 내 직접 보간 금지)
+        START_DATE: ${{ inputs.start_date }}
+        END_DATE: ${{ inputs.end_date }}
       run: |
         python -c "
+        import os
         from src.backtest.cache import BacktestDataCache
         from src.utils.logger import TradeLogger
         from datetime import datetime, timedelta
 
-        start_date = '${{ inputs.start_date }}'
-        end_date = '${{ inputs.end_date }}'
+        start_date = os.environ['START_DATE']
+        end_date = os.environ['END_DATE']
 
         # 지표 계산용 500일 여유분 포함
         real_start = datetime.strptime(start_date, '%Y-%m-%d') - timedelta(days=500)
@@ -75,7 +80,7 @@ jobs:
         "
 
     - name: Commit and Push Cache
-      uses: stefanzweifel/git-auto-commit-action@v5
+      uses: stefanzweifel/git-auto-commit-action@b863ae1933cb653a53c021fe36dbb774e1fb9403 # v5.2.0
       with:
         commit_message: "data: download market data (${{ inputs.start_date }} ~ ${{ inputs.end_date }}) [skip ci]"
         file_pattern: "src/backtest/cache/**"

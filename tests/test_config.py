@@ -1,6 +1,6 @@
 # tests/test_config.py
 import pytest
-from src.config import Config, EXCHANGE_CODE_SHORT_TO_FULL
+from src.config import Config, EXCHANGE_CODE_SHORT_TO_FULL, _parse_http_timeout
 
 
 class TestConfig:
@@ -18,3 +18,18 @@ class TestConfig:
         assert EXCHANGE_CODE_SHORT_TO_FULL["NAS"] == "NASD"
         assert EXCHANGE_CODE_SHORT_TO_FULL["NYS"] == "NYSE"
         assert EXCHANGE_CODE_SHORT_TO_FULL["AMS"] == "AMEX"
+
+
+class TestParseHttpTimeout:
+    def test_valid_value(self):
+        assert _parse_http_timeout("30") == 30.0
+        assert _parse_http_timeout("2.5") == 2.5
+
+    def test_invalid_string_falls_back_to_default(self):
+        assert _parse_http_timeout("abc") == 10.0
+        assert _parse_http_timeout("") == 10.0
+        assert _parse_http_timeout(None) == 10.0
+
+    def test_non_positive_falls_back_to_default(self):
+        assert _parse_http_timeout("0") == 10.0
+        assert _parse_http_timeout("-5") == 10.0
