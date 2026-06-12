@@ -29,24 +29,34 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
+    # 입력값은 셸 인젝션 방지를 위해 env 경유로만 전달한다 (run 내 직접 보간 금지)
     - name: Create destination directories
+      env:
+        SKILL_DEST: ${{ inputs.skill_dest }}
+        UTILS_DEST: ${{ inputs.utils_dest }}
       run: |
-        mkdir -p "${{ inputs.skill_dest }}"
-        mkdir -p "${{ inputs.utils_dest }}"
+        mkdir -p "$SKILL_DEST"
+        mkdir -p "$UTILS_DEST"
 
     - name: Download ticker-reader skill files
+      env:
+        TICKER_MAP_REF: ${{ inputs.ticker_map_ref }}
+        SKILL_DEST: ${{ inputs.skill_dest }}
       run: |
-        BASE="https://raw.githubusercontent.com/junghyun99/ticker-map/${{ inputs.ticker_map_ref }}"
+        BASE="https://raw.githubusercontent.com/junghyun99/ticker-map/$TICKER_MAP_REF"
         curl -fsSL "$BASE/.claude/skills/ticker-reader/SKILL.md" \
-          -o "${{ inputs.skill_dest }}/SKILL.md"
+          -o "$SKILL_DEST/SKILL.md"
 
     - name: Download utils files
+      env:
+        TICKER_MAP_REF: ${{ inputs.ticker_map_ref }}
+        UTILS_DEST: ${{ inputs.utils_dest }}
       run: |
-        BASE="https://raw.githubusercontent.com/junghyun99/ticker-map/${{ inputs.ticker_map_ref }}"
+        BASE="https://raw.githubusercontent.com/junghyun99/ticker-map/$TICKER_MAP_REF"
         curl -fsSL "$BASE/src/utils/ticker_reader.py" \
-          -o "${{ inputs.utils_dest }}/ticker_reader_base.py"
+          -o "$UTILS_DEST/ticker_reader_base.py"
         curl -fsSL "$BASE/src/utils/tickers.db" \
-          -o "${{ inputs.utils_dest }}/tickers.db"
+          -o "$UTILS_DEST/tickers.db"
 
     - name: Set up Python 3.10
       uses: actions/setup-python@v5
@@ -60,16 +70,20 @@ jobs:
         python scripts/export_tickers.py
 
     - name: Commit and Push
+      env:
+        TICKER_MAP_REF: ${{ inputs.ticker_map_ref }}
+        SKILL_DEST: ${{ inputs.skill_dest }}
+        UTILS_DEST: ${{ inputs.utils_dest }}
       run: |
         git config user.name "github-actions[bot]"
         git config user.email "github-actions[bot]@users.noreply.github.com"
-        git add "${{ inputs.skill_dest }}/SKILL.md"
-        git add "${{ inputs.utils_dest }}/ticker_reader_base.py"
-        git add "${{ inputs.utils_dest }}/tickers.db"
+        git add "$SKILL_DEST/SKILL.md"
+        git add "$UTILS_DEST/ticker_reader_base.py"
+        git add "$UTILS_DEST/tickers.db"
         git add "docs/data/tickers.json"
         if git diff --cached --quiet; then
           echo "변경 사항 없음 - 커밋 생략"
         else
-          git commit -m "feat: sync ticker files from ticker-map@${{ inputs.ticker_map_ref }} [skip ci]"
+          git commit -m "feat: sync ticker files from ticker-map@$TICKER_MAP_REF [skip ci]"
           git push
         fi

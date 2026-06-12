@@ -11,7 +11,8 @@ EXCHANGE_CODE_SHORT_TO_FULL: dict[str, str] = {
     'AMS': 'AMEX',
 }
 
-DEFAULT_HTTP_TIMEOUT = 10
+# KIS REST 호출 타임아웃 (초). 미설정 시 무한 대기 방지를 위해 항상 적용된다.
+DEFAULT_HTTP_TIMEOUT = float(os.getenv("KIS_HTTP_TIMEOUT", "10"))
 
 
 class Config:

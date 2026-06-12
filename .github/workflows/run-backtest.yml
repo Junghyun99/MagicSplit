@@ -46,8 +46,10 @@ jobs:
         pip install -r requirements.txt
 
     - name: Set Environment Variables
+      env:
+        MARKET_TYPE: ${{ inputs.market_type }}
       run: |
-        if [ "${{ inputs.market_type }}" == "국내" ]; then
+        if [ "$MARKET_TYPE" == "국내" ]; then
           echo "CONFIG_PATH=config_test_domestic.json" >> $GITHUB_ENV
           echo "MARKET_VAL=domestic" >> $GITHUB_ENV
         else
@@ -57,17 +59,23 @@ jobs:
       shell: bash
 
     - name: Run backtest
+      env:
+        # 입력값은 코드 인젝션 방지를 위해 env 경유로만 전달한다 (스크립트 내 직접 보간 금지)
+        START_DATE: ${{ inputs.start }}
+        END_DATE: ${{ inputs.end }}
+        INITIAL_CASH: ${{ inputs.initial_cash }}
+        RUN_NUMBER: ${{ github.run_number }}
       run: |
         python -c "
         import os
         from src.backtest.runner import run_backtest
         result = run_backtest(
             config_path=os.environ.get('CONFIG_PATH'),
-            start_date='${{ inputs.start }}',
-            end_date='${{ inputs.end }}',
-            initial_cash=float('${{ inputs.initial_cash }}'),
+            start_date=os.environ['START_DATE'],
+            end_date=os.environ['END_DATE'],
+            initial_cash=float(os.environ['INITIAL_CASH']),
             market_type=os.environ.get('MARKET_VAL'),
-            run_number='${{ github.run_number }}_' + os.environ.get('MARKET_VAL'),
+            run_number=os.environ['RUN_NUMBER'] + '_' + os.environ.get('MARKET_VAL'),
         )
         if result:
             pf = result.final_portfolio
@@ -77,7 +85,7 @@ jobs:
         "
 
     - name: Commit and Push Results
-      uses: stefanzweifel/git-auto-commit-action@v5
+      uses: stefanzweifel/git-auto-commit-action@b863ae1933cb653a53c021fe36dbb774e1fb9403 # v5.2.0
       with:
         commit_message: "backtest result update (${{ inputs.start }} ~ ${{ inputs.end }}) [skip ci]"
         file_pattern: "docs/data/backtest/** logs/backtest/*"
