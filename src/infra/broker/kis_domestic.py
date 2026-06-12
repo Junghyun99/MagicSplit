@@ -13,8 +13,10 @@ from .kis_order_helpers import poll_order_fill, resolve_timeout_outcome
 
 
 def _to_kis_code(ticker: str) -> str:
-    """MagicSplit 표준 티커 -> KIS 종목코드 (zero-padded 6자리). '5930' -> '005930'"""
-    return ticker.zfill(6)
+    """MagicSplit 표준 티커 -> KIS 종목코드 (zero-padded 6자리).
+    '5930' -> '005930', '005930.KS' -> '005930'
+    """
+    return ticker.split(".")[0].zfill(6)
 
 
 class KisDomesticBrokerBase(KisBrokerCommon):
