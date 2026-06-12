@@ -1065,6 +1065,62 @@ class TestRunManualTrade:
         alert_msgs = [c.args[0] for c in notifier.send_alert.call_args_list]
         assert any("수동매매" in m and "체결 실패 또는 거절" in m for m in alert_msgs)
 
+    def test_sell_proceeds_when_portfolio_api_fails(
+        self, mock_broker, mock_repo, mock_logger,
+    ):
+        """포트폴리오 API 500 에러 시 빈 포트폴리오로 폴백하여 매도가 정상 진행된다."""
+        rules = [StockRule("AAPL", -5.0, 10.0, 500, 10)]
+        mock_broker.get_portfolio.side_effect = RuntimeError(
+            "[KisDomestic] Error getting portfolio: 500 Server Error: Internal Server Error"
+        )
+        mock_broker.fetch_current_prices.return_value = {"AAPL": 100.0}
+        mock_repo.load_positions.return_value = [
+            PositionLot("lot_001", "AAPL", 90.0, 5, "2026-04-01", level=1),
+        ]
+        mock_repo.load_last_sell_prices.return_value = {}
+        mock_broker.execute_orders.return_value = [
+            TradeExecution("AAPL", OrderAction.SELL, 5, 100.0, 0.5,
+                           "2026-04-10", ExecutionStatus.FILLED),
+        ]
+
+        eng = self._make_engine(mock_broker, mock_repo, mock_logger, rules)
+        result = eng.run_manual_trade(
+            ticker="AAPL", action=OrderAction.SELL, sim_date="2026-04-10",
+        )
+
+        assert result.has_orders is True
+        assert len(result.executions) == 1
+        assert result.executions[0].status == ExecutionStatus.FILLED
+        mock_repo.save_positions.assert_called_once()
+
+    def test_buy_proceeds_when_portfolio_api_fails(
+        self, mock_broker, mock_repo, mock_logger,
+    ):
+        """포트폴리오 API 500 에러 시 빈 포트폴리오로 폴백하여 매수가 정상 진행된다."""
+        rules = [StockRule("AAPL", -5.0, 10.0, 500, 10)]
+        mock_broker.get_portfolio.side_effect = RuntimeError(
+            "[KisDomestic] Error getting portfolio: 500 Server Error: Internal Server Error"
+        )
+        mock_broker.fetch_current_prices.return_value = {"AAPL": 100.0}
+        mock_repo.load_positions.return_value = []
+        mock_repo.load_last_sell_prices.return_value = {}
+        mock_repo.get_realized_pnl_by_ticker.return_value = {}
+        mock_repo.get_last_trade_dates.return_value = {}
+        mock_broker.execute_orders.return_value = [
+            TradeExecution("AAPL", OrderAction.BUY, 5, 100.0, 0.5,
+                           "2026-04-10", ExecutionStatus.FILLED),
+        ]
+
+        eng = self._make_engine(mock_broker, mock_repo, mock_logger, rules)
+        result = eng.run_manual_trade(
+            ticker="AAPL", action=OrderAction.BUY, sim_date="2026-04-10",
+        )
+
+        assert result.has_orders is True
+        assert len(result.executions) == 1
+        assert result.executions[0].status == ExecutionStatus.FILLED
+        mock_repo.save_positions.assert_called_once()
+
 
 class TestRegimeAddCommitOnFill:
     """상승 add는 매수 체결이 확정될 때만 regime_state를 갱신한다 (백테스트/라이브 동일)."""

@@ -340,7 +340,17 @@ class MagicSplitEngine:
 
         try:
             # Step 1+2: 자동 사이클과 동일한 상태 로드 (공유 헬퍼)
-            portfolio, positions, last_sell_prices = self._load_initial_state()
+            # 포트폴리오 API 장애 시 빈 포트폴리오로 폴백: SELL은 현금 잔고 불필요.
+            # BUY도 수동매매에서는 max_exposure 체크 없으므로 진행 가능.
+            try:
+                portfolio, positions, last_sell_prices = self._load_initial_state()
+            except Exception as pf_err:
+                self.logger.warning(
+                    f"Portfolio API error - falling back to cached state: {pf_err}"
+                )
+                portfolio = Portfolio(total_cash=0.0, holdings={}, current_prices={})
+                positions = self.repo.load_positions()
+                last_sell_prices = self.repo.load_last_sell_prices()
             current_price = self._ensure_current_price(portfolio, ticker)
             if current_price <= 0:
                 raise RuntimeError(f"{disp} 현재가 조회 실패")
