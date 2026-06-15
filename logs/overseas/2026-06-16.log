@@ -44,3 +44,48 @@
 2026-06-16 00:01:22,503 [INFO] [루멘텀 홀딩스(LITE)] 현금 부족: 보유 현금 USD 128.36 < 현재가 USD 940.88 (1주도 매수 불가) -> 매수 보류
 2026-06-16 00:01:22,816 [WARNING] [팔란티어 테크(PLTR)] 수량 불일치로 매매 중단. scripts/reconcile_positions.py 로 보정 후 재실행.
 2026-06-16 00:01:22,816 [INFO] >>> Step 6: Persist
+2026-06-16 02:00:59,413 [INFO] === Initializing MagicSplit Bot (overseas) ===
+2026-06-16 02:00:59,413 [INFO] Loaded 19 stock rule(s) from config_overseas.json
+2026-06-16 02:00:59,413 [INFO] [overseas] 16 rule(s), mode=LIVE
+2026-06-16 02:00:59,413 [INFO] [KisBroker] 캐시에서 토큰 로드 (API 호출 생략)
+2026-06-16 02:00:59,413 [INFO] [KisOverseasLiveBroker] Mode: LIVE TRADING
+2026-06-16 02:00:59,413 [INFO] === Running overseas engine ===
+2026-06-16 02:00:59,413 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-06-16 02:01:01,804 [INFO] Fetching real-time prices from Broker...
+2026-06-16 02:01:08,032 [INFO] Portfolio: Cash=USD 128.36, Value=USD 12,329.74
+2026-06-16 02:01:08,033 [INFO] >>> Step 2: Load Positions
+2026-06-16 02:01:08,033 [INFO] Loaded 18 position lot(s)
+2026-06-16 02:01:08,034 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-06-16 02:01:08,034 [INFO] >>> Processing 애플(AAPL)
+2026-06-16 02:01:08,035 [INFO]   [애플(AAPL)] 신호 없음 | Lv1 매수 USD 291.90 -> 현재 USD 296.59 (+1.61%) | 익절 +10.0% / 추매 -5.0%
+2026-06-16 02:01:08,035 [INFO] >>> Processing 리얼티 인컴(O)
+2026-06-16 02:01:08,035 [INFO]   [리얼티 인컴(O)] 신호 없음 | Lv1 매수 USD 62.37 -> 현재 USD 62.44 (+0.10%) | 익절 +10.0% / 추매 -5.0%
+2026-06-16 02:01:08,035 [INFO] >>> Processing 프록터 앤드 갬블(PG)
+2026-06-16 02:01:08,036 [INFO]   [프록터 앤드 갬블(PG)] 신호 없음 | Lv1 매수 USD 142.81 -> 현재 USD 150.96 (+5.70%) | 익절 +10.0% / 추매 -5.0%
+2026-06-16 02:01:08,036 [INFO] >>> Processing 펩시코(PEP)
+2026-06-16 02:01:08,036 [INFO]   [펩시코(PEP)] 신호 없음 | Lv2 매수 USD 142.33 -> 현재 USD 145.72 (+2.38%) | 익절 +10.0% / 추매 -5.0%
+2026-06-16 02:01:08,037 [INFO] >>> Processing 듀크 에너지(DUK)
+2026-06-16 02:01:08,037 [INFO]   [듀크 에너지(DUK)] 신호 없음 | Lv1 매수 USD 124.92 -> 현재 USD 125.87 (+0.76%) | 익절 +10.0% / 추매 -5.0%
+2026-06-16 02:01:08,037 [INFO] >>> Processing ARK INNOVATION(ARKK)
+2026-06-16 02:01:08,038 [INFO]   [ARK INNOVATION(ARKK)] 신호 없음 | Lv2 매수 USD 75.28 -> 현재 USD 79.50 (+5.61%) | 익절 +10.0% / 추매 -5.0%
+2026-06-16 02:01:08,038 [INFO] >>> Processing SCHWAB US DIVIDEND EQUITY(SCHD)
+2026-06-16 02:01:08,038 [INFO]   [SCHWAB US DIVIDEND EQUITY(SCHD)] 신호 없음 | Lv1 매수 USD 31.74 -> 현재 USD 32.81 (+3.39%) | 익절 +10.0% / 추매 -5.0%
+2026-06-16 02:01:08,038 [INFO] >>> Processing ISHARES GLOBAL CLEAN ENERGY(ICLN)
+2026-06-16 02:01:08,039 [INFO]   [ISHARES GLOBAL CLEAN ENERGY(ICLN)] 신호 없음 | Lv1 매수 USD 22.01 -> 현재 USD 20.97 (-4.73%) | 익절 +10.0% / 추매 -5.0%
+2026-06-16 02:01:08,039 [INFO] >>> Processing 알파벳 A(GOOGL)
+2026-06-16 02:01:08,039 [INFO]   [알파벳 A(GOOGL)] 신호 없음 | Lv2 매수 USD 369.66 -> 현재 USD 371.35 (+0.46%) | 익절 +10.0% / 추매 -5.0%
+2026-06-16 02:01:08,040 [INFO] >>> Processing 브로드컴(AVGO)
+2026-06-16 02:01:08,040 [INFO] [브로드컴(AVGO)] 현금 부족: 보유 현금 USD 128.36 < 현재가 USD 392.98 (1주도 매수 불가) -> 매수 보류
+2026-06-16 02:01:08,333 [INFO] >>> Processing 테슬라(TSLA)
+2026-06-16 02:01:08,334 [INFO]   [테슬라(TSLA)] 신호 없음 | Lv3 매수 USD 409.90 -> 현재 USD 409.11 (-0.19%) | 익절 +10.0% / 추매 -5.0%
+2026-06-16 02:01:08,334 [INFO] >>> Processing 코닝(GLW)
+2026-06-16 02:01:08,334 [INFO]   [코닝(GLW)] 신호 없음 | Lv2 매수 USD 184.60 -> 현재 USD 187.29 (+1.46%) | 익절 +10.0% / 추매 -5.0%
+2026-06-16 02:01:08,335 [INFO] >>> Processing IBM
+2026-06-16 02:01:08,335 [INFO] [IBM] 현금 부족: 보유 현금 USD 128.36 < 현재가 USD 267.93 (1주도 매수 불가) -> 매수 보류
+2026-06-16 02:01:08,576 [INFO] >>> Processing 포엣 테크놀로지스(POET)
+2026-06-16 02:01:08,576 [INFO] [포엣 테크놀로지스(POET)] 현금 부족: 보유 현금 USD 128.36 < 매수 예정 금액 USD 988.38 (68주) -> 매수 보류
+2026-06-16 02:01:08,800 [INFO] >>> Processing 루멘텀 홀딩스(LITE)
+2026-06-16 02:01:08,801 [INFO] [루멘텀 홀딩스(LITE)] 현금 부족: 보유 현금 USD 128.36 < 현재가 USD 947.51 (1주도 매수 불가) -> 매수 보류
+2026-06-16 02:01:09,053 [INFO] >>> Processing 팔란티어 테크(PLTR)
+2026-06-16 02:01:09,053 [INFO] [팔란티어 테크(PLTR)] 현금 부족: 보유 현금 USD 128.36 < 현재가 USD 133.74 (1주도 매수 불가) -> 매수 보류
+2026-06-16 02:01:09,282 [INFO] >>> Step 6: Persist
