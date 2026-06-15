@@ -946,5 +946,41 @@
                 "alias": "NAVER"
             }
         ]
+    },
+    {
+        "id": "tx_20260615_100114",
+        "date": "2026-06-15 10:01:14",
+        "portfolio_value": 29853231.0,
+        "total_trade_amount": 2250220.0,
+        "reason": "삼성전자(005930):SKIP(Lv1: trailing 활성화 (매수가 대비 +12.1%, 스톱가 KRW 322,762)), KODEX 증권(102970):SKIP(Lv2: trailing 활성화 (매수가 대비 +11.0%, 스톱가 KRW 24,006)), TIGER 지주회사(307520):SKIP(Lv2: trailing 활성화 (매수가 대비 +10.8%, 스톱가 KRW 24,263)), 테스(095610):SELL(trailing 벌크 매도 Lv1~Lv1 (7주 +33.9%)), KoAct 글로벌AI메모리반도체액티브(0174B0):BUY(초기 매수 Lv1)",
+        "executions": [
+            {
+                "ticker": "095610",
+                "action": "SELL",
+                "quantity": 7,
+                "price": 180800.0,
+                "fee": 189.83999999999997,
+                "date": "2026-06-15 10:01:05",
+                "status": "FILLED",
+                "reason": "ODNO=0015248500",
+                "lot_id": "lot_20260526_101743_095610_001",
+                "level": 1,
+                "buy_price": 135400.0,
+                "realized_pnl": 317610.16,
+                "alias": "테스"
+            },
+            {
+                "ticker": "0174B0",
+                "action": "BUY",
+                "quantity": 52,
+                "price": 18935.0,
+                "fee": 147.69299999999998,
+                "date": "2026-06-15 10:01:10",
+                "status": "FILLED",
+                "reason": "ODNO=0015257000",
+                "level": 1,
+                "alias": "KoAct 글로벌AI메모리반도체액티브"
+            }
+        ]
     }
 ]
