@@ -491,6 +491,60 @@
         ]
     },
     {
+        "id": "tx_20260615_150000",
+        "date": "2026-06-15 15:00:00",
+        "portfolio_value": 12029.0,
+        "total_trade_amount": 3702.43,
+        "reason": "팔란티어 테크(PLTR):SELL(수동 매매(Manual Trade)), 포엣 테크놀로지스(POET):SELL(수동 매매(Manual Trade))",
+        "executions": [
+            {
+                "ticker": "PLTR",
+                "action": "SELL",
+                "quantity": 18,
+                "price": 130.1,
+                "fee": 0.0,
+                "date": "2026-06-15 15:00:00",
+                "status": "FILLED",
+                "reason": "수동 매매(Manual Trade)",
+                "lot_id": "lot_20260529_212259_PLTR_001",
+                "level": 1,
+                "buy_price": 147.91,
+                "realized_pnl": -320.58,
+                "alias": "팔란티어 테크"
+            },
+            {
+                "ticker": "POET",
+                "action": "SELL",
+                "quantity": 64,
+                "price": 13.21,
+                "fee": 0.0,
+                "date": "2026-06-15 15:00:00",
+                "status": "FILLED",
+                "reason": "수동 매매(Manual Trade)",
+                "lot_id": "lot_20260604_033840_POET_001",
+                "level": 1,
+                "buy_price": 15.42,
+                "realized_pnl": -141.44,
+                "alias": "포엣 테크놀로지스"
+            },
+            {
+                "ticker": "POET",
+                "action": "SELL",
+                "quantity": 39,
+                "price": 13.21,
+                "fee": 0.0,
+                "date": "2026-06-15 15:00:00",
+                "status": "FILLED",
+                "reason": "수동 매매(Manual Trade)",
+                "lot_id": "lot_20260606_020627_POET_002",
+                "level": 2,
+                "buy_price": 12.34,
+                "realized_pnl": 33.93,
+                "alias": "포엣 테크놀로지스"
+            }
+        ]
+    },
+    {
         "id": "tx_20260606_020632",
         "date": "2026-06-06 02:06:32",
         "portfolio_value": 12070.7696,
