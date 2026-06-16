@@ -46,6 +46,7 @@ window.ConfigView = (function () {
         document.getElementById('edit-preset').value = stock.preset || '';
         document.getElementById('edit-max-lots').value = stock.max_lots !== undefined ? stock.max_lots : '';
         document.getElementById('edit-reentry').value = stock.reentry_guard_pct !== undefined ? stock.reentry_guard_pct : '';
+        document.getElementById('edit-priority').value = stock.priority !== undefined ? stock.priority : '';
         document.getElementById('edit-enabled').checked = stock.enabled !== false;
 
         document.getElementById('edit-buy-pct').value = stock.buy_threshold_pct !== undefined ? stock.buy_threshold_pct : '';
@@ -200,6 +201,7 @@ window.ConfigView = (function () {
             preset: document.getElementById('edit-preset').value.trim(),
             max_lots: document.getElementById('edit-max-lots').value,
             reentry_guard_pct: document.getElementById('edit-reentry').value,
+            priority: document.getElementById('edit-priority').value,
             buy_threshold_pct: document.getElementById('edit-buy-pct').value,
             sell_threshold_pct: document.getElementById('edit-sell-pct').value,
             buy_amount: document.getElementById('edit-buy-amt').value,

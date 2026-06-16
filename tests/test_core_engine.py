@@ -69,6 +69,89 @@ class TestEngineInit:
         assert engine.all_tickers == ["AAPL"]
 
 
+class TestOrderRules:
+    """_order_rules: priority 기반 정렬 + 랜덤 셔플 검증"""
+
+    def _make_rule(self, ticker, priority=None):
+        return StockRule(ticker, -5.0, 10.0, 500, 10, priority=priority)
+
+    def test_priority_group_comes_before_no_priority(self):
+        """priority 있는 종목은 항상 priority 없는 종목보다 먼저 처리된다."""
+        rules = [
+            self._make_rule("A"),       # priority=None
+            self._make_rule("B"),       # priority=None
+            self._make_rule("C", 1),    # priority=1
+        ]
+        for _ in range(20):
+            ordered = MagicSplitEngine._order_rules(rules)
+            tickers = [r.ticker for r in ordered]
+            assert tickers.index("C") < tickers.index("A")
+            assert tickers.index("C") < tickers.index("B")
+
+    def test_lower_priority_number_comes_first(self):
+        """priority 숫자가 작을수록 먼저 처리된다."""
+        rules = [
+            self._make_rule("A", 3),
+            self._make_rule("B", 1),
+            self._make_rule("C", 2),
+        ]
+        for _ in range(20):
+            ordered = MagicSplitEngine._order_rules(rules)
+            tickers = [r.ticker for r in ordered]
+            assert tickers.index("B") < tickers.index("C") < tickers.index("A")
+
+    def test_same_priority_group_is_shuffled(self):
+        """동일 priority 그룹 내 순서는 랜덤이다 (반복 실행 시 다른 순서 발생)."""
+        rules = [self._make_rule(t, 1) for t in ["A", "B", "C", "D", "E"]]
+        seen_orders = set()
+        for _ in range(50):
+            ordered = MagicSplitEngine._order_rules(rules)
+            seen_orders.add(tuple(r.ticker for r in ordered))
+        assert len(seen_orders) > 1, "같은 priority 내에서 항상 동일한 순서가 나옴 (랜덤 미작동)"
+
+    def test_no_priority_group_is_shuffled(self):
+        """priority 없는 그룹도 랜덤 셔플된다."""
+        rules = [self._make_rule(t) for t in ["A", "B", "C", "D", "E"]]
+        seen_orders = set()
+        for _ in range(50):
+            ordered = MagicSplitEngine._order_rules(rules)
+            seen_orders.add(tuple(r.ticker for r in ordered))
+        assert len(seen_orders) > 1, "priority=None 그룹에서 항상 동일한 순서가 나옴 (랜덤 미작동)"
+
+    def test_all_rules_present_after_ordering(self):
+        """정렬 후 모든 종목이 유지된다."""
+        rules = [
+            self._make_rule("A", 1),
+            self._make_rule("B"),
+            self._make_rule("C", 2),
+            self._make_rule("D"),
+        ]
+        ordered = MagicSplitEngine._order_rules(rules)
+        assert {r.ticker for r in ordered} == {"A", "B", "C", "D"}
+        assert len(ordered) == 4
+
+    def test_shuffle_happens_every_cycle(self, mock_broker, mock_repo, mock_logger):
+        """run_one_cycle 호출마다 stock_rules 순서가 새로 셔플된다."""
+        rules = [self._make_rule(t) for t in ["A", "B", "C", "D", "E"]]
+        mock_broker.get_portfolio.return_value = MagicMock(
+            total_cash=0.0, holdings={}, current_prices={}
+        )
+        mock_broker.fetch_current_prices.return_value = {}
+        mock_repo.load_positions.return_value = []
+        eng = MagicSplitEngine(
+            broker=mock_broker, repo=mock_repo,
+            logger=mock_logger, stock_rules=rules,
+        )
+        seen_orders = set()
+        for _ in range(30):
+            try:
+                eng.run_one_cycle()
+            except Exception:
+                pass
+            seen_orders.add(tuple(r.ticker for r in eng.stock_rules))
+        assert len(seen_orders) > 1, "매 사이클 셔플이 일어나지 않음"
+
+
 class TestRunOneCycle:
     def test_engine_continues_on_rule_error(self, mock_broker, mock_repo, mock_logger):
         """특정 종목 평가 중 에러 발생 시, 해당 종목을 건너뛰고 다음 종목은 정상 처리"""

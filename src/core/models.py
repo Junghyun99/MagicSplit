@@ -50,6 +50,9 @@ class StockRule:
     # 종목별 최대 투입 비중 (예: 20.0 = 계좌 총 자산의 20%까지만 투입)
     # None이면 비중 제한 없음. 글로벌 설정을 strategy_config에서 상속받을 수 있음.
     max_exposure_pct: Optional[float] = None
+    # 처리 우선순위 (1이 최우선). 동일 priority끼리는 랜덤 셔플.
+    # None이면 우선순위 없는 마지막 그룹(전체 랜덤).
+    priority: Optional[int] = None
 
     # --- 레짐 필터 (전부 기본값 => OFF => 오늘과 완전히 동일 동작) ---
     regime_enabled: bool = False

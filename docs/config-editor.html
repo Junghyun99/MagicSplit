@@ -131,6 +131,10 @@
                         <label>최대 차수</label>
                         <input type="number" id="edit-max-lots" class="form-control" placeholder="10">
                     </div>
+                    <div class="form-group">
+                        <label>처리 우선순위 <small>(낮을수록 먼저)</small></label>
+                        <input type="number" min="1" step="1" id="edit-priority" class="form-control" placeholder="없음=랜덤">
+                    </div>
                     <div class="form-group" id="group-enabled"
                         style="display:flex; flex-direction:column; justify-content:center; align-items:center;">
                         <label>활성화</label>
@@ -242,8 +246,8 @@
     <script src="js/services/data-repository.js?v=20260508-1"></script>
     <script src="js/services/github-api.js?v=20260508-1"></script>
     <script src="js/models/config-model.js?v=20260508-1"></script>
-    <script src="js/views/config-view.js?v=20260602-3"></script>
-    <script src="js/controllers/config-controller.js?v=20260602-3"></script>
+    <script src="js/views/config-view.js?v=20260616-1"></script>
+    <script src="js/controllers/config-controller.js?v=20260616-1"></script>
     <script src="js/config-editor.js?v=20260508-1"></script>
 </body>
 

@@ -50,6 +50,21 @@ class TestStrategyConfig:
         sc = StrategyConfig(str(config_file))
         assert len(sc.rules) == 2
 
+    def test_priority_parsed(self, tmp_path):
+        """priority 필드가 있으면 파싱되고, 없으면 None이다."""
+        config = {
+            "stocks": [
+                {"ticker": "AAPL", "buy_amount": 500, "priority": 1},
+                {"ticker": "MSFT", "buy_amount": 500},
+            ]
+        }
+        config_file = tmp_path / "config_overseas.json"
+        config_file.write_text(json.dumps(config))
+
+        sc = StrategyConfig(str(config_file))
+        assert sc.rules[0].priority == 1
+        assert sc.rules[1].priority is None
+
     def test_file_not_found(self):
         """존재하지 않는 파일"""
         with pytest.raises(FileNotFoundError):
