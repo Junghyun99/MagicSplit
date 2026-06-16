@@ -72,3 +72,46 @@
 2026-06-17 02:01:08,258 [ERROR] [KisBroker] Error getting portfolio (AMEX): ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
 2026-06-17 02:01:08,258 [ERROR] 사이클 초기화 실패: 모든 거래소(NASD/NYSE/AMEX) 잔고 조회 실패(현금 조회 오류) — 사이클을 중단합니다.
 2026-06-17 02:01:08,526 [ERROR] >>> Step 6: 포트폴리오, 포지션 조회 실패로 저장 생략. 수동 데이터 복구 필요
+2026-06-17 04:01:06,676 [INFO] === Initializing MagicSplit Bot (overseas) ===
+2026-06-17 04:01:06,676 [INFO] Loaded 20 stock rule(s) from config_overseas.json
+2026-06-17 04:01:06,676 [INFO] [overseas] 15 rule(s), mode=LIVE
+2026-06-17 04:01:06,676 [INFO] [KisBroker] 캐시에서 토큰 로드 (API 호출 생략)
+2026-06-17 04:01:06,676 [INFO] [KisOverseasLiveBroker] Mode: LIVE TRADING
+2026-06-17 04:01:06,676 [INFO] === Running overseas engine ===
+2026-06-17 04:01:06,676 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-06-17 04:01:09,051 [INFO] Fetching real-time prices from Broker...
+2026-06-17 04:01:14,847 [INFO] Portfolio: Cash=USD 2,220.00, Value=USD 13,063.48
+2026-06-17 04:01:14,847 [INFO] >>> Step 2: Load Positions
+2026-06-17 04:01:14,848 [INFO] Loaded 21 position lot(s)
+2026-06-17 04:01:14,849 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-06-17 04:01:14,849 [INFO] >>> Processing 테슬라(TSLA)
+2026-06-17 04:01:14,849 [INFO]   [테슬라(TSLA)] 신호 없음 | Lv3 매수 USD 409.90 -> 현재 USD 405.05 (-1.18%) | 익절 +10.0% / 추매 -5.0%
+2026-06-17 04:01:14,850 [INFO] >>> Processing 애플(AAPL)
+2026-06-17 04:01:14,850 [INFO]   [애플(AAPL)] 신호 없음 | Lv1 매수 USD 291.90 -> 현재 USD 299.08 (+2.46%) | 익절 +10.0% / 추매 -5.0%
+2026-06-17 04:01:14,850 [INFO] >>> Processing 브로드컴(AVGO)
+2026-06-17 04:01:14,850 [INFO]   [브로드컴(AVGO)] 신호 없음 | Lv1 매수 USD 382.60 -> 현재 USD 380.60 (-0.52%) | 익절 +10.0% / 추매 -5.0%
+2026-06-17 04:01:14,851 [INFO] >>> Processing 루멘텀 홀딩스(LITE)
+2026-06-17 04:01:14,851 [INFO] [루멘텀 홀딩스(LITE)] buy_amount(USD 500.00) < 현재가(USD 878.10) -> 1주도 매수 불가. buy_amount 상향 조정 필요
+2026-06-17 04:01:15,127 [INFO] >>> Processing 코닝(GLW)
+2026-06-17 04:01:15,127 [INFO]   [코닝(GLW)] 신호 없음 | Lv2 매수 USD 184.60 -> 현재 USD 178.27 (-3.43%) | 익절 +10.0% / 추매 -5.0%
+2026-06-17 04:01:15,128 [INFO] >>> Processing 알파벳 A(GOOGL)
+2026-06-17 04:01:15,128 [INFO]   [알파벳 A(GOOGL)] 신호 없음 | Lv2 매수 USD 369.66 -> 현재 USD 373.36 (+1.00%) | 익절 +10.0% / 추매 -5.0%
+2026-06-17 04:01:15,128 [INFO] >>> Processing 리얼티 인컴(O)
+2026-06-17 04:01:15,129 [INFO]   [리얼티 인컴(O)] 신호 없음 | Lv1 매수 USD 62.37 -> 현재 USD 61.85 (-0.83%) | 익절 +10.0% / 추매 -5.0%
+2026-06-17 04:01:15,129 [INFO] >>> Processing ISHARES GLOBAL CLEAN ENERGY(ICLN)
+2026-06-17 04:01:15,129 [INFO]   [ISHARES GLOBAL CLEAN ENERGY(ICLN)] 신호 없음 | Lv1 매수 USD 22.01 -> 현재 USD 20.95 (-4.84%) | 익절 +10.0% / 추매 -5.0%
+2026-06-17 04:01:15,129 [INFO] >>> Processing ARK INNOVATION(ARKK)
+2026-06-17 04:01:15,130 [INFO]   [ARK INNOVATION(ARKK)] 신호 없음 | Lv2 매수 USD 75.28 -> 현재 USD 79.70 (+5.87%) | 익절 +10.0% / 추매 -5.0%
+2026-06-17 04:01:15,130 [INFO] >>> Processing SCHWAB US DIVIDEND EQUITY(SCHD)
+2026-06-17 04:01:15,130 [INFO]   [SCHWAB US DIVIDEND EQUITY(SCHD)] 신호 없음 | Lv1 매수 USD 31.74 -> 현재 USD 32.53 (+2.50%) | 익절 +10.0% / 추매 -5.0%
+2026-06-17 04:01:15,130 [INFO] >>> Processing 듀크 에너지(DUK)
+2026-06-17 04:01:15,130 [INFO]   [듀크 에너지(DUK)] 신호 없음 | Lv1 매수 USD 124.92 -> 현재 USD 125.61 (+0.55%) | 익절 +10.0% / 추매 -5.0%
+2026-06-17 04:01:15,131 [INFO] >>> Processing 펩시코(PEP)
+2026-06-17 04:01:15,131 [INFO]   [펩시코(PEP)] 신호 없음 | Lv2 매수 USD 142.33 -> 현재 USD 146.16 (+2.69%) | 익절 +10.0% / 추매 -5.0%
+2026-06-17 04:01:15,131 [INFO] >>> Processing 프록터 앤드 갬블(PG)
+2026-06-17 04:01:15,131 [INFO]   [프록터 앤드 갬블(PG)] 신호 없음 | Lv1 매수 USD 142.81 -> 현재 USD 152.20 (+6.58%) | 익절 +10.0% / 추매 -5.0%
+2026-06-17 04:01:15,132 [INFO] >>> Processing 에이알엠 홀딩스(ADR)(ARM)
+2026-06-17 04:01:15,132 [INFO]   [에이알엠 홀딩스(ADR)(ARM)] 신호 없음 | Lv1 매수 USD 400.22 -> 현재 USD 411.60 (+2.84%) | 익절 +10.0% / 추매 -5.0%
+2026-06-17 04:01:15,132 [INFO] >>> Processing IBM
+2026-06-17 04:01:15,133 [INFO]   [IBM] 신호 없음 | Lv1 매수 USD 283.55 -> 현재 USD 271.48 (-4.26%) | 익절 +10.0% / 추매 -5.0%
+2026-06-17 04:01:15,133 [INFO] >>> Step 6: Persist
