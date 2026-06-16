@@ -130,6 +130,27 @@ class TestOrderRules:
         assert {r.ticker for r in ordered} == {"A", "B", "C", "D"}
         assert len(ordered) == 4
 
+    def test_shuffle_happens_every_cycle(self, mock_broker, mock_repo, mock_logger):
+        """run_one_cycle 호출마다 stock_rules 순서가 새로 셔플된다."""
+        rules = [self._make_rule(t) for t in ["A", "B", "C", "D", "E"]]
+        mock_broker.get_portfolio.return_value = MagicMock(
+            total_cash=0.0, holdings={}, current_prices={}
+        )
+        mock_broker.fetch_current_prices.return_value = {}
+        mock_repo.load_positions.return_value = []
+        eng = MagicSplitEngine(
+            broker=mock_broker, repo=mock_repo,
+            logger=mock_logger, stock_rules=rules,
+        )
+        seen_orders = set()
+        for _ in range(30):
+            try:
+                eng.run_one_cycle()
+            except Exception:
+                pass
+            seen_orders.add(tuple(r.ticker for r in eng.stock_rules))
+        assert len(seen_orders) > 1, "매 사이클 셔플이 일어나지 않음"
+
 
 class TestRunOneCycle:
     def test_engine_continues_on_rule_error(self, mock_broker, mock_repo, mock_logger):

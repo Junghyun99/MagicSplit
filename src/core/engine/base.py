@@ -52,7 +52,7 @@ class MagicSplitEngine:
         # 레짐 지표용 시세 제공자 (실행 브로커와 분리). None이면 레짐 비활성(현 라이브).
         self.market_data = market_data
         self.evaluator = SplitEvaluator(logger=logger)
-        self.stock_rules = self._order_rules([r for r in stock_rules if r.enabled])
+        self.stock_rules = [r for r in stock_rules if r.enabled]
         self.all_tickers = [r.ticker for r in self.stock_rules]
         self.notifier = notifier
         self.is_live_trading = is_live_trading
@@ -69,15 +69,15 @@ class MagicSplitEngine:
         priority=None 인 종목은 가장 마지막 그룹에서 랜덤 처리된다.
         """
         import random
-        groups: dict = {}
-        no_priority: list = []
+        groups: Dict[int, List[StockRule]] = {}
+        no_priority: List[StockRule] = []
         for r in rules:
             if r.priority is not None:
                 groups.setdefault(r.priority, []).append(r)
             else:
                 no_priority.append(r)
 
-        ordered: list = []
+        ordered: List[StockRule] = []
         for level in sorted(groups.keys()):
             group = groups[level]
             random.shuffle(group)
@@ -100,6 +100,7 @@ class MagicSplitEngine:
             DayResult: 사이클 실행 결과
         """
         today = sim_date or datetime.now().strftime("%Y-%m-%d")
+        self.stock_rules = self._order_rules(self.stock_rules)
 
         all_signals: List[SplitSignal] = []
         all_executions: List[TradeExecution] = []
