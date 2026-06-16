@@ -1,0 +1,47 @@
+2026-06-16 10:00:56,848 [INFO] === Initializing MagicSplit Bot (domestic) ===
+2026-06-16 10:00:56,848 [INFO] Loaded 18 stock rule(s) from config_domestic.json
+2026-06-16 10:00:56,848 [INFO] [domestic] 17 rule(s), mode=LIVE
+2026-06-16 10:00:56,849 [INFO] [KisBroker] 새 토큰 발급 중...
+2026-06-16 10:00:57,973 [INFO] [KisDomesticLiveBroker] Mode: LIVE TRADING
+2026-06-16 10:00:57,974 [INFO] === Running domestic engine ===
+2026-06-16 10:00:57,974 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-06-16 10:00:58,611 [INFO] Fetching real-time prices from Broker...
+2026-06-16 10:01:03,841 [INFO] Portfolio: Cash=KRW 34,386, Value=KRW 30,221,201
+2026-06-16 10:01:03,842 [INFO] >>> Step 2: Load Positions
+2026-06-16 10:01:03,842 [INFO] Loaded 28 position lot(s)
+2026-06-16 10:01:03,843 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-06-16 10:01:03,843 [INFO] >>> Processing 삼성전자(005930)
+2026-06-16 10:01:03,844 [INFO]   [삼성전자(005930)] 신호 없음 | Lv1 매수 KRW 303,000 -> 현재 KRW 336,500 (+11.06%) | 익절 +10.0% / 추매 -5.0%
+2026-06-16 10:01:03,844 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-06-16 10:01:03,844 [INFO]   [ACE 엔비디아밸류체인액티브(483320)] 신호 없음 | Lv1 매수 KRW 29,460 -> 현재 KRW 30,995 (+5.21%) | 익절 +10.0% / 추매 -5.0%
+2026-06-16 10:01:03,845 [INFO] >>> Processing 현대차(005380)
+2026-06-16 10:01:03,845 [INFO]   [현대차(005380)] 신호 없음 | Lv3 매수 KRW 591,000 -> 현재 KRW 631,500 (+6.85%) | 익절 +10.0% / 추매 -5.0%
+2026-06-16 10:01:03,845 [INFO] >>> Processing 미래에셋증권(006800)
+2026-06-16 10:01:03,846 [INFO]   [미래에셋증권(006800)] 신호 없음 | Lv4 매수 KRW 51,000 -> 현재 KRW 53,300 (+4.51%) | 익절 +10.0% / 추매 -5.0%
+2026-06-16 10:01:03,846 [INFO] >>> Processing KODEX 증권(102970)
+2026-06-16 10:01:03,846 [INFO] [KODEX 증권(102970)] Lv2: trailing 고점 갱신 -> KRW 25,660 (스톱가 KRW 24,377)
+2026-06-16 10:01:03,847 [INFO]   [KODEX 증권(102970)] 신호 없음 | Lv2 매수 KRW 22,765 -> 현재 KRW 25,660 (+12.72%) | 익절 +10.0% / 추매 -5.0%
+2026-06-16 10:01:03,847 [INFO] >>> Processing TIGER 지주회사(307520)
+2026-06-16 10:01:03,847 [INFO] [TIGER 지주회사(307520)] Lv2: trailing 고점 갱신 -> KRW 25,835 (스톱가 KRW 24,543)
+2026-06-16 10:01:03,847 [INFO]   [TIGER 지주회사(307520)] 신호 없음 | Lv2 매수 KRW 23,050 -> 현재 KRW 25,835 (+12.08%) | 익절 +10.0% / 추매 -5.0%
+2026-06-16 10:01:03,848 [INFO] >>> Processing 메리츠금융지주(138040)
+2026-06-16 10:01:03,848 [INFO] [메리츠금융지주(138040)] Lv2: trailing 고점 갱신 -> KRW 114,700 (스톱가 KRW 108,965)
+2026-06-16 10:01:03,848 [INFO]   [메리츠금융지주(138040)] 신호 없음 | Lv2 매수 KRW 102,300 -> 현재 KRW 114,700 (+12.12%) | 익절 +10.0% / 추매 -5.0%
+2026-06-16 10:01:03,849 [INFO] >>> Processing KODEX 미국S&P500에너지(합성)(218420)
+2026-06-16 10:01:03,849 [INFO]   [KODEX 미국S&P500에너지(합성)(218420)] 신호 없음 | Lv2 매수 KRW 19,905 -> 현재 KRW 19,455 (-2.26%) | 익절 +10.0% / 추매 -5.0%
+2026-06-16 10:01:03,849 [INFO] >>> Processing KODEX 미국S&P500금융(453650)
+2026-06-16 10:01:03,850 [INFO]   [KODEX 미국S&P500금융(453650)] 신호 없음 | Lv1 매수 KRW 18,975 -> 현재 KRW 19,660 (+3.61%) | 익절 +10.0% / 추매 -5.0%
+2026-06-16 10:01:03,850 [INFO] >>> Processing KODEX 미국S&P500필수소비재(453630)
+2026-06-16 10:01:03,850 [INFO]   [KODEX 미국S&P500필수소비재(453630)] 신호 없음 | Lv1 매수 KRW 13,600 -> 현재 KRW 13,520 (-0.59%) | 익절 +10.0% / 추매 -5.0%
+2026-06-16 10:01:03,850 [INFO] >>> Processing ACE 테슬라밸류체인액티브(457480)
+2026-06-16 10:01:03,851 [INFO]   [ACE 테슬라밸류체인액티브(457480)] 신호 없음 | Lv1 매수 KRW 23,625 -> 현재 KRW 24,000 (+1.59%) | 익절 +10.0% / 추매 -5.0%
+2026-06-16 10:01:03,851 [INFO] >>> Processing SOL 반도체전공정(475300)
+2026-06-16 10:01:03,851 [INFO] [SOL 반도체전공정(475300)] trailing 벌크 매도 발동: Lv1~Lv2 63주 (+21.4%)
+2026-06-16 10:01:03,851 [INFO] Executing 1 order(s)...
+2026-06-16 10:01:03,851 [INFO] [KisBroker] Processing 1 SELL orders...
+2026-06-16 10:01:04,953 [INFO] [KisDomestic] Order Sent: SELL SOL 반도체전공정(475300) 63 @ 28360 (ODNO=0016018000)
+2026-06-16 10:01:05,361 [INFO] [KisDomestic] Order FILLED: SOL 반도체전공정(475300) ODNO=0016018000 price=28363.0 qty=63 fee=268.0335
+2026-06-16 10:01:05,562 [INFO] [Position] Trailing 벌크 청산: SOL 반도체전공정(475300) 63주 소진 (잔여 0주), 실현손익 KRW 313,196
+2026-06-16 10:01:08,957 [ERROR] [SOL 반도체전공정(475300)] 포트폴리오 갱신 실패 — 나머지 종목 처리 중단: [KisDomestic] Error getting portfolio: 500 Server Error: Internal Server Error for url: https://openapi.koreainvestment.com:9443/uapi/domestic-stock/v1/trading/inquire-balance?CANO=73297247&ACNT_PRDT_CD=01&AFHR_FLPR_YN=N&OFL_YN=&INQR_DVSN=01&UNPR_DVSN=01&FUND_STTL_ICLD_YN=N&FNCG_AMT_AUTO_RDPT_YN=N&PRCS_DVSN=00&CTX_AREA_FK100=&CTX_AREA_NK100=
+2026-06-16 10:01:09,141 [INFO] >>> Step 6: Persist
+2026-06-16 10:01:10,175 [INFO] [Step 6] 포트폴리오 재조회 성공.

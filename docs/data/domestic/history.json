@@ -982,5 +982,44 @@
                 "alias": "KoAct 글로벌AI메모리반도체액티브"
             }
         ]
+    },
+    {
+        "id": "tx_20260616_100110",
+        "date": "2026-06-16 10:01:10",
+        "portfolio_value": 30210066.0,
+        "total_trade_amount": 1786869.0,
+        "reason": "SOL 반도체전공정(475300):SELL(trailing 벌크 매도 Lv1~Lv2 (63주 +21.4%))",
+        "executions": [
+            {
+                "ticker": "475300",
+                "action": "SELL",
+                "quantity": 22,
+                "price": 28363.0,
+                "fee": 268.0335,
+                "date": "2026-06-16 10:01:05",
+                "status": "FILLED",
+                "reason": "ODNO=0016018000",
+                "lot_id": "lot_20260608_142130_475300_002",
+                "level": 2,
+                "buy_price": 22050.0,
+                "realized_pnl": 138792.4,
+                "alias": "SOL 반도체전공정"
+            },
+            {
+                "ticker": "475300",
+                "action": "SELL",
+                "quantity": 41,
+                "price": 28363.0,
+                "fee": 268.0335,
+                "date": "2026-06-16 10:01:05",
+                "status": "FILLED",
+                "reason": "ODNO=0016018000",
+                "lot_id": "lot_20260528_094543_475300_001",
+                "level": 1,
+                "buy_price": 24105.0,
+                "realized_pnl": 174403.57,
+                "alias": "SOL 반도체전공정"
+            }
+        ]
     }
 ]
