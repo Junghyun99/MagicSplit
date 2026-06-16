@@ -229,6 +229,9 @@ class StrategyConfig:
                 float(max_exposure_raw) if max_exposure_raw is not None else None
             )
 
+            priority_raw = merged.get("priority")
+            priority = int(priority_raw) if priority_raw is not None else None
+
             # trailing_drop_pct: 개별 설정 > 글로벌 설정 > None(비활성)
             trailing_drop_raw = merged.get("trailing_drop_pct", global_trailing_drop)
             trailing_drop_pct = (
@@ -253,6 +256,7 @@ class StrategyConfig:
                 trailing_drop_pct=trailing_drop_pct,
                 trailing_drop_pcts=[float(x) for x in trailing_drops] if trailing_drops else None,
                 max_exposure_pct=max_exposure_pct,
+                priority=priority,
                 **regime_kwargs,
             )
             self.rules.append(rule)

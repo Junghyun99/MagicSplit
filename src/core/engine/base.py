@@ -52,7 +52,7 @@ class MagicSplitEngine:
         # 레짐 지표용 시세 제공자 (실행 브로커와 분리). None이면 레짐 비활성(현 라이브).
         self.market_data = market_data
         self.evaluator = SplitEvaluator(logger=logger)
-        self.stock_rules = [r for r in stock_rules if r.enabled]
+        self.stock_rules = self._order_rules([r for r in stock_rules if r.enabled])
         self.all_tickers = [r.ticker for r in self.stock_rules]
         self.notifier = notifier
         self.is_live_trading = is_live_trading
@@ -60,6 +60,32 @@ class MagicSplitEngine:
         self.all_stock_rules = list(stock_rules)
         # 한 사이클의 모든 종목은 동일 market_type. 로그 통화 분기에 사용.
         self.market_type = self.stock_rules[0].market_type if self.stock_rules else "overseas"
+
+    @staticmethod
+    def _order_rules(rules: List[StockRule]) -> List[StockRule]:
+        """priority 기준으로 처리 순서를 결정한다.
+
+        priority 숫자가 작을수록 먼저 처리되며, 같은 priority 내에서는 랜덤 셔플.
+        priority=None 인 종목은 가장 마지막 그룹에서 랜덤 처리된다.
+        """
+        import random
+        groups: dict = {}
+        no_priority: list = []
+        for r in rules:
+            if r.priority is not None:
+                groups.setdefault(r.priority, []).append(r)
+            else:
+                no_priority.append(r)
+
+        ordered: list = []
+        for level in sorted(groups.keys()):
+            group = groups[level]
+            random.shuffle(group)
+            ordered.extend(group)
+
+        random.shuffle(no_priority)
+        ordered.extend(no_priority)
+        return ordered
 
     def run_one_cycle(self, sim_date: Optional[str] = None) -> DayResult:
         """하루치 매매 사이클 전체를 실행한다.
