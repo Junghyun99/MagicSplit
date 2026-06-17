@@ -1042,5 +1042,44 @@
                 "alias": "SOL 반도체전공정"
             }
         ]
+    },
+    {
+        "id": "tx_20260617_100119",
+        "date": "2026-06-17 10:01:19",
+        "portfolio_value": 30052143.0,
+        "total_trade_amount": 1574500.0,
+        "reason": "테스(095610):SKIP(현금 부족: 보유 현금 KRW 828,101 < 매수 예정 금액 KRW 867,000 (5주)), NAVER(035420):SELL(trailing 벌크 매도 Lv1~Lv1 (4주 +5.7%)), 현대차(005380):SELL(trailing 벌크 매도 Lv3~Lv3 (1주 +4.3%))",
+        "executions": [
+            {
+                "ticker": "035420",
+                "action": "SELL",
+                "quantity": 4,
+                "price": 239500.0,
+                "fee": 143.7,
+                "date": "2026-06-17 10:01:10",
+                "status": "FILLED",
+                "reason": "ODNO=0013787300",
+                "lot_id": "lot_20260610_140829_035420_001",
+                "level": 1,
+                "buy_price": 226500.0,
+                "realized_pnl": 51856.3,
+                "alias": "NAVER"
+            },
+            {
+                "ticker": "005380",
+                "action": "SELL",
+                "quantity": 1,
+                "price": 616500.0,
+                "fee": 92.475,
+                "date": "2026-06-17 10:01:15",
+                "status": "FILLED",
+                "reason": "ODNO=0013794200",
+                "lot_id": "lot_20260610_140822_005380_003",
+                "level": 3,
+                "buy_price": 591000.0,
+                "realized_pnl": 25407.53,
+                "alias": "현대차"
+            }
+        ]
     }
 ]
