@@ -1081,5 +1081,38 @@
                 "alias": "현대차"
             }
         ]
+    },
+    {
+        "id": "tx_20260617_120118",
+        "date": "2026-06-17 12:01:18",
+        "portfolio_value": 30230758.0,
+        "total_trade_amount": 1826000.0,
+        "reason": "테스(095610):BUY(초기 매수 Lv1), NAVER(035420):BUY(초기 매수 Lv1)",
+        "executions": [
+            {
+                "ticker": "095610",
+                "action": "BUY",
+                "quantity": 5,
+                "price": 169200.0,
+                "fee": 126.89999999999999,
+                "date": "2026-06-17 12:01:08",
+                "status": "FILLED",
+                "reason": "ODNO=0020810800",
+                "level": 1,
+                "alias": "테스"
+            },
+            {
+                "ticker": "035420",
+                "action": "BUY",
+                "quantity": 4,
+                "price": 245000.0,
+                "fee": 147.0,
+                "date": "2026-06-17 12:01:14",
+                "status": "FILLED",
+                "reason": "ODNO=0020814600",
+                "level": 1,
+                "alias": "NAVER"
+            }
+        ]
     }
 ]
