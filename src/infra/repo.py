@@ -166,6 +166,7 @@ class JsonRepository(IRepository):
             "id": tx_id,
             "date": date_str,
             "portfolio_value": portfolio.total_value,
+            "cash_balance": portfolio.total_cash,
             "total_trade_amount": trade_amt,
             "reason": reason,
             "executions": enriched_execs,

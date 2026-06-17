@@ -122,7 +122,25 @@ window.ChartsView = (function () {
 
         const initialValue = pts[0].value;
         const currentValue = pts[pts.length - 1].value;
-        const returnPct = ((currentValue - initialValue) / initialValue) * 100;
+
+        // Use TWR (Time-Weighted Return) when cash_balance data is available to exclude
+        // the effect of deposits/withdrawals. Falls back to simple change rate otherwise.
+        const hasCashFlowData = pts.every(p => p.netDeposit != null);
+        let returnPct;
+        if (hasCashFlowData) {
+            let twr = 1.0;
+            for (let i = 1; i < pts.length; i++) {
+                const startVal = pts[i - 1].value;
+                if (startVal === 0) continue;
+                // period_return = (V_end - V_start - external_deposit) / V_start
+                const periodReturn = (pts[i].value - startVal - (pts[i].netDeposit || 0)) / startVal;
+                twr *= (1 + periodReturn);
+            }
+            returnPct = (twr - 1) * 100;
+        } else {
+            returnPct = ((currentValue - initialValue) / initialValue) * 100;
+        }
+        const returnLabel = hasCashFlowData ? '수익률(TWR)' : '자산변동률';
         const returnSign = returnPct >= 0 ? '+' : '';
         const lineColor = returnPct >= 0 ? '#16a34a' : '#dc2626';
 
@@ -173,9 +191,9 @@ window.ChartsView = (function () {
 
         container.innerHTML = `
             <div class="ec-summary">
-                <span class="ec-label">수익률</span>
+                <span class="ec-label">${esc(returnLabel)}</span>
                 <span class="ec-return" style="color:${lineColor}">${returnSign}${returnPct.toFixed(2)}%</span>
-                <span class="ec-detail">(${esc(pts[0].date)} ${esc(fmtVal(initialValue))} → ${esc(pts[pts.length - 1].date)} ${esc(fmtVal(currentValue))})</span>
+                <span class="ec-detail">(${esc(pts[0].date)} ${esc(fmtVal(initialValue))} -> ${esc(pts[pts.length - 1].date)} ${esc(fmtVal(currentValue))})</span>
             </div>
             <svg viewBox="0 0 ${W} ${H}" class="equity-curve-svg" role="img" aria-label="자산 곡선">
                 <defs>

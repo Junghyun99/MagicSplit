@@ -110,10 +110,38 @@ window.HistoryModel = (function () {
         const pts = [];
         for (const tx of historyData) {
             if (tx && tx.date && tx.portfolio_value != null) {
-                pts.push({ date: tx.date, value: Number(tx.portfolio_value) });
+                pts.push({
+                    date: tx.date,
+                    value: Number(tx.portfolio_value),
+                    cashBalance: tx.cash_balance != null ? Number(tx.cash_balance) : null,
+                    executions: Array.isArray(tx.executions) ? tx.executions : [],
+                });
             }
         }
         pts.sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : 0));
+
+        // Detect external cash flows (deposits/withdrawals) between consecutive records.
+        // net_deposit[i] = actual cash change minus what trades alone explain.
+        // Formula: deposit = cash[i] - cash[i-1] - trade_cash_impact
+        //   BUY  cash impact: -(price * qty + fee)
+        //   SELL cash impact: +(price * qty - fee)
+        for (let i = 1; i < pts.length; i++) {
+            const prev = pts[i - 1];
+            const curr = pts[i];
+            if (prev.cashBalance == null || curr.cashBalance == null) continue;
+            let tradeCashImpact = 0;
+            for (const ex of curr.executions) {
+                const action = (ex.action || '').toUpperCase();
+                const qty = ex.quantity || 0;
+                const price = ex.price || 0;
+                const fee = ex.fee || 0;
+                if (action === 'BUY') tradeCashImpact -= qty * price + fee;
+                else if (action === 'SELL') tradeCashImpact += qty * price - fee;
+            }
+            curr.netDeposit = curr.cashBalance - prev.cashBalance - tradeCashImpact;
+        }
+        if (pts.length > 0 && pts[0].cashBalance != null) pts[0].netDeposit = 0;
+
         return pts;
     }
 
