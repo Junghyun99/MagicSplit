@@ -125,7 +125,7 @@ window.ChartsView = (function () {
 
         // Use TWR (Time-Weighted Return) when cash_balance data is available to exclude
         // the effect of deposits/withdrawals. Falls back to simple change rate otherwise.
-        const hasCashFlowData = pts.every(p => p.netDeposit != null);
+        const hasCashFlowData = pts.every(p => p.netDeposit != null && !isNaN(p.netDeposit));
         let returnPct;
         if (hasCashFlowData) {
             let twr = 1.0;

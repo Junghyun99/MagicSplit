@@ -132,9 +132,9 @@ window.HistoryModel = (function () {
             let tradeCashImpact = 0;
             for (const ex of curr.executions) {
                 const action = (ex.action || '').toUpperCase();
-                const qty = ex.quantity || 0;
-                const price = ex.price || 0;
-                const fee = ex.fee || 0;
+                const qty = Number(ex.quantity) || 0;
+                const price = Number(ex.price) || 0;
+                const fee = Number(ex.fee) || 0;
                 if (action === 'BUY') tradeCashImpact -= qty * price + fee;
                 else if (action === 'SELL') tradeCashImpact += qty * price - fee;
             }
