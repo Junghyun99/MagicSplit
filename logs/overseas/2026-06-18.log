@@ -1,0 +1,53 @@
+2026-06-18 00:01:11,268 [INFO] === Initializing MagicSplit Bot (overseas) ===
+2026-06-18 00:01:11,268 [INFO] Loaded 20 stock rule(s) from config_overseas.json
+2026-06-18 00:01:11,268 [INFO] [overseas] 15 rule(s), mode=LIVE
+2026-06-18 00:01:11,269 [INFO] [KisBroker] 캐시에서 토큰 로드 (API 호출 생략)
+2026-06-18 00:01:11,269 [INFO] [KisOverseasLiveBroker] Mode: LIVE TRADING
+2026-06-18 00:01:11,269 [INFO] === Running overseas engine ===
+2026-06-18 00:01:11,269 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-06-18 00:01:13,465 [INFO] Fetching real-time prices from Broker...
+2026-06-18 00:01:19,358 [INFO] Portfolio: Cash=USD 2,251.34, Value=USD 13,034.41
+2026-06-18 00:01:19,358 [INFO] >>> Step 2: Load Positions
+2026-06-18 00:01:19,358 [INFO] Loaded 21 position lot(s)
+2026-06-18 00:01:19,359 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-06-18 00:01:19,360 [INFO] >>> Processing IBM
+2026-06-18 00:01:19,360 [INFO] [IBM] Lv1 매수가 USD 283.55 대비 -7.0% -> 추가 매수 Lv2 1주 @USD 263.80
+2026-06-18 00:01:19,360 [INFO] Executing 1 order(s)...
+2026-06-18 00:01:20,987 [INFO] [KisBroker] Available Cash for BUY: 2,251
+2026-06-18 00:01:22,406 [INFO] [KisBroker] Order Sent: BUY IBM 1 @ 263.88 (ODNO=0031129240)
+2026-06-18 00:01:24,994 [INFO] [KisBroker] Order FILLED: IBM ODNO=0031129240 price=263.88 qty=1 fee=0.0
+2026-06-18 00:01:25,195 [INFO] [Position] New lot: lot_20260618_000125_IBM_002 Lv2 IBM 1주 @USD 263.88
+2026-06-18 00:01:29,829 [INFO] >>> Processing 알파벳 A(GOOGL)
+2026-06-18 00:01:29,830 [INFO]   [알파벳 A(GOOGL)] 신호 없음 | Lv2 매수 USD 369.66 -> 현재 USD 363.45 (-1.68%) | 익절 +10.0% / 추매 -5.0%
+2026-06-18 00:01:29,830 [INFO] >>> Processing 듀크 에너지(DUK)
+2026-06-18 00:01:29,830 [INFO]   [듀크 에너지(DUK)] 신호 없음 | Lv1 매수 USD 124.92 -> 현재 USD 125.05 (+0.10%) | 익절 +10.0% / 추매 -5.0%
+2026-06-18 00:01:29,831 [INFO] >>> Processing SCHWAB US DIVIDEND EQUITY(SCHD)
+2026-06-18 00:01:29,831 [INFO]   [SCHWAB US DIVIDEND EQUITY(SCHD)] 신호 없음 | Lv1 매수 USD 31.74 -> 현재 USD 32.40 (+2.06%) | 익절 +10.0% / 추매 -5.0%
+2026-06-18 00:01:29,831 [INFO] >>> Processing 프록터 앤드 갬블(PG)
+2026-06-18 00:01:29,831 [INFO]   [프록터 앤드 갬블(PG)] 신호 없음 | Lv1 매수 USD 142.81 -> 현재 USD 152.00 (+6.44%) | 익절 +10.0% / 추매 -5.0%
+2026-06-18 00:01:29,832 [INFO] >>> Processing 에이알엠 홀딩스(ADR)(ARM)
+2026-06-18 00:01:29,832 [INFO]   [에이알엠 홀딩스(ADR)(ARM)] 신호 없음 | Lv1 매수 USD 400.22 -> 현재 USD 418.59 (+4.59%) | 익절 +10.0% / 추매 -5.0%
+2026-06-18 00:01:29,832 [INFO] >>> Processing ISHARES GLOBAL CLEAN ENERGY(ICLN)
+2026-06-18 00:01:29,832 [INFO] [ISHARES GLOBAL CLEAN ENERGY(ICLN)] Lv1 매수가 USD 22.01 대비 -5.3% -> 추가 매수 Lv2 23주 @USD 20.85
+2026-06-18 00:01:29,833 [INFO] Executing 1 order(s)...
+2026-06-18 00:01:31,468 [INFO] [KisBroker] Available Cash for BUY: 1,988
+2026-06-18 00:01:32,894 [INFO] [KisBroker] Order Sent: BUY ISHARES GLOBAL CLEAN ENERGY(ICLN) 23 @ 20.86 (ODNO=0031129349)
+2026-06-18 00:01:35,476 [INFO] [KisBroker] Order FILLED: ISHARES GLOBAL CLEAN ENERGY(ICLN) ODNO=0031129349 price=20.86 qty=23 fee=0.0
+2026-06-18 00:01:35,677 [INFO] [Position] New lot: lot_20260618_000135_ICLN_002 Lv2 ISHARES GLOBAL CLEAN ENERGY(ICLN) 23주 @USD 20.86
+2026-06-18 00:01:40,321 [INFO] >>> Processing 루멘텀 홀딩스(LITE)
+2026-06-18 00:01:40,322 [INFO] [루멘텀 홀딩스(LITE)] buy_amount(USD 500.00) < 현재가(USD 870.00) -> 1주도 매수 불가. buy_amount 상향 조정 필요
+2026-06-18 00:01:40,674 [INFO] >>> Processing 애플(AAPL)
+2026-06-18 00:01:40,675 [INFO]   [애플(AAPL)] 신호 없음 | Lv1 매수 USD 291.90 -> 현재 USD 298.11 (+2.13%) | 익절 +10.0% / 추매 -5.0%
+2026-06-18 00:01:40,675 [INFO] >>> Processing 펩시코(PEP)
+2026-06-18 00:01:40,675 [INFO]   [펩시코(PEP)] 신호 없음 | Lv2 매수 USD 142.33 -> 현재 USD 144.42 (+1.47%) | 익절 +10.0% / 추매 -5.0%
+2026-06-18 00:01:40,675 [INFO] >>> Processing 테슬라(TSLA)
+2026-06-18 00:01:40,676 [INFO]   [테슬라(TSLA)] 신호 없음 | Lv3 매수 USD 409.90 -> 현재 USD 399.30 (-2.59%) | 익절 +10.0% / 추매 -5.0%
+2026-06-18 00:01:40,676 [INFO] >>> Processing ARK INNOVATION(ARKK)
+2026-06-18 00:01:40,676 [INFO]   [ARK INNOVATION(ARKK)] 신호 없음 | Lv2 매수 USD 75.28 -> 현재 USD 80.02 (+6.30%) | 익절 +10.0% / 추매 -5.0%
+2026-06-18 00:01:40,677 [INFO] >>> Processing 브로드컴(AVGO)
+2026-06-18 00:01:40,677 [INFO]   [브로드컴(AVGO)] 신호 없음 | Lv1 매수 USD 382.60 -> 현재 USD 394.01 (+2.98%) | 익절 +10.0% / 추매 -5.0%
+2026-06-18 00:01:40,677 [INFO] >>> Processing 코닝(GLW)
+2026-06-18 00:01:40,677 [INFO]   [코닝(GLW)] 신호 없음 | Lv2 매수 USD 184.60 -> 현재 USD 175.80 (-4.77%) | 익절 +10.0% / 추매 -5.0%
+2026-06-18 00:01:40,678 [INFO] >>> Processing 리얼티 인컴(O)
+2026-06-18 00:01:40,678 [INFO]   [리얼티 인컴(O)] 신호 없음 | Lv1 매수 USD 62.37 -> 현재 USD 61.35 (-1.64%) | 익절 +10.0% / 추매 -5.0%
+2026-06-18 00:01:40,678 [INFO] >>> Step 6: Persist
