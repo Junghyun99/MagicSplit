@@ -62,7 +62,16 @@ PATH = "docs/data/domestic/history.json"
 with open(PATH, "r", encoding="utf-8") as f:
     records = json.load(f)
 
-records.sort(key=lambda r: r["date"])
+# May 11: 09:38 morning trade happened FIRST; the 00:39-00:43 midnight trades
+# happened the NEXT night. Date strings sort wrongly (00:xx < 09:xx), so we
+# assign explicit sequence keys for these four records.
+SORT_OVERRIDE = {
+    "tx_20260511_093805": "2026-05-11 A",  # morning first
+    "tx_20260511_003940": "2026-05-11 B",  # midnight second
+    "tx_20260511_004126": "2026-05-11 C",
+    "tx_20260511_004308": "2026-05-11 D",
+}
+records.sort(key=lambda r: SORT_OVERRIDE.get(r["id"], r["date"]))
 
 prev_cash = None
 print(f"{'ID':<30} {'before':>12} {'trade':>14} {'cash_bal':>14} {'net_dep':>12}")

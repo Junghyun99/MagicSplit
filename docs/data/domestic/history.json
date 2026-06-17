@@ -1,5 +1,28 @@
 [
     {
+        "id": "tx_20260511_093805",
+        "date": "2026-05-11 09:38:05",
+        "portfolio_value": 1082786.0,
+        "total_trade_amount": 280720.0,
+        "reason": "ACE 엔비디아밸류체인액티브(483320):BUY(초기 매수 Lv1)",
+        "executions": [
+            {
+                "ticker": "483320",
+                "action": "BUY",
+                "quantity": 11,
+                "price": 25520.0,
+                "fee": 42.108,
+                "date": "2026-05-11 09:38:01",
+                "status": "FILLED",
+                "reason": "ODNO=0015302200",
+                "level": 1,
+                "alias": "ACE 엔비디아밸류체인액티브"
+            }
+        ],
+        "cash_balance": 802063.89,
+        "net_deposit": 0.0
+    },
+    {
         "id": "tx_20260511_003940",
         "date": "2026-05-11 00:39:40",
         "portfolio_value": 1082691.0,
@@ -20,7 +43,7 @@
             }
         ],
         "cash_balance": 521358.9,
-        "net_deposit": 0.0
+        "net_deposit": 2.11
     },
     {
         "id": "tx_20260511_004126",
@@ -75,29 +98,6 @@
         "net_deposit": 2.09
     },
     {
-        "id": "tx_20260511_093805",
-        "date": "2026-05-11 09:38:05",
-        "portfolio_value": 1082786.0,
-        "total_trade_amount": 280720.0,
-        "reason": "ACE 엔비디아밸류체인액티브(483320):BUY(초기 매수 Lv1)",
-        "executions": [
-            {
-                "ticker": "483320",
-                "action": "BUY",
-                "quantity": 11,
-                "price": 25520.0,
-                "fee": 42.108,
-                "date": "2026-05-11 09:38:01",
-                "status": "FILLED",
-                "reason": "ODNO=0015302200",
-                "level": 1,
-                "alias": "ACE 엔비디아밸류체인액티브"
-            }
-        ],
-        "cash_balance": 802063.89,
-        "net_deposit": 272.1
-    },
-    {
         "id": "tx_20260518_095353",
         "date": "2026-05-18 09:53:53",
         "portfolio_value": 1082446.0,
@@ -118,7 +118,7 @@
             }
         ],
         "cash_balance": 260432.7,
-        "net_deposit": 280492.11
+        "net_deposit": 2.1
     },
     {
         "id": "tx_20260519_143406",
