@@ -27,8 +27,8 @@ BEFORE_CASH = {
     "tx_20260528_145652": 15570299.0,  # before May 28 afternoon SELL
     "tx_20260529_090500": 16604784.0,  # before May 29 morning BUYs (-8M withdrawal not yet applied)
     "tx_20260529_150018": 6740534.0,   # before May 29 afternoon BUY (-8M withdrawal already applied)
-    "tx_20260602_024338": 6259879.0,   # API fail; Available Cash used as proxy
-    "tx_20260602_090631": 6259879.0,   # D+2 before auto trades (02:43 BUY not yet settled in D+2)
+    "tx_20260602_090631": 6259879.0,   # D+2 before Jun 2 auto trades (midnight 02:43 BUY not yet settled)
+    "tx_20260602_024338": 4302580.45,  # cash after 090631 trades; D+2=6.26M still unsettled, use computed value
     "tx_20260604_142946": 2304074.0,   # before Jun 4 SELL
     "tx_20260605_104902": 3008572.0,   # before Jun 5 morning SELLs
     "tx_20260605_140617": 8352730.0,   # before Jun 5 afternoon BUYs

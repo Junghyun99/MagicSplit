@@ -553,29 +553,6 @@
         "net_deposit": -7999970.4
     },
     {
-        "id": "tx_20260602_024338",
-        "date": "2026-06-02 02:43:38",
-        "portfolio_value": 24020334.0,
-        "total_trade_amount": 1998240.0,
-        "reason": "SOL 반도체전공정(475300):BUY(수동 매매(Manual Trade))",
-        "executions": [
-            {
-                "ticker": "475300",
-                "action": "BUY",
-                "quantity": 92,
-                "price": 21720.0,
-                "fee": 299.736,
-                "date": "2026-06-02 02:43:35",
-                "status": "FILLED",
-                "reason": "ODNO=0034181900",
-                "level": 4,
-                "alias": "SOL 반도체전공정"
-            }
-        ],
-        "cash_balance": 4261339.26,
-        "net_deposit": 2.09
-    },
-    {
         "id": "tx_20260602_090631",
         "date": "2026-06-02 09:06:31",
         "portfolio_value": 25205644.0,
@@ -620,7 +597,30 @@
             }
         ],
         "cash_balance": 4302580.45,
-        "net_deposit": 1998539.74
+        "net_deposit": 2.09
+    },
+    {
+        "id": "tx_20260602_024338",
+        "date": "2026-06-02 02:43:38",
+        "portfolio_value": 24020334.0,
+        "total_trade_amount": 1998240.0,
+        "reason": "SOL 반도체전공정(475300):BUY(수동 매매(Manual Trade))",
+        "executions": [
+            {
+                "ticker": "475300",
+                "action": "BUY",
+                "quantity": 92,
+                "price": 21720.0,
+                "fee": 299.736,
+                "date": "2026-06-02 02:43:35",
+                "status": "FILLED",
+                "reason": "ODNO=0034181900",
+                "level": 4,
+                "alias": "SOL 반도체전공정"
+            }
+        ],
+        "cash_balance": 2304040.71,
+        "net_deposit": 0.0
     },
     {
         "id": "tx_20260604_142946",
@@ -646,7 +646,7 @@
             }
         ],
         "cash_balance": 3009968.1,
-        "net_deposit": -1998506.45
+        "net_deposit": 33.29
     },
     {
         "id": "tx_20260605_104902",
