@@ -70,3 +70,51 @@
 2026-06-19 00:12:07,815 [INFO] [Position] Remove lot: lot_20260619_000134_IBM_003 Lv3 (2주 전량 매도)
 2026-06-19 00:12:12,375 [INFO] >>> Step 6: Persist
 2026-06-19 00:12:12,688 [INFO] === Manual Trade 완료 ===
+2026-06-19 02:00:59,313 [INFO] === Initializing MagicSplit Bot (overseas) ===
+2026-06-19 02:00:59,313 [INFO] Loaded 21 stock rule(s) from config_overseas.json
+2026-06-19 02:00:59,313 [INFO] [overseas] 15 rule(s), mode=LIVE
+2026-06-19 02:00:59,313 [INFO] [KisBroker] 캐시에서 토큰 로드 (API 호출 생략)
+2026-06-19 02:00:59,313 [INFO] [KisOverseasLiveBroker] Mode: LIVE TRADING
+2026-06-19 02:00:59,314 [INFO] === Running overseas engine ===
+2026-06-19 02:00:59,314 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-06-19 02:01:01,513 [INFO] Fetching real-time prices from Broker...
+2026-06-19 02:01:07,441 [INFO] Portfolio: Cash=USD 1,115.07, Value=USD 13,016.66
+2026-06-19 02:01:07,441 [INFO] >>> Step 2: Load Positions
+2026-06-19 02:01:07,442 [INFO] Loaded 24 position lot(s)
+2026-06-19 02:01:07,443 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-06-19 02:01:07,443 [INFO] >>> Processing 코닝(GLW)
+2026-06-19 02:01:07,444 [INFO]   [코닝(GLW)] 신호 없음 | Lv2 매수 USD 184.60 -> 현재 USD 189.17 (+2.48%) | 익절 +10.0% / 추매 -5.0%
+2026-06-19 02:01:07,444 [INFO] >>> Processing 듀크 에너지(DUK)
+2026-06-19 02:01:07,444 [INFO]   [듀크 에너지(DUK)] 신호 없음 | Lv1 매수 USD 124.92 -> 현재 USD 124.56 (-0.29%) | 익절 +10.0% / 추매 -5.0%
+2026-06-19 02:01:07,444 [INFO] >>> Processing 에이알엠 홀딩스(ADR)(ARM)
+2026-06-19 02:01:07,445 [INFO]   [에이알엠 홀딩스(ADR)(ARM)] 신호 없음 | Lv1 매수 USD 400.22 -> 현재 USD 427.64 (+6.85%) | 익절 +10.0% / 추매 -5.0%
+2026-06-19 02:01:07,445 [INFO] >>> Processing 프록터 앤드 갬블(PG)
+2026-06-19 02:01:07,446 [INFO]   [프록터 앤드 갬블(PG)] 신호 없음 | Lv1 매수 USD 142.81 -> 현재 USD 151.56 (+6.13%) | 익절 +10.0% / 추매 -5.0%
+2026-06-19 02:01:07,446 [INFO] >>> Processing 리얼티 인컴(O)
+2026-06-19 02:01:07,446 [INFO]   [리얼티 인컴(O)] 신호 없음 | Lv1 매수 USD 62.37 -> 현재 USD 60.76 (-2.59%) | 익절 +10.0% / 추매 -5.0%
+2026-06-19 02:01:07,446 [INFO] >>> Processing SCHWAB US DIVIDEND EQUITY(SCHD)
+2026-06-19 02:01:07,447 [INFO]   [SCHWAB US DIVIDEND EQUITY(SCHD)] 신호 없음 | Lv1 매수 USD 31.74 -> 현재 USD 31.83 (+0.29%) | 익절 +10.0% / 추매 -5.0%
+2026-06-19 02:01:07,447 [INFO] >>> Processing 펩시코(PEP)
+2026-06-19 02:01:07,447 [INFO]   [펩시코(PEP)] 신호 없음 | Lv2 매수 USD 142.33 -> 현재 USD 142.03 (-0.21%) | 익절 +10.0% / 추매 -5.0%
+2026-06-19 02:01:07,448 [INFO] >>> Processing 애플(AAPL)
+2026-06-19 02:01:07,448 [INFO]   [애플(AAPL)] 신호 없음 | Lv1 매수 USD 291.90 -> 현재 USD 297.06 (+1.77%) | 익절 +10.0% / 추매 -5.0%
+2026-06-19 02:01:07,448 [INFO] >>> Processing 브로드컴(AVGO)
+2026-06-19 02:01:07,448 [INFO]   [브로드컴(AVGO)] 신호 없음 | Lv1 매수 USD 382.60 -> 현재 USD 407.23 (+6.44%) | 익절 +10.0% / 추매 -5.0%
+2026-06-19 02:01:07,449 [INFO] >>> Processing 테슬라(TSLA)
+2026-06-19 02:01:07,449 [INFO]   [테슬라(TSLA)] 신호 없음 | Lv4 매수 USD 389.00 -> 현재 USD 393.14 (+1.06%) | 익절 +10.0% / 추매 -5.0%
+2026-06-19 02:01:07,449 [INFO] >>> Processing ARK INNOVATION(ARKK)
+2026-06-19 02:01:07,449 [INFO]   [ARK INNOVATION(ARKK)] 신호 없음 | Lv2 매수 USD 75.28 -> 현재 USD 79.17 (+5.16%) | 익절 +10.0% / 추매 -5.0%
+2026-06-19 02:01:07,450 [INFO] >>> Processing 루멘텀 홀딩스(LITE)
+2026-06-19 02:01:07,450 [INFO] [루멘텀 홀딩스(LITE)] buy_amount(USD 500.00) < 현재가(USD 839.27) -> 1주도 매수 불가. buy_amount 상향 조정 필요
+2026-06-19 02:01:07,742 [INFO] >>> Processing 알파벳 A(GOOGL)
+2026-06-19 02:01:07,742 [INFO]   [알파벳 A(GOOGL)] 신호 없음 | Lv2 매수 USD 369.66 -> 현재 USD 366.60 (-0.83%) | 익절 +10.0% / 추매 -5.0%
+2026-06-19 02:01:07,743 [INFO] >>> Processing ISHARES GLOBAL CLEAN ENERGY(ICLN)
+2026-06-19 02:01:07,743 [INFO]   [ISHARES GLOBAL CLEAN ENERGY(ICLN)] 신호 없음 | Lv2 매수 USD 20.86 -> 현재 USD 20.84 (-0.12%) | 익절 +10.0% / 추매 -5.0%
+2026-06-19 02:01:07,743 [INFO] >>> Processing 델 테크놀로지스(DELL)
+2026-06-19 02:01:07,744 [INFO] [델 테크놀로지스(DELL)] 보유 lot 없음 -> 초기 매수 Lv1 2주 @USD 426.67
+2026-06-19 02:01:07,744 [INFO] Executing 1 order(s)...
+2026-06-19 02:01:09,390 [INFO] [KisBroker] Available Cash for BUY: 1,115
+2026-06-19 02:01:10,859 [INFO] [KisBroker] Order Sent: BUY 델 테크놀로지스(DELL) 2 @ 427.22 (ODNO=0031646615)
+2026-06-19 02:01:13,453 [INFO] [KisBroker] Order FILLED: 델 테크놀로지스(DELL) ODNO=0031646615 price=427.22 qty=2 fee=0.0
+2026-06-19 02:01:13,654 [INFO] [Position] New lot: lot_20260619_020113_DELL_001 Lv1 델 테크놀로지스(DELL) 2주 @USD 427.22
+2026-06-19 02:01:18,290 [INFO] >>> Step 6: Persist
