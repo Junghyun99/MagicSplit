@@ -58,13 +58,6 @@ def main():
             f"'{args.ticker}' 종목이 없습니다."
         )
         sys.exit(1)
-    # 매수만 비활성 종목 차단. 매도는 청산 목적으로 허용 (엔진과 동일 정책).
-    if args.action == "buy" and not target_rule.enabled:
-        print(
-            f"에러: '{args.ticker}'는 비활성화 상태입니다. "
-            f"매수하려면 설정 파일에서 enabled=true 로 변경하세요."
-        )
-        sys.exit(1)
     market_type = target_rule.market_type
 
     log_dir = os.path.join(config.LOG_PATH, market_type)
@@ -108,6 +101,7 @@ def main():
             ticker=args.ticker,
             action=action,
             override_amount=args.amount,
+            force=True,
         )
     except Exception as e:
         logger.error(f"수동매매 중단: {e}")
