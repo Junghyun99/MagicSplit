@@ -144,6 +144,12 @@ window.ChartsView = (function () {
         const returnSign = returnPct >= 0 ? '+' : '';
         const lineColor = returnPct >= 0 ? '#16a34a' : '#dc2626';
 
+        // Principal-based ROI: sum all principal_flow entries
+        const totalPrincipal = pts.reduce((sum, p) => sum + (p.principalFlow != null ? p.principalFlow : 0), 0);
+        const hasPrincipalData = totalPrincipal !== 0;
+        const principalRoiPct = hasPrincipalData ? ((currentValue - totalPrincipal) / totalPrincipal) * 100 : null;
+        const principalColor = (principalRoiPct != null && principalRoiPct >= 0) ? '#16a34a' : '#dc2626';
+
         const xScale = (i) => PAD.left + (i / (pts.length - 1)) * chartW;
         const yScale = (v) => PAD.top + chartH - ((v - minY) / rangeY) * chartH;
 
@@ -189,11 +195,16 @@ window.ChartsView = (function () {
 
         const fmtVal = (v) => formatCurrencyFn ? formatCurrencyFn(v, mode) : v.toFixed(2);
 
+        const principalRoiHtml = hasPrincipalData && principalRoiPct != null
+            ? `<span class="ec-separator">|</span><span class="ec-label">원금대비</span><span class="ec-return" style="color:${principalColor}">${principalRoiPct >= 0 ? '+' : ''}${principalRoiPct.toFixed(2)}%</span><span class="ec-detail">(원금 ${esc(fmtVal(totalPrincipal))})</span>`
+            : '';
+
         container.innerHTML = `
             <div class="ec-summary">
                 <span class="ec-label">${esc(returnLabel)}</span>
                 <span class="ec-return" style="color:${lineColor}">${returnSign}${returnPct.toFixed(2)}%</span>
                 <span class="ec-detail">(${esc(pts[0].date)} ${esc(fmtVal(initialValue))} -> ${esc(pts[pts.length - 1].date)} ${esc(fmtVal(currentValue))})</span>
+                ${principalRoiHtml}
             </div>
             <svg viewBox="0 0 ${W} ${H}" class="equity-curve-svg" role="img" aria-label="자산 곡선">
                 <defs>
