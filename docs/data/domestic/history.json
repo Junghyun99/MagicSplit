@@ -1114,5 +1114,56 @@
                 "alias": "NAVER"
             }
         ]
+    },
+    {
+        "id": "tx_20260618_100149",
+        "date": "2026-06-18 10:01:49",
+        "portfolio_value": 30592268.0,
+        "total_trade_amount": 1282565.0,
+        "reason": "TIGER 지주회사(307520):SELL(trailing 벌크 매도 Lv2~Lv2 (21주 +6.4%)), 현대차(005380):BUY(추가 매수 Lv3 (Lv2 대비 -7.1%)), KODEX 증권(102970):SELL(trailing 벌크 매도 Lv2~Lv2 (21주 +5.9%))",
+        "executions": [
+            {
+                "ticker": "307520",
+                "action": "SELL",
+                "quantity": 7,
+                "price": 24525.0,
+                "fee": 25.75125,
+                "date": "2026-06-18 10:01:35",
+                "status": "PARTIAL",
+                "reason": "ODNO=0014102900 partial_after_cancel(7/21)",
+                "lot_id": "lot_20260608_142124_307520_002",
+                "level": 2,
+                "buy_price": 23050.0,
+                "realized_pnl": 10299.25,
+                "alias": "TIGER 지주회사"
+            },
+            {
+                "ticker": "005380",
+                "action": "BUY",
+                "quantity": 1,
+                "price": 605000.0,
+                "fee": 90.74999999999999,
+                "date": "2026-06-18 10:01:41",
+                "status": "FILLED",
+                "reason": "ODNO=0014169300",
+                "level": 3,
+                "alias": "현대차"
+            },
+            {
+                "ticker": "102970",
+                "action": "SELL",
+                "quantity": 21,
+                "price": 24090.0,
+                "fee": 75.8835,
+                "date": "2026-06-18 10:01:46",
+                "status": "FILLED",
+                "reason": "ODNO=0014177200",
+                "lot_id": "lot_20260608_142119_102970_002",
+                "level": 2,
+                "buy_price": 22765.0,
+                "realized_pnl": 27749.12,
+                "alias": "KODEX 증권"
+            }
+        ]
     }
 ]
