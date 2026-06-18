@@ -43,7 +43,10 @@ BEFORE_CASH = {
 
 
 def calc_trade_cash_impact(executions):
-    """BUY decreases cash (cost + fee), SELL increases cash (proceeds - fee)."""
+    """BUY decreases cash (cost + fee), SELL increases cash (proceeds - fee).
+
+    Note: 증권거래세(0.20%)는 D+2 예수금에 즉시 반영되지 않으므로 포함하지 않는다.
+    """
     impact = 0.0
     for e in executions:
         qty = e.get("quantity") or 0
