@@ -84,6 +84,8 @@ for record in records:
     before_cash = BEFORE_CASH.get(tx_id)
     if before_cash is None:
         print(f"WARNING: no before_cash for {tx_id} — skipping")
+        if "cash_balance" in record:
+            prev_cash = record["cash_balance"]
         continue
 
     trade_impact = calc_trade_cash_impact(record.get("executions", []))
