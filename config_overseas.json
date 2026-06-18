@@ -86,7 +86,7 @@
         },
         {
             "ticker": "IBM",
-            "enabled": true,
+            "enabled": false,
             "market_type": "overseas",
             "preset": "large_cap_us"
         },
@@ -119,6 +119,12 @@
         },
         {
             "ticker": "ARM",
+            "enabled": true,
+            "market_type": "overseas",
+            "preset": "large_cap_us"
+        },
+        {
+            "ticker": "DELL",
             "enabled": true,
             "market_type": "overseas",
             "preset": "large_cap_us"
