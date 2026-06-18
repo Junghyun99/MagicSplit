@@ -38,6 +38,7 @@ BEFORE_CASH = {
     "tx_20260609_142505": 3257947.0,   # before Jun 9 BUYs
     "tx_20260610_140833": 1826567.0,   # before Jun 10 BUYs
     "tx_20260615_100114": 329367.0,    # before Jun 15 trades
+    "tx_20260615_151922": 1007531.95,  # before Jun 15 MTS BUY (40만 deposit + prev_cash + trade)
     "tx_20260616_100110": 34386.0,     # before Jun 16 10:01 SELL
     "tx_20260616_120110": 1821016.0,   # before Jun 16 12:01 BUY
 }

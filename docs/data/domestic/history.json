@@ -1055,6 +1055,29 @@
         "net_deposit": 24.55
     },
     {
+        "id": "tx_20260615_151922",
+        "date": "2026-06-15 15:19:22",
+        "portfolio_value": 30210602.0,
+        "total_trade_amount": 973000.0,
+        "reason": "리노공업(058470):BUY(수동 매매(Manual Trade))",
+        "executions": [
+            {
+                "ticker": "058470",
+                "action": "BUY",
+                "quantity": 10,
+                "price": 97300.0,
+                "fee": 145.95,
+                "date": "2026-06-15 15:19:22",
+                "status": "FILLED",
+                "reason": "ODNO=31453700",
+                "level": 1,
+                "alias": "리노공업"
+            }
+        ],
+        "cash_balance": 34386.0,
+        "net_deposit": 397522.48
+    },
+    {
         "id": "tx_20260616_100110",
         "date": "2026-06-16 10:01:10",
         "portfolio_value": 30210066.0,
@@ -1093,7 +1116,7 @@
             }
         ],
         "cash_balance": 1820718.93,
-        "net_deposit": -575623.47
+        "net_deposit": 0.0
     },
     {
         "id": "tx_20260616_120110",
