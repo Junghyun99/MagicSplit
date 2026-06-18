@@ -717,5 +717,67 @@
         ],
         "cash_balance": 1507.68,
         "net_deposit": 32.15
+        
+    },
+    {
+        "id": "tx_20260619_000139",
+        "date": "2026-06-19 00:01:39",
+        "portfolio_value": 13051.189400000001,
+        "cash_balance": 626.26,
+        "net_deposit": 1510.86,
+        "total_trade_amount": 884.6,
+        "reason": "테슬라(TSLA):BUY(추가 매수 Lv4 (Lv3 대비 -5.1%)), IBM:BUY(추가 매수 Lv3 (Lv2 대비 -6.1%)), 루멘텀 홀딩스(LITE):SKIP(buy_amount(USD 500.00) < 현재가(USD 874.54) -> 1주도 매수 불가. buy_amount 상향 조정 필요)",
+        "executions": [
+            {
+                "ticker": "TSLA",
+                "action": "BUY",
+                "quantity": 1,
+                "price": 389.0,
+                "fee": 0.0,
+                "date": "2026-06-19 00:01:24",
+                "status": "FILLED",
+                "reason": "ODNO=0031588421",
+                "level": 4,
+                "alias": "테슬라"
+            },
+            {
+                "ticker": "IBM",
+                "action": "BUY",
+                "quantity": 2,
+                "price": 247.8,
+                "fee": 0.0,
+                "date": "2026-06-19 00:01:34",
+                "status": "FILLED",
+                "reason": "ODNO=0031588532",
+                "level": 3,
+                "alias": "IBM"
+            }
+        ]
+    },
+    {
+        "id": "tx_20260619_001212",
+        "date": "2026-06-19 00:12:12",
+        "portfolio_value": 13052.13,
+        "cash_balance": 1115.07,
+        "net_deposit": -5.39,
+        "total_trade_amount": 494.2,
+        "reason": "IBM:SELL(수동 매매(Manual Trade))",
+        "executions": [
+            {
+                "ticker": "IBM",
+                "action": "SELL",
+                "quantity": 2,
+                "price": 247.1,
+                "fee": 0.0,
+                "date": "2026-06-19 00:12:07",
+                "status": "FILLED",
+                "reason": "ODNO=0031596162",
+                "lot_id": "lot_20260619_000134_IBM_003",
+                "level": 3,
+                "buy_price": 247.8,
+                "realized_pnl": -1.4,
+                "alias": "IBM"
+            }
+        ]
     }
 ]

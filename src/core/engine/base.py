@@ -325,6 +325,7 @@ class MagicSplitEngine:
         action: OrderAction,
         sim_date: Optional[str] = None,
         override_amount: Optional[float] = None,
+        force: bool = False,
     ) -> DayResult:
         """수동매매 1건을 실행한다.
 
@@ -353,7 +354,8 @@ class MagicSplitEngine:
         if target_rule is None:
             raise ValueError(f"설정에 등록되지 않은 종목입니다: {ticker}")
         # 비활성 종목은 매수만 차단. 매도는 잔여 포지션 청산을 위해 허용.
-        if not target_rule.enabled and action == OrderAction.BUY:
+        # force=True(수동매매 전용)이면 enabled 여부 무관하게 허용.
+        if not force and not target_rule.enabled and action == OrderAction.BUY:
             raise ValueError(
                 f"비활성화된 종목 매수 불가: {ticker}. "
                 f"config에서 enabled=true 설정 후 매수하세요. (매도는 청산 목적으로 허용됨)"

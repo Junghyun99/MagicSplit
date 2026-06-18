@@ -649,6 +649,54 @@
             "unrealized_pnl_pct": -3.47,
             "realized_pnl": 183705.1,
             "total_pnl": 149705.1
+        },
+        "000660": {
+            "total_qty": 3,
+            "lot_count": 1,
+            "total_invested": 5775000.0,
+            "current_value": 7986000.0,
+            "lots": [
+                {
+                    "lot_id": "lot_20260608_092643_000660_001",
+                    "buy_price": 1925000.0,
+                    "quantity": 3,
+                    "buy_date": "2026-06-08",
+                    "level": 1,
+                    "current_price": 2662000.0,
+                    "pct_change": 38.29
+                }
+            ],
+            "current_price": 2662000.0,
+            "alias": "SK하이닉스",
+            "avg_buy_price": 1925000.0,
+            "unrealized_pnl": 2211000.0,
+            "unrealized_pnl_pct": 38.29,
+            "realized_pnl": 0.0,
+            "total_pnl": 2211000.0
+        },
+        "058470": {
+            "total_qty": 10,
+            "lot_count": 1,
+            "total_invested": 973000.0,
+            "current_value": 920000.0,
+            "lots": [
+                {
+                    "lot_id": "lot_20260615_151922_058470_001",
+                    "buy_price": 97300.0,
+                    "quantity": 10,
+                    "buy_date": "2026-06-15",
+                    "level": 1,
+                    "current_price": 92000.0,
+                    "pct_change": -5.45
+                }
+            ],
+            "current_price": 92000.0,
+            "alias": "리노공업",
+            "avg_buy_price": 97300.0,
+            "unrealized_pnl": -53000.0,
+            "unrealized_pnl_pct": -5.45,
+            "realized_pnl": 0.0,
+            "total_pnl": -53000.0
         }
     },
     "realized_pnl_by_ticker": {
@@ -718,6 +766,12 @@
                 "days_stale": 10
             },
             {
+                "ticker": "000660",
+                "alias": "SK하이닉스",
+                "last_trade_date": "2026-06-08",
+                "days_stale": 10
+            },
+            {
                 "ticker": "006800",
                 "alias": "미래에셋증권",
                 "last_trade_date": "2026-06-09",
@@ -732,6 +786,12 @@
             {
                 "ticker": "0174B0",
                 "alias": "KoAct 글로벌AI메모리반도체액티브",
+                "last_trade_date": "2026-06-15",
+                "days_stale": 3
+            },
+            {
+                "ticker": "058470",
+                "alias": "리노공업",
                 "last_trade_date": "2026-06-15",
                 "days_stale": 3
             },
@@ -772,20 +832,24 @@
                 "days_stale": 0
             }
         ],
-        "risk_score": 58,
+        "risk_score": 36,
         "deductions": [
             {
                 "reason": "현금 비중 부족",
                 "points": 30
             },
             {
+                "reason": "단일 종목 집중도 과다",
+                "points": 21.8
+            },
+            {
                 "reason": "장기 정체 종목",
                 "points": 12
             }
         ],
-        "sync_error": true,
-        "alerts": ["⚠️ [리노공업] 잔고 불일치 (봇: 0, 계좌: 10)", "⚠️ [SK하이닉스] 잔고 불일치 (봇: 0, 계좌: 3)", "⚠️ 현금 비중 부족 (0.5%)", "⚠️ 장기 정체 종목 존재 (3개)"],
-        "max_ticker_concentration": 7.78,
+        "sync_error": false,
+        "alerts": ["⚠️ 현금 비중 부족 (0.5%)", "⚠️ 장기 정체 종목 존재 (3개)", "⚠️ 단일 종목 집중도 과다 (25.9%)"],
+        "max_ticker_concentration": 25.9,
         "high_level_ratio": 0.0
     }
 }

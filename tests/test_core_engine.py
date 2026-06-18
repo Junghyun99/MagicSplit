@@ -1050,6 +1050,50 @@ class TestRunManualTrade:
                 sim_date="2026-04-10",
             )
 
+    def test_force_buy_disabled_ticker_succeeds(
+        self, mock_broker, mock_repo, mock_logger,
+    ):
+        """force=True 이면 비활성 ticker BUY도 허용된다."""
+        rules = [
+            StockRule("MSFT", -5.0, 10.0, 500, 10, enabled=False),
+        ]
+        mock_broker.get_portfolio.return_value = Portfolio(
+            total_cash=10000.0, holdings={}, current_prices={"MSFT": 100.0},
+        )
+        mock_broker.fetch_current_prices.return_value = {"MSFT": 100.0}
+        mock_repo.load_positions.return_value = []
+        mock_repo.load_last_sell_prices.return_value = {}
+        mock_repo.get_realized_pnl_by_ticker.return_value = {}
+        mock_repo.get_last_trade_dates.return_value = {}
+        mock_broker.execute_orders.return_value = [
+            TradeExecution("MSFT", OrderAction.BUY, 5, 100.0, 0.5,
+                           "2026-06-18", ExecutionStatus.FILLED),
+        ]
+
+        eng = self._make_engine(mock_broker, mock_repo, mock_logger, rules)
+        result = eng.run_manual_trade(
+            ticker="MSFT", action=OrderAction.BUY,
+            sim_date="2026-06-18", force=True,
+        )
+
+        assert result.has_orders is True
+        saved = mock_repo.save_positions.call_args[0][0]
+        assert any(lot.ticker == "MSFT" for lot in saved)
+
+    def test_force_false_disabled_ticker_buy_still_raises(
+        self, mock_broker, mock_repo, mock_logger,
+    ):
+        """force=False(기본값)이면 비활성 ticker BUY는 여전히 ValueError."""
+        rules = [
+            StockRule("MSFT", -5.0, 10.0, 500, 10, enabled=False),
+        ]
+        eng = self._make_engine(mock_broker, mock_repo, mock_logger, rules)
+        with pytest.raises(ValueError, match="비활성화된 종목 매수 불가"):
+            eng.run_manual_trade(
+                ticker="MSFT", action=OrderAction.BUY,
+                sim_date="2026-06-18", force=False,
+            )
+
     def test_disabled_ticker_sell_allowed_for_liquidation(
         self, mock_broker, mock_repo, mock_logger,
     ):

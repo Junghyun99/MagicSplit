@@ -1,0 +1,72 @@
+2026-06-19 00:01:10,781 [INFO] === Initializing MagicSplit Bot (overseas) ===
+2026-06-19 00:01:10,782 [INFO] Loaded 20 stock rule(s) from config_overseas.json
+2026-06-19 00:01:10,782 [INFO] [overseas] 15 rule(s), mode=LIVE
+2026-06-19 00:01:10,782 [INFO] [KisBroker] 캐시에서 토큰 로드 (API 호출 생략)
+2026-06-19 00:01:10,782 [INFO] [KisOverseasLiveBroker] Mode: LIVE TRADING
+2026-06-19 00:01:10,782 [INFO] === Running overseas engine ===
+2026-06-19 00:01:10,782 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-06-19 00:01:13,073 [INFO] Fetching real-time prices from Broker...
+2026-06-19 00:01:18,742 [INFO] Portfolio: Cash=USD 1,510.76, Value=USD 13,053.06
+2026-06-19 00:01:18,742 [INFO] >>> Step 2: Load Positions
+2026-06-19 00:01:18,743 [INFO] Loaded 23 position lot(s)
+2026-06-19 00:01:18,743 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-06-19 00:01:18,744 [INFO] >>> Processing 알파벳 A(GOOGL)
+2026-06-19 00:01:18,744 [INFO]   [알파벳 A(GOOGL)] 신호 없음 | Lv2 매수 USD 369.66 -> 현재 USD 363.28 (-1.73%) | 익절 +10.0% / 추매 -5.0%
+2026-06-19 00:01:18,744 [INFO] >>> Processing 펩시코(PEP)
+2026-06-19 00:01:18,745 [INFO]   [펩시코(PEP)] 신호 없음 | Lv2 매수 USD 142.33 -> 현재 USD 141.53 (-0.56%) | 익절 +10.0% / 추매 -5.0%
+2026-06-19 00:01:18,745 [INFO] >>> Processing 테슬라(TSLA)
+2026-06-19 00:01:18,745 [INFO] [테슬라(TSLA)] Lv3 매수가 USD 409.90 대비 -5.1% -> 추가 매수 Lv4 1주 @USD 388.95
+2026-06-19 00:01:18,745 [INFO] Executing 1 order(s)...
+2026-06-19 00:01:20,295 [INFO] [KisBroker] Available Cash for BUY: 1,511
+2026-06-19 00:01:21,703 [INFO] [KisBroker] Order Sent: BUY 테슬라(TSLA) 1 @ 389.0 (ODNO=0031588421)
+2026-06-19 00:01:24,236 [INFO] [KisBroker] Order FILLED: 테슬라(TSLA) ODNO=0031588421 price=389.0 qty=1 fee=0.0
+2026-06-19 00:01:24,437 [INFO] [Position] New lot: lot_20260619_000124_TSLA_004 Lv4 테슬라(TSLA) 1주 @USD 389.00
+2026-06-19 00:01:28,994 [INFO] >>> Processing 코닝(GLW)
+2026-06-19 00:01:28,994 [INFO]   [코닝(GLW)] 신호 없음 | Lv2 매수 USD 184.60 -> 현재 USD 184.42 (-0.10%) | 익절 +10.0% / 추매 -5.0%
+2026-06-19 00:01:28,995 [INFO] >>> Processing 프록터 앤드 갬블(PG)
+2026-06-19 00:01:28,995 [INFO]   [프록터 앤드 갬블(PG)] 신호 없음 | Lv1 매수 USD 142.81 -> 현재 USD 151.26 (+5.92%) | 익절 +10.0% / 추매 -5.0%
+2026-06-19 00:01:28,995 [INFO] >>> Processing 리얼티 인컴(O)
+2026-06-19 00:01:28,996 [INFO]   [리얼티 인컴(O)] 신호 없음 | Lv1 매수 USD 62.37 -> 현재 USD 60.55 (-2.91%) | 익절 +10.0% / 추매 -5.0%
+2026-06-19 00:01:28,996 [INFO] >>> Processing ISHARES GLOBAL CLEAN ENERGY(ICLN)
+2026-06-19 00:01:28,996 [INFO]   [ISHARES GLOBAL CLEAN ENERGY(ICLN)] 신호 없음 | Lv2 매수 USD 20.86 -> 현재 USD 20.89 (+0.14%) | 익절 +10.0% / 추매 -5.0%
+2026-06-19 00:01:28,997 [INFO] >>> Processing 브로드컴(AVGO)
+2026-06-19 00:01:28,997 [INFO]   [브로드컴(AVGO)] 신호 없음 | Lv1 매수 USD 382.60 -> 현재 USD 409.36 (+6.99%) | 익절 +10.0% / 추매 -5.0%
+2026-06-19 00:01:28,997 [INFO] >>> Processing 듀크 에너지(DUK)
+2026-06-19 00:01:28,997 [INFO]   [듀크 에너지(DUK)] 신호 없음 | Lv1 매수 USD 124.92 -> 현재 USD 124.37 (-0.44%) | 익절 +10.0% / 추매 -5.0%
+2026-06-19 00:01:28,998 [INFO] >>> Processing IBM
+2026-06-19 00:01:28,998 [INFO] [IBM] Lv2 매수가 USD 263.88 대비 -6.1% -> 추가 매수 Lv3 2주 @USD 247.70
+2026-06-19 00:01:28,998 [INFO] Executing 1 order(s)...
+2026-06-19 00:01:30,550 [INFO] [KisBroker] Available Cash for BUY: 1,122
+2026-06-19 00:01:31,846 [INFO] [KisBroker] Order Sent: BUY IBM 2 @ 247.8 (ODNO=0031588532)
+2026-06-19 00:01:34,379 [INFO] [KisBroker] Order FILLED: IBM ODNO=0031588532 price=247.8 qty=2 fee=0.0
+2026-06-19 00:01:34,580 [INFO] [Position] New lot: lot_20260619_000134_IBM_003 Lv3 IBM 2주 @USD 247.80
+2026-06-19 00:01:39,137 [INFO] >>> Processing 루멘텀 홀딩스(LITE)
+2026-06-19 00:01:39,137 [INFO] [루멘텀 홀딩스(LITE)] buy_amount(USD 500.00) < 현재가(USD 874.54) -> 1주도 매수 불가. buy_amount 상향 조정 필요
+2026-06-19 00:01:39,562 [INFO] >>> Processing SCHWAB US DIVIDEND EQUITY(SCHD)
+2026-06-19 00:01:39,562 [INFO]   [SCHWAB US DIVIDEND EQUITY(SCHD)] 신호 없음 | Lv1 매수 USD 31.74 -> 현재 USD 31.85 (+0.35%) | 익절 +10.0% / 추매 -5.0%
+2026-06-19 00:01:39,563 [INFO] >>> Processing 에이알엠 홀딩스(ADR)(ARM)
+2026-06-19 00:01:39,563 [INFO] [에이알엠 홀딩스(ADR)(ARM)] Lv1: trailing 고점 갱신 -> USD 448.61 (스톱가 USD 426.18)
+2026-06-19 00:01:39,563 [INFO]   [에이알엠 홀딩스(ADR)(ARM)] 신호 없음 | Lv1 매수 USD 400.22 -> 현재 USD 448.61 (+12.09%) | 익절 +10.0% / 추매 -5.0%
+2026-06-19 00:01:39,564 [INFO] >>> Processing 애플(AAPL)
+2026-06-19 00:01:39,564 [INFO]   [애플(AAPL)] 신호 없음 | Lv1 매수 USD 291.90 -> 현재 USD 298.87 (+2.39%) | 익절 +10.0% / 추매 -5.0%
+2026-06-19 00:01:39,564 [INFO] >>> Processing ARK INNOVATION(ARKK)
+2026-06-19 00:01:39,564 [INFO]   [ARK INNOVATION(ARKK)] 신호 없음 | Lv2 매수 USD 75.28 -> 현재 USD 79.72 (+5.90%) | 익절 +10.0% / 추매 -5.0%
+2026-06-19 00:01:39,564 [INFO] >>> Step 6: Persist
+2026-06-19 00:11:56,012 [INFO] === Manual Trade CLI: IBM SELL ===
+2026-06-19 00:11:56,012 [INFO] [KisBroker] 캐시에서 토큰 로드 (API 호출 생략)
+2026-06-19 00:11:56,012 [INFO] [KisOverseasLiveBroker] Mode: LIVE TRADING
+2026-06-19 00:11:56,013 [INFO] === Manual Trade: IBM SELL ===
+2026-06-19 00:11:56,013 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-06-19 00:11:58,430 [INFO] Fetching real-time prices from Broker...
+2026-06-19 00:12:04,057 [INFO] Portfolio: Cash=USD 626.26, Value=USD 13,059.42
+2026-06-19 00:12:04,057 [INFO] >>> Step 2: Load Positions
+2026-06-19 00:12:04,057 [INFO] Loaded 25 position lot(s)
+2026-06-19 00:12:04,057 [INFO] 매도 수량 자동 도출: Lv3 lot 2주 전량
+2026-06-19 00:12:04,057 [INFO] [IBM] 수동 신호 생성: SELL Lv3 2주 @USD 247.16
+2026-06-19 00:12:04,057 [INFO] Executing 1 order(s)...
+2026-06-19 00:12:04,058 [INFO] [KisBroker] Processing 1 SELL orders...
+2026-06-19 00:12:05,081 [INFO] [KisBroker] Order Sent: SELL IBM 2 @ 247.1 (ODNO=0031596162)
+2026-06-19 00:12:07,614 [INFO] [KisBroker] Order FILLED: IBM ODNO=0031596162 price=247.1 qty=2 fee=0.0
+2026-06-19 00:12:07,815 [INFO] [Position] Remove lot: lot_20260619_000134_IBM_003 Lv3 (2주 전량 매도)
+2026-06-19 00:12:12,375 [INFO] >>> Step 6: Persist
+2026-06-19 00:12:12,688 [INFO] === Manual Trade 완료 ===
