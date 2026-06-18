@@ -71,20 +71,18 @@ PRINCIPAL_FLOW = {
 }
 
 
-COMMISSION_RATE = 0.0025  # KIS overseas brokerage: 0.25%
-
-
 def calc_trade_cash_impact(executions):
-    """BUY decreases cash, SELL increases cash.
-    Overseas fee is stored as 0.0 in records; apply 0.25% commission explicitly.
+    """BUY decreases cash (price*qty + fee), SELL increases cash (price*qty - fee).
+    Overseas fee is read directly from the KIS API (ovrs_stck_ccld_fee) and stored
+    in each execution record; currently the API returns 0.0 for all executions.
     """
     impact = 0.0
     for e in executions:
         qty = e.get("quantity") or 0
         price = e.get("price") or 0
+        fee = e.get("fee") or 0
         action = (e.get("action") or "").upper()
         if qty > 0:
-            fee = round(price * qty * COMMISSION_RATE, 2)
             if action == "BUY":
                 impact -= price * qty + fee
             elif action == "SELL":
