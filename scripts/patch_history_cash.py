@@ -32,8 +32,9 @@ BEFORE_CASH = {
     "tx_20260604_142946": 2304074.0,   # before Jun 4 SELL
     "tx_20260605_104902": 3008572.0,   # before Jun 5 morning SELLs
     "tx_20260605_140617": 8352730.0,   # before Jun 5 afternoon BUYs
-    "tx_20260608_003712": 4211048.0,   # API fail; Available Cash used as proxy
-    "tx_20260608_142200": 3559958.0,   # before Jun 8 auto trades
+    "tx_20260608_003712": 9982524.50,  # actual D+2 = 6/5 cash + 300만 deposit (Available Cash 4,211,048 is low: SK하이닉스 reservation)
+    "tx_20260608_092643": 9331426.85, # cash after 003712; SK하이닉스 09:26 BUY
+    "tx_20260608_142200": 3559958.0,  # before Jun 8 auto trades (Step1 log)
     "tx_20260609_142505": 3257947.0,   # before Jun 9 BUYs
     "tx_20260610_140833": 1826567.0,   # before Jun 10 BUYs
     "tx_20260615_100114": 329367.0,    # before Jun 15 trades
