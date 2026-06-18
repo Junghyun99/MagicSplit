@@ -648,5 +648,38 @@
                 "alias": "에이알엠 홀딩스(ADR)"
             }
         ]
+    },
+    {
+        "id": "tx_20260618_000140",
+        "date": "2026-06-18 00:01:40",
+        "portfolio_value": 13033.122599999999,
+        "total_trade_amount": 743.66,
+        "reason": "IBM:BUY(추가 매수 Lv2 (Lv1 대비 -7.0%)), ISHARES GLOBAL CLEAN ENERGY(ICLN):BUY(추가 매수 Lv2 (Lv1 대비 -5.3%)), 루멘텀 홀딩스(LITE):SKIP(buy_amount(USD 500.00) < 현재가(USD 870.00) -> 1주도 매수 불가. buy_amount 상향 조정 필요)",
+        "executions": [
+            {
+                "ticker": "IBM",
+                "action": "BUY",
+                "quantity": 1,
+                "price": 263.88,
+                "fee": 0.0,
+                "date": "2026-06-18 00:01:24",
+                "status": "FILLED",
+                "reason": "ODNO=0031129240",
+                "level": 2,
+                "alias": "IBM"
+            },
+            {
+                "ticker": "ICLN",
+                "action": "BUY",
+                "quantity": 23,
+                "price": 20.86,
+                "fee": 0.0,
+                "date": "2026-06-18 00:01:35",
+                "status": "FILLED",
+                "reason": "ODNO=0031129349",
+                "level": 2,
+                "alias": "ISHARES GLOBAL CLEAN ENERGY"
+            }
+        ]
     }
 ]
