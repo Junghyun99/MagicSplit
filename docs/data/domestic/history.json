@@ -1165,5 +1165,26 @@
                 "alias": "KODEX 증권"
             }
         ]
+    },
+    {
+        "id": "tx_20260618_120107",
+        "date": "2026-06-18 12:01:07",
+        "portfolio_value": 30748178.0,
+        "total_trade_amount": 477300.0,
+        "reason": "KODEX 증권(102970):BUY(추가 매수 Lv2 (Lv1 대비 -9.5%))",
+        "executions": [
+            {
+                "ticker": "102970",
+                "action": "BUY",
+                "quantity": 20,
+                "price": 23865.0,
+                "fee": 71.595,
+                "date": "2026-06-18 12:01:03",
+                "status": "FILLED",
+                "reason": "ODNO=0021266200",
+                "level": 2,
+                "alias": "KODEX 증권"
+            }
+        ]
     }
 ]
