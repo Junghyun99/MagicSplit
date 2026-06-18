@@ -132,8 +132,10 @@ window.ChartsView = (function () {
             for (let i = 1; i < pts.length; i++) {
                 const startVal = pts[i - 1].value;
                 if (startVal === 0) continue;
-                // period_return = (V_end - V_start - external_deposit) / V_start
-                const periodReturn = (pts[i].value - startVal - (pts[i].netDeposit || 0)) / startVal;
+                const cf = pts[i].netDeposit || 0;
+                // TWR sub-period: net_deposit arrives before trades (start of period)
+                // period_return = V_end / (V_start + CF) - 1
+                const periodReturn = pts[i].value / (startVal + cf) - 1;
                 twr *= (1 + periodReturn);
             }
             returnPct = (twr - 1) * 100;
