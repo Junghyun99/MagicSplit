@@ -52,3 +52,21 @@
 2026-06-19 00:01:39,564 [INFO] >>> Processing ARK INNOVATION(ARKK)
 2026-06-19 00:01:39,564 [INFO]   [ARK INNOVATION(ARKK)] 신호 없음 | Lv2 매수 USD 75.28 -> 현재 USD 79.72 (+5.90%) | 익절 +10.0% / 추매 -5.0%
 2026-06-19 00:01:39,564 [INFO] >>> Step 6: Persist
+2026-06-19 00:11:56,012 [INFO] === Manual Trade CLI: IBM SELL ===
+2026-06-19 00:11:56,012 [INFO] [KisBroker] 캐시에서 토큰 로드 (API 호출 생략)
+2026-06-19 00:11:56,012 [INFO] [KisOverseasLiveBroker] Mode: LIVE TRADING
+2026-06-19 00:11:56,013 [INFO] === Manual Trade: IBM SELL ===
+2026-06-19 00:11:56,013 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-06-19 00:11:58,430 [INFO] Fetching real-time prices from Broker...
+2026-06-19 00:12:04,057 [INFO] Portfolio: Cash=USD 626.26, Value=USD 13,059.42
+2026-06-19 00:12:04,057 [INFO] >>> Step 2: Load Positions
+2026-06-19 00:12:04,057 [INFO] Loaded 25 position lot(s)
+2026-06-19 00:12:04,057 [INFO] 매도 수량 자동 도출: Lv3 lot 2주 전량
+2026-06-19 00:12:04,057 [INFO] [IBM] 수동 신호 생성: SELL Lv3 2주 @USD 247.16
+2026-06-19 00:12:04,057 [INFO] Executing 1 order(s)...
+2026-06-19 00:12:04,058 [INFO] [KisBroker] Processing 1 SELL orders...
+2026-06-19 00:12:05,081 [INFO] [KisBroker] Order Sent: SELL IBM 2 @ 247.1 (ODNO=0031596162)
+2026-06-19 00:12:07,614 [INFO] [KisBroker] Order FILLED: IBM ODNO=0031596162 price=247.1 qty=2 fee=0.0
+2026-06-19 00:12:07,815 [INFO] [Position] Remove lot: lot_20260619_000134_IBM_003 Lv3 (2주 전량 매도)
+2026-06-19 00:12:12,375 [INFO] >>> Step 6: Persist
+2026-06-19 00:12:12,688 [INFO] === Manual Trade 완료 ===
