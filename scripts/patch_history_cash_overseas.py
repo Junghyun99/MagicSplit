@@ -45,6 +45,8 @@ BEFORE_CASH = {
     "tx_20260615_150000": 22.84,       # estimated: cash_balance end of 6/6 run (no 6/15 log)
     "tx_20260617_000153": 4660.36,     # log 00:01:23
     "tx_20260618_000140": 2251.34,     # log 00:01:19
+    "tx_20260619_000139": 1510.86,     # derived: cash_balance(626.26) + trade(884.6); log shows 1,510.76
+    "tx_20260619_001212": 620.87,      # derived: cash_balance(1115.07) - trade(494.2); 10-min manual sell
 }
 
 # Records whose BEFORE_CASH equals the cash_balance of a prior record in the
