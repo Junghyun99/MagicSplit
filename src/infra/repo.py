@@ -162,16 +162,35 @@ class JsonRepository(IRepository):
 
             enriched_execs.append(rec)
 
+        data = self._load_json(self.history_file, default=[])
+
+        # Calculate net external cash flow (deposit/withdrawal) since previous record.
+        # trade_cash_impact: BUY decreases cash, SELL increases cash.
+        trade_cash_impact = sum(
+            (-e.price * e.quantity - e.fee) if e.action == OrderAction.BUY
+            else (e.price * e.quantity - e.fee)
+            for e in executions
+            if e.quantity > 0
+        )
+        prev = data[-1] if data else None
+        prev_cash = prev["cash_balance"] if prev and "cash_balance" in prev else None
+        if prev_cash is not None:
+            net_deposit = round(portfolio.total_cash - prev_cash - trade_cash_impact, 2)
+        else:
+            # First record: before-trade cash is the initial deposit
+            net_deposit = round(portfolio.total_cash - trade_cash_impact, 2)
+
         record = {
             "id": tx_id,
             "date": date_str,
             "portfolio_value": portfolio.total_value,
+            "cash_balance": portfolio.total_cash,
+            "net_deposit": net_deposit,
             "total_trade_amount": trade_amt,
             "reason": reason,
             "executions": enriched_execs,
         }
 
-        data = self._load_json(self.history_file, default=[])
         data.append(record)
 
         if self.max_history_records > 0:

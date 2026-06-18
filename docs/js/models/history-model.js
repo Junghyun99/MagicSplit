@@ -110,7 +110,14 @@ window.HistoryModel = (function () {
         const pts = [];
         for (const tx of historyData) {
             if (tx && tx.date && tx.portfolio_value != null) {
-                pts.push({ date: tx.date, value: Number(tx.portfolio_value) });
+                const nd = tx.net_deposit;
+                const pf = tx.principal_flow;
+                pts.push({
+                    date: tx.date,
+                    value: Number(tx.portfolio_value),
+                    netDeposit: (nd != null && !isNaN(Number(nd))) ? Number(nd) : null,
+                    principalFlow: (pf != null && !isNaN(Number(pf))) ? Number(pf) : null,
+                });
             }
         }
         pts.sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : 0));

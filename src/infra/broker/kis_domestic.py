@@ -320,7 +320,7 @@ class KisDomesticBrokerBase(KisBrokerCommon):
             self.logger.error(f"[KisDomestic] Pending Check Error: {e}")
             return 0
 
-    def _query_fill_details(self, odno: str, ticker: str):
+    def _query_fill_details(self, odno: str, ticker: str, action=None):
         """국내주식 체결내역 조회 — 실제 체결가·수량·수수료 반환."""
         if not self.FILL_TR_ID:
             return 0.0, 0, 0.0
