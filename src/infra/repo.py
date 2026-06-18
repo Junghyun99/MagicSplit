@@ -174,8 +174,11 @@ class JsonRepository(IRepository):
         )
         prev = data[-1] if data else None
         prev_cash = prev["cash_balance"] if prev and "cash_balance" in prev else None
-        net_deposit = round(portfolio.total_cash - prev_cash - trade_cash_impact, 2) \
-            if prev_cash is not None else 0.0
+        if prev_cash is not None:
+            net_deposit = round(portfolio.total_cash - prev_cash - trade_cash_impact, 2)
+        else:
+            # First record: before-trade cash is the initial deposit
+            net_deposit = round(portfolio.total_cash - trade_cash_impact, 2)
 
         record = {
             "id": tx_id,

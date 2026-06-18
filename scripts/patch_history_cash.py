@@ -4,7 +4,8 @@ using log-derived before-trade cash values as ground truth.
 
 Formula:
   cash_balance[i] = before_cash[i] + trade_cash_impact[i]
-  net_deposit[i]  = before_cash[i] - cash_balance[i-1]   (0 for first record)
+  net_deposit[i]  = before_cash[i] - cash_balance[i-1]
+  net_deposit[0]  = before_cash[0]   (first record: entire initial balance is a deposit)
 """
 import json
 import re
@@ -78,7 +79,7 @@ for record in records:
 
     trade_impact = calc_trade_cash_impact(record.get("executions", []))
     cash_balance = before_cash + trade_impact
-    net_deposit = round(before_cash - prev_cash, 2) if prev_cash is not None else 0.0
+    net_deposit = round(before_cash - prev_cash, 2) if prev_cash is not None else round(before_cash, 2)
 
     record["cash_balance"] = round(cash_balance, 2)
     record["net_deposit"] = net_deposit
