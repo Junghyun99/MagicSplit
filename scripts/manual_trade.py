@@ -33,8 +33,8 @@ def parse_args():
     parser = argparse.ArgumentParser(description="수동 매매 스크립트")
     parser.add_argument("--ticker", required=True, help="종목 코드 (예: 005930, TSLA)")
     parser.add_argument(
-        "--action", required=True, choices=["buy", "sell"],
-        help="매수(buy) 또는 매도(sell). 수량은 자동 도출됨.",
+        "--action", required=True, choices=["buy", "sell", "sell_all"],
+        help="매수(buy), 매도(sell), 일괄매도(sell_all). 수량은 자동 도출됨.",
     )
     parser.add_argument(
         "--amount", type=float, default=None,
@@ -95,6 +95,7 @@ def main():
     )
 
     action = OrderAction.BUY if args.action == "buy" else OrderAction.SELL
+    is_sell_all = args.action == "sell_all"
 
     try:
         result = engine.run_manual_trade(
@@ -102,6 +103,7 @@ def main():
             action=action,
             override_amount=args.amount,
             force=True,
+            sell_all=is_sell_all,
         )
     except Exception as e:
         logger.error(f"수동매매 중단: {e}")
