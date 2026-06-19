@@ -15,12 +15,13 @@ on:
         required: true
         type: string
       action:
-        description: 'Order Action (qty is auto-derived: BUY=rule.buy_amount, SELL=highest-level lot full)'
+        description: 'Order Action (qty is auto-derived: BUY=rule.buy_amount, SELL=highest-level lot, SELL_ALL=all lots at once)'
         required: true
         type: choice
         options:
           - buy
           - sell
+          - sell_all
       amount:
         description: 'Buy amount override (KRW or USD). Leave empty to use config buy_amount.'
         required: false

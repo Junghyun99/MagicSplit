@@ -24,7 +24,7 @@
     const cancelTradeBtn = document.getElementById('cancel-trade-btn');
     const statusFeedback = document.getElementById('status-feedback');
 
-    let activeOrderParams = null; // { ticker, alias, action, marketType, configAmount }
+    let activeOrderParams = null; // { ticker, alias, action, marketType, configAmount, totalQty }
 
     /** market_type에 맞춰 통화 단위와 함께 금액을 포매팅한다. */
     function formatAmount(value, marketType) {
@@ -157,22 +157,23 @@
             if (!Array.isArray(posData)) {
                 Object.entries(posData).forEach(([ticker, info]) => {
                     const lots = info.lots || [];
-                    const maxLevel = lots.length > 0 
-                        ? Math.max(...lots.map(l => l.level || 0)) 
+                    const maxLevel = lots.length > 0
+                        ? Math.max(...lots.map(l => l.level || 0))
                         : 0;
                     const highestLot = lots.find(l => (l.level || 0) === maxLevel);
-                    statusMap[ticker] = { 
-                        level: maxLevel, 
+                    statusMap[ticker] = {
+                        level: maxLevel,
                         quantity: info.total_qty || 0,
-                        highestLvQty: highestLot ? highestLot.quantity : 0
+                        highestLvQty: highestLot ? highestLot.quantity : 0,
+                        lotsCount: lots.length,
                     };
                 });
             } else {
                 // Legacy: positions is a flat array of lots
                 posData.forEach(pos => {
                     const t = pos.ticker;
-                    if (!statusMap[t]) statusMap[t] = { level: 0, quantity: 0, highestLvQty: 0 };
-                    
+                    if (!statusMap[t]) statusMap[t] = { level: 0, quantity: 0, highestLvQty: 0, lotsCount: 0 };
+
                     if ((pos.level || 0) > statusMap[t].level) {
                         statusMap[t].level = pos.level || 0;
                         statusMap[t].highestLvQty = pos.quantity || 0;
@@ -180,14 +181,15 @@
                         statusMap[t].highestLvQty += (pos.quantity || 0);
                     }
                     statusMap[t].quantity += (pos.quantity || 0);
+                    statusMap[t].lotsCount += 1;
                 });
             }
         }
 
         tickers = stocks.map(rule => {
-            const status = statusMap[rule.ticker] || { level: 0, quantity: 0, highestLvQty: 0 };
+            const status = statusMap[rule.ticker] || { level: 0, quantity: 0, highestLvQty: 0, lotsCount: 0 };
             const resolvedAlias = rule.alias || tickerMap[rule.ticker] || rule.ticker;
-            
+
             return {
                 ticker: rule.ticker,
                 alias: resolvedAlias,
@@ -195,6 +197,7 @@
                 currentLevel: status.level,
                 currentQty: status.quantity,
                 highestLvQty: status.highestLvQty,
+                lotsCount: status.lotsCount,
                 config: rule
             };
         });
@@ -251,8 +254,19 @@
                 sellBtn.onclick = () => openOrderModal(t, 'sell');
             }
 
+            const sellAllBtn = document.createElement('button');
+            sellAllBtn.className = 'btn btn-sm btn-sell-all';
+            sellAllBtn.textContent = '일괄매도';
+            if (t.currentQty <= 0) {
+                sellAllBtn.style.opacity = '0.5';
+                sellAllBtn.style.cursor = 'not-allowed';
+            } else {
+                sellAllBtn.onclick = () => openOrderModal(t, 'sell_all');
+            }
+
             actionsTd.appendChild(buyBtn);
             actionsTd.appendChild(sellBtn);
+            actionsTd.appendChild(sellAllBtn);
 
             tr.appendChild(infoTd);
             tr.appendChild(statusTd);
@@ -267,7 +281,8 @@
             ? `${tickerObj.alias} (${tickerObj.ticker})`
             : tickerObj.ticker;
 
-        modalTitle.textContent = `${displayName} ${action === 'buy' ? '매수' : '매도'}`;
+        const actionLabel = action === 'buy' ? '매수' : action === 'sell_all' ? '일괄매도' : '매도';
+        modalTitle.textContent = `${displayName} ${actionLabel}`;
         statusFeedback.style.display = 'none';
         confirmTradeBtn.disabled = false;
         confirmTradeBtn.textContent = '실행';
@@ -302,6 +317,13 @@
                     설정값: ${formatAmount(configAmount, currentMarket)} — 변경하면 해당 금액으로 주문합니다.
                 </small>`;
             inputHint.parentNode.insertBefore(amountGroup, inputHint);
+        } else if (action === 'sell_all') {
+            const totalQty = tickerObj.currentQty || 0;
+            const lotsCount = tickerObj.lotsCount || 0;
+            orderSummary.innerHTML =
+                `보유 <b>${lotsCount}개 lot</b> (<b>총 ${totalQty}주</b>) 전량 일괄매도`;
+            inputHint.textContent =
+                '고차수부터 순차로 모든 lot을 한 번의 주문으로 청산합니다. 히스토리에 lot별 손익이 기록됩니다.';
         } else {
             const sellQty = tickerObj.highestLvQty || 0;
             orderSummary.innerHTML =
@@ -316,6 +338,7 @@
             action: action,
             marketType: currentMarket,
             configAmount: configAmount,
+            totalQty: tickerObj.currentQty,
         };
 
         orderModal.style.display = 'flex';
@@ -325,7 +348,8 @@
         if (!activeOrderParams || !githubApi) return;
 
         const isBuy = activeOrderParams.action === 'buy';
-        const actionLabel = isBuy ? '매수' : '매도';
+        const isSellAll = activeOrderParams.action === 'sell_all';
+        const actionLabel = isBuy ? '매수' : isSellAll ? '일괄매도' : '매도';
 
         const inputs = {
             market_type: activeOrderParams.marketType,
@@ -346,7 +370,12 @@
         if (isBuy && inputs.amount) {
             confirmMsg += `\n매수 금액: ${formatAmount(parseFloat(inputs.amount), activeOrderParams.marketType)}`;
         }
-        confirmMsg += '\n(수량은 [금액 / 현재가]로 엔진이 자동 계산합니다)';
+        if (isSellAll) {
+            confirmMsg += `\n총 ${activeOrderParams.totalQty}주 전량 청산`;
+        }
+        if (isBuy) {
+            confirmMsg += '\n(수량은 [금액 / 현재가]로 엔진이 자동 계산합니다)';
+        }
         if (!confirm(confirmMsg)) {
             return;
         }

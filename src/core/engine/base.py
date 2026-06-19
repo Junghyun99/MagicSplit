@@ -326,12 +326,14 @@ class MagicSplitEngine:
         sim_date: Optional[str] = None,
         override_amount: Optional[float] = None,
         force: bool = False,
+        sell_all: bool = False,
     ) -> DayResult:
         """수동매매 1건을 실행한다.
 
         evaluate_stock 단계만 우회하고, 자동매매와 동일한 방식으로 모든 수량을 도출한다.
         - BUY: override_amount 지정 시 해당 금액, 없으면 rule.buy_amount_at(next_level) / 현재가
         - SELL: 최고 차수 lot.quantity 전량 매도 (사용자 입력 없음)
+        - SELL (sell_all=True): 보유 lot 전체 수량을 한 번에 일괄 청산
 
         후반부 파이프라인(주문 실행 -> 포지션 반영 -> 저장)은 자동매매와 100% 동일.
         max_lots 같은 안전 한도도 동일하게 적용된다.
@@ -342,6 +344,7 @@ class MagicSplitEngine:
             action: OrderAction.BUY 또는 OrderAction.SELL
             sim_date: 시뮬레이션 날짜 ("YYYY-MM-DD")
             override_amount: 매수 금액 직접 지정 (None이면 config buy_amount 사용)
+            sell_all: True이면 보유 lot 전체를 일괄 청산 (regime_liquidation 경로)
         """
         today = sim_date or datetime.now().strftime("%Y-%m-%d")
         disp = display_ticker(ticker)
@@ -361,15 +364,20 @@ class MagicSplitEngine:
                 f"config에서 enabled=true 설정 후 매수하세요. (매도는 청산 목적으로 허용됨)"
             )
 
+        if sell_all and action != OrderAction.SELL:
+            raise ValueError("일괄매도(sell_all)는 매도(SELL) 작업에만 사용할 수 있습니다.")
+
         all_signals: List[SplitSignal] = []
         all_executions: List[TradeExecution] = []
         portfolio: Optional[Portfolio] = None
         positions: Optional[List[PositionLot]] = None
         last_sell_prices: dict = {}
+        regime_state: dict = {}
 
         try:
             # Step 1+2: 자동 사이클과 동일한 상태 로드 (공유 헬퍼)
             portfolio, positions, last_sell_prices = self._load_initial_state()
+            regime_state = self._load_regime_state()
             current_price = self._ensure_current_price(portfolio, ticker)
             if current_price <= 0:
                 raise RuntimeError(f"{disp} 현재가 조회 실패")
@@ -378,6 +386,7 @@ class MagicSplitEngine:
             highest_level = max((lot.level for lot in ticker_lots), default=0)
             target_lot_id: Optional[str] = None
             target_buy_price: float = 0.0
+            is_bulk_sell: bool = False
 
             if action == OrderAction.BUY:
                 level = highest_level + 1
@@ -405,6 +414,18 @@ class MagicSplitEngine:
                     f"{format_money(buy_amount, self.market_type)} / 현재가="
                     f"{format_money(current_price, self.market_type)} = {order_qty}주"
                 )
+            elif sell_all:
+                # 일괄매도: 보유 lot 전체 수량 합산 -> regime_liquidation 경로로 전량 청산
+                if not ticker_lots:
+                    raise RuntimeError(
+                        f"{disp} 매도할 포지션이 존재하지 않습니다."
+                    )
+                order_qty = sum(lot.quantity for lot in ticker_lots)
+                level = highest_level
+                is_bulk_sell = True
+                self.logger.info(
+                    f"일괄매도 수량 도출: {len(ticker_lots)}개 lot 합산 {order_qty}주 전량"
+                )
             else:
                 # 매도: 자동매매와 동일하게 최고 차수 lot 전량 매도. 수량은 자동 도출.
                 if not ticker_lots:
@@ -426,10 +447,11 @@ class MagicSplitEngine:
                 action=action,
                 quantity=order_qty,
                 price=current_price,
-                reason="수동 매매(Manual Trade)",
+                reason="수동 일괄매도(Manual Bulk Sell)" if is_bulk_sell else "수동 매매(Manual Trade)",
                 pct_change=0.0,
                 level=level,
                 buy_price=target_buy_price,
+                regime_liquidation=is_bulk_sell,
             )
             all_signals.append(signal)
             self.logger.info(
@@ -447,6 +469,7 @@ class MagicSplitEngine:
                     positions = self._update_positions(
                         positions, [signal], executions, today,
                         last_sell_prices=last_sell_prices,
+                        regime_state=regime_state,
                     )
                     portfolio = self._refresh_portfolio(portfolio)
                 except Exception as e:
@@ -467,6 +490,7 @@ class MagicSplitEngine:
                 self._persist(
                     portfolio, all_signals, all_executions, positions,
                     sim_date=sim_date, last_sell_prices=last_sell_prices,
+                    regime_state=regime_state,
                 )
 
         self.logger.set_ticker_context(None)

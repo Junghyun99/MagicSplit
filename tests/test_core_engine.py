@@ -1192,6 +1192,169 @@ class TestRunManualTrade:
         alert_msgs = [c.args[0] for c in notifier.send_alert.call_args_list]
         assert any("수동매매" in m and "체결 실패 또는 거절" in m for m in alert_msgs)
 
+    # ── sell_all 관련 테스트 ────────────────────────────────────────
+
+    def test_sell_all_drains_all_lots(self, mock_broker, mock_repo, mock_logger):
+        """sell_all=True: 전체 lot 수량 합산해 regime_liquidation 신호 생성, 전량 청산."""
+        rules = [StockRule("AAPL", -5.0, 10.0, 500, 10)]
+        mock_broker.get_portfolio.return_value = Portfolio(
+            total_cash=10000.0, holdings={"AAPL": 10},
+            current_prices={"AAPL": 110.0},
+        )
+        mock_broker.fetch_current_prices.return_value = {"AAPL": 110.0}
+        mock_repo.load_positions.return_value = [
+            PositionLot("lot_lv1", "AAPL", 100.0, 5, "2026-04-01", level=1),
+            PositionLot("lot_lv2", "AAPL", 95.0, 3, "2026-04-05", level=2),
+            PositionLot("lot_lv3", "AAPL", 90.0, 2, "2026-04-08", level=3),
+        ]
+        mock_repo.load_last_sell_prices.return_value = {}
+        mock_repo.load_status.return_value = {}
+        mock_broker.execute_orders.return_value = [
+            TradeExecution("AAPL", OrderAction.SELL, 10, 110.0, 0.5,
+                           "2026-04-10", ExecutionStatus.FILLED),
+        ]
+        mock_repo.get_realized_pnl_by_ticker.return_value = {}
+        mock_repo.get_last_trade_dates.return_value = {}
+
+        eng = self._make_engine(mock_broker, mock_repo, mock_logger, rules)
+        result = eng.run_manual_trade(
+            ticker="AAPL", action=OrderAction.SELL,
+            sim_date="2026-04-10", sell_all=True,
+        )
+
+        # 신호: regime_liquidation=True, lot_id=None, 수량=전체 합산
+        assert len(result.signals) == 1
+        sig = result.signals[0]
+        assert sig.regime_liquidation is True
+        assert sig.lot_id is None
+        assert sig.quantity == 10  # 5+3+2
+        assert sig.level == 3     # 최고 차수
+        assert sig.reason == "수동 일괄매도(Manual Bulk Sell)"
+
+        # 브로커 주문: 합산 수량 전달
+        sent = mock_broker.execute_orders.call_args[0][0]
+        assert sent[0].quantity == 10
+
+        # 포지션: 전량 제거
+        saved = mock_repo.save_positions.call_args[0][0]
+        assert all(l.ticker != "AAPL" for l in saved)
+
+        # last_sell_prices 갱신
+        lsp = mock_repo.save_last_sell_prices.call_args[0][0]
+        assert lsp["AAPL"] == 110.0
+
+    def test_sell_all_no_positions_raises(self, mock_broker, mock_repo, mock_logger):
+        """sell_all=True + 보유 없음 -> RuntimeError."""
+        rules = [StockRule("AAPL", -5.0, 10.0, 500, 10)]
+        mock_broker.get_portfolio.return_value = Portfolio(
+            total_cash=10000.0, holdings={}, current_prices={"AAPL": 100.0},
+        )
+        mock_broker.fetch_current_prices.return_value = {"AAPL": 100.0}
+        mock_repo.load_positions.return_value = []
+        mock_repo.load_last_sell_prices.return_value = {}
+        mock_repo.load_status.return_value = {}
+
+        eng = self._make_engine(mock_broker, mock_repo, mock_logger, rules)
+        with pytest.raises(RuntimeError, match="매도할 포지션"):
+            eng.run_manual_trade(
+                ticker="AAPL", action=OrderAction.SELL,
+                sim_date="2026-04-10", sell_all=True,
+            )
+
+    def test_sell_all_with_buy_action_raises(self, mock_broker, mock_repo, mock_logger):
+        """sell_all=True + action=BUY -> ValueError (방어 검증)."""
+        rules = [StockRule("AAPL", -5.0, 10.0, 500, 10)]
+        eng = self._make_engine(mock_broker, mock_repo, mock_logger, rules)
+        with pytest.raises(ValueError, match="일괄매도"):
+            eng.run_manual_trade(
+                ticker="AAPL", action=OrderAction.BUY,
+                sim_date="2026-04-10", sell_all=True,
+            )
+
+    def test_sell_all_clears_ticker_regime_state_on_full_liquidation(
+        self, mock_broker, mock_repo, mock_logger
+    ):
+        """sell_all 전량 체결 후 해당 종목 regime_state가 pop되고
+        다른 종목(MSFT) 상태는 그대로 build_dashboard_status에 전달된다."""
+        from unittest.mock import patch
+        rules = [
+            StockRule("AAPL", -5.0, 10.0, 500, 10),
+            StockRule("MSFT", -5.0, 10.0, 500, 10),
+        ]
+        existing_regime = {
+            "AAPL": {"regime": "uptrend", "adds": 2},
+            "MSFT": {"regime": "uptrend", "adds": 1},
+        }
+        mock_repo.load_status.return_value = {"regime_state_by_ticker": existing_regime}
+        mock_broker.get_portfolio.return_value = Portfolio(
+            total_cash=10000.0, holdings={"AAPL": 8},
+            current_prices={"AAPL": 110.0, "MSFT": 200.0},
+        )
+        mock_broker.fetch_current_prices.return_value = {"AAPL": 110.0}
+        mock_repo.load_positions.return_value = [
+            PositionLot("lot_lv1", "AAPL", 100.0, 5, "2026-04-01", level=1),
+            PositionLot("lot_lv2", "AAPL", 95.0, 3, "2026-04-05", level=2),
+        ]
+        mock_repo.load_last_sell_prices.return_value = {}
+        mock_broker.execute_orders.return_value = [
+            TradeExecution("AAPL", OrderAction.SELL, 8, 110.0, 0.5,
+                           "2026-04-10", ExecutionStatus.FILLED),
+        ]
+        mock_repo.get_realized_pnl_by_ticker.return_value = {}
+        mock_repo.get_last_trade_dates.return_value = {}
+
+        eng = self._make_engine(mock_broker, mock_repo, mock_logger, rules)
+        with patch("src.core.engine.base.build_dashboard_status") as mock_build:
+            mock_build.return_value = {}
+            eng.run_manual_trade(
+                ticker="AAPL", action=OrderAction.SELL,
+                sim_date="2026-04-10", sell_all=True,
+            )
+
+        _, kwargs = mock_build.call_args
+        passed_regime = kwargs.get("regime_state_by_ticker")
+        # AAPL은 전량 청산 후 pop
+        assert "AAPL" not in passed_regime
+        # MSFT는 건드리지 않음
+        assert passed_regime.get("MSFT", {}).get("adds") == 1
+
+    def test_regime_state_preserved_for_other_tickers_on_regular_sell(
+        self, mock_broker, mock_repo, mock_logger
+    ):
+        """일반 매도(sell)도 regime_state를 로드해 다른 종목 상태가 보존된다 (버그 수정 검증)."""
+        from unittest.mock import patch
+        rules = [StockRule("AAPL", -5.0, 10.0, 500, 10)]
+        existing_regime = {"TSLA": {"regime": "uptrend", "adds": 3}}
+        mock_repo.load_status.return_value = {"regime_state_by_ticker": existing_regime}
+        mock_broker.get_portfolio.return_value = Portfolio(
+            total_cash=10000.0, holdings={"AAPL": 5},
+            current_prices={"AAPL": 110.0},
+        )
+        mock_broker.fetch_current_prices.return_value = {"AAPL": 110.0}
+        mock_repo.load_positions.return_value = [
+            PositionLot("lot_lv1", "AAPL", 100.0, 5, "2026-04-01", level=1),
+        ]
+        mock_repo.load_last_sell_prices.return_value = {}
+        mock_broker.execute_orders.return_value = [
+            TradeExecution("AAPL", OrderAction.SELL, 5, 110.0, 0.5,
+                           "2026-04-10", ExecutionStatus.FILLED),
+        ]
+        mock_repo.get_realized_pnl_by_ticker.return_value = {}
+        mock_repo.get_last_trade_dates.return_value = {}
+
+        eng = self._make_engine(mock_broker, mock_repo, mock_logger, rules)
+        with patch("src.core.engine.base.build_dashboard_status") as mock_build:
+            mock_build.return_value = {}
+            eng.run_manual_trade(
+                ticker="AAPL", action=OrderAction.SELL,
+                sim_date="2026-04-10",
+            )
+
+        _, kwargs = mock_build.call_args
+        passed_regime = kwargs.get("regime_state_by_ticker")
+        # TSLA regime_state가 status.json에 그대로 보존되어야 함
+        assert passed_regime.get("TSLA", {}).get("adds") == 3
+
 
 class TestRegimeAddCommitOnFill:
     """상승 add는 매수 체결이 확정될 때만 regime_state를 갱신한다 (백테스트/라이브 동일)."""
