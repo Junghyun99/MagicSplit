@@ -34,3 +34,22 @@
 2026-06-19 09:05:04,945 [INFO] [Position] Remove lot: lot_20260608_003708_005380_002 Lv2 (1주 전량 매도)
 2026-06-19 09:05:08,554 [INFO] >>> Step 6: Persist
 2026-06-19 09:05:08,854 [INFO] === Manual Trade 완료 ===
+2026-06-19 09:10:08,241 [INFO] === Manual Trade CLI: 005935 BUY amount=1300000.0 ===
+2026-06-19 09:10:08,242 [INFO] [KisBroker] 캐시에서 토큰 로드 (API 호출 생략)
+2026-06-19 09:10:08,242 [INFO] [KisDomesticLiveBroker] Mode: LIVE TRADING
+2026-06-19 09:10:08,242 [INFO] === Manual Trade: 삼성전자우(005935) BUY ===
+2026-06-19 09:10:08,242 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-06-19 09:10:10,047 [INFO] Fetching real-time prices from Broker...
+2026-06-19 09:10:16,060 [INFO] Portfolio: Cash=KRW 1,367,474, Value=KRW 31,315,049
+2026-06-19 09:10:16,060 [INFO] >>> Step 2: Load Positions
+2026-06-19 09:10:16,060 [INFO] Loaded 28 position lot(s)
+2026-06-19 09:10:16,060 [INFO] 매수 금액 수동 지정: KRW 1,300,000
+2026-06-19 09:10:16,060 [INFO] 매수 수량 도출: Lv1 buy_amount=KRW 1,300,000 / 현재가=KRW 234,250 = 5주
+2026-06-19 09:10:16,061 [INFO] [삼성전자우(005935)] 수동 신호 생성: BUY Lv1 5주 @KRW 234,250
+2026-06-19 09:10:16,061 [INFO] Executing 1 order(s)...
+2026-06-19 09:10:16,520 [INFO] [KisBroker] Available Cash for BUY: 1,367,474
+2026-06-19 09:10:17,926 [INFO] [KisDomestic] Order Sent: BUY 삼성전자우(005935) 5 @ 234500 (ODNO=0007758000)
+2026-06-19 09:10:18,338 [INFO] [KisDomestic] Order FILLED: 삼성전자우(005935) ODNO=0007758000 price=234500.0 qty=5 fee=175.87499999999997
+2026-06-19 09:10:18,539 [INFO] [Position] New lot: lot_20260619_091018_005935_001 Lv1 삼성전자우(005935) 5주 @KRW 234,500
+2026-06-19 09:10:22,181 [INFO] >>> Step 6: Persist
+2026-06-19 09:10:22,416 [INFO] === Manual Trade 완료 ===
