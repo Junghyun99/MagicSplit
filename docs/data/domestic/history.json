@@ -1297,5 +1297,31 @@
         ],
         "cash_balance": 168026.41,
         "net_deposit": 22.38
+    },
+    {
+        "id": "tx_20260619_090155",
+        "date": "2026-06-19 09:01:55",
+        "portfolio_value": 31334428.0,
+        "cash_balance": 766758.0,
+        "net_deposit": -1178.41,
+        "total_trade_amount": 600000.0,
+        "reason": "현대차(005380):SELL(수동 매매(Manual Trade))",
+        "executions": [
+            {
+                "ticker": "005380",
+                "action": "SELL",
+                "quantity": 1,
+                "price": 600000.0,
+                "fee": 89.99999999999999,
+                "date": "2026-06-19 09:01:52",
+                "status": "FILLED",
+                "reason": "ODNO=0004592800",
+                "lot_id": "lot_20260618_100141_005380_003",
+                "level": 3,
+                "buy_price": 605000.0,
+                "realized_pnl": -5090.0,
+                "alias": "현대차"
+            }
+        ]
     }
 ]
