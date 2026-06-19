@@ -190,12 +190,13 @@ class KisBrokerCommon(IBrokerAdapter):
                 if bid <= 0 or ask <= 0 or ask < bid:
                     self.logger.warning(f"[KisBroker] 호가 조회 실패 — {disp} 현재가 기반 주문 진행")
                     estimated_price = order.price * 1.02 if order.price > 0 else 0.0
-                elif not self._check_spread(bid, ask):
+                elif not self._check_spread(bid, ask, order.spread_threshold_pct):
                     mid = (bid + ask) / 2
                     spread_pct = (ask - bid) / mid * 100
+                    threshold = order.spread_threshold_pct if order.spread_threshold_pct is not None else self.SPREAD_THRESHOLD_PCT
                     self.logger.warning(
                         f"[KisBroker] 스프레드 비정상 — {disp} 매수 건너뜀 "
-                        f"bid={bid} ask={ask} spread={spread_pct:.2f}%"
+                        f"bid={bid} ask={ask} spread={spread_pct:.2f}% > {threshold}%"
                     )
                     continue
                 else:
@@ -210,7 +211,7 @@ class KisBrokerCommon(IBrokerAdapter):
                     self.logger.warning(f"Qty Adjusted: {disp} {order.quantity} -> {actual_qty}")
 
                 if actual_qty > 0:
-                    adjusted_order = Order(ticker=order.ticker, action=order.action, quantity=actual_qty, price=order.price)
+                    adjusted_order = Order(ticker=order.ticker, action=order.action, quantity=actual_qty, price=order.price, spread_threshold_pct=order.spread_threshold_pct)
                     res = self._send_order_and_wait(adjusted_order, timeout=30)
                     if res:
                         executions.append(res)
@@ -228,10 +229,14 @@ class KisBrokerCommon(IBrokerAdapter):
             time.sleep(2)
         return False
 
-    def _check_spread(self, bid: float, ask: float) -> bool:
-        """스프레드 정상 여부 반환. bid/ask가 유효하지 않거나(<=0) 역전되면 False"""
+    def _check_spread(self, bid: float, ask: float, threshold_pct: Optional[float] = None) -> bool:
+        """스프레드 정상 여부 반환. bid/ask가 유효하지 않거나(<=0) 역전되면 False.
+
+        threshold_pct가 지정되면 해당 값 사용, None이면 SPREAD_THRESHOLD_PCT 기본값 사용.
+        """
         if bid <= 0 or ask <= 0 or ask < bid:
             return False
         mid = (bid + ask) / 2
         spread_pct = (ask - bid) / mid * 100
-        return spread_pct <= self.SPREAD_THRESHOLD_PCT
+        threshold = threshold_pct if threshold_pct is not None else self.SPREAD_THRESHOLD_PCT
+        return spread_pct <= threshold

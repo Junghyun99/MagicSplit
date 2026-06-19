@@ -300,6 +300,7 @@ window.ConfigController = (function () {
         if (vals.buy_amount) stock.buy_amount = parseFloat(vals.buy_amount); else delete stock.buy_amount;
         if (vals.max_exposure_pct) stock.max_exposure_pct = parseFloat(vals.max_exposure_pct); else delete stock.max_exposure_pct;
         if (vals.trailing_drop_pct) stock.trailing_drop_pct = parseFloat(vals.trailing_drop_pct); else delete stock.trailing_drop_pct;
+        if (vals.spread_threshold_pct !== '') stock.spread_threshold_pct = parseFloat(vals.spread_threshold_pct); else delete stock.spread_threshold_pct;
         stock.enabled = vals.enabled;
 
         const filterNaNs = (arr) => {

@@ -169,6 +169,7 @@ class StrategyConfig:
         # 글로벌 설정들 (종목별 설정이 없으면 이 값을 상속)
         global_max_exposure = self.global_config.get("max_exposure_pct")
         global_trailing_drop = self.global_config.get("trailing_drop_pct")
+        global_spread_threshold = self.global_config.get("spread_threshold_pct")
 
         needs_presets = any("preset" in s for s in raw_stocks)
         if needs_presets and not os.path.exists(self.presets_path):
@@ -238,6 +239,12 @@ class StrategyConfig:
                 float(trailing_drop_raw) if trailing_drop_raw is not None else None
             )
 
+            # spread_threshold_pct: 개별 설정 > 글로벌 설정 > None(브로커 기본값)
+            spread_threshold_raw = merged.get("spread_threshold_pct", global_spread_threshold)
+            spread_threshold_pct = (
+                float(spread_threshold_raw) if spread_threshold_raw is not None else None
+            )
+
             # 레짐 필터: 개별 설정 > 글로벌 설정 > StockRule 기본값(부재 시 키 생략).
             regime_kwargs = self._build_regime_kwargs(merged)
 
@@ -257,6 +264,7 @@ class StrategyConfig:
                 trailing_drop_pcts=[float(x) for x in trailing_drops] if trailing_drops else None,
                 max_exposure_pct=max_exposure_pct,
                 priority=priority,
+                spread_threshold_pct=spread_threshold_pct,
                 **regime_kwargs,
             )
             self.rules.append(rule)

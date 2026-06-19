@@ -166,6 +166,16 @@ class TestCheckSpread:
     def test_inverted_spread_returns_false(self, broker):
         assert broker._check_spread(100.0, 90.0) is False
 
+    def test_per_order_threshold_overrides_default(self, broker):
+        # spread ~1.21% — 기본 0.5%에서는 False, 종목별 2.0%에서는 True
+        assert broker._check_spread(32895.0, 33295.0) is False
+        assert broker._check_spread(32895.0, 33295.0, threshold_pct=2.0) is True
+
+    def test_per_order_threshold_none_uses_default(self, broker):
+        # threshold_pct=None 이면 SPREAD_THRESHOLD_PCT(0.5%) 사용
+        assert broker._check_spread(100.0, 100.2, threshold_pct=None) is True
+        assert broker._check_spread(99.0, 101.0, threshold_pct=None) is False
+
 
 class TestKisOverseasGetPortfolio:
     @pytest.fixture
