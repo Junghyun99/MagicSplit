@@ -373,7 +373,7 @@
         if (isSellAll) {
             confirmMsg += `\n총 ${activeOrderParams.totalQty}주 전량 청산`;
         }
-        if (!isSellAll) {
+        if (isBuy) {
             confirmMsg += '\n(수량은 [금액 / 현재가]로 엔진이 자동 계산합니다)';
         }
         if (!confirm(confirmMsg)) {

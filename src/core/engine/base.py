@@ -364,15 +364,20 @@ class MagicSplitEngine:
                 f"config에서 enabled=true 설정 후 매수하세요. (매도는 청산 목적으로 허용됨)"
             )
 
+        if sell_all and action != OrderAction.SELL:
+            raise ValueError("일괄매도(sell_all)는 매도(SELL) 작업에만 사용할 수 있습니다.")
+
         all_signals: List[SplitSignal] = []
         all_executions: List[TradeExecution] = []
         portfolio: Optional[Portfolio] = None
         positions: Optional[List[PositionLot]] = None
         last_sell_prices: dict = {}
+        regime_state: dict = {}
 
         try:
             # Step 1+2: 자동 사이클과 동일한 상태 로드 (공유 헬퍼)
             portfolio, positions, last_sell_prices = self._load_initial_state()
+            regime_state = self._load_regime_state()
             current_price = self._ensure_current_price(portfolio, ticker)
             if current_price <= 0:
                 raise RuntimeError(f"{disp} 현재가 조회 실패")
@@ -464,6 +469,7 @@ class MagicSplitEngine:
                     positions = self._update_positions(
                         positions, [signal], executions, today,
                         last_sell_prices=last_sell_prices,
+                        regime_state=regime_state,
                     )
                     portfolio = self._refresh_portfolio(portfolio)
                 except Exception as e:
@@ -484,6 +490,7 @@ class MagicSplitEngine:
                 self._persist(
                     portfolio, all_signals, all_executions, positions,
                     sim_date=sim_date, last_sell_prices=last_sell_prices,
+                    regime_state=regime_state,
                 )
 
         self.logger.set_ticker_context(None)
