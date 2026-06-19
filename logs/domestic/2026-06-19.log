@@ -107,3 +107,21 @@
 2026-06-19 10:01:05,840 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
 2026-06-19 10:01:05,841 [INFO] [ACE 엔비디아밸류체인액티브(483320)] Lv1: trailing 활성화 (매수가 대비 +11.3%, 스톱가 KRW 31,136)
 2026-06-19 10:01:06,109 [INFO] >>> Step 6: Persist
+2026-06-19 10:05:30,368 [INFO] === Manual Trade CLI: 473640 SELL ===
+2026-06-19 10:05:30,368 [INFO] [KisBroker] 캐시에서 토큰 로드 (API 호출 생략)
+2026-06-19 10:05:30,368 [INFO] [KisDomesticLiveBroker] Mode: LIVE TRADING
+2026-06-19 10:05:30,369 [INFO] === Manual Trade: HANARO 글로벌금채굴기업(473640) SELL ===
+2026-06-19 10:05:30,369 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-06-19 10:05:31,711 [INFO] Fetching real-time prices from Broker...
+2026-06-19 10:05:36,844 [INFO] Portfolio: Cash=KRW 619,514, Value=KRW 31,431,269
+2026-06-19 10:05:36,844 [INFO] >>> Step 2: Load Positions
+2026-06-19 10:05:36,844 [INFO] Loaded 28 position lot(s)
+2026-06-19 10:05:36,845 [INFO] 매도 수량 자동 도출: Lv2 lot 15주 전량
+2026-06-19 10:05:36,845 [INFO] [HANARO 글로벌금채굴기업(473640)] 수동 신호 생성: SELL Lv2 15주 @KRW 32,890
+2026-06-19 10:05:36,845 [INFO] Executing 1 order(s)...
+2026-06-19 10:05:36,845 [INFO] [KisBroker] Processing 1 SELL orders...
+2026-06-19 10:05:37,997 [INFO] [KisDomestic] Order Sent: SELL HANARO 글로벌금채굴기업(473640) 15 @ 32890 (ODNO=0015379500)
+2026-06-19 10:05:38,411 [INFO] [KisDomestic] Order FILLED: HANARO 글로벌금채굴기업(473640) ODNO=0015379500 price=32895.0 qty=15 fee=74.01374999999999
+2026-06-19 10:05:38,611 [INFO] [Position] Remove lot: lot_20260608_142157_473640_002 Lv2 (15주 전량 매도)
+2026-06-19 10:05:42,256 [INFO] >>> Step 6: Persist
+2026-06-19 10:05:42,513 [INFO] === Manual Trade 완료 ===
