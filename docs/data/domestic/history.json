@@ -1519,5 +1519,82 @@
                 "alias": "삼성전자우"
             }
         ]
+    },
+    {
+        "id": "tx_20260619_140132",
+        "date": "2026-06-19 14:01:32",
+        "portfolio_value": 31441245.0,
+        "cash_balance": 294920.0,
+        "net_deposit": -2053.2,
+        "total_trade_amount": 2818654.0,
+        "reason": "삼성전자(005930):SELL(trailing 벌크 매도 Lv1~Lv1 (3주 +16.0%)), TIGER 지주회사(307520):SELL(trailing 벌크 매도 Lv2~Lv2 (14주 +3.9%)), NAVER(035420):BUY(추가 매수 Lv2 (Lv1 대비 -6.9%)), SOL 반도체전공정(475300):BUY(추가 매수 Lv2 (Lv1 대비 -8.8%)), 미래에셋증권(006800):BUY(추가 매수 Lv5 (Lv4 대비 -5.7%))",
+        "executions": [
+            {
+                "ticker": "005930",
+                "action": "SELL",
+                "quantity": 3,
+                "price": 351583.0,
+                "fee": 158.21249999999998,
+                "date": "2026-06-19 14:01:05",
+                "status": "FILLED",
+                "reason": "ODNO=0031840200",
+                "lot_id": "lot_20260608_142107_005930_001",
+                "level": 1,
+                "buy_price": 303000.0,
+                "realized_pnl": 145590.79,
+                "alias": "삼성전자"
+            },
+            {
+                "ticker": "307520",
+                "action": "SELL",
+                "quantity": 14,
+                "price": 23935.0,
+                "fee": 50.26349999999999,
+                "date": "2026-06-19 14:01:10",
+                "status": "FILLED",
+                "reason": "ODNO=0031845200",
+                "lot_id": "lot_20260608_142124_307520_002",
+                "level": 2,
+                "buy_price": 23050.0,
+                "realized_pnl": 12339.74,
+                "alias": "TIGER 지주회사"
+            },
+            {
+                "ticker": "035420",
+                "action": "BUY",
+                "quantity": 2,
+                "price": 228000.0,
+                "fee": 68.39999999999999,
+                "date": "2026-06-19 14:01:16",
+                "status": "FILLED",
+                "reason": "ODNO=0031851100",
+                "level": 2,
+                "alias": "NAVER"
+            },
+            {
+                "ticker": "475300",
+                "action": "BUY",
+                "quantity": 19,
+                "price": 25885.0,
+                "fee": 73.77225,
+                "date": "2026-06-19 14:01:22",
+                "status": "FILLED",
+                "reason": "ODNO=0031856700",
+                "level": 2,
+                "alias": "SOL 반도체전공정"
+            },
+            {
+                "ticker": "006800",
+                "action": "BUY",
+                "quantity": 10,
+                "price": 48100.0,
+                "fee": 72.14999999999999,
+                "date": "2026-06-19 14:01:28",
+                "status": "FILLED",
+                "reason": "ODNO=0031863000",
+                "level": 5,
+                "alias": "미래에셋증권"
+            }
+        ]
     }
 ]
