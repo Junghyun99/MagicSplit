@@ -244,6 +244,11 @@ class StrategyConfig:
             spread_threshold_pct = (
                 float(spread_threshold_raw) if spread_threshold_raw is not None else None
             )
+            if spread_threshold_pct is not None and spread_threshold_pct < 0:
+                raise ValueError(
+                    f"{self.config_path}[{idx}]: spread_threshold_pct는 음수일 수 없습니다. "
+                    f"got '{spread_threshold_pct}'"
+                )
 
             # 레짐 필터: 개별 설정 > 글로벌 설정 > StockRule 기본값(부재 시 키 생략).
             regime_kwargs = self._build_regime_kwargs(merged)

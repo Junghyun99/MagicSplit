@@ -100,6 +100,12 @@ class StockRule:
             if arr is not None and len(arr) == 0:
                 raise ValueError(f"StockRule({self.ticker}): {name}는 비어 있으면 안 됩니다.")
 
+        if self.spread_threshold_pct is not None and self.spread_threshold_pct < 0:
+            raise ValueError(
+                f"StockRule({self.ticker}): spread_threshold_pct는 0 이상이어야 합니다. "
+                f"got {self.spread_threshold_pct}"
+            )
+
         if self.regime_enabled:
             if self.regime_adx_range > self.regime_adx_trend:
                 raise ValueError(
