@@ -16,3 +16,21 @@
 2026-06-19 09:01:52,409 [INFO] [Position] Remove lot: lot_20260618_100141_005380_003 Lv3 (1주 전량 매도)
 2026-06-19 09:01:55,935 [INFO] >>> Step 6: Persist
 2026-06-19 09:01:56,403 [INFO] === Manual Trade 완료 ===
+2026-06-19 09:04:57,516 [INFO] === Manual Trade CLI: 005380 SELL ===
+2026-06-19 09:04:57,516 [INFO] [KisBroker] 캐시에서 토큰 로드 (API 호출 생략)
+2026-06-19 09:04:57,516 [INFO] [KisDomesticLiveBroker] Mode: LIVE TRADING
+2026-06-19 09:04:57,517 [INFO] === Manual Trade: 현대차(005380) SELL ===
+2026-06-19 09:04:57,517 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-06-19 09:04:58,760 [INFO] Fetching real-time prices from Broker...
+2026-06-19 09:05:03,219 [INFO] Portfolio: Cash=KRW 766,758, Value=KRW 31,328,054
+2026-06-19 09:05:03,220 [INFO] >>> Step 2: Load Positions
+2026-06-19 09:05:03,220 [INFO] Loaded 29 position lot(s)
+2026-06-19 09:05:03,220 [INFO] 매도 수량 자동 도출: Lv2 lot 1주 전량
+2026-06-19 09:05:03,220 [INFO] [현대차(005380)] 수동 신호 생성: SELL Lv2 1주 @KRW 603,000
+2026-06-19 09:05:03,220 [INFO] Executing 1 order(s)...
+2026-06-19 09:05:03,220 [INFO] [KisBroker] Processing 1 SELL orders...
+2026-06-19 09:05:04,367 [INFO] [KisDomestic] Order Sent: SELL 현대차(005380) 1 @ 602000 (ODNO=0005920500)
+2026-06-19 09:05:04,744 [INFO] [KisDomestic] Order FILLED: 현대차(005380) ODNO=0005920500 price=602000.0 qty=1 fee=90.3
+2026-06-19 09:05:04,945 [INFO] [Position] Remove lot: lot_20260608_003708_005380_002 Lv2 (1주 전량 매도)
+2026-06-19 09:05:08,554 [INFO] >>> Step 6: Persist
+2026-06-19 09:05:08,854 [INFO] === Manual Trade 완료 ===
