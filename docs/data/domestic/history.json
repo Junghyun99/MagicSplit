@@ -1372,5 +1372,31 @@
                 "alias": "삼성전자우"
             }
         ]
+    },
+    {
+        "id": "tx_20260619_100106",
+        "date": "2026-06-19 10:01:06",
+        "portfolio_value": 31391179.0,
+        "cash_balance": 619514.0,
+        "net_deposit": -836.16,
+        "total_trade_amount": 425600.0,
+        "reason": "원익IPS(240810):SKIP(현금 부족: 보유 현금 KRW 194,814 < 매수 예정 금액 KRW 932,400 (6주)), 메리츠금융지주(138040):SELL(trailing 벌크 매도 Lv2~Lv2 (4주 +4.1%)), KoAct 글로벌AI메모리반도체액티브(0174B0):SKIP(Lv1: trailing 활성화 (매수가 대비 +10.8%, 스톱가 KRW 19,926)), ACE 엔비디아밸류체인액티브(483320):SKIP(Lv1: trailing 활성화 (매수가 대비 +11.3%, 스톱가 KRW 31,136))",
+        "executions": [
+            {
+                "ticker": "138040",
+                "action": "SELL",
+                "quantity": 4,
+                "price": 106400.0,
+                "fee": 63.839999999999996,
+                "date": "2026-06-19 10:01:01",
+                "status": "FILLED",
+                "reason": "ODNO=0014955700",
+                "lot_id": "lot_20260528_094538_138040_002",
+                "level": 2,
+                "buy_price": 102300.0,
+                "realized_pnl": 16336.16,
+                "alias": "메리츠금융지주"
+            }
+        ]
     }
 ]
