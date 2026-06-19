@@ -135,12 +135,13 @@ class KisDomesticBrokerBase(KisBrokerCommon):
         if bid <= 0 or ask <= 0 or ask < bid:
             self.logger.warning(f"[KisDomestic] 호가 조회 실패 — {display_ticker(order.ticker)} 현재가 기반 주문 진행")
             bid, ask = 0.0, 0.0
-        elif not self._check_spread(bid, ask):
+        elif not self._check_spread(bid, ask, order.spread_threshold_pct):
             mid = (bid + ask) / 2
             spread_pct = (ask - bid) / mid * 100
+            threshold = order.spread_threshold_pct if order.spread_threshold_pct is not None else self.SPREAD_THRESHOLD_PCT
             self.logger.warning(
                 f"[KisDomestic] 스프레드 비정상 — {display_ticker(order.ticker)} "
-                f"bid={bid} ask={ask} spread={spread_pct:.2f}% > {self.SPREAD_THRESHOLD_PCT}% — 주문 보류"
+                f"bid={bid} ask={ask} spread={spread_pct:.2f}% > {threshold}% — 주문 보류"
             )
             return TradeExecution(
                 ticker=order.ticker, action=order.action, quantity=order.quantity,

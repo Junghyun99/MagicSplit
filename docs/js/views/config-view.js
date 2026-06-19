@@ -54,6 +54,7 @@ window.ConfigView = (function () {
         document.getElementById('edit-buy-amt').value = stock.buy_amount !== undefined ? stock.buy_amount : '';
         document.getElementById('edit-max-exposure').value = stock.max_exposure_pct !== undefined ? stock.max_exposure_pct : '';
         document.getElementById('edit-trailing-drop').value = stock.trailing_drop_pct !== undefined ? stock.trailing_drop_pct : '';
+        document.getElementById('edit-spread-threshold').value = stock.spread_threshold_pct !== undefined ? stock.spread_threshold_pct : '';
 
         document.getElementById('edit-uptrend-max-adds').value = stock.uptrend_max_adds !== undefined ? stock.uptrend_max_adds : '';
         document.getElementById('edit-uptrend-pullback-band-pct').value = stock.uptrend_pullback_band_pct !== undefined ? stock.uptrend_pullback_band_pct : '';
@@ -207,6 +208,7 @@ window.ConfigView = (function () {
             buy_amount: document.getElementById('edit-buy-amt').value,
             max_exposure_pct: document.getElementById('edit-max-exposure').value,
             trailing_drop_pct: document.getElementById('edit-trailing-drop').value,
+            spread_threshold_pct: document.getElementById('edit-spread-threshold').value,
             enabled: document.getElementById('edit-enabled').checked,
             uptrend_max_adds: document.getElementById('edit-uptrend-max-adds').value,
             uptrend_pullback_band_pct: document.getElementById('edit-uptrend-pullback-band-pct').value,

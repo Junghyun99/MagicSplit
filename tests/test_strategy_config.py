@@ -363,6 +363,69 @@ class TestTrailingDropConfig:
         assert rule.trailing_drop_at(10) == 2.0  # clamp to last
 
 
+class TestSpreadThresholdConfig:
+    """글로벌/개별 spread_threshold_pct 로딩 및 검증 테스트"""
+
+    def test_global_spread_threshold_applied_to_all(self, tmp_path):
+        config = {
+            "stocks": [
+                {"ticker": "AAPL", "buy_amount": 500},
+                {"ticker": "MSFT", "buy_amount": 1000},
+            ],
+            "global": {"spread_threshold_pct": 1.5},
+        }
+        config_file = tmp_path / "config_overseas.json"
+        config_file.write_text(json.dumps(config))
+
+        sc = StrategyConfig(str(config_file))
+        assert sc.rules[0].spread_threshold_pct == 1.5
+        assert sc.rules[1].spread_threshold_pct == 1.5
+
+    def test_individual_overrides_global(self, tmp_path):
+        config = {
+            "stocks": [
+                {"ticker": "AAPL", "buy_amount": 500},
+                {"ticker": "TSLA", "buy_amount": 500, "spread_threshold_pct": 2.0},
+            ],
+            "global": {"spread_threshold_pct": 1.5},
+        }
+        config_file = tmp_path / "config_overseas.json"
+        config_file.write_text(json.dumps(config))
+
+        sc = StrategyConfig(str(config_file))
+        assert sc.rules[0].spread_threshold_pct == 1.5   # 글로벌 상속
+        assert sc.rules[1].spread_threshold_pct == 2.0   # 개별 오버라이드
+
+    def test_no_global_no_individual_means_none(self, tmp_path):
+        config = {"stocks": [{"ticker": "AAPL", "buy_amount": 500}]}
+        config_file = tmp_path / "config_overseas.json"
+        config_file.write_text(json.dumps(config))
+
+        sc = StrategyConfig(str(config_file))
+        assert sc.rules[0].spread_threshold_pct is None
+
+    def test_negative_value_raises(self, tmp_path):
+        config = {
+            "stocks": [{"ticker": "AAPL", "buy_amount": 500, "spread_threshold_pct": -1.0}],
+        }
+        config_file = tmp_path / "config_overseas.json"
+        config_file.write_text(json.dumps(config))
+
+        with pytest.raises(ValueError, match="spread_threshold_pct"):
+            StrategyConfig(str(config_file))
+
+    def test_negative_global_raises(self, tmp_path):
+        config = {
+            "stocks": [{"ticker": "AAPL", "buy_amount": 500}],
+            "global": {"spread_threshold_pct": -0.5},
+        }
+        config_file = tmp_path / "config_overseas.json"
+        config_file.write_text(json.dumps(config))
+
+        with pytest.raises(ValueError, match="spread_threshold_pct"):
+            StrategyConfig(str(config_file))
+
+
 class TestStrategyConfigRegime:
     def test_regime_absent_defaults_off(self, tmp_path):
         config = {"stocks": [{"ticker": "AAPL"}]}

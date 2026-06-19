@@ -558,13 +558,16 @@ class MagicSplitEngine:
 
     def _signals_to_orders(self, signals: List[SplitSignal]) -> List[Order]:
         """SplitSignal 리스트를 Order 리스트로 변환한다."""
+        rule_map = {r.ticker: r for r in self.all_stock_rules}
         orders = []
         for sig in signals:
+            rule = rule_map.get(sig.ticker)
             orders.append(Order(
                 ticker=sig.ticker,
                 action=sig.action,
                 quantity=sig.quantity,
                 price=sig.price,
+                spread_threshold_pct=rule.spread_threshold_pct if rule else None,
             ))
         return orders
 

@@ -53,6 +53,9 @@ class StockRule:
     # 처리 우선순위 (1이 최우선). 동일 priority끼리는 랜덤 셔플.
     # None이면 우선순위 없는 마지막 그룹(전체 랜덤).
     priority: Optional[int] = None
+    # 호가 스프레드 허용 한도 (%). None이면 브로커 기본값(SPREAD_THRESHOLD_PCT=0.5%) 사용.
+    # 비인기/저유동성 종목은 2.0 이상 권장.
+    spread_threshold_pct: Optional[float] = None
 
     # --- 레짐 필터 (전부 기본값 => OFF => 오늘과 완전히 동일 동작) ---
     regime_enabled: bool = False
@@ -96,6 +99,12 @@ class StockRule:
         ):
             if arr is not None and len(arr) == 0:
                 raise ValueError(f"StockRule({self.ticker}): {name}는 비어 있으면 안 됩니다.")
+
+        if self.spread_threshold_pct is not None and self.spread_threshold_pct < 0:
+            raise ValueError(
+                f"StockRule({self.ticker}): spread_threshold_pct는 0 이상이어야 합니다. "
+                f"got {self.spread_threshold_pct}"
+            )
 
         if self.regime_enabled:
             if self.regime_adx_range > self.regime_adx_trend:
@@ -199,6 +208,7 @@ class Order:
     action: OrderAction
     quantity: int
     price: float  # 예상가
+    spread_threshold_pct: Optional[float] = None  # None이면 브로커 기본값 사용
 
 
 @dataclass
