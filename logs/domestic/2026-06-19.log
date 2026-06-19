@@ -171,3 +171,22 @@
 2026-06-19 12:00:57,823 [INFO] >>> Step 1: Portfolio & Price Fetch
 2026-06-19 12:01:08,507 [ERROR] 사이클 초기화 실패: [KisDomestic] Error getting portfolio: HTTPSConnectionPool(host='openapi.koreainvestment.com', port=9443): Max retries exceeded with url: /uapi/domestic-stock/v1/trading/inquire-balance?CANO=73297247&ACNT_PRDT_CD=01&AFHR_FLPR_YN=N&OFL_YN=&INQR_DVSN=01&UNPR_DVSN=01&FUND_STTL_ICLD_YN=N&FNCG_AMT_AUTO_RDPT_YN=N&PRCS_DVSN=00&CTX_AREA_FK100=&CTX_AREA_NK100= (Caused by ConnectTimeoutError(<HTTPSConnection(host='openapi.koreainvestment.com', port=9443) at 0x7f54c6bbd960>, 'Connection to openapi.koreainvestment.com timed out. (connect timeout=10.0)'))
 2026-06-19 12:01:08,770 [ERROR] >>> Step 6: 포트폴리오, 포지션 조회 실패로 저장 생략. 수동 데이터 복구 필요
+2026-06-19 12:20:41,076 [INFO] === Manual Trade CLI: 005935 BUY amount=1000000.0 ===
+2026-06-19 12:20:41,077 [INFO] [KisBroker] 캐시에서 토큰 로드 (API 호출 생략)
+2026-06-19 12:20:41,077 [INFO] [KisDomesticLiveBroker] Mode: LIVE TRADING
+2026-06-19 12:20:41,077 [INFO] === Manual Trade: 삼성전자우(005935) BUY ===
+2026-06-19 12:20:41,077 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-06-19 12:20:42,240 [INFO] Fetching real-time prices from Broker...
+2026-06-19 12:20:46,306 [INFO] Portfolio: Cash=KRW 1,142,622, Value=KRW 31,019,497
+2026-06-19 12:20:46,306 [INFO] >>> Step 2: Load Positions
+2026-06-19 12:20:46,306 [INFO] Loaded 27 position lot(s)
+2026-06-19 12:20:46,306 [INFO] 매수 금액 수동 지정: KRW 1,000,000
+2026-06-19 12:20:46,306 [INFO] 매수 수량 도출: Lv2 buy_amount=KRW 1,000,000 / 현재가=KRW 226,750 = 4주
+2026-06-19 12:20:46,306 [INFO] [삼성전자우(005935)] 수동 신호 생성: BUY Lv2 4주 @KRW 226,750
+2026-06-19 12:20:46,306 [INFO] Executing 1 order(s)...
+2026-06-19 12:20:46,829 [INFO] [KisBroker] Available Cash for BUY: 1,142,622
+2026-06-19 12:20:47,884 [INFO] [KisDomestic] Order Sent: BUY 삼성전자우(005935) 4 @ 227000 (ODNO=0023704500)
+2026-06-19 12:20:48,171 [INFO] [KisDomestic] Order FILLED: 삼성전자우(005935) ODNO=0023704500 price=227000.0 qty=4 fee=136.2
+2026-06-19 12:20:48,372 [INFO] [Position] New lot: lot_20260619_122048_005935_002 Lv2 삼성전자우(005935) 4주 @KRW 227,000
+2026-06-19 12:20:51,892 [INFO] >>> Step 6: Persist
+2026-06-19 12:20:52,360 [INFO] === Manual Trade 완료 ===
