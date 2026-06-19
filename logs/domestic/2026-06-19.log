@@ -125,3 +125,21 @@
 2026-06-19 10:05:38,611 [INFO] [Position] Remove lot: lot_20260608_142157_473640_002 Lv2 (15주 전량 매도)
 2026-06-19 10:05:42,256 [INFO] >>> Step 6: Persist
 2026-06-19 10:05:42,513 [INFO] === Manual Trade 완료 ===
+2026-06-19 10:08:52,218 [INFO] === Manual Trade CLI: 473640 SELL ===
+2026-06-19 10:08:52,219 [INFO] [KisBroker] 캐시에서 토큰 로드 (API 호출 생략)
+2026-06-19 10:08:52,219 [INFO] [KisDomesticLiveBroker] Mode: LIVE TRADING
+2026-06-19 10:08:52,219 [INFO] === Manual Trade: HANARO 글로벌금채굴기업(473640) SELL ===
+2026-06-19 10:08:52,219 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-06-19 10:08:53,346 [INFO] Fetching real-time prices from Broker...
+2026-06-19 10:08:57,383 [INFO] Portfolio: Cash=KRW 1,112,869, Value=KRW 31,426,994
+2026-06-19 10:08:57,383 [INFO] >>> Step 2: Load Positions
+2026-06-19 10:08:57,383 [INFO] Loaded 27 position lot(s)
+2026-06-19 10:08:57,384 [INFO] 매도 수량 자동 도출: Lv1 lot 29주 전량
+2026-06-19 10:08:57,384 [INFO] [HANARO 글로벌금채굴기업(473640)] 수동 신호 생성: SELL Lv1 29주 @KRW 32,900
+2026-06-19 10:08:57,384 [INFO] Executing 1 order(s)...
+2026-06-19 10:08:57,384 [INFO] [KisBroker] Processing 1 SELL orders...
+2026-06-19 10:08:58,263 [INFO] [KisDomestic] Order Sent: SELL HANARO 글로벌금채굴기업(473640) 29 @ 32895 (ODNO=0015679400)
+2026-06-19 10:08:58,549 [INFO] [KisDomestic] Order FILLED: HANARO 글로벌금채굴기업(473640) ODNO=0015679400 price=32897.0 qty=29 fee=143.10195
+2026-06-19 10:08:58,750 [INFO] [Position] Remove lot: lot_20260602_090627_473640_001 Lv1 (29주 전량 매도)
+2026-06-19 10:09:02,295 [INFO] >>> Step 6: Persist
+2026-06-19 10:09:02,746 [INFO] === Manual Trade 완료 ===
