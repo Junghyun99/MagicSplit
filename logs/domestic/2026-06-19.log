@@ -143,3 +143,22 @@
 2026-06-19 10:08:58,750 [INFO] [Position] Remove lot: lot_20260602_090627_473640_001 Lv1 (29주 전량 매도)
 2026-06-19 10:09:02,295 [INFO] >>> Step 6: Persist
 2026-06-19 10:09:02,746 [INFO] === Manual Trade 완료 ===
+2026-06-19 10:12:12,590 [INFO] === Manual Trade CLI: 240810 BUY amount=1000000.0 ===
+2026-06-19 10:12:12,591 [INFO] [KisBroker] 캐시에서 토큰 로드 (API 호출 생략)
+2026-06-19 10:12:12,591 [INFO] [KisDomesticLiveBroker] Mode: LIVE TRADING
+2026-06-19 10:12:12,591 [INFO] === Manual Trade: 원익IPS(240810) BUY ===
+2026-06-19 10:12:12,591 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-06-19 10:12:13,952 [INFO] Fetching real-time prices from Broker...
+2026-06-19 10:12:19,040 [INFO] Portfolio: Cash=KRW 2,066,742, Value=KRW 31,427,482
+2026-06-19 10:12:19,040 [INFO] >>> Step 2: Load Positions
+2026-06-19 10:12:19,040 [INFO] Loaded 26 position lot(s)
+2026-06-19 10:12:19,040 [INFO] 매수 금액 수동 지정: KRW 1,000,000
+2026-06-19 10:12:19,040 [INFO] 매수 수량 도출: Lv1 buy_amount=KRW 1,000,000 / 현재가=KRW 153,900 = 6주
+2026-06-19 10:12:19,040 [INFO] [원익IPS(240810)] 수동 신호 생성: BUY Lv1 6주 @KRW 153,900
+2026-06-19 10:12:19,041 [INFO] Executing 1 order(s)...
+2026-06-19 10:12:19,494 [INFO] [KisBroker] Available Cash for BUY: 2,066,742
+2026-06-19 10:12:20,992 [INFO] [KisDomestic] Order Sent: BUY 원익IPS(240810) 6 @ 154000 (ODNO=0015943800)
+2026-06-19 10:12:21,407 [INFO] [KisDomestic] Order FILLED: 원익IPS(240810) ODNO=0015943800 price=154000.0 qty=6 fee=138.6
+2026-06-19 10:12:21,608 [INFO] [Position] New lot: lot_20260619_101221_240810_001 Lv1 원익IPS(240810) 6주 @KRW 154,000
+2026-06-19 10:12:25,278 [INFO] >>> Step 6: Persist
+2026-06-19 10:12:25,531 [INFO] === Manual Trade 완료 ===
