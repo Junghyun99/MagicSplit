@@ -105,3 +105,23 @@
 2026-06-22 12:35:18,424 [INFO] [Position] Bulk 청산: KODEX 미국S&P500에너지(합성)(218420) 71주 소진 (잔여 1주), 실현손익 KRW -116,988
 2026-06-22 12:35:21,971 [INFO] >>> Step 6: Persist
 2026-06-22 12:35:22,568 [INFO] === Manual Trade 완료 ===
+2026-06-22 12:51:40,211 [INFO] === Manual Trade CLI: 005930 BUY amount=1000000.0 ===
+2026-06-22 12:51:40,211 [INFO] [KisBroker] 캐시에서 토큰 로드 (API 호출 생략)
+2026-06-22 12:51:40,211 [INFO] [KisDomesticLiveBroker] Mode: LIVE TRADING
+2026-06-22 12:51:40,212 [INFO] === Manual Trade: 삼성전자(005930) BUY ===
+2026-06-22 12:51:40,212 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-06-22 12:51:41,383 [INFO] Fetching real-time prices from Broker...
+2026-06-22 12:51:45,583 [INFO] Portfolio: Cash=KRW 1,648,700, Value=KRW 32,268,735
+2026-06-22 12:51:45,583 [INFO] >>> Step 2: Load Positions
+2026-06-22 12:51:45,583 [INFO] Loaded 29 position lot(s)
+2026-06-22 12:51:45,584 [INFO] 매수 금액 수동 지정: KRW 1,000,000
+2026-06-22 12:51:45,584 [INFO] 매수 수량 도출: Lv1 buy_amount=KRW 1,000,000 / 현재가=KRW 356,750 = 2주
+2026-06-22 12:51:45,584 [INFO] [삼성전자(005930)] 수동 신호 생성: BUY Lv1 2주 @KRW 356,750
+2026-06-22 12:51:45,584 [INFO] Executing 1 order(s)...
+2026-06-22 12:51:46,226 [INFO] [KisBroker] Available Cash for BUY: 1,648,700
+2026-06-22 12:51:47,651 [INFO] [KisDomestic] Order Sent: BUY 삼성전자(005930) 2 @ 357000 (ODNO=0023426800)
+2026-06-22 12:51:48,064 [INFO] [KisDomestic] Order FILLED: 삼성전자(005930) ODNO=0023426800 price=356750.0 qty=2 fee=107.02499999999999
+2026-06-22 12:51:48,265 [INFO] [삼성전자(005930)] 동적 재매수 기준 초기화 (매도가 KRW 351,583 -> 소비됨)
+2026-06-22 12:51:48,265 [INFO] [Position] New lot: lot_20260622_125148_005930_001 Lv1 삼성전자(005930) 2주 @KRW 356,750
+2026-06-22 12:51:51,905 [INFO] >>> Step 6: Persist
+2026-06-22 12:51:52,153 [INFO] === Manual Trade 완료 ===

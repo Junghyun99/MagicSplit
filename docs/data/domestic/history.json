@@ -1637,5 +1637,28 @@
                 "alias": "KODEX 미국S&P500에너지(합성)"
             }
         ]
+    },
+    {
+        "id": "tx_20260622_125151",
+        "date": "2026-06-22 12:51:51",
+        "portfolio_value": 32270505.0,
+        "cash_balance": 935100.0,
+        "net_deposit": 7.03,
+        "total_trade_amount": 713500.0,
+        "reason": "삼성전자(005930):BUY(수동 매매(Manual Trade))",
+        "executions": [
+            {
+                "ticker": "005930",
+                "action": "BUY",
+                "quantity": 2,
+                "price": 356750.0,
+                "fee": 107.02499999999999,
+                "date": "2026-06-22 12:51:48",
+                "status": "FILLED",
+                "reason": "ODNO=0023426800",
+                "level": 1,
+                "alias": "삼성전자"
+            }
+        ]
     }
 ]
