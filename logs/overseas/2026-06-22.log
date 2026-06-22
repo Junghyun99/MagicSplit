@@ -36,3 +36,22 @@
 2026-06-22 21:21:19,726 [INFO] [Position] New lot: lot_20260622_212119_ARM_002 Lv2 에이알엠 홀딩스(ADR)(ARM) 1주 @USD 436.10
 2026-06-22 21:21:24,120 [INFO] >>> Step 6: Persist
 2026-06-22 21:21:24,718 [INFO] === Manual Trade 완료 ===
+2026-06-22 21:22:07,093 [INFO] === Manual Trade CLI: DELL BUY amount=600.0 ===
+2026-06-22 21:22:07,094 [INFO] [KisBroker] 캐시에서 토큰 로드 (API 호출 생략)
+2026-06-22 21:22:07,094 [INFO] [KisOverseasLiveBroker] Mode: LIVE TRADING
+2026-06-22 21:22:07,094 [INFO] === Manual Trade: 델 테크놀로지스(DELL) BUY ===
+2026-06-22 21:22:07,094 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-06-22 21:22:09,394 [INFO] Fetching real-time prices from Broker...
+2026-06-22 21:22:15,391 [INFO] Portfolio: Cash=USD 811.80, Value=USD 13,097.59
+2026-06-22 21:22:15,391 [INFO] >>> Step 2: Load Positions
+2026-06-22 21:22:15,391 [INFO] Loaded 24 position lot(s)
+2026-06-22 21:22:15,391 [INFO] 매수 금액 수동 지정: USD 600.00
+2026-06-22 21:22:15,392 [INFO] 매수 수량 도출: Lv2 buy_amount=USD 600.00 / 현재가=USD 409.51 = 1주
+2026-06-22 21:22:15,392 [INFO] [델 테크놀로지스(DELL)] 수동 신호 생성: BUY Lv2 1주 @USD 409.51
+2026-06-22 21:22:15,392 [INFO] Executing 1 order(s)...
+2026-06-22 21:22:17,075 [INFO] [KisBroker] Available Cash for BUY: 812
+2026-06-22 21:22:18,521 [INFO] [KisBroker] Order Sent: BUY 델 테크놀로지스(DELL) 1 @ 409.9 (ODNO=0030125556)
+2026-06-22 21:22:21,132 [INFO] [KisBroker] Order FILLED: 델 테크놀로지스(DELL) ODNO=0030125556 price=409.9 qty=1 fee=0.0
+2026-06-22 21:22:21,333 [INFO] [Position] New lot: lot_20260622_212221_DELL_002 Lv2 델 테크놀로지스(DELL) 1주 @USD 409.90
+2026-06-22 21:22:26,016 [INFO] >>> Step 6: Persist
+2026-06-22 21:22:26,268 [INFO] === Manual Trade 완료 ===
