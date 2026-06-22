@@ -16,3 +16,23 @@
 2026-06-22 21:19:28,695 [INFO] [Position] Bulk 청산: IBM 4주 소진 (잔여 0주), 실현손익 USD -127.33
 2026-06-22 21:19:33,342 [INFO] >>> Step 6: Persist
 2026-06-22 21:19:33,639 [INFO] === Manual Trade 완료 ===
+2026-06-22 21:21:07,505 [INFO] === Manual Trade CLI: ARM BUY amount=600.0 ===
+2026-06-22 21:21:07,505 [INFO] [KisBroker] 캐시에서 토큰 로드 (API 호출 생략)
+2026-06-22 21:21:07,505 [INFO] [KisOverseasLiveBroker] Mode: LIVE TRADING
+2026-06-22 21:21:07,506 [INFO] === Manual Trade: 에이알엠 홀딩스(ADR)(ARM) BUY ===
+2026-06-22 21:21:07,506 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-06-22 21:21:09,396 [INFO] Fetching real-time prices from Broker...
+2026-06-22 21:21:14,576 [INFO] Portfolio: Cash=USD 1,247.89, Value=USD 13,097.07
+2026-06-22 21:21:14,576 [INFO] >>> Step 2: Load Positions
+2026-06-22 21:21:14,577 [INFO] Loaded 23 position lot(s)
+2026-06-22 21:21:14,577 [INFO] 매수 금액 수동 지정: USD 600.00
+2026-06-22 21:21:14,577 [INFO] 매수 수량 도출: Lv2 buy_amount=USD 600.00 / 현재가=USD 436.00 = 1주
+2026-06-22 21:21:14,577 [INFO] [에이알엠 홀딩스(ADR)(ARM)] 수동 신호 생성: BUY Lv2 1주 @USD 436.00
+2026-06-22 21:21:14,577 [INFO] Executing 1 order(s)...
+2026-06-22 21:21:15,966 [INFO] [KisBroker] Available Cash for BUY: 1,248
+2026-06-22 21:21:17,088 [INFO] [KisBroker] Order Sent: BUY 에이알엠 홀딩스(ADR)(ARM) 1 @ 436.1 (ODNO=0030125108)
+2026-06-22 21:21:19,525 [INFO] [KisBroker] Order FILLED: 에이알엠 홀딩스(ADR)(ARM) ODNO=0030125108 price=436.1 qty=1 fee=0.0
+2026-06-22 21:21:19,726 [INFO] [에이알엠 홀딩스(ADR)(ARM)] Lv1 trailing 초기화 (Lv2 신규 매수 -> trailing 게이트 재시작)
+2026-06-22 21:21:19,726 [INFO] [Position] New lot: lot_20260622_212119_ARM_002 Lv2 에이알엠 홀딩스(ADR)(ARM) 1주 @USD 436.10
+2026-06-22 21:21:24,120 [INFO] >>> Step 6: Persist
+2026-06-22 21:21:24,718 [INFO] === Manual Trade 완료 ===
