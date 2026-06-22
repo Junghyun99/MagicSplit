@@ -1660,5 +1660,28 @@
                 "alias": "삼성전자"
             }
         ]
+    },
+    {
+        "id": "tx_20260622_140111",
+        "date": "2026-06-22 14:01:11",
+        "portfolio_value": 32017905.0,
+        "cash_balance": 442230.0,
+        "net_deposit": 3.92,
+        "total_trade_amount": 492800.0,
+        "reason": "KODEX 증권(102970):BUY(추가 매수 Lv3 (Lv2 대비 -6.2%)), TIGER 지주회사(307520):SKIP(현금 부족: 보유 현금 KRW 442,230 < 매수 예정 금액 KRW 482,600 (20주))",
+        "executions": [
+            {
+                "ticker": "102970",
+                "action": "BUY",
+                "quantity": 22,
+                "price": 22400.0,
+                "fee": 73.91999999999999,
+                "date": "2026-06-22 14:01:07",
+                "status": "FILLED",
+                "reason": "ODNO=0026892800",
+                "level": 3,
+                "alias": "KODEX 증권"
+            }
+        ]
     }
 ]
