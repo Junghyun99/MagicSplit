@@ -888,5 +888,28 @@
                 "alias": "델 테크놀로지스"
             }
         ]
+    },
+    {
+        "id": "tx_20260623_000129",
+        "date": "2026-06-23 00:01:29",
+        "portfolio_value": 13055.5401,
+        "cash_balance": 56.86,
+        "net_deposit": 0.1,
+        "total_trade_amount": 345.13,
+        "reason": "루멘텀 홀딩스(LITE):SKIP(buy_amount(USD 500.00) < 현재가(USD 836.00) -> 1주도 매수 불가. buy_amount 상향 조정 필요), 알파벳 A(GOOGL):BUY(추가 매수 Lv3 (Lv2 대비 -6.6%))",
+        "executions": [
+            {
+                "ticker": "GOOGL",
+                "action": "BUY",
+                "quantity": 1,
+                "price": 345.13,
+                "fee": 0.0,
+                "date": "2026-06-23 00:01:24",
+                "status": "FILLED",
+                "reason": "ODNO=0030308553",
+                "level": 3,
+                "alias": "알파벳 A"
+            }
+        ]
     }
 ]

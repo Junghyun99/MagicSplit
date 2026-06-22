@@ -1,0 +1,48 @@
+2026-06-23 00:01:09,856 [INFO] === Initializing MagicSplit Bot (overseas) ===
+2026-06-23 00:01:09,856 [INFO] Loaded 21 stock rule(s) from config_overseas.json
+2026-06-23 00:01:09,856 [INFO] [overseas] 15 rule(s), mode=LIVE
+2026-06-23 00:01:09,856 [INFO] [KisBroker] 캐시에서 토큰 로드 (API 호출 생략)
+2026-06-23 00:01:09,856 [INFO] [KisOverseasLiveBroker] Mode: LIVE TRADING
+2026-06-23 00:01:09,856 [INFO] === Running overseas engine ===
+2026-06-23 00:01:09,856 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-06-23 00:01:12,285 [INFO] Fetching real-time prices from Broker...
+2026-06-23 00:01:18,210 [INFO] Portfolio: Cash=USD 401.89, Value=USD 13,056.68
+2026-06-23 00:01:18,211 [INFO] >>> Step 2: Load Positions
+2026-06-23 00:01:18,211 [INFO] Loaded 25 position lot(s)
+2026-06-23 00:01:18,212 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-06-23 00:01:18,212 [INFO] >>> Processing 테슬라(TSLA)
+2026-06-23 00:01:18,213 [INFO]   [테슬라(TSLA)] 신호 없음 | Lv4 매수 USD 389.00 -> 현재 USD 405.65 (+4.28%) | 익절 +10.0% / 추매 -5.0%
+2026-06-23 00:01:18,213 [INFO] >>> Processing SCHWAB US DIVIDEND EQUITY(SCHD)
+2026-06-23 00:01:18,213 [INFO]   [SCHWAB US DIVIDEND EQUITY(SCHD)] 신호 없음 | Lv1 매수 USD 31.74 -> 현재 USD 31.95 (+0.67%) | 익절 +10.0% / 추매 -5.0%
+2026-06-23 00:01:18,213 [INFO] >>> Processing 리얼티 인컴(O)
+2026-06-23 00:01:18,214 [INFO]   [리얼티 인컴(O)] 신호 없음 | Lv1 매수 USD 62.37 -> 현재 USD 60.85 (-2.44%) | 익절 +10.0% / 추매 -5.0%
+2026-06-23 00:01:18,214 [INFO] >>> Processing ISHARES GLOBAL CLEAN ENERGY(ICLN)
+2026-06-23 00:01:18,214 [INFO]   [ISHARES GLOBAL CLEAN ENERGY(ICLN)] 신호 없음 | Lv2 매수 USD 20.86 -> 현재 USD 21.58 (+3.45%) | 익절 +10.0% / 추매 -5.0%
+2026-06-23 00:01:18,214 [INFO] >>> Processing 에이알엠 홀딩스(ADR)(ARM)
+2026-06-23 00:01:18,215 [INFO]   [에이알엠 홀딩스(ADR)(ARM)] 신호 없음 | Lv2 매수 USD 436.10 -> 현재 USD 414.40 (-4.98%) | 익절 +10.0% / 추매 -5.0%
+2026-06-23 00:01:18,215 [INFO] >>> Processing 델 테크놀로지스(DELL)
+2026-06-23 00:01:18,215 [INFO]   [델 테크놀로지스(DELL)] 신호 없음 | Lv2 매수 USD 409.90 -> 현재 USD 429.69 (+4.83%) | 익절 +10.0% / 추매 -5.0%
+2026-06-23 00:01:18,216 [INFO] >>> Processing 루멘텀 홀딩스(LITE)
+2026-06-23 00:01:18,216 [INFO] [루멘텀 홀딩스(LITE)] buy_amount(USD 500.00) < 현재가(USD 836.00) -> 1주도 매수 불가. buy_amount 상향 조정 필요
+2026-06-23 00:01:18,597 [INFO] >>> Processing 프록터 앤드 갬블(PG)
+2026-06-23 00:01:18,597 [INFO]   [프록터 앤드 갬블(PG)] 신호 없음 | Lv1 매수 USD 142.81 -> 현재 USD 150.01 (+5.04%) | 익절 +10.0% / 추매 -5.0%
+2026-06-23 00:01:18,598 [INFO] >>> Processing 코닝(GLW)
+2026-06-23 00:01:18,598 [INFO]   [코닝(GLW)] 신호 없음 | Lv2 매수 USD 184.60 -> 현재 USD 199.25 (+7.94%) | 익절 +10.0% / 추매 -5.0%
+2026-06-23 00:01:18,598 [INFO] >>> Processing 펩시코(PEP)
+2026-06-23 00:01:18,599 [INFO]   [펩시코(PEP)] 신호 없음 | Lv2 매수 USD 142.33 -> 현재 USD 141.79 (-0.38%) | 익절 +10.0% / 추매 -5.0%
+2026-06-23 00:01:18,599 [INFO] >>> Processing 브로드컴(AVGO)
+2026-06-23 00:01:18,599 [INFO]   [브로드컴(AVGO)] 신호 없음 | Lv1 매수 USD 382.60 -> 현재 USD 395.48 (+3.37%) | 익절 +10.0% / 추매 -5.0%
+2026-06-23 00:01:18,599 [INFO] >>> Processing 알파벳 A(GOOGL)
+2026-06-23 00:01:18,600 [INFO] [알파벳 A(GOOGL)] Lv2 매수가 USD 369.66 대비 -6.6% -> 추가 매수 Lv3 1주 @USD 345.09
+2026-06-23 00:01:18,600 [INFO] Executing 1 order(s)...
+2026-06-23 00:01:20,248 [INFO] [KisBroker] Available Cash for BUY: 402
+2026-06-23 00:01:21,697 [INFO] [KisBroker] Order Sent: BUY 알파벳 A(GOOGL) 1 @ 345.13 (ODNO=0030308553)
+2026-06-23 00:01:24,286 [INFO] [KisBroker] Order FILLED: 알파벳 A(GOOGL) ODNO=0030308553 price=345.13 qty=1 fee=0.0
+2026-06-23 00:01:24,487 [INFO] [Position] New lot: lot_20260623_000124_GOOGL_003 Lv3 알파벳 A(GOOGL) 1주 @USD 345.13
+2026-06-23 00:01:29,145 [INFO] >>> Processing ARK INNOVATION(ARKK)
+2026-06-23 00:01:29,145 [INFO]   [ARK INNOVATION(ARKK)] 신호 없음 | Lv2 매수 USD 75.28 -> 현재 USD 79.20 (+5.21%) | 익절 +10.0% / 추매 -5.0%
+2026-06-23 00:01:29,146 [INFO] >>> Processing 애플(AAPL)
+2026-06-23 00:01:29,146 [INFO]   [애플(AAPL)] 신호 없음 | Lv1 매수 USD 291.90 -> 현재 USD 300.16 (+2.83%) | 익절 +10.0% / 추매 -5.0%
+2026-06-23 00:01:29,146 [INFO] >>> Processing 듀크 에너지(DUK)
+2026-06-23 00:01:29,146 [INFO]   [듀크 에너지(DUK)] 신호 없음 | Lv1 매수 USD 124.92 -> 현재 USD 124.56 (-0.29%) | 익절 +10.0% / 추매 -5.0%
+2026-06-23 00:01:29,146 [INFO] >>> Step 6: Persist
