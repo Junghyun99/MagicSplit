@@ -1596,5 +1596,46 @@
                 "alias": "미래에셋증권"
             }
         ]
+    },
+    {
+        "id": "tx_20260622_123521",
+        "date": "2026-06-22 12:35:21",
+        "portfolio_value": 32309101.0,
+        "cash_balance": 1648700.0,
+        "net_deposit": 13.1,
+        "total_trade_amount": 1353970.0,
+        "reason": "KODEX 미국S&P500에너지(합성)(218420):SELL(수동 일괄매도(Manual Bulk Sell))",
+        "executions": [
+            {
+                "ticker": "218420",
+                "action": "SELL",
+                "quantity": 25,
+                "price": 19070.0,
+                "fee": 203.0955,
+                "date": "2026-06-22 12:35:18",
+                "status": "PARTIAL",
+                "reason": "ODNO=0022724200 partial_after_cancel(71/72)",
+                "lot_id": "lot_20260527_150533_218420_002",
+                "level": 2,
+                "buy_price": 19905.0,
+                "realized_pnl": -20946.51,
+                "alias": "KODEX 미국S&P500에너지(합성)"
+            },
+            {
+                "ticker": "218420",
+                "action": "SELL",
+                "quantity": 46,
+                "price": 19070.0,
+                "fee": 203.0955,
+                "date": "2026-06-22 12:35:18",
+                "status": "PARTIAL",
+                "reason": "ODNO=0022724200 partial_after_cancel(71/72)",
+                "lot_id": "lot_20260519_143338_218420_001",
+                "level": 1,
+                "buy_price": 21155.0,
+                "realized_pnl": -96041.58,
+                "alias": "KODEX 미국S&P500에너지(합성)"
+            }
+        ]
     }
 ]

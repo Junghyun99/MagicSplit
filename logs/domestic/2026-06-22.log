@@ -85,3 +85,23 @@
 2026-06-22 12:01:04,814 [INFO] >>> Processing 삼성전자(005930)
 2026-06-22 12:01:04,814 [INFO] [삼성전자(005930)] 현금 부족: 보유 현금 KRW 294,920 < 현재가 KRW 355,750 (1주도 매수 불가) -> 매수 보류
 2026-06-22 12:01:05,050 [INFO] >>> Step 6: Persist
+2026-06-22 12:34:39,988 [INFO] === Manual Trade CLI: 218420 SELL_ALL ===
+2026-06-22 12:34:39,988 [INFO] [KisBroker] 캐시에서 토큰 로드 (API 호출 생략)
+2026-06-22 12:34:39,988 [INFO] [KisDomesticLiveBroker] Mode: LIVE TRADING
+2026-06-22 12:34:39,988 [INFO] === Manual Trade: KODEX 미국S&P500에너지(합성)(218420) SELL ===
+2026-06-22 12:34:39,989 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-06-22 12:34:41,073 [INFO] Fetching real-time prices from Broker...
+2026-06-22 12:34:44,776 [INFO] Portfolio: Cash=KRW 294,920, Value=KRW 32,331,635
+2026-06-22 12:34:44,776 [INFO] >>> Step 2: Load Positions
+2026-06-22 12:34:44,776 [INFO] Loaded 30 position lot(s)
+2026-06-22 12:34:44,777 [INFO] 일괄매도 수량 도출: 2개 lot 합산 72주 전량
+2026-06-22 12:34:44,777 [INFO] [KODEX 미국S&P500에너지(합성)(218420)] 수동 신호 생성: SELL Lv2 72주 @KRW 19,070
+2026-06-22 12:34:44,777 [INFO] Executing 1 order(s)...
+2026-06-22 12:34:44,777 [INFO] [KisBroker] Processing 1 SELL orders...
+2026-06-22 12:34:45,635 [INFO] [KisDomestic] Order Sent: SELL KODEX 미국S&P500에너지(합성)(218420) 72 @ 19070 (ODNO=0022724200)
+2026-06-22 12:35:15,793 [WARNING] [KisDomestic] Order NOT confirmed within 30s: KODEX 미국S&P500에너지(합성)(218420) ODNO=0022724200 — 취소 시도 후 재폴링·체결조회
+2026-06-22 12:35:16,412 [INFO] [KisDomestic] Order Cancelled: KODEX 미국S&P500에너지(합성)(218420) ODNO=0022724200
+2026-06-22 12:35:18,223 [INFO] [KisDomestic] Timeout outcome: KODEX 미국S&P500에너지(합성)(218420) ODNO=0022724200 PARTIAL qty=71/72 detail=partial_after_cancel
+2026-06-22 12:35:18,424 [INFO] [Position] Bulk 청산: KODEX 미국S&P500에너지(합성)(218420) 71주 소진 (잔여 1주), 실현손익 KRW -116,988
+2026-06-22 12:35:21,971 [INFO] >>> Step 6: Persist
+2026-06-22 12:35:22,568 [INFO] === Manual Trade 완료 ===
