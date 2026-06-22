@@ -1,0 +1,18 @@
+2026-06-22 21:19:16,492 [INFO] === Manual Trade CLI: IBM SELL_ALL ===
+2026-06-22 21:19:16,492 [INFO] [KisBroker] 캐시에서 토큰 로드 (API 호출 생략)
+2026-06-22 21:19:16,492 [INFO] [KisOverseasLiveBroker] Mode: LIVE TRADING
+2026-06-22 21:19:16,493 [INFO] === Manual Trade: IBM SELL ===
+2026-06-22 21:19:16,493 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-06-22 21:19:18,795 [INFO] Fetching real-time prices from Broker...
+2026-06-22 21:19:24,744 [INFO] Portfolio: Cash=USD 271.42, Value=USD 13,108.61
+2026-06-22 21:19:24,744 [INFO] >>> Step 2: Load Positions
+2026-06-22 21:19:24,745 [INFO] Loaded 25 position lot(s)
+2026-06-22 21:19:24,745 [INFO] 일괄매도 수량 도출: 2개 lot 합산 4주 전량
+2026-06-22 21:19:24,745 [INFO] [IBM] 수동 신호 생성: SELL Lv2 4주 @USD 246.83
+2026-06-22 21:19:24,745 [INFO] Executing 1 order(s)...
+2026-06-22 21:19:24,745 [INFO] [KisBroker] Processing 1 SELL orders...
+2026-06-22 21:19:25,895 [INFO] [KisBroker] Order Sent: SELL IBM 4 @ 246.8 (ODNO=0030124216)
+2026-06-22 21:19:28,494 [INFO] [KisBroker] Order FILLED: IBM ODNO=0030124216 price=246.8 qty=4 fee=0.0
+2026-06-22 21:19:28,695 [INFO] [Position] Bulk 청산: IBM 4주 소진 (잔여 0주), 실현손익 USD -127.33
+2026-06-22 21:19:33,342 [INFO] >>> Step 6: Persist
+2026-06-22 21:19:33,639 [INFO] === Manual Trade 완료 ===

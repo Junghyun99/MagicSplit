@@ -801,5 +801,46 @@
                 "alias": "델 테크놀로지스"
             }
         ]
+    },
+    {
+        "id": "tx_20260622_211933",
+        "date": "2026-06-22 21:19:33",
+        "portfolio_value": 13096.4523,
+        "cash_balance": 1247.89,
+        "net_deposit": -0.84,
+        "total_trade_amount": 987.2,
+        "reason": "IBM:SELL(수동 일괄매도(Manual Bulk Sell))",
+        "executions": [
+            {
+                "ticker": "IBM",
+                "action": "SELL",
+                "quantity": 1,
+                "price": 246.8,
+                "fee": 0.0,
+                "date": "2026-06-22 21:19:28",
+                "status": "FILLED",
+                "reason": "ODNO=0030124216",
+                "lot_id": "lot_20260618_000125_IBM_002",
+                "level": 2,
+                "buy_price": 263.88,
+                "realized_pnl": -17.08,
+                "alias": "IBM"
+            },
+            {
+                "ticker": "IBM",
+                "action": "SELL",
+                "quantity": 3,
+                "price": 246.8,
+                "fee": 0.0,
+                "date": "2026-06-22 21:19:28",
+                "status": "FILLED",
+                "reason": "ODNO=0030124216",
+                "lot_id": "lot_20260606_020617_IBM_001",
+                "level": 1,
+                "buy_price": 283.55,
+                "realized_pnl": -110.25,
+                "alias": "IBM"
+            }
+        ]
     }
 ]
