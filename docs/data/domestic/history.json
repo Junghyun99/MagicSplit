@@ -1683,5 +1683,28 @@
                 "alias": "KODEX 증권"
             }
         ]
+    },
+    {
+        "id": "tx_20260623_120111",
+        "date": "2026-06-23 12:01:11",
+        "portfolio_value": 30928460.0,
+        "cash_balance": 105940.0,
+        "net_deposit": 10.44,
+        "total_trade_amount": 336250.0,
+        "reason": "TIGER 지주회사(307520):SKIP(현금 부족: 보유 현금 KRW 442,230 < 매수 예정 금액 KRW 491,925 (21주)), 삼성전자(005930):BUY(추가 매수 Lv2 (Lv1 대비 -5.5%))",
+        "executions": [
+            {
+                "ticker": "005930",
+                "action": "BUY",
+                "quantity": 1,
+                "price": 336250.0,
+                "fee": 50.43749999999999,
+                "date": "2026-06-23 12:01:07",
+                "status": "FILLED",
+                "reason": "ODNO=0024163900",
+                "level": 2,
+                "alias": "삼성전자"
+            }
+        ]
     }
 ]
