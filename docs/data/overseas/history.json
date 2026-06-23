@@ -911,5 +911,31 @@
                 "alias": "알파벳 A"
             }
         ]
+    },
+    {
+        "id": "tx_20260624_000126",
+        "date": "2026-06-24 00:01:26",
+        "portfolio_value": 12705.4603,
+        "cash_balance": 440.27,
+        "net_deposit": 4.55,
+        "total_trade_amount": 378.86,
+        "reason": "루멘텀 홀딩스(LITE):SKIP(buy_amount(USD 500.00) < 현재가(USD 835.71) -> 1주도 매수 불가. buy_amount 상향 조정 필요), 에이알엠 홀딩스(ADR)(ARM):SKIP(현금 부족: 보유 현금 USD 65.52 < 현재가 USD 373.64 (1주도 매수 불가)), 코닝(GLW):SELL(trailing 벌크 매도 Lv2~Lv2 (2주 +2.6%))",
+        "executions": [
+            {
+                "ticker": "GLW",
+                "action": "SELL",
+                "quantity": 2,
+                "price": 189.43,
+                "fee": 0.0,
+                "date": "2026-06-24 00:01:21",
+                "status": "FILLED",
+                "reason": "ODNO=0030751949",
+                "lot_id": "lot_20260529_212022_GLW_002",
+                "level": 2,
+                "buy_price": 184.6,
+                "realized_pnl": 9.66,
+                "alias": "코닝"
+            }
+        ]
     }
 ]

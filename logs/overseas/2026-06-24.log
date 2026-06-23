@@ -1,0 +1,48 @@
+2026-06-24 00:01:10,657 [INFO] === Initializing MagicSplit Bot (overseas) ===
+2026-06-24 00:01:10,657 [INFO] Loaded 21 stock rule(s) from config_overseas.json
+2026-06-24 00:01:10,657 [INFO] [overseas] 15 rule(s), mode=LIVE
+2026-06-24 00:01:10,657 [INFO] [KisBroker] 캐시에서 토큰 로드 (API 호출 생략)
+2026-06-24 00:01:10,657 [INFO] [KisOverseasLiveBroker] Mode: LIVE TRADING
+2026-06-24 00:01:10,657 [INFO] === Running overseas engine ===
+2026-06-24 00:01:10,657 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-06-24 00:01:12,580 [INFO] Fetching real-time prices from Broker...
+2026-06-24 00:01:17,651 [INFO] Portfolio: Cash=USD 65.52, Value=USD 12,716.57
+2026-06-24 00:01:17,651 [INFO] >>> Step 2: Load Positions
+2026-06-24 00:01:17,651 [INFO] Loaded 26 position lot(s)
+2026-06-24 00:01:17,652 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-06-24 00:01:17,653 [INFO] >>> Processing 루멘텀 홀딩스(LITE)
+2026-06-24 00:01:17,653 [INFO] [루멘텀 홀딩스(LITE)] buy_amount(USD 500.00) < 현재가(USD 835.71) -> 1주도 매수 불가. buy_amount 상향 조정 필요
+2026-06-24 00:01:18,187 [INFO] >>> Processing 델 테크놀로지스(DELL)
+2026-06-24 00:01:18,188 [INFO]   [델 테크놀로지스(DELL)] 신호 없음 | Lv2 매수 USD 409.90 -> 현재 USD 420.50 (+2.59%) | 익절 +10.0% / 추매 -5.0%
+2026-06-24 00:01:18,188 [INFO] >>> Processing 브로드컴(AVGO)
+2026-06-24 00:01:18,188 [INFO]   [브로드컴(AVGO)] 신호 없음 | Lv1 매수 USD 382.60 -> 현재 USD 382.74 (+0.04%) | 익절 +10.0% / 추매 -5.0%
+2026-06-24 00:01:18,189 [INFO] >>> Processing 알파벳 A(GOOGL)
+2026-06-24 00:01:18,189 [INFO]   [알파벳 A(GOOGL)] 신호 없음 | Lv3 매수 USD 345.13 -> 현재 USD 346.65 (+0.44%) | 익절 +10.0% / 추매 -5.0%
+2026-06-24 00:01:18,189 [INFO] >>> Processing 에이알엠 홀딩스(ADR)(ARM)
+2026-06-24 00:01:18,190 [INFO] [에이알엠 홀딩스(ADR)(ARM)] 현금 부족: 보유 현금 USD 65.52 < 현재가 USD 373.64 (1주도 매수 불가) -> 매수 보류
+2026-06-24 00:01:18,636 [INFO] >>> Processing 듀크 에너지(DUK)
+2026-06-24 00:01:18,636 [INFO]   [듀크 에너지(DUK)] 신호 없음 | Lv1 매수 USD 124.92 -> 현재 USD 125.04 (+0.10%) | 익절 +10.0% / 추매 -5.0%
+2026-06-24 00:01:18,637 [INFO] >>> Processing 펩시코(PEP)
+2026-06-24 00:01:18,637 [INFO]   [펩시코(PEP)] 신호 없음 | Lv2 매수 USD 142.33 -> 현재 USD 141.50 (-0.58%) | 익절 +10.0% / 추매 -5.0%
+2026-06-24 00:01:18,637 [INFO] >>> Processing ISHARES GLOBAL CLEAN ENERGY(ICLN)
+2026-06-24 00:01:18,638 [INFO]   [ISHARES GLOBAL CLEAN ENERGY(ICLN)] 신호 없음 | Lv2 매수 USD 20.86 -> 현재 USD 20.85 (-0.05%) | 익절 +10.0% / 추매 -5.0%
+2026-06-24 00:01:18,638 [INFO] >>> Processing 리얼티 인컴(O)
+2026-06-24 00:01:18,638 [INFO]   [리얼티 인컴(O)] 신호 없음 | Lv1 매수 USD 62.37 -> 현재 USD 61.44 (-1.49%) | 익절 +10.0% / 추매 -5.0%
+2026-06-24 00:01:18,639 [INFO] >>> Processing 코닝(GLW)
+2026-06-24 00:01:18,639 [INFO] [코닝(GLW)] trailing 벌크 매도 발동: Lv2~Lv2 2주 (+2.6%)
+2026-06-24 00:01:18,639 [INFO] Executing 1 order(s)...
+2026-06-24 00:01:18,639 [INFO] [KisBroker] Processing 1 SELL orders...
+2026-06-24 00:01:19,498 [INFO] [KisBroker] Order Sent: SELL 코닝(GLW) 2 @ 189.43 (ODNO=0030751949)
+2026-06-24 00:01:21,913 [INFO] [KisBroker] Order FILLED: 코닝(GLW) ODNO=0030751949 price=189.43 qty=2 fee=0.0
+2026-06-24 00:01:22,113 [INFO] [Position] Trailing 벌크 청산: 코닝(GLW) 2주 소진 (잔여 4주), 실현손익 USD 9.66
+2026-06-24 00:01:26,469 [INFO] >>> Processing 테슬라(TSLA)
+2026-06-24 00:01:26,470 [INFO]   [테슬라(TSLA)] 신호 없음 | Lv4 매수 USD 389.00 -> 현재 USD 386.12 (-0.74%) | 익절 +10.0% / 추매 -5.0%
+2026-06-24 00:01:26,470 [INFO] >>> Processing 애플(AAPL)
+2026-06-24 00:01:26,470 [INFO]   [애플(AAPL)] 신호 없음 | Lv1 매수 USD 291.90 -> 현재 USD 300.07 (+2.80%) | 익절 +10.0% / 추매 -5.0%
+2026-06-24 00:01:26,471 [INFO] >>> Processing 프록터 앤드 갬블(PG)
+2026-06-24 00:01:26,471 [INFO]   [프록터 앤드 갬블(PG)] 신호 없음 | Lv1 매수 USD 142.81 -> 현재 USD 150.71 (+5.53%) | 익절 +10.0% / 추매 -5.0%
+2026-06-24 00:01:26,471 [INFO] >>> Processing SCHWAB US DIVIDEND EQUITY(SCHD)
+2026-06-24 00:01:26,471 [INFO]   [SCHWAB US DIVIDEND EQUITY(SCHD)] 신호 없음 | Lv1 매수 USD 31.74 -> 현재 USD 31.91 (+0.54%) | 익절 +10.0% / 추매 -5.0%
+2026-06-24 00:01:26,472 [INFO] >>> Processing ARK INNOVATION(ARKK)
+2026-06-24 00:01:26,472 [INFO]   [ARK INNOVATION(ARKK)] 신호 없음 | Lv2 매수 USD 75.28 -> 현재 USD 77.90 (+3.48%) | 익절 +10.0% / 추매 -5.0%
+2026-06-24 00:01:26,472 [INFO] >>> Step 6: Persist
