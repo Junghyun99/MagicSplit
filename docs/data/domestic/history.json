@@ -1706,5 +1706,55 @@
                 "alias": "삼성전자"
             }
         ]
+    },
+    {
+        "id": "tx_20260623_140120",
+        "date": "2026-06-23 14:01:20",
+        "portfolio_value": 30245500.0,
+        "cash_balance": 230355.0,
+        "net_deposit": -8018.84,
+        "total_trade_amount": 1941035.0,
+        "reason": "KoAct 글로벌AI메모리반도체액티브(0174B0):SELL(trailing 벌크 매도 Lv1~Lv1 (52주 +5.2%)), 삼성전자우(005935):BUY(추가 매수 Lv4 (Lv3 대비 -6.5%)), TIGER 지주회사(307520):BUY(추가 매수 Lv2 (Lv1 대비 -11.3%))",
+        "executions": [
+            {
+                "ticker": "0174B0",
+                "action": "SELL",
+                "quantity": 52,
+                "price": 19940.0,
+                "fee": 155.53199999999998,
+                "date": "2026-06-23 14:01:04",
+                "status": "FILLED",
+                "reason": "ODNO=0031927700",
+                "lot_id": "lot_20260615_100110_0174B0_001",
+                "level": 1,
+                "buy_price": 18935.0,
+                "realized_pnl": 52104.47,
+                "alias": "KoAct 글로벌AI메모리반도체액티브"
+            },
+            {
+                "ticker": "005935",
+                "action": "BUY",
+                "quantity": 2,
+                "price": 210000.0,
+                "fee": 62.99999999999999,
+                "date": "2026-06-23 14:01:10",
+                "status": "FILLED",
+                "reason": "ODNO=0031936500",
+                "level": 4,
+                "alias": "삼성전자우"
+            },
+            {
+                "ticker": "307520",
+                "action": "BUY",
+                "quantity": 21,
+                "price": 23055.0,
+                "fee": 72.62325,
+                "date": "2026-06-23 14:01:17",
+                "status": "FILLED",
+                "reason": "ODNO=0031943800",
+                "level": 2,
+                "alias": "TIGER 지주회사"
+            }
+        ]
     }
 ]
