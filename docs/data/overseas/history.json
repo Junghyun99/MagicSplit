@@ -937,5 +937,28 @@
                 "alias": "코닝"
             }
         ]
+    },
+    {
+        "id": "tx_20260624_020126",
+        "date": "2026-06-24 02:01:26",
+        "portfolio_value": 12736.175000000001,
+        "cash_balance": 70.64,
+        "net_deposit": 0.28,
+        "total_trade_amount": 369.91,
+        "reason": "루멘텀 홀딩스(LITE):SKIP(buy_amount(USD 500.00) < 현재가(USD 832.29) -> 1주도 매수 불가. buy_amount 상향 조정 필요), 에이알엠 홀딩스(ADR)(ARM):BUY(추가 매수 Lv3 (Lv2 대비 -15.2%)), 코닝(GLW):SKIP(현금 부족: 보유 현금 USD 70.64 < 현재가 USD 192.54 (1주도 매수 불가))",
+        "executions": [
+            {
+                "ticker": "ARM",
+                "action": "BUY",
+                "quantity": 1,
+                "price": 369.91,
+                "fee": 0.0,
+                "date": "2026-06-24 02:01:21",
+                "status": "FILLED",
+                "reason": "ODNO=0030808546",
+                "level": 3,
+                "alias": "에이알엠 홀딩스(ADR)"
+            }
+        ]
     }
 ]

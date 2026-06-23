@@ -46,3 +46,51 @@
 2026-06-24 00:01:26,472 [INFO] >>> Processing ARK INNOVATION(ARKK)
 2026-06-24 00:01:26,472 [INFO]   [ARK INNOVATION(ARKK)] 신호 없음 | Lv2 매수 USD 75.28 -> 현재 USD 77.90 (+3.48%) | 익절 +10.0% / 추매 -5.0%
 2026-06-24 00:01:26,472 [INFO] >>> Step 6: Persist
+2026-06-24 02:01:08,012 [INFO] === Initializing MagicSplit Bot (overseas) ===
+2026-06-24 02:01:08,013 [INFO] Loaded 21 stock rule(s) from config_overseas.json
+2026-06-24 02:01:08,013 [INFO] [overseas] 15 rule(s), mode=LIVE
+2026-06-24 02:01:08,013 [INFO] [KisBroker] 캐시에서 토큰 로드 (API 호출 생략)
+2026-06-24 02:01:08,013 [INFO] [KisOverseasLiveBroker] Mode: LIVE TRADING
+2026-06-24 02:01:08,013 [INFO] === Running overseas engine ===
+2026-06-24 02:01:08,013 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-06-24 02:01:10,083 [INFO] Fetching real-time prices from Broker...
+2026-06-24 02:01:15,526 [INFO] Portfolio: Cash=USD 440.27, Value=USD 12,735.83
+2026-06-24 02:01:15,526 [INFO] >>> Step 2: Load Positions
+2026-06-24 02:01:15,527 [INFO] Loaded 25 position lot(s)
+2026-06-24 02:01:15,528 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-06-24 02:01:15,528 [INFO] >>> Processing 알파벳 A(GOOGL)
+2026-06-24 02:01:15,528 [INFO]   [알파벳 A(GOOGL)] 신호 없음 | Lv3 매수 USD 345.13 -> 현재 USD 347.84 (+0.79%) | 익절 +10.0% / 추매 -5.0%
+2026-06-24 02:01:15,529 [INFO] >>> Processing 루멘텀 홀딩스(LITE)
+2026-06-24 02:01:15,529 [INFO] [루멘텀 홀딩스(LITE)] buy_amount(USD 500.00) < 현재가(USD 832.29) -> 1주도 매수 불가. buy_amount 상향 조정 필요
+2026-06-24 02:01:16,000 [INFO] >>> Processing 에이알엠 홀딩스(ADR)(ARM)
+2026-06-24 02:01:16,000 [INFO] [에이알엠 홀딩스(ADR)(ARM)] Lv2 매수가 USD 436.10 대비 -15.2% -> 추가 매수 Lv3 1주 @USD 369.63
+2026-06-24 02:01:16,000 [INFO] Executing 1 order(s)...
+2026-06-24 02:01:17,480 [INFO] [KisBroker] Available Cash for BUY: 440
+2026-06-24 02:01:18,782 [INFO] [KisBroker] Order Sent: BUY 에이알엠 홀딩스(ADR)(ARM) 1 @ 369.91 (ODNO=0030808546)
+2026-06-24 02:01:21,279 [INFO] [KisBroker] Order FILLED: 에이알엠 홀딩스(ADR)(ARM) ODNO=0030808546 price=369.91 qty=1 fee=0.0
+2026-06-24 02:01:21,480 [INFO] [Position] New lot: lot_20260624_020121_ARM_003 Lv3 에이알엠 홀딩스(ADR)(ARM) 1주 @USD 369.91
+2026-06-24 02:01:25,978 [INFO] >>> Processing ARK INNOVATION(ARKK)
+2026-06-24 02:01:25,978 [INFO]   [ARK INNOVATION(ARKK)] 신호 없음 | Lv2 매수 USD 75.28 -> 현재 USD 77.85 (+3.41%) | 익절 +10.0% / 추매 -5.0%
+2026-06-24 02:01:25,978 [INFO] >>> Processing ISHARES GLOBAL CLEAN ENERGY(ICLN)
+2026-06-24 02:01:25,979 [INFO]   [ISHARES GLOBAL CLEAN ENERGY(ICLN)] 신호 없음 | Lv2 매수 USD 20.86 -> 현재 USD 20.90 (+0.19%) | 익절 +10.0% / 추매 -5.0%
+2026-06-24 02:01:25,979 [INFO] >>> Processing 듀크 에너지(DUK)
+2026-06-24 02:01:25,979 [INFO]   [듀크 에너지(DUK)] 신호 없음 | Lv1 매수 USD 124.92 -> 현재 USD 125.08 (+0.12%) | 익절 +10.0% / 추매 -5.0%
+2026-06-24 02:01:25,979 [INFO] >>> Processing 프록터 앤드 갬블(PG)
+2026-06-24 02:01:25,980 [INFO]   [프록터 앤드 갬블(PG)] 신호 없음 | Lv1 매수 USD 142.81 -> 현재 USD 150.62 (+5.47%) | 익절 +10.0% / 추매 -5.0%
+2026-06-24 02:01:25,980 [INFO] >>> Processing 리얼티 인컴(O)
+2026-06-24 02:01:25,980 [INFO]   [리얼티 인컴(O)] 신호 없음 | Lv1 매수 USD 62.37 -> 현재 USD 61.59 (-1.24%) | 익절 +10.0% / 추매 -5.0%
+2026-06-24 02:01:25,980 [INFO] >>> Processing 델 테크놀로지스(DELL)
+2026-06-24 02:01:25,981 [INFO]   [델 테크놀로지스(DELL)] 신호 없음 | Lv2 매수 USD 409.90 -> 현재 USD 430.73 (+5.08%) | 익절 +10.0% / 추매 -5.0%
+2026-06-24 02:01:25,981 [INFO] >>> Processing 애플(AAPL)
+2026-06-24 02:01:25,981 [INFO]   [애플(AAPL)] 신호 없음 | Lv1 매수 USD 291.90 -> 현재 USD 298.44 (+2.24%) | 익절 +10.0% / 추매 -5.0%
+2026-06-24 02:01:25,982 [INFO] >>> Processing 테슬라(TSLA)
+2026-06-24 02:01:25,982 [INFO]   [테슬라(TSLA)] 신호 없음 | Lv4 매수 USD 389.00 -> 현재 USD 384.88 (-1.06%) | 익절 +10.0% / 추매 -5.0%
+2026-06-24 02:01:25,982 [INFO] >>> Processing SCHWAB US DIVIDEND EQUITY(SCHD)
+2026-06-24 02:01:25,983 [INFO]   [SCHWAB US DIVIDEND EQUITY(SCHD)] 신호 없음 | Lv1 매수 USD 31.74 -> 현재 USD 31.96 (+0.69%) | 익절 +10.0% / 추매 -5.0%
+2026-06-24 02:01:25,983 [INFO] >>> Processing 브로드컴(AVGO)
+2026-06-24 02:01:25,983 [INFO]   [브로드컴(AVGO)] 신호 없음 | Lv1 매수 USD 382.60 -> 현재 USD 383.17 (+0.15%) | 익절 +10.0% / 추매 -5.0%
+2026-06-24 02:01:25,983 [INFO] >>> Processing 코닝(GLW)
+2026-06-24 02:01:25,984 [INFO] [코닝(GLW)] 현금 부족: 보유 현금 USD 70.64 < 현재가 USD 192.54 (1주도 매수 불가) -> 매수 보류
+2026-06-24 02:01:26,377 [INFO] >>> Processing 펩시코(PEP)
+2026-06-24 02:01:26,378 [INFO]   [펩시코(PEP)] 신호 없음 | Lv2 매수 USD 142.33 -> 현재 USD 140.87 (-1.03%) | 익절 +10.0% / 추매 -5.0%
+2026-06-24 02:01:26,378 [INFO] >>> Step 6: Persist
