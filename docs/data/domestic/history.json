@@ -1756,5 +1756,55 @@
                 "alias": "TIGER 지주회사"
             }
         ]
+    },
+    {
+        "id": "tx_20260624_100132",
+        "date": "2026-06-24 10:01:32",
+        "portfolio_value": 29937740.0,
+        "cash_balance": 364255.0,
+        "net_deposit": -7624.67,
+        "total_trade_amount": 1902210.0,
+        "reason": "ACE 엔비디아밸류체인액티브(483320):SELL(trailing 벌크 매도 Lv1~Lv1 (33주 +5.2%)), 테스(095610):BUY(추가 매수 Lv2 (Lv1 대비 -7.0%)), KoAct 글로벌AI메모리반도체액티브(0174B0):SKIP(현금 부족: 보유 현금 KRW 772,305 < 매수 예정 금액 KRW 996,030 (51주)), 메리츠금융지주(138040):BUY(추가 매수 Lv2 (Lv1 대비 -6.7%)), KODEX 증권(102970):SKIP(현금 부족: 보유 현금 KRW 364,255 < 매수 예정 금액 KRW 482,540 (23주))",
+        "executions": [
+            {
+                "ticker": "483320",
+                "action": "SELL",
+                "quantity": 33,
+                "price": 30970.0,
+                "fee": 153.30149999999998,
+                "date": "2026-06-24 10:01:16",
+                "status": "FILLED",
+                "reason": "ODNO=0013058400",
+                "lot_id": "lot_20260609_142455_483320_001",
+                "level": 1,
+                "buy_price": 29460.0,
+                "realized_pnl": 49676.7,
+                "alias": "ACE 엔비디아밸류체인액티브"
+            },
+            {
+                "ticker": "095610",
+                "action": "BUY",
+                "quantity": 3,
+                "price": 157400.0,
+                "fee": 70.83,
+                "date": "2026-06-24 10:01:22",
+                "status": "FILLED",
+                "reason": "ODNO=0013081400",
+                "level": 2,
+                "alias": "테스"
+            },
+            {
+                "ticker": "138040",
+                "action": "BUY",
+                "quantity": 4,
+                "price": 102000.0,
+                "fee": 61.199999999999996,
+                "date": "2026-06-24 10:01:28",
+                "status": "FILLED",
+                "reason": "ODNO=0013090000",
+                "level": 2,
+                "alias": "메리츠금융지주"
+            }
+        ]
     }
 ]
