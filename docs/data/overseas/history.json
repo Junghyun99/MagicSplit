@@ -960,5 +960,55 @@
                 "alias": "에이알엠 홀딩스(ADR)"
             }
         ]
+    },
+    {
+        "id": "tx_20260627_020135",
+        "date": "2026-06-27 02:01:35",
+        "portfolio_value": 12451.163500000004,
+        "cash_balance": 100.44,
+        "net_deposit": -5.81,
+        "total_trade_amount": 1689.35,
+        "reason": "코닝(GLW):SELL(trailing 벌크 매도 Lv1~Lv1 (4주 +6.4%)), 에이알엠 홀딩스(ADR)(ARM):BUY(추가 매수 Lv4 (Lv3 대비 -10.0%)), ISHARES GLOBAL CLEAN ENERGY(ICLN):BUY(추가 매수 Lv3 (Lv2 대비 -5.3%)), 루멘텀 홀딩스(LITE):SKIP(buy_amount(USD 500.00) < 현재가(USD 808.45) -> 1주도 매수 불가. buy_amount 상향 조정 필요)",
+        "executions": [
+            {
+                "ticker": "GLW",
+                "action": "SELL",
+                "quantity": 4,
+                "price": 215.62,
+                "fee": 0.0,
+                "date": "2026-06-27 02:01:10",
+                "status": "FILLED",
+                "reason": "ODNO=0031842296",
+                "lot_id": "lot_20260513_234024_GLW_001",
+                "level": 1,
+                "buy_price": 202.75,
+                "realized_pnl": 51.48,
+                "alias": "코닝"
+            },
+            {
+                "ticker": "ARM",
+                "action": "BUY",
+                "quantity": 1,
+                "price": 333.12,
+                "fee": 0.0,
+                "date": "2026-06-27 02:01:19",
+                "status": "FILLED",
+                "reason": "ODNO=0031842354",
+                "level": 4,
+                "alias": "에이알엠 홀딩스(ADR)"
+            },
+            {
+                "ticker": "ICLN",
+                "action": "BUY",
+                "quantity": 25,
+                "price": 19.75,
+                "fee": 0.0,
+                "date": "2026-06-27 02:01:29",
+                "status": "FILLED",
+                "reason": "ODNO=0031842402",
+                "level": 3,
+                "alias": "ISHARES GLOBAL CLEAN ENERGY"
+            }
+        ]
     }
 ]
