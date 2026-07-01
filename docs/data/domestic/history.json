@@ -2022,5 +2022,43 @@
                 "alias": "KODEX 증권"
             }
         ]
+    },
+    {
+        "id": "tx_20260701_120121",
+        "date": "2026-07-01 12:01:21",
+        "portfolio_value": 30097567.0,
+        "cash_balance": 250898.0,
+        "net_deposit": 616.48,
+        "total_trade_amount": 1949895.0,
+        "reason": "KoAct 글로벌AI메모리반도체액티브(0174B0):SKIP(현금 부족: 보유 현금 KRW 296,169 < 매수 예정 금액 KRW 983,920 (49주)), 삼성전자(005930):SKIP(현금 부족: 보유 현금 KRW 296,169 < 현재가 KRW 318,750 (1주도 매수 불가)), 원익IPS(240810):SELL(trailing 벌크 매도 Lv1~Lv1 (6주 +3.2%)), ACE 엔비디아밸류체인액티브(483320):BUY(초기 매수 Lv1), 삼성전자우(005935):SKIP(현금 부족: 보유 현금 KRW 250,898 < 매수 예정 금액 KRW 405,000 (2주))",
+        "executions": [
+            {
+                "ticker": "240810",
+                "action": "SELL",
+                "quantity": 6,
+                "price": 158900.0,
+                "fee": 143.01,
+                "date": "2026-07-01 12:01:11",
+                "status": "FILLED",
+                "reason": "ODNO=0017726300",
+                "lot_id": "lot_20260619_101221_240810_001",
+                "level": 1,
+                "buy_price": 154000.0,
+                "realized_pnl": 29256.99,
+                "alias": "원익IPS"
+            },
+            {
+                "ticker": "483320",
+                "action": "BUY",
+                "quantity": 31,
+                "price": 32145.0,
+                "fee": 149.47424999999998,
+                "date": "2026-07-01 12:01:17",
+                "status": "FILLED",
+                "reason": "ODNO=0017729100",
+                "level": 1,
+                "alias": "ACE 엔비디아밸류체인액티브"
+            }
+        ]
     }
 ]
