@@ -2191,5 +2191,28 @@
                 "alias": "원익IPS"
             }
         ]
+    },
+    {
+        "id": "tx_20260702_140116",
+        "date": "2026-07-02 14:01:16",
+        "portfolio_value": 29160216.0,
+        "cash_balance": 160831.0,
+        "net_deposit": 2.08,
+        "total_trade_amount": 480510.0,
+        "reason": "삼성에스디에스(018260):SKIP(현금 부족: 보유 현금 KRW 641,411 < 매수 예정 금액 KRW 826,000 (4주)), 테스(095610):SKIP(현금 부족: 보유 현금 KRW 641,411 < 매수 예정 금액 KRW 901,500 (5주)), SOL 반도체전공정(475300):BUY(추가 매수 Lv2 (Lv1 대비 -6.0%))",
+        "executions": [
+            {
+                "ticker": "475300",
+                "action": "BUY",
+                "quantity": 18,
+                "price": 26695.0,
+                "fee": 72.0765,
+                "date": "2026-07-02 14:01:12",
+                "status": "FILLED",
+                "reason": "ODNO=0026005200",
+                "level": 2,
+                "alias": "SOL 반도체전공정"
+            }
+        ]
     }
 ]
