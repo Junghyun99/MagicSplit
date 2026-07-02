@@ -2060,5 +2060,136 @@
                 "alias": "ACE 엔비디아밸류체인액티브"
             }
         ]
+    },
+    {
+        "id": "tx_20260702_100233",
+        "date": "2026-07-02 10:02:33",
+        "portfolio_value": 28994676.0,
+        "cash_balance": 641411.0,
+        "net_deposit": 997134.06,
+        "total_trade_amount": 5607080.0,
+        "reason": "ACE 엔비디아밸류체인액티브(483320):BUY(추가 매수 Lv2 (Lv1 대비 -6.7%)), SOL 반도체전공정(475300):SELL(trailing 벌크 매도 Lv2~Lv2 (19주 +2.1%)), KoAct 글로벌AI메모리반도체액티브(0174B0):BUY(초기 매수 Lv1), 테스(095610):SELL(trailing 벌크 매도 Lv1~Lv2 (8주 +11.4%)), KODEX 증권(102970):SELL(trailing 벌크 매도 Lv4~Lv4 (25주 +6.3%)), 삼성전자우(005935):BUY(추가 매수 Lv4 (Lv3 대비 -14.0%)), 삼성전자(005930):BUY(추가 매수 Lv5 (Lv4 대비 -20.2%)), 원익IPS(240810):BUY(초기 매수 Lv1)",
+        "executions": [
+            {
+                "ticker": "483320",
+                "action": "BUY",
+                "quantity": 16,
+                "price": 29975.0,
+                "fee": 71.94,
+                "date": "2026-07-02 10:01:14",
+                "status": "FILLED",
+                "reason": "ODNO=0012463100",
+                "level": 2,
+                "alias": "ACE 엔비디아밸류체인액티브"
+            },
+            {
+                "ticker": "475300",
+                "action": "SELL",
+                "quantity": 19,
+                "price": 26400.0,
+                "fee": 75.24,
+                "date": "2026-07-02 10:01:21",
+                "status": "FILLED",
+                "reason": "ODNO=0012470800",
+                "lot_id": "lot_20260619_140122_475300_002",
+                "level": 2,
+                "buy_price": 25885.0,
+                "realized_pnl": 9709.76,
+                "alias": "SOL 반도체전공정"
+            },
+            {
+                "ticker": "0174B0",
+                "action": "BUY",
+                "quantity": 54,
+                "price": 18320.0,
+                "fee": 148.392,
+                "date": "2026-07-02 10:01:29",
+                "status": "FILLED",
+                "reason": "ODNO=0012483900",
+                "level": 1,
+                "alias": "KoAct 글로벌AI메모리반도체액티브"
+            },
+            {
+                "ticker": "095610",
+                "action": "SELL",
+                "quantity": 3,
+                "price": 183600.0,
+                "fee": 220.32,
+                "date": "2026-07-02 10:01:34",
+                "status": "FILLED",
+                "reason": "ODNO=0012495600",
+                "lot_id": "lot_20260624_100122_095610_002",
+                "level": 2,
+                "buy_price": 157400.0,
+                "realized_pnl": 78517.38,
+                "alias": "테스"
+            },
+            {
+                "ticker": "095610",
+                "action": "SELL",
+                "quantity": 5,
+                "price": 183600.0,
+                "fee": 220.32,
+                "date": "2026-07-02 10:01:34",
+                "status": "FILLED",
+                "reason": "ODNO=0012495600",
+                "lot_id": "lot_20260617_120108_095610_001",
+                "level": 1,
+                "buy_price": 169200.0,
+                "realized_pnl": 71862.3,
+                "alias": "테스"
+            },
+            {
+                "ticker": "102970",
+                "action": "SELL",
+                "quantity": 25,
+                "price": 21210.0,
+                "fee": 79.5375,
+                "date": "2026-07-02 10:02:12",
+                "status": "FILLED",
+                "reason": "ODNO=0012504100 race_full_fill cancel_unconfirmed",
+                "lot_id": "lot_20260626_140110_102970_004",
+                "level": 4,
+                "buy_price": 19955.0,
+                "realized_pnl": 31295.46,
+                "alias": "KODEX 증권"
+            },
+            {
+                "ticker": "005935",
+                "action": "BUY",
+                "quantity": 2,
+                "price": 193100.0,
+                "fee": 57.92999999999999,
+                "date": "2026-07-02 10:02:18",
+                "status": "FILLED",
+                "reason": "ODNO=0012554400",
+                "level": 4,
+                "alias": "삼성전자우"
+            },
+            {
+                "ticker": "005930",
+                "action": "BUY",
+                "quantity": 1,
+                "price": 290250.0,
+                "fee": 43.537499999999994,
+                "date": "2026-07-02 10:02:23",
+                "status": "FILLED",
+                "reason": "ODNO=0012561300",
+                "level": 5,
+                "alias": "삼성전자"
+            },
+            {
+                "ticker": "240810",
+                "action": "BUY",
+                "quantity": 7,
+                "price": 137300.0,
+                "fee": 144.165,
+                "date": "2026-07-02 10:02:29",
+                "status": "FILLED",
+                "reason": "ODNO=0012568500",
+                "level": 1,
+                "alias": "원익IPS"
+            }
+        ]
     }
 ]

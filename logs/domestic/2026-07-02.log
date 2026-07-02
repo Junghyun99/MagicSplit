@@ -1,0 +1,86 @@
+2026-07-02 10:01:06,965 [INFO] === Initializing MagicSplit Bot (domestic) ===
+2026-07-02 10:01:06,966 [INFO] Loaded 20 stock rule(s) from config_domestic.json
+2026-07-02 10:01:06,966 [INFO] [domestic] 14 rule(s), mode=LIVE
+2026-07-02 10:01:06,966 [INFO] [KisBroker] 새 토큰 발급 중...
+2026-07-02 10:01:07,791 [INFO] [KisDomesticLiveBroker] Mode: LIVE TRADING
+2026-07-02 10:01:07,792 [INFO] === Running domestic engine ===
+2026-07-02 10:01:07,792 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-07-02 10:01:08,385 [INFO] Fetching real-time prices from Broker...
+2026-07-02 10:01:12,235 [INFO] Portfolio: Cash=KRW 1,250,898, Value=KRW 29,041,438
+2026-07-02 10:01:12,235 [INFO] >>> Step 2: Load Positions
+2026-07-02 10:01:12,235 [INFO] Loaded 28 position lot(s)
+2026-07-02 10:01:12,236 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-07-02 10:01:12,237 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-07-02 10:01:12,237 [INFO] [ACE 엔비디아밸류체인액티브(483320)] Lv1 매수가 KRW 32,145 대비 -6.7% -> 추가 매수 Lv2 16주 @KRW 29,980
+2026-07-02 10:01:12,237 [INFO] Executing 1 order(s)...
+2026-07-02 10:01:12,648 [INFO] [KisBroker] Available Cash for BUY: 1,250,898
+2026-07-02 10:01:13,946 [INFO] [KisDomestic] Order Sent: BUY ACE 엔비디아밸류체인액티브(483320) 16 @ 29975 (ODNO=0012463100)
+2026-07-02 10:01:14,303 [INFO] [KisDomestic] Order FILLED: ACE 엔비디아밸류체인액티브(483320) ODNO=0012463100 price=29975.0 qty=16 fee=71.94
+2026-07-02 10:01:14,504 [INFO] [Position] New lot: lot_20260702_100114_483320_002 Lv2 ACE 엔비디아밸류체인액티브(483320) 16주 @KRW 29,975
+2026-07-02 10:01:18,094 [INFO] >>> Processing SOL 반도체전공정(475300)
+2026-07-02 10:01:18,095 [INFO] [SOL 반도체전공정(475300)] trailing 벌크 매도 발동: Lv2~Lv2 19주 (+2.1%)
+2026-07-02 10:01:18,095 [INFO] Executing 1 order(s)...
+2026-07-02 10:01:18,095 [INFO] [KisBroker] Processing 1 SELL orders...
+2026-07-02 10:01:19,137 [INFO] [KisDomestic] Order Sent: SELL SOL 반도체전공정(475300) 19 @ 26400 (ODNO=0012470800)
+2026-07-02 10:01:21,669 [INFO] [KisDomestic] Order FILLED: SOL 반도체전공정(475300) ODNO=0012470800 price=26400.0 qty=19 fee=75.24
+2026-07-02 10:01:21,870 [INFO] [Position] Trailing 벌크 청산: SOL 반도체전공정(475300) 19주 소진 (잔여 35주), 실현손익 KRW 9,710
+2026-07-02 10:01:25,308 [INFO] >>> Processing 메리츠금융지주(138040)
+2026-07-02 10:01:25,308 [INFO]   [메리츠금융지주(138040)] 신호 없음 | Lv2 매수 KRW 102,000 -> 현재 KRW 105,600 (+3.53%) | 익절 +10.0% / 추매 -5.0%
+2026-07-02 10:01:25,308 [INFO] >>> Processing KoAct 글로벌AI메모리반도체액티브(0174B0)
+2026-07-02 10:01:25,309 [INFO] [KoAct 글로벌AI메모리반도체액티브(0174B0)] 보유 lot 없음 -> 초기 매수 Lv1 54주 @KRW 18,305
+2026-07-02 10:01:25,309 [INFO] Executing 1 order(s)...
+2026-07-02 10:01:25,718 [INFO] [KisBroker] Available Cash for BUY: 1,272,758
+2026-07-02 10:01:26,998 [INFO] [KisDomestic] Order Sent: BUY KoAct 글로벌AI메모리반도체액티브(0174B0) 54 @ 18320 (ODNO=0012483900)
+2026-07-02 10:01:29,530 [INFO] [KisDomestic] Order FILLED: KoAct 글로벌AI메모리반도체액티브(0174B0) ODNO=0012483900 price=18320.0 qty=54 fee=148.392
+2026-07-02 10:01:29,731 [INFO] [KoAct 글로벌AI메모리반도체액티브(0174B0)] 동적 재매수 기준 초기화 (매도가 KRW 19,940 -> 소비됨)
+2026-07-02 10:01:29,731 [INFO] [Position] New lot: lot_20260702_100129_0174B0_001 Lv1 KoAct 글로벌AI메모리반도체액티브(0174B0) 54주 @KRW 18,320
+2026-07-02 10:01:33,158 [INFO] >>> Processing TIGER 지주회사(307520)
+2026-07-02 10:01:33,159 [INFO]   [TIGER 지주회사(307520)] 신호 없음 | Lv2 매수 KRW 23,055 -> 현재 KRW 22,485 (-2.47%) | 익절 +10.0% / 추매 -5.0%
+2026-07-02 10:01:33,159 [INFO] >>> Processing KODEX 미국S&P500금융(453650)
+2026-07-02 10:01:33,159 [INFO]   [KODEX 미국S&P500금융(453650)] 신호 없음 | Lv1 매수 KRW 18,975 -> 현재 KRW 20,785 (+9.54%) | 익절 +10.0% / 추매 -5.0%
+2026-07-02 10:01:33,159 [INFO] >>> Processing KODEX 미국S&P500필수소비재(453630)
+2026-07-02 10:01:33,160 [INFO]   [KODEX 미국S&P500필수소비재(453630)] 신호 없음 | Lv1 매수 KRW 13,600 -> 현재 KRW 13,665 (+0.48%) | 익절 +10.0% / 추매 -5.0%
+2026-07-02 10:01:33,160 [INFO] >>> Processing 테스(095610)
+2026-07-02 10:01:33,160 [INFO] [테스(095610)] trailing 벌크 매도 발동: Lv1~Lv2 8주 (+11.4%)
+2026-07-02 10:01:33,160 [INFO] Executing 1 order(s)...
+2026-07-02 10:01:33,160 [INFO] [KisBroker] Processing 1 SELL orders...
+2026-07-02 10:01:34,160 [INFO] [KisDomestic] Order Sent: SELL 테스(095610) 8 @ 183600 (ODNO=0012495600)
+2026-07-02 10:01:34,515 [INFO] [KisDomestic] Order FILLED: 테스(095610) ODNO=0012495600 price=183600.0 qty=8 fee=220.32
+2026-07-02 10:01:34,716 [INFO] [Position] Trailing 벌크 청산: 테스(095610) 8주 소진 (잔여 0주), 실현손익 KRW 150,380
+2026-07-02 10:01:38,305 [INFO] >>> Processing KODEX 증권(102970)
+2026-07-02 10:01:38,305 [INFO] [KODEX 증권(102970)] trailing 벌크 매도 발동: Lv4~Lv4 25주 (+6.3%)
+2026-07-02 10:01:38,305 [INFO] Executing 1 order(s)...
+2026-07-02 10:01:38,306 [INFO] [KisBroker] Processing 1 SELL orders...
+2026-07-02 10:01:39,318 [INFO] [KisDomestic] Order Sent: SELL KODEX 증권(102970) 25 @ 21210 (ODNO=0012504100)
+2026-07-02 10:02:09,828 [WARNING] [KisDomestic] Order NOT confirmed within 30s: KODEX 증권(102970) ODNO=0012504100 — 취소 시도 후 재폴링·체결조회
+2026-07-02 10:02:10,566 [ERROR] [KisDomestic] Cancel Failed: KODEX 증권(102970) ODNO=0012504100 — 정정취소 가능수량이 없습니다.
+2026-07-02 10:02:12,428 [INFO] [KisDomestic] Timeout outcome: KODEX 증권(102970) ODNO=0012504100 FILLED qty=25/25 detail=race_full_fill
+2026-07-02 10:02:12,629 [INFO] [Position] Trailing 벌크 청산: KODEX 증권(102970) 25주 소진 (잔여 79주), 실현손익 KRW 31,295
+2026-07-02 10:02:16,052 [INFO] >>> Processing ACE 테슬라밸류체인액티브(457480)
+2026-07-02 10:02:16,052 [INFO]   [ACE 테슬라밸류체인액티브(457480)] 신호 없음 | Lv1 매수 KRW 23,625 -> 현재 KRW 23,520 (-0.44%) | 익절 +10.0% / 추매 -5.0%
+2026-07-02 10:02:16,052 [INFO] >>> Processing 삼성전자우(005935)
+2026-07-02 10:02:16,053 [INFO] [삼성전자우(005935)] Lv3 매수가 KRW 224,500 대비 -14.0% -> 추가 매수 Lv4 2주 @KRW 193,100
+2026-07-02 10:02:16,053 [INFO] Executing 1 order(s)...
+2026-07-02 10:02:16,471 [INFO] [KisBroker] Available Cash for BUY: 2,279,181
+2026-07-02 10:02:17,756 [INFO] [KisDomestic] Order Sent: BUY 삼성전자우(005935) 2 @ 193100 (ODNO=0012554400)
+2026-07-02 10:02:18,114 [INFO] [KisDomestic] Order FILLED: 삼성전자우(005935) ODNO=0012554400 price=193100.0 qty=2 fee=57.92999999999999
+2026-07-02 10:02:18,315 [INFO] [삼성전자우(005935)] 동적 재매수 기준 초기화 (매도가 KRW 218,000 -> 소비됨)
+2026-07-02 10:02:18,316 [INFO] [Position] New lot: lot_20260702_100218_005935_004 Lv4 삼성전자우(005935) 2주 @KRW 193,100
+2026-07-02 10:02:21,733 [INFO] >>> Processing 삼성전자(005930)
+2026-07-02 10:02:21,734 [INFO] [삼성전자(005930)] Lv4 매수가 KRW 364,000 대비 -20.2% -> 추가 매수 Lv5 1주 @KRW 290,500
+2026-07-02 10:02:21,734 [INFO] Executing 1 order(s)...
+2026-07-02 10:02:22,154 [INFO] [KisBroker] Available Cash for BUY: 1,892,931
+2026-07-02 10:02:23,437 [INFO] [KisDomestic] Order Sent: BUY 삼성전자(005930) 1 @ 290500 (ODNO=0012561300)
+2026-07-02 10:02:23,793 [INFO] [KisDomestic] Order FILLED: 삼성전자(005930) ODNO=0012561300 price=290250.0 qty=1 fee=43.537499999999994
+2026-07-02 10:02:23,994 [INFO] [Position] New lot: lot_20260702_100223_005930_005 Lv5 삼성전자(005930) 1주 @KRW 290,250
+2026-07-02 10:02:27,413 [INFO] >>> Processing 원익IPS(240810)
+2026-07-02 10:02:27,413 [INFO] [원익IPS(240810)] 보유 lot 없음 -> 초기 매수 Lv1 7주 @KRW 138,600
+2026-07-02 10:02:27,413 [INFO] Executing 1 order(s)...
+2026-07-02 10:02:27,837 [INFO] [KisBroker] Available Cash for BUY: 1,602,641
+2026-07-02 10:02:29,133 [INFO] [KisDomestic] Order Sent: BUY 원익IPS(240810) 7 @ 137300 (ODNO=0012568500)
+2026-07-02 10:02:29,488 [INFO] [KisDomestic] Order FILLED: 원익IPS(240810) ODNO=0012568500 price=137300.0 qty=7 fee=144.165
+2026-07-02 10:02:29,689 [INFO] [원익IPS(240810)] 동적 재매수 기준 초기화 (매도가 KRW 158,900 -> 소비됨)
+2026-07-02 10:02:29,689 [INFO] [Position] New lot: lot_20260702_100229_240810_001 Lv1 원익IPS(240810) 7주 @KRW 137,300
+2026-07-02 10:02:33,123 [INFO] >>> Processing SOL 미국양자컴퓨팅TOP10(0023A0)
+2026-07-02 10:02:33,123 [INFO]   [SOL 미국양자컴퓨팅TOP10(0023A0)] 신호 없음 | Lv2 매수 KRW 33,355 -> 현재 KRW 33,170 (-0.55%) | 익절 +10.0% / 추매 -5.0%
+2026-07-02 10:02:33,123 [INFO] >>> Step 6: Persist
