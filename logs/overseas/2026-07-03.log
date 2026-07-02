@@ -127,3 +127,21 @@
 2026-07-03 04:01:29,717 [INFO] >>> Processing 에이알엠 홀딩스(ADR)(ARM)
 2026-07-03 04:01:29,717 [INFO] [에이알엠 홀딩스(ADR)(ARM)] 현금 부족: 보유 현금 USD 119.92 < 현재가 USD 312.61 (1주도 매수 불가) -> 매수 보류
 2026-07-03 04:01:30,030 [INFO] >>> Step 6: Persist
+2026-07-03 08:08:59,965 [INFO] === Manual Trade CLI: ARM SELL_ALL ===
+2026-07-03 08:08:59,965 [INFO] [KisBroker] 캐시에서 토큰 로드 (API 호출 생략)
+2026-07-03 08:08:59,965 [INFO] [KisOverseasLiveBroker] Mode: LIVE TRADING
+2026-07-03 08:08:59,966 [INFO] === Manual Trade: 에이알엠 홀딩스(ADR)(ARM) SELL ===
+2026-07-03 08:08:59,966 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-07-03 08:09:02,116 [INFO] Fetching real-time prices from Broker...
+2026-07-03 08:09:07,698 [INFO] Portfolio: Cash=USD 119.92, Value=USD 12,469.85
+2026-07-03 08:09:07,698 [INFO] >>> Step 2: Load Positions
+2026-07-03 08:09:07,698 [INFO] Loaded 27 position lot(s)
+2026-07-03 08:09:07,699 [INFO] 일괄매도 수량 도출: 4개 lot 합산 5주 전량
+2026-07-03 08:09:07,699 [INFO] [에이알엠 홀딩스(ADR)(ARM)] 수동 신호 생성: SELL Lv4 5주 @USD 315.28
+2026-07-03 08:09:07,699 [INFO] Executing 1 order(s)...
+2026-07-03 08:09:07,699 [INFO] [KisBroker] Processing 1 SELL orders...
+2026-07-03 08:09:08,717 [INFO] [KisBroker] Order Sent: SELL 에이알엠 홀딩스(ADR)(ARM) 5 @ 315.0 (ODNO=0031540376)
+2026-07-03 08:09:11,242 [INFO] [KisBroker] Order FILLED: 에이알엠 홀딩스(ADR)(ARM) ODNO=0031540376 price=315.0 qty=5 fee=0.0
+2026-07-03 08:09:11,443 [INFO] [Position] Bulk 청산: 에이알엠 홀딩스(ADR)(ARM) 5주 소진 (잔여 0주), 실현손익 USD -364.57
+2026-07-03 08:09:15,990 [INFO] >>> Step 6: Persist
+2026-07-03 08:09:16,287 [INFO] === Manual Trade 완료 ===
