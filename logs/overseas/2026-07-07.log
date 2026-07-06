@@ -1,0 +1,49 @@
+2026-07-07 00:01:25,492 [INFO] === Initializing MagicSplit Bot (overseas) ===
+2026-07-07 00:01:25,492 [INFO] Loaded 22 stock rule(s) from config_overseas.json
+2026-07-07 00:01:25,492 [INFO] [overseas] 15 rule(s), mode=LIVE
+2026-07-07 00:01:25,492 [INFO] [KisBroker] 캐시에서 토큰 로드 (API 호출 생략)
+2026-07-07 00:01:25,492 [INFO] [KisOverseasLiveBroker] Mode: LIVE TRADING
+2026-07-07 00:01:25,492 [INFO] === Running overseas engine ===
+2026-07-07 00:01:25,493 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-07-07 00:01:27,966 [INFO] Fetching real-time prices from Broker...
+2026-07-07 00:01:33,712 [INFO] Portfolio: Cash=USD 1,684.21, Value=USD 12,675.18
+2026-07-07 00:01:33,712 [INFO] >>> Step 2: Load Positions
+2026-07-07 00:01:33,713 [INFO] Loaded 23 position lot(s)
+2026-07-07 00:01:33,714 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-07-07 00:01:33,714 [INFO] >>> Processing 코닝(GLW)
+2026-07-07 00:01:33,714 [INFO] [코닝(GLW)] 보유 lot 없음 -> 초기 매수 Lv1 5주 @USD 199.97
+2026-07-07 00:01:33,714 [INFO] Executing 1 order(s)...
+2026-07-07 00:01:35,510 [INFO] [KisBroker] Available Cash for BUY: 1,684
+2026-07-07 00:01:36,940 [INFO] [KisBroker] Order Sent: BUY 코닝(GLW) 5 @ 200.18 (ODNO=0030241411)
+2026-07-07 00:01:39,492 [INFO] [KisBroker] Order FILLED: 코닝(GLW) ODNO=0030241411 price=200.18 qty=5 fee=0.0
+2026-07-07 00:01:39,693 [INFO] [코닝(GLW)] 동적 재매수 기준 초기화 (매도가 USD 215.62 -> 소비됨)
+2026-07-07 00:01:39,693 [INFO] [Position] New lot: lot_20260707_000139_GLW_001 Lv1 코닝(GLW) 5주 @USD 200.18
+2026-07-07 00:01:44,457 [INFO] >>> Processing 델 테크놀로지스(DELL)
+2026-07-07 00:01:44,458 [INFO]   [델 테크놀로지스(DELL)] 신호 없음 | Lv2 매수 USD 409.90 -> 현재 USD 424.45 (+3.55%) | 익절 +10.0% / 추매 -5.0%
+2026-07-07 00:01:44,458 [INFO] >>> Processing 리얼티 인컴(O)
+2026-07-07 00:01:44,458 [INFO]   [리얼티 인컴(O)] 신호 없음 | Lv1 매수 USD 62.37 -> 현재 USD 63.05 (+1.09%) | 익절 +10.0% / 추매 -5.0%
+2026-07-07 00:01:44,459 [INFO] >>> Processing 루멘텀 홀딩스(LITE)
+2026-07-07 00:01:44,459 [INFO] [루멘텀 홀딩스(LITE)] buy_amount(USD 500.00) < 현재가(USD 737.03) -> 1주도 매수 불가. buy_amount 상향 조정 필요
+2026-07-07 00:01:44,838 [INFO] >>> Processing 알파벳 A(GOOGL)
+2026-07-07 00:01:44,839 [INFO]   [알파벳 A(GOOGL)] 신호 없음 | Lv3 매수 USD 345.13 -> 현재 USD 361.30 (+4.69%) | 익절 +10.0% / 추매 -5.0%
+2026-07-07 00:01:44,839 [INFO] >>> Processing 듀크 에너지(DUK)
+2026-07-07 00:01:44,839 [INFO]   [듀크 에너지(DUK)] 신호 없음 | Lv1 매수 USD 124.92 -> 현재 USD 127.04 (+1.70%) | 익절 +10.0% / 추매 -5.0%
+2026-07-07 00:01:44,840 [INFO] >>> Processing 프록터 앤드 갬블(PG)
+2026-07-07 00:01:44,840 [INFO]   [프록터 앤드 갬블(PG)] 신호 없음 | Lv1 매수 USD 142.81 -> 현재 USD 147.78 (+3.48%) | 익절 +10.0% / 추매 -5.0%
+2026-07-07 00:01:44,840 [INFO] >>> Processing SCHWAB US DIVIDEND EQUITY(SCHD)
+2026-07-07 00:01:44,840 [INFO]   [SCHWAB US DIVIDEND EQUITY(SCHD)] 신호 없음 | Lv1 매수 USD 31.74 -> 현재 USD 32.13 (+1.22%) | 익절 +10.0% / 추매 -5.0%
+2026-07-07 00:01:44,841 [INFO] >>> Processing 카메코(CCJ)
+2026-07-07 00:01:44,841 [INFO] [카메코(CCJ)] 현금 부족: 보유 현금 USD 683.42 < 매수 예정 금액 USD 985.60 (10주) -> 매수 보류
+2026-07-07 00:01:45,208 [INFO] >>> Processing ARK INNOVATION(ARKK)
+2026-07-07 00:01:45,209 [INFO] [ARK INNOVATION(ARKK)] Lv2: trailing 활성화 (매수가 대비 +10.2%, 스톱가 USD 78.83)
+2026-07-07 00:01:45,529 [INFO] >>> Processing 브로드컴(AVGO)
+2026-07-07 00:01:45,529 [INFO]   [브로드컴(AVGO)] 신호 없음 | Lv1 매수 USD 382.60 -> 현재 USD 375.44 (-1.87%) | 익절 +10.0% / 추매 -5.0%
+2026-07-07 00:01:45,529 [INFO] >>> Processing ISHARES GLOBAL CLEAN ENERGY(ICLN)
+2026-07-07 00:01:45,530 [INFO]   [ISHARES GLOBAL CLEAN ENERGY(ICLN)] 신호 없음 | Lv3 매수 USD 19.75 -> 현재 USD 20.24 (+2.48%) | 익절 +10.0% / 추매 -5.0%
+2026-07-07 00:01:45,530 [INFO] >>> Processing 테슬라(TSLA)
+2026-07-07 00:01:45,530 [INFO]   [테슬라(TSLA)] 신호 없음 | Lv4 매수 USD 389.00 -> 현재 USD 409.07 (+5.16%) | 익절 +10.0% / 추매 -5.0%
+2026-07-07 00:01:45,531 [INFO] >>> Processing 애플(AAPL)
+2026-07-07 00:01:45,531 [INFO]   [애플(AAPL)] 신호 없음 | Lv1 매수 USD 291.90 -> 현재 USD 312.86 (+7.18%) | 익절 +10.0% / 추매 -5.0%
+2026-07-07 00:01:45,531 [INFO] >>> Processing 펩시코(PEP)
+2026-07-07 00:01:45,531 [INFO]   [펩시코(PEP)] 신호 없음 | Lv2 매수 USD 142.33 -> 현재 USD 141.83 (-0.35%) | 익절 +10.0% / 추매 -5.0%
+2026-07-07 00:01:45,531 [INFO] >>> Step 6: Persist

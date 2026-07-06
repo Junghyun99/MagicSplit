@@ -1081,5 +1081,28 @@
                 "alias": "에이알엠 홀딩스(ADR)"
             }
         ]
+    },
+    {
+        "id": "tx_20260707_000145",
+        "date": "2026-07-07 00:01:45",
+        "portfolio_value": 12678.625100000001,
+        "cash_balance": 683.42,
+        "net_deposit": 6.34,
+        "total_trade_amount": 1000.9000000000001,
+        "reason": "코닝(GLW):BUY(초기 매수 Lv1), 루멘텀 홀딩스(LITE):SKIP(buy_amount(USD 500.00) < 현재가(USD 737.03) -> 1주도 매수 불가. buy_amount 상향 조정 필요), 카메코(CCJ):SKIP(현금 부족: 보유 현금 USD 683.42 < 매수 예정 금액 USD 985.60 (10주)), ARK INNOVATION(ARKK):SKIP(Lv2: trailing 활성화 (매수가 대비 +10.2%, 스톱가 USD 78.83))",
+        "executions": [
+            {
+                "ticker": "GLW",
+                "action": "BUY",
+                "quantity": 5,
+                "price": 200.18,
+                "fee": 0.0,
+                "date": "2026-07-07 00:01:39",
+                "status": "FILLED",
+                "reason": "ODNO=0030241411",
+                "level": 1,
+                "alias": "코닝"
+            }
+        ]
     }
 ]
