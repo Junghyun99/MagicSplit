@@ -1,0 +1,52 @@
+2026-07-08 00:01:27,895 [INFO] === Initializing MagicSplit Bot (overseas) ===
+2026-07-08 00:01:27,895 [INFO] Loaded 22 stock rule(s) from config_overseas.json
+2026-07-08 00:01:27,896 [INFO] [overseas] 12 rule(s), mode=LIVE
+2026-07-08 00:01:27,896 [INFO] [KisBroker] 캐시에서 토큰 로드 (API 호출 생략)
+2026-07-08 00:01:27,896 [INFO] [KisOverseasLiveBroker] Mode: LIVE TRADING
+2026-07-08 00:01:27,896 [INFO] === Running overseas engine ===
+2026-07-08 00:01:27,896 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-07-08 00:01:30,660 [INFO] Fetching real-time prices from Broker...
+2026-07-08 00:01:35,353 [INFO] Portfolio: Cash=USD 7,188.52, Value=USD 18,980.95
+2026-07-08 00:01:35,353 [INFO] >>> Step 2: Load Positions
+2026-07-08 00:01:35,353 [INFO] Loaded 24 position lot(s)
+2026-07-08 00:01:35,354 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-07-08 00:01:35,355 [INFO] >>> Processing 브로드컴(AVGO)
+2026-07-08 00:01:35,355 [INFO] [브로드컴(AVGO)] Lv1 매수가 USD 382.60 대비 -5.1% -> 추가 매수 Lv2 1주 @USD 363.07
+2026-07-08 00:01:35,355 [INFO] Executing 1 order(s)...
+2026-07-08 00:01:37,191 [INFO] [KisBroker] Available Cash for BUY: 7,189
+2026-07-08 00:01:38,600 [INFO] [KisBroker] Order Sent: BUY 브로드컴(AVGO) 1 @ 363.2 (ODNO=0030625700)
+2026-07-08 00:01:41,181 [INFO] [KisBroker] Order FILLED: 브로드컴(AVGO) ODNO=0030625700 price=363.2 qty=1 fee=0.0
+2026-07-08 00:01:41,382 [INFO] [Position] New lot: lot_20260708_000141_AVGO_002 Lv2 브로드컴(AVGO) 1주 @USD 363.20
+2026-07-08 00:01:46,171 [INFO] >>> Processing 델 테크놀로지스(DELL)
+2026-07-08 00:01:46,172 [INFO]   [델 테크놀로지스(DELL)] 신호 없음 | Lv2 매수 USD 409.90 -> 현재 USD 406.78 (-0.76%) | 익절 +10.0% / 추매 -5.0%
+2026-07-08 00:01:46,172 [INFO] >>> Processing 테슬라(TSLA)
+2026-07-08 00:01:46,173 [INFO]   [테슬라(TSLA)] 신호 없음 | Lv4 매수 USD 389.00 -> 현재 USD 408.44 (+5.00%) | 익절 +10.0% / 추매 -5.0%
+2026-07-08 00:01:46,173 [INFO] >>> Processing 애플(AAPL)
+2026-07-08 00:01:46,173 [INFO]   [애플(AAPL)] 신호 없음 | Lv1 매수 USD 291.90 -> 현재 USD 313.02 (+7.24%) | 익절 +10.0% / 추매 -5.0%
+2026-07-08 00:01:46,173 [INFO] >>> Processing 카메코(CCJ)
+2026-07-08 00:01:46,174 [INFO] [카메코(CCJ)] 보유 lot 없음 -> 초기 매수 Lv1 10주 @USD 94.00
+2026-07-08 00:01:46,174 [INFO] Executing 1 order(s)...
+2026-07-08 00:01:47,981 [INFO] [KisBroker] Available Cash for BUY: 6,825
+2026-07-08 00:01:49,382 [INFO] [KisBroker] Order Sent: BUY 카메코(CCJ) 10 @ 94.06 (ODNO=0030626016)
+2026-07-08 00:01:49,777 [INFO] [KisBroker] Order FILLED: 카메코(CCJ) ODNO=0030626016 price=94.06 qty=10 fee=0.0
+2026-07-08 00:01:49,978 [INFO] [Position] New lot: lot_20260708_000149_CCJ_001 Lv1 카메코(CCJ) 10주 @USD 94.06
+2026-07-08 00:01:54,808 [INFO] >>> Processing ISHARES GLOBAL CLEAN ENERGY(ICLN)
+2026-07-08 00:01:54,808 [INFO]   [ISHARES GLOBAL CLEAN ENERGY(ICLN)] 신호 없음 | Lv3 매수 USD 19.75 -> 현재 USD 19.30 (-2.28%) | 익절 +10.0% / 추매 -5.0%
+2026-07-08 00:01:54,808 [INFO] >>> Processing ARK INNOVATION(ARKK)
+2026-07-08 00:01:54,809 [INFO]   [ARK INNOVATION(ARKK)] 신호 없음 | Lv2 매수 USD 75.28 -> 현재 USD 80.90 (+7.47%) | 익절 +10.0% / 추매 -5.0%
+2026-07-08 00:01:54,809 [INFO] >>> Processing SCHWAB US DIVIDEND EQUITY(SCHD)
+2026-07-08 00:01:54,809 [INFO]   [SCHWAB US DIVIDEND EQUITY(SCHD)] 신호 없음 | Lv1 매수 USD 31.74 -> 현재 USD 32.62 (+2.77%) | 익절 +10.0% / 추매 -5.0%
+2026-07-08 00:01:54,810 [INFO] >>> Processing 루멘텀 홀딩스(LITE)
+2026-07-08 00:01:54,810 [INFO] [루멘텀 홀딩스(LITE)] buy_amount(USD 500.00) < 현재가(USD 693.43) -> 1주도 매수 불가. buy_amount 상향 조정 필요
+2026-07-08 00:01:55,120 [INFO] >>> Processing 펩시코(PEP)
+2026-07-08 00:01:55,121 [INFO]   [펩시코(PEP)] 신호 없음 | Lv2 매수 USD 142.33 -> 현재 USD 147.83 (+3.86%) | 익절 +10.0% / 추매 -5.0%
+2026-07-08 00:01:55,121 [INFO] >>> Processing 코닝(GLW)
+2026-07-08 00:01:55,121 [INFO] [코닝(GLW)] Lv1 매수가 USD 200.18 대비 -8.7% -> 추가 매수 Lv2 2주 @USD 182.80
+2026-07-08 00:01:55,121 [INFO] Executing 1 order(s)...
+2026-07-08 00:01:56,942 [INFO] [KisBroker] Available Cash for BUY: 5,885
+2026-07-08 00:01:58,362 [INFO] [KisBroker] Order Sent: BUY 코닝(GLW) 2 @ 183.31 (ODNO=0030626141)
+2026-07-08 00:02:00,948 [INFO] [KisBroker] Order FILLED: 코닝(GLW) ODNO=0030626141 price=183.31 qty=2 fee=0.0
+2026-07-08 00:02:01,149 [INFO] [Position] New lot: lot_20260708_000201_GLW_002 Lv2 코닝(GLW) 2주 @USD 183.31
+2026-07-08 00:02:05,980 [INFO] >>> Processing 알파벳 A(GOOGL)
+2026-07-08 00:02:05,981 [INFO]   [알파벳 A(GOOGL)] 신호 없음 | Lv3 매수 USD 345.13 -> 현재 USD 367.96 (+6.61%) | 익절 +10.0% / 추매 -5.0%
+2026-07-08 00:02:05,981 [INFO] >>> Step 6: Persist

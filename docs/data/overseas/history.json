@@ -1104,5 +1104,52 @@
                 "alias": "코닝"
             }
         ]
+    },
+    {
+        "id": "tx_20260708_000205",
+        "date": "2026-07-08 00:02:05",
+        "portfolio_value": 18988.6845,
+        "cash_balance": 5518.48,
+        "net_deposit": 6505.48,
+        "total_trade_amount": 1670.42,
+        "reason": "브로드컴(AVGO):BUY(추가 매수 Lv2 (Lv1 대비 -5.1%)), 카메코(CCJ):BUY(초기 매수 Lv1), 루멘텀 홀딩스(LITE):SKIP(buy_amount(USD 500.00) < 현재가(USD 693.43) -> 1주도 매수 불가. buy_amount 상향 조정 필요), 코닝(GLW):BUY(추가 매수 Lv2 (Lv1 대비 -8.7%))",
+        "executions": [
+            {
+                "ticker": "AVGO",
+                "action": "BUY",
+                "quantity": 1,
+                "price": 363.2,
+                "fee": 0.0,
+                "date": "2026-07-08 00:01:41",
+                "status": "FILLED",
+                "reason": "ODNO=0030625700",
+                "level": 2,
+                "alias": "브로드컴"
+            },
+            {
+                "ticker": "CCJ",
+                "action": "BUY",
+                "quantity": 10,
+                "price": 94.06,
+                "fee": 0.0,
+                "date": "2026-07-08 00:01:49",
+                "status": "FILLED",
+                "reason": "ODNO=0030626016",
+                "level": 1,
+                "alias": "카메코"
+            },
+            {
+                "ticker": "GLW",
+                "action": "BUY",
+                "quantity": 2,
+                "price": 183.31,
+                "fee": 0.0,
+                "date": "2026-07-08 00:02:00",
+                "status": "FILLED",
+                "reason": "ODNO=0030626141",
+                "level": 2,
+                "alias": "코닝"
+            }
+        ]
     }
 ]
