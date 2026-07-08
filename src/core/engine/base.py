@@ -1127,7 +1127,7 @@ class MagicSplitEngine:
         skip_status: bool = False,
     ) -> None:
         """Step 6: 저장 4종 호출."""
-        reason = self._build_reason(signals)
+        reason = self._build_reason(signals, executions)
 
         self.repo.save_positions(positions)
         if last_sell_prices is not None:
@@ -1232,17 +1232,27 @@ class MagicSplitEngine:
         except Exception as e:
             self.logger.error(f"상태 전이 처리 중 오류 발생 (무시하고 진행): {e}")
 
-    def _build_reason(self, signals: List[SplitSignal]) -> str:
-        """신호 목록에서 사유 문자열을 생성한다."""
+    def _build_reason(self, signals: List[SplitSignal], executions: List[TradeExecution]) -> str:
+        """신호 목록에서 사유 문자열을 생성한다.
+
+        활성 신호(BUY/SELL)라도 실제 체결 결과(executions)와 교차 검증하여,
+        주문이 미전송된 경우(현금 부족 등) SKIP으로 표시한다.
+        """
         if not signals:
             return REASON_NO_SIGNAL
+        executed = {(e.ticker, e.action) for e in executions}
         reasons = []
         for s in signals:
             if s.is_blocked or s.is_info:
                 label = "SKIP"
+                reason_text = s.reason
+            elif (s.ticker, s.action) not in executed:
+                label = "SKIP"
+                reason_text = f"주문 미전송: {s.reason}"
             else:
                 label = s.action.value
-            reasons.append(f"{display_ticker(s.ticker)}:{label}({s.reason})")
+                reason_text = s.reason
+            reasons.append(f"{display_ticker(s.ticker)}:{label}({reason_text})")
         return ", ".join(reasons)
 
     def _notify_message(self, msg: str, detail: Optional[str] = None) -> None:

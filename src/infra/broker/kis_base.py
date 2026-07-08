@@ -208,15 +208,21 @@ class KisBrokerCommon(IBrokerAdapter):
                 max_qty = int(budget / estimated_price)
                 actual_qty = min(order.quantity, max_qty)
 
-                if max_qty < order.quantity:
+                if actual_qty <= 0:
+                    self.logger.warning(
+                        f"[KisBroker] BUY skipped — {disp}: "
+                        f"cash={current_cash:,.0f}, price~{estimated_price:,.0f} -> qty=0"
+                    )
+                    continue
+
+                if actual_qty < order.quantity:
                     self.logger.warning(f"Qty Adjusted: {disp} {order.quantity} -> {actual_qty}")
 
-                if actual_qty > 0:
-                    adjusted_order = Order(ticker=order.ticker, action=order.action, quantity=actual_qty, price=order.price, spread_threshold_pct=order.spread_threshold_pct)
-                    res = self._send_order_and_wait(adjusted_order, timeout=30)
-                    if res:
-                        executions.append(res)
-                    time.sleep(0.2)
+                adjusted_order = Order(ticker=order.ticker, action=order.action, quantity=actual_qty, price=order.price, spread_threshold_pct=order.spread_threshold_pct)
+                res = self._send_order_and_wait(adjusted_order, timeout=30)
+                if res:
+                    executions.append(res)
+                time.sleep(0.2)
 
         return executions
 
