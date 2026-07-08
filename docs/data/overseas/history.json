@@ -1151,5 +1151,31 @@
                 "alias": "코닝"
             }
         ]
+    },
+    {
+        "id": "tx_20260708_224018",
+        "date": "2026-07-08 22:40:18",
+        "portfolio_value": 19035.407799999997,
+        "cash_balance": 6028.87,
+        "net_deposit": 1.19,
+        "total_trade_amount": 509.2,
+        "reason": "리얼티 인컴(O):SELL(수동 일괄매도(Manual Bulk Sell))",
+        "executions": [
+            {
+                "ticker": "O",
+                "action": "SELL",
+                "quantity": 8,
+                "price": 63.65,
+                "fee": 0.0,
+                "date": "2026-07-08 22:40:13",
+                "status": "FILLED",
+                "reason": "ODNO=0030931922",
+                "lot_id": "lot_20260512_003449_O_001",
+                "level": 1,
+                "buy_price": 62.37,
+                "realized_pnl": 10.24,
+                "alias": "리얼티 인컴"
+            }
+        ]
     }
 ]

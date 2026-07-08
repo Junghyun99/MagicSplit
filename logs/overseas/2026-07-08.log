@@ -124,3 +124,21 @@
 2026-07-08 04:01:29,239 [INFO] >>> Processing ISHARES GLOBAL CLEAN ENERGY(ICLN)
 2026-07-08 04:01:29,239 [INFO]   [ISHARES GLOBAL CLEAN ENERGY(ICLN)] 신호 없음 | Lv3 매수 USD 19.75 -> 현재 USD 19.30 (-2.25%) | 익절 +10.0% / 추매 -5.0%
 2026-07-08 04:01:29,239 [INFO] >>> Step 6: Persist
+2026-07-08 22:40:03,292 [INFO] === Manual Trade CLI: O SELL_ALL ===
+2026-07-08 22:40:03,292 [INFO] [KisBroker] 캐시에서 토큰 로드 (API 호출 생략)
+2026-07-08 22:40:03,292 [INFO] [KisOverseasLiveBroker] Mode: LIVE TRADING
+2026-07-08 22:40:03,292 [INFO] === Manual Trade: 리얼티 인컴(O) SELL ===
+2026-07-08 22:40:03,292 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-07-08 22:40:05,493 [INFO] Fetching real-time prices from Broker...
+2026-07-08 22:40:10,193 [INFO] Portfolio: Cash=USD 5,525.14, Value=USD 19,029.70
+2026-07-08 22:40:10,193 [INFO] >>> Step 2: Load Positions
+2026-07-08 22:40:10,193 [INFO] Loaded 27 position lot(s)
+2026-07-08 22:40:10,194 [INFO] 일괄매도 수량 도출: 1개 lot 합산 8주 전량
+2026-07-08 22:40:10,194 [INFO] [리얼티 인컴(O)] 수동 신호 생성: SELL Lv1 8주 @USD 63.69
+2026-07-08 22:40:10,194 [INFO] Executing 1 order(s)...
+2026-07-08 22:40:10,194 [INFO] [KisBroker] Processing 1 SELL orders...
+2026-07-08 22:40:11,290 [INFO] [KisBroker] Order Sent: SELL 리얼티 인컴(O) 8 @ 63.65 (ODNO=0030931922)
+2026-07-08 22:40:13,869 [INFO] [KisBroker] Order FILLED: 리얼티 인컴(O) ODNO=0030931922 price=63.65 qty=8 fee=0.0
+2026-07-08 22:40:14,070 [INFO] [Position] Bulk 청산: 리얼티 인컴(O) 8주 소진 (잔여 0주), 실현손익 USD 10.24
+2026-07-08 22:40:18,680 [INFO] >>> Step 6: Persist
+2026-07-08 22:40:19,041 [INFO] === Manual Trade 완료 ===
