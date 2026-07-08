@@ -2255,5 +2255,28 @@
                 "alias": "삼성전자우"
             }
         ]
+    },
+    {
+        "id": "tx_20260708_120136",
+        "date": "2026-07-08 12:01:36",
+        "portfolio_value": 27868036.0,
+        "cash_balance": 863597.0,
+        "net_deposit": 496299.43,
+        "total_trade_amount": 496225.0,
+        "reason": "삼성에스디에스(018260):SKIP(현금 부족: 보유 현금 KRW 863,597 < 매수 예정 금액 KRW 994,000 (5주)), ACE 테슬라밸류체인액티브(457480):BUY(추가 매수 Lv2 (Lv1 대비 -8.7%))",
+        "executions": [
+            {
+                "ticker": "457480",
+                "action": "BUY",
+                "quantity": 23,
+                "price": 21575.0,
+                "fee": 74.43374999999999,
+                "date": "2026-07-08 12:01:31",
+                "status": "FILLED",
+                "reason": "ODNO=0016036500",
+                "level": 2,
+                "alias": "ACE 테슬라밸류체인액티브"
+            }
+        ]
     }
 ]
