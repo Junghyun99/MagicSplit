@@ -195,6 +195,7 @@ class Portfolio:
     total_cash: float
     holdings: Dict[str, int]          # {ticker: quantity}
     current_prices: Dict[str, float]  # {ticker: price}
+    exchange_rate: Optional[float] = None  # 조회 시점 기준환율 (KRW/USD). 해외주식 전용, 없으면 None
 
     @property
     def total_value(self) -> float:

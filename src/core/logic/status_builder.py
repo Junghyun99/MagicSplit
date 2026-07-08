@@ -194,6 +194,7 @@ def build_dashboard_status(
         "last_run_date": last_run_date,
         "market_type": market_type,
         "reason": reason,
+        "exchange_rate": portfolio.exchange_rate,
         "portfolio": {
             "total_value": portfolio.total_value,
             "cash_balance": portfolio.total_cash,

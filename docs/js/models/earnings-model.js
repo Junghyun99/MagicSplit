@@ -6,6 +6,7 @@ window.EarningsModel = (function () {
     let monthlyData = {};
     let sortedYears = [];
     let currentUnrealized = { total: 0, byTicker: {} };
+    let exchangeRate = null; // 마지막 저장 시점 기준환율 (KRW/USD), 없으면 null
 
     // { ticker: { sell_count, win_count, alias, trades: [...], monthly: { "YYYY-MM": { pnl, count } } } }
     let tickerSellStats = {};
@@ -108,6 +109,7 @@ window.EarningsModel = (function () {
     function setStatusData(statusData) {
         _rawStatusData = statusData || null;
         currentUnrealized = { total: 0, byTicker: {} };
+        exchangeRate = (statusData && statusData.exchange_rate != null) ? Number(statusData.exchange_rate) : null;
         if (!statusData || !statusData.positions) return;
 
         for (const [ticker, info] of Object.entries(statusData.positions)) {
@@ -182,6 +184,10 @@ window.EarningsModel = (function () {
 
     function getCurrentUnrealized() {
         return currentUnrealized;
+    }
+
+    function getExchangeRate() {
+        return exchangeRate;
     }
 
     // Returns array of per-ticker comprehensive P&L (all tickers ever traded or held)
@@ -278,6 +284,7 @@ window.EarningsModel = (function () {
         getPeriodSummary,
         getMonthsWithData,
         getCurrentUnrealized,
+        getExchangeRate,
         getTickerSummaries,
         getTickerDetail,
         getLevelStats

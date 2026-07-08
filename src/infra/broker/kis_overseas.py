@@ -72,7 +72,7 @@ class KisOverseasBrokerBase(KisBrokerCommon):
         target_exchanges = ["NASD", "NYSE", "AMEX"]
 
         # 1. 예수금/주문가능금액 조회 (해외증거금 상세 API 필수)
-        total_cash = self._fetch_total_cash()
+        total_cash, exchange_rate = self._fetch_total_cash()
         all_holdings: Dict[str, int] = {}
         all_prices: Dict[str, float] = {}
 
@@ -117,7 +117,8 @@ class KisOverseasBrokerBase(KisBrokerCommon):
         return Portfolio(
             total_cash=total_cash,
             holdings=all_holdings,
-            current_prices=all_prices
+            current_prices=all_prices,
+            exchange_rate=exchange_rate,
         )
 
     def _send_order_and_wait(self, order: Order, timeout: int = 30) -> Optional[TradeExecution]:
@@ -475,10 +476,14 @@ class KisOverseasBrokerBase(KisBrokerCommon):
             return EXCHANGE_CODE_SHORT_TO_FULL.get(price_code, 'NASD')
         return price_code
 
-    def _fetch_total_cash(self) -> float:
-        """해외증거금/예수금 상세 API를 통해 실제 주문 가능 금액을 조회한다."""
+    def _fetch_total_cash(self) -> tuple:
+        """해외증거금/예수금 상세 API를 통해 실제 주문 가능 금액과 기준환율(KRW/USD)을 조회한다.
+
+        반환: (total_cash, exchange_rate). 조회 실패 시 (None, None).
+        exchange_rate는 status.json 저장 시 달러 손익의 원화 환산 표시에 사용된다 (frst_bltn_exrt: 최초고시환율).
+        """
         if not self.MARGIN_TR_ID:
-            return 0.0
+            return 0.0, None
 
         url = f"{self.base_url}/uapi/overseas-stock/v1/trading/foreign-margin"
         params = {
@@ -494,12 +499,25 @@ class KisOverseasBrokerBase(KisBrokerCommon):
                 for item in data.get('output', []):
                     if item.get('natn_name') == '미국':
                         val = item.get('frcr_gnrl_ord_psbl_amt')
-                        if val is not None:
-                            return float(val)
+                        if val is None:
+                            continue
+                        exrt_val = item.get('frst_bltn_exrt')
+                        exchange_rate = None
+                        if exrt_val is not None:
+                            try:
+                                exchange_rate = float(exrt_val)
+                            except (TypeError, ValueError):
+                                exchange_rate = None
+                        if exchange_rate is None:
+                            self.logger.warning(
+                                "[KisBroker] Exchange rate field (frst_bltn_exrt) missing/invalid "
+                                f"in foreign-margin response: {item}"
+                            )
+                        return float(val), exchange_rate
             self.logger.warning(f"[KisBroker] Margin Check Failed: {data.get('msg1')}")
         except Exception as e:
             self.logger.error(f"[KisBroker] Margin Check Error: {e}")
-        return None  # 실패 시 None 반환
+        return None, None  # 실패 시 None 반환
 
 
 class KisOverseasPaperBroker(KisOverseasBrokerBase):

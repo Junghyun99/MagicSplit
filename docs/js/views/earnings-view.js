@@ -28,6 +28,14 @@ window.EarningsView = (function () {
         }).format(Number(value));
     }
 
+    // 해외(USD) 모드에서 저장 시점 환율 기준 원화 환산액을 보여주는 보조 문자열 (없으면 '')
+    function krwSubLabel(usdValue, mode) {
+        if ((mode || 'domestic') !== 'overseas') return '';
+        const rate = EarningsModel.getExchangeRate();
+        if (!rate) return '';
+        return `<div class="earnings-card-subvalue">약 ${escapeHtml(formatAmt(Number(usdValue) * rate, 'domestic'))}</div>`;
+    }
+
     function render(currencyMode) {
         _currencyMode = currencyMode || 'domestic';
 
@@ -121,6 +129,7 @@ window.EarningsView = (function () {
             <div class="earnings-card">
                 <div class="earnings-card-label">실현수익 (${escapeHtml(periodLabel)})</div>
                 <div class="earnings-card-value ${rClass}">${rSign}${escapeHtml(formatAmt(rPnl, mode))}</div>
+                ${krwSubLabel(rPnl, mode)}
                 <div class="earnings-card-note">SELL 체결 기준 누적</div>
             </div>
             <div class="earnings-card">
@@ -131,6 +140,7 @@ window.EarningsView = (function () {
             <div class="earnings-card">
                 <div class="earnings-card-label">현재 평가손익</div>
                 <div class="earnings-card-value ${uClass}">${uSign}${escapeHtml(formatAmt(uPnl, mode))}</div>
+                ${krwSubLabel(uPnl, mode)}
                 <div class="earnings-card-note">현재 시점 기준 (과거 월 소급 불가)</div>
             </div>`;
     }
