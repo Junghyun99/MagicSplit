@@ -160,3 +160,21 @@
 2026-07-08 22:42:24,341 [INFO] [Position] Bulk 청산: 프록터 앤드 갬블(PG) 3주 소진 (잔여 0주), 실현손익 USD 19.05
 2026-07-08 22:42:28,898 [INFO] >>> Step 6: Persist
 2026-07-08 22:42:29,278 [INFO] === Manual Trade 완료 ===
+2026-07-08 22:44:41,701 [INFO] === Manual Trade CLI: DUK SELL_ALL ===
+2026-07-08 22:44:41,702 [INFO] [KisBroker] 캐시에서 토큰 로드 (API 호출 생략)
+2026-07-08 22:44:41,702 [INFO] [KisOverseasLiveBroker] Mode: LIVE TRADING
+2026-07-08 22:44:41,702 [INFO] === Manual Trade: 듀크 에너지(DUK) SELL ===
+2026-07-08 22:44:41,702 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-07-08 22:44:43,981 [INFO] Fetching real-time prices from Broker...
+2026-07-08 22:44:48,764 [INFO] Portfolio: Cash=USD 6,471.73, Value=USD 19,073.18
+2026-07-08 22:44:48,764 [INFO] >>> Step 2: Load Positions
+2026-07-08 22:44:48,764 [INFO] Loaded 25 position lot(s)
+2026-07-08 22:44:48,765 [INFO] 일괄매도 수량 도출: 1개 lot 합산 4주 전량
+2026-07-08 22:44:48,765 [INFO] [듀크 에너지(DUK)] 수동 신호 생성: SELL Lv1 4주 @USD 127.86
+2026-07-08 22:44:48,765 [INFO] Executing 1 order(s)...
+2026-07-08 22:44:48,765 [INFO] [KisBroker] Processing 1 SELL orders...
+2026-07-08 22:44:49,955 [INFO] [KisBroker] Order Sent: SELL 듀크 에너지(DUK) 4 @ 127.77 (ODNO=0030936851)
+2026-07-08 22:44:52,550 [INFO] [KisBroker] Order FILLED: 듀크 에너지(DUK) ODNO=0030936851 price=127.77 qty=4 fee=0.0
+2026-07-08 22:44:52,751 [INFO] [Position] Bulk 청산: 듀크 에너지(DUK) 4주 소진 (잔여 0주), 실현손익 USD 11.40
+2026-07-08 22:44:57,379 [INFO] >>> Step 6: Persist
+2026-07-08 22:44:57,626 [INFO] === Manual Trade 완료 ===

@@ -1203,5 +1203,31 @@
                 "alias": "프록터 앤드 갬블"
             }
         ]
+    },
+    {
+        "id": "tx_20260708_224457",
+        "date": "2026-07-08 22:44:57",
+        "portfolio_value": 19064.8851,
+        "cash_balance": 6977.77,
+        "net_deposit": -5.04,
+        "total_trade_amount": 511.08,
+        "reason": "듀크 에너지(DUK):SELL(수동 일괄매도(Manual Bulk Sell))",
+        "executions": [
+            {
+                "ticker": "DUK",
+                "action": "SELL",
+                "quantity": 4,
+                "price": 127.77,
+                "fee": 0.0,
+                "date": "2026-07-08 22:44:52",
+                "status": "FILLED",
+                "reason": "ODNO=0030936851",
+                "lot_id": "lot_20260512_003524_DUK_001",
+                "level": 1,
+                "buy_price": 124.92,
+                "realized_pnl": 11.4,
+                "alias": "듀크 에너지"
+            }
+        ]
     }
 ]
