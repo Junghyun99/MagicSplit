@@ -71,8 +71,9 @@ class KisOverseasBrokerBase(KisBrokerCommon):
 
         target_exchanges = ["NASD", "NYSE", "AMEX"]
 
-        # 1. 예수금/주문가능금액 조회 (해외증거금 상세 API 필수)
-        total_cash, exchange_rate = self._fetch_total_cash()
+        # 1. 예수금/주문가능금액 조회 (해외증거금 상세 API 필수) + 기준환율 조회
+        total_cash = self._fetch_total_cash()
+        exchange_rate = self._fetch_exchange_rate()
         all_holdings: Dict[str, int] = {}
         all_prices: Dict[str, float] = {}
 
@@ -476,14 +477,10 @@ class KisOverseasBrokerBase(KisBrokerCommon):
             return EXCHANGE_CODE_SHORT_TO_FULL.get(price_code, 'NASD')
         return price_code
 
-    def _fetch_total_cash(self) -> tuple:
-        """해외증거금/예수금 상세 API를 통해 실제 주문 가능 금액과 기준환율(KRW/USD)을 조회한다.
-
-        반환: (total_cash, exchange_rate). 조회 실패 시 (None, None).
-        exchange_rate는 status.json 저장 시 달러 손익의 원화 환산 표시에 사용된다 (frst_bltn_exrt: 최초고시환율).
-        """
+    def _fetch_total_cash(self) -> Optional[float]:
+        """해외증거금/예수금 상세 API를 통해 실제 주문 가능 금액을 조회한다."""
         if not self.MARGIN_TR_ID:
-            return 0.0, None
+            return 0.0
 
         url = f"{self.base_url}/uapi/overseas-stock/v1/trading/foreign-margin"
         params = {
@@ -499,27 +496,74 @@ class KisOverseasBrokerBase(KisBrokerCommon):
                 for item in data.get('output', []):
                     if item.get('natn_name') == '미국':
                         val = item.get('frcr_gnrl_ord_psbl_amt')
-                        if val is None:
-                            continue
-                        exrt_val = item.get('frst_bltn_exrt')
-                        exchange_rate = None
-                        if exrt_val is not None:
-                            try:
-                                parsed_rate = float(exrt_val)
-                                if parsed_rate > 0:
-                                    exchange_rate = parsed_rate
-                            except (TypeError, ValueError):
-                                exchange_rate = None
-                        if exchange_rate is None:
-                            self.logger.warning(
-                                "[KisBroker] Exchange rate field (frst_bltn_exrt) missing/invalid "
-                                f"in foreign-margin response: {item}"
-                            )
-                        return float(val), exchange_rate
+                        if val is not None:
+                            return float(val)
             self.logger.warning(f"[KisBroker] Margin Check Failed: {data.get('msg1')}")
         except Exception as e:
             self.logger.error(f"[KisBroker] Margin Check Error: {e}")
-        return None, None  # 실패 시 None 반환
+        return None  # 실패 시 None 반환
+
+    # 환율 필드(frst_bltn_exrt 등) 후보. inquire-present-balance 응답의 output1~3 중
+    # 어느 배열에 담기는지가 계좌/조회조건에 따라 달라질 수 있어 전부 스캔한다.
+    _EXCHANGE_RATE_FIELD_CANDIDATES = ("frst_bltn_exrt", "exrt", "bass_exrt")
+
+    def _fetch_exchange_rate(self) -> Optional[float]:
+        """해외주식 체결기준현재잔고 API(inquire-present-balance)에서 기준환율(KRW/USD)을 조회한다.
+
+        해외증거금 API(foreign-margin)의 환율 필드는 0으로 채워지는 경우가 있어 신뢰할 수 없으므로,
+        미국(NATN_CD=840) 외화(WCRC_FRCR_DVSN_CD=02) 조건으로 이 엔드포인트를 별도 조회한다.
+        실패/필드 부재 시 None 반환 (status.json에는 KRW 환산 없이 저장됨).
+        """
+        if not self.PRESENT_BALANCE_TR_ID:
+            return None
+
+        url = f"{self.base_url}/uapi/overseas-stock/v1/trading/inquire-present-balance"
+        params = {
+            "CANO": self.cano,
+            "ACNT_PRDT_CD": self.acnt_prdt_cd,
+            "WCRC_FRCR_DVSN_CD": "02",  # 외화
+            "NATN_CD": "840",  # 미국
+            "TR_MKET_CD": "00",  # 전체
+            "INQR_DVSN_CD": "00",  # 전체
+        }
+        headers = self._get_header(self.PRESENT_BALANCE_TR_ID)
+        try:
+            res = self._request('GET', url, headers=headers, params=params, timeout=DEFAULT_HTTP_TIMEOUT)
+            res.raise_for_status()
+            data = res.json()
+            if data.get('rt_cd') != '0':
+                self.logger.warning(f"[KisBroker] Exchange Rate Check Failed: {data.get('msg1')}")
+                return None
+
+            for output_key in ("output2", "output3", "output1"):
+                rows = data.get(output_key)
+                if not rows:
+                    continue
+                if isinstance(rows, dict):
+                    rows = [rows]
+                elif not isinstance(rows, list):
+                    continue
+                for item in rows:
+                    if not isinstance(item, dict):
+                        continue
+                    for key in self._EXCHANGE_RATE_FIELD_CANDIDATES:
+                        val = item.get(key)
+                        if val is None:
+                            continue
+                        try:
+                            rate = float(val)
+                        except (TypeError, ValueError):
+                            continue
+                        if rate > 0:
+                            return rate
+
+            self.logger.warning(
+                "[KisBroker] Exchange rate field missing/invalid in inquire-present-balance response: "
+                f"output1={data.get('output1')} output2={data.get('output2')} output3={data.get('output3')}"
+            )
+        except Exception as e:
+            self.logger.error(f"[KisBroker] Exchange Rate Fetch Error: {e}")
+        return None
 
 
 class KisOverseasPaperBroker(KisOverseasBrokerBase):
@@ -533,6 +577,7 @@ class KisOverseasPaperBroker(KisOverseasBrokerBase):
     FILL_TR_ID = "VTTS3035R"
     CANCEL_TR_ID = "VTTT1004U"
     MARGIN_TR_ID = "VTTC2101R"
+    PRESENT_BALANCE_TR_ID = "VTRP6504R"
 
     def __init__(self, app_key: str, app_secret: str, acc_no: str, logger):
         super().__init__(app_key, app_secret, acc_no, logger)
@@ -550,6 +595,7 @@ class KisOverseasLiveBroker(KisOverseasBrokerBase):
     FILL_TR_ID = "TTTS3035R"
     CANCEL_TR_ID = "TTTT1004U"
     MARGIN_TR_ID = "TTTC2101R"
+    PRESENT_BALANCE_TR_ID = "CTRP6504R"
 
     def __init__(self, app_key: str, app_secret: str, acc_no: str, logger):
         super().__init__(app_key, app_secret, acc_no, logger)

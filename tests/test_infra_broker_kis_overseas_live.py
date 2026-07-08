@@ -178,8 +178,10 @@ class TestReadonly:
     def test_s4_get_portfolio(self, broker):
         """S4. 잔고 조회 (TTTS3012R). NASD/NYSE/AMEX 통합. total_cash 는 USD.
 
-        exchange_rate는 해외증거금 API(foreign-margin) 응답의 frst_bltn_exrt(최초고시환율)에서
-        함께 조회된다. 필드 부재/조회 실패 시 None 이 정상이므로 None 또는 양수만 허용한다.
+        exchange_rate는 해외주식 체결기준현재잔고 API(inquire-present-balance,
+        CTRP6504R)에서 별도 조회된다. 필드 위치/이름이 계좌별로 다를 수 있어 아직
+        실계좌로 검증되지 않은 상태이므로, 조회 실패(필드 부재 등)로 None이 나와도
+        실패시키지 않되 눈에 띄게 경고를 출력한다.
         """
         pf = broker.get_portfolio()
         assert isinstance(pf, Portfolio)
@@ -189,6 +191,8 @@ class TestReadonly:
         assert pf.exchange_rate is None or pf.exchange_rate > 0, \
             f"exchange_rate 비정상: {pf.exchange_rate}"
         print(f"  total_cash=${pf.total_cash:,.2f} (USD) exchange_rate={pf.exchange_rate} (KRW/USD) holdings={len(pf.holdings)}건")
+        if pf.exchange_rate is None:
+            print("  [WARN] exchange_rate 조회 실패 (None) - inquire-present-balance 응답 필드 확인 필요 (로그 참고)")
         for ticker, qty in pf.holdings.items():
             assert qty > 0, f"{ticker} 수량이 0 이하: {qty}"
             print(f"    {ticker}: qty={qty} price=${pf.current_prices.get(ticker, 0):,.2f}")
