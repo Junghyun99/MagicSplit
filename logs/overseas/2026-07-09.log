@@ -1,0 +1,44 @@
+2026-07-09 00:01:22,241 [INFO] === Initializing MagicSplit Bot (overseas) ===
+2026-07-09 00:01:22,241 [INFO] Loaded 22 stock rule(s) from config_overseas.json
+2026-07-09 00:01:22,241 [INFO] [overseas] 12 rule(s), mode=LIVE
+2026-07-09 00:01:22,241 [INFO] [KisBroker] 캐시에서 토큰 로드 (API 호출 생략)
+2026-07-09 00:01:22,241 [INFO] [KisOverseasLiveBroker] Mode: LIVE TRADING
+2026-07-09 00:01:22,241 [INFO] === Running overseas engine ===
+2026-07-09 00:01:22,241 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-07-09 00:01:23,432 [WARNING] [KisBroker] Exchange rate field (frst_bltn_exrt) missing/invalid in foreign-margin response: {'natn_name': '미국', 'crcy_cd': 'USD', 'frcr_dncl_amt1': '7228.060000', 'ustl_buy_amt': '1672.53', 'ustl_sll_amt': '1468.71', 'frcr_rcvb_amt': '0.00', 'frcr_mgn_amt': '0.000000', 'frcr_gnrl_ord_psbl_amt': '6977.77', 'frcr_ord_psbl_amt1': '0.000000', 'itgr_ord_psbl_amt': '0.00', 'bass_exrt': '0.00000000'}
+2026-07-09 00:01:24,621 [INFO] Fetching real-time prices from Broker...
+2026-07-09 00:01:29,318 [INFO] Portfolio: Cash=USD 6,977.77, Value=USD 18,902.72
+2026-07-09 00:01:29,318 [INFO] >>> Step 2: Load Positions
+2026-07-09 00:01:29,318 [INFO] Loaded 24 position lot(s)
+2026-07-09 00:01:29,319 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-07-09 00:01:29,319 [INFO] >>> Processing 테슬라(TSLA)
+2026-07-09 00:01:29,320 [INFO]   [테슬라(TSLA)] 신호 없음 | Lv4 매수 USD 389.00 -> 현재 USD 392.30 (+0.85%) | 익절 +10.0% / 추매 -5.0%
+2026-07-09 00:01:29,320 [INFO] >>> Processing 알파벳 A(GOOGL)
+2026-07-09 00:01:29,320 [INFO]   [알파벳 A(GOOGL)] 신호 없음 | Lv3 매수 USD 345.13 -> 현재 USD 361.23 (+4.66%) | 익절 +10.0% / 추매 -5.0%
+2026-07-09 00:01:29,320 [INFO] >>> Processing 델 테크놀로지스(DELL)
+2026-07-09 00:01:29,321 [INFO]   [델 테크놀로지스(DELL)] 신호 없음 | Lv2 매수 USD 409.90 -> 현재 USD 420.46 (+2.58%) | 익절 +10.0% / 추매 -5.0%
+2026-07-09 00:01:29,321 [INFO] >>> Processing 루멘텀 홀딩스(LITE)
+2026-07-09 00:01:29,321 [INFO] [루멘텀 홀딩스(LITE)] buy_amount(USD 500.00) < 현재가(USD 700.53) -> 1주도 매수 불가. buy_amount 상향 조정 필요
+2026-07-09 00:01:29,657 [INFO] >>> Processing ISHARES GLOBAL CLEAN ENERGY(ICLN)
+2026-07-09 00:01:29,657 [INFO]   [ISHARES GLOBAL CLEAN ENERGY(ICLN)] 신호 없음 | Lv3 매수 USD 19.75 -> 현재 USD 18.87 (-4.46%) | 익절 +10.0% / 추매 -5.0%
+2026-07-09 00:01:29,657 [INFO] >>> Processing SCHWAB US DIVIDEND EQUITY(SCHD)
+2026-07-09 00:01:29,658 [INFO]   [SCHWAB US DIVIDEND EQUITY(SCHD)] 신호 없음 | Lv1 매수 USD 31.74 -> 현재 USD 32.42 (+2.16%) | 익절 +10.0% / 추매 -5.0%
+2026-07-09 00:01:29,658 [INFO] >>> Processing 펩시코(PEP)
+2026-07-09 00:01:29,658 [INFO]   [펩시코(PEP)] 신호 없음 | Lv2 매수 USD 142.33 -> 현재 USD 144.47 (+1.51%) | 익절 +10.0% / 추매 -5.0%
+2026-07-09 00:01:29,659 [INFO] >>> Processing ARK INNOVATION(ARKK)
+2026-07-09 00:01:29,659 [INFO] [ARK INNOVATION(ARKK)] trailing 벌크 매도 발동: Lv2~Lv2 6주 (+5.1%)
+2026-07-09 00:01:29,659 [INFO] Executing 1 order(s)...
+2026-07-09 00:01:29,659 [INFO] [KisBroker] Processing 1 SELL orders...
+2026-07-09 00:01:30,832 [INFO] [KisBroker] Order Sent: SELL ARK INNOVATION(ARKK) 6 @ 79.15 (ODNO=0030992278)
+2026-07-09 00:01:33,412 [INFO] [KisBroker] Order FILLED: ARK INNOVATION(ARKK) ODNO=0030992278 price=79.15 qty=6 fee=0.0
+2026-07-09 00:01:33,613 [INFO] [Position] Trailing 벌크 청산: ARK INNOVATION(ARKK) 6주 소진 (잔여 6주), 실현손익 USD 23.22
+2026-07-09 00:01:37,331 [WARNING] [KisBroker] Exchange rate field (frst_bltn_exrt) missing/invalid in foreign-margin response: {'natn_name': '미국', 'crcy_cd': 'USD', 'frcr_dncl_amt1': '7228.060000', 'ustl_buy_amt': '1672.53', 'ustl_sll_amt': '1943.67', 'frcr_rcvb_amt': '0.00', 'frcr_mgn_amt': '0.000000', 'frcr_gnrl_ord_psbl_amt': '7447.53', 'frcr_ord_psbl_amt1': '0.000000', 'itgr_ord_psbl_amt': '0.00', 'bass_exrt': '0.00000000'}
+2026-07-09 00:01:38,519 [INFO] >>> Processing 카메코(CCJ)
+2026-07-09 00:01:38,520 [INFO]   [카메코(CCJ)] 신호 없음 | Lv1 매수 USD 94.06 -> 현재 USD 92.78 (-1.36%) | 익절 +10.0% / 추매 -5.0%
+2026-07-09 00:01:38,520 [INFO] >>> Processing 애플(AAPL)
+2026-07-09 00:01:38,520 [INFO]   [애플(AAPL)] 신호 없음 | Lv1 매수 USD 291.90 -> 현재 USD 308.98 (+5.85%) | 익절 +10.0% / 추매 -5.0%
+2026-07-09 00:01:38,520 [INFO] >>> Processing 브로드컴(AVGO)
+2026-07-09 00:01:38,521 [INFO]   [브로드컴(AVGO)] 신호 없음 | Lv2 매수 USD 363.20 -> 현재 USD 387.36 (+6.65%) | 익절 +10.0% / 추매 -5.0%
+2026-07-09 00:01:38,521 [INFO] >>> Processing 코닝(GLW)
+2026-07-09 00:01:38,521 [INFO]   [코닝(GLW)] 신호 없음 | Lv2 매수 USD 183.31 -> 현재 USD 184.01 (+0.38%) | 익절 +10.0% / 추매 -5.0%
+2026-07-09 00:01:38,521 [INFO] >>> Step 6: Persist
