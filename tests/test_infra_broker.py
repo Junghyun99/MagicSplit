@@ -233,13 +233,70 @@ class TestKisOverseasGetPortfolio:
         margin_resp.raise_for_status.return_value = None
         margin_resp.json.return_value = {
             "rt_cd": "0",
-            "output": [{"natn_name": "미국", "frcr_gnrl_ord_psbl_amt": "5000.00"}]
+            "output": [{
+                "natn_name": "미국",
+                "frcr_gnrl_ord_psbl_amt": "5000.00",
+                "frst_bltn_exrt": "1450.5",
+            }]
         }
 
         mock_get.side_effect = [margin_resp, fail_resp, success_resp, success_resp]
 
         pf = broker.get_portfolio()
         assert pf.total_cash == 5000.0
+        assert pf.exchange_rate == 1450.5
+
+    @patch("src.infra.broker.kis_overseas._pkg.requests.get")
+    def test_missing_exchange_rate_field_returns_none(self, mock_get, broker):
+        """frst_bltn_exrt 필드가 없으면 exchange_rate는 None이고 total_cash는 정상 반환된다."""
+        success_resp = MagicMock()
+        success_resp.raise_for_status.return_value = None
+        success_resp.json.return_value = {
+            "rt_cd": "0",
+            "output1": [],
+            "output2": {"ovrs_ord_psbl_amt": "5000.00"},
+        }
+
+        margin_resp = MagicMock()
+        margin_resp.raise_for_status.return_value = None
+        margin_resp.json.return_value = {
+            "rt_cd": "0",
+            "output": [{"natn_name": "미국", "frcr_gnrl_ord_psbl_amt": "5000.00"}]
+        }
+
+        mock_get.side_effect = [margin_resp, success_resp, success_resp, success_resp]
+
+        pf = broker.get_portfolio()
+        assert pf.total_cash == 5000.0
+        assert pf.exchange_rate is None
+
+    @patch("src.infra.broker.kis_overseas._pkg.requests.get")
+    def test_non_positive_exchange_rate_returns_none(self, mock_get, broker):
+        """frst_bltn_exrt가 0 이하면 비정상 값으로 간주해 exchange_rate는 None이 된다."""
+        success_resp = MagicMock()
+        success_resp.raise_for_status.return_value = None
+        success_resp.json.return_value = {
+            "rt_cd": "0",
+            "output1": [],
+            "output2": {"ovrs_ord_psbl_amt": "5000.00"},
+        }
+
+        margin_resp = MagicMock()
+        margin_resp.raise_for_status.return_value = None
+        margin_resp.json.return_value = {
+            "rt_cd": "0",
+            "output": [{
+                "natn_name": "미국",
+                "frcr_gnrl_ord_psbl_amt": "5000.00",
+                "frst_bltn_exrt": "0",
+            }]
+        }
+
+        mock_get.side_effect = [margin_resp, success_resp, success_resp, success_resp]
+
+        pf = broker.get_portfolio()
+        assert pf.total_cash == 5000.0
+        assert pf.exchange_rate is None
 
 
 class TestKisOverseasSendOrderRemoved:
