@@ -109,7 +109,8 @@ window.EarningsModel = (function () {
     function setStatusData(statusData) {
         _rawStatusData = statusData || null;
         currentUnrealized = { total: 0, byTicker: {} };
-        exchangeRate = (statusData && statusData.exchange_rate != null) ? Number(statusData.exchange_rate) : null;
+        const parsedRate = (statusData && statusData.exchange_rate != null) ? Number(statusData.exchange_rate) : null;
+        exchangeRate = (parsedRate !== null && !isNaN(parsedRate)) ? parsedRate : null;
         if (!statusData || !statusData.positions) return;
 
         for (const [ticker, info] of Object.entries(statusData.positions)) {

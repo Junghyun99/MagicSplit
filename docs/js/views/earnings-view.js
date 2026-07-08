@@ -33,7 +33,9 @@ window.EarningsView = (function () {
         if ((mode || 'domestic') !== 'overseas') return '';
         const rate = EarningsModel.getExchangeRate();
         if (!rate) return '';
-        return `<div class="earnings-card-subvalue">약 ${escapeHtml(formatAmt(Number(usdValue) * rate, 'domestic'))}</div>`;
+        const numVal = Number(usdValue);
+        if (isNaN(numVal)) return '';
+        return `<div class="earnings-card-subvalue">약 ${escapeHtml(formatAmt(numVal * rate, 'domestic'))}</div>`;
     }
 
     function render(currencyMode) {

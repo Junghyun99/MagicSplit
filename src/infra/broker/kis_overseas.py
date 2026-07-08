@@ -505,7 +505,9 @@ class KisOverseasBrokerBase(KisBrokerCommon):
                         exchange_rate = None
                         if exrt_val is not None:
                             try:
-                                exchange_rate = float(exrt_val)
+                                parsed_rate = float(exrt_val)
+                                if parsed_rate > 0:
+                                    exchange_rate = parsed_rate
                             except (TypeError, ValueError):
                                 exchange_rate = None
                         if exchange_rate is None:
