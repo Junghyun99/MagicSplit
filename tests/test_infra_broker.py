@@ -192,6 +192,7 @@ class TestKisOverseasGetPortfolio:
         b.access_token = "fake_token"
         b.token_expires_at = datetime.now() + timedelta(hours=1)
         b.MARGIN_TR_ID = "TTTC2101R"
+        b.PRESENT_BALANCE_TR_ID = "CTRP6504R"
         return b
 
     @patch("src.infra.broker.kis_overseas._pkg.requests.get")
@@ -228,35 +229,6 @@ class TestKisOverseasGetPortfolio:
             "output2": {"ovrs_ord_psbl_amt": "5000.00"},
         }
 
-        # 1: margin API (success), 2: exchange 1 (fail), 3: exchange 2 (success), 4: exchange 3 (success)
-        margin_resp = MagicMock()
-        margin_resp.raise_for_status.return_value = None
-        margin_resp.json.return_value = {
-            "rt_cd": "0",
-            "output": [{
-                "natn_name": "미국",
-                "frcr_gnrl_ord_psbl_amt": "5000.00",
-                "frst_bltn_exrt": "1450.5",
-            }]
-        }
-
-        mock_get.side_effect = [margin_resp, fail_resp, success_resp, success_resp]
-
-        pf = broker.get_portfolio()
-        assert pf.total_cash == 5000.0
-        assert pf.exchange_rate == 1450.5
-
-    @patch("src.infra.broker.kis_overseas._pkg.requests.get")
-    def test_missing_exchange_rate_field_returns_none(self, mock_get, broker):
-        """frst_bltn_exrt 필드가 없으면 exchange_rate는 None이고 total_cash는 정상 반환된다."""
-        success_resp = MagicMock()
-        success_resp.raise_for_status.return_value = None
-        success_resp.json.return_value = {
-            "rt_cd": "0",
-            "output1": [],
-            "output2": {"ovrs_ord_psbl_amt": "5000.00"},
-        }
-
         margin_resp = MagicMock()
         margin_resp.raise_for_status.return_value = None
         margin_resp.json.return_value = {
@@ -264,39 +236,93 @@ class TestKisOverseasGetPortfolio:
             "output": [{"natn_name": "미국", "frcr_gnrl_ord_psbl_amt": "5000.00"}]
         }
 
-        mock_get.side_effect = [margin_resp, success_resp, success_resp, success_resp]
+        exrate_resp = MagicMock()
+        exrate_resp.raise_for_status.return_value = None
+        exrate_resp.json.return_value = {"rt_cd": "0", "output1": [], "output2": [], "output3": {}}
+
+        # 1: margin API, 2: exchange rate API, 3: exchange 1 (fail), 4: exchange 2 (success), 5: exchange 3 (success)
+        mock_get.side_effect = [margin_resp, exrate_resp, fail_resp, success_resp, success_resp]
 
         pf = broker.get_portfolio()
         assert pf.total_cash == 5000.0
         assert pf.exchange_rate is None
+
+
+class TestKisOverseasFetchExchangeRate:
+    """_fetch_exchange_rate (inquire-present-balance) 단위 테스트."""
+
+    @pytest.fixture
+    def broker(self):
+        from datetime import datetime, timedelta
+        b = KisOverseasBrokerBase.__new__(KisOverseasBrokerBase)
+        b.logger = MagicMock()
+        b.base_url = "https://fake"
+        b.cano = "12345678"
+        b.acnt_prdt_cd = "01"
+        b.app_key = "fake_key"
+        b.app_secret = "fake_secret"
+        b.access_token = "fake_token"
+        b.token_expires_at = datetime.now() + timedelta(hours=1)
+        b.PRESENT_BALANCE_TR_ID = "CTRP6504R"
+        return b
 
     @patch("src.infra.broker.kis_overseas._pkg.requests.get")
-    def test_non_positive_exchange_rate_returns_none(self, mock_get, broker):
-        """frst_bltn_exrt가 0 이하면 비정상 값으로 간주해 exchange_rate는 None이 된다."""
-        success_resp = MagicMock()
-        success_resp.raise_for_status.return_value = None
-        success_resp.json.return_value = {
+    def test_rate_found_in_output2(self, mock_get, broker):
+        resp = MagicMock()
+        resp.raise_for_status.return_value = None
+        resp.json.return_value = {
             "rt_cd": "0",
             "output1": [],
-            "output2": {"ovrs_ord_psbl_amt": "5000.00"},
+            "output2": [{"crcy_cd": "USD", "frst_bltn_exrt": "1450.5"}],
+            "output3": {},
         }
+        mock_get.return_value = resp
 
-        margin_resp = MagicMock()
-        margin_resp.raise_for_status.return_value = None
-        margin_resp.json.return_value = {
+        assert broker._fetch_exchange_rate() == 1450.5
+
+    @patch("src.infra.broker.kis_overseas._pkg.requests.get")
+    def test_rate_found_in_output3_when_output2_empty(self, mock_get, broker):
+        resp = MagicMock()
+        resp.raise_for_status.return_value = None
+        resp.json.return_value = {
             "rt_cd": "0",
-            "output": [{
-                "natn_name": "미국",
-                "frcr_gnrl_ord_psbl_amt": "5000.00",
-                "frst_bltn_exrt": "0",
-            }]
+            "output1": [],
+            "output2": [],
+            "output3": {"exrt": "1400.0"},
         }
+        mock_get.return_value = resp
 
-        mock_get.side_effect = [margin_resp, success_resp, success_resp, success_resp]
+        assert broker._fetch_exchange_rate() == 1400.0
 
-        pf = broker.get_portfolio()
-        assert pf.total_cash == 5000.0
-        assert pf.exchange_rate is None
+    @patch("src.infra.broker.kis_overseas._pkg.requests.get")
+    def test_missing_field_returns_none(self, mock_get, broker):
+        """foreign-margin의 bass_exrt처럼 신뢰할 수 없는 필드가 0으로 채워져 있으면 무시한다."""
+        resp = MagicMock()
+        resp.raise_for_status.return_value = None
+        resp.json.return_value = {
+            "rt_cd": "0",
+            "output1": [],
+            "output2": [{"crcy_cd": "USD", "bass_exrt": "0.00000000"}],
+            "output3": {},
+        }
+        mock_get.return_value = resp
+
+        assert broker._fetch_exchange_rate() is None
+
+    @patch("src.infra.broker.kis_overseas._pkg.requests.get")
+    def test_api_failure_returns_none(self, mock_get, broker):
+        resp = MagicMock()
+        resp.raise_for_status.return_value = None
+        resp.json.return_value = {"rt_cd": "1", "msg1": "error"}
+        mock_get.return_value = resp
+
+        assert broker._fetch_exchange_rate() is None
+
+    @patch("src.infra.broker.kis_overseas._pkg.requests.get")
+    def test_request_exception_returns_none(self, mock_get, broker):
+        mock_get.side_effect = Exception("network error")
+
+        assert broker._fetch_exchange_rate() is None
 
 
 class TestKisOverseasSendOrderRemoved:
