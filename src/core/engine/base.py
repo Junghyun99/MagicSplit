@@ -1240,7 +1240,10 @@ class MagicSplitEngine:
         """
         if not signals:
             return REASON_NO_SIGNAL
-        executed = {(e.ticker, e.action) for e in executions}
+        executed = {
+            (e.ticker, e.action) for e in executions
+            if e.status in (ExecutionStatus.FILLED, ExecutionStatus.PARTIAL)
+        }
         reasons = []
         for s in signals:
             if s.is_blocked or s.is_info:
