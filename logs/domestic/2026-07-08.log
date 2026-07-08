@@ -79,3 +79,52 @@
 2026-07-08 12:01:35,188 [INFO] >>> Step 6: Persist
 2026-07-08 12:01:36,014 [WARNING] [Step 6] 포트폴리오 재조회 실패 — status.json 갱신 생략: [KisDomestic] Error getting portfolio: 500 Server Error: Internal Server Error for url: https://openapi.koreainvestment.com:9443/uapi/domestic-stock/v1/trading/inquire-balance?CANO=73297247&ACNT_PRDT_CD=01&AFHR_FLPR_YN=N&OFL_YN=&INQR_DVSN=01&UNPR_DVSN=01&FUND_STTL_ICLD_YN=N&FNCG_AMT_AUTO_RDPT_YN=N&PRCS_DVSN=00&CTX_AREA_FK100=&CTX_AREA_NK100=
 2026-07-08 12:01:36,026 [INFO] [Step 6] status.json 갱신 생략 (포트폴리오 재조회 실패).
+2026-07-08 14:01:25,504 [INFO] === Initializing MagicSplit Bot (domestic) ===
+2026-07-08 14:01:25,504 [INFO] Loaded 21 stock rule(s) from config_domestic.json
+2026-07-08 14:01:25,504 [INFO] [domestic] 15 rule(s), mode=LIVE
+2026-07-08 14:01:25,504 [INFO] [KisBroker] 캐시에서 토큰 로드 (API 호출 생략)
+2026-07-08 14:01:25,504 [INFO] [KisDomesticLiveBroker] Mode: LIVE TRADING
+2026-07-08 14:01:25,504 [INFO] === Running domestic engine ===
+2026-07-08 14:01:25,505 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-07-08 14:01:26,660 [INFO] Fetching real-time prices from Broker...
+2026-07-08 14:01:30,249 [INFO] Portfolio: Cash=KRW 367,302, Value=KRW 27,242,647
+2026-07-08 14:01:30,249 [INFO] >>> Step 2: Load Positions
+2026-07-08 14:01:30,249 [INFO] Loaded 29 position lot(s)
+2026-07-08 14:01:30,252 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-07-08 14:01:30,252 [INFO] >>> Processing 삼성에스디에스(018260)
+2026-07-08 14:01:30,253 [INFO] [삼성에스디에스(018260)] 현금 부족: 보유 현금 KRW 367,302 < 매수 예정 금액 KRW 961,000 (5주) -> 매수 보류
+2026-07-08 14:01:30,898 [INFO] >>> Processing SOL 반도체전공정(475300)
+2026-07-08 14:01:30,898 [INFO] [SOL 반도체전공정(475300)] 현금 부족: 보유 현금 KRW 367,302 < 매수 예정 금액 KRW 485,760 (23주) -> 매수 보류
+2026-07-08 14:01:31,469 [INFO] >>> Processing 원익IPS(240810)
+2026-07-08 14:01:31,469 [INFO] [원익IPS(240810)] 현금 부족: 보유 현금 KRW 367,302 < 매수 예정 금액 KRW 416,000 (4주) -> 매수 보류
+2026-07-08 14:01:31,994 [INFO] >>> Processing KODEX 미국S&P500금융(453650)
+2026-07-08 14:01:31,995 [INFO]   [KODEX 미국S&P500금융(453650)] 신호 없음 | Lv1 매수 KRW 18,975 -> 현재 KRW 20,720 (+9.20%) | 익절 +10.0% / 추매 -5.0%
+2026-07-08 14:01:31,995 [INFO] >>> Processing KoAct 글로벌AI메모리반도체액티브(0174B0)
+2026-07-08 14:01:31,995 [INFO] [KoAct 글로벌AI메모리반도체액티브(0174B0)] 현금 부족: 보유 현금 KRW 367,302 < 매수 예정 금액 KRW 493,365 (31주) -> 매수 보류
+2026-07-08 14:01:32,489 [INFO] >>> Processing 삼성전자우(005935)
+2026-07-08 14:01:32,490 [INFO] [삼성전자우(005935)] 현금 부족: 보유 현금 KRW 367,302 < 매수 예정 금액 KRW 376,000 (2주) -> 매수 보류
+2026-07-08 14:01:33,055 [INFO] >>> Processing 메리츠금융지주(138040)
+2026-07-08 14:01:33,055 [INFO]   [메리츠금융지주(138040)] 신호 없음 | Lv2 매수 KRW 102,000 -> 현재 KRW 111,600 (+9.41%) | 익절 +10.0% / 추매 -5.0%
+2026-07-08 14:01:33,056 [INFO] >>> Processing KODEX 미국S&P500필수소비재(453630)
+2026-07-08 14:01:33,056 [INFO]   [KODEX 미국S&P500필수소비재(453630)] 신호 없음 | Lv1 매수 KRW 13,600 -> 현재 KRW 13,550 (-0.37%) | 익절 +10.0% / 추매 -5.0%
+2026-07-08 14:01:33,056 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-07-08 14:01:33,057 [INFO] [ACE 엔비디아밸류체인액티브(483320)] 현금 부족: 보유 현금 KRW 367,302 < 매수 예정 금액 KRW 483,930 (18주) -> 매수 보류
+2026-07-08 14:01:33,529 [INFO] >>> Processing ACE 테슬라밸류체인액티브(457480)
+2026-07-08 14:01:33,529 [INFO]   [ACE 테슬라밸류체인액티브(457480)] 신호 없음 | Lv2 매수 KRW 21,575 -> 현재 KRW 21,565 (-0.05%) | 익절 +10.0% / 추매 -5.0%
+2026-07-08 14:01:33,529 [INFO] >>> Processing KODEX 증권(102970)
+2026-07-08 14:01:33,530 [INFO]   [KODEX 증권(102970)] 신호 없음 | Lv3 매수 KRW 22,400 -> 현재 KRW 21,660 (-3.30%) | 익절 +10.0% / 추매 -5.0%
+2026-07-08 14:01:33,530 [INFO] >>> Processing TIGER 지주회사(307520)
+2026-07-08 14:01:33,530 [INFO] [TIGER 지주회사(307520)] 현금 부족: 보유 현금 KRW 367,302 < 매수 예정 금액 KRW 480,470 (23주) -> 매수 보류
+2026-07-08 14:01:34,111 [INFO] >>> Processing 삼성전자(005930)
+2026-07-08 14:01:34,111 [INFO] [삼성전자(005930)] Lv4 매수가 KRW 364,000 대비 -23.2% -> 추가 매수 Lv5 1주 @KRW 279,500
+2026-07-08 14:01:34,111 [INFO] Executing 1 order(s)...
+2026-07-08 14:01:34,478 [INFO] [KisBroker] Available Cash for BUY: 367,302
+2026-07-08 14:01:35,638 [INFO] [KisDomestic] Order Sent: BUY 삼성전자(005930) 1 @ 279500 (ODNO=0021992600)
+2026-07-08 14:01:35,921 [INFO] [KisDomestic] Order FILLED: 삼성전자(005930) ODNO=0021992600 price=279250.0 qty=1 fee=41.887499999999996
+2026-07-08 14:01:36,122 [INFO] [삼성전자(005930)] 동적 재매수 기준 초기화 (매도가 KRW 299,000 -> 소비됨)
+2026-07-08 14:01:36,122 [INFO] [Position] New lot: lot_20260708_140136_005930_005 Lv5 삼성전자(005930) 1주 @KRW 279,250
+2026-07-08 14:01:39,490 [INFO] >>> Processing 테스(095610)
+2026-07-08 14:01:39,490 [INFO] [테스(095610)] 현금 부족: 보유 현금 KRW 88,022 < 현재가 KRW 137,500 (1주도 매수 불가) -> 매수 보류
+2026-07-08 14:01:40,008 [INFO] >>> Processing SOL 미국양자컴퓨팅TOP10(0023A0)
+2026-07-08 14:01:40,008 [INFO] [SOL 미국양자컴퓨팅TOP10(0023A0)] 현금 부족: 보유 현금 KRW 88,022 < 매수 예정 금액 KRW 477,040 (16주) -> 매수 보류
+2026-07-08 14:01:40,530 [INFO] >>> Step 6: Persist
