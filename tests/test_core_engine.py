@@ -1643,3 +1643,72 @@ class TestTrailingBulk:
             "2024-01-02", last_sell_prices={}, regime_state=regime_state,
         )
         assert "AAPL" not in regime_state
+
+
+class TestBuildReason:
+    """_build_reason()이 executions와 교차 검증하여 미전송 주문을 SKIP으로 표시하는지 검증."""
+
+    def _signal(self, action=OrderAction.BUY, ticker="AAPL"):
+        return SplitSignal(ticker, None, action, 5, 100.0, "초기 매수 Lv1", 0.0, 1)
+
+    def _execution(self, action=OrderAction.BUY, ticker="AAPL"):
+        return TradeExecution(ticker, action, 5, 100.0, 0.0, "2026-01-01", ExecutionStatus.FILLED)
+
+    def test_active_signal_with_matching_execution_shows_buy(self, engine):
+        """활성 BUY 신호 + 매칭 execution -> BUY 레이블."""
+        reason = engine._build_reason([self._signal()], [self._execution()])
+        assert "BUY" in reason
+        assert "SKIP" not in reason
+
+    def test_active_signal_without_execution_shows_skip(self, engine):
+        """활성 BUY 신호 + executions 없음 -> SKIP(주문 미전송) 레이블."""
+        reason = engine._build_reason([self._signal()], [])
+        assert "SKIP" in reason
+        assert "주문 미전송" in reason
+        assert "BUY" not in reason
+
+    def test_blocked_signal_always_skip(self, engine):
+        """차단 신호는 execution 유무와 무관하게 SKIP."""
+        sig = self._signal()
+        sig.is_blocked = True
+        reason = engine._build_reason([sig], [self._execution()])
+        assert "SKIP" in reason
+
+    def test_mismatched_ticker_treated_as_no_execution(self, engine):
+        """다른 종목 execution은 매칭 안 됨 -> SKIP."""
+        reason = engine._build_reason(
+            [self._signal(ticker="AAPL")],
+            [self._execution(ticker="MSFT")],
+        )
+        assert "SKIP" in reason
+        assert "주문 미전송" in reason
+
+    def test_sell_signal_with_matching_execution_shows_sell(self, engine):
+        """활성 SELL 신호 + 매칭 execution -> SELL 레이블."""
+        reason = engine._build_reason(
+            [self._signal(action=OrderAction.SELL)],
+            [self._execution(action=OrderAction.SELL)],
+        )
+        assert "SELL" in reason
+        assert "SKIP" not in reason
+
+    def test_ordered_execution_treated_as_no_execution(self, engine):
+        """ORDERED(미체결 잔존) execution은 포지션 미반영이므로 SKIP 처리."""
+        exe = TradeExecution("AAPL", OrderAction.BUY, 5, 100.0, 0.0, "2026-01-01", ExecutionStatus.ORDERED)
+        reason = engine._build_reason([self._signal()], [exe])
+        assert "SKIP" in reason
+        assert "주문 미전송" in reason
+
+    def test_rejected_execution_treated_as_no_execution(self, engine):
+        """REJECTED execution은 포지션 미반영이므로 SKIP 처리."""
+        exe = TradeExecution("AAPL", OrderAction.BUY, 0, 0.0, 0.0, "2026-01-01", ExecutionStatus.REJECTED)
+        reason = engine._build_reason([self._signal()], [exe])
+        assert "SKIP" in reason
+        assert "주문 미전송" in reason
+
+    def test_partial_execution_shows_buy(self, engine):
+        """PARTIAL(부분 체결) execution은 포지션 반영 대상이므로 BUY 표시."""
+        exe = TradeExecution("AAPL", OrderAction.BUY, 2, 100.0, 0.0, "2026-01-01", ExecutionStatus.PARTIAL)
+        reason = engine._build_reason([self._signal()], [exe])
+        assert "BUY" in reason
+        assert "SKIP" not in reason
