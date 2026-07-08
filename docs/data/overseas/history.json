@@ -1177,5 +1177,31 @@
                 "alias": "리얼티 인컴"
             }
         ]
+    },
+    {
+        "id": "tx_20260708_224228",
+        "date": "2026-07-08 22:42:28",
+        "portfolio_value": 19039.9398,
+        "cash_balance": 6471.73,
+        "net_deposit": -4.62,
+        "total_trade_amount": 447.48,
+        "reason": "프록터 앤드 갬블(PG):SELL(수동 일괄매도(Manual Bulk Sell))",
+        "executions": [
+            {
+                "ticker": "PG",
+                "action": "SELL",
+                "quantity": 3,
+                "price": 149.16,
+                "fee": 0.0,
+                "date": "2026-07-08 22:42:24",
+                "status": "FILLED",
+                "reason": "ODNO=0030934543",
+                "lot_id": "lot_20260512_003501_PG_001",
+                "level": 1,
+                "buy_price": 142.81,
+                "realized_pnl": 19.05,
+                "alias": "프록터 앤드 갬블"
+            }
+        ]
     }
 ]

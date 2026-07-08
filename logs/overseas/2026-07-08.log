@@ -142,3 +142,21 @@
 2026-07-08 22:40:14,070 [INFO] [Position] Bulk 청산: 리얼티 인컴(O) 8주 소진 (잔여 0주), 실현손익 USD 10.24
 2026-07-08 22:40:18,680 [INFO] >>> Step 6: Persist
 2026-07-08 22:40:19,041 [INFO] === Manual Trade 완료 ===
+2026-07-08 22:42:13,664 [INFO] === Manual Trade CLI: PG SELL_ALL ===
+2026-07-08 22:42:13,665 [INFO] [KisBroker] 캐시에서 토큰 로드 (API 호출 생략)
+2026-07-08 22:42:13,665 [INFO] [KisOverseasLiveBroker] Mode: LIVE TRADING
+2026-07-08 22:42:13,665 [INFO] === Manual Trade: 프록터 앤드 갬블(PG) SELL ===
+2026-07-08 22:42:13,665 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-07-08 22:42:15,984 [INFO] Fetching real-time prices from Broker...
+2026-07-08 22:42:20,543 [INFO] Portfolio: Cash=USD 6,028.87, Value=USD 19,056.52
+2026-07-08 22:42:20,543 [INFO] >>> Step 2: Load Positions
+2026-07-08 22:42:20,544 [INFO] Loaded 26 position lot(s)
+2026-07-08 22:42:20,544 [INFO] 일괄매도 수량 도출: 1개 lot 합산 3주 전량
+2026-07-08 22:42:20,544 [INFO] [프록터 앤드 갬블(PG)] 수동 신호 생성: SELL Lv1 3주 @USD 149.20
+2026-07-08 22:42:20,544 [INFO] Executing 1 order(s)...
+2026-07-08 22:42:20,544 [INFO] [KisBroker] Processing 1 SELL orders...
+2026-07-08 22:42:21,593 [INFO] [KisBroker] Order Sent: SELL 프록터 앤드 갬블(PG) 3 @ 149.16 (ODNO=0030934543)
+2026-07-08 22:42:24,140 [INFO] [KisBroker] Order FILLED: 프록터 앤드 갬블(PG) ODNO=0030934543 price=149.16 qty=3 fee=0.0
+2026-07-08 22:42:24,341 [INFO] [Position] Bulk 청산: 프록터 앤드 갬블(PG) 3주 소진 (잔여 0주), 실현손익 USD 19.05
+2026-07-08 22:42:28,898 [INFO] >>> Step 6: Persist
+2026-07-08 22:42:29,278 [INFO] === Manual Trade 완료 ===
