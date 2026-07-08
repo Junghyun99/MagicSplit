@@ -477,7 +477,7 @@ class KisOverseasBrokerBase(KisBrokerCommon):
             return EXCHANGE_CODE_SHORT_TO_FULL.get(price_code, 'NASD')
         return price_code
 
-    def _fetch_total_cash(self) -> float:
+    def _fetch_total_cash(self) -> Optional[float]:
         """해외증거금/예수금 상세 API를 통해 실제 주문 가능 금액을 조회한다."""
         if not self.MARGIN_TR_ID:
             return 0.0
@@ -541,7 +541,11 @@ class KisOverseasBrokerBase(KisBrokerCommon):
                     continue
                 if isinstance(rows, dict):
                     rows = [rows]
+                elif not isinstance(rows, list):
+                    continue
                 for item in rows:
+                    if not isinstance(item, dict):
+                        continue
                     for key in self._EXCHANGE_RATE_FIELD_CANDIDATES:
                         val = item.get(key)
                         if val is None:
