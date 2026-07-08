@@ -21,7 +21,7 @@ def _parse_http_timeout(raw, default: float = 10.0) -> float:
 
 
 # KIS REST 호출 타임아웃 (초). 미설정 시 무한 대기 방지를 위해 항상 적용된다.
-DEFAULT_HTTP_TIMEOUT = _parse_http_timeout(os.getenv("KIS_HTTP_TIMEOUT", "10"))
+DEFAULT_HTTP_TIMEOUT = _parse_http_timeout(os.getenv("KIS_HTTP_TIMEOUT", "20"))
 
 
 class Config:
