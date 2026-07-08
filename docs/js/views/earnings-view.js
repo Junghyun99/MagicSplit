@@ -28,14 +28,15 @@ window.EarningsView = (function () {
         }).format(Number(value));
     }
 
-    // 해외(USD) 모드에서 저장 시점 환율 기준 원화 환산액을 보여주는 보조 문자열 (없으면 '')
+    // 해외(USD) 모드에서 저장 시점 환율 기준 원화 환산액 + 환율을 보여주는 보조 문자열 (없으면 '')
     function krwSubLabel(usdValue, mode) {
         if ((mode || 'domestic') !== 'overseas') return '';
         const rate = EarningsModel.getExchangeRate();
         if (!rate) return '';
         const numVal = Number(usdValue);
         if (isNaN(numVal)) return '';
-        return `<div class="earnings-card-subvalue">약 ${escapeHtml(formatAmt(numVal * rate, 'domestic'))}</div>`;
+        const rateLabel = new Intl.NumberFormat('ko-KR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(rate);
+        return `<div class="earnings-card-subvalue">약 ${escapeHtml(formatAmt(numVal * rate, 'domestic'))} (환율 ₩${escapeHtml(rateLabel)})</div>`;
     }
 
     function render(currencyMode) {
