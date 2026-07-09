@@ -153,3 +153,22 @@
 2026-07-09 04:01:33,392 [INFO] >>> Processing 루멘텀 홀딩스(LITE)
 2026-07-09 04:01:33,392 [INFO] [루멘텀 홀딩스(LITE)] buy_amount(USD 500.00) < 현재가(USD 698.28) -> 1주도 매수 불가. buy_amount 상향 조정 필요
 2026-07-09 04:01:33,773 [INFO] >>> Step 6: Persist
+2026-07-09 23:23:27,712 [INFO] === Manual Trade CLI: GLW BUY amount=2000.0 ===
+2026-07-09 23:23:27,713 [INFO] [KisBroker] 캐시에서 토큰 로드 (API 호출 생략)
+2026-07-09 23:23:27,713 [INFO] [KisOverseasLiveBroker] Mode: LIVE TRADING
+2026-07-09 23:23:27,713 [INFO] === Manual Trade: 코닝(GLW) BUY ===
+2026-07-09 23:23:27,713 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-07-09 23:23:30,735 [INFO] Fetching real-time prices from Broker...
+2026-07-09 23:23:35,267 [INFO] Portfolio: Cash=USD 7,455.23, Value=USD 19,145.66
+2026-07-09 23:23:35,267 [INFO] >>> Step 2: Load Positions
+2026-07-09 23:23:35,267 [INFO] Loaded 23 position lot(s)
+2026-07-09 23:23:35,268 [INFO] 매수 금액 수동 지정: USD 2,000.00
+2026-07-09 23:23:35,268 [INFO] 매수 수량 도출: Lv3 buy_amount=USD 2,000.00 / 현재가=USD 196.22 = 10주
+2026-07-09 23:23:35,268 [INFO] [코닝(GLW)] 수동 신호 생성: BUY Lv3 10주 @USD 196.22
+2026-07-09 23:23:35,268 [INFO] Executing 1 order(s)...
+2026-07-09 23:23:37,100 [INFO] [KisBroker] Available Cash for BUY: 7,455
+2026-07-09 23:23:38,533 [INFO] [KisBroker] Order Sent: BUY 코닝(GLW) 10 @ 196.6 (ODNO=0031271862)
+2026-07-09 23:23:41,066 [INFO] [KisBroker] Order FILLED: 코닝(GLW) ODNO=0031271862 price=196.6 qty=10 fee=0.0
+2026-07-09 23:23:41,267 [INFO] [Position] New lot: lot_20260709_232341_GLW_003 Lv3 코닝(GLW) 10주 @USD 196.60
+2026-07-09 23:23:46,088 [INFO] >>> Step 6: Persist
+2026-07-09 23:23:46,486 [INFO] === Manual Trade 완료 ===
