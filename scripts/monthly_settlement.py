@@ -7,9 +7,13 @@ history.json의 실현손익 합계도 교차검증용으로 함께 표시한다
 
 결산 항등식: 기간손익 = 기말자산 - 기초자산 - 순입금액
 
+해외(overseas)는 기본적으로 USD로 표시되며, --currency krw 를 주면 각 스냅샷 시점의
+그날 기준환율로 원화 환산해 표시한다 (증권사 계좌평가와 동일한 방식).
+
 사용법:
     python -m scripts.monthly_settlement --market domestic --start 2026-04-01 --end 2026-04-28
     python -m scripts.monthly_settlement --market overseas --start 2026-04-01 --end 2026-04-30
+    python -m scripts.monthly_settlement --market overseas --start 2026-04-01 --end 2026-04-30 --currency krw
 """
 import argparse
 import os
@@ -18,9 +22,9 @@ from datetime import datetime
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/..")
 
-from src.core.settlement import compute_settlement
+from src.core.settlement import compute_settlement, convert_snapshots_to_krw
 from src.infra.repo import JsonRepository
-from src.utils.currency import format_money
+from src.utils.currency import currency_code_for, format_money
 
 DATE_FMT = "%Y-%m-%d"
 
@@ -49,6 +53,9 @@ def parse_args(argv=None):
                         help="조회 시작일 (YYYY-MM-DD, 예: 2026-04-01)")
     parser.add_argument("--end", required=True, type=_valid_date,
                         help="조회 종료일 (YYYY-MM-DD, 예: 2026-04-28)")
+    parser.add_argument("--currency", default="native", choices=["native", "krw"],
+                        help="표시 통화. native=시장 통화(해외는 USD), "
+                             "krw=각 시점 기준환율로 원화 환산 (해외 전용, 증권사 방식)")
     parser.add_argument("--data-root", default="docs/data",
                         help="데이터 루트 경로 (기본: docs/data)")
     return parser.parse_args(argv)
@@ -69,13 +76,23 @@ def _realized_pnl_in_range(history: list, start: str, end: str) -> float:
     return round(total, 2)
 
 
-def build_report(result, realized_pnl: float, market: str) -> str:
-    """결산 결과를 사람이 읽는 리포트 문자열로 조립한다."""
-    fm = lambda v: format_money(v, market)
+def build_report(result, realized_pnl: float, market: str,
+                 display_currency: str = None, dropped_missing_rate: int = 0) -> str:
+    """결산 결과를 사람이 읽는 리포트 문자열로 조립한다.
+
+    display_currency를 지정하면(예: 원화 환산 결산의 "KRW") 기초/기말/손익을 그 통화로
+    표기한다. 실현손익 교차검증은 원본 체결 통화(market 기준)를 그대로 유지한다.
+    """
+    disp = display_currency or currency_code_for(market)
+    native = currency_code_for(market)
+    fm = lambda v: format_money(v, market, currency=disp)
     twr = "-" if result.twr_pct is None else f"{result.twr_pct:+.2f}%"
     profit_sign = "+" if result.profit >= 0 else ""
+    header = f"=== 기간 결산 ({market}) ==="
+    if disp != native:
+        header = f"=== 기간 결산 ({market}, {disp} 환산) ==="
     lines = [
-        f"=== 기간 결산 ({market}) ===",
+        header,
         f"기간           : {result.start_date} ~ {result.end_date}",
         f"스냅샷 개수    : {result.snapshot_count}건",
     ]
@@ -93,9 +110,19 @@ def build_report(result, realized_pnl: float, market: str) -> str:
         f"기간손익(금액) : {profit_sign}{fm(result.profit)}",
         f"수익률(TWR)    : {twr}",
         "-" * 40,
-        f"[교차검증] 실현손익 합계 : {fm(realized_pnl)}",
+        f"[교차검증] 실현손익 합계 : {format_money(realized_pnl, market)}",
         "  (실현손익은 매도 확정분만 집계 - 평가손익 미포함, 참고용)",
     ]
+    if disp != native:
+        lines += [
+            f"  (자산/손익은 각 시점 기준환율로 {disp} 환산 - 주가손익+환차손익 포함.",
+            f"   실현손익 교차검증은 원본 체결 통화 {native} 기준)",
+        ]
+        if dropped_missing_rate:
+            lines.append(
+                f"  주의: 기준환율이 없어 {dropped_missing_rate}건의 스냅샷을 환산에서 제외했습니다 "
+                f"(환율 저장 이전 구간은 소급 불가)."
+            )
     return "\n".join(lines)
 
 
@@ -110,10 +137,26 @@ def main(argv=None) -> int:
     snapshots = repo.load_snapshots()
     history = repo._load_json(repo.history_file, default=[])
 
+    display_currency = None
+    dropped = 0
+    want_krw = args.currency == "krw"
+    if want_krw and args.market == "overseas":
+        # 각 시점 기준환율로 원화 환산 (증권사 방식). 환율 부재 스냅샷은 제외.
+        snapshots, dropped = convert_snapshots_to_krw(snapshots)
+        display_currency = "KRW"
+        if not snapshots:
+            print("오류: 환산 가능한(기준환율이 저장된) 스냅샷이 없습니다. "
+                  "원화 결산은 환율을 저장하기 시작한 이후 구간부터 가능합니다.",
+                  file=sys.stderr)
+            return 3
+    # domestic은 이미 원화이므로 --currency krw는 native와 동일 (환산 불필요)
+
     result = compute_settlement(snapshots, args.start, args.end)
     realized_pnl = _realized_pnl_in_range(history, args.start, args.end)
 
-    print(build_report(result, realized_pnl, args.market))
+    print(build_report(result, realized_pnl, args.market,
+                       display_currency=display_currency,
+                       dropped_missing_rate=dropped))
     return 0
 
 

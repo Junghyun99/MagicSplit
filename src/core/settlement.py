@@ -31,6 +31,36 @@ class SettlementResult:
         return asdict(self)
 
 
+def convert_snapshots_to_krw(snapshots: List[dict]):
+    """USD 스냅샷을 각 시점의 그날 기준환율(exchange_rate)로 KRW 환산한다.
+
+    증권사 계좌평가 방식과 동일하게, 기간말 단일 환율이 아니라 각 스냅샷 시점의
+    환율을 적용한다 -> 원화 기간손익에 주가손익과 환차손익이 함께 반영된다.
+
+    exchange_rate가 없거나(과거 스냅샷/조회 실패) 0 이하인 스냅샷은 환산 불가하여
+    제외한다. 반환값의 dropped로 제외 건수를 알려 소급 불가 구간을 표시할 수 있다.
+
+    Args:
+        snapshots: repo.load_snapshots() 결과 (portfolio_value/net_deposit은 USD).
+
+    Returns:
+        (converted, dropped): KRW로 환산된 스냅샷 리스트와 환율 부재로 제외된 건수.
+    """
+    converted = []
+    dropped = 0
+    for s in snapshots:
+        rate = _finite(s.get("exchange_rate"))
+        if rate is None or rate <= 0:
+            dropped += 1
+            continue
+        c = dict(s)
+        pv = _finite(s.get("portfolio_value"))
+        c["portfolio_value"] = None if pv is None else round(pv * rate, 2)
+        c["net_deposit"] = round(float(s.get("net_deposit") or 0.0) * rate, 2)
+        converted.append(c)
+    return converted, dropped
+
+
 def compute_settlement(snapshots: List[dict], start: str, end: str) -> SettlementResult:
     """일별 스냅샷 리스트에서 [start, end] 기간(양끝 포함) 결산을 계산한다.
 

@@ -1,16 +1,19 @@
 # tests/test_settlement.py
 import pytest
-from src.core.settlement import compute_settlement
+from src.core.settlement import compute_settlement, convert_snapshots_to_krw
 
 
-def _snap(date, value, cash=0.0, net_deposit=0.0):
-    return {
+def _snap(date, value, cash=0.0, net_deposit=0.0, exchange_rate=None):
+    s = {
         "date": date,
         "portfolio_value": value,
         "cash_balance": cash,
         "stock_value": value - cash,
         "net_deposit": net_deposit,
     }
+    if exchange_rate is not None:
+        s["exchange_rate"] = exchange_rate
+    return s
 
 
 class TestComputeSettlement:
@@ -157,3 +160,53 @@ class TestComputeSettlement:
         r = compute_settlement(snaps, "2026-04-01", "2026-04-28")
         assert r.start_asset == 1000.0
         assert r.end_asset == 1200.0
+
+
+class TestConvertSnapshotsToKrw:
+    def test_converts_each_snapshot_at_its_own_rate(self):
+        """각 스냅샷의 그날 환율로 환산한다 (기간말 단일 환율 아님)"""
+        snaps = [
+            _snap("2026-04-01", 1000.0, net_deposit=1000.0, exchange_rate=1300.0),
+            _snap("2026-04-28", 1100.0, net_deposit=0.0, exchange_rate=1400.0),
+        ]
+        conv, dropped = convert_snapshots_to_krw(snaps)
+        assert dropped == 0
+        assert conv[0]["portfolio_value"] == 1_300_000.0  # 1000 * 1300
+        assert conv[0]["net_deposit"] == 1_300_000.0
+        assert conv[1]["portfolio_value"] == 1_540_000.0  # 1100 * 1400
+
+    def test_drops_snapshots_without_rate(self):
+        """환율이 없거나 0 이하인 스냅샷은 제외하고 개수를 보고한다"""
+        snaps = [
+            _snap("2026-04-01", 1000.0, exchange_rate=None),
+            _snap("2026-04-10", 1050.0, exchange_rate=0.0),
+            _snap("2026-04-28", 1100.0, exchange_rate=1400.0),
+        ]
+        conv, dropped = convert_snapshots_to_krw(snaps)
+        assert dropped == 2
+        assert len(conv) == 1
+        assert conv[0]["portfolio_value"] == 1_540_000.0
+
+    def test_krw_settlement_includes_fx_gain(self):
+        """원화 결산 손익에 환차손익이 포함된다.
+
+        USD 자산은 그대로(1000->1000)여도 환율이 1300->1400으로 오르면
+        원화 기간손익은 +100,000 (순수 환차익).
+        """
+        snaps = [
+            _snap("2026-03-31", 1000.0, exchange_rate=1300.0),
+            _snap("2026-04-28", 1000.0, net_deposit=0.0, exchange_rate=1400.0),
+        ]
+        conv, _ = convert_snapshots_to_krw(snaps)
+        r = compute_settlement(conv, "2026-04-01", "2026-04-30")
+        assert r.start_asset == 1_300_000.0
+        assert r.end_asset == 1_400_000.0
+        assert r.profit == 100_000.0
+
+    def test_none_portfolio_value_preserved_as_none(self):
+        """portfolio_value가 None이면 환산 후에도 None (compute가 스킵)"""
+        snaps = [{"date": "2026-04-01", "portfolio_value": None,
+                  "net_deposit": 0.0, "exchange_rate": 1300.0}]
+        conv, dropped = convert_snapshots_to_krw(snaps)
+        assert dropped == 0
+        assert conv[0]["portfolio_value"] is None
