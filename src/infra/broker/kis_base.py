@@ -2,10 +2,16 @@
 """KIS 공통 베이스 — 인증, 헤더, 매도우선 오케스트레이션."""
 from typing import List, Dict, Optional
 import time
+import threading
 import src.infra.broker as _pkg  # test patch 타깃: src.infra.broker.requests
 from datetime import datetime, timedelta
 
-from src.config import DEFAULT_HTTP_TIMEOUT
+from src.config import (
+    DEFAULT_HTTP_TIMEOUT,
+    KIS_MIN_REQUEST_INTERVAL,
+    KIS_RATE_LIMIT_RETRIES,
+    KIS_RATE_LIMIT_BACKOFF,
+)
 from src.core.interfaces import IBrokerAdapter
 from src.core.models import Portfolio, Order, TradeExecution, OrderAction, ExecutionStatus
 from src.utils.ticker_reader import display_ticker
@@ -47,6 +53,15 @@ class KisBrokerCommon(IBrokerAdapter):
         self.base_url = self.BASE_URL
         self.token_expires_at: Optional[datetime] = None
         self.session = _pkg.requests.Session()
+
+        # 중앙 레이트리밋: 모든 REST 호출을 계좌(프로세스)당 최소 간격으로 직렬화하고,
+        # 초당 거래건수 초과 응답(EGW00201/429)은 지수 백오프로 재시도한다.
+        self._rl_lock = threading.Lock()
+        self._last_request_ts = 0.0
+        self._min_request_interval = KIS_MIN_REQUEST_INTERVAL
+        self._rate_limit_retries = KIS_RATE_LIMIT_RETRIES
+        self._rate_limit_backoff = KIS_RATE_LIMIT_BACKOFF
+
         self.access_token = self._auth()
 
     def _auth(self) -> str:
@@ -112,17 +127,74 @@ class KisBrokerCommon(IBrokerAdapter):
         return kis_http.fetch_hashkey(self.base_url, self.app_key, self.app_secret, data, self.logger)
 
     def _request(self, method: str, url: str, **kwargs):
-        """테스트 Mock 과 실제 Session 을 전환하여 호출하는 헬퍼."""
+        """테스트 Mock 과 실제 Session 을 전환하여 호출하는 헬퍼.
+
+        실제 호출은 중앙 스로틀(_throttle)로 초당 호출수를 제한하고, 초당 거래건수
+        초과(EGW00201)/HTTP 429 응답 시 지수 백오프로 재시도한다.
+        """
         from unittest.mock import MagicMock
         target_fn = getattr(_pkg.requests, method.lower())
-        
+
         # 테스트 환경: _pkg.requests.get/post 가 Mock 이면 해당 Mock 호출
         if isinstance(target_fn, MagicMock) or hasattr(target_fn, 'assert_called'):
             return target_fn(url, **kwargs)
-            
-        # 실제 환경: Session 사용
+
+        # 실제 환경: Session 사용 (스로틀 + 레이트리밋 백오프)
         session_fn = getattr(self.session, method.lower())
-        return session_fn(url, **kwargs)
+        retries = getattr(self, "_rate_limit_retries", KIS_RATE_LIMIT_RETRIES)
+        backoff_base = getattr(self, "_rate_limit_backoff", KIS_RATE_LIMIT_BACKOFF)
+
+        res = None
+        for attempt in range(retries + 1):
+            self._throttle()
+            res = session_fn(url, **kwargs)
+            if not self._is_rate_limited(res):
+                return res
+            if attempt < retries:
+                backoff = backoff_base * (2 ** attempt)
+                self.logger.warning(
+                    f"[KisBroker] 초당 거래건수 초과(EGW00201/429) 감지 — "
+                    f"{backoff:.1f}s 대기 후 재시도 ({attempt + 1}/{retries})"
+                )
+                time.sleep(backoff)
+        return res
+
+    def _throttle(self) -> None:
+        """모든 KIS 호출 사이에 최소 간격을 강제한다 (초당 호출수 상한).
+
+        서로 다른 메서드가 연달아 호출돼도 계좌(프로세스) 단위로 호출 간격이
+        보장되도록 단일 길목(_request)에서 직렬화한다.
+        """
+        min_interval = getattr(self, "_min_request_interval", KIS_MIN_REQUEST_INTERVAL)
+        if min_interval <= 0:
+            return
+        lock = getattr(self, "_rl_lock", None)
+        if lock is None:
+            lock = self._rl_lock = threading.Lock()
+        with lock:
+            now = time.monotonic()
+            wait = min_interval - (now - getattr(self, "_last_request_ts", 0.0))
+            if wait > 0:
+                time.sleep(wait)
+            self._last_request_ts = time.monotonic()
+
+    @staticmethod
+    def _is_rate_limited(res) -> bool:
+        """KIS 초당 거래건수 초과(EGW00201) 또는 HTTP 429 응답인지 판별한다.
+
+        EGW00201은 요청이 처리되지 않고 거부된 것이므로 재시도가 안전하다.
+        """
+        if getattr(res, "status_code", None) == 429:
+            return True
+        try:
+            data = res.json()
+        except Exception:
+            return False
+        if not isinstance(data, dict):
+            return False
+        code = str(data.get("msg_cd", ""))
+        msg = str(data.get("msg1", ""))
+        return code == "EGW00201" or "초당 거래건수" in msg
 
     # --- 추상 메서드 (서브클래스에서 구현 필수) ---
 

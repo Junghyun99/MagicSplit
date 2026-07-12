@@ -24,6 +24,35 @@ def _parse_http_timeout(raw, default: float = 10.0) -> float:
 DEFAULT_HTTP_TIMEOUT = _parse_http_timeout(os.getenv("KIS_HTTP_TIMEOUT", "20"))
 
 
+def _parse_positive_float(raw, default: float) -> float:
+    """양수 float 환경변수를 검증한다. 숫자가 아니거나 0 이하(간격은 0 이상)면 기본값."""
+    try:
+        value = float(raw)
+    except (TypeError, ValueError):
+        return default
+    return value if value >= 0 else default
+
+
+def _parse_positive_int(raw, default: int) -> int:
+    try:
+        value = int(raw)
+    except (TypeError, ValueError):
+        return default
+    return value if value >= 0 else default
+
+
+# KIS 초당 호출수 상한: 모든 REST 호출 사이 최소 간격(초). 실전 유량제한(~20건/초)
+# 아래로 유지하기 위한 중앙 스로틀. 0이면 간격 제어 비활성화.
+KIS_MIN_REQUEST_INTERVAL = _parse_positive_float(
+    os.getenv("KIS_MIN_REQUEST_INTERVAL", "0.06"), 0.06
+)
+# 초당 거래건수 초과(EGW00201)/HTTP 429 응답 시 재시도 횟수와 백오프 기준(초).
+KIS_RATE_LIMIT_RETRIES = _parse_positive_int(os.getenv("KIS_RATE_LIMIT_RETRIES", "3"), 3)
+KIS_RATE_LIMIT_BACKOFF = _parse_positive_float(
+    os.getenv("KIS_RATE_LIMIT_BACKOFF", "0.5"), 0.5
+)
+
+
 class Config:
     def __init__(self):
         # KIS 단일 계좌 인증
