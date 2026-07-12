@@ -42,6 +42,7 @@ scripts/
 ?��??� manual_trade.py      # Actions/CLI?�서 ?�동 매수·매도 주문
 ?��??� reconcile_positions.py  # ?�계�??�고?� positions.json ?�합
 ?��??� monthly_settlement.py   # snapshots.json 기반 기간 결산 (기초/기말자산, 순입금, 기간손익, TWR)
+?��??� migrate_snapshots.py     # history.json -> snapshots.json 백필 (하루 여러 거래는 net_deposit 합산)
 tests/                   # ?�스??(80% 커버리�? ?�구)
 docs/                    # ???�?�보??GitHub Pages) + config-editor + data ?�??
 config_domestic.json     # �?�� 종목 매매 규칙
