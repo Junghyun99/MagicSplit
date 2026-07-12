@@ -1,5 +1,6 @@
 # tests/test_infra_broker_ratelimit.py
 """KIS 중앙 레이트리밋(_throttle) + 초당 거래건수 초과 백오프(_request) 테스트."""
+import threading
 from unittest.mock import MagicMock
 import pytest
 
@@ -10,7 +11,7 @@ def _make_broker(min_interval=0.0, retries=3, backoff=0.5):
     """__init__/_auth 우회하고 레이트리밋 속성만 세팅한 브로커."""
     b = KisBrokerCommon.__new__(KisBrokerCommon)
     b.logger = MagicMock()
-    b._rl_lock = None  # _throttle이 지연 생성
+    b._rl_lock = threading.Lock()
     b._last_request_ts = 0.0
     b._min_request_interval = min_interval
     b._rate_limit_retries = retries
@@ -45,6 +46,9 @@ class TestIsRateLimited:
         r.status_code = 200
         r.json.side_effect = ValueError("not json")
         assert KisBrokerCommon._is_rate_limited(r) is False
+
+    def test_none_response(self):
+        assert KisBrokerCommon._is_rate_limited(None) is False
 
 
 class TestThrottle:

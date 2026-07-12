@@ -141,8 +141,8 @@ class KisBrokerCommon(IBrokerAdapter):
 
         # 실제 환경: Session 사용 (스로틀 + 레이트리밋 백오프)
         session_fn = getattr(self.session, method.lower())
-        retries = getattr(self, "_rate_limit_retries", KIS_RATE_LIMIT_RETRIES)
-        backoff_base = getattr(self, "_rate_limit_backoff", KIS_RATE_LIMIT_BACKOFF)
+        retries = self._rate_limit_retries
+        backoff_base = self._rate_limit_backoff
 
         res = None
         for attempt in range(retries + 1):
@@ -165,15 +165,11 @@ class KisBrokerCommon(IBrokerAdapter):
         서로 다른 메서드가 연달아 호출돼도 계좌(프로세스) 단위로 호출 간격이
         보장되도록 단일 길목(_request)에서 직렬화한다.
         """
-        min_interval = getattr(self, "_min_request_interval", KIS_MIN_REQUEST_INTERVAL)
-        if min_interval <= 0:
+        if self._min_request_interval <= 0:
             return
-        lock = getattr(self, "_rl_lock", None)
-        if lock is None:
-            lock = self._rl_lock = threading.Lock()
-        with lock:
+        with self._rl_lock:
             now = time.monotonic()
-            wait = min_interval - (now - getattr(self, "_last_request_ts", 0.0))
+            wait = self._min_request_interval - (now - self._last_request_ts)
             if wait > 0:
                 time.sleep(wait)
             self._last_request_ts = time.monotonic()
@@ -184,6 +180,8 @@ class KisBrokerCommon(IBrokerAdapter):
 
         EGW00201은 요청이 처리되지 않고 거부된 것이므로 재시도가 안전하다.
         """
+        if res is None:
+            return False
         if getattr(res, "status_code", None) == 429:
             return True
         try:
