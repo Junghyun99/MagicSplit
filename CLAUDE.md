@@ -19,7 +19,6 @@
 - �?1???�행: `python -m src.main` (`config_overseas.json_PATH`�?�?��/?�외 ?�택)
 - ?��????�합: `python scripts/reconcile_positions.py`
 - 기간(월간) 결산: `python -m scripts.monthly_settlement --market domestic --start 2026-04-01 --end 2026-04-28` (해외는 USD/KRW 두 버전 출력)
-- 스냅샷 환율 마이그레이션: `python -m scripts.migrate_snapshot_fx --market overseas` (과거 snapshots.json에 원/달러 환율 소급 채움, --dry-run/--overwrite 지원)
 
 ## ?�로?�트 구조
 ```
