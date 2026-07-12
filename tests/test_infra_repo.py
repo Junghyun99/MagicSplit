@@ -86,6 +86,95 @@ class TestTradeHistory:
         assert len(data) == 2
 
 
+class TestSnapshots:
+    def test_save_and_load_snapshot(self, repo):
+        """스냅샷 저장/로드 라운드트립 및 필드 구성"""
+        pf = Portfolio(8000.0, {"AAPL": 5}, {"AAPL": 200.0})  # value=9000
+        repo.save_snapshot(pf, [], sim_date="2026-04-01")
+
+        snaps = repo.load_snapshots()
+        assert len(snaps) == 1
+        s = snaps[0]
+        assert s["date"] == "2026-04-01"
+        assert s["portfolio_value"] == 9000.0
+        assert s["cash_balance"] == 8000.0
+        assert s["stock_value"] == 1000.0
+
+    def test_snapshot_saved_without_executions(self, repo):
+        """거래가 없어도 스냅샷은 저장된다 (history와 달리 무조건 기록)"""
+        pf = Portfolio(10000.0, {}, {})
+        repo.save_snapshot(pf, [], sim_date="2026-04-01")
+        assert len(repo.load_snapshots()) == 1
+
+    def test_snapshot_net_deposit_first_record(self, repo):
+        """첫 스냅샷의 순입금은 (현금 - 거래현금영향)"""
+        pf = Portfolio(10000.0, {}, {})
+        repo.save_snapshot(pf, [], sim_date="2026-04-01")
+        assert repo.load_snapshots()[0]["net_deposit"] == 10000.0
+
+    def test_snapshot_net_deposit_pure_deposit(self, repo):
+        """거래 없이 현금만 증가하면 그대로 순입금으로 잡힌다"""
+        repo.save_snapshot(Portfolio(10000.0, {}, {}), [], sim_date="2026-04-01")
+        repo.save_snapshot(Portfolio(15000.0, {}, {}), [], sim_date="2026-04-02")
+        snaps = repo.load_snapshots()
+        assert snaps[1]["net_deposit"] == 5000.0
+
+    def test_snapshot_net_deposit_excludes_trade(self, repo):
+        """매수로 인한 현금 감소는 순입금에 반영되지 않는다"""
+        repo.save_snapshot(Portfolio(10000.0, {}, {}), [], sim_date="2026-04-01")
+        # 다음 날 5주 @150 매수 (수수료 0) -> 현금 10000 - 750 = 9250, 순입금 0
+        exe = [TradeExecution("AAPL", OrderAction.BUY, 5, 150.0, 0.0,
+                              "2026-04-02", ExecutionStatus.FILLED)]
+        repo.save_snapshot(Portfolio(9250.0, {"AAPL": 5}, {"AAPL": 150.0}),
+                           exe, sim_date="2026-04-02")
+        assert repo.load_snapshots()[1]["net_deposit"] == 0.0
+
+    def test_snapshot_same_date_overwrites(self, repo):
+        """같은 날짜 재실행 시 덮어쓰기 — 하루 1개 대표값 유지"""
+        repo.save_snapshot(Portfolio(10000.0, {}, {}), [], sim_date="2026-04-01")
+        repo.save_snapshot(Portfolio(12000.0, {}, {}), [], sim_date="2026-04-01")
+        snaps = repo.load_snapshots()
+        assert len(snaps) == 1
+        assert snaps[0]["portfolio_value"] == 12000.0
+        # 첫 실행 10000 + 둘째 실행 추가 입금 2000 = 당일 순입금 12000
+        assert snaps[0]["net_deposit"] == 12000.0
+
+    def test_snapshot_same_date_accumulates_trade_impact(self, repo):
+        """같은 날짜 재실행이 각각 체결을 동반해도 순입금이 왜곡되지 않는다.
+
+        두 실행 모두 매수(현금 유출)만 있고 실제 입출금은 0이면 당일 순입금도 0.
+        덮어쓰기 시 앞선 실행의 매수 현금영향이 누락되면 안 된다.
+        """
+        # 전일: 현금 10000
+        repo.save_snapshot(Portfolio(10000.0, {}, {}), [], sim_date="2026-04-01")
+        # 당일 1차: 5주 @150 매수 -> 현금 9250
+        exe1 = [TradeExecution("AAPL", OrderAction.BUY, 5, 150.0, 0.0,
+                               "2026-04-02", ExecutionStatus.FILLED)]
+        repo.save_snapshot(Portfolio(9250.0, {"AAPL": 5}, {"AAPL": 150.0}),
+                           exe1, sim_date="2026-04-02")
+        # 당일 2차: 3주 @100 매수 -> 현금 8950
+        exe2 = [TradeExecution("MSFT", OrderAction.BUY, 3, 100.0, 0.0,
+                               "2026-04-02", ExecutionStatus.FILLED)]
+        repo.save_snapshot(Portfolio(8950.0, {"AAPL": 5, "MSFT": 3},
+                                     {"AAPL": 150.0, "MSFT": 100.0}),
+                           exe2, sim_date="2026-04-02")
+        snaps = repo.load_snapshots()
+        assert len(snaps) == 2
+        # 순수 입출금 0 (매수만 발생) -> net_deposit 0, 앞선 매수 누락 시 -750이 됨
+        assert snaps[1]["net_deposit"] == 0.0
+        assert snaps[1]["cash_balance"] == 8950.0
+
+    def test_snapshot_datetime_normalized_to_date(self, repo):
+        """sim_date=None (라이브) 시 날짜만(YYYY-MM-DD) 저장된다"""
+        repo.save_snapshot(Portfolio(10000.0, {}, {}), [])
+        s = repo.load_snapshots()[0]
+        assert len(s["date"]) == 10 and s["date"].count("-") == 2
+
+    def test_load_empty_snapshots(self, repo):
+        """파일이 없으면 빈 리스트"""
+        assert repo.load_snapshots() == []
+
+
 class TestStatus:
     def test_save_and_get_status(self, repo):
         """상태 저장 및 마지막 실행일 조회"""

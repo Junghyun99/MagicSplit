@@ -33,6 +33,7 @@ class JsonRepository(IRepository):
         self.status_file = os.path.join(self.root, "status.json")
         self.last_sell_prices_file = os.path.join(self.root, "last_sell_prices.json")
         self.decisions_file = os.path.join(self.root, "decisions.json")
+        self.snapshots_file = os.path.join(self.root, "snapshots.json")
 
         # 초기 파일 생성 (404 방지)
         if not os.path.exists(self.positions_file):
@@ -45,6 +46,8 @@ class JsonRepository(IRepository):
             self._save_json(self.last_sell_prices_file, {})
         if not os.path.exists(self.decisions_file):
             self._save_json(self.decisions_file, [])
+        if not os.path.exists(self.snapshots_file):
+            self._save_json(self.snapshots_file, [])
 
         # ⚡ Bolt: Memory cache to avoid redundant disk I/O and JSON decoding
         # This dramatically speeds up the backtest loop which constantly reads/writes status.
@@ -165,13 +168,7 @@ class JsonRepository(IRepository):
         data = self._load_json(self.history_file, default=[])
 
         # Calculate net external cash flow (deposit/withdrawal) since previous record.
-        # trade_cash_impact: BUY decreases cash, SELL increases cash.
-        trade_cash_impact = sum(
-            (-e.price * e.quantity - e.fee) if e.action == OrderAction.BUY
-            else (e.price * e.quantity - e.fee)
-            for e in executions
-            if e.quantity > 0
-        )
+        trade_cash_impact = self._trade_cash_impact(executions)
         prev = data[-1] if data else None
         prev_cash = prev["cash_balance"] if prev and "cash_balance" in prev else None
         if prev_cash is not None:
@@ -197,6 +194,82 @@ class JsonRepository(IRepository):
             data = data[-self.max_history_records:]
 
         self._save_json(self.history_file, data)
+
+    @staticmethod
+    def _trade_cash_impact(executions: List[TradeExecution]) -> float:
+        """체결로 인한 순 현금 변동을 계산한다.
+
+        BUY는 현금 감소(-), SELL은 현금 증가(+), 각각 수수료만큼 추가 차감.
+        입출금(순입금) 역산 시 시세 변동/거래를 제외하기 위해 사용한다.
+        """
+        return sum(
+            (-e.price * e.quantity - e.fee) if e.action == OrderAction.BUY
+            else (e.price * e.quantity - e.fee)
+            for e in executions
+            if e.quantity > 0
+        )
+
+    # === Snapshots (일별 자산 스냅샷 — 결산용) ===
+
+    def save_snapshot(self, portfolio: Portfolio,
+                      executions: Optional[List[TradeExecution]] = None,
+                      sim_date: Optional[str] = None) -> None:
+        """일별 자산 스냅샷을 저장한다 (거래 유무와 무관하게 매 실행마다 기록).
+
+        history.json(매매 로그)과 분리된 시계열로, 월간/기간 결산의 기초·기말 자산과
+        순입금액 산출에 사용한다. 같은 날짜 레코드는 마지막 값으로 덮어써서
+        하루 1개의 대표 스냅샷만 유지한다.
+
+        net_deposit = 당일현금 - 직전스냅샷현금 - 당일체결현금영향
+        (시세 재평가는 현금에 영향을 주지 않으므로 순수 입출금만 남는다.)
+        """
+        executions = executions or []
+        date_str = sim_date if sim_date else datetime.now().strftime("%Y-%m-%d")
+        # 스냅샷 날짜는 날짜 단위(YYYY-MM-DD)로 정규화
+        date_key = date_str[:10]
+
+        data = self._load_json(self.snapshots_file, default=[])
+
+        trade_cash_impact = self._trade_cash_impact(executions)
+        prev = data[-1] if data else None
+        prev_cash = prev.get("cash_balance") if prev else None
+        same_day = prev is not None and prev.get("date") == date_key
+
+        if same_day:
+            # 같은 날짜 재실행(수동매매/재실행 등): 직전(같은 날) 스냅샷의 net_deposit에
+            # 이번 실행의 순입금 변동분만 누적 합산한다. prev_cash가 직전 실행 후
+            # 현금이므로, 앞선 실행들의 체결 현금영향이 누락되지 않아 순입금이
+            # 왜곡되지 않는다.
+            run_net_deposit = portfolio.total_cash - (prev_cash or 0.0) - trade_cash_impact
+            net_deposit = round(float(prev.get("net_deposit") or 0.0) + run_net_deposit, 2)
+        elif prev_cash is not None:
+            net_deposit = round(portfolio.total_cash - prev_cash - trade_cash_impact, 2)
+        else:
+            net_deposit = round(portfolio.total_cash - trade_cash_impact, 2)
+
+        stock_value = round(portfolio.total_value - portfolio.total_cash, 2)
+        record = {
+            "date": date_key,
+            "portfolio_value": round(portfolio.total_value, 2),
+            "cash_balance": round(portfolio.total_cash, 2),
+            "stock_value": stock_value,
+            "net_deposit": net_deposit,
+        }
+
+        # 같은 날짜면 덮어쓰기(하루 1개 대표값), 아니면 append
+        if same_day:
+            data[-1] = record
+        else:
+            data.append(record)
+
+        if self.max_history_records > 0:
+            data = data[-self.max_history_records:]
+
+        self._save_json(self.snapshots_file, data)
+
+    def load_snapshots(self) -> List[dict]:
+        """일별 자산 스냅샷 목록을 로드한다 (날짜 오름차순 저장 순서)."""
+        return self._load_json(self.snapshots_file, default=[])
 
     # === Status ===
 

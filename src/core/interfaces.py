@@ -80,6 +80,18 @@ class IRepository(ABC):
         ...
 
     @abstractmethod
+    def save_snapshot(self, portfolio: Portfolio,
+                      executions: Optional[List[TradeExecution]] = None,
+                      sim_date: Optional[str] = None) -> None:
+        """일별 자산 스냅샷을 저장한다 (거래 유무와 무관하게 기록)."""
+        ...
+
+    @abstractmethod
+    def load_snapshots(self) -> List[dict]:
+        """일별 자산 스냅샷 목록을 로드한다."""
+        ...
+
+    @abstractmethod
     def get_realized_pnl_by_ticker(self) -> Dict[str, float]:
         """과거 누적 실현 손익을 종목별로 반환한다."""
         ...
