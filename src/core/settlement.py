@@ -97,14 +97,29 @@ def _twr_pct(seq: List[dict]) -> Optional[float]:
         return None
     twr = 1.0
     for i in range(1, len(seq)):
-        start_val = float(seq[i - 1]["portfolio_value"])
-        if start_val <= 0:
+        start_val = _finite(seq[i - 1].get("portfolio_value"))
+        end_val = _finite(seq[i].get("portfolio_value"))
+        # 기준/종료 자산이 없거나(시세조회 실패로 null) 0 이하이면 왜곡되므로 스킵.
+        # 특히 end_val이 0이면 곱셈이 전체 TWR을 0(-100%)으로 붕괴시키므로 반드시 가드.
+        if start_val is None or end_val is None or start_val <= 0 or end_val <= 0:
             continue
         cf = float(seq[i].get("net_deposit") or 0.0)
         denom = start_val + cf
         if denom <= 0:
             # 대규모 출금 등으로 분모가 0 이하가 되면 수익률이 왜곡되므로 스킵
             continue
-        period_return = float(seq[i]["portfolio_value"]) / denom - 1
-        twr *= (1 + period_return)
+        twr *= end_val / denom
     return round((twr - 1) * 100, 4)
+
+
+def _finite(value) -> Optional[float]:
+    """유한한 float면 반환, None/NaN/inf면 None."""
+    if value is None:
+        return None
+    try:
+        f = float(value)
+    except (TypeError, ValueError):
+        return None
+    if f != f or f in (float("inf"), float("-inf")):  # NaN or inf
+        return None
+    return f

@@ -115,6 +115,28 @@ class TestComputeSettlement:
         # 두 번째 구간(600/500-1=+20%)만 반영
         assert r.twr_pct == pytest.approx(20.0)
 
+    def test_twr_not_collapsed_by_zero_end_value(self):
+        """종료 자산이 0(시세조회 실패 등)인 구간이 전체 TWR을 -100%로 붕괴시키지 않는다."""
+        snaps = [
+            _snap("2026-04-01", 1000.0),
+            _snap("2026-04-10", 0.0, net_deposit=0.0),   # 비정상 0 자산
+            _snap("2026-04-20", 1100.0, net_deposit=0.0),
+            _snap("2026-04-28", 1200.0, net_deposit=0.0),
+        ]
+        r = compute_settlement(snaps, "2026-04-01", "2026-04-28")
+        # 0 구간은 스킵되고 정상 구간만 반영 (1200/1100-1 = +9.09%)
+        assert r.twr_pct == pytest.approx(9.0909, abs=1e-3)
+
+    def test_twr_skips_null_portfolio_value(self):
+        """portfolio_value가 None(null)인 구간도 예외 없이 스킵된다."""
+        snaps = [
+            _snap("2026-04-01", 1000.0),
+            {"date": "2026-04-10", "portfolio_value": None, "net_deposit": 0.0},
+            _snap("2026-04-28", 1100.0, net_deposit=0.0),
+        ]
+        r = compute_settlement(snaps, "2026-04-01", "2026-04-28")
+        assert r.twr_pct is not None
+
     def test_twr_skips_nonpositive_start_value(self):
         """기준 자산이 0 이하인 구간도 스킵된다 (예외 없이 처리)."""
         snaps = [
