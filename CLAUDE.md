@@ -18,6 +18,7 @@
 - 커버리�? ?�함 ?�스?? `pytest --cov=src tests/` (80% ?�상 준???�수)
 - �?1???�행: `python -m src.main` (`config_overseas.json_PATH`�?�?��/?�외 ?�택)
 - ?��????�합: `python scripts/reconcile_positions.py`
+- 기간(월간) 결산: `python -m scripts.monthly_settlement --market domestic --start 2026-04-01 --end 2026-04-28`
 
 ## ?�로?�트 구조
 ```
@@ -33,13 +34,14 @@ src/
 ?��??� infra/
 ??  ?��??� broker/          # KIS domestic/overseas/mock 브로�?
 ??  ?��??� data.py          # YFinanceLoader (?�택??
-??  ?��??� repo.py          # JsonRepository (positions.json, status.json, history.json)
+??  ?��??� repo.py          # JsonRepository (positions.json, status.json, history.json, snapshots.json)
 ??  ?��??� notifier.py      # SlackNotifier
 ?��??� backtest/            # runner, cache (parquet), fetcher (yfinance), components
 ?��??� utils/               # TradeLogger
 scripts/
 ?��??� manual_trade.py      # Actions/CLI?�서 ?�동 매수·매도 주문
 ?��??� reconcile_positions.py  # ?�계�??�고?� positions.json ?�합
+?��??� monthly_settlement.py   # snapshots.json 기반 기간 결산 (기초/기말자산, 순입금, 기간손익, TWR)
 tests/                   # ?�스??(80% 커버리�? ?�구)
 docs/                    # ???�?�보??GitHub Pages) + config-editor + data ?�??
 config_domestic.json     # �?�� 종목 매매 규칙

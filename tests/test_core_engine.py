@@ -1154,6 +1154,7 @@ class TestRunManualTrade:
 
         mock_repo.save_positions.assert_called_once()
         mock_repo.save_trade_history.assert_called_once()
+        mock_repo.save_snapshot.assert_called_once()
         mock_repo.save_status.assert_called_once()
         # 사유 문자열에 "수동 매매(Manual Trade)"가 포함되어야 한다
         history_args = mock_repo.save_trade_history.call_args

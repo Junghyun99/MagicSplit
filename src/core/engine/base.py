@@ -1134,6 +1134,9 @@ class MagicSplitEngine:
             self.repo.save_last_sell_prices(last_sell_prices)
         self.repo.save_trade_history(executions, portfolio, reason, sim_date=sim_date)
 
+        # 일별 자산 스냅샷 저장 (거래 유무와 무관하게 매 실행 기록 — 기간 결산용)
+        self.repo.save_snapshot(portfolio, executions, sim_date=sim_date)
+
         # 판단 내역 저장 (신호가 있을 때만 기록하여 파일 비대화 방지)
         if reason != REASON_NO_SIGNAL:
             full_date = sim_date + " 23:59:59" if sim_date else datetime.now().strftime("%Y-%m-%d %H:%M:%S")
