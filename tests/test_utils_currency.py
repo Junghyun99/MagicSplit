@@ -42,3 +42,10 @@ class TestFormatMoney:
 
     def test_unknown_market_type_treated_as_overseas(self):
         assert format_money(10, "futures") == "USD 10.00"
+
+    def test_currency_override_krw_for_overseas(self):
+        """overseas 값을 KRW로 환산 표기 (소수점 없음)"""
+        assert format_money(1_540_000.0, "overseas", currency="KRW") == "KRW 1,540,000"
+
+    def test_currency_override_preserves_none(self):
+        assert format_money(None, "overseas", currency="KRW") == "-"

@@ -100,6 +100,17 @@ class TestSnapshots:
         assert s["cash_balance"] == 8000.0
         assert s["stock_value"] == 1000.0
 
+    def test_snapshot_records_exchange_rate(self, repo):
+        """해외 포트폴리오의 그날 기준환율이 스냅샷에 저장된다 (원화 결산용)"""
+        pf = Portfolio(1000.0, {"AAPL": 5}, {"AAPL": 200.0}, exchange_rate=1350.5)
+        repo.save_snapshot(pf, [], sim_date="2026-04-01")
+        assert repo.load_snapshots()[0]["exchange_rate"] == 1350.5
+
+    def test_snapshot_exchange_rate_none_when_absent(self, repo):
+        """환율 없는(domestic/조회실패) 포트폴리오는 exchange_rate가 None으로 저장"""
+        repo.save_snapshot(Portfolio(10000.0, {}, {}), [], sim_date="2026-04-01")
+        assert repo.load_snapshots()[0]["exchange_rate"] is None
+
     def test_snapshot_saved_without_executions(self, repo):
         """거래가 없어도 스냅샷은 저장된다 (history와 달리 무조건 기록)"""
         pf = Portfolio(10000.0, {}, {})

@@ -18,7 +18,7 @@
 - 커버리�? ?�함 ?�스?? `pytest --cov=src tests/` (80% ?�상 준???�수)
 - �?1???�행: `python -m src.main` (`config_overseas.json_PATH`�?�?��/?�외 ?�택)
 - ?��????�합: `python scripts/reconcile_positions.py`
-- 기간(월간) 결산: `python -m scripts.monthly_settlement --market domestic --start 2026-04-01 --end 2026-04-28`
+- 기간(월간) 결산: `python -m scripts.monthly_settlement --market domestic --start 2026-04-01 --end 2026-04-28` (해외는 USD/KRW 두 버전 출력)
 
 ## ?�로?�트 구조
 ```

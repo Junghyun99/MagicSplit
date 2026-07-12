@@ -254,6 +254,9 @@ class JsonRepository(IRepository):
             "cash_balance": round(portfolio.total_cash, 2),
             "stock_value": stock_value,
             "net_deposit": net_deposit,
+            # 그날 기준환율(KRW/USD). 해외 결산의 각 시점 원화 환산에 사용.
+            # domestic은 None(원화 자체라 환산 불필요), 조회 실패 시에도 None.
+            "exchange_rate": portfolio.exchange_rate,
         }
 
         # 같은 날짜면 덮어쓰기(하루 1개 대표값), 아니면 append
