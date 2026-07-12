@@ -175,6 +175,15 @@ class TestConvertSnapshotsToKrw:
         assert conv[0]["net_deposit"] == 1_300_000.0
         assert conv[1]["portfolio_value"] == 1_540_000.0  # 1100 * 1400
 
+    def test_all_monetary_fields_converted_and_invariant_holds(self):
+        """cash_balance/stock_value도 같은 환율로 환산 -> value = cash + stock 유지"""
+        snaps = [_snap("2026-04-01", 1000.0, cash=300.0, exchange_rate=1300.0)]
+        conv, _ = convert_snapshots_to_krw(snaps)
+        c = conv[0]
+        assert c["cash_balance"] == 390_000.0   # 300 * 1300
+        assert c["stock_value"] == 910_000.0    # 700 * 1300
+        assert c["portfolio_value"] == c["cash_balance"] + c["stock_value"]
+
     def test_drops_snapshots_without_rate(self):
         """환율이 없거나 0 이하인 스냅샷은 제외하고 개수를 보고한다"""
         snaps = [

@@ -54,9 +54,13 @@ def convert_snapshots_to_krw(snapshots: List[dict]):
             dropped += 1
             continue
         c = dict(s)
-        pv = _finite(s.get("portfolio_value"))
-        c["portfolio_value"] = None if pv is None else round(pv * rate, 2)
-        c["net_deposit"] = round(float(s.get("net_deposit") or 0.0) * rate, 2)
+        # 모든 금액 필드를 같은 환율로 환산 -> portfolio_value = cash + stock 항등식 유지
+        for key in ("portfolio_value", "cash_balance", "stock_value"):
+            if key in s:
+                v = _finite(s.get(key))
+                c[key] = None if v is None else round(v * rate, 2)
+        nd = _finite(s.get("net_deposit"))
+        c["net_deposit"] = 0.0 if nd is None else round(nd * rate, 2)
         converted.append(c)
     return converted, dropped
 

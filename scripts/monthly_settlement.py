@@ -77,7 +77,7 @@ def _realized_pnl_in_range(history: list, start: str, end: str) -> float:
 
 
 def build_report(result, realized_pnl: float, market: str,
-                 display_currency: str = None, dropped_missing_rate: int = 0) -> str:
+                 display_currency: str = None, dropped_missing_count: int = 0) -> str:
     """결산 결과를 사람이 읽는 리포트 문자열로 조립한다.
 
     display_currency를 지정하면(예: 원화 환산 결산의 "KRW") 기초/기말/손익을 그 통화로
@@ -118,9 +118,9 @@ def build_report(result, realized_pnl: float, market: str,
             f"  (자산/손익은 각 시점 기준환율로 {disp} 환산 - 주가손익+환차손익 포함.",
             f"   실현손익 교차검증은 원본 체결 통화 {native} 기준)",
         ]
-        if dropped_missing_rate:
+        if dropped_missing_count:
             lines.append(
-                f"  주의: 기준환율이 없어 {dropped_missing_rate}건의 스냅샷을 환산에서 제외했습니다 "
+                f"  주의: 기준환율이 없어 {dropped_missing_count}건의 스냅샷을 환산에서 제외했습니다 "
                 f"(환율 저장 이전 구간은 소급 불가)."
             )
     return "\n".join(lines)
@@ -156,7 +156,7 @@ def main(argv=None) -> int:
 
     print(build_report(result, realized_pnl, args.market,
                        display_currency=display_currency,
-                       dropped_missing_rate=dropped))
+                       dropped_missing_count=dropped))
     return 0
 
 
