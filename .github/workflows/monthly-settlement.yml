@@ -18,14 +18,6 @@ on:
         description: 'End date (YYYY-MM-DD, e.g. 2026-04-28)'
         required: true
         type: string
-      currency:
-        description: 'Display currency (native=market currency/USD for overseas, krw=KRW-converted at each snapshot rate)'
-        required: false
-        type: choice
-        default: native
-        options:
-          - native
-          - krw
 
 permissions:
   contents: read
@@ -56,13 +48,11 @@ jobs:
         MARKET: ${{ github.event.inputs.market }}
         START: ${{ github.event.inputs.start }}
         END: ${{ github.event.inputs.end }}
-        CURRENCY: ${{ github.event.inputs.currency }}
       run: |
         python -m scripts.monthly_settlement \
           --market "$MARKET" \
           --start "$START" \
-          --end "$END" \
-          --currency "${CURRENCY:-native}" | tee settlement_report.txt
+          --end "$END" | tee settlement_report.txt
 
     - name: Publish report to job summary
       if: always()

@@ -7,13 +7,12 @@ history.json의 실현손익 합계도 교차검증용으로 함께 표시한다
 
 결산 항등식: 기간손익 = 기말자산 - 기초자산 - 순입금액
 
-해외(overseas)는 기본적으로 USD로 표시되며, --currency krw 를 주면 각 스냅샷 시점의
-그날 기준환율로 원화 환산해 표시한다 (증권사 계좌평가와 동일한 방식).
+해외(overseas)는 USD 결산과 함께, 각 스냅샷 시점의 그날 기준환율로 원화 환산한
+결산(증권사 계좌평가와 동일한 방식)을 항상 두 버전으로 나란히 출력한다.
 
 사용법:
     python -m scripts.monthly_settlement --market domestic --start 2026-04-01 --end 2026-04-28
     python -m scripts.monthly_settlement --market overseas --start 2026-04-01 --end 2026-04-30
-    python -m scripts.monthly_settlement --market overseas --start 2026-04-01 --end 2026-04-30 --currency krw
 """
 import argparse
 import os
@@ -53,9 +52,6 @@ def parse_args(argv=None):
                         help="조회 시작일 (YYYY-MM-DD, 예: 2026-04-01)")
     parser.add_argument("--end", required=True, type=_valid_date,
                         help="조회 종료일 (YYYY-MM-DD, 예: 2026-04-28)")
-    parser.add_argument("--currency", default="native", choices=["native", "krw"],
-                        help="표시 통화. native=시장 통화(해외는 USD), "
-                             "krw=각 시점 기준환율로 원화 환산 (해외 전용, 증권사 방식)")
     parser.add_argument("--data-root", default="docs/data",
                         help="데이터 루트 경로 (기본: docs/data)")
     return parser.parse_args(argv)
@@ -136,28 +132,33 @@ def main(argv=None) -> int:
     repo = JsonRepository(os.path.join(args.data_root, args.market))
     snapshots = repo.load_snapshots()
     history = repo._load_json(repo.history_file, default=[])
-
-    display_currency = None
-    dropped = 0
-    want_krw = args.currency == "krw"
-    if want_krw and args.market == "overseas":
-        # 각 시점 기준환율로 원화 환산 (증권사 방식). 환율 부재 스냅샷은 제외.
-        snapshots, dropped = convert_snapshots_to_krw(snapshots)
-        display_currency = "KRW"
-        if not snapshots:
-            print("오류: 환산 가능한(기준환율이 저장된) 스냅샷이 없습니다. "
-                  "원화 결산은 환율을 저장하기 시작한 이후 구간부터 가능합니다.",
-                  file=sys.stderr)
-            return 3
-    # domestic은 이미 원화이므로 --currency krw는 native와 동일 (환산 불필요)
-
-    result = compute_settlement(snapshots, args.start, args.end)
     realized_pnl = _realized_pnl_in_range(history, args.start, args.end)
 
-    print(build_report(result, realized_pnl, args.market,
-                       display_currency=display_currency,
-                       dropped_missing_count=dropped))
+    # 시장 통화(해외=USD, 국내=KRW) 기준 결산
+    native_result = compute_settlement(snapshots, args.start, args.end)
+    reports = [build_report(native_result, realized_pnl, args.market)]
+
+    # 해외는 원화 환산 버전도 항상 함께 출력 (각 시점 기준환율, 증권사 방식)
+    if args.market == "overseas":
+        reports.append(_krw_report(snapshots, args.start, args.end, realized_pnl))
+
+    print("\n\n".join(reports))
     return 0
+
+
+def _krw_report(snapshots: list, start: str, end: str, realized_pnl: float) -> str:
+    """해외 스냅샷을 각 시점 기준환율로 원화 환산한 결산 리포트를 만든다.
+
+    환율이 저장된 스냅샷이 하나도 없으면(환율 기록 이전 구간) 안내 문구를 반환한다.
+    """
+    krw_snaps, dropped = convert_snapshots_to_krw(snapshots)
+    if not krw_snaps:
+        return ("=== 기간 결산 (overseas, KRW 환산) ===\n"
+                "환산 가능한(기준환율이 저장된) 스냅샷이 없습니다. "
+                "원화 결산은 환율을 저장하기 시작한 이후 구간부터 가능합니다.")
+    krw_result = compute_settlement(krw_snaps, start, end)
+    return build_report(krw_result, realized_pnl, "overseas",
+                        display_currency="KRW", dropped_missing_count=dropped)
 
 
 if __name__ == "__main__":
