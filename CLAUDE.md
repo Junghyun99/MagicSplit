@@ -97,6 +97,9 @@ presets.json             # 차수�?배열 공유 ?�리??(?�택)
 - `PRESETS_JSON_PATH` - ?�리???�일 경로 (?�택, 기본?� config ?�일�?같�? ?�렉?�리??`presets.json`)
 - `PYTHONUTF8` - Windows ?�경?�서 ?��? 로그 ?�코???�류 방�???(?�수: `1` ?�정)
 - `KIS_HTTP_TIMEOUT` - KIS REST 호출 타임아웃 초 (기본값: `10`)
+- `KIS_MIN_REQUEST_INTERVAL` - 모든 KIS REST 호출 사이 최소 간격 초 (기본값: `0.06`, 실전 유량제한 ~20건/초 방어. `0`이면 비활성)
+- `KIS_RATE_LIMIT_RETRIES` - 초당 거래건수 초과(EGW00201)/429 응답 시 재시도 횟수 (기본값: `3`)
+- `KIS_RATE_LIMIT_BACKOFF` - 재시도 지수 백오프 기준 초 (기본값: `0.5`)
 
 ## 로컬 ?�경 ?�정
 1. `.env.example` ?�일??`.env`�?복사
