@@ -98,11 +98,12 @@ def _twr_pct(seq: List[dict]) -> Optional[float]:
     twr = 1.0
     for i in range(1, len(seq)):
         start_val = float(seq[i - 1]["portfolio_value"])
-        if start_val == 0:
+        if start_val <= 0:
             continue
         cf = float(seq[i].get("net_deposit") or 0.0)
         denom = start_val + cf
-        if denom == 0:
+        if denom <= 0:
+            # 대규모 출금 등으로 분모가 0 이하가 되면 수익률이 왜곡되므로 스킵
             continue
         period_return = float(seq[i]["portfolio_value"]) / denom - 1
         twr *= (1 + period_return)

@@ -233,7 +233,16 @@ class JsonRepository(IRepository):
         trade_cash_impact = self._trade_cash_impact(executions)
         prev = data[-1] if data else None
         prev_cash = prev.get("cash_balance") if prev else None
-        if prev_cash is not None:
+        same_day = prev is not None and prev.get("date") == date_key
+
+        if same_day:
+            # 같은 날짜 재실행(수동매매/재실행 등): 직전(같은 날) 스냅샷의 net_deposit에
+            # 이번 실행의 순입금 변동분만 누적 합산한다. prev_cash가 직전 실행 후
+            # 현금이므로, 앞선 실행들의 체결 현금영향이 누락되지 않아 순입금이
+            # 왜곡되지 않는다.
+            run_net_deposit = portfolio.total_cash - (prev_cash or 0.0) - trade_cash_impact
+            net_deposit = round(float(prev.get("net_deposit") or 0.0) + run_net_deposit, 2)
+        elif prev_cash is not None:
             net_deposit = round(portfolio.total_cash - prev_cash - trade_cash_impact, 2)
         else:
             net_deposit = round(portfolio.total_cash - trade_cash_impact, 2)
@@ -247,19 +256,8 @@ class JsonRepository(IRepository):
             "net_deposit": net_deposit,
         }
 
-        # 같은 날짜가 직전 레코드면 덮어쓰기(하루 1개 대표값). 단, 덮어쓸 때는
-        # net_deposit이 이중 계산되지 않도록 그 이전 레코드 현금 기준으로 재산출.
-        if prev is not None and prev.get("date") == date_key:
-            base = data[-2] if len(data) >= 2 else None
-            base_cash = base.get("cash_balance") if base else None
-            if base_cash is not None:
-                record["net_deposit"] = round(
-                    portfolio.total_cash - base_cash - trade_cash_impact, 2
-                )
-            else:
-                record["net_deposit"] = round(
-                    portfolio.total_cash - trade_cash_impact, 2
-                )
+        # 같은 날짜면 덮어쓰기(하루 1개 대표값), 아니면 append
+        if same_day:
             data[-1] = record
         else:
             data.append(record)

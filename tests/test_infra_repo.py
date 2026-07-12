@@ -136,6 +136,33 @@ class TestSnapshots:
         snaps = repo.load_snapshots()
         assert len(snaps) == 1
         assert snaps[0]["portfolio_value"] == 12000.0
+        # 첫 실행 10000 + 둘째 실행 추가 입금 2000 = 당일 순입금 12000
+        assert snaps[0]["net_deposit"] == 12000.0
+
+    def test_snapshot_same_date_accumulates_trade_impact(self, repo):
+        """같은 날짜 재실행이 각각 체결을 동반해도 순입금이 왜곡되지 않는다.
+
+        두 실행 모두 매수(현금 유출)만 있고 실제 입출금은 0이면 당일 순입금도 0.
+        덮어쓰기 시 앞선 실행의 매수 현금영향이 누락되면 안 된다.
+        """
+        # 전일: 현금 10000
+        repo.save_snapshot(Portfolio(10000.0, {}, {}), [], sim_date="2026-04-01")
+        # 당일 1차: 5주 @150 매수 -> 현금 9250
+        exe1 = [TradeExecution("AAPL", OrderAction.BUY, 5, 150.0, 0.0,
+                               "2026-04-02", ExecutionStatus.FILLED)]
+        repo.save_snapshot(Portfolio(9250.0, {"AAPL": 5}, {"AAPL": 150.0}),
+                           exe1, sim_date="2026-04-02")
+        # 당일 2차: 3주 @100 매수 -> 현금 8950
+        exe2 = [TradeExecution("MSFT", OrderAction.BUY, 3, 100.0, 0.0,
+                               "2026-04-02", ExecutionStatus.FILLED)]
+        repo.save_snapshot(Portfolio(8950.0, {"AAPL": 5, "MSFT": 3},
+                                     {"AAPL": 150.0, "MSFT": 100.0}),
+                           exe2, sim_date="2026-04-02")
+        snaps = repo.load_snapshots()
+        assert len(snaps) == 2
+        # 순수 입출금 0 (매수만 발생) -> net_deposit 0, 앞선 매수 누락 시 -750이 됨
+        assert snaps[1]["net_deposit"] == 0.0
+        assert snaps[1]["cash_balance"] == 8950.0
 
     def test_snapshot_datetime_normalized_to_date(self, repo):
         """sim_date=None (라이브) 시 날짜만(YYYY-MM-DD) 저장된다"""
