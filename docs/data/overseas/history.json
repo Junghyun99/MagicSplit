@@ -1278,5 +1278,43 @@
                 "alias": "코닝"
             }
         ]
+    },
+    {
+        "id": "tx_20260714_020153",
+        "date": "2026-07-14 02:01:53",
+        "portfolio_value": 18822.415200000003,
+        "cash_balance": 5434.08,
+        "net_deposit": 3.42,
+        "total_trade_amount": 916.4300000000001,
+        "reason": "델 테크놀로지스(DELL):SELL(trailing 벌크 매도 Lv2~Lv2 (1주 +4.7%)), ISHARES GLOBAL CLEAN ENERGY(ICLN):BUY(추가 매수 Lv4 (Lv3 대비 -5.1%)), 루멘텀 홀딩스(LITE):SKIP(buy_amount(USD 500.00) < 현재가(USD 776.47) -> 1주도 매수 불가. buy_amount 상향 조정 필요)",
+        "executions": [
+            {
+                "ticker": "DELL",
+                "action": "SELL",
+                "quantity": 1,
+                "price": 428.93,
+                "fee": 0.0,
+                "date": "2026-07-14 02:01:35",
+                "status": "FILLED",
+                "reason": "ODNO=0030285279",
+                "lot_id": "lot_20260622_212221_DELL_002",
+                "level": 2,
+                "buy_price": 409.9,
+                "realized_pnl": 19.03,
+                "alias": "델 테크놀로지스"
+            },
+            {
+                "ticker": "ICLN",
+                "action": "BUY",
+                "quantity": 26,
+                "price": 18.75,
+                "fee": 0.0,
+                "date": "2026-07-14 02:01:47",
+                "status": "FILLED",
+                "reason": "ODNO=0030285336",
+                "level": 4,
+                "alias": "ISHARES GLOBAL CLEAN ENERGY"
+            }
+        ]
     }
 ]
