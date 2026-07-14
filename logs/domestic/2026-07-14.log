@@ -80,3 +80,21 @@
 2026-07-14 12:01:36,734 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
 2026-07-14 12:01:36,734 [INFO] [ACE 엔비디아밸류체인액티브(483320)] 현금 부족: 보유 현금 KRW 65,901 < 매수 예정 금액 KRW 490,770 (19주) -> 매수 보류
 2026-07-14 12:01:37,150 [INFO] >>> Step 6: Persist
+2026-07-14 12:31:32,530 [INFO] === Manual Trade CLI: 218420 SELL ===
+2026-07-14 12:31:32,531 [INFO] [KisBroker] 캐시에서 토큰 로드 (API 호출 생략)
+2026-07-14 12:31:32,531 [INFO] [KisDomesticLiveBroker] Mode: LIVE TRADING
+2026-07-14 12:31:32,531 [INFO] === Manual Trade: KODEX 미국S&P500에너지(합성)(218420) SELL ===
+2026-07-14 12:31:32,531 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-07-14 12:31:33,599 [INFO] Fetching real-time prices from Broker...
+2026-07-14 12:31:37,464 [INFO] Portfolio: Cash=KRW 65,901, Value=KRW 27,500,291
+2026-07-14 12:31:37,464 [INFO] >>> Step 2: Load Positions
+2026-07-14 12:31:37,464 [INFO] Loaded 33 position lot(s)
+2026-07-14 12:31:37,465 [INFO] 매도 수량 자동 도출: Lv1 lot 1주 전량
+2026-07-14 12:31:37,465 [INFO] [KODEX 미국S&P500에너지(합성)(218420)] 수동 신호 생성: SELL Lv1 1주 @KRW 19,800
+2026-07-14 12:31:37,465 [INFO] Executing 1 order(s)...
+2026-07-14 12:31:37,465 [INFO] [KisBroker] Processing 1 SELL orders...
+2026-07-14 12:31:38,475 [INFO] [KisDomestic] Order Sent: SELL KODEX 미국S&P500에너지(합성)(218420) 1 @ 19785 (ODNO=0020572800)
+2026-07-14 12:31:38,835 [INFO] [KisDomestic] Order FILLED: KODEX 미국S&P500에너지(합성)(218420) ODNO=0020572800 price=19785.0 qty=1 fee=2.9677499999999997
+2026-07-14 12:31:39,036 [INFO] [Position] Remove lot: lot_20260519_143338_218420_001 Lv1 (1주 전량 매도)
+2026-07-14 12:31:42,617 [INFO] >>> Step 6: Persist
+2026-07-14 12:31:43,028 [INFO] === Manual Trade 완료 ===

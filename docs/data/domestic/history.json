@@ -2435,5 +2435,31 @@
                 "alias": "SOL 반도체전공정"
             }
         ]
+    },
+    {
+        "id": "tx_20260714_123142",
+        "date": "2026-07-14 12:31:42",
+        "portfolio_value": 27509031.0,
+        "cash_balance": 85686.0,
+        "net_deposit": 2.97,
+        "total_trade_amount": 19785.0,
+        "reason": "KODEX 미국S&P500에너지(합성)(218420):SELL(수동 매매(Manual Trade))",
+        "executions": [
+            {
+                "ticker": "218420",
+                "action": "SELL",
+                "quantity": 1,
+                "price": 19785.0,
+                "fee": 2.9677499999999997,
+                "date": "2026-07-14 12:31:38",
+                "status": "FILLED",
+                "reason": "ODNO=0020572800",
+                "lot_id": "lot_20260519_143338_218420_001",
+                "level": 1,
+                "buy_price": 21155.0,
+                "realized_pnl": -1372.97,
+                "alias": "KODEX 미국S&P500에너지(합성)"
+            }
+        ]
     }
 ]
