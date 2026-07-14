@@ -8,6 +8,9 @@
     let currentStatus = null;
     let tickers = []; // Merged data
     let tickerMap = {};
+    // 전송 대기 트레이: [{ ticker, alias, action, amount|null, marketType }]
+    // 종목당 1개 엔트리만 유지(재선택 시 교체)해 같은 종목의 상충 주문을 방지한다.
+    let tray = [];
 
     // UI Elements
     const githubToken = document.getElementById('github-token');
@@ -16,6 +19,11 @@
 
     const tickerTbody = document.getElementById('ticker-tbody');
 
+    const trayList = document.getElementById('tray-list');
+    const trayCount = document.getElementById('tray-count');
+    const sendBatchBtn = document.getElementById('send-batch-btn');
+    const clearTrayBtn = document.getElementById('clear-tray-btn');
+
     const orderModal = document.getElementById('order-modal');
     const modalTitle = document.getElementById('modal-title');
     const orderSummary = document.getElementById('order-summary');
@@ -23,8 +31,6 @@
     const confirmTradeBtn = document.getElementById('confirm-trade-btn');
     const cancelTradeBtn = document.getElementById('cancel-trade-btn');
     const statusFeedback = document.getElementById('status-feedback');
-
-    let activeOrderParams = null; // { ticker, alias, action, marketType, configAmount, totalQty }
 
     /** market_type에 맞춰 통화 단위와 함께 금액을 포매팅한다. */
     function formatAmount(value, marketType) {
@@ -37,10 +43,15 @@
         }).format(Number(value));
     }
 
+    function actionLabel(action) {
+        return action === 'buy' ? '매수' : action === 'sell_all' ? '일괄매도' : '매도';
+    }
+
     // Init
     async function init() {
         loadSettings();
         setupEventListeners();
+        renderTray();
 
         // Load ticker mapping
         try {
@@ -62,7 +73,7 @@
         githubToken.value = localStorage.getItem('githubToken') || '';
         githubOwner.value = localStorage.getItem('githubOwner') || 'Junghyun99';
         githubRepo.value = localStorage.getItem('githubRepo') || 'MagicSplit';
-        
+
         const configPathInput = document.getElementById('config-path');
         const savedPath = localStorage.getItem('githubConfigPath') || 'config_overseas.json';
         configPathInput.value = savedPath;
@@ -95,7 +106,7 @@
             const path = configPathInput.value;
 
             if (!token || !owner || !repo || !path) { alert('모든 설정을 입력해 주세요.'); return; }
-            
+
             localStorage.setItem('githubToken', token);
             localStorage.setItem('githubOwner', owner);
             localStorage.setItem('githubRepo', repo);
@@ -103,12 +114,18 @@
 
             githubApi = new GitHubAPI(token, owner, repo);
             updateMarketByPath(path);
+            // 마켓이 바뀌면 담아둔 트레이는 초기화 (배치는 단일 마켓 전제)
+            tray = [];
+            renderTray();
             await refreshData();
         };
 
+        clearTrayBtn.onclick = () => { tray = []; renderTray(); };
+        sendBatchBtn.onclick = openBatchConfirm;
+
         cancelTradeBtn.onclick = () => orderModal.style.display = 'none';
-        confirmTradeBtn.onclick = executeTrade;
-        
+        confirmTradeBtn.onclick = executeBatch;
+
         // Close modal when clicking overlay
         orderModal.onclick = (e) => {
             if (e.target === orderModal) orderModal.style.display = 'none';
@@ -117,7 +134,7 @@
 
     async function refreshData() {
         tickerTbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding: 40px;">데이터를 불러오는 중...</td></tr>';
-        
+
         try {
             if (!githubApi) {
                 tickerTbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding: 40px; color: var(--danger);">GitHub 설정을 먼저 완료해 주세요.</td></tr>';
@@ -148,11 +165,11 @@
     function mergeData() {
         if (!currentConfig) return;
         const stocks = currentConfig.stocks || currentConfig.rules || [];
-        
+
         const statusMap = {};
         if (currentStatus && currentStatus.positions) {
             const posData = currentStatus.positions;
-            
+
             // If positions is an object (ticker -> summary), as produced by recent status_builder.py
             if (!Array.isArray(posData)) {
                 Object.entries(posData).forEach(([ticker, info]) => {
@@ -212,7 +229,7 @@
 
         tickers.forEach(t => {
             const tr = document.createElement('tr');
-            
+
             // Info Column
             const infoTd = document.createElement('td');
             infoTd.innerHTML = `
@@ -235,33 +252,34 @@
                 <span style="font-size:0.9rem; margin-left:5px;">${t.currentQty}주</span>
             `;
 
-            // Actions Column
+            // Actions Column - 클릭 시 즉시 실행이 아니라 트레이에 담는다.
             const actionsTd = document.createElement('td');
             actionsTd.className = 'trade-actions';
-            
+            const queuedAction = (tray.find(e => e.ticker === t.ticker) || {}).action;
+
             const buyBtn = document.createElement('button');
-            buyBtn.className = 'btn btn-sm btn-buy';
+            buyBtn.className = 'btn btn-sm btn-buy' + (queuedAction === 'buy' ? ' selected' : '');
             buyBtn.textContent = '매수';
-            buyBtn.onclick = () => openOrderModal(t, 'buy');
+            buyBtn.onclick = () => addToTray(t, 'buy');
 
             const sellBtn = document.createElement('button');
-            sellBtn.className = 'btn btn-sm btn-sell';
+            sellBtn.className = 'btn btn-sm btn-sell' + (queuedAction === 'sell' ? ' selected' : '');
             sellBtn.textContent = '매도';
             if (t.currentQty <= 0) {
                 sellBtn.style.opacity = '0.5';
                 sellBtn.style.cursor = 'not-allowed';
             } else {
-                sellBtn.onclick = () => openOrderModal(t, 'sell');
+                sellBtn.onclick = () => addToTray(t, 'sell');
             }
 
             const sellAllBtn = document.createElement('button');
-            sellAllBtn.className = 'btn btn-sm btn-sell-all';
+            sellAllBtn.className = 'btn btn-sm btn-sell-all' + (queuedAction === 'sell_all' ? ' selected' : '');
             sellAllBtn.textContent = '일괄매도';
             if (t.currentQty <= 0) {
                 sellAllBtn.style.opacity = '0.5';
                 sellAllBtn.style.cursor = 'not-allowed';
             } else {
-                sellAllBtn.onclick = () => openOrderModal(t, 'sell_all');
+                sellAllBtn.onclick = () => addToTray(t, 'sell_all');
             }
 
             actionsTd.appendChild(buyBtn);
@@ -276,118 +294,133 @@
         });
     }
 
-    function openOrderModal(tickerObj, action) {
-        const displayName = tickerObj.alias !== tickerObj.ticker
-            ? `${tickerObj.alias} (${tickerObj.ticker})`
-            : tickerObj.ticker;
+    /** 매수 기본 금액: 다음 차수의 buy_amounts[nextLv-1], 없으면 buy_amount. */
+    function defaultBuyAmount(t) {
+        const nextLv = (t.currentLevel || 0) + 1;
+        const lvAmount = t.config && t.config.buy_amounts && t.config.buy_amounts[nextLv - 1];
+        return lvAmount || (t.config && t.config.buy_amount) || 0;
+    }
 
-        const actionLabel = action === 'buy' ? '매수' : action === 'sell_all' ? '일괄매도' : '매도';
-        modalTitle.textContent = `${displayName} ${actionLabel}`;
+    /** 종목/액션을 트레이에 담는다(종목당 1건, 재선택 시 교체). */
+    function addToTray(t, action) {
+        const entry = {
+            ticker: t.ticker,
+            alias: t.alias,
+            action: action,
+            amount: action === 'buy' ? defaultBuyAmount(t) : null,
+            marketType: currentMarket,
+        };
+        const idx = tray.findIndex(e => e.ticker === t.ticker);
+        if (idx >= 0) tray[idx] = entry; else tray.push(entry);
+        renderTray();
+        renderTable(); // 버튼 선택 표시 갱신
+    }
+
+    function removeFromTray(ticker) {
+        tray = tray.filter(e => e.ticker !== ticker);
+        renderTray();
+        renderTable();
+    }
+
+    function renderTray() {
+        // 표시 순서: 매도 -> 매수 (실제 실행 순서와 동일)
+        const ordered = tray.slice().sort((a, b) => (a.action === 'buy' ? 1 : 0) - (b.action === 'buy' ? 1 : 0));
+
+        if (ordered.length === 0) {
+            trayList.innerHTML = '<span class="tray-empty">전송할 종목이 없습니다. 위 표에서 매수/매도/일괄매도를 눌러 담으세요.</span>';
+            trayCount.textContent = '0건 선택됨';
+            sendBatchBtn.disabled = true;
+            sendBatchBtn.textContent = '일괄 전송';
+            return;
+        }
+
+        trayList.innerHTML = '';
+        ordered.forEach(e => {
+            const chip = document.createElement('div');
+            chip.className = 'tray-chip';
+
+            const name = document.createElement('span');
+            name.innerHTML = `<span class="chip-action ${e.action}">${actionLabel(e.action)}</span> ${e.alias}`;
+            chip.appendChild(name);
+
+            if (e.action === 'buy') {
+                const amt = document.createElement('input');
+                amt.type = 'number';
+                amt.min = '1';
+                amt.step = '1';
+                amt.className = 'chip-amount';
+                amt.value = e.amount || 0;
+                amt.title = `매수 금액 (${e.marketType === 'domestic' ? '원' : 'USD'})`;
+                amt.oninput = () => {
+                    const v = parseFloat(amt.value);
+                    e.amount = (!isNaN(v) && v > 0) ? v : 0;
+                };
+                chip.appendChild(amt);
+            }
+
+            const rm = document.createElement('button');
+            rm.className = 'chip-remove';
+            rm.textContent = 'x';
+            rm.title = '제거';
+            rm.onclick = () => removeFromTray(e.ticker);
+            chip.appendChild(rm);
+
+            trayList.appendChild(chip);
+        });
+
+        trayCount.textContent = `${ordered.length}건 선택됨`;
+        sendBatchBtn.disabled = false;
+        sendBatchBtn.textContent = `${ordered.length}건 일괄 전송`;
+    }
+
+    /** 전송 전 확인 모달에 전체 목록을 표시한다. */
+    function openBatchConfirm() {
+        if (!githubApi) { alert('GitHub 설정을 먼저 완료해 주세요.'); return; }
+        if (tray.length === 0) return;
+
+        const ordered = tray.slice().sort((a, b) => (a.action === 'buy' ? 1 : 0) - (b.action === 'buy' ? 1 : 0));
+        modalTitle.textContent = `${ordered.length}건 일괄 수동매매`;
+
+        const rows = ordered.map(e => {
+            let line = `<b>${e.alias}</b> (${e.ticker}) — ${actionLabel(e.action)}`;
+            if (e.action === 'buy' && e.amount > 0) {
+                line += ` · ${formatAmount(e.amount, e.marketType)}`;
+            }
+            return `<div style="padding:4px 0; border-bottom:1px solid var(--border);">${line}</div>`;
+        }).join('');
+
+        orderSummary.innerHTML = rows;
+        inputHint.textContent = '매도(일괄매도 포함)를 먼저 실행한 뒤 매수를 진행합니다. 수량은 엔진이 자동 계산합니다.';
         statusFeedback.style.display = 'none';
         confirmTradeBtn.disabled = false;
         confirmTradeBtn.textContent = '실행';
-
-        // Remove previous amount input if any
-        const prevInput = document.getElementById('override-amount-group');
-        if (prevInput) prevInput.remove();
-
-        let configAmount = 0;
-        if (action === 'buy') {
-            const nextLv = tickerObj.currentLevel + 1;
-            const lvAmount = tickerObj.config.buy_amounts && tickerObj.config.buy_amounts[nextLv - 1];
-            configAmount = lvAmount || tickerObj.config.buy_amount || 0;
-
-            orderSummary.innerHTML =
-                `현재 <b>Lv${tickerObj.currentLevel}</b> -> <b>Lv${nextLv}</b> 매수`;
-            inputHint.textContent = '실제 주문 수량은 엔진이 [입력 금액 / 현재가]로 자동 계산합니다.';
-
-            // Inject amount input field
-            const amountGroup = document.createElement('div');
-            amountGroup.id = 'override-amount-group';
-            amountGroup.className = 'form-group';
-            amountGroup.style.marginTop = '14px';
-            amountGroup.innerHTML = `
-                <label style="font-size:0.875rem; font-weight:600; display:block; margin-bottom:4px;">
-                    매수 금액 (${currentMarket === 'domestic' ? '원' : 'USD'})
-                </label>
-                <input type="number" id="override-amount-input" class="form-control"
-                    value="${configAmount}" min="1" step="1"
-                    style="width:100%; box-sizing:border-box;">
-                <small style="color:var(--text-muted); font-size:0.8rem; display:block; margin-top:4px;">
-                    설정값: ${formatAmount(configAmount, currentMarket)} — 변경하면 해당 금액으로 주문합니다.
-                </small>`;
-            inputHint.parentNode.insertBefore(amountGroup, inputHint);
-        } else if (action === 'sell_all') {
-            const totalQty = tickerObj.currentQty || 0;
-            const lotsCount = tickerObj.lotsCount || 0;
-            orderSummary.innerHTML =
-                `보유 <b>${lotsCount}개 lot</b> (<b>총 ${totalQty}주</b>) 전량 일괄매도`;
-            inputHint.textContent =
-                '고차수부터 순차로 모든 lot을 한 번의 주문으로 청산합니다. 히스토리에 lot별 손익이 기록됩니다.';
-        } else {
-            const sellQty = tickerObj.highestLvQty || 0;
-            orderSummary.innerHTML =
-                `<b>Lv${tickerObj.currentLevel}</b> 차수 lot <b>${sellQty}주</b> 전량 매도`;
-            inputHint.textContent =
-                '매도 수량은 엔진이 최고 차수 lot 전량으로 자동 결정합니다 (자동매매와 동일).';
-        }
-
-        activeOrderParams = {
-            ticker: tickerObj.ticker,
-            alias: tickerObj.alias,
-            action: action,
-            marketType: currentMarket,
-            configAmount: configAmount,
-            totalQty: tickerObj.currentQty,
-        };
-
         orderModal.style.display = 'flex';
     }
 
-    async function executeTrade() {
-        if (!activeOrderParams || !githubApi) return;
+    async function executeBatch() {
+        if (!githubApi || tray.length === 0) return;
 
-        const isBuy = activeOrderParams.action === 'buy';
-        const isSellAll = activeOrderParams.action === 'sell_all';
-        const actionLabel = isBuy ? '매수' : isSellAll ? '일괄매도' : '매도';
-
-        const inputs = {
-            market_type: activeOrderParams.marketType,
-            ticker: activeOrderParams.ticker,
-            action: activeOrderParams.action,
-        };
-
-        if (isBuy) {
-            const amountInput = document.getElementById('override-amount-input');
-            const enteredAmount = amountInput ? parseFloat(amountInput.value) : NaN;
-            if (!isNaN(enteredAmount) && enteredAmount > 0
-                    && enteredAmount !== activeOrderParams.configAmount) {
-                inputs.amount = String(enteredAmount);
-            }
-        }
-
-        let confirmMsg = `${activeOrderParams.alias} 종목을 ${actionLabel} 하시겠습니까?`;
-        if (isBuy && inputs.amount) {
-            confirmMsg += `\n매수 금액: ${formatAmount(parseFloat(inputs.amount), activeOrderParams.marketType)}`;
-        }
-        if (isSellAll) {
-            confirmMsg += `\n총 ${activeOrderParams.totalQty}주 전량 청산`;
-        }
-        if (isBuy) {
-            confirmMsg += '\n(수량은 [금액 / 현재가]로 엔진이 자동 계산합니다)';
-        }
-        if (!confirm(confirmMsg)) {
-            return;
-        }
+        const market = tray[0].marketType;
+        const trades = tray.map(e => {
+            const o = { ticker: e.ticker, action: e.action };
+            if (e.action === 'buy' && e.amount > 0) o.amount = e.amount;
+            return o;
+        });
 
         try {
             setLoading(true);
             showFeedback('GitHub Action 트리거 중...', 'info');
 
-            await githubApi.triggerWorkflow('manual-trade.yml', inputs);
+            await githubApi.triggerWorkflow('manual-trade.yml', {
+                market_type: market,
+                trades: JSON.stringify(trades),
+            });
 
-            showFeedback('매매 요청 성공! 1~2분 후 대시보드 데이터 업데이트가 완료되면 반영됩니다.', 'success');
-            
+            showFeedback(`${trades.length}건 일괄 매매 요청 성공! 1~2분 후 대시보드 데이터 업데이트가 완료되면 반영됩니다.`, 'success');
+            tray = [];
+            renderTray();
+            renderTable();
+
             setTimeout(async () => {
                 try {
                     const run = await githubApi.getLatestWorkflowRun('manual-trade.yml');
@@ -406,7 +439,7 @@
                         link.style.fontWeight = 'bold';
                         statusFeedback.appendChild(link);
                     }
-                } catch(e) {}
+                } catch (e) {}
             }, 3000);
 
         } catch (e) {

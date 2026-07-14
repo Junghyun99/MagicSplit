@@ -177,6 +177,86 @@
             vertical-align: middle;
         }
         @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Batch tray (여러 종목 일괄 전송) */
+        .btn-sm.selected {
+            outline: 2px solid var(--primary);
+            outline-offset: 1px;
+        }
+
+        .tray-bar {
+            position: sticky;
+            bottom: 0;
+            z-index: 500;
+            background: var(--bg-card);
+            border-top: 1px solid var(--border);
+            box-shadow: 0 -4px 12px rgba(0,0,0,0.06);
+            padding: 12px 16px;
+            margin-top: 24px;
+        }
+
+        .tray-inner {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .tray-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .tray-empty {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            padding: 6px 0;
+        }
+
+        .tray-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--bg-body, #f8fafc);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 6px 10px;
+            font-size: 0.85rem;
+        }
+
+        .tray-chip .chip-action { font-weight: 700; }
+        .tray-chip .chip-action.buy { color: var(--success); }
+        .tray-chip .chip-action.sell { color: var(--danger); }
+        .tray-chip .chip-action.sell_all { color: #7c3aed; }
+
+        .tray-chip input.chip-amount {
+            width: 90px;
+            padding: 3px 6px;
+            font-size: 0.8rem;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+        }
+
+        .tray-chip .chip-remove {
+            cursor: pointer;
+            border: none;
+            background: transparent;
+            color: var(--text-muted);
+            font-size: 1rem;
+            line-height: 1;
+            padding: 0 2px;
+        }
+
+        .tray-footer {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .tray-footer #tray-count {
+            font-weight: 600;
+            margin-right: auto;
+        }
     </style>
 </head>
 
@@ -240,6 +320,20 @@
         </div>
     </div>
 
+    <!-- Batch tray: 여러 종목을 담아 한 번에 전송 -->
+    <div class="tray-bar" id="tray-bar">
+        <div class="tray-inner">
+            <div id="tray-list" class="tray-list">
+                <span class="tray-empty">전송할 종목이 없습니다. 위 표에서 매수/매도/일괄매도를 눌러 담으세요.</span>
+            </div>
+            <div class="tray-footer">
+                <span id="tray-count">0건 선택됨</span>
+                <button id="clear-tray-btn" class="btn btn-sm" style="border:1px solid var(--border);">비우기</button>
+                <button id="send-batch-btn" class="btn btn-primary" disabled>일괄 전송</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Order Modal -->
     <div class="modal-overlay" id="order-modal">
         <div class="modal-content">
@@ -260,7 +354,7 @@
 
     <script src="js/services/data-repository.js?v=20260512-2"></script>
     <script src="js/services/github-api.js?v=20260512-2"></script>
-    <script src="js/manual-trade.js?v=20260619-1"></script>
+    <script src="js/manual-trade.js?v=20260714-1"></script>
 </body>
 
 </html>

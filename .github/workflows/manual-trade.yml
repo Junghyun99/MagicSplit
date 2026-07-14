@@ -11,12 +11,13 @@ on:
           - domestic
           - overseas
       ticker:
-        description: 'Ticker Symbol (e.g. 005930 or TSLA)'
-        required: true
+        description: 'Ticker Symbol (e.g. 005930 or TSLA). Ignored when "trades" is set.'
+        required: false
         type: string
+        default: ''
       action:
-        description: 'Order Action (qty is auto-derived: BUY=rule.buy_amount, SELL=highest-level lot, SELL_ALL=all lots at once)'
-        required: true
+        description: 'Order Action (qty is auto-derived: BUY=rule.buy_amount, SELL=highest-level lot, SELL_ALL=all lots at once). Ignored when "trades" is set.'
+        required: false
         type: choice
         options:
           - buy
@@ -24,6 +25,11 @@ on:
           - sell_all
       amount:
         description: 'Buy amount override (KRW or USD). Leave empty to use config buy_amount.'
+        required: false
+        type: string
+        default: ''
+      trades:
+        description: 'Batch trades JSON array, e.g. [{"ticker":"005930","action":"sell"},{"ticker":"000660","action":"buy","amount":500000}]. When set, ticker/action/amount above are ignored.'
         required: false
         type: string
         default: ''
@@ -93,8 +99,12 @@ jobs:
         TICKER: ${{ github.event.inputs.ticker }}
         ORDER_ACTION: ${{ github.event.inputs.action }}
         AMOUNT: ${{ github.event.inputs.amount }}
+        TRADES: ${{ github.event.inputs.trades }}
       run: |
-        if [ -n "$AMOUNT" ]; then
+        if [ -n "$TRADES" ]; then
+          # 다종목 배치: KIS 세션 1개로 순회 체결 (매도 우선, 부분 성공 허용)
+          python scripts/manual_trade.py --trades-json "$TRADES"
+        elif [ -n "$AMOUNT" ]; then
           python scripts/manual_trade.py \
             --ticker "$TICKER" \
             --action "$ORDER_ACTION" \
@@ -145,7 +155,7 @@ jobs:
     - name: Push updated data and logs
       uses: stefanzweifel/git-auto-commit-action@b863ae1933cb653a53c021fe36dbb774e1fb9403 # v5.2.0
       with:
-        commit_message: "Manual trade update: ${{ github.event.inputs.ticker }} ${{ github.event.inputs.action }} [skip ci]"
+        commit_message: "Manual trade update: ${{ github.event.inputs.trades && 'batch' || format('{0} {1}', github.event.inputs.ticker, github.event.inputs.action) }} [skip ci]"
         file_pattern: "docs/data/${{ github.event.inputs.market_type }}/*.json logs/${{ github.event.inputs.market_type }}/*.log"
         commit_user_name: "github-actions[bot]"
         commit_user_email: "github-actions[bot]@users.noreply.github.com"
