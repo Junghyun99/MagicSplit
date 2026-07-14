@@ -2528,5 +2528,117 @@
                 "alias": "SOL 미국양자컴퓨팅TOP10"
             }
         ]
+    },
+    {
+        "id": "tx_20260714_123404",
+        "date": "2026-07-14 12:34:04",
+        "total_trade_amount": 1055236.0,
+        "reason": "KODEX 미국S&P500금융(453650):SELL(MTS 매매(MTS Trade))",
+        "executions": [
+            {
+                "ticker": "453650",
+                "action": "SELL",
+                "quantity": 52,
+                "price": 20293.0,
+                "fee": 158.28539999999998,
+                "date": "2026-07-14 12:34:00",
+                "status": "FILLED",
+                "reason": "MTS 체결",
+                "lot_id": "lot_20260519_143344_453650_001",
+                "level": 1,
+                "buy_price": 18975.0,
+                "realized_pnl": 68377.71,
+                "alias": "KODEX 미국S&P500금융"
+            }
+        ]
+    },
+    {
+        "id": "tx_20260714_123504",
+        "date": "2026-07-14 12:35:04",
+        "total_trade_amount": 852600.0,
+        "reason": "원익IPS(240810):SELL(MTS 매매(MTS Trade))",
+        "executions": [
+            {
+                "ticker": "240810",
+                "action": "SELL",
+                "quantity": 7,
+                "price": 121800.0,
+                "fee": 127.89,
+                "date": "2026-07-14 12:35:00",
+                "status": "FILLED",
+                "reason": "MTS 체결",
+                "lot_id": "lot_20260702_100229_240810_001",
+                "level": 1,
+                "buy_price": 137300.0,
+                "realized_pnl": -108627.89,
+                "alias": "원익IPS"
+            }
+        ]
+    },
+    {
+        "id": "tx_20260714_123604",
+        "date": "2026-07-14 12:36:04",
+        "total_trade_amount": 964768.0,
+        "reason": "KODEX 미국S&P500필수소비재(453630):SELL(MTS 매매(MTS Trade))",
+        "executions": [
+            {
+                "ticker": "453630",
+                "action": "SELL",
+                "quantity": 73,
+                "price": 13216.0,
+                "fee": 144.71519999999998,
+                "date": "2026-07-14 12:36:00",
+                "status": "FILLED",
+                "reason": "MTS 체결",
+                "lot_id": "lot_20260519_143350_453630_001",
+                "level": 1,
+                "buy_price": 13600.0,
+                "realized_pnl": -28176.72,
+                "alias": "KODEX 미국S&P500필수소비재"
+            }
+        ]
+    },
+    {
+        "id": "tx_20260714_123704",
+        "date": "2026-07-14 12:37:04",
+        "total_trade_amount": 705000.0,
+        "reason": "리노공업(058470):SELL(MTS 매매(MTS Trade))",
+        "executions": [
+            {
+                "ticker": "058470",
+                "action": "SELL",
+                "quantity": 10,
+                "price": 70500.0,
+                "fee": 105.75,
+                "date": "2026-07-14 12:37:00",
+                "status": "FILLED",
+                "reason": "MTS 체결",
+                "lot_id": "lot_20260615_151922_058470_001",
+                "level": 1,
+                "buy_price": 97300.0,
+                "realized_pnl": -268105.75,
+                "alias": "리노공업"
+            }
+        ]
+    },
+    {
+        "id": "tx_20260714_123804",
+        "date": "2026-07-14 12:38:04",
+        "total_trade_amount": 5464935.0,
+        "reason": "KODEX 반도체레버리지(494310):BUY(MTS 매매(MTS Trade))",
+        "executions": [
+            {
+                "ticker": "494310",
+                "action": "BUY",
+                "quantity": 63,
+                "price": 86745.0,
+                "fee": 819.74025,
+                "date": "2026-07-14 12:38:00",
+                "status": "FILLED",
+                "reason": "MTS 체결",
+                "level": 1,
+                "alias": "KODEX 반도체레버리지"
+            }
+        ]
     }
 ]
