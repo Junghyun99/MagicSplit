@@ -1259,7 +1259,8 @@ class MagicSplitEngine:
                 label = s.action.value
                 reason_text = s.reason
             reasons.append(f"{display_ticker(s.ticker)}:{label}({reason_text})")
-        return ", ".join(reasons)
+        # 종목별 판단을 줄바꿈으로 구분하여 저장 (웹 대시보드 가독성 향상)
+        return ",\n".join(reasons)
 
     def _notify_message(self, msg: str, detail: Optional[str] = None) -> None:
         if self.notifier:
