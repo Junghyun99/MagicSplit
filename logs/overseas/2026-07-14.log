@@ -113,3 +113,22 @@
 2026-07-14 04:01:33,286 [INFO] >>> Processing ARK INNOVATION(ARKK)
 2026-07-14 04:01:33,286 [INFO]   [ARK INNOVATION(ARKK)] 신호 없음 | Lv1 매수 USD 79.92 -> 현재 USD 78.18 (-2.18%) | 익절 +10.0% / 추매 -5.0%
 2026-07-14 04:01:33,286 [INFO] >>> Step 6: Persist
+2026-07-14 23:57:19,958 [INFO] === Manual Trade CLI (overseas) [1건]: GLW:buy(2000.0) ===
+2026-07-14 23:57:19,958 [INFO] [KisBroker] 캐시에서 토큰 로드 (API 호출 생략)
+2026-07-14 23:57:19,958 [INFO] [KisOverseasLiveBroker] Mode: LIVE TRADING
+2026-07-14 23:57:19,958 [INFO] === Manual Trade: 코닝(GLW) BUY ===
+2026-07-14 23:57:19,959 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-07-14 23:57:22,179 [INFO] Fetching real-time prices from Broker...
+2026-07-14 23:57:25,885 [INFO] Portfolio: Cash=USD 5,437.73, Value=USD 19,076.70
+2026-07-14 23:57:25,885 [INFO] >>> Step 2: Load Positions
+2026-07-14 23:57:25,885 [INFO] Loaded 24 position lot(s)
+2026-07-14 23:57:25,886 [INFO] 매수 금액 수동 지정: USD 2,000.00
+2026-07-14 23:57:25,886 [INFO] 매수 수량 도출: Lv4 buy_amount=USD 2,000.00 / 현재가=USD 189.25 = 10주
+2026-07-14 23:57:25,886 [INFO] [코닝(GLW)] 수동 신호 생성: BUY Lv4 10주 @USD 189.25
+2026-07-14 23:57:25,886 [INFO] Executing 1 order(s)...
+2026-07-14 23:57:27,462 [INFO] [KisBroker] Available Cash for BUY: 5,438
+2026-07-14 23:57:28,576 [INFO] [KisBroker] Order Sent: BUY 코닝(GLW) 10 @ 189.56 (ODNO=0030555105)
+2026-07-14 23:57:30,995 [INFO] [KisBroker] Order FILLED: 코닝(GLW) ODNO=0030555105 price=189.56 qty=10 fee=0.0
+2026-07-14 23:57:31,196 [INFO] [Position] New lot: lot_20260714_235731_GLW_004 Lv4 코닝(GLW) 10주 @USD 189.56
+2026-07-14 23:57:35,798 [INFO] >>> Step 6: Persist
+2026-07-14 23:57:36,407 [INFO] === Manual Trade 완료: 체결 1건 [GLW BUY], 실패 0건 ===
