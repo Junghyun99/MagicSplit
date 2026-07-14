@@ -5,20 +5,21 @@
 주문 -> 포지션 반영 -> 저장 파이프라인을 사용한다. 신호 평가(evaluate_stock)만
 우회하고, 사용자가 지정한 ticker/action으로 즉시 매매를 강제한다.
 수량은 자동매매와 동일하게 엔진이 도출한다:
-  - BUY: --amount 지정 시 해당 금액, 없으면 rule.buy_amount_at(next_level) / 현재가
+  - BUY: amount 지정 시 해당 금액, 없으면 rule.buy_amount_at(next_level) / 현재가
   - SELL: 최고 차수 lot 전량
+  - SELL_ALL: 보유 lot 전체를 한 번에 청산
 
-단일 매매:
-    python scripts/manual_trade.py --ticker 005930 --action buy
-    python scripts/manual_trade.py --ticker 005930 --action buy --amount 500000
-    python scripts/manual_trade.py --ticker TSLA --action sell
+입력은 항상 --trades-json(JSON 배열) 하나로 받는다. 한 종목이든 여러 종목이든
+동일 경로로 처리되며, 브로커/엔진/KIS 세션을 1회만 생성하고 순회 체결한다.
+매도(sell/sell_all)를 먼저 실행한 뒤 매수를 진행해 현금 부족을 방지하며,
+한 종목이 실패해도 나머지는 계속 진행한다(부분 성공 허용).
 
-다종목 배치(브로커/엔진/KIS 세션을 1회만 생성하고 순회 체결):
+사용법:
+    python scripts/manual_trade.py --trades-json '[{"ticker":"005930","action":"sell"}]'
     python scripts/manual_trade.py --trades-json \
         '[{"ticker":"005930","action":"sell"},{"ticker":"000660","action":"buy","amount":500000}]'
 
-배치는 매도(sell/sell_all)를 먼저 실행한 뒤 매수를 진행해 현금 부족을 방지하며,
-한 종목이 실패해도 나머지는 계속 진행한다(부분 성공 허용).
+각 원소: {"ticker": str, "action": "buy"|"sell"|"sell_all", "amount"?: number}
 """
 import argparse
 import json
@@ -39,62 +40,48 @@ from src.infra.notifier import SlackNotifier
 
 def parse_args():
     parser = argparse.ArgumentParser(description="수동 매매 스크립트")
-    parser.add_argument("--ticker", help="종목 코드 (예: 005930, TSLA). 단일 매매용.")
     parser.add_argument(
-        "--action", choices=["buy", "sell", "sell_all"],
-        help="매수(buy), 매도(sell), 일괄매도(sell_all). 수량은 자동 도출됨.",
-    )
-    parser.add_argument(
-        "--amount", type=float, default=None,
-        help="매수 금액 직접 지정 (원 또는 USD). 생략 시 config buy_amount 사용.",
-    )
-    parser.add_argument(
-        "--trades-json", default=None,
-        help='다종목 배치. JSON 배열 [{"ticker","action","amount"?}]. '
-             "지정 시 --ticker/--action은 무시된다.",
+        "--trades-json", required=True,
+        help='매매 목록 JSON 배열 [{"ticker","action","amount"?}]. '
+             "한 종목이든 여러 종목이든 동일 경로로 처리된다.",
     )
     return parser.parse_args()
 
 
 def _parse_trades(args):
-    """CLI 인자를 정규화된 trade 목록으로 변환한다.
+    """--trades-json 을 정규화된 trade 목록으로 변환한다.
 
     반환: [{"ticker": str, "action": str, "amount": Optional[float]}]
     """
-    if args.trades_json:
+    try:
+        raw = json.loads(args.trades_json)
+    except json.JSONDecodeError as e:
+        raise SystemExit(f"에러: --trades-json 파싱 실패: {e}")
+    if not isinstance(raw, list) or not raw:
+        raise SystemExit("에러: --trades-json 은 비어있지 않은 JSON 배열이어야 합니다.")
+    trades = []
+    for i, item in enumerate(raw):
+        if not isinstance(item, dict):
+            raise SystemExit(f"에러: --trades-json[{i}] 는 객체여야 합니다.")
+        ticker = str(item.get("ticker", "")).strip().upper()
+        action = str(item.get("action", "")).strip().lower()
+        if not ticker or action not in ("buy", "sell", "sell_all"):
+            raise SystemExit(
+                f"에러: --trades-json[{i}] 의 ticker/action 이 유효하지 않습니다: {item}"
+            )
+        amount = item.get("amount", None)
         try:
-            raw = json.loads(args.trades_json)
-        except json.JSONDecodeError as e:
-            raise SystemExit(f"에러: --trades-json 파싱 실패: {e}")
-        if not isinstance(raw, list) or not raw:
-            raise SystemExit("에러: --trades-json 은 비어있지 않은 JSON 배열이어야 합니다.")
-        trades = []
-        for i, item in enumerate(raw):
-            if not isinstance(item, dict):
-                raise SystemExit(f"에러: --trades-json[{i}] 는 객체여야 합니다.")
-            ticker = str(item.get("ticker", "")).strip().upper()
-            action = str(item.get("action", "")).strip().lower()
-            if not ticker or action not in ("buy", "sell", "sell_all"):
-                raise SystemExit(
-                    f"에러: --trades-json[{i}] 의 ticker/action 이 유효하지 않습니다: {item}"
-                )
-            amount = item.get("amount", None)
-            try:
-                amount_val = float(amount) if amount not in (None, "") else None
-            except (ValueError, TypeError):
-                raise SystemExit(
-                    f"에러: --trades-json[{i}] 의 amount 가 유효한 숫자가 아닙니다: {amount}"
-                )
-            trades.append({
-                "ticker": ticker,
-                "action": action,
-                "amount": amount_val,
-            })
-        return trades
-
-    if not args.ticker or not args.action:
-        raise SystemExit("에러: --ticker 와 --action 을 지정하거나 --trades-json 을 사용하세요.")
-    return [{"ticker": args.ticker, "action": args.action, "amount": args.amount}]
+            amount_val = float(amount) if amount not in (None, "") else None
+        except (ValueError, TypeError):
+            raise SystemExit(
+                f"에러: --trades-json[{i}] 의 amount 가 유효한 숫자가 아닙니다: {amount}"
+            )
+        trades.append({
+            "ticker": ticker,
+            "action": action,
+            "amount": amount_val,
+        })
+    return trades
 
 
 def _execute_one(engine, logger, ticker, action_str, amount):
