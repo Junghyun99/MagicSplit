@@ -378,6 +378,14 @@
         if (!githubApi) { alert('GitHub 설정을 먼저 완료해 주세요.'); return; }
         if (tray.length === 0) return;
 
+        // 매수 금액이 비었거나 0 이하이면 진행 차단. 빈 값이면 백엔드가 config
+        // 기본 매수금액으로 폴백해 의도치 않은 큰 매수가 실행될 수 있어 명시적으로 막는다.
+        const invalidBuy = tray.find(e => e.action === 'buy' && (!e.amount || e.amount <= 0));
+        if (invalidBuy) {
+            alert(`[${invalidBuy.alias}]의 매수 금액을 올바르게 입력해 주세요. (0보다 큰 숫자)`);
+            return;
+        }
+
         const ordered = tray.slice().sort((a, b) => (a.action === 'buy' ? 1 : 0) - (b.action === 'buy' ? 1 : 0));
         modalTitle.textContent = `${ordered.length}건 일괄 수동매매`;
 

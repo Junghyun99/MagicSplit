@@ -72,17 +72,23 @@ def _parse_trades(args):
         for i, item in enumerate(raw):
             if not isinstance(item, dict):
                 raise SystemExit(f"에러: --trades-json[{i}] 는 객체여야 합니다.")
-            ticker = str(item.get("ticker", "")).strip()
+            ticker = str(item.get("ticker", "")).strip().upper()
             action = str(item.get("action", "")).strip().lower()
             if not ticker or action not in ("buy", "sell", "sell_all"):
                 raise SystemExit(
                     f"에러: --trades-json[{i}] 의 ticker/action 이 유효하지 않습니다: {item}"
                 )
             amount = item.get("amount", None)
+            try:
+                amount_val = float(amount) if amount not in (None, "") else None
+            except (ValueError, TypeError):
+                raise SystemExit(
+                    f"에러: --trades-json[{i}] 의 amount 가 유효한 숫자가 아닙니다: {amount}"
+                )
             trades.append({
                 "ticker": ticker,
                 "action": action,
-                "amount": float(amount) if amount not in (None, "") else None,
+                "amount": amount_val,
             })
         return trades
 
