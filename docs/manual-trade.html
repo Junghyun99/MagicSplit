@@ -26,7 +26,7 @@
             padding: 10px 25px;
             border: 1px solid var(--border);
             border-radius: 20px;
-            background: var(--bg-card);
+            background: var(--card-bg, #ffffff);
             cursor: pointer;
             transition: all 0.2s;
             font-weight: 600;
@@ -136,7 +136,7 @@
         }
 
         .modal-content {
-            background: var(--bg-card);
+            background: var(--card-bg, #ffffff);
             padding: 24px;
             border-radius: 12px;
             width: 100%;
@@ -188,7 +188,7 @@
             position: sticky;
             bottom: 0;
             z-index: 500;
-            background: var(--bg-card);
+            background: var(--card-bg, #ffffff);
             border-top: 1px solid var(--border);
             box-shadow: 0 -4px 12px rgba(0,0,0,0.06);
             padding: 12px 16px;
@@ -217,7 +217,7 @@
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            background: var(--bg-body, #f8fafc);
+            background: var(--bg, #f3f4f6);
             border: 1px solid var(--border);
             border-radius: 8px;
             padding: 6px 10px;
