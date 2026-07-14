@@ -29,14 +29,20 @@ DEF_EXTS = (".css", ".html")
 REF_EXTS = (".css", ".html", ".js")
 
 
+def _blank_comment(m: "re.Match") -> str:
+    """주석을 제거하되 개행 수는 보존해 이후 라인 번호가 밀리지 않게 한다."""
+    return "\n" * m.group(0).count("\n")
+
+
 def _read(path: str) -> str:
     """파일을 관대하게 읽고 NUL/주석을 제거해 오탐을 줄인다."""
     with open(path, encoding="utf-8", errors="ignore") as f:
         text = f.read()
     text = text.replace("\x00", "")  # 일부 파일에 섞인 NUL(UTF-16 잔재) 제거
-    # 주석 안의 var() 는 실제 참조가 아니므로 제거 (CSS 블록 / HTML 주석)
-    text = BLOCK_COMMENT_RE.sub(" ", text)
-    text = HTML_COMMENT_RE.sub(" ", text)
+    # 주석 안의 var() 는 실제 참조가 아니므로 제거 (CSS 블록 / HTML 주석).
+    # 여러 줄 주석은 개행을 보존해 참조의 라인 번호 정확도를 유지한다.
+    text = BLOCK_COMMENT_RE.sub(_blank_comment, text)
+    text = HTML_COMMENT_RE.sub(_blank_comment, text)
     return text
 
 
@@ -75,9 +81,9 @@ def main() -> int:
         print(f"에러: 디렉토리를 찾을 수 없습니다: {docs_dir}")
         return 2
 
-    undefined = find_undefined(docs_dir)
+    defined, refs = scan(docs_dir)
+    undefined = [(name, path, ln) for (name, path, ln) in refs if name not in defined]
     if not undefined:
-        defined, refs = scan(docs_dir)
         print(f"OK: CSS 변수 검사 통과 (정의 {len(defined)}개, 참조 {len(refs)}건, 미정의 0건)")
         return 0
 
