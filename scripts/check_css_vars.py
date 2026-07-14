@@ -69,12 +69,6 @@ def scan(docs_dir: str) -> Tuple[Set[str], List[Tuple[str, str, int]]]:
     return defined, refs
 
 
-def find_undefined(docs_dir: str) -> List[Tuple[str, str, int]]:
-    """정의되지 않은 변수를 참조하는 (변수, 파일, 라인) 목록을 반환한다."""
-    defined, refs = scan(docs_dir)
-    return [(name, path, ln) for (name, path, ln) in refs if name not in defined]
-
-
 def main() -> int:
     docs_dir = sys.argv[1] if len(sys.argv) > 1 else "docs"
     if not os.path.isdir(docs_dir):
