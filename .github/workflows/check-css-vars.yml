@@ -1,0 +1,26 @@
+name: CSS Variable Check
+
+# docs/ 정적 UI에서 var(--x) 로 참조하지만 어디에도 --x: 로 정의되지 않은
+# CSS 변수를 검출한다 (예: --bg-card 오타 vs 정의된 --card-bg).
+# 파이썬 유닛테스트(python-test.yml)와 독립적으로 병렬 실행된다.
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  css-vars:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v3
+      with:
+        python-version: "3.10"
+
+    # 표준 라이브러리만 사용하므로 의존성 설치가 필요 없다.
+    - name: Check CSS variables
+      run: python scripts/check_css_vars.py
