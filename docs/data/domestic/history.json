@@ -2461,5 +2461,31 @@
                 "alias": "KODEX 미국S&P500에너지(합성)"
             }
         ]
+    },
+    {
+        "id": "tx_20260714_123242",
+        "date": "2026-07-14 12:32:42",
+        "portfolio_value": 27550831.0,
+        "cash_balance": 913116.0,
+        "net_deposit": 4.13,
+        "total_trade_amount": 827550.0,
+        "reason": "KoAct 글로벌AI메모리반도체액티브(0174B0):SELL(수동 일괄매도(Manual Bulk Sell))",
+        "executions": [
+            {
+                "ticker": "0174B0",
+                "action": "SELL",
+                "quantity": 54,
+                "price": 15325.0,
+                "fee": 124.1325,
+                "date": "2026-07-14 12:32:38",
+                "status": "FILLED",
+                "reason": "ODNO=0020671700",
+                "lot_id": "lot_20260702_100129_0174B0_001",
+                "level": 1,
+                "buy_price": 18320.0,
+                "realized_pnl": -161854.13,
+                "alias": "KoAct 글로벌AI메모리반도체액티브"
+            }
+        ]
     }
 ]
