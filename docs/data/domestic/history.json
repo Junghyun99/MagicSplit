@@ -2487,5 +2487,46 @@
                 "alias": "KoAct 글로벌AI메모리반도체액티브"
             }
         ]
+    },
+    {
+        "id": "tx_20260714_123330",
+        "date": "2026-07-14 12:33:30",
+        "portfolio_value": 27434406.0,
+        "cash_balance": 2001721.0,
+        "net_deposit": 13.31,
+        "total_trade_amount": 1088755.0,
+        "reason": "SOL 미국양자컴퓨팅TOP10(0023A0):SELL(수동 일괄매도(Manual Bulk Sell))",
+        "executions": [
+            {
+                "ticker": "0023A0",
+                "action": "SELL",
+                "quantity": 14,
+                "price": 26555.0,
+                "fee": 163.31324999999998,
+                "date": "2026-07-14 12:33:26",
+                "status": "FILLED",
+                "reason": "ODNO=0020735000",
+                "lot_id": "lot_20260608_142150_0023A0_002",
+                "level": 2,
+                "buy_price": 33355.0,
+                "realized_pnl": -95255.77,
+                "alias": "SOL 미국양자컴퓨팅TOP10"
+            },
+            {
+                "ticker": "0023A0",
+                "action": "SELL",
+                "quantity": 27,
+                "price": 26555.0,
+                "fee": 163.31324999999998,
+                "date": "2026-07-14 12:33:26",
+                "status": "FILLED",
+                "reason": "ODNO=0020735000",
+                "lot_id": "lot_20260527_150555_0023A0_001",
+                "level": 1,
+                "buy_price": 36450.0,
+                "realized_pnl": -267272.55,
+                "alias": "SOL 미국양자컴퓨팅TOP10"
+            }
+        ]
     }
 ]

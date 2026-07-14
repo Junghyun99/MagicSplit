@@ -118,3 +118,21 @@
 2026-07-14 12:32:39,180 [INFO] [Position] Bulk 청산: KoAct 글로벌AI메모리반도체액티브(0174B0) 54주 소진 (잔여 0주), 실현손익 KRW -161,854
 2026-07-14 12:32:42,684 [INFO] >>> Step 6: Persist
 2026-07-14 12:32:43,186 [INFO] === Manual Trade 완료 ===
+2026-07-14 12:33:21,033 [INFO] === Manual Trade CLI: 0023A0 SELL_ALL ===
+2026-07-14 12:33:21,033 [INFO] [KisBroker] 캐시에서 토큰 로드 (API 호출 생략)
+2026-07-14 12:33:21,033 [INFO] [KisDomesticLiveBroker] Mode: LIVE TRADING
+2026-07-14 12:33:21,034 [INFO] === Manual Trade: SOL 미국양자컴퓨팅TOP10(0023A0) SELL ===
+2026-07-14 12:33:21,034 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-07-14 12:33:21,820 [INFO] Fetching real-time prices from Broker...
+2026-07-14 12:33:25,188 [INFO] Portfolio: Cash=KRW 913,116, Value=KRW 27,439,491
+2026-07-14 12:33:25,188 [INFO] >>> Step 2: Load Positions
+2026-07-14 12:33:25,188 [INFO] Loaded 31 position lot(s)
+2026-07-14 12:33:25,189 [INFO] 일괄매도 수량 도출: 2개 lot 합산 41주 전량
+2026-07-14 12:33:25,189 [INFO] [SOL 미국양자컴퓨팅TOP10(0023A0)] 수동 신호 생성: SELL Lv2 41주 @KRW 26,630
+2026-07-14 12:33:25,189 [INFO] Executing 1 order(s)...
+2026-07-14 12:33:25,189 [INFO] [KisBroker] Processing 1 SELL orders...
+2026-07-14 12:33:26,039 [INFO] [KisDomestic] Order Sent: SELL SOL 미국양자컴퓨팅TOP10(0023A0) 41 @ 26555 (ODNO=0020735000)
+2026-07-14 12:33:26,327 [INFO] [KisDomestic] Order FILLED: SOL 미국양자컴퓨팅TOP10(0023A0) ODNO=0020735000 price=26555.0 qty=41 fee=163.31324999999998
+2026-07-14 12:33:26,528 [INFO] [Position] Bulk 청산: SOL 미국양자컴퓨팅TOP10(0023A0) 41주 소진 (잔여 0주), 실현손익 KRW -362,528
+2026-07-14 12:33:30,030 [INFO] >>> Step 6: Persist
+2026-07-14 12:33:31,594 [INFO] === Manual Trade 완료 ===
