@@ -71,3 +71,36 @@
 2026-07-16 02:01:32,375 [INFO] [애플(AAPL)] Lv1: trailing 고점 갱신 -> USD 327.71 (스톱가 USD 311.32)
 2026-07-16 02:01:32,375 [INFO]   [애플(AAPL)] 신호 없음 | Lv1 매수 USD 291.90 -> 현재 USD 327.71 (+12.27%) | 익절 +10.0% / 추매 -5.0%
 2026-07-16 02:01:32,375 [INFO] >>> Step 6: Persist
+2026-07-16 04:01:25,379 [INFO] === Initializing MagicSplit Bot (overseas) ===
+2026-07-16 04:01:25,379 [INFO] Loaded 22 stock rule(s) from config_overseas.json
+2026-07-16 04:01:25,379 [INFO] [overseas] 10 rule(s), mode=LIVE
+2026-07-16 04:01:25,379 [INFO] [KisBroker] 캐시에서 토큰 로드 (API 호출 생략)
+2026-07-16 04:01:25,379 [INFO] [KisOverseasLiveBroker] Mode: LIVE TRADING
+2026-07-16 04:01:25,380 [INFO] === Running overseas engine ===
+2026-07-16 04:01:25,380 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-07-16 04:01:28,539 [INFO] Fetching real-time prices from Broker...
+2026-07-16 04:01:32,464 [INFO] Portfolio: Cash=USD 3,146.04, Value=USD 18,473.68
+2026-07-16 04:01:32,465 [INFO] >>> Step 2: Load Positions
+2026-07-16 04:01:32,465 [INFO] Loaded 26 position lot(s)
+2026-07-16 04:01:32,466 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-07-16 04:01:32,466 [INFO] >>> Processing ISHARES GLOBAL CLEAN ENERGY(ICLN)
+2026-07-16 04:01:32,466 [INFO]   [ISHARES GLOBAL CLEAN ENERGY(ICLN)] 신호 없음 | Lv4 매수 USD 18.75 -> 현재 USD 18.99 (+1.28%) | 익절 +10.0% / 추매 -5.0%
+2026-07-16 04:01:32,467 [INFO] >>> Processing ARK INNOVATION(ARKK)
+2026-07-16 04:01:32,467 [INFO]   [ARK INNOVATION(ARKK)] 신호 없음 | Lv1 매수 USD 79.92 -> 현재 USD 79.33 (-0.74%) | 익절 +10.0% / 추매 -5.0%
+2026-07-16 04:01:32,467 [INFO] >>> Processing 브로드컴(AVGO)
+2026-07-16 04:01:32,468 [INFO]   [브로드컴(AVGO)] 신호 없음 | Lv2 매수 USD 363.20 -> 현재 USD 392.62 (+8.10%) | 익절 +10.0% / 추매 -5.0%
+2026-07-16 04:01:32,468 [INFO] >>> Processing 알파벳 A(GOOGL)
+2026-07-16 04:01:32,468 [INFO]   [알파벳 A(GOOGL)] 신호 없음 | Lv3 매수 USD 345.13 -> 현재 USD 370.53 (+7.36%) | 익절 +10.0% / 추매 -5.0%
+2026-07-16 04:01:32,469 [INFO] >>> Processing 애플(AAPL)
+2026-07-16 04:01:32,469 [INFO]   [애플(AAPL)] 신호 없음 | Lv1 매수 USD 291.90 -> 현재 USD 327.62 (+12.24%) | 익절 +10.0% / 추매 -5.0%
+2026-07-16 04:01:32,469 [INFO] >>> Processing 카메코(CCJ)
+2026-07-16 04:01:32,470 [INFO]   [카메코(CCJ)] 신호 없음 | Lv1 매수 USD 94.06 -> 현재 USD 90.19 (-4.11%) | 익절 +10.0% / 추매 -5.0%
+2026-07-16 04:01:32,471 [INFO] >>> Processing 델 테크놀로지스(DELL)
+2026-07-16 04:01:32,471 [INFO]   [델 테크놀로지스(DELL)] 신호 없음 | Lv2 매수 USD 407.08 -> 현재 USD 404.47 (-0.64%) | 익절 +10.0% / 추매 -5.0%
+2026-07-16 04:01:32,471 [INFO] >>> Processing 펩시코(PEP)
+2026-07-16 04:01:32,471 [INFO]   [펩시코(PEP)] 신호 없음 | Lv2 매수 USD 142.33 -> 현재 USD 136.13 (-4.36%) | 익절 +10.0% / 추매 -5.0%
+2026-07-16 04:01:32,472 [INFO] >>> Processing 테슬라(TSLA)
+2026-07-16 04:01:32,472 [INFO]   [테슬라(TSLA)] 신호 없음 | Lv4 매수 USD 389.00 -> 현재 USD 394.97 (+1.53%) | 익절 +10.0% / 추매 -5.0%
+2026-07-16 04:01:32,472 [INFO] >>> Processing SCHWAB US DIVIDEND EQUITY(SCHD)
+2026-07-16 04:01:32,472 [INFO]   [SCHWAB US DIVIDEND EQUITY(SCHD)] 신호 없음 | Lv1 매수 USD 31.74 -> 현재 USD 32.31 (+1.78%) | 익절 +10.0% / 추매 -5.0%
+2026-07-16 04:01:32,473 [INFO] >>> Step 6: Persist
