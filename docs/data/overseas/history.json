@@ -1339,5 +1339,28 @@
                 "alias": "코닝"
             }
         ]
+    },
+    {
+        "id": "tx_20260716_000149",
+        "date": "2026-07-16 00:01:49",
+        "portfolio_value": 18480.594999999998,
+        "cash_balance": 3146.04,
+        "net_deposit": 9.68,
+        "total_trade_amount": 407.08,
+        "reason": "델 테크놀로지스(DELL):BUY(동적 재매수 Lv2 (매도가 USD 428.93 대비 -5.3%)),\n애플(AAPL):SKIP(Lv1: trailing 활성화 (매수가 대비 +11.0%, 스톱가 USD 307.77))",
+        "executions": [
+            {
+                "ticker": "DELL",
+                "action": "BUY",
+                "quantity": 1,
+                "price": 407.08,
+                "fee": 0.0,
+                "date": "2026-07-16 00:01:44",
+                "status": "FILLED",
+                "reason": "ODNO=0030836767",
+                "level": 2,
+                "alias": "델 테크놀로지스"
+            }
+        ]
     }
 ]
