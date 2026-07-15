@@ -128,23 +128,43 @@ window.ChartsView = (function () {
         const hasCashFlowData = pts.every(p => p.netDeposit != null && !isNaN(p.netDeposit));
         let returnPct;
         if (hasCashFlowData) {
+            // TWR sub-period: net_deposit arrives before trades (start of period)
+            // period_return = V_end / (V_start + CF) - 1
+            // 비정상 포인트(자산이 null/0 이하 - 시세조회 실패 등)는 스킵하지 않고
+            // 다음 정상 포인트까지 구간을 병합하며 순입금을 누적한다
+            // (src/core/settlement.py _twr_pct 와 동일 로직).
+            // 단순 스킵은 전후 수익률 변화를 누락시키고, 0 자산이 곱셈에 들어가면
+            // twr 전체가 -100%로 붕괴한다.
             let twr = 1.0;
-            for (let i = 1; i < pts.length; i++) {
-                const startVal = pts[i - 1].value;
-                if (startVal === 0) continue;
-                const cf = pts[i].netDeposit || 0;
-                // TWR sub-period: net_deposit arrives before trades (start of period)
-                // period_return = V_end / (V_start + CF) - 1
-                const periodReturn = pts[i].value / (startVal + cf) - 1;
-                twr *= (1 + periodReturn);
+            let lastValidVal = null;   // 직전 정상 포인트의 자산 (병합 구간 기준값)
+            let accumulatedCf = 0;     // 병합 구간에 누적된 순입금
+            let hasValidPeriod = false;
+            for (const p of pts) {
+                const val = (Number.isFinite(p.value) && p.value > 0) ? p.value : null;
+                if (lastValidVal === null) {
+                    if (val !== null) lastValidVal = val;
+                    continue;
+                }
+                accumulatedCf += p.netDeposit || 0;
+                if (val !== null) {
+                    const denom = lastValidVal + accumulatedCf;
+                    if (denom > 0) {
+                        twr *= val / denom;
+                        hasValidPeriod = true;
+                    }
+                    // 분모가 0 이하(대규모 출금 등)인 병합 구간은 왜곡 방지를 위해
+                    // 반영하지 않고, 이번 정상값을 새 기준으로 삼는다
+                    lastValidVal = val;
+                    accumulatedCf = 0;
+                }
             }
-            returnPct = (twr - 1) * 100;
+            returnPct = hasValidPeriod ? (twr - 1) * 100 : null;
         } else {
             returnPct = ((currentValue - initialValue) / initialValue) * 100;
         }
         const returnLabel = hasCashFlowData ? '수익률(TWR)' : '자산변동률';
-        const returnSign = returnPct >= 0 ? '+' : '';
-        const lineColor = returnPct >= 0 ? '#16a34a' : '#dc2626';
+        const returnSign = (returnPct != null && returnPct >= 0) ? '+' : '';
+        const lineColor = (returnPct == null || returnPct >= 0) ? '#16a34a' : '#dc2626';
 
         // Principal-based ROI: sum all principal_flow entries
         const totalPrincipal = pts.reduce((sum, p) => sum + (p.principalFlow != null ? p.principalFlow : 0), 0);
@@ -204,7 +224,7 @@ window.ChartsView = (function () {
         container.innerHTML = `
             <div class="ec-summary">
                 <span class="ec-label">${esc(returnLabel)}</span>
-                <span class="ec-return" style="color:${lineColor}">${returnSign}${returnPct.toFixed(2)}%</span>
+                <span class="ec-return" style="color:${lineColor}">${returnPct != null ? `${returnSign}${returnPct.toFixed(2)}%` : '-'}</span>
                 <span class="ec-detail">(${esc(pts[0].date)} ${esc(fmtVal(initialValue))} -> ${esc(pts[pts.length - 1].date)} ${esc(fmtVal(currentValue))})</span>
                 ${principalRoiHtml}
             </div>

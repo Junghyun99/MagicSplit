@@ -127,28 +127,92 @@ class TestComputeSettlement:
             _snap("2026-04-28", 1200.0, net_deposit=0.0),
         ]
         r = compute_settlement(snaps, "2026-04-01", "2026-04-28")
-        # 0 구간은 스킵되고 정상 구간만 반영 (1200/1100-1 = +9.09%)
-        assert r.twr_pct == pytest.approx(9.0909, abs=1e-3)
+        # 0 구간은 다음 정상 스냅샷까지 병합되어 전체 변화가 반영됨 (1200/1000-1 = +20%)
+        assert r.twr_pct == pytest.approx(20.0)
 
-    def test_twr_skips_null_portfolio_value(self):
-        """portfolio_value가 None(null)인 구간도 예외 없이 스킵된다."""
+    def test_twr_merges_null_portfolio_value_period(self):
+        """portfolio_value가 None(null)인 구간은 병합되어 전체 수익률이 유지된다."""
         snaps = [
             _snap("2026-04-01", 1000.0),
             {"date": "2026-04-10", "portfolio_value": None, "net_deposit": 0.0},
             _snap("2026-04-28", 1100.0, net_deposit=0.0),
         ]
         r = compute_settlement(snaps, "2026-04-01", "2026-04-28")
-        assert r.twr_pct is not None
+        assert r.twr_pct == pytest.approx(10.0)
+
+    def test_twr_merged_period_accumulates_cash_flow(self):
+        """병합된 비정상 구간의 순입금도 분모에 누적 반영된다."""
+        snaps = [
+            _snap("2026-04-01", 1000.0),
+            # 비정상 스냅샷에 1000 입금 -> 다음 정상 구간 분모는 1000+1000
+            {"date": "2026-04-10", "portfolio_value": None, "net_deposit": 1000.0},
+            _snap("2026-04-28", 2200.0, net_deposit=0.0),
+        ]
+        r = compute_settlement(snaps, "2026-04-01", "2026-04-28")
+        assert r.twr_pct == pytest.approx(10.0)  # 2200/(1000+1000)-1
 
     def test_twr_skips_nonpositive_start_value(self):
-        """기준 자산이 0 이하인 구간도 스킵된다 (예외 없이 처리)."""
+        """기준 자산이 0 이하이면 다음 정상 스냅샷이 기준이 된다 (예외 없이 처리)."""
         snaps = [
             _snap("2026-04-01", 0.0, net_deposit=0.0),
             _snap("2026-04-15", 100.0, net_deposit=100.0),
             _snap("2026-04-28", 150.0, net_deposit=0.0),
         ]
         r = compute_settlement(snaps, "2026-04-01", "2026-04-28")
-        assert r.twr_pct is not None
+        assert r.twr_pct == pytest.approx(50.0)  # 150/100-1
+
+    def test_twr_none_when_no_valid_period(self):
+        """유효한 하위기간이 하나도 없으면 0%가 아니라 None을 반환한다."""
+        snaps = [
+            _snap("2026-04-01", 1000.0),
+            {"date": "2026-04-10", "portfolio_value": None, "net_deposit": 0.0},
+            {"date": "2026-04-28", "portfolio_value": None, "net_deposit": 0.0},
+        ]
+        r = compute_settlement(snaps, "2026-04-01", "2026-04-28")
+        assert r.twr_pct is None
+
+    def test_null_boundaries_resolve_to_nearest_valid_snapshot(self):
+        """기초/기말 스냅샷이 null이면 가장 가까운 유효 스냅샷을 기초/기말로 쓴다."""
+        snaps = [
+            {"date": "2026-04-01", "portfolio_value": None, "net_deposit": 0.0},
+            _snap("2026-04-15", 1000.0, net_deposit=0.0),
+            {"date": "2026-04-28", "portfolio_value": None, "net_deposit": 0.0},
+        ]
+        r = compute_settlement(snaps, "2026-04-01", "2026-04-30")
+        assert r.start_asset == 1000.0
+        assert r.end_asset == 1000.0
+        assert r.base_date == "2026-04-15"
+        assert r.last_date == "2026-04-15"
+        assert r.profit == 0.0
+
+    def test_null_end_snapshot_uses_last_valid_and_excludes_later_deposits(self):
+        """기말이 null이면 마지막 유효 스냅샷이 기말이 되고, 그 이후 순입금은 제외된다."""
+        snaps = [
+            _snap("2026-03-31", 1000.0),
+            _snap("2026-04-15", 1200.0, net_deposit=100.0),
+            # 마지막 날 시세조회 실패 + 입금 500: 기말은 4/15, 500은 합산 제외
+            {"date": "2026-04-28", "portfolio_value": None, "net_deposit": 500.0},
+        ]
+        r = compute_settlement(snaps, "2026-04-01", "2026-04-30")
+        assert r.last_date == "2026-04-15"
+        assert r.end_asset == 1200.0
+        assert r.net_deposit == 100.0
+        assert r.profit == 100.0  # 1200 - 1000 - 100
+
+    def test_null_prior_base_walks_back_and_keeps_identity(self):
+        """직전 스냅샷이 null이면 그 이전 유효 스냅샷이 기초가 되고,
+        그 사이(기간 밖) 순입금도 합산해 항등식이 유지된다."""
+        snaps = [
+            _snap("2026-03-28", 1000.0),
+            # start 직전 스냅샷이 비정상이지만 200 입금이 기록됨
+            {"date": "2026-03-31", "portfolio_value": None, "net_deposit": 200.0},
+            _snap("2026-04-15", 1300.0, net_deposit=0.0),
+        ]
+        r = compute_settlement(snaps, "2026-04-01", "2026-04-30")
+        assert r.base_date == "2026-03-28"
+        assert r.start_asset == 1000.0
+        assert r.net_deposit == 200.0
+        assert r.profit == 100.0  # 1300 - 1000 - 200
 
     def test_snapshots_sorted_defensively(self):
         """저장 순서가 뒤섞여 있어도 날짜순으로 정렬해 계산한다"""

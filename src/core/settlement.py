@@ -93,28 +93,43 @@ def compute_settlement(snapshots: List[dict], start: str, end: str) -> Settlemen
             twr_pct=None, snapshot_count=0,
         )
 
-    # 기초자산: start 직전 마지막 스냅샷. 없으면 기간 첫 스냅샷을 기초로 사용.
+    # 기초/기말 스냅샷 선택: portfolio_value가 null(시세조회 실패 등)인 스냅샷을
+    # 기초/기말로 쓰면 자산이 0으로 잡혀 손익이 크게 왜곡되므로, 가장 가까운
+    # "유효한"(값이 있는) 스냅샷을 선택한다.
+    #   기초: start 직전의 마지막 유효 스냅샷. 없으면 기간 내 첫 유효 스냅샷.
+    #   기말: 기간 내 마지막 유효 스냅샷.
+    # 유효 스냅샷이 하나도 없으면 기존 위치(기간 첫/끝)로 강등하고 금액은 0 처리.
+    def _valid(s):
+        return _finite(s.get("portfolio_value")) is not None
+
     prior = [s for s in snaps if s["date"][:10] < start]
-    if prior:
-        base = prior[-1]
-        # 기간 내 모든 순입금이 base 이후 발생분
-        contrib = in_range
-        twr_seq = [base] + in_range
+    valid_prior = [s for s in prior if _valid(s)]
+    valid_in_range = [s for s in in_range if _valid(s)]
+
+    if valid_prior:
+        base = valid_prior[-1]
+    elif valid_in_range:
+        base = valid_in_range[0]
     else:
         base = in_range[0]
-        # 첫 스냅샷 값에는 그날까지의 입금이 이미 반영 -> 그 이후 분만 합산
-        contrib = in_range[1:]
-        twr_seq = in_range
+    end_snap = valid_in_range[-1] if valid_in_range else in_range[-1]
 
-    start_asset = float(base["portfolio_value"])
-    end_asset = float(in_range[-1]["portfolio_value"])
-    net_deposit = round(sum(float(s.get("net_deposit") or 0.0) for s in contrib), 2)
+    # 결산 창은 (base, end_snap]: 항등식(손익 = 기말 - 기초 - 순입금)이 유지되도록
+    # base 이후 ~ end_snap까지 발생한 순입금만 합산한다. base가 null 스냅샷을
+    # 건너뛰어 기간 밖 과거로 이동했다면 그 사이 순입금도 포함하고, end_snap이
+    # 기간 끝보다 앞이라면 그 이후 순입금은 제외한다.
+    pos = {id(s): i for i, s in enumerate(snaps)}
+    window = snaps[pos[id(base)] + 1: pos[id(end_snap)] + 1]
+
+    start_asset = _finite(base.get("portfolio_value")) or 0.0
+    end_asset = _finite(end_snap.get("portfolio_value")) or 0.0
+    net_deposit = round(sum(float(s.get("net_deposit") or 0.0) for s in window), 2)
     profit = round(end_asset - start_asset - net_deposit, 2)
-    twr_pct = _twr_pct(twr_seq)
+    twr_pct = _twr_pct([base] + window)
 
     return SettlementResult(
         start_date=start, end_date=end,
-        base_date=base["date"][:10], last_date=in_range[-1]["date"][:10],
+        base_date=base["date"][:10], last_date=end_snap["date"][:10],
         start_asset=round(start_asset, 2), end_asset=round(end_asset, 2),
         net_deposit=net_deposit, profit=profit,
         twr_pct=twr_pct, snapshot_count=len(in_range),
@@ -126,23 +141,44 @@ def _twr_pct(seq: List[dict]) -> Optional[float]:
 
     각 하위기간 수익률 = V_end / (V_start + CF) - 1, CF는 해당 스냅샷의 net_deposit
     (기초에 유입되었다고 가정). 시퀀스가 2개 미만이면 None.
+
+    비정상 스냅샷(portfolio_value가 null이거나 0 이하 - 시세조회 실패 등)은 단순히
+    건너뛰지 않고 다음 정상 스냅샷까지 하위기간을 병합하며, 그 사이 발생한
+    순입금은 병합 구간 분모에 누적 반영한다. 단순 스킵은 비정상 스냅샷 전후의
+    수익률 변화를 통째로 누락시켜 TWR을 왜곡하기 때문이다.
+    유효한 하위기간이 하나도 없으면 None을 반환한다.
     """
     if len(seq) < 2:
         return None
     twr = 1.0
-    for i in range(1, len(seq)):
-        start_val = _finite(seq[i - 1].get("portfolio_value"))
-        end_val = _finite(seq[i].get("portfolio_value"))
-        # 기준/종료 자산이 없거나(시세조회 실패로 null) 0 이하이면 왜곡되므로 스킵.
-        # 특히 end_val이 0이면 곱셈이 전체 TWR을 0(-100%)으로 붕괴시키므로 반드시 가드.
-        if start_val is None or end_val is None or start_val <= 0 or end_val <= 0:
+    last_valid_val = None   # 직전 정상 스냅샷의 자산 (병합 구간의 기준값)
+    accumulated_cf = 0.0    # 병합 구간에 누적된 순입금
+    has_valid_period = False
+
+    for rec in seq:
+        val = _finite(rec.get("portfolio_value"))
+        valid = val is not None and val > 0
+
+        if last_valid_val is None:
+            # 아직 기준값이 없으면 첫 정상 스냅샷을 기준으로 삼는다
+            # (기준 스냅샷의 net_deposit은 자산에 이미 반영되어 있으므로 미사용)
+            if valid:
+                last_valid_val = val
             continue
-        cf = float(seq[i].get("net_deposit") or 0.0)
-        denom = start_val + cf
-        if denom <= 0:
-            # 대규모 출금 등으로 분모가 0 이하가 되면 수익률이 왜곡되므로 스킵
-            continue
-        twr *= end_val / denom
+
+        accumulated_cf += float(rec.get("net_deposit") or 0.0)
+        if valid:
+            denom = last_valid_val + accumulated_cf
+            if denom > 0:
+                twr *= val / denom
+                has_valid_period = True
+            # 대규모 출금 등으로 분모가 0 이하이면 해당 병합 구간은 왜곡 방지를
+            # 위해 반영하지 않고, 이번 정상값을 새 기준으로 삼는다
+            last_valid_val = val
+            accumulated_cf = 0.0
+
+    if not has_valid_period:
+        return None
     return round((twr - 1) * 100, 4)
 
 
