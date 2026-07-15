@@ -93,29 +93,43 @@ def compute_settlement(snapshots: List[dict], start: str, end: str) -> Settlemen
             twr_pct=None, snapshot_count=0,
         )
 
-    # 기초자산: start 직전 마지막 스냅샷. 없으면 기간 첫 스냅샷을 기초로 사용.
+    # 기초/기말 스냅샷 선택: portfolio_value가 null(시세조회 실패 등)인 스냅샷을
+    # 기초/기말로 쓰면 자산이 0으로 잡혀 손익이 크게 왜곡되므로, 가장 가까운
+    # "유효한"(값이 있는) 스냅샷을 선택한다.
+    #   기초: start 직전의 마지막 유효 스냅샷. 없으면 기간 내 첫 유효 스냅샷.
+    #   기말: 기간 내 마지막 유효 스냅샷.
+    # 유효 스냅샷이 하나도 없으면 기존 위치(기간 첫/끝)로 강등하고 금액은 0 처리.
+    def _valid(s):
+        return _finite(s.get("portfolio_value")) is not None
+
     prior = [s for s in snaps if s["date"][:10] < start]
-    if prior:
-        base = prior[-1]
-        # 기간 내 모든 순입금이 base 이후 발생분
-        contrib = in_range
-        twr_seq = [base] + in_range
+    valid_prior = [s for s in prior if _valid(s)]
+    valid_in_range = [s for s in in_range if _valid(s)]
+
+    if valid_prior:
+        base = valid_prior[-1]
+    elif valid_in_range:
+        base = valid_in_range[0]
     else:
         base = in_range[0]
-        # 첫 스냅샷 값에는 그날까지의 입금이 이미 반영 -> 그 이후 분만 합산
-        contrib = in_range[1:]
-        twr_seq = in_range
+    end_snap = valid_in_range[-1] if valid_in_range else in_range[-1]
 
-    # portfolio_value가 null(시세조회 실패 등)이어도 결산 전체가 중단되지 않도록 방어
+    # 결산 창은 (base, end_snap]: 항등식(손익 = 기말 - 기초 - 순입금)이 유지되도록
+    # base 이후 ~ end_snap까지 발생한 순입금만 합산한다. base가 null 스냅샷을
+    # 건너뛰어 기간 밖 과거로 이동했다면 그 사이 순입금도 포함하고, end_snap이
+    # 기간 끝보다 앞이라면 그 이후 순입금은 제외한다.
+    pos = {id(s): i for i, s in enumerate(snaps)}
+    window = snaps[pos[id(base)] + 1: pos[id(end_snap)] + 1]
+
     start_asset = _finite(base.get("portfolio_value")) or 0.0
-    end_asset = _finite(in_range[-1].get("portfolio_value")) or 0.0
-    net_deposit = round(sum(float(s.get("net_deposit") or 0.0) for s in contrib), 2)
+    end_asset = _finite(end_snap.get("portfolio_value")) or 0.0
+    net_deposit = round(sum(float(s.get("net_deposit") or 0.0) for s in window), 2)
     profit = round(end_asset - start_asset - net_deposit, 2)
-    twr_pct = _twr_pct(twr_seq)
+    twr_pct = _twr_pct([base] + window)
 
     return SettlementResult(
         start_date=start, end_date=end,
-        base_date=base["date"][:10], last_date=in_range[-1]["date"][:10],
+        base_date=base["date"][:10], last_date=end_snap["date"][:10],
         start_asset=round(start_asset, 2), end_asset=round(end_asset, 2),
         net_deposit=net_deposit, profit=profit,
         twr_pct=twr_pct, snapshot_count=len(in_range),
