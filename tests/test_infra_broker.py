@@ -111,6 +111,19 @@ class TestMockBroker:
         # 200 * 0.98 / (100 * 1.01) = 1.94 -> 1주만 매수 가능
         assert executions[0].quantity <= 2
 
+    def test_integer_valued_crypto_order_stays_fractional_under_budget(self):
+        """정수값(1.0) 코인 주문도 예산 부족 시 소수 수량으로 매수된다 (0으로 차단 X)."""
+        # 예산 한도 내 최대치가 ~0.95개 -> 정수화하면 0이 되어 매수 불가해지는 상황.
+        broker = MockBroker(initial_cash=98.0, prices={"KRW-BTC": 100.0})
+        orders = [Order("KRW-BTC", OrderAction.BUY, 1.0, 100.0, qty_precision=8)]
+        executions = broker.execute_orders(orders)
+
+        assert len(executions) == 1
+        qty = executions[0].quantity
+        assert 0 < qty < 1.0            # 소수 수량으로 체결
+        assert not float(qty).is_integer()
+        assert broker.get_portfolio().holdings["KRW-BTC"] == qty
+
     def test_multiple_orders(self):
         """여러 주문 동시 처리"""
         broker = MockBroker(

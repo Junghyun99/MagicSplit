@@ -141,6 +141,16 @@ class TestQuantizeQty:
         rule = self._crypto(qty_precision=-2)
         assert rule.quantize_qty(5.9) == 5
 
+    def test_floor_not_broken_by_float_error(self):
+        # 0.29 * 100 = 28.999999999999996 (FP 오차) -> 방어 없으면 floor가 0.28로 잘못 계산
+        rule = self._crypto(qty_precision=2)
+        assert rule.quantize_qty(0.29) == pytest.approx(0.29, abs=1e-12)
+
+    def test_ceil_not_broken_by_float_error(self):
+        # 0.07 * 100 = 7.000000000000001 (FP 오차) -> 방어 없으면 ceil이 0.08로 잘못 올림
+        rule = self._crypto(qty_precision=2)
+        assert rule.quantize_qty(0.07, round_up=True) == pytest.approx(0.07, abs=1e-12)
+
 
 class TestPositionLot:
     def test_creation(self):

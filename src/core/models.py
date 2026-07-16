@@ -189,7 +189,7 @@ class StockRule:
             return float(self.uptrend_add_amount)
         return self.buy_amount_at(1)
 
-    def _effective_qty_precision(self) -> int:
+    def effective_qty_precision(self) -> int:
         """이 종목의 유효 수량 정밀도(소수 자릿수)를 반환한다.
 
         qty_precision이 명시되면 그 값을, 아니면 market_type 기본값을 쓴다.
@@ -207,19 +207,21 @@ class StockRule:
         - round_up=False(기본, 매수): 내림 -> 예산 초과 방지.
         - round_up=True(부분매도): 올림 -> 잔량 dust 방지.
         """
-        precision = self._effective_qty_precision()
+        precision = self.effective_qty_precision()
         rounder = math.ceil if round_up else math.floor
         if precision <= 0:
             return int(rounder(raw_qty))
         factor = 10 ** precision
-        return rounder(raw_qty * factor) / factor
+        # 부동소수 오차 방어: floor/ceil 직전에 12자리로 반올림해
+        # 5.699999999999(=5.7)가 5로 잘리거나 57.0000001이 58로 올림되는 것을 막는다.
+        return rounder(round(raw_qty * factor, 12)) / factor
 
     def min_order_qty(self) -> float:
         """이 종목의 최소 주문 단위 수량.
 
         정수 시장(주식/KIS)=1주, 소수 시장(코인/업비트)=10^-precision.
         """
-        precision = self._effective_qty_precision()
+        precision = self.effective_qty_precision()
         return 1 if precision <= 0 else 10 ** (-precision)
 
 
@@ -256,6 +258,9 @@ class Order:
     quantity: float
     price: float  # 예상가
     spread_threshold_pct: Optional[float] = None  # None이면 브로커 기본값 사용
+    # 주문 수량 정밀도(소수 자릿수). None/0이면 정수(주식), p>0이면 소수(코인).
+    # 브로커가 예산 조정 등으로 수량을 재계산할 때 정수/소수 여부를 판단하는 데 쓴다.
+    qty_precision: Optional[int] = None
 
 
 @dataclass

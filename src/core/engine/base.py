@@ -592,6 +592,7 @@ class MagicSplitEngine:
                 quantity=sig.quantity,
                 price=sig.price,
                 spread_threshold_pct=rule.spread_threshold_pct if rule else None,
+                qty_precision=rule.effective_qty_precision() if rule else None,
             ))
         return orders
 

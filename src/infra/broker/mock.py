@@ -1,4 +1,5 @@
 # src/infra/broker/mock.py
+import math
 from typing import List, Dict, Optional
 from datetime import datetime
 
@@ -48,10 +49,16 @@ class MockBroker(IBrokerAdapter):
             if estimated_price <= 0:
                 continue
 
-            # 예산 한도 내 최대 수량. 주문이 정수(주식)면 정수로 내림, 소수(코인)면 소수 유지.
+            # 예산 한도 내 최대 수량. 주문 정밀도(qty_precision)에 맞춰 조정한다.
+            # 정수(주식)면 정수로 내림, 소수(코인)면 해당 자릿수로 내림.
+            # 티커 형태나 수량의 정수 여부로 추정하지 않으므로, 정수값 코인 주문도 안전.
             max_qty = budget / estimated_price
-            if float(order.quantity).is_integer():
+            precision = order.qty_precision or 0
+            if precision <= 0:
                 max_qty = int(max_qty)
+            else:
+                factor = 10 ** precision
+                max_qty = math.floor(max_qty * factor) / factor
             actual_qty = min(order.quantity, max_qty)
 
             if max_qty < order.quantity and self.logger:

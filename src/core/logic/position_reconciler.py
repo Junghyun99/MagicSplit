@@ -6,7 +6,8 @@ from src.core.models import PositionLot, Portfolio, StockRule
 
 
 # 부동소수 수량(코인) 비교 허용오차. 이보다 작은 차이는 동일로 간주한다.
-QTY_MATCH_TOL = 1e-8
+# 최소 주문 단위(1 satoshi = 1e-8)의 불일치는 잡되, 표현 오차(~1e-12)는 흡수하도록 1e-9.
+QTY_MATCH_TOL = 1e-9
 
 
 @dataclass
