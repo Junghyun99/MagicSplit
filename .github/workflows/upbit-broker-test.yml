@@ -1,0 +1,66 @@
+name: Upbit Broker Live Test
+
+# 수동 실행 전용 — push/PR 트리거 없음 (실거래 API 호출 방지)
+on:
+  workflow_dispatch:
+    inputs:
+      test_level:
+        description: '테스트 수준: readonly(조회만, U1~U4) / full(지정가 매수+취소, U1~U6)'
+        required: true
+        default: 'readonly'
+        type: choice
+        options:
+          - readonly
+          - full
+      test_market:
+        description: '주문 테스트 마켓 (full 모드에서만 사용. 예: KRW-BTC)'
+        required: false
+        default: 'KRW-BTC'
+
+jobs:
+  broker-live-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.10"
+        cache: pip
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Show runner time (KST)
+      run: |
+        echo "Runner UTC : $(date -u '+%Y-%m-%d %H:%M:%S %Z')"
+        echo "KST equiv  : $(TZ=Asia/Seoul date '+%Y-%m-%d %H:%M:%S %Z')"
+        echo "업비트는 24시간 거래 — 시간대 제약 없음"
+
+    - name: Run broker live tests
+      env:
+        UPBIT_ACCESS_KEY: ${{ secrets.UPBIT_ACCESS_KEY }}
+        UPBIT_SECRET_KEY: ${{ secrets.UPBIT_SECRET_KEY }}
+        IS_LIVE: 'true'
+        RUN_ORDER_TESTS: ${{ inputs.test_level == 'full' && 'true' || 'false' }}
+        TEST_LEVEL: ${{ inputs.test_level }}
+        TEST_MARKET: ${{ inputs.test_market }}
+        PYTHONUTF8: '1'
+        PYTHONUNBUFFERED: '1'
+      run: |
+        if [ -z "${UPBIT_ACCESS_KEY:-}" ] || [ -z "${UPBIT_SECRET_KEY:-}" ]; then
+          echo "::error::UPBIT_ACCESS_KEY / UPBIT_SECRET_KEY 시크릿이 설정되지 않았습니다."
+          exit 1
+        fi
+        echo "=== Upbit Broker Live Test ==="
+        echo "Test level   : $TEST_LEVEL"
+        echo "Order tests  : $RUN_ORDER_TESTS"
+        echo "Test market  : $TEST_MARKET"
+        echo "Broker       : UpbitLiveBroker (실거래 서버)"
+        echo "=============================="
+        pytest tests/test_infra_broker_upbit_live.py -v -s
