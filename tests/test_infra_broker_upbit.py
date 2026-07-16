@@ -6,6 +6,7 @@ from urllib.parse import urlencode
 from unittest.mock import patch, MagicMock
 
 import pytest
+import requests
 
 from src.infra.broker.upbit import (
     UpbitBroker, UpbitLiveBroker, UpbitPaperBroker,
@@ -101,6 +102,50 @@ class TestFetchCurrentPrices:
         prices = _broker().fetch_current_prices(["KRW-BTC", "KRW-XRP"])
         assert prices["KRW-XRP"] == 0.0
 
+    @patch("src.infra.broker.upbit._pkg.requests.get")
+    def test_error_response_returns_zeros(self, mock_get):
+        mock_get.return_value = _resp({"error": {"name": "invalid_market"}})
+        prices = _broker().fetch_current_prices(["KRW-BTC"])
+        assert prices == {"KRW-BTC": 0.0}
+
+    @patch("src.infra.broker.upbit._pkg.requests.get")
+    def test_non_list_response_returns_zeros(self, mock_get):
+        mock_get.return_value = _resp({"unexpected": "shape"})
+        prices = _broker().fetch_current_prices(["KRW-BTC"])
+        assert prices == {"KRW-BTC": 0.0}
+
+    @patch("src.infra.broker.upbit._pkg.requests.get")
+    def test_network_exception_returns_zeros(self, mock_get):
+        mock_get.side_effect = requests.exceptions.ConnectionError("boom")
+        prices = _broker().fetch_current_prices(["KRW-BTC", "KRW-ETH"])
+        assert prices == {"KRW-BTC": 0.0, "KRW-ETH": 0.0}
+
+    @patch("src.infra.broker.upbit._pkg.requests.get")
+    def test_skips_non_dict_items(self, mock_get):
+        mock_get.return_value = _resp([None, "junk", {"market": "KRW-BTC", "trade_price": 100.0}])
+        prices = _broker().fetch_current_prices(["KRW-BTC"])
+        assert prices["KRW-BTC"] == 100.0
+
+
+class TestActiveMarkets:
+    @patch("src.infra.broker.upbit._pkg.requests.get")
+    def test_returns_market_code_set(self, mock_get):
+        mock_get.return_value = _resp([
+            {"market": "KRW-BTC"}, {"market": "KRW-ETH"}, {"market": "BTC-XRP"},
+        ])
+        active = _broker()._active_markets()
+        assert active == {"KRW-BTC", "KRW-ETH", "BTC-XRP"}
+
+    @patch("src.infra.broker.upbit._pkg.requests.get")
+    def test_network_exception_returns_none(self, mock_get):
+        mock_get.side_effect = requests.exceptions.Timeout("slow")
+        assert _broker()._active_markets() is None
+
+    @patch("src.infra.broker.upbit._pkg.requests.get")
+    def test_non_list_response_returns_none(self, mock_get):
+        mock_get.return_value = _resp({"error": {"name": "server_error"}})
+        assert _broker()._active_markets() is None
+
 
 class TestGetPortfolio:
     @staticmethod
@@ -182,6 +227,18 @@ class TestGetPortfolio:
     def test_error_response_raises(self, mock_get):
         mock_get.return_value = _resp({"error": {"message": "invalid key", "name": "invalid_access_key"}})
         with pytest.raises(RuntimeError, match="portfolio fetch failed"):
+            _broker().get_portfolio()
+
+    @patch("src.infra.broker.upbit._pkg.requests.get")
+    def test_network_exception_raises(self, mock_get):
+        mock_get.side_effect = requests.exceptions.ConnectionError("down")
+        with pytest.raises(RuntimeError, match="Error getting portfolio"):
+            _broker().get_portfolio()
+
+    @patch("src.infra.broker.upbit._pkg.requests.get")
+    def test_unexpected_accounts_shape_raises(self, mock_get):
+        mock_get.return_value = _resp("not-a-list-or-error-dict")
+        with pytest.raises(RuntimeError, match="unexpected accounts response"):
             _broker().get_portfolio()
 
 
@@ -292,6 +349,38 @@ class TestExecuteOrders:
         assert price_param == "100000"
         assert "." not in price_param
 
+    @patch("src.infra.broker.upbit._pkg.requests.post")
+    def test_sell_below_min_order_rejected_without_post(self, mock_post):
+        # 매도측 최소주문 가드: 0.00001 * 100000 = 1 KRW < 5000 -> 전송 없이 거부
+        order = Order("KRW-BTC", OrderAction.SELL, 0.00001, 100000.0, qty_precision=8)
+        execs = _broker().execute_orders([order])
+        assert execs[0].status == ExecutionStatus.REJECTED
+        mock_post.assert_not_called()
+
+    @patch("src.infra.broker.upbit._pkg.requests.get")
+    @patch("src.infra.broker.upbit._pkg.requests.post")
+    def test_post_network_exception_returns_none(self, mock_post, mock_get):
+        mock_post.side_effect = requests.exceptions.ConnectionError("network down")
+        order = Order("KRW-BTC", OrderAction.BUY, 0.001, 150000000.0, qty_precision=8)
+        execs = _broker().execute_orders([order])
+        assert execs == []           # 전송 실패 주문은 결과에서 제외
+        mock_get.assert_not_called()  # 체결 조회로 진행하지 않음
+
+    @patch("src.infra.broker.upbit._pkg.requests.get")
+    @patch("src.infra.broker.upbit._pkg.requests.post")
+    def test_order_response_missing_uuid_returns_none(self, mock_post, mock_get):
+        mock_post.return_value = _resp({"state": "wait"})  # uuid 누락
+        order = Order("KRW-BTC", OrderAction.BUY, 0.001, 150000000.0, qty_precision=8)
+        execs = _broker().execute_orders([order])
+        assert execs == []
+        mock_get.assert_not_called()
+
+    def test_extract_fill_non_dict_detail(self):
+        order = Order("KRW-BTC", OrderAction.BUY, 0.001, 150000000.0, qty_precision=8)
+        # 폴링 실패로 detail 이 None 이면 (0, order.price, 0)
+        vol, price, fee = UpbitBroker._extract_fill(None, order)
+        assert (vol, price, fee) == (0.0, 150000000.0, 0.0)
+
 
 class TestInitValidation:
     def test_missing_access_key_raises(self):
@@ -318,6 +407,16 @@ class TestRequestAndPolling:
         assert res is r200
         assert b.session.get.call_count == 2
 
+    def test_request_429_exhausted_returns_last(self):
+        b = _broker()
+        b.MIN_REQUEST_INTERVAL = 0  # throttle 비활성 경로 커버
+        r429 = MagicMock(status_code=429)
+        b.session.get = MagicMock(return_value=r429)
+        res = b._request("GET", "http://x")
+        assert res is r429
+        # 최초 1회 + 재시도 RATE_LIMIT_RETRIES회
+        assert b.session.get.call_count == b.RATE_LIMIT_RETRIES + 1
+
     @patch("src.infra.broker.upbit._pkg.requests.get")
     def test_poll_waits_until_done(self, mock_get):
         wait = _resp({"state": "wait"})
@@ -331,7 +430,7 @@ class TestRequestAndPolling:
     def test_poll_continues_after_transient_error(self, mock_get):
         # 첫 조회는 네트워크 오류로 실패해도 폴링을 중단하지 않고 다음 시도로 이어간다.
         done = _resp({"state": "done", "executed_volume": "0.001", "trades": []})
-        mock_get.side_effect = [ConnectionError("boom"), done]
+        mock_get.side_effect = [requests.exceptions.ConnectionError("boom"), done]
         detail = _broker()._poll_order("u-y")
         assert detail["state"] == "done"
         assert mock_get.call_count == 2
