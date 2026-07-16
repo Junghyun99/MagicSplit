@@ -1362,5 +1362,43 @@
                 "alias": "델 테크놀로지스"
             }
         ]
+    },
+    {
+        "id": "tx_20260717_000141",
+        "date": "2026-07-17 00:01:41",
+        "portfolio_value": 18003.871499999997,
+        "cash_balance": 3088.06,
+        "net_deposit": -1.92,
+        "total_trade_amount": 819.14,
+        "reason": "카메코(CCJ):BUY(추가 매수 Lv2 (Lv1 대비 -7.1%)),\n브로드컴(AVGO):SELL(trailing 벌크 매도 Lv2~Lv2 (1주 +5.1%))",
+        "executions": [
+            {
+                "ticker": "CCJ",
+                "action": "BUY",
+                "quantity": 5,
+                "price": 87.52,
+                "fee": 0.0,
+                "date": "2026-07-17 00:01:28",
+                "status": "FILLED",
+                "reason": "ODNO=0031169184",
+                "level": 2,
+                "alias": "카메코"
+            },
+            {
+                "ticker": "AVGO",
+                "action": "SELL",
+                "quantity": 1,
+                "price": 381.54,
+                "fee": 0.0,
+                "date": "2026-07-17 00:01:36",
+                "status": "FILLED",
+                "reason": "ODNO=0031169244",
+                "lot_id": "lot_20260708_000141_AVGO_002",
+                "level": 2,
+                "buy_price": 363.2,
+                "realized_pnl": 18.34,
+                "alias": "브로드컴"
+            }
+        ]
     }
 ]
