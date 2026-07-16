@@ -18,6 +18,8 @@ from src.utils.currency import format_money
 REGIME_CONFIRM_BARS = 2
 # 하락 추세 래치 진입/탈출 확정에 필요한 연속 판정 횟수 (독립 조정 가능)
 DOWNTREND_CONFIRM_BARS = 2
+# 채널 하단 이탈 청산 확정에 필요한 연속 이탈 판정 횟수 (독립 조정 가능)
+BREAKDOWN_CONFIRM_BARS = 2
 
 
 def classify_for_rule(rule: StockRule, ohlc_window):
@@ -943,8 +945,10 @@ class SplitEvaluator:
     ) -> Optional[List[SplitSignal]]:
         """채널 모드(regime_algo="channel")의 이탈 판정을 통상 흐름 앞에서 수행한다.
 
-        이탈 = (하락 래치 확정) OR (현재가가 하단 채널선 하향 돌파).
-        청산 방식은 trendbreak_partial_sell_pct(50=절반+추종 데드라인, 100=전량)를 따른다.
+        이탈 = (하락 래치 확정) OR (현재가가 하단 채널선을 BREAKDOWN_CONFIRM_BARS봉
+        연속 하향 돌파). 단봉 스파이크로 청산되지 않도록 상승/하락 확정과 동일한
+        연속 확정 방식을 쓴다. 청산 방식은 trendbreak_partial_sell_pct
+        (50=절반+추종 데드라인, 100=전량)를 따른다.
 
         반환:
             List -> 이탈 처리 신호 (빈 리스트 포함: 평가 보류/대기)
@@ -975,6 +979,7 @@ class SplitEvaluator:
 
         # 2. 하락 래치 확정 -> 이탈 청산
         if downtrend_blocked:
+            st["breakdown_streak"] = 0
             if self._logger:
                 self._logger.info(
                     f"[{display_ticker(rule.ticker)}] 채널 기울기 하락 전환 확정 "
@@ -982,19 +987,32 @@ class SplitEvaluator:
                 )
             return self._handle_trendbreak(rule, ticker_lots, current_price, reading, st)
 
-        # 3. 상승/횡보 중 하단 채널선 하향 돌파 -> 이탈 청산
+        # 3. 상승/횡보 중 하단 채널선 하향 돌파 -> 연속 확정 후 이탈 청산
         breakdown_line = support * (1 - rule.channel_breakdown_tolerance_pct / 100)
         if current_price < breakdown_line:
+            st["breakdown_streak"] = st.get("breakdown_streak", 0) + 1
+            if st["breakdown_streak"] < BREAKDOWN_CONFIRM_BARS:
+                if self._logger:
+                    self._logger.info(
+                        f"[{display_ticker(rule.ticker)}] 하단 채널선 이탈 감지 "
+                        f"({st['breakdown_streak']}/{BREAKDOWN_CONFIRM_BARS}봉, "
+                        f"현재가 {format_money(current_price, rule.market_type)} < "
+                        f"이탈선 {format_money(breakdown_line, rule.market_type)}) -> 확정 대기"
+                    )
+                return None
+            st["breakdown_streak"] = 0
             if self._logger:
                 self._logger.info(
-                    f"[{display_ticker(rule.ticker)}] 하단 채널선 이탈 감지 "
-                    f"(현재가 {format_money(current_price, rule.market_type)} < "
+                    f"[{display_ticker(rule.ticker)}] 하단 채널선 이탈 확정 "
+                    f"({BREAKDOWN_CONFIRM_BARS}봉 연속, "
+                    f"현재가 {format_money(current_price, rule.market_type)} < "
                     f"이탈선 {format_money(breakdown_line, rule.market_type)}, "
                     f"채널하단 {format_money(support, rule.market_type)}, "
                     f"허용 -{rule.channel_breakdown_tolerance_pct}%) -> 이탈 청산 진행"
                 )
             return self._handle_trendbreak(rule, ticker_lots, current_price, reading, st)
 
+        st["breakdown_streak"] = 0
         return None
 
     def _evaluate_uptrend(

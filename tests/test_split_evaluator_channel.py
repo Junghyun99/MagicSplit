@@ -8,7 +8,11 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from src.core.logic.split_evaluator import SplitEvaluator, classify_for_rule
+from src.core.logic.split_evaluator import (
+    BREAKDOWN_CONFIRM_BARS,
+    SplitEvaluator,
+    classify_for_rule,
+)
 from src.core.logic.regime import Regime
 from src.core.models import StockRule, PositionLot, Portfolio, OrderAction
 
@@ -70,6 +74,16 @@ def _support(rule, window):
     return classify_for_rule(rule, window).channel_support
 
 
+def _eval_until_confirmed(evaluator, rule, lots, pf, window, st):
+    """이탈 확정 봉수만큼 반복 평가해 마지막 신호를 반환한다."""
+    signals = []
+    for _ in range(BREAKDOWN_CONFIRM_BARS):
+        signals = evaluator.evaluate_stock(
+            rule, lots, pf, ohlc_window=window, regime_state=st,
+        )
+    return signals
+
+
 class TestChannelClassifierDispatch:
     def test_classify_for_rule_selects_channel(self):
         rule = _channel_rule()
@@ -104,8 +118,8 @@ class TestChannelSidewaysBreakdown:
         support = _support(rule, window)
         lots = [_lot(buy_price=100.0, qty=10)]
         st = {}
-        signals = evaluator.evaluate_stock(
-            rule, lots, _pf(support * 0.95, qty=10), ohlc_window=window, regime_state=st,
+        signals = _eval_until_confirmed(
+            evaluator, rule, lots, _pf(support * 0.95, qty=10), window, st,
         )
         assert len(signals) == 1
         assert signals[0].action == OrderAction.SELL
@@ -115,13 +129,51 @@ class TestChannelSidewaysBreakdown:
         # 평가 단계에서는 st를 오염시키지 않는다
         assert "trailing_lock" not in st.get("AAPL", {})
 
+    def test_breakdown_requires_confirm_bars(self, evaluator):
+        # 1봉째 이탈은 확정 대기 -> 청산 신호 없음
+        window = _sideways_window()
+        rule = _channel_rule()
+        support = _support(rule, window)
+        lots = [_lot(buy_price=100.0, qty=10)]
+        st = {}
+        signals = evaluator.evaluate_stock(
+            rule, lots, _pf(support * 0.95, qty=10), ohlc_window=window, regime_state=st,
+        )
+        assert all(
+            not s.regime_liquidation and not s.regime_partial_liquidation
+            for s in signals
+        )
+        assert st["AAPL"]["breakdown_streak"] == 1
+
+    def test_breakdown_streak_resets_on_recovery(self, evaluator):
+        # 이탈 1봉 -> 회복 1봉 -> 다시 이탈 1봉: 스파이크는 청산으로 이어지지 않음
+        window = _sideways_window()
+        rule = _channel_rule()
+        support = _support(rule, window)
+        lots = [_lot(buy_price=100.0, qty=10)]
+        st = {}
+        evaluator.evaluate_stock(
+            rule, lots, _pf(support * 0.95, qty=10), ohlc_window=window, regime_state=st,
+        )
+        evaluator.evaluate_stock(
+            rule, lots, _pf(support * 1.02, qty=10), ohlc_window=window, regime_state=st,
+        )
+        assert st["AAPL"]["breakdown_streak"] == 0
+        signals = evaluator.evaluate_stock(
+            rule, lots, _pf(support * 0.95, qty=10), ohlc_window=window, regime_state=st,
+        )
+        assert all(
+            not s.regime_liquidation and not s.regime_partial_liquidation
+            for s in signals
+        )
+
     def test_breakdown_full_100_liquidates_all(self, evaluator):
         window = _sideways_window()
         rule = _channel_rule(trendbreak_partial_sell_pct=100.0)
         support = _support(rule, window)
         lots = [_lot(level=1, qty=5), _lot(level=2, buy_price=95.0, qty=5, lot_id="lot_002")]
-        signals = evaluator.evaluate_stock(
-            rule, lots, _pf(support * 0.95, qty=10), ohlc_window=window, regime_state={},
+        signals = _eval_until_confirmed(
+            evaluator, rule, lots, _pf(support * 0.95, qty=10), window, {},
         )
         assert len(signals) == 1
         assert signals[0].action == OrderAction.SELL
@@ -136,14 +188,14 @@ class TestChannelSidewaysBreakdown:
         lots = [_lot(buy_price=100.0)]
 
         # 지지선 -2%: 이탈선(support*0.95) 위 -> 통상 흐름 (신호 없음: 익절/추매 조건 미충족)
-        signals = evaluator.evaluate_stock(
-            rule, lots, _pf(support * 0.98), ohlc_window=window, regime_state={},
+        signals = _eval_until_confirmed(
+            evaluator, rule, lots, _pf(support * 0.98), window, {},
         )
         assert all(not s.regime_liquidation and not s.regime_partial_liquidation for s in signals)
 
         # 지지선 -6%: 이탈선 아래 -> 이탈 청산
-        signals = evaluator.evaluate_stock(
-            rule, lots, _pf(support * 0.94), ohlc_window=window, regime_state={},
+        signals = _eval_until_confirmed(
+            evaluator, rule, lots, _pf(support * 0.94), window, {},
         )
         assert len(signals) == 1
         assert signals[0].regime_partial_liquidation is True
@@ -222,8 +274,8 @@ class TestChannelUptrend:
         support = _support(rule, window)
         lots = [_lot(buy_price=100.0)]
         st = {"AAPL": {"regime": "uptrend", "adds": 0, "last_add_price": 100.0}}
-        signals = evaluator.evaluate_stock(
-            rule, lots, _pf(support * 0.95), ohlc_window=window, regime_state=st,
+        signals = _eval_until_confirmed(
+            evaluator, rule, lots, _pf(support * 0.95), window, st,
         )
         assert len(signals) == 1
         assert signals[0].regime_liquidation is True
