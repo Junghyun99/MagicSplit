@@ -103,14 +103,20 @@ class TestFetchCurrentPrices:
 
 
 class TestGetPortfolio:
+    @staticmethod
+    def _markets(*codes):
+        return _resp([{"market": c} for c in codes])
+
     @patch("src.infra.broker.upbit._pkg.requests.get")
     def test_maps_krw_to_cash_and_coins_to_holdings(self, mock_get):
         accounts = _resp([
             {"currency": "KRW", "balance": "1000000.0", "locked": "0"},
             {"currency": "BTC", "balance": "0.0005", "locked": "0.0001"},
         ])
+        market_all = self._markets("KRW-BTC", "KRW-ETH")
         ticker = _resp([{"market": "KRW-BTC", "trade_price": 150000000.0}])
-        mock_get.side_effect = [accounts, ticker]
+        # 호출 순서: accounts -> market/all -> ticker
+        mock_get.side_effect = [accounts, market_all, ticker]
 
         pf = _broker().get_portfolio()
         assert pf.total_cash == 1000000.0
@@ -119,12 +125,58 @@ class TestGetPortfolio:
         assert pf.current_prices["KRW-BTC"] == 150000000.0
 
     @patch("src.infra.broker.upbit._pkg.requests.get")
-    def test_no_holdings_skips_ticker_call(self, mock_get):
+    def test_excludes_delisted_holdings(self, mock_get):
+        accounts = _resp([
+            {"currency": "KRW", "balance": "1000000.0", "locked": "0"},
+            {"currency": "BTC", "balance": "0.001", "locked": "0"},
+            {"currency": "DEAD", "balance": "500.0", "locked": "0"},  # 상폐/미상장
+        ])
+        market_all = self._markets("KRW-BTC", "KRW-ETH")  # KRW-DEAD 없음
+        ticker = _resp([{"market": "KRW-BTC", "trade_price": 150000000.0}])
+        mock_get.side_effect = [accounts, market_all, ticker]
+
+        pf = _broker().get_portfolio()
+        assert "KRW-BTC" in pf.holdings
+        assert "KRW-DEAD" not in pf.holdings          # 상폐 보유 제외
+        # ticker 는 거래가능 마켓만으로 호출됨
+        _, kwargs = mock_get.call_args
+        assert kwargs["params"]["markets"] == "KRW-BTC"
+
+    @patch("src.infra.broker.upbit._pkg.requests.get")
+    def test_market_all_failure_keeps_holdings(self, mock_get):
+        # market/all 조회 실패 -> 필터 스킵(정상 코인을 상폐로 오분류하지 않음)
+        accounts = _resp([
+            {"currency": "KRW", "balance": "0", "locked": "0"},
+            {"currency": "BTC", "balance": "0.001", "locked": "0"},
+        ])
+        market_all_err = _resp({"error": {"name": "server_error"}})
+        ticker = _resp([{"market": "KRW-BTC", "trade_price": 150000000.0}])
+        mock_get.side_effect = [accounts, market_all_err, ticker]
+
+        pf = _broker().get_portfolio()
+        assert "KRW-BTC" in pf.holdings  # 필터 스킵되어 보존
+
+    @patch("src.infra.broker.upbit._pkg.requests.get")
+    def test_empty_market_list_keeps_holdings(self, mock_get):
+        # market/all 이 빈 리스트(비정상)면 필터 스킵 -> 정상 보유 통째 삭제 방지
+        accounts = _resp([
+            {"currency": "KRW", "balance": "0", "locked": "0"},
+            {"currency": "BTC", "balance": "0.001", "locked": "0"},
+        ])
+        market_all_empty = _resp([])
+        ticker = _resp([{"market": "KRW-BTC", "trade_price": 150000000.0}])
+        mock_get.side_effect = [accounts, market_all_empty, ticker]
+
+        pf = _broker().get_portfolio()
+        assert "KRW-BTC" in pf.holdings
+
+    @patch("src.infra.broker.upbit._pkg.requests.get")
+    def test_no_holdings_skips_market_and_ticker_calls(self, mock_get):
         mock_get.return_value = _resp([{"currency": "KRW", "balance": "500.0", "locked": "0"}])
         pf = _broker().get_portfolio()
         assert pf.total_cash == 500.0
         assert pf.holdings == {}
-        assert mock_get.call_count == 1  # accounts만 호출
+        assert mock_get.call_count == 1  # accounts만 호출 (market/all·ticker 없음)
 
     @patch("src.infra.broker.upbit._pkg.requests.get")
     def test_error_response_raises(self, mock_get):
