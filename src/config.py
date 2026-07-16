@@ -61,6 +61,10 @@ class Config:
         self.KIS_ACC_NO = os.getenv("KIS_ACC_NO", "")
         self.IS_LIVE = os.getenv("IS_LIVE", "false").lower() == "true"
 
+        # 업비트(코인) 인증 — access/secret 키 쌍 (계좌번호 개념 없음)
+        self.UPBIT_ACCESS_KEY = os.getenv("UPBIT_ACCESS_KEY", "")
+        self.UPBIT_SECRET_KEY = os.getenv("UPBIT_SECRET_KEY", "")
+
         # 알림
         self.SLACK_WEBHOOK_URL = os.getenv("SLACK_WEBHOOK_URL", "")
         self.SLACK_BOT_TOKEN = os.getenv("SLACK_BOT_TOKEN", "")

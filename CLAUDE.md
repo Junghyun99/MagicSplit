@@ -91,6 +91,8 @@ presets.json             # 차수�?배열 공유 ?�리??(?�택)
 - `KIS_APP_KEY` - KIS API ????
 - `KIS_APP_SECRET` - KIS API ???�크�?
 - `KIS_ACC_NO` - KIS 계좌번호
+- `UPBIT_ACCESS_KEY` - 업비트 API Access Key (crypto 마켓용)
+- `UPBIT_SECRET_KEY` - 업비트 API Secret Key (crypto 마켓용)
 - `IS_LIVE` - ?�거???��? ("true" / "false", 기본�? "false")
 - `SLACK_WEBHOOK_URL` - Slack ?�림
 - `config_overseas.json_PATH` - 매매 규칙 ?�일 경로 (기본�? `config_overseas.json`. �?��??`config_domestic.json` 지??

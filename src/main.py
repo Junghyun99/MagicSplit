@@ -10,6 +10,8 @@ from src.infra.broker import (
     KisOverseasLiveBroker,
     KisDomesticPaperBroker,
     KisDomesticLiveBroker,
+    UpbitLiveBroker,
+    UpbitPaperBroker,
 )
 from src.infra.notifier import SlackNotifier
 from src.infra.repo import JsonRepository
@@ -27,8 +29,15 @@ def _resolve_engine_class(engine_name: str):
 
 
 def _create_broker(market_type: str, is_live: bool,
-                    app_key: str, app_secret: str, acc_no: str, logger):
-    """(market_type, is_live) 조합에 따라 KIS 브로커를 생성."""
+                   app_key: str, app_secret: str, acc_no: str, logger,
+                   upbit_access_key: str = "", upbit_secret_key: str = ""):
+    """(market_type, is_live) 조합에 따라 브로커를 생성.
+
+    domestic/overseas -> KIS, crypto -> 업비트.
+    """
+    if market_type == "crypto":
+        args = (upbit_access_key, upbit_secret_key, logger)
+        return UpbitLiveBroker(*args) if is_live else UpbitPaperBroker(*args)
     args = (app_key, app_secret, acc_no, logger)
     if market_type == "domestic":
         return KisDomesticLiveBroker(*args) if is_live else KisDomesticPaperBroker(*args)
@@ -77,6 +86,8 @@ class MagicSplitBot:
             app_secret=self.config.KIS_APP_SECRET,
             acc_no=self.config.KIS_ACC_NO,
             logger=self.logger,
+            upbit_access_key=self.config.UPBIT_ACCESS_KEY,
+            upbit_secret_key=self.config.UPBIT_SECRET_KEY,
         )
         repo = JsonRepository(
             os.path.join(self.config.DATA_PATH, self.market_type),
