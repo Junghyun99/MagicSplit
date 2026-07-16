@@ -72,9 +72,16 @@ class StockRule:
 
     # --- 레짐 필터 (전부 기본값 => OFF => 오늘과 완전히 동일 동작) ---
     regime_enabled: bool = False
-    regime_adx_trend: float = 25.0      # ADX 이상이면 추세장으로 간주
-    regime_adx_range: float = 20.0      # ADX 미만이면 횡보장 (히스테리시스 하단)
-    regime_min_bars: int = 200          # 레짐 판정에 필요한 최소 봉 수
+    # 레짐 분류 알고리즘: "ma_adx"(이동평균 정렬+ADX) | "channel"(회귀 채널 기울기)
+    regime_algo: str = "ma_adx"
+    regime_adx_trend: float = 25.0      # ADX 이상이면 추세장으로 간주 (ma_adx 전용)
+    regime_adx_range: float = 20.0      # ADX 미만이면 횡보장 (히스테리시스 하단, ma_adx 전용)
+    regime_min_bars: int = 200          # 레짐 판정에 필요한 최소 봉 수 (ma_adx 전용. channel은 channel_lookback)
+    # 회귀 채널 분류기 (regime_algo="channel" 전용)
+    channel_lookback: int = 63                    # 회귀 윈도우 봉 수 (63 = 3개월)
+    channel_stddev_k: float = 2.0                 # 채널 폭 = 중심선 +- k*잔차표준편차
+    channel_slope_band_pct: float = 5.0           # |윈도우 전체 기울기%| 이내면 횡보
+    channel_breakdown_tolerance_pct: float = 0.0  # 하단선*(1-tol%) 미만이면 이탈
     # 상승 레짐: 차수 매도를 잠그고 추세 눌림에 누적 매수
     uptrend_pullback_band_pct: float = 1.5   # 눌림 매수 상한: 20EMA + band% 이하면 허용 (하단 제한 없음)
     uptrend_max_adds: int = 3                # 상승장 1사이클 최대 추가매수 횟수
@@ -120,6 +127,32 @@ class StockRule:
             )
 
         if self.regime_enabled:
+            if self.regime_algo not in ("ma_adx", "channel"):
+                raise ValueError(
+                    f"StockRule({self.ticker}): regime_algo는 'ma_adx' 또는 'channel'이어야 합니다. "
+                    f"got '{self.regime_algo}'"
+                )
+            if self.regime_algo == "channel":
+                # ema20/chandelier(22) 등 보조 지표 계산이 보장되는 최소 윈도우
+                if self.channel_lookback < 30:
+                    raise ValueError(
+                        f"StockRule({self.ticker}): channel_lookback은 30 이상이어야 합니다. "
+                        f"got {self.channel_lookback}"
+                    )
+                if self.channel_stddev_k <= 0:
+                    raise ValueError(
+                        f"StockRule({self.ticker}): channel_stddev_k는 양수여야 합니다. "
+                        f"got {self.channel_stddev_k}"
+                    )
+                if self.channel_slope_band_pct < 0:
+                    raise ValueError(
+                        f"StockRule({self.ticker}): channel_slope_band_pct는 음수일 수 없습니다."
+                    )
+                if not (0 <= self.channel_breakdown_tolerance_pct < 100):
+                    raise ValueError(
+                        f"StockRule({self.ticker}): channel_breakdown_tolerance_pct는 "
+                        f"0 이상 100 미만이어야 합니다."
+                    )
             if self.regime_adx_range > self.regime_adx_trend:
                 raise ValueError(
                     f"StockRule({self.ticker}): regime_adx_range({self.regime_adx_range})는 "

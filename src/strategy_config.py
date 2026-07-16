@@ -108,15 +108,19 @@ class StrategyConfig:
 
     # 레짐 필터 파라미터: 타입별 키 집합 (개별 > 글로벌 > dataclass 기본값)
     _REGIME_KEYS_BOOL = ("regime_enabled", "trendbreak_use_sma50")
+    _REGIME_KEYS_STR = ("regime_algo",)
     _REGIME_KEYS_INT = (
         "regime_min_bars", "uptrend_max_adds",
         "uptrend_swing_lookback", "trendbreak_chandelier_lookback",
+        "channel_lookback",
     )
     _REGIME_KEYS_FLOAT = (
         "regime_adx_trend", "regime_adx_range",
         "uptrend_pullback_band_pct", "uptrend_add_amount",
         "trendbreak_chandelier_k", "uptrend_add_reset_pct",
         "trendbreak_partial_sell_pct", "trendbreak_trailing_drop_pct",
+        "channel_stddev_k", "channel_slope_band_pct",
+        "channel_breakdown_tolerance_pct",
     )
     _REGIME_KEYS_LIST = ("uptrend_add_amounts",)
 
@@ -136,6 +140,10 @@ class StrategyConfig:
             val = resolve(key)
             if val is not None:
                 kwargs[key] = bool(val)
+        for key in self._REGIME_KEYS_STR:
+            val = resolve(key)
+            if val is not None:
+                kwargs[key] = str(val)
         for key in self._REGIME_KEYS_INT:
             val = resolve(key)
             if val is not None:
