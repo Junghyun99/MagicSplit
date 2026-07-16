@@ -1048,7 +1048,6 @@ class SplitEvaluator:
 
         if rule.regime_algo != "channel":
             # 지표 결손(NaN) 감지 시 안전 최우선 필터: 오작동 및 청산 누락 방지
-            import math
             target_indicator = reading.sma50 if rule.trendbreak_use_sma50 else reading.chandelier_stop
             if math.isnan(target_indicator):
                 if self._logger:
