@@ -19,7 +19,7 @@ import json
 import time
 import uuid as _uuid
 from datetime import datetime
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Set
 from urllib.parse import urlencode
 
 import src.infra.broker as _pkg  # test patch 타깃: src.infra.broker.requests
@@ -177,7 +177,7 @@ class UpbitBroker(IBrokerAdapter):
             self.logger.error(f"[Upbit] Price fetch error {tickers}: {e}")
         return prices
 
-    def _active_markets(self) -> Optional[set]:
+    def _active_markets(self) -> Optional[Set[str]]:
         """거래 가능한 전체 마켓 코드 집합을 조회한다 (무인증 GET /v1/market/all).
 
         보유 코인이 상폐/미상장인지 판별하는 데 쓴다. 실패 시 None 을 반환하고,
@@ -235,7 +235,8 @@ class UpbitBroker(IBrokerAdapter):
         #  정상 코인 현재가까지 0 이 되는 문제가 있음)
         if holdings:
             active = self._active_markets()
-            if active is not None:
+            # 빈 집합(비정상 응답)은 필터를 건너뛴다 — 정상 보유를 통째로 지우지 않도록.
+            if active:
                 delisted = sorted(m for m in holdings if m not in active)
                 if delisted:
                     self.logger.warning(

@@ -157,6 +157,20 @@ class TestGetPortfolio:
         assert "KRW-BTC" in pf.holdings  # 필터 스킵되어 보존
 
     @patch("src.infra.broker.upbit._pkg.requests.get")
+    def test_empty_market_list_keeps_holdings(self, mock_get):
+        # market/all 이 빈 리스트(비정상)면 필터 스킵 -> 정상 보유 통째 삭제 방지
+        accounts = _resp([
+            {"currency": "KRW", "balance": "0", "locked": "0"},
+            {"currency": "BTC", "balance": "0.001", "locked": "0"},
+        ])
+        market_all_empty = _resp([])
+        ticker = _resp([{"market": "KRW-BTC", "trade_price": 150000000.0}])
+        mock_get.side_effect = [accounts, market_all_empty, ticker]
+
+        pf = _broker().get_portfolio()
+        assert "KRW-BTC" in pf.holdings
+
+    @patch("src.infra.broker.upbit._pkg.requests.get")
     def test_no_holdings_skips_market_and_ticker_calls(self, mock_get):
         mock_get.return_value = _resp([{"currency": "KRW", "balance": "500.0", "locked": "0"}])
         pf = _broker().get_portfolio()
