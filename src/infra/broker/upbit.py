@@ -177,10 +177,30 @@ class UpbitBroker(IBrokerAdapter):
             self.logger.error(f"[Upbit] Price fetch error {tickers}: {e}")
         return prices
 
+    def _active_markets(self) -> Optional[set]:
+        """거래 가능한 전체 마켓 코드 집합을 조회한다 (무인증 GET /v1/market/all).
+
+        보유 코인이 상폐/미상장인지 판별하는 데 쓴다. 실패 시 None 을 반환하고,
+        호출측은 필터링을 건너뛴다(정상 코인을 상폐로 오분류하지 않기 위함).
+        """
+        url = f"{self.BASE_URL}/v1/market/all"
+        try:
+            res = self._request("GET", url, timeout=DEFAULT_HTTP_TIMEOUT)
+            res.raise_for_status()
+            data = res.json()
+        except Exception as e:
+            self.logger.error(f"[Upbit] market/all fetch error: {e}")
+            return None
+        if not isinstance(data, list):
+            self.logger.warning(f"[Upbit] Unexpected market/all response: {data}")
+            return None
+        return {m.get("market") for m in data if isinstance(m, dict) and m.get("market")}
+
     def get_portfolio(self) -> Portfolio:
         """전체 계좌 조회 -> Portfolio.
 
         KRW 통화의 balance 를 현금으로, 그 외 통화(balance+locked)를 보유수량으로 매핑한다.
+        거래 가능 마켓 목록에 없는 보유분(상폐/KRW미상장)은 holdings 에서 제외한다.
         보유 코인의 현재가는 시세 API로 채운다.
         """
         url = f"{self.BASE_URL}/v1/accounts"
@@ -209,6 +229,19 @@ class UpbitBroker(IBrokerAdapter):
                 qty = balance + locked
                 if qty > 0:
                     holdings[f"KRW-{currency}"] = qty
+
+        # 상폐/KRW미상장 보유분 제외 — 거래 가능 마켓에 없는 코인은 holdings 에서 뺀다.
+        # (제외하지 않으면 /v1/ticker 가 잘못된 마켓 하나로 배치 전체를 에러 처리해
+        #  정상 코인 현재가까지 0 이 되는 문제가 있음)
+        if holdings:
+            active = self._active_markets()
+            if active is not None:
+                delisted = sorted(m for m in holdings if m not in active)
+                if delisted:
+                    self.logger.warning(
+                        f"[Upbit] 상폐/KRW미상장 보유 제외 ({len(delisted)}건): {delisted}"
+                    )
+                    holdings = {m: q for m, q in holdings.items() if m in active}
 
         prices = self.fetch_current_prices(list(holdings.keys())) if holdings else {}
         return Portfolio(total_cash=total_cash, holdings=holdings, current_prices=prices)
