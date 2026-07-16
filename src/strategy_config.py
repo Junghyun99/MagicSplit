@@ -188,17 +188,19 @@ class StrategyConfig:
             if not ticker:
                 raise ValueError(f"{self.config_path}[{idx}]: 'ticker' 필드가 필요합니다.")
 
-            if get_ticker_info(ticker) is None:
+            market_type = merged.get("market_type", "overseas")
+            if market_type not in ("overseas", "domestic", "crypto"):
+                raise ValueError(
+                    f"{self.config_path}[{idx}]: market_type은 "
+                    f"'overseas', 'domestic', 'crypto' 중 하나여야 합니다. got '{market_type}'"
+                )
+
+            # 주식(국내/해외) 티커는 tickers.db 등록 여부를 검증한다.
+            # 코인(crypto)은 업비트 마켓 코드(예: 'KRW-BTC')를 쓰므로 stock DB 검증에서 제외.
+            if market_type != "crypto" and get_ticker_info(ticker) is None:
                 raise ValueError(
                     f"{self.config_path}[{idx}]: 티커 '{ticker}' 가 tickers.db에 등록되어 있지 않습니다. "
                     f"국내는 접미사 없는 6자리 코드(예: '005930'), 해외는 심볼 그대로(예: 'AAPL')를 사용하세요."
-                )
-
-            market_type = merged.get("market_type", "overseas")
-            if market_type not in ("overseas", "domestic"):
-                raise ValueError(
-                    f"{self.config_path}[{idx}]: market_type은 "
-                    f"'overseas' 또는 'domestic'이어야 합니다. got '{market_type}'"
                 )
 
             reentry_raw = merged.get("reentry_guard_pct")
@@ -250,6 +252,17 @@ class StrategyConfig:
                     f"got '{spread_threshold_pct}'"
                 )
 
+            # qty_precision: 주문 수량 소수 자릿수. None이면 market_type 기본값(주식=0, 코인=8).
+            qty_precision_raw = merged.get("qty_precision")
+            qty_precision = (
+                int(qty_precision_raw) if qty_precision_raw is not None else None
+            )
+            if qty_precision is not None and qty_precision < 0:
+                raise ValueError(
+                    f"{self.config_path}[{idx}]: qty_precision은 음수일 수 없습니다. "
+                    f"got '{qty_precision}'"
+                )
+
             # 레짐 필터: 개별 설정 > 글로벌 설정 > StockRule 기본값(부재 시 키 생략).
             regime_kwargs = self._build_regime_kwargs(merged)
 
@@ -270,6 +283,7 @@ class StrategyConfig:
                 max_exposure_pct=max_exposure_pct,
                 priority=priority,
                 spread_threshold_pct=spread_threshold_pct,
+                qty_precision=qty_precision,
                 **regime_kwargs,
             )
             self.rules.append(rule)

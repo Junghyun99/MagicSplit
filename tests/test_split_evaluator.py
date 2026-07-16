@@ -39,6 +39,51 @@ class TestEvaluateInitialBuy:
         assert "매수 불가" in signals[0].reason
 
 
+class TestEvaluateCryptoFractional:
+    """코인(crypto) 종목의 소수 수량 매수/매도 end-to-end 검증."""
+
+    def _crypto_rule(self, **kw):
+        return StockRule(
+            ticker="KRW-BTC",
+            buy_threshold_pct=-5.0,
+            sell_threshold_pct=10.0,
+            buy_amount=100000,      # 10만원
+            market_type="crypto",
+            **kw,
+        )
+
+    def test_initial_buy_is_fractional(self, evaluator, create_portfolio):
+        """BTC 가격이 매수금액보다 커도 소수 수량으로 매수한다 (주식이면 0주로 차단될 상황)."""
+        rule = self._crypto_rule()
+        portfolio = create_portfolio(cash=10_000_000, prices={"KRW-BTC": 150_000_000})
+
+        signals = evaluator.evaluate([rule], [], portfolio)
+
+        assert len(signals) == 1
+        buy = signals[0]
+        assert buy.action == OrderAction.BUY
+        assert buy.is_blocked is False
+        # 100000 / 150000000 = 0.000666... -> 8자리 내림
+        assert buy.quantity == pytest.approx(0.00066666, abs=1e-9)
+
+    def test_sell_uses_stored_fractional_quantity(self, evaluator, create_portfolio):
+        """보유 소수 수량이 그대로 매도 신호에 반영된다."""
+        rule = self._crypto_rule()
+        lot = PositionLot(
+            lot_id="lot_btc_1", ticker="KRW-BTC", buy_price=150_000_000,
+            quantity=0.00066666, buy_date="2026-04-01", level=1,
+        )
+        portfolio = create_portfolio(
+            prices={"KRW-BTC": 170_000_000},        # +13% (> 10%)
+            holdings={"KRW-BTC": 0.00066666},
+        )
+
+        signals = evaluator.evaluate([rule], [lot], portfolio)
+        sells = [s for s in signals if s.action == OrderAction.SELL]
+        assert len(sells) == 1
+        assert sells[0].quantity == pytest.approx(0.00066666, abs=1e-9)
+
+
 class TestEvaluateSell:
     """익절 매도 테스트"""
 

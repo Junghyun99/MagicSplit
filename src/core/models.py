@@ -1,7 +1,17 @@
 # src/core/models.py
+import math
 from dataclasses import dataclass
 from enum import Enum
 from typing import Dict, List, Optional
+
+
+# 시장별 기본 수량 정밀도 (허용 소수 자릿수).
+# 주식(domestic/overseas)은 1주 단위(정수), 코인(crypto)은 소수 수량 허용.
+DEFAULT_QTY_PRECISION: Dict[str, int] = {
+    "domestic": 0,
+    "overseas": 0,
+    "crypto": 8,
+}
 
 
 class OrderAction(str, Enum):
@@ -56,6 +66,9 @@ class StockRule:
     # 호가 스프레드 허용 한도 (%). None이면 브로커 기본값(SPREAD_THRESHOLD_PCT=0.5%) 사용.
     # 비인기/저유동성 종목은 2.0 이상 권장.
     spread_threshold_pct: Optional[float] = None
+    # 주문 수량 정밀도 (허용 소수 자릿수). None이면 market_type 기본값
+    # (domestic/overseas=0 정수, crypto=8 소수). KIS는 정수, 업비트는 소수 수량.
+    qty_precision: Optional[int] = None
 
     # --- 레짐 필터 (전부 기본값 => OFF => 오늘과 완전히 동일 동작) ---
     regime_enabled: bool = False
@@ -176,6 +189,41 @@ class StockRule:
             return float(self.uptrend_add_amount)
         return self.buy_amount_at(1)
 
+    def effective_qty_precision(self) -> int:
+        """이 종목의 유효 수량 정밀도(소수 자릿수)를 반환한다.
+
+        qty_precision이 명시되면 그 값을, 아니면 market_type 기본값을 쓴다.
+        미등록 market_type은 안전하게 정수(0)로 처리한다.
+        """
+        if self.qty_precision is not None:
+            return max(0, int(self.qty_precision))
+        return DEFAULT_QTY_PRECISION.get(self.market_type, 0)
+
+    def quantize_qty(self, raw_qty: float, round_up: bool = False) -> float:
+        """주문 수량을 이 종목의 정밀도에 맞춰 정규화한다.
+
+        - 정밀도 0(주식/KIS): 정수(int)로 반환 -> 기존 동작·직렬화 그대로.
+        - 정밀도 p>0(코인/업비트): 소수 p자리로 절단하여 float로 반환.
+        - round_up=False(기본, 매수): 내림 -> 예산 초과 방지.
+        - round_up=True(부분매도): 올림 -> 잔량 dust 방지.
+        """
+        precision = self.effective_qty_precision()
+        rounder = math.ceil if round_up else math.floor
+        if precision <= 0:
+            return int(rounder(raw_qty))
+        factor = 10 ** precision
+        # 부동소수 오차 방어: floor/ceil 직전에 12자리로 반올림해
+        # 5.699999999999(=5.7)가 5로 잘리거나 57.0000001이 58로 올림되는 것을 막는다.
+        return rounder(round(raw_qty * factor, 12)) / factor
+
+    def min_order_qty(self) -> float:
+        """이 종목의 최소 주문 단위 수량.
+
+        정수 시장(주식/KIS)=1주, 소수 시장(코인/업비트)=10^-precision.
+        """
+        precision = self.effective_qty_precision()
+        return 1 if precision <= 0 else 10 ** (-precision)
+
 
 @dataclass
 class PositionLot:
@@ -183,7 +231,7 @@ class PositionLot:
     lot_id: str          # 고유 ID (예: "lot_20260410_001")
     ticker: str
     buy_price: float     # 매수 단가
-    quantity: int        # 매수 수량
+    quantity: float      # 매수 수량 (주식=정수, 코인=소수)
     buy_date: str        # 매수 일자
     level: int = 0       # 차수 (1차, 2차, ..., 100차). 0 = 레거시 데이터
     trailing_highest_price: Optional[float] = None  # 트레일링 스톱 활성화 이후 최고가
@@ -193,7 +241,7 @@ class PositionLot:
 class Portfolio:
     """현재 계좌 상태"""
     total_cash: float
-    holdings: Dict[str, int]          # {ticker: quantity}
+    holdings: Dict[str, float]        # {ticker: quantity} (주식=정수, 코인=소수)
     current_prices: Dict[str, float]  # {ticker: price}
     exchange_rate: Optional[float] = None  # 조회 시점 기준환율 (KRW/USD). 해외주식 전용, 없으면 None
 
@@ -207,9 +255,12 @@ class Portfolio:
 class Order:
     ticker: str
     action: OrderAction
-    quantity: int
+    quantity: float
     price: float  # 예상가
     spread_threshold_pct: Optional[float] = None  # None이면 브로커 기본값 사용
+    # 주문 수량 정밀도(소수 자릿수). None/0이면 정수(주식), p>0이면 소수(코인).
+    # 브로커가 예산 조정 등으로 수량을 재계산할 때 정수/소수 여부를 판단하는 데 쓴다.
+    qty_precision: Optional[int] = None
 
 
 @dataclass
@@ -217,7 +268,7 @@ class TradeExecution:
     """실제 체결된 매매 결과 (영수증)"""
     ticker: str
     action: OrderAction
-    quantity: int    # 실제 체결 수량
+    quantity: float  # 실제 체결 수량 (주식=정수, 코인=소수)
     price: float     # 실제 체결 단가 (평균단가)
     fee: float       # 수수료
     date: str        # 체결 시간
@@ -240,7 +291,7 @@ class SplitSignal:
     ticker: str
     lot_id: Optional[str]   # 매도 시 대상 lot (매수 시 None)
     action: OrderAction
-    quantity: int
+    quantity: float
     price: float
     reason: str             # 판단 사유 (예: "Lv3 +12.3% -> 익절")
     pct_change: float       # 매수가 대비 변동률

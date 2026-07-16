@@ -477,7 +477,7 @@ class SplitEvaluator:
             )
 
         buy_amount = rule.buy_amount_at(1)
-        buy_qty = math.floor(buy_amount / current_price)
+        buy_qty = rule.quantize_qty(buy_amount / current_price)
         if buy_qty <= 0:
             reason = (
                 f"buy_amount({format_money(buy_amount, rule.market_type)}) < "
@@ -602,7 +602,7 @@ class SplitEvaluator:
         rule: StockRule,
         ticker_lots: List[PositionLot],
         current_price: float,
-        buy_qty: int,
+        buy_qty: float,
         portfolio: Optional[Portfolio],
     ) -> bool:
         """종목별 투입 비중 상한 가드: 매수 후 비중이 상한을 넘는지 확인한다.
@@ -655,18 +655,19 @@ class SplitEvaluator:
         self,
         rule: StockRule,
         current_price: float,
-        buy_qty: int,
+        buy_qty: float,
         portfolio: Optional[Portfolio],
     ) -> tuple[bool, str]:
         """잔고 부족 여부를 확인한다."""
         if portfolio is None:
             return True, ""
 
-        # 1. 1주도 살 수 없는 경우
-        if portfolio.total_cash < current_price:
+        # 1. 최소 주문 단위(주식=1주, 코인=10^-precision)조차 살 수 없는 경우
+        min_order_cost = current_price * rule.min_order_qty()
+        if portfolio.total_cash < min_order_cost:
             reason = (
                 f"현금 부족: 보유 현금 {format_money(portfolio.total_cash, rule.market_type)} "
-                f"< 현재가 {format_money(current_price, rule.market_type)} (1주도 매수 불가)"
+                f"< 최소 주문 금액 {format_money(min_order_cost, rule.market_type)} (최소 수량도 매수 불가)"
             )
             return False, reason
 
@@ -724,7 +725,7 @@ class SplitEvaluator:
 
         # 매수 수량 계산 (다음 차수 기준 금액)
         buy_amount = rule.buy_amount_at(next_level)
-        buy_qty = math.floor(buy_amount / current_price)
+        buy_qty = rule.quantize_qty(buy_amount / current_price)
         if buy_qty <= 0:
             reason = (
                 f"buy_amount({format_money(buy_amount, rule.market_type)}) < "
@@ -1012,9 +1013,9 @@ class SplitEvaluator:
             )]
 
         # 분할 매도: partial_pct% 만큼 즉시 매도, 나머지는 추종 데드라인
-        sell_qty = math.ceil(total_qty * partial_pct / 100) if partial_pct > 0 else 0
+        sell_qty = rule.quantize_qty(total_qty * partial_pct / 100, round_up=True) if partial_pct > 0 else 0
 
-        # ceil 올림으로 sell_qty가 total_qty 이상이 되면 전량 청산으로 처리 (상태 오염 방지)
+        # 올림으로 sell_qty가 total_qty 이상이 되면 전량 청산으로 처리 (상태 오염 방지)
         if sell_qty >= total_qty:
             if self._logger:
                 self._logger.info(
@@ -1230,7 +1231,7 @@ class SplitEvaluator:
             return None
 
         amount = rule.uptrend_add_amount_at(adds + 1)
-        buy_qty = math.floor(amount / current_price)
+        buy_qty = rule.quantize_qty(amount / current_price)
         if buy_qty <= 0:
             if self._logger:
                 self._logger.warning(

@@ -158,7 +158,8 @@ class KisOverseasBrokerBase(KisBrokerCommon):
             "ACNT_PRDT_CD": self.acnt_prdt_cd,
             "OVRS_EXCG_CD": exch,
             "PDNO": order.ticker,
-            "ORD_QTY": str(order.quantity),
+            # KIS 해외주식은 정수 수량만 허용 -> 방어적으로 정수화
+            "ORD_QTY": str(int(order.quantity)),
             "OVRS_ORD_UNPR": str(order_price),
             "CTAC_TLNO": "",
             "MGCO_APTM_ODNO": "",

@@ -5,17 +5,22 @@ from typing import List
 from src.core.models import PositionLot, Portfolio, StockRule
 
 
+# 부동소수 수량(코인) 비교 허용오차. 이보다 작은 차이는 동일로 간주한다.
+# 최소 주문 단위(1 satoshi = 1e-8)의 불일치는 잡되, 표현 오차(~1e-12)는 흡수하도록 1e-9.
+QTY_MATCH_TOL = 1e-9
+
+
 @dataclass
 class QuantityMismatch:
     """브로커 보유수량과 positions.json 차수별 수량 합의 불일치 내역."""
     ticker: str
-    broker_qty: int
-    positions_qty: int
+    broker_qty: float
+    positions_qty: float
     lot_count: int
     levels: List[int]
 
     @property
-    def diff(self) -> int:
+    def diff(self) -> float:
         """broker_qty - positions_qty (양수면 브로커가 많음)."""
         return self.broker_qty - self.positions_qty
 
@@ -39,9 +44,10 @@ def detect_mismatches(
     for ticker in sorted(target_tickers):
         ticker_lots = [lot for lot in positions if lot.ticker == ticker]
         positions_qty = sum(lot.quantity for lot in ticker_lots)
-        broker_qty = int(portfolio.holdings.get(ticker, 0))
+        # 주식은 정수, 코인은 소수 -> int 캐스팅 없이 원 수량으로 비교(허용오차 적용).
+        broker_qty = portfolio.holdings.get(ticker, 0)
 
-        if broker_qty == positions_qty:
+        if abs(broker_qty - positions_qty) <= QTY_MATCH_TOL:
             continue
 
         mismatches.append(QuantityMismatch(
