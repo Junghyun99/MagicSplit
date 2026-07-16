@@ -3,7 +3,7 @@ import math
 from typing import Dict, List, Optional
 
 from src.core.interfaces import ILogger
-from src.core.logic.regime import Regime, classify
+from src.core.logic.regime import Regime, classify, classify_channel
 from src.core.models import (
     StockRule,
     PositionLot,
@@ -18,6 +18,29 @@ from src.utils.currency import format_money
 REGIME_CONFIRM_BARS = 2
 # 하락 추세 래치 진입/탈출 확정에 필요한 연속 판정 횟수 (독립 조정 가능)
 DOWNTREND_CONFIRM_BARS = 2
+
+
+def classify_for_rule(rule: StockRule, ohlc_window):
+    """rule.regime_algo에 따라 레짐 분류기를 선택 호출한다 (엔진/평가기 공용)."""
+    if rule.regime_algo == "channel":
+        return classify_channel(
+            ohlc_window,
+            lookback=rule.channel_lookback,
+            stddev_k=rule.channel_stddev_k,
+            slope_band_pct=rule.channel_slope_band_pct,
+            chandelier_k=rule.trendbreak_chandelier_k,
+            chandelier_lookback=rule.trendbreak_chandelier_lookback,
+            swing_lookback=rule.uptrend_swing_lookback,
+        )
+    return classify(
+        ohlc_window,
+        adx_trend_threshold=rule.regime_adx_trend,
+        adx_range_threshold=rule.regime_adx_range,
+        chandelier_k=rule.trendbreak_chandelier_k,
+        chandelier_lookback=rule.trendbreak_chandelier_lookback,
+        swing_lookback=rule.uptrend_swing_lookback,
+        min_bars=rule.regime_min_bars,
+    )
 
 
 class SplitEvaluator:
@@ -112,19 +135,20 @@ class SplitEvaluator:
         regime_st: dict = {}
         downtrend_blocked = False
         if rule.regime_enabled and ohlc_window is not None:
-            reading = classify(
-                ohlc_window,
-                adx_trend_threshold=rule.regime_adx_trend,
-                adx_range_threshold=rule.regime_adx_range,
-                chandelier_k=rule.trendbreak_chandelier_k,
-                chandelier_lookback=rule.trendbreak_chandelier_lookback,
-                swing_lookback=rule.uptrend_swing_lookback,
-                min_bars=rule.regime_min_bars,
-            )
+            reading = classify_for_rule(rule, ohlc_window)
             regime_st = regime_state.setdefault(rule.ticker, {}) if regime_state is not None else {}
             # 하락 래치 갱신: UPTREND 모드 중에도 항상 실행해 레짐 탈출 후 즉시 차단 가능하게 함
             downtrend_blocked = self._resolve_downtrend_block(reading, regime_st, rule.ticker)
             if ticker_lots:
+                # 채널 모드 이탈 처리: 추종 데드라인 -> 하락 래치 청산 -> 하단 이탈 청산.
+                # None이면 이탈 아님 -> 통상 흐름(상승/횡보) 계속.
+                if rule.regime_algo == "channel":
+                    exit_signals = self._evaluate_channel_exit(
+                        rule, ticker_lots, current_price, reading, regime_st,
+                        downtrend_blocked, portfolio,
+                    )
+                    if exit_signals is not None:
+                        return exit_signals
                 uptrend_resolved = (
                     self._resolve_regime(reading, regime_st, rule.ticker, current_price) == Regime.UPTREND
                 )
@@ -852,10 +876,18 @@ class SplitEvaluator:
             st["last_add_price"] = current_price
             st["uptrend_streak"] = 0
             if self._logger:
-                self._logger.info(
-                    f"[{display_ticker(ticker)}] 강한 상승 추세 진입 확정! "
-                    f"(ADX {reading.adx:.1f} 돌파, 20EMA/50MA/200MA 정배열 정렬 상승 국면)"
-                )
+                if math.isnan(reading.adx):
+                    # 채널 분류기: ADX 미사용 -> 기울기 기준 메시지
+                    self._logger.info(
+                        f"[{display_ticker(ticker)}] 강한 상승 추세 진입 확정! "
+                        f"(회귀 채널 기울기 {reading.channel_slope_pct:+.2f}% 밴드 상향 돌파, "
+                        f"{REGIME_CONFIRM_BARS}봉 연속)"
+                    )
+                else:
+                    self._logger.info(
+                        f"[{display_ticker(ticker)}] 강한 상승 추세 진입 확정! "
+                        f"(ADX {reading.adx:.1f} 돌파, 20EMA/50MA/200MA 정배열 정렬 상승 국면)"
+                    )
             return Regime.UPTREND
         return Regime.SIDEWAYS
 
@@ -898,6 +930,72 @@ class SplitEvaluator:
             return True
 
         return False
+
+    def _evaluate_channel_exit(
+        self,
+        rule: StockRule,
+        ticker_lots: List[PositionLot],
+        current_price: float,
+        reading,
+        st: dict,
+        downtrend_blocked: bool,
+        portfolio: Optional[Portfolio],
+    ) -> Optional[List[SplitSignal]]:
+        """채널 모드(regime_algo="channel")의 이탈 판정을 통상 흐름 앞에서 수행한다.
+
+        이탈 = (하락 래치 확정) OR (현재가가 하단 채널선 하향 돌파).
+        청산 방식은 trendbreak_partial_sell_pct(50=절반+추종 데드라인, 100=전량)를 따른다.
+
+        반환:
+            List -> 이탈 처리 신호 (빈 리스트 포함: 평가 보류/대기)
+            None -> 이탈 아님. 호출부가 상승/횡보 통상 흐름을 계속한다.
+        """
+        lock_active = st.get("trailing_lock") is not None
+        support = reading.channel_support
+
+        if math.isnan(support):
+            # 히스토리 부족(UNKNOWN)/데이터 결손 -> 이탈 판정 불가.
+            # 추종 데드라인 추적 중엔 안전을 위해 평가를 보류하고,
+            # 아니면 레짐 OFF와 동일하게 통상 흐름으로 폴백한다 (ma_adx UNKNOWN과 대칭).
+            if lock_active:
+                if self._logger:
+                    self._logger.warning(
+                        f"[{display_ticker(rule.ticker)}] ⚠️ 채널 지표 결손(NaN) - "
+                        "추종 데드라인 추적 중이므로 매매 평가를 보류합니다."
+                    )
+                return []
+            return None
+
+        # 1. 추종 데드라인 활성 -> 전용 평가 (회복/추가 하락/대기)
+        #    횡보장 분할 청산 후에도 잔량 추적이 유지되도록 레짐과 무관하게 최우선 처리.
+        if lock_active:
+            return self._evaluate_trailing_lock(
+                rule, ticker_lots, current_price, reading, st, portfolio
+            )
+
+        # 2. 하락 래치 확정 -> 이탈 청산
+        if downtrend_blocked:
+            if self._logger:
+                self._logger.info(
+                    f"[{display_ticker(rule.ticker)}] 채널 기울기 하락 전환 확정 "
+                    f"({reading.channel_slope_pct:+.2f}%/{rule.channel_lookback}봉) -> 이탈 청산 진행"
+                )
+            return self._handle_trendbreak(rule, ticker_lots, current_price, reading, st)
+
+        # 3. 상승/횡보 중 하단 채널선 하향 돌파 -> 이탈 청산
+        breakdown_line = support * (1 - rule.channel_breakdown_tolerance_pct / 100)
+        if current_price < breakdown_line:
+            if self._logger:
+                self._logger.info(
+                    f"[{display_ticker(rule.ticker)}] 하단 채널선 이탈 감지 "
+                    f"(현재가 {format_money(current_price, rule.market_type)} < "
+                    f"이탈선 {format_money(breakdown_line, rule.market_type)}, "
+                    f"채널하단 {format_money(support, rule.market_type)}, "
+                    f"허용 -{rule.channel_breakdown_tolerance_pct}%) -> 이탈 청산 진행"
+                )
+            return self._handle_trendbreak(rule, ticker_lots, current_price, reading, st)
+
+        return None
 
     def _evaluate_uptrend(
         self,
@@ -945,26 +1043,29 @@ class SplitEvaluator:
         # 기본(use_sma50)은 50MA 하향 이탈을 쓴다. 50MA는 상승 정렬에서 항상 20EMA보다
         # 아래이므로, 20EMA로의 정상 눌림이 이탈로 오인되지 않는 버퍼가 보장된다.
         # use_sma50=False면 변동성 기반 Chandelier 스톱을 쓴다(버퍼는 사용자 책임).
-        
-        # 지표 결손(NaN) 감지 시 안전 최우선 필터: 오작동 및 청산 누락 방지
-        import math
-        target_indicator = reading.sma50 if rule.trendbreak_use_sma50 else reading.chandelier_stop
-        if math.isnan(target_indicator):
-            if self._logger:
-                self._logger.warning(
-                    f"[{display_ticker(rule.ticker)}] ⚠️ 레짐 기술적 지표 결손(NaN) 감지! "
-                    "추세 이탈 여부를 판단할 수 없으므로 안전을 위해 매매 평가를 보류합니다."
-                )
-            return []
+        # 채널 모드는 이탈(하단 채널선)을 evaluate_stock 상단 _evaluate_channel_exit에서
+        # 이미 판정했으므로 여기서는 건너뛴다.
 
-        if rule.trendbreak_use_sma50:
-            broke = current_price < reading.sma50
-        else:
-            broke = current_price < reading.chandelier_stop
-        if broke:
-            return self._handle_trendbreak(
-                rule, ticker_lots, current_price, reading, st
-            )
+        if rule.regime_algo != "channel":
+            # 지표 결손(NaN) 감지 시 안전 최우선 필터: 오작동 및 청산 누락 방지
+            import math
+            target_indicator = reading.sma50 if rule.trendbreak_use_sma50 else reading.chandelier_stop
+            if math.isnan(target_indicator):
+                if self._logger:
+                    self._logger.warning(
+                        f"[{display_ticker(rule.ticker)}] ⚠️ 레짐 기술적 지표 결손(NaN) 감지! "
+                        "추세 이탈 여부를 판단할 수 없으므로 안전을 위해 매매 평가를 보류합니다."
+                    )
+                return []
+
+            if rule.trendbreak_use_sma50:
+                broke = current_price < reading.sma50
+            else:
+                broke = current_price < reading.chandelier_stop
+            if broke:
+                return self._handle_trendbreak(
+                    rule, ticker_lots, current_price, reading, st
+                )
 
         # 2. 매도 잠금 -> 추세 눌림 누적 매수만 평가
         last_lot = max(ticker_lots, key=lambda l: l.level)
@@ -990,6 +1091,15 @@ class SplitEvaluator:
 
         partial_pct = rule.trendbreak_partial_sell_pct
 
+        # 이탈 기준선 로그 문구 (채널 모드는 하단 채널선)
+        if rule.regime_algo == "channel":
+            indicator_txt = f"채널하단 {format_money(reading.channel_support, rule.market_type)}"
+        else:
+            indicator_txt = (
+                f"50MA {format_money(reading.sma50, rule.market_type)}, "
+                f"Chandelier {format_money(reading.chandelier_stop, rule.market_type)}"
+            )
+
         # 100%이면 기존 전량 청산 (하위 호환)
         if partial_pct >= 100.0:
             if self._logger:
@@ -997,8 +1107,7 @@ class SplitEvaluator:
                     f"[{display_ticker(rule.ticker)}] 추세 이탈 -> 통합 전량 청산(Bulk) "
                     f"{total_qty}주 (평단 {format_money(avg_buy, rule.market_type)}, "
                     f"현재가 {format_money(current_price, rule.market_type)}, "
-                    f"50MA {format_money(reading.sma50, rule.market_type)}, "
-                    f"Chandelier {format_money(reading.chandelier_stop, rule.market_type)})"
+                    f"{indicator_txt})"
                 )
             return [SplitSignal(
                 ticker=rule.ticker,
@@ -1063,7 +1172,7 @@ class SplitEvaluator:
                 f"(기준가 {format_money(current_price, rule.market_type)}, "
                 f"청산선 {format_money(stop_price, rule.market_type)}, "
                 f"평단 {format_money(avg_buy, rule.market_type)}, "
-                f"50MA {format_money(reading.sma50, rule.market_type)})"
+                f"{indicator_txt})"
             )
         return [SplitSignal(
             ticker=rule.ticker,
@@ -1096,8 +1205,15 @@ class SplitEvaluator:
         lock_price = lock["lock_price"]
         drop_pct = lock["drop_pct"]
 
+        # 이탈 기준선: 채널 모드는 하단 채널선, ma_adx는 50MA 또는 Chandelier 스톱
+        if rule.regime_algo == "channel":
+            target_indicator = reading.channel_support
+        elif rule.trendbreak_use_sma50:
+            target_indicator = reading.sma50
+        else:
+            target_indicator = reading.chandelier_stop
+
         # 지표 결손 안전 필터
-        target_indicator = reading.sma50 if rule.trendbreak_use_sma50 else reading.chandelier_stop
         if math.isnan(target_indicator):
             if self._logger:
                 self._logger.warning(
@@ -1107,10 +1223,7 @@ class SplitEvaluator:
             return []
 
         # 1. 회복 판정: 이탈 기준선 위로 복귀?
-        if rule.trendbreak_use_sma50:
-            recovered = current_price >= reading.sma50
-        else:
-            recovered = current_price >= reading.chandelier_stop
+        recovered = current_price >= target_indicator
 
         if recovered:
             del st["trailing_lock"]

@@ -684,28 +684,25 @@ class MagicSplitEngine:
         # ── 상승 레짐 전용 요약 로그 분기 ──
         ticker_state = regime_state.get(ticker, {}) if regime_state else {}
         if ticker_state.get("regime") == "uptrend" and ohlc_window is not None:
-            from src.core.logic.regime import classify
-            reading = classify(
-                ohlc_window,
-                adx_trend_threshold=rule.regime_adx_trend,
-                adx_range_threshold=rule.regime_adx_range,
-                chandelier_k=rule.trendbreak_chandelier_k,
-                chandelier_lookback=rule.trendbreak_chandelier_lookback,
-                swing_lookback=rule.uptrend_swing_lookback,
-                min_bars=rule.regime_min_bars,
-            )
+            from src.core.logic.split_evaluator import classify_for_rule
+            reading = classify_for_rule(rule, ohlc_window)
             ema20 = reading.ema20
-            sma50 = reading.sma50
             adds = ticker_state.get("adds", 0)
-            
+
+            # 이탈선: 채널 모드는 하단 채널선, ma_adx는 50MA
+            if rule.regime_algo == "channel":
+                exit_line_txt = f"채널하단(이탈선) {format_money(reading.channel_support, rule.market_type)}"
+            else:
+                exit_line_txt = f"50MA(이탈선) {format_money(reading.sma50, rule.market_type)}"
+
             profit_pct = (current_price - last_lot.buy_price) / last_lot.buy_price * 100
             ema_dist = (current_price - ema20) / ema20 * 100 if ema20 > 0 else float("nan")
-            
+
             msg = (
                 f"  [{disp}] 📈 상승 레짐 유지 | Lv{last_lot.level} "
                 f"매수 {format_money(last_lot.buy_price, rule.market_type)} -> "
                 f"현재 {format_money(current_price, rule.market_type)} ({profit_pct:+.2f}%) | "
-                f"50MA(이탈선) {format_money(sma50, rule.market_type)} | "
+                f"{exit_line_txt} | "
                 f"20EMA(눌림) {format_money(ema20, rule.market_type)} (이격 {ema_dist:+.2f}%) | "
                 f"adds {adds}/{rule.uptrend_max_adds}"
             )
