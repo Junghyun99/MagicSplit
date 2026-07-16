@@ -82,6 +82,30 @@
                     <label>Regime Enabled</label>
                     <input type="checkbox" id="global-regime-enabled" style="width:20px; height:20px;">
                 </div>
+                <div class="form-group">
+                    <label>레짐 알고리즘</label>
+                    <select id="global-regime-algo" class="form-control">
+                        <option value="">(기본: ma_adx)</option>
+                        <option value="ma_adx">ma_adx (MA+ADX)</option>
+                        <option value="channel">channel (회귀 채널)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>채널 룩백 (봉)</label>
+                    <input type="number" id="global-channel-lookback" class="form-control" placeholder="63">
+                </div>
+                <div class="form-group">
+                    <label>채널 폭 K (σ)</label>
+                    <input type="number" step="0.1" id="global-channel-stddev-k" class="form-control" placeholder="2.0">
+                </div>
+                <div class="form-group">
+                    <label>횡보 기울기 밴드 (%)</label>
+                    <input type="number" step="0.1" id="global-channel-slope-band-pct" class="form-control" placeholder="5.0">
+                </div>
+                <div class="form-group">
+                    <label>하단 이탈 허용 (%)</label>
+                    <input type="number" step="0.1" id="global-channel-breakdown-tolerance-pct" class="form-control" placeholder="0.0">
+                </div>
                 <div class="form-group"
                     style="display:flex; flex-direction:column; justify-content:center; align-items:center;">
                     <label>Use SMA50</label>
@@ -250,8 +274,8 @@
     <script src="js/services/data-repository.js?v=20260508-1"></script>
     <script src="js/services/github-api.js?v=20260508-1"></script>
     <script src="js/models/config-model.js?v=20260508-1"></script>
-    <script src="js/views/config-view.js?v=20260619-1"></script>
-    <script src="js/controllers/config-controller.js?v=20260619-1"></script>
+    <script src="js/views/config-view.js?v=20260716-1"></script>
+    <script src="js/controllers/config-controller.js?v=20260716-1"></script>
     <script src="js/config-editor.js?v=20260508-1"></script>
 </body>
 

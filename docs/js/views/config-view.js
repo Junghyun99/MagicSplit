@@ -19,6 +19,11 @@ window.ConfigView = (function () {
         document.getElementById('global-uptrend-add-reset-pct').value = globalConfig?.uptrend_add_reset_pct !== undefined ? globalConfig.uptrend_add_reset_pct : '';
         document.getElementById('global-trendbreak-use-sma50').checked = globalConfig?.trendbreak_use_sma50 !== false;
         document.getElementById('global-trendbreak-chandelier-k').value = globalConfig?.trendbreak_chandelier_k !== undefined ? globalConfig.trendbreak_chandelier_k : '';
+        document.getElementById('global-regime-algo').value = globalConfig?.regime_algo !== undefined ? globalConfig.regime_algo : '';
+        document.getElementById('global-channel-lookback').value = globalConfig?.channel_lookback !== undefined ? globalConfig.channel_lookback : '';
+        document.getElementById('global-channel-stddev-k').value = globalConfig?.channel_stddev_k !== undefined ? globalConfig.channel_stddev_k : '';
+        document.getElementById('global-channel-slope-band-pct').value = globalConfig?.channel_slope_band_pct !== undefined ? globalConfig.channel_slope_band_pct : '';
+        document.getElementById('global-channel-breakdown-tolerance-pct').value = globalConfig?.channel_breakdown_tolerance_pct !== undefined ? globalConfig.channel_breakdown_tolerance_pct : '';
     }
 
     function renderTickerList(stocks, activeIndex, onSelect, getDisplayName) {
@@ -233,7 +238,12 @@ window.ConfigView = (function () {
             regime_enabled: document.getElementById('global-regime-enabled').checked,
             uptrend_add_reset_pct: document.getElementById('global-uptrend-add-reset-pct').value,
             trendbreak_use_sma50: document.getElementById('global-trendbreak-use-sma50').checked,
-            trendbreak_chandelier_k: document.getElementById('global-trendbreak-chandelier-k').value
+            trendbreak_chandelier_k: document.getElementById('global-trendbreak-chandelier-k').value,
+            regime_algo: document.getElementById('global-regime-algo').value,
+            channel_lookback: document.getElementById('global-channel-lookback').value,
+            channel_stddev_k: document.getElementById('global-channel-stddev-k').value,
+            channel_slope_band_pct: document.getElementById('global-channel-slope-band-pct').value,
+            channel_breakdown_tolerance_pct: document.getElementById('global-channel-breakdown-tolerance-pct').value
         };
     }
 
