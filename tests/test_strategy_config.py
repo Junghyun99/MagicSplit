@@ -516,3 +516,62 @@ class TestRepoConfigRegimeSeparation:
     def test_backtest_domestic_regime_on(self):
         sc = StrategyConfig(os.path.join(REPO_ROOT, "config_test_domestic.json"))
         assert sc.rules and all(r.regime_enabled is True for r in sc.rules)
+
+
+class TestCryptoMarketAndQtyPrecision:
+    """코인 마켓(crypto) 수용 및 qty_precision 파싱."""
+
+    def _write(self, tmp_path, stock, fname="config_crypto.json"):
+        config = {"stocks": [stock], "global": {}}
+        f = tmp_path / fname
+        f.write_text(json.dumps(config))
+        return str(f)
+
+    def test_crypto_market_type_accepted(self, tmp_path):
+        path = self._write(tmp_path, {
+            "ticker": "KRW-BTC",
+            "buy_threshold_pct": -5.0,
+            "sell_threshold_pct": 10.0,
+            "buy_amount": 100000,
+            "market_type": "crypto",
+        })
+        rule = StrategyConfig(path).rules[0]
+        assert rule.market_type == "crypto"
+        # 기본 정밀도 8 -> 소수 수량 지원
+        assert rule.min_order_qty() == 10 ** -8
+
+    def test_invalid_market_type_rejected(self, tmp_path):
+        path = self._write(tmp_path, {
+            "ticker": "XXX",
+            "buy_threshold_pct": -5.0,
+            "sell_threshold_pct": 10.0,
+            "buy_amount": 100000,
+            "market_type": "futures",
+        })
+        with pytest.raises(ValueError, match="market_type"):
+            StrategyConfig(path)
+
+    def test_qty_precision_override_parsed(self, tmp_path):
+        path = self._write(tmp_path, {
+            "ticker": "KRW-XRP",
+            "buy_threshold_pct": -5.0,
+            "sell_threshold_pct": 10.0,
+            "buy_amount": 100000,
+            "market_type": "crypto",
+            "qty_precision": 4,
+        })
+        rule = StrategyConfig(path).rules[0]
+        assert rule.qty_precision == 4
+        assert rule.quantize_qty(0.123456) == pytest.approx(0.1234, abs=1e-12)
+
+    def test_negative_qty_precision_rejected(self, tmp_path):
+        path = self._write(tmp_path, {
+            "ticker": "KRW-BTC",
+            "buy_threshold_pct": -5.0,
+            "sell_threshold_pct": 10.0,
+            "buy_amount": 100000,
+            "market_type": "crypto",
+            "qty_precision": -1,
+        })
+        with pytest.raises(ValueError, match="qty_precision"):
+            StrategyConfig(path)

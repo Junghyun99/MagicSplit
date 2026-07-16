@@ -9,8 +9,8 @@ from typing import Optional
 
 
 def currency_code_for(market_type: str) -> str:
-    """market_type -> 통화 코드 (KRW/USD)."""
-    return "KRW" if market_type == "domestic" else "USD"
+    """market_type -> 통화 코드 (KRW/USD). 코인(crypto)은 업비트 원화마켓 -> KRW."""
+    return "KRW" if market_type in ("domestic", "crypto") else "USD"
 
 
 def format_money(value: Optional[float], market_type: str,

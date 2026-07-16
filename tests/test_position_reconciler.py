@@ -87,3 +87,20 @@ class TestDetectMismatches:
     def test_quantity_mismatch_diff_property(self):
         m = QuantityMismatch("X", broker_qty=3, positions_qty=5, lot_count=1, levels=[1])
         assert m.diff == -2
+
+    def test_fractional_match_within_tolerance(self):
+        """코인 소수 수량이 허용오차 내로 일치하면 불일치 아님 (int 절단 없음)."""
+        crypto_rule = StockRule("KRW-BTC", -5.0, 10.0, 100000, market_type="crypto")
+        positions = [_lot("KRW-BTC", 0.00033333, 1, "b1"),
+                     _lot("KRW-BTC", 0.00033333, 2, "b2")]
+        portfolio = _portfolio({"KRW-BTC": 0.00066666})
+        assert detect_mismatches(positions, portfolio, [crypto_rule]) == []
+
+    def test_fractional_mismatch_detected(self):
+        crypto_rule = StockRule("KRW-BTC", -5.0, 10.0, 100000, market_type="crypto")
+        positions = [_lot("KRW-BTC", 0.00066666, 1, "b1")]
+        portfolio = _portfolio({"KRW-BTC": 0.001})
+        out = detect_mismatches(positions, portfolio, [crypto_rule])
+        assert len(out) == 1
+        assert out[0].broker_qty == 0.001
+        assert out[0].positions_qty == 0.00066666

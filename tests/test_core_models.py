@@ -84,6 +84,64 @@ class TestStockRule:
             )
 
 
+class TestQuantizeQty:
+    """수량 정밀도 정규화: 주식(KIS)=정수, 코인(업비트)=소수."""
+
+    def _stock(self, market_type="overseas", **kw):
+        return StockRule("AAPL", -5.0, 10.0, 500, market_type=market_type, **kw)
+
+    def _crypto(self, **kw):
+        return StockRule("KRW-BTC", -5.0, 10.0, 100000, market_type="crypto", **kw)
+
+    def test_stock_floors_to_integer(self):
+        rule = self._stock()
+        result = rule.quantize_qty(3.99)
+        assert result == 3
+        assert isinstance(result, int)
+
+    def test_domestic_floors_to_integer(self):
+        rule = self._stock(market_type="domestic")
+        assert rule.quantize_qty(7.5) == 7
+        assert isinstance(rule.quantize_qty(7.5), int)
+
+    def test_crypto_keeps_fraction(self):
+        rule = self._crypto()
+        # buy_amount 100000 / price 150000000 = 0.000666... -> 8자리 내림
+        qty = rule.quantize_qty(100000 / 150000000)
+        assert qty == pytest.approx(0.00066666, abs=1e-9)
+        assert isinstance(qty, float)
+
+    def test_crypto_default_precision_is_8(self):
+        rule = self._crypto()
+        assert rule.quantize_qty(0.123456789) == pytest.approx(0.12345678, abs=1e-12)
+
+    def test_explicit_precision_overrides_market_default(self):
+        # 코인이지만 소수 3자리로 제한
+        rule = self._crypto(qty_precision=3)
+        assert rule.quantize_qty(0.123456) == pytest.approx(0.123, abs=1e-12)
+
+    def test_precision_zero_on_crypto_forces_integer(self):
+        rule = self._crypto(qty_precision=0)
+        result = rule.quantize_qty(2.9)
+        assert result == 2
+        assert isinstance(result, int)
+
+    def test_round_up_for_partial_sell(self):
+        rule = self._crypto()
+        # 부분매도: 올림 -> dust 방지
+        assert rule.quantize_qty(0.000000011, round_up=True) == pytest.approx(0.00000002, abs=1e-12)
+
+    def test_stock_round_up_returns_integer(self):
+        rule = self._stock()
+        result = rule.quantize_qty(3.01, round_up=True)
+        assert result == 4
+        assert isinstance(result, int)
+
+    def test_negative_precision_treated_as_integer(self):
+        rule = self._crypto(qty_precision=-2)
+        assert rule.quantize_qty(5.9) == 5
+
+
 class TestPositionLot:
     def test_creation(self):
         lot = PositionLot(

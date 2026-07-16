@@ -160,7 +160,8 @@ class KisDomesticBrokerBase(KisBrokerCommon):
             "ACNT_PRDT_CD": self.acnt_prdt_cd,
             "PDNO": _to_kis_code(order.ticker),
             "ORD_DVSN": "00",
-            "ORD_QTY": str(order.quantity),
+            # KIS 국내주식은 정수 수량만 허용 -> 방어적으로 정수화
+            "ORD_QTY": str(int(order.quantity)),
             "ORD_UNPR": str(order_price),
         }
 
