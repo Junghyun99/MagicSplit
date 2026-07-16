@@ -60,7 +60,8 @@ def _floor_price_tick(price: float) -> float:
     ]
     for lower, tick in ranges:
         if price >= lower:
-            return (int(price / tick)) * tick
+            # 부동소수 오차 방어: int 변환 전 8자리 반올림 (예: 0.29/0.01=28.9999996 -> 28 오류)
+            return int(round(price / tick, 8)) * tick
     return price
 
 
@@ -130,7 +131,8 @@ def _place_unfillable_limit_buy(broker, market: str) -> tuple:
         "market": market,
         "side": "bid",
         "ord_type": "limit",
-        "price": str(int(price)) if price >= 1 else _fmt_num(price),
+        # 소수 호가 단위(1~100원대 tick 0.01/0.1) 소실 방지 -> 전 구간 _fmt_num 사용
+        "price": _fmt_num(price),
         "volume": _fmt_num(volume),
     }
     url = f"{broker.BASE_URL}/v1/orders"
