@@ -199,9 +199,9 @@ window.ChartsView = (function () {
             if (abs >= 1_000_000_000) return (v / 1_000_000_000).toFixed(1) + 'B';
             if (abs >= 1_000_000) return (v / 1_000_000).toFixed(1) + 'M';
             if (abs >= 1_000) return (v / 1_000).toFixed(1) + 'K';
-            return v.toFixed(mode === 'domestic' ? 0 : 2);
+            return v.toFixed(window.FormatUtils.isKrwMode(mode) ? 0 : 2);
         };
-        const currencySymbol = mode === 'domestic' ? '₩' : '$';
+        const currencySymbol = window.FormatUtils.isKrwMode(mode) ? '₩' : '$';
         const yLabelHtml = yTickValues.map(v => {
             const y = yScale(v).toFixed(1);
             const label = currencySymbol + compactLabel(v);
