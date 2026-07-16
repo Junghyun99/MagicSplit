@@ -6,11 +6,12 @@
 
 환경변수:
   UPBIT_ACCESS_KEY / UPBIT_SECRET_KEY  - 필수 (실계좌 키)
-  RUN_ORDER_TESTS=true                 - U5~U6 (실주문 시나리오) 활성화
+  RUN_ORDER_TESTS=true                 - U8~U9 (실주문 시나리오) 활성화
   TEST_MARKET=KRW-BTC                  - 주문 테스트 마켓 (기본: KRW-BTC)
 
-readonly tier(U1~U4): 자금 위험 0. RUN_ORDER_TESTS 미설정이어도 실행.
-full tier(U5~U6)    : 실제 주문 발생. 시장가는 즉시 체결되므로 체결되지 않는
+readonly tier(U1~U7): 자금 위험 0. RUN_ORDER_TESTS 미설정이어도 실행.
+                      (인증/시세/잔고/주문가능정보 + 상폐 필터 불변식 검증)
+full tier(U8~U9)    : 실제 주문 발생. 시장가는 즉시 체결되므로 체결되지 않는
                       지정가 매수를 넣고 즉시 취소한다(자금 이동 없음, 잠금만).
 
 주의: 프로덕션 브로커(UpbitBroker.execute_orders)는 시장가 주문을 쓴다.
@@ -178,7 +179,7 @@ def _cleanup_open_orders(broker, logger, test_market):
 
 
 # =====================================================================
-# Readonly Tier (U1~U4) — 항상 실행, 자금 위험 0
+# Readonly Tier (U1~U7) — 항상 실행, 자금 위험 0
 # =====================================================================
 
 class TestReadonly:
@@ -226,17 +227,52 @@ class TestReadonly:
         min_total = data["market"].get("bid", {}).get("min_total")
         print(f"  {test_market} bid_fee={data.get('bid_fee')} min_total={min_total}")
 
+    def test_u5_active_markets(self, broker, test_market):
+        """U5. 거래 가능 마켓 목록 (GET /v1/market/all) — 상폐 판별의 기준 데이터."""
+        active = broker._active_markets()
+        assert isinstance(active, set) and active, "active markets 비어있음/None (파싱 실패)"
+        assert test_market in active, f"{test_market} 가 거래가능 목록에 없음"
+        # 업비트는 수백 개 마켓을 운영 — 파싱이 정상이면 넉넉히 많아야 함
+        assert len(active) > 50, f"마켓 수가 비정상적으로 적음: {len(active)}"
+        print(f"  거래가능 마켓 {len(active)}개 (KRW-BTC 포함={test_market in active})")
+
+    def test_u6_holdings_are_all_tradable(self, broker):
+        """U6. get_portfolio 의 holdings 는 모두 거래가능 마켓이어야 한다.
+
+        상폐/미상장 보유가 필터링돼 빠지는 불변식을 실계좌 데이터로 검증한다.
+        (계좌에 상폐 dust 가 있으면 그것이 제외됐음을, 없으면 불변식 유지를 확인)
+        """
+        active = broker._active_markets()
+        assert active, "active markets 조회 실패"
+        pf = broker.get_portfolio()
+        untradable = [m for m in pf.holdings if m not in active]
+        assert not untradable, f"holdings 에 거래불가(상폐/미상장) 마켓 잔존: {untradable}"
+        print(f"  보유 {len(pf.holdings)}종 전부 거래가능 (상폐 필터 정상)")
+
+    def test_u7_all_holdings_priced(self, broker):
+        """U7. 필터링 후 남은 보유분은 모두 현재가가 조회돼야 한다 (0원 없음).
+
+        상폐 제외 + 시세 조회가 end-to-end 로 맞물려 동작하는지 검증.
+        """
+        pf = broker.get_portfolio()
+        if not pf.holdings:
+            pytest.skip("보유 코인이 없어 검증 생략")
+        for market in pf.holdings:
+            price = pf.current_prices.get(market, 0)
+            assert price > 0, f"{market} 현재가가 0 — 상폐 필터/시세 조회 불일치"
+        print(f"  보유 {len(pf.holdings)}종 전부 현재가 정상 조회")
+
 
 # =====================================================================
-# Full Tier (U5~U6) — 실주문 발생, RUN_ORDER_TESTS=true 필요
+# Full Tier (U8~U9) — 실주문 발생, RUN_ORDER_TESTS=true 필요
 # =====================================================================
 
 @_requires_order_tests()
 class TestFull:
     """체결되지 않는 지정가 매수 -> 미체결 확인 -> 취소. 자금 이동 없음(잠금만)."""
 
-    def test_u5_limit_buy_then_cancel(self, broker, test_market):
-        """U5. 지정가 매수 -> 미체결 등록 확인 -> 취소 -> 미체결 해제 확인."""
+    def test_u8_limit_buy_then_cancel(self, broker, test_market):
+        """U8. 지정가 매수 -> 미체결 등록 확인 -> 취소 -> 미체결 해제 확인."""
         uuid, price, volume = _place_unfillable_limit_buy(broker, test_market)
         print(f"  주문 uuid={uuid} price={price:,.0f} volume={volume}")
 
@@ -260,8 +296,8 @@ class TestFull:
             f"취소 후에도 uuid={uuid} 가 미체결에 남음"
         print("  취소 후 미체결 해제 확인")
 
-    def test_u6_cancelled_order_state(self, broker, test_market):
-        """U6. 취소된 주문 조회 — _poll_order 가 취소 상태를 정상 파싱하는지."""
+    def test_u9_cancelled_order_state(self, broker, test_market):
+        """U9. 취소된 주문 조회 — _poll_order 가 취소 상태를 정상 파싱하는지."""
         uuid, _, _ = _place_unfillable_limit_buy(broker, test_market)
         time.sleep(1.0)
         _cancel(broker, uuid)
