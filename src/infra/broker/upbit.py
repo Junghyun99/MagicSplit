@@ -80,6 +80,12 @@ class UpbitBroker(IBrokerAdapter):
     POLL_INTERVAL = 0.5
 
     def __init__(self, access_key: str, secret_key: str, logger):
+        # 페이퍼 브로커도 실계좌(잔고/시세)를 읽으므로 키가 필수 -> 구동 시점에 즉시 검증
+        if not access_key or not secret_key:
+            raise ValueError(
+                "[Upbit] API Access Key와 Secret Key가 필요합니다. "
+                "UPBIT_ACCESS_KEY / UPBIT_SECRET_KEY 환경변수를 확인하세요."
+            )
         self.access_key = access_key
         self.secret_key = secret_key
         self.logger = logger
@@ -158,7 +164,12 @@ class UpbitBroker(IBrokerAdapter):
             if isinstance(data, dict) and data.get("error"):
                 self.logger.warning(f"[Upbit] Price fetch error: {data['error']}")
                 return prices
+            if not isinstance(data, list):
+                self.logger.warning(f"[Upbit] Unexpected ticker response: {data}")
+                return prices
             for item in data:
+                if not isinstance(item, dict):
+                    continue
                 market = item.get("market")
                 if market:
                     prices[market] = float(item.get("trade_price", 0) or 0)
@@ -244,11 +255,12 @@ class UpbitBroker(IBrokerAdapter):
             krw_total = order.quantity * order.price
             if krw_total < MIN_ORDER_KRW:
                 return None, f"최소 주문 금액 미달 ({krw_total:.0f} < {MIN_ORDER_KRW:.0f} KRW)"
+            # KRW는 정수 통화 -> 시장가 매수 금액은 정수로 전달 (소수점 시 API 검증 오류)
             params = {
                 "market": order.ticker,
                 "side": "bid",
                 "ord_type": "price",
-                "price": _fmt_num(krw_total),
+                "price": str(int(round(krw_total))),
             }
             return params, None
         # 매도 (시장가)
@@ -295,9 +307,26 @@ class UpbitBroker(IBrokerAdapter):
         detail = self._poll_order(order_uuid)
         executed_vol, avg_price, fee = self._extract_fill(detail or resp, order)
 
-        if executed_vol <= 0:
+        if executed_vol > 0:
+            self.logger.info(
+                f"[Upbit] Order FILLED: {order.ticker} uuid={order_uuid} "
+                f"qty={executed_vol} @ {avg_price} fee={fee}"
+            )
+            return TradeExecution(
+                ticker=order.ticker, action=order.action, quantity=executed_vol,
+                price=avg_price, fee=fee,
+                date=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                status=ExecutionStatus.FILLED, reason=f"uuid={order_uuid}",
+            )
+
+        # 체결 수량 0. 거래소가 종료 상태(done/cancel)로 확정했으면 안전하게 REJECTED,
+        # 확정 못 한(폴링 실패/여전히 wait) 경우는 ORDERED 로 남겨 수동 확인을 유도한다.
+        # (주문은 수락됐으나 체결 여부를 못 밝힌 상태를 REJECTED 로 처리하면
+        #  실제 체결 시 로컬 포지션과 거래소 잔고가 어긋날 수 있음)
+        terminal = isinstance(detail, dict) and detail.get("state") in ("done", "cancel")
+        if terminal:
             self.logger.warning(
-                f"[Upbit] Order NOT filled: {order.ticker} uuid={order_uuid}"
+                f"[Upbit] Order NOT filled (terminal): {order.ticker} uuid={order_uuid}"
             )
             return TradeExecution(
                 ticker=order.ticker, action=order.action, quantity=0,
@@ -305,20 +334,22 @@ class UpbitBroker(IBrokerAdapter):
                 date=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
                 status=ExecutionStatus.REJECTED, reason=f"uuid={order_uuid} not filled",
             )
-
-        self.logger.info(
-            f"[Upbit] Order FILLED: {order.ticker} uuid={order_uuid} "
-            f"qty={executed_vol} @ {avg_price} fee={fee}"
+        self.logger.error(
+            f"[Upbit] Order UNCONFIRMED — 수동 확인 필요: {order.ticker} uuid={order_uuid}"
         )
         return TradeExecution(
-            ticker=order.ticker, action=order.action, quantity=executed_vol,
-            price=avg_price, fee=fee,
+            ticker=order.ticker, action=order.action, quantity=0,
+            price=order.price, fee=0.0,
             date=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            status=ExecutionStatus.FILLED, reason=f"uuid={order_uuid}",
+            status=ExecutionStatus.ORDERED, reason=f"uuid={order_uuid} unconfirmed",
         )
 
     def _poll_order(self, order_uuid: str) -> Optional[dict]:
-        """개별 주문 조회를 반복해 체결 완료(done/cancel)를 기다린다."""
+        """개별 주문 조회를 반복해 체결 완료(done/cancel)를 기다린다.
+
+        일시적 네트워크 오류로 한 번 조회에 실패해도 폴링을 중단하지 않고
+        다음 시도로 넘어간다 (체결 여부 미확정으로 오판하는 것을 방지).
+        """
         url = f"{self.BASE_URL}/v1/order"
         params = {"uuid": order_uuid}
         detail = None
@@ -331,7 +362,8 @@ class UpbitBroker(IBrokerAdapter):
                 detail = res.json()
             except Exception as e:
                 self.logger.warning(f"[Upbit] Order query error uuid={order_uuid}: {e}")
-                return detail
+                time.sleep(self.POLL_INTERVAL)
+                continue
             if isinstance(detail, dict) and detail.get("state") in ("done", "cancel"):
                 return detail
             time.sleep(self.POLL_INTERVAL)

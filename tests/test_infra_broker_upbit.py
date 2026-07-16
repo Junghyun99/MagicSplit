@@ -209,12 +209,50 @@ class TestExecuteOrders:
 
     @patch("src.infra.broker.upbit._pkg.requests.get")
     @patch("src.infra.broker.upbit._pkg.requests.post")
-    def test_not_filled_returns_rejected(self, mock_post, mock_get):
+    def test_terminal_zero_fill_returns_rejected(self, mock_post, mock_get):
+        # state=cancel(종료) + 체결 0 -> 거래소가 미체결 확정 -> REJECTED
         mock_post.return_value = _resp({"uuid": "u-3", "state": "wait"})
         mock_get.return_value = _resp({"uuid": "u-3", "state": "cancel", "executed_volume": "0"})
         order = Order("KRW-BTC", OrderAction.BUY, 0.001, 150000000.0, qty_precision=8)
         execs = _broker().execute_orders([order])
         assert execs[0].status == ExecutionStatus.REJECTED
+
+    @patch("src.infra.broker.upbit._pkg.requests.get")
+    @patch("src.infra.broker.upbit._pkg.requests.post")
+    def test_unconfirmed_fill_returns_ordered(self, mock_post, mock_get):
+        # 주문은 수락됐으나 체결 확정 못함(계속 wait) -> ORDERED(수동 확인), REJECTED 아님
+        mock_post.return_value = _resp({"uuid": "u-4", "state": "wait"})
+        mock_get.return_value = _resp({"uuid": "u-4", "state": "wait", "executed_volume": "0"})
+        order = Order("KRW-BTC", OrderAction.BUY, 0.001, 150000000.0, qty_precision=8)
+        execs = _broker().execute_orders([order])
+        assert execs[0].status == ExecutionStatus.ORDERED
+        assert execs[0].quantity == 0
+
+    @patch("src.infra.broker.upbit._pkg.requests.get")
+    @patch("src.infra.broker.upbit._pkg.requests.post")
+    def test_market_buy_price_is_integer_string(self, mock_post, mock_get):
+        mock_post.return_value = _resp({"uuid": "u-5", "state": "wait"})
+        mock_get.return_value = self._fill_detail(0.0006, 166666666.0)
+        # 0.0006 * 166666666 = 99999.9996 -> 정수 반올림 "100000"
+        order = Order("KRW-BTC", OrderAction.BUY, 0.0006, 166666666.0, qty_precision=8)
+        _broker().execute_orders([order])
+        price_param = mock_post.call_args.kwargs["params"]["price"]
+        assert price_param == "100000"
+        assert "." not in price_param
+
+
+class TestInitValidation:
+    def test_missing_access_key_raises(self):
+        with pytest.raises(ValueError, match="Access Key"):
+            UpbitBroker("", "SECRET", MagicMock())
+
+    def test_missing_secret_key_raises(self):
+        with pytest.raises(ValueError, match="Access Key"):
+            UpbitBroker("ACCKEY", "", MagicMock())
+
+    def test_paper_broker_also_requires_keys(self):
+        with pytest.raises(ValueError):
+            UpbitPaperBroker("", "", MagicMock())
 
 
 class TestRequestAndPolling:
@@ -234,6 +272,15 @@ class TestRequestAndPolling:
         done = _resp({"state": "done", "executed_volume": "0.001", "trades": []})
         mock_get.side_effect = [wait, done]
         detail = _broker()._poll_order("u-x")
+        assert detail["state"] == "done"
+        assert mock_get.call_count == 2
+
+    @patch("src.infra.broker.upbit._pkg.requests.get")
+    def test_poll_continues_after_transient_error(self, mock_get):
+        # 첫 조회는 네트워크 오류로 실패해도 폴링을 중단하지 않고 다음 시도로 이어간다.
+        done = _resp({"state": "done", "executed_volume": "0.001", "trades": []})
+        mock_get.side_effect = [ConnectionError("boom"), done]
+        detail = _broker()._poll_order("u-y")
         assert detail["state"] == "done"
         assert mock_get.call_count == 2
 
