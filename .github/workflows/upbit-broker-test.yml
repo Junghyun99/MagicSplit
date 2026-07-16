@@ -19,7 +19,7 @@ on:
 
 jobs:
   broker-live-test:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     timeout-minutes: 10
 
     steps:
@@ -37,12 +37,14 @@ jobs:
         pip install -r requirements.txt
 
     - name: Show runner time (KST)
+      shell: bash
       run: |
         echo "Runner UTC : $(date -u '+%Y-%m-%d %H:%M:%S %Z')"
         echo "KST equiv  : $(TZ=Asia/Seoul date '+%Y-%m-%d %H:%M:%S %Z')"
         echo "업비트는 24시간 거래 — 시간대 제약 없음"
 
     - name: Run broker live tests
+      shell: bash
       env:
         UPBIT_ACCESS_KEY: ${{ secrets.UPBIT_ACCESS_KEY }}
         UPBIT_SECRET_KEY: ${{ secrets.UPBIT_SECRET_KEY }}
