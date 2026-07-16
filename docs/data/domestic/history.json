@@ -2640,5 +2640,103 @@
                 "alias": "KODEX 반도체레버리지"
             }
         ]
+    },
+    {
+        "id": "tx_20260716_100212",
+        "date": "2026-07-16 10:02:12",
+        "portfolio_value": 28747906.0,
+        "cash_balance": 3170056.0,
+        "net_deposit": 99866.68,
+        "total_trade_amount": 9137840.0,
+        "reason": "KODEX 반도체레버리지(494310):SELL(trailing 벌크 매도 Lv1~Lv1 (63주 +11.9%)),\n테스(095610):BUY(초기 매수 Lv1),\nACE 엔비디아밸류체인액티브(483320):BUY(추가 매수 Lv3 (Lv2 대비 -13.7%)),\n삼성전자우(005935):BUY(추가 매수 Lv5 (Lv4 대비 -9.7%)),\nKODEX 증권(102970):BUY(추가 매수 Lv4 (Lv3 대비 -5.9%)),\nTIGER 지주회사(307520):BUY(추가 매수 Lv3 (Lv2 대비 -11.7%)),\n삼성전자(005930):BUY(추가 매수 Lv6 (Lv5 대비 -7.8%))",
+        "executions": [
+            {
+                "ticker": "494310",
+                "action": "SELL",
+                "quantity": 63,
+                "price": 96900.0,
+                "fee": 915.7049999999999,
+                "date": "2026-07-16 10:01:37",
+                "status": "FILLED",
+                "reason": "ODNO=0009243400",
+                "lot_id": "lot_20260714_123800_494310_001",
+                "level": 1,
+                "buy_price": 86745.0,
+                "realized_pnl": 638849.3,
+                "alias": "KODEX 반도체레버리지"
+            },
+            {
+                "ticker": "095610",
+                "action": "BUY",
+                "quantity": 5,
+                "price": 191900.0,
+                "fee": 143.92499999999998,
+                "date": "2026-07-16 10:01:42",
+                "status": "FILLED",
+                "reason": "ODNO=0009251200",
+                "level": 1,
+                "alias": "테스"
+            },
+            {
+                "ticker": "483320",
+                "action": "BUY",
+                "quantity": 19,
+                "price": 25860.0,
+                "fee": 73.701,
+                "date": "2026-07-16 10:01:48",
+                "status": "FILLED",
+                "reason": "ODNO=0009259100",
+                "level": 3,
+                "alias": "ACE 엔비디아밸류체인액티브"
+            },
+            {
+                "ticker": "005935",
+                "action": "BUY",
+                "quantity": 2,
+                "price": 175300.0,
+                "fee": 52.589999999999996,
+                "date": "2026-07-16 10:01:53",
+                "status": "FILLED",
+                "reason": "ODNO=0009267100",
+                "level": 5,
+                "alias": "삼성전자우"
+            },
+            {
+                "ticker": "102970",
+                "action": "BUY",
+                "quantity": 23,
+                "price": 21080.0,
+                "fee": 72.726,
+                "date": "2026-07-16 10:01:58",
+                "status": "FILLED",
+                "reason": "ODNO=0009274500",
+                "level": 4,
+                "alias": "KODEX 증권"
+            },
+            {
+                "ticker": "307520",
+                "action": "BUY",
+                "quantity": 24,
+                "price": 20390.0,
+                "fee": 73.404,
+                "date": "2026-07-16 10:02:04",
+                "status": "FILLED",
+                "reason": "ODNO=0009283600",
+                "level": 3,
+                "alias": "TIGER 지주회사"
+            },
+            {
+                "ticker": "005930",
+                "action": "BUY",
+                "quantity": 1,
+                "price": 257500.0,
+                "fee": 38.625,
+                "date": "2026-07-16 10:02:09",
+                "status": "FILLED",
+                "reason": "ODNO=0009290300",
+                "level": 6,
+                "alias": "삼성전자"
+            }
+        ]
     }
 ]
