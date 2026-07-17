@@ -1480,6 +1480,32 @@ class TestBulkLiquidation:
         assert len(result) == 3                    # 아무것도 안 지워짐
         assert regime_state["AAPL"]["regime"] == "uptrend"
 
+    def test_full_liquidation_preserves_downtrend_latch(self, engine):
+        # 하락 래치 활성 중 전량 청산 -> 상승 관련 키만 리셋, 래치는 보존
+        # (래치까지 지우면 하락장에서 다음 사이클 즉시 재진입하는 churn 발생)
+        regime_state = {"AAPL": {
+            "regime": "uptrend", "adds": 3, "last_add_swing_high": 200.0,
+            "trailing_lock": {"active": True, "lock_price": 90.0, "drop_pct": 3.0},
+            "breakdown_streak": 1,
+            "downtrend": "active", "downtrend_streak": 0, "downtrend_exit_streak": 1,
+        }}
+        result = engine._update_positions(
+            self._positions(), [self._bulk_signal(15)], [self._exe(15)],
+            "2024-01-02", last_sell_prices={}, regime_state=regime_state,
+        )
+        assert result == []
+        st = regime_state["AAPL"]
+        assert st == {"downtrend": "active", "downtrend_streak": 0, "downtrend_exit_streak": 1}
+
+    def test_full_liquidation_without_latch_pops_state(self, engine):
+        # 래치 키가 없으면 기존과 동일하게 상태 전체 제거
+        regime_state = {"AAPL": {"regime": "uptrend", "adds": 3}}
+        engine._update_positions(
+            self._positions(), [self._bulk_signal(15)], [self._exe(15)],
+            "2024-01-02", last_sell_prices={}, regime_state=regime_state,
+        )
+        assert "AAPL" not in regime_state
+
 
 class TestPartialLiquidation:
     """추세이탈 분할청산(Partial Liquidation): 50% 매도를 고차수부터 차감하고 trailing_lock 상태를 활성화한다."""

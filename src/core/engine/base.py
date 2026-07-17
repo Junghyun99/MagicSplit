@@ -961,6 +961,28 @@ class MagicSplitEngine:
 
         return updated, consumed
 
+    @staticmethod
+    def _reset_regime_after_flat(regime_state: dict, ticker: str) -> None:
+        """전량 청산(잔여 0) 후 레짐 상태를 리셋하되 하락 래치 키는 보존한다.
+
+        래치까지 지우면 하락장 한복판에서 다음 사이클에 즉시 1차수 재진입해
+        청산-재매수 churn이 생긴다. 래치 해제는 비하락 판정 연속 확정
+        (DOWNTREND_CONFIRM_BARS) 규칙에만 맡긴다.
+        """
+        st = regime_state.get(ticker)
+        if not isinstance(st, dict):
+            regime_state.pop(ticker, None)
+            return
+        kept = {
+            k: st[k]
+            for k in ("downtrend", "downtrend_streak", "downtrend_exit_streak")
+            if k in st
+        }
+        if kept:
+            regime_state[ticker] = kept
+        else:
+            regime_state.pop(ticker, None)
+
     def _apply_bulk_liquidation(
         self,
         updated: List[PositionLot],
@@ -992,9 +1014,10 @@ class MagicSplitEngine:
                 f"scripts/reconcile_positions.py 로 정합성 확인 권장."
             )
 
-        # 잔여 0일 때만 레짐 리셋(flat 재시작). 부분체결/거절이면 모드 유지 -> 다음 사이클 재청산.
+        # 잔여 0일 때만 레짐 리셋(flat 재시작, 하락 래치는 보존).
+        # 부분체결/거절이면 모드 유지 -> 다음 사이클 재청산.
         if regime_state is not None and not remaining:
-            regime_state.pop(exe.ticker, None)
+            self._reset_regime_after_flat(regime_state, exe.ticker)
         return updated
 
     def _apply_partial_liquidation(
@@ -1033,8 +1056,8 @@ class MagicSplitEngine:
         # 잔량이 없으면 trailing_lock 대신 레짐 상태를 완전히 초기화한다.
         if regime_state is not None:
             if not remaining:
-                regime_state.pop(exe.ticker, None)
-                self.logger.info(f"[{disp}] 분할 청산 후 잔량 없음 -> 레짐 상태 초기화")
+                self._reset_regime_after_flat(regime_state, exe.ticker)
+                self.logger.info(f"[{disp}] 분할 청산 후 잔량 없음 -> 레짐 상태 초기화 (하락 래치 보존)")
             else:
                 st = regime_state.setdefault(exe.ticker, {})
 
@@ -1089,7 +1112,7 @@ class MagicSplitEngine:
                 f"scripts/reconcile_positions.py 로 정합성 확인 권장."
             )
         if regime_state is not None and not remaining:
-            regime_state.pop(exe.ticker, None)
+            self._reset_regime_after_flat(regime_state, exe.ticker)
         return updated
 
     def _enrich_executions(self, executions: List[TradeExecution], signals: List[SplitSignal]) -> None:
