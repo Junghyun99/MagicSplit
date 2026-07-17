@@ -136,6 +136,8 @@ def main():
         app_secret=config.KIS_APP_SECRET,
         acc_no=config.KIS_ACC_NO,
         logger=logger,
+        upbit_access_key=config.UPBIT_ACCESS_KEY,
+        upbit_secret_key=config.UPBIT_SECRET_KEY,
     )
     repo = JsonRepository(
         os.path.join(config.DATA_PATH, market_type),

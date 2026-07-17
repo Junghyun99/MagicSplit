@@ -66,6 +66,8 @@ window.ConfigModel = (function () {
             stock.market_type = 'domestic';
         } else if (currentConfigPath === 'config_overseas.json' || currentConfigPath === 'config_test_overseas.json') {
             stock.market_type = 'overseas';
+        } else if (currentConfigPath === 'config_crypto.json') {
+            stock.market_type = 'crypto';
         }
         currentConfigObj.stocks.push(stock);
         return currentConfigObj.stocks.length - 1;

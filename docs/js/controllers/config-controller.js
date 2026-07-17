@@ -188,6 +188,13 @@ window.ConfigController = (function () {
                 return;
             }
 
+            // 코인(config_crypto.json)은 주식 티커 DB(tickers.json) 대상이 아니므로
+            // 자동완성을 제공하지 않는다 (KRW-BTC 등 마켓 코드는 직접 입력).
+            if (ConfigModel.getPath().includes('crypto.json')) {
+                ConfigView.hideTickerSearchResults();
+                return;
+            }
+
             // 현재 편집 중인 설정 파일에 맞춰 필터링
             const isDomesticFile = ConfigModel.getPath().includes('domestic.json');
 
