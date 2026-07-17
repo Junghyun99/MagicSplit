@@ -2,7 +2,7 @@
 window.DashboardModel = (function () {
     'use strict';
 
-    const VALID_MODES = ['domestic', 'overseas', 'backtest'];
+    const VALID_MODES = ['domestic', 'overseas', 'crypto', 'backtest'];
     const DEFAULT_MODE = 'domestic';
 
     let currentMode = DEFAULT_MODE;

@@ -25,12 +25,12 @@ window.DashboardView = (function () {
     }
 
     function formatCurrency(value, mode) {
-        const isDomestic = mode === 'domestic';
-        return new Intl.NumberFormat(isDomestic ? 'ko-KR' : 'en-US', {
+        const isKrw = window.FormatUtils.isKrwMode(mode);
+        return new Intl.NumberFormat(isKrw ? 'ko-KR' : 'en-US', {
             style: 'currency',
-            currency: isDomestic ? 'KRW' : 'USD',
-            minimumFractionDigits: isDomestic ? 0 : 2,
-            maximumFractionDigits: isDomestic ? 0 : 2,
+            currency: isKrw ? 'KRW' : 'USD',
+            minimumFractionDigits: isKrw ? 0 : 2,
+            maximumFractionDigits: isKrw ? 0 : 2,
         }).format(Number(value));
     }
 

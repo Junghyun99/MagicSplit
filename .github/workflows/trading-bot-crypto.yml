@@ -1,0 +1,95 @@
+name: MagicSplit Trading Bot (Crypto)
+
+on:
+  # 코인은 24시간 거래 — 원하는 주기로 cron 활성화 (예: 매시 정각)
+  # schedule:
+  #  - cron: '0 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: trading-crypto
+  cancel-in-progress: false
+
+jobs:
+  trade-crypto:
+    runs-on: self-hosted
+    timeout-minutes: 20
+    env:
+      TZ: Asia/Seoul
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.10"
+        cache: pip
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Show runner time (KST)
+      run: |
+        Write-Host "Runner UTC : $((Get-Date).ToUniversalTime().ToString('yyyy-MM-dd HH:mm:ss UTC'))"
+        Write-Host "KST equiv  : $((Get-Date).ToString('yyyy-MM-dd HH:mm:ss KST'))"
+        Write-Host "업비트는 24시간 거래 — 시간대/휴장 제약 없음"
+
+    - name: Run MagicSplit Bot (Crypto)
+      env:
+        CONFIG_JSON_PATH: config_crypto.json
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_LIVE }}
+        SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+        SLACK_CHANNEL_ID: ${{ secrets.SLACK_CHANNEL_ID }}
+        UPBIT_ACCESS_KEY: ${{ secrets.UPBIT_ACCESS_KEY }}
+        UPBIT_SECRET_KEY: ${{ secrets.UPBIT_SECRET_KEY }}
+        IS_LIVE: 'true'
+        PYTHONUTF8: '1'
+        PYTHONUNBUFFERED: '1'
+      run: |
+        if ([string]::IsNullOrEmpty($env:UPBIT_ACCESS_KEY) -or [string]::IsNullOrEmpty($env:UPBIT_SECRET_KEY)) {
+          Write-Host "::error::UPBIT_ACCESS_KEY / UPBIT_SECRET_KEY 시크릿이 설정되지 않았습니다."
+          exit 1
+        }
+        Write-Host "=== MagicSplit Trading Bot (Crypto) ==="
+        Write-Host "Config : config_crypto.json"
+        Write-Host "Broker : UpbitLiveBroker (실거래 서버, IS_LIVE=true)"
+        Write-Host "======================================="
+        python -m src.main
+
+    - name: Debug - List data and logs
+      if: always()
+      run: |
+        Write-Host "=== docs/data/crypto/ ==="
+        Get-ChildItem -Recurse docs/data/crypto/ -ErrorAction SilentlyContinue
+        Write-Host "=== logs/crypto/ ==="
+        Get-ChildItem -Recurse logs/crypto/ -ErrorAction SilentlyContinue
+
+    - name: Commit and push updated data and logs
+      if: ${{ success() }}
+      uses: stefanzweifel/git-auto-commit-action@b863ae1933cb653a53c021fe36dbb774e1fb9403 # v5.2.0
+      with:
+        commit_message: "Auto-update crypto trading data and logs [skip ci]"
+        file_pattern: "docs/data/crypto/*.json logs/crypto/*.log"
+        commit_user_name: "github-actions[bot]"
+        commit_user_email: "github-actions[bot]@users.noreply.github.com"
+        add_options: '--force'
+
+    - name: Notify Slack on failure
+      if: ${{ failure() }}
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_LIVE }}
+      run: |
+        if ([string]::IsNullOrEmpty($env:SLACK_WEBHOOK_URL)) {
+          Write-Host "SLACK_WEBHOOK_URL 미설정 — Slack 알림 생략"
+          exit 0
+        }
+        $runUrl = "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+        $body = @{ text = ":rotating_light: MagicSplit (Crypto) FAILED`n<$runUrl|Run #${{ github.run_id }}>" } | ConvertTo-Json
+        Invoke-RestMethod -Uri $env:SLACK_WEBHOOK_URL -Method Post -ContentType 'application/json' -Body $body

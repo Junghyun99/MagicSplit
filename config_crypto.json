@@ -1,0 +1,32 @@
+{
+    "stocks": [
+        {
+            "ticker": "KRW-BTC",
+            "market_type": "crypto",
+            "enabled": true,
+            "preset": "major_coin"
+        },
+        {
+            "ticker": "KRW-ETH",
+            "market_type": "crypto",
+            "enabled": false,
+            "preset": "major_coin"
+        },
+        {
+            "ticker": "KRW-XRP",
+            "market_type": "crypto",
+            "enabled": false,
+            "preset": "alt_coin"
+        },
+        {
+            "ticker": "KRW-SOL",
+            "market_type": "crypto",
+            "enabled": false,
+            "preset": "alt_coin"
+        }
+    ],
+    "global": {
+        "max_exposure_pct": 30,
+        "notification_enabled": true
+    }
+}
