@@ -402,17 +402,19 @@ class MagicSplitEngine:
                     )
                 else:
                     buy_amount = target_rule.buy_amount_at(level)
-                order_qty = int(buy_amount / current_price)
+                # 수량 정밀도 반영: 주식=정수, 코인=소수(현재가보다 작아도 소수 수량 가능)
+                order_qty = target_rule.quantize_qty(buy_amount / current_price)
                 if order_qty <= 0:
                     raise RuntimeError(
-                        f"{disp} 매수 수량 0주 — Lv{level} buy_amount"
+                        f"{disp} 매수 수량 0 — Lv{level} buy_amount"
                         f"({format_money(buy_amount, self.market_type)})가 "
-                        f"현재가({format_money(current_price, self.market_type)})보다 작음."
+                        f"최소 주문 단위 금액보다 작음 "
+                        f"(현재가 {format_money(current_price, self.market_type)})."
                     )
                 self.logger.info(
                     f"매수 수량 도출: Lv{level} buy_amount="
                     f"{format_money(buy_amount, self.market_type)} / 현재가="
-                    f"{format_money(current_price, self.market_type)} = {order_qty}주"
+                    f"{format_money(current_price, self.market_type)} = {order_qty}"
                 )
             elif sell_all:
                 # 일괄매도: 보유 lot 전체 수량 합산 -> regime_liquidation 경로로 전량 청산

@@ -849,6 +849,39 @@ class TestRunManualTrade:
         assert new_lot.quantity == 5
         assert new_lot.buy_price == 100.0
 
+    def test_crypto_buy_allows_fractional_qty_below_price(
+        self, mock_broker, mock_repo, mock_logger,
+    ):
+        """코인 수동매수: buy_amount(10000)가 현재가(93,487,000)보다 작아도
+        소수 수량으로 매수돼야 한다 (정수 0으로 차단되면 안 됨)."""
+        price = 93_487_000.0
+        # 10000 / 93,487,000 = 0.00010696674... -> 8자리 내림(truncation) = 0.00010696
+        expected_qty = 0.00010696
+        rules = [StockRule("KRW-BTC", -5.0, 10.0, 10000, market_type="crypto")]
+        mock_broker.get_portfolio.return_value = Portfolio(
+            total_cash=1_000_000.0, holdings={}, current_prices={"KRW-BTC": price},
+        )
+        mock_broker.fetch_current_prices.return_value = {"KRW-BTC": price}
+        mock_repo.load_positions.return_value = []
+        mock_repo.load_last_sell_prices.return_value = {}
+        mock_broker.execute_orders.return_value = [
+            TradeExecution("KRW-BTC", OrderAction.BUY, 0.00010696, price, 5.0,
+                           "2026-04-10", ExecutionStatus.FILLED),
+        ]
+
+        eng = self._make_engine(mock_broker, mock_repo, mock_logger, rules)
+        result = eng.run_manual_trade(
+            ticker="KRW-BTC", action=OrderAction.BUY,
+            override_amount=10000, sim_date="2026-04-10",
+        )
+
+        assert result.has_orders is True
+        sig = result.signals[0]
+        assert sig.level == 1
+        assert 0 < sig.quantity < 1                      # 소수 수량
+        # 정확한 내림값과 일치해야 함 (올림/반올림 회귀 방지 — approx 오차 미허용)
+        assert sig.quantity == expected_qty
+
     def test_buy_resets_trailing_on_lower_lots(
         self, mock_broker, mock_repo, mock_logger,
     ):
@@ -986,7 +1019,7 @@ class TestRunManualTrade:
     def test_buy_amount_too_small_raises(
         self, mock_broker, mock_repo, mock_logger,
     ):
-        """rule.buy_amount < 현재가 -> 도출 수량이 0이면 RuntimeError."""
+        """정수 마켓(주식): buy_amount < 현재가 -> 도출 수량이 0이면 RuntimeError."""
         rules = [StockRule("AAPL", -5.0, 10.0, 50, 10)]  # buy_amount=50
         mock_broker.get_portfolio.return_value = Portfolio(
             total_cash=10000.0, holdings={}, current_prices={"AAPL": 100.0},
@@ -996,7 +1029,7 @@ class TestRunManualTrade:
         mock_repo.load_last_sell_prices.return_value = {}
 
         eng = self._make_engine(mock_broker, mock_repo, mock_logger, rules)
-        with pytest.raises(RuntimeError, match="매수 수량 0주"):
+        with pytest.raises(RuntimeError, match="매수 수량 0"):
             eng.run_manual_trade(
                 ticker="AAPL", action=OrderAction.BUY, sim_date="2026-04-10",
             )
