@@ -40,23 +40,37 @@ from src.infra.notifier import SlackNotifier
 
 def parse_args():
     parser = argparse.ArgumentParser(description="수동 매매 스크립트")
-    parser.add_argument(
-        "--trades-json", required=True,
+    group = parser.add_mutually_exclusive_group(required=True)
+    group.add_argument(
+        "--trades-json",
         help='매매 목록 JSON 배열 [{"ticker","action","amount"?}]. '
              "한 종목이든 여러 종목이든 동일 경로로 처리된다.",
+    )
+    group.add_argument(
+        "--trades-file",
+        help="매매 목록 JSON이 담긴 파일 경로. 따옴표 포함 JSON을 셸(특히 "
+             "PowerShell)에서 안전하게 전달하기 위한 대안 입력.",
     )
     return parser.parse_args()
 
 
 def _parse_trades(args):
-    """--trades-json 을 정규화된 trade 목록으로 변환한다.
+    """--trades-json / --trades-file 을 정규화된 trade 목록으로 변환한다.
 
     반환: [{"ticker": str, "action": str, "amount": Optional[float]}]
     """
+    if getattr(args, "trades_file", None):
+        try:
+            with open(args.trades_file, "r", encoding="utf-8") as f:
+                raw_text = f.read()
+        except OSError as e:
+            raise SystemExit(f"에러: --trades-file 읽기 실패: {e}")
+    else:
+        raw_text = args.trades_json
     try:
-        raw = json.loads(args.trades_json)
+        raw = json.loads(raw_text)
     except json.JSONDecodeError as e:
-        raise SystemExit(f"에러: --trades-json 파싱 실패: {e}")
+        raise SystemExit(f"에러: 매매 목록 JSON 파싱 실패: {e}")
     if not isinstance(raw, list) or not raw:
         raise SystemExit("에러: --trades-json 은 비어있지 않은 JSON 배열이어야 합니다.")
     trades = []
@@ -136,6 +150,8 @@ def main():
         app_secret=config.KIS_APP_SECRET,
         acc_no=config.KIS_ACC_NO,
         logger=logger,
+        upbit_access_key=config.UPBIT_ACCESS_KEY,
+        upbit_secret_key=config.UPBIT_SECRET_KEY,
     )
     repo = JsonRepository(
         os.path.join(config.DATA_PATH, market_type),
