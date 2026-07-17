@@ -71,15 +71,24 @@ jobs:
         Write-Host "=== logs/crypto/ ==="
         Get-ChildItem -Recurse logs/crypto/ -ErrorAction SilentlyContinue
 
+    # git-auto-commit-action은 bash로 entrypoint.sh를 실행 -> self-hosted Windows(bash 없음)
+    # 에서 'spawn bash ENOENT'로 실패한다. 네이티브 git(PowerShell)으로 대체한다.
     - name: Commit and push updated data and logs
       if: ${{ success() }}
-      uses: stefanzweifel/git-auto-commit-action@b863ae1933cb653a53c021fe36dbb774e1fb9403 # v5.2.0
-      with:
-        commit_message: "Auto-update crypto trading data and logs [skip ci]"
-        file_pattern: "docs/data/crypto/*.json logs/crypto/*.log"
-        commit_user_name: "github-actions[bot]"
-        commit_user_email: "github-actions[bot]@users.noreply.github.com"
-        add_options: '--force'
+      env:
+        TARGET_REF: ${{ github.ref_name }}
+      run: |
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+        if (Test-Path docs/data/crypto) { git add --force docs/data/crypto }
+        if (Test-Path logs/crypto)      { git add --force logs/crypto }
+        git diff --cached --quiet
+        if ($LASTEXITCODE -ne 0) {
+          git commit -m "Auto-update crypto trading data and logs [skip ci]"
+          git push origin "HEAD:$env:TARGET_REF"
+        } else {
+          Write-Host "커밋할 변경 사항 없음 - 생략"
+        }
 
     - name: Notify Slack on failure
       if: ${{ failure() }}
