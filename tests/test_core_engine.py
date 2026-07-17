@@ -855,7 +855,8 @@ class TestRunManualTrade:
         """코인 수동매수: buy_amount(10000)가 현재가(93,487,000)보다 작아도
         소수 수량으로 매수돼야 한다 (정수 0으로 차단되면 안 됨)."""
         price = 93_487_000.0
-        expected_qty = 10000 / price  # ~0.00010696 (8자리 내림)
+        # 10000 / 93,487,000 = 0.00010696674... -> 8자리 내림(truncation) = 0.00010696
+        expected_qty = 0.00010696
         rules = [StockRule("KRW-BTC", -5.0, 10.0, 10000, market_type="crypto")]
         mock_broker.get_portfolio.return_value = Portfolio(
             total_cash=1_000_000.0, holdings={}, current_prices={"KRW-BTC": price},
@@ -878,7 +879,8 @@ class TestRunManualTrade:
         sig = result.signals[0]
         assert sig.level == 1
         assert 0 < sig.quantity < 1                      # 소수 수량
-        assert sig.quantity == pytest.approx(expected_qty, abs=1e-8)
+        # 정확한 내림값과 일치해야 함 (올림/반올림 회귀 방지 — approx 오차 미허용)
+        assert sig.quantity == expected_qty
 
     def test_buy_resets_trailing_on_lower_lots(
         self, mock_broker, mock_repo, mock_logger,
