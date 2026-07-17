@@ -82,6 +82,9 @@ class StockRule:
     channel_stddev_k: float = 2.0                 # 채널 폭 = 중심선 +- k*잔차표준편차
     channel_slope_band_pct: float = 8.0           # |윈도우 전체 기울기%| 이내면 횡보 (백테스트 근거 5.0 -> 8.0)
     channel_breakdown_tolerance_pct: float = 0.0  # 하단선*(1-tol%) 미만이면 이탈
+    # True면 하단 이탈 청산을 상승 래치 활성 중에만 발동 (횡보장은 분할매매에 맡기고
+    # 하락 방어는 하락 래치 청산만 사용). False = 상승/횡보 모두 발동 (기존 동작)
+    channel_breakdown_uptrend_only: bool = False
     # 상승 레짐: 차수 매도를 잠그고 추세 눌림에 누적 매수
     uptrend_pullback_band_pct: float = 1.5   # 눌림 매수 상한: 20EMA + band% 이하면 허용 (하단 제한 없음)
     uptrend_max_adds: int = 3                # 상승장 1사이클 최대 추가매수 횟수

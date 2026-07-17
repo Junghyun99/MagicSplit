@@ -988,6 +988,12 @@ class SplitEvaluator:
             return self._handle_trendbreak(rule, ticker_lots, current_price, reading, st)
 
         # 3. 상승/횡보 중 하단 채널선 하향 돌파 -> 연속 확정 후 이탈 청산
+        # channel_breakdown_uptrend_only=True면 상승 래치 활성 중에만 발동.
+        # 횡보장은 분할매매(물타기/익절)에 맡기고 하락 방어는 하락 래치 청산만 쓴다.
+        if rule.channel_breakdown_uptrend_only and st.get("regime") != "uptrend":
+            st["breakdown_streak"] = 0
+            return None
+
         breakdown_line = support * (1 - rule.channel_breakdown_tolerance_pct / 100)
         if current_price < breakdown_line:
             st["breakdown_streak"] = st.get("breakdown_streak", 0) + 1

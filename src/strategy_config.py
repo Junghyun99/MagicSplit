@@ -107,7 +107,9 @@ class StrategyConfig:
         return merged
 
     # 레짐 필터 파라미터: 타입별 키 집합 (개별 > 글로벌 > dataclass 기본값)
-    _REGIME_KEYS_BOOL = ("regime_enabled", "trendbreak_use_sma50")
+    _REGIME_KEYS_BOOL = (
+        "regime_enabled", "trendbreak_use_sma50", "channel_breakdown_uptrend_only",
+    )
     _REGIME_KEYS_STR = ("regime_algo",)
     _REGIME_KEYS_INT = (
         "regime_min_bars", "uptrend_max_adds",

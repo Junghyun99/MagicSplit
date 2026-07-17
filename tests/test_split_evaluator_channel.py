@@ -201,6 +201,58 @@ class TestChannelSidewaysBreakdown:
         assert signals[0].regime_partial_liquidation is True
 
 
+class TestChannelBreakdownUptrendOnly:
+    """channel_breakdown_uptrend_only=True: 하단 이탈 청산을 상승 래치 중에만 발동."""
+
+    def test_sideways_breakdown_skipped(self, evaluator):
+        # 횡보(래치 없음) + 하단 이탈 지속 -> 청산 없이 통상 분할매매 유지
+        window = _sideways_window()
+        rule = _channel_rule(channel_breakdown_uptrend_only=True)
+        support = _support(rule, window)
+        lots = [_lot(buy_price=100.0, qty=10)]
+        st = {}
+        signals = _eval_until_confirmed(
+            evaluator, rule, lots, _pf(support * 0.95, qty=10), window, st,
+        )
+        assert all(
+            not s.regime_liquidation and not s.regime_partial_liquidation
+            for s in signals
+        )
+        assert st["AAPL"].get("breakdown_streak", 0) == 0
+
+    def test_uptrend_breakdown_still_fires(self, evaluator):
+        window = _uptrend_window()
+        rule = _channel_rule(
+            channel_breakdown_uptrend_only=True, trendbreak_partial_sell_pct=100.0,
+        )
+        support = _support(rule, window)
+        lots = [_lot(buy_price=100.0)]
+        st = {"AAPL": {"regime": "uptrend", "adds": 0, "last_add_price": 100.0}}
+        signals = _eval_until_confirmed(
+            evaluator, rule, lots, _pf(support * 0.95), window, st,
+        )
+        assert len(signals) == 1
+        assert signals[0].regime_liquidation is True
+
+    def test_downtrend_latch_liquidation_unaffected(self, evaluator):
+        # 하락 래치 청산은 옵션과 무관하게 유지
+        window = _downtrend_window()
+        rule = _channel_rule(
+            channel_breakdown_uptrend_only=True, trendbreak_partial_sell_pct=100.0,
+        )
+        support = _support(rule, window)
+        lots = [_lot(buy_price=150.0)]
+        st = {}
+        evaluator.evaluate_stock(
+            rule, lots, _pf(support * 1.02), ohlc_window=window, regime_state=st,
+        )
+        signals = evaluator.evaluate_stock(
+            rule, lots, _pf(support * 1.02), ohlc_window=window, regime_state=st,
+        )
+        assert len(signals) == 1
+        assert signals[0].regime_liquidation is True
+
+
 class TestChannelDowntrendLiquidation:
     def test_downtrend_latch_confirms_then_liquidates(self, evaluator):
         # 하락 기울기 확정(2봉 연속) -> 보유분 이탈 청산
