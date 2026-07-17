@@ -33,8 +33,9 @@ def fetch_krw_markets():
     for m in data:
         if not isinstance(m, dict):
             continue
-        market = m.get("market", "")
-        if not market.startswith("KRW-"):
+        # market이 None/비문자열이면 startswith에서 AttributeError -> 방어적 타입 검사
+        market = m.get("market")
+        if not isinstance(market, str) or not market.startswith("KRW-"):
             continue
         korean = m.get("korean_name") or market
         rows.append([market, korean, "KRW"])
