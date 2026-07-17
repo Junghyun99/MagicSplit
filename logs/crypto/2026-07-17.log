@@ -1,0 +1,19 @@
+2026-07-17 06:55:09,783 [INFO] === Manual Trade CLI (crypto) [1건]: KRW-BTC:buy(10000.0) ===
+2026-07-17 06:55:09,791 [INFO] === Manual Trade: KRW-BTC BUY ===
+2026-07-17 06:55:09,791 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-07-17 06:55:10,110 [WARNING] [Upbit] 상폐/KRW미상장 보유 제외 (3건): ['KRW-APENFT', 'KRW-ETHF', 'KRW-ETHW']
+2026-07-17 06:55:10,215 [INFO] Fetching real-time prices from Broker...
+2026-07-17 06:55:10,319 [INFO] Portfolio: Cash=KRW 11,927, Value=KRW 16,968,441
+2026-07-17 06:55:10,319 [INFO] >>> Step 2: Load Positions
+2026-07-17 06:55:10,320 [INFO] Loaded 0 position lot(s)
+2026-07-17 06:55:10,320 [INFO] 매수 금액 수동 지정: KRW 10,000
+2026-07-17 06:55:10,320 [INFO] 매수 수량 도출: Lv1 buy_amount=KRW 10,000 / 현재가=KRW 92,752,000 = 0.00010781
+2026-07-17 06:55:10,320 [INFO] [KRW-BTC] 수동 신호 생성: BUY Lv1 0.00010781주 @KRW 92,752,000
+2026-07-17 06:55:10,320 [INFO] Executing 1 order(s)...
+2026-07-17 06:55:10,321 [INFO] [Upbit] Processing 1 BUY orders...
+2026-07-17 06:55:10,497 [INFO] [Upbit] Order sent: BUY KRW-BTC qty=0.00010781 (uuid=8e3168c2-a8bf-43b3-a42b-fa5f93e140d2)
+2026-07-17 06:55:11,093 [INFO] [Upbit] Order FILLED: KRW-BTC uuid=8e3168c2-a8bf-43b3-a42b-fa5f93e140d2 qty=0.00010781 @ 92752000.0 fee=4.99979656
+2026-07-17 06:55:11,199 [INFO] [Position] New lot: lot_20260717_065511_KRW-BTC_001 Lv1 KRW-BTC 0.00010781주 @KRW 92,752,000
+2026-07-17 06:55:14,348 [WARNING] [Upbit] 상폐/KRW미상장 보유 제외 (3건): ['KRW-APENFT', 'KRW-ETHF', 'KRW-ETHW']
+2026-07-17 06:55:14,471 [INFO] >>> Step 6: Persist
+2026-07-17 06:55:15,193 [INFO] === Manual Trade 완료: 체결 1건 [KRW-BTC BUY], 실패 0건 ===
