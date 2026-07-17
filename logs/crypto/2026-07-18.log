@@ -1,0 +1,19 @@
+2026-07-18 00:21:11,099 [INFO] === Manual Trade CLI (crypto) [1건]: KRW-USDT:buy(10000.0) ===
+2026-07-18 00:21:11,117 [INFO] === Manual Trade: KRW-USDT BUY ===
+2026-07-18 00:21:11,117 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-07-18 00:21:11,475 [WARNING] [Upbit] 상폐/KRW미상장 보유 제외 (3건): ['KRW-APENFT', 'KRW-ETHF', 'KRW-ETHW']
+2026-07-18 00:21:11,581 [INFO] Fetching real-time prices from Broker...
+2026-07-18 00:21:11,921 [INFO] Portfolio: Cash=KRW 101,748, Value=KRW 17,211,639
+2026-07-18 00:21:11,921 [INFO] >>> Step 2: Load Positions
+2026-07-18 00:21:11,923 [INFO] Loaded 1 position lot(s)
+2026-07-18 00:21:11,926 [INFO] 매수 금액 수동 지정: KRW 10,000
+2026-07-18 00:21:11,926 [INFO] 매수 수량 도출: Lv1 buy_amount=KRW 10,000 / 현재가=KRW 1,476 = 6.77506775
+2026-07-18 00:21:11,926 [INFO] [KRW-USDT] 수동 신호 생성: BUY Lv1 6.77506775개 @KRW 1,476
+2026-07-18 00:21:11,926 [INFO] Executing 1 order(s)...
+2026-07-18 00:21:11,926 [INFO] [Upbit] Processing 1 BUY orders...
+2026-07-18 00:21:12,003 [INFO] [Upbit] Order sent: BUY KRW-USDT qty=6.77506775 (uuid=820bb977-f430-4e0d-8fec-610992109964)
+2026-07-18 00:21:12,595 [INFO] [Upbit] Order FILLED: KRW-USDT uuid=820bb977-f430-4e0d-8fec-610992109964 qty=6.77506775 @ 1476.0 fee=4.9999999995
+2026-07-18 00:21:12,711 [INFO] [Position] New lot: lot_20260718_002112_KRW-USDT_001 Lv1 KRW-USDT 6.77506775개 @KRW 1,476
+2026-07-18 00:21:15,867 [WARNING] [Upbit] 상폐/KRW미상장 보유 제외 (3건): ['KRW-APENFT', 'KRW-ETHF', 'KRW-ETHW']
+2026-07-18 00:21:15,969 [INFO] >>> Step 6: Persist
+2026-07-18 00:21:17,016 [INFO] === Manual Trade 완료: 체결 1건 [KRW-USDT BUY], 실패 0건 ===
