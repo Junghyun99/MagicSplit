@@ -283,3 +283,26 @@ class TestConvertSnapshotsToKrw:
         conv, dropped = convert_snapshots_to_krw(snaps)
         assert dropped == 0
         assert conv[0]["portfolio_value"] is None
+
+
+class TestCryptoSettlement:
+    """코인(crypto) 마켓 결산: 원화(KRW) 네이티브, 환산 불필요."""
+
+    def test_parse_args_accepts_crypto_market(self):
+        from scripts.monthly_settlement import parse_args
+        args = parse_args(["--market", "crypto",
+                           "--start", "2026-04-01", "--end", "2026-04-30"])
+        assert args.market == "crypto"
+
+    def test_build_report_uses_krw_for_crypto(self):
+        from scripts.monthly_settlement import build_report
+        result = compute_settlement(
+            [_snap("2026-04-01", 1_000_000.0),
+             _snap("2026-04-30", 1_200_000.0)],
+            "2026-04-01", "2026-04-30",
+        )
+        report = build_report(result, realized_pnl=50_000.0, market="crypto")
+        assert "(crypto)" in report
+        assert "KRW" in report
+        # 원화 네이티브이므로 환산 헤더는 없어야 한다
+        assert "환산" not in report

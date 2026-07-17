@@ -22,19 +22,14 @@ import argparse
 import os
 import sys
 from datetime import datetime
-from typing import List, Optional
+from typing import Dict, List, Optional
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/..")
 
 from src.config import Config
 from src.core.logic.position_reconciler import QuantityMismatch, detect_mismatches
 from src.core.models import PositionLot
-from src.infra.broker import (
-    KisDomesticLiveBroker,
-    KisDomesticPaperBroker,
-    KisOverseasLiveBroker,
-    KisOverseasPaperBroker,
-)
+from src.main import _create_broker
 from src.infra.repo import JsonRepository
 from src.strategy_config import StrategyConfig
 from src.utils.logger import TradeLogger
@@ -248,12 +243,15 @@ def _build_repo_and_broker(logger):
         raise ValueError("설정 파일(config_*.json)에 종목이 없습니다.")
     market_type = rules[0].market_type
 
-    if market_type == "domestic":
-        broker_cls = KisDomesticLiveBroker if config.IS_LIVE else KisDomesticPaperBroker
-    else:
-        broker_cls = KisOverseasLiveBroker if config.IS_LIVE else KisOverseasPaperBroker
-    broker = broker_cls(
-        config.KIS_APP_KEY, config.KIS_APP_SECRET, config.KIS_ACC_NO, logger,
+    broker = _create_broker(
+        market_type=market_type,
+        is_live=config.IS_LIVE,
+        app_key=config.KIS_APP_KEY,
+        app_secret=config.KIS_APP_SECRET,
+        acc_no=config.KIS_ACC_NO,
+        logger=logger,
+        upbit_access_key=config.UPBIT_ACCESS_KEY,
+        upbit_secret_key=config.UPBIT_SECRET_KEY,
     )
     repo = JsonRepository(
         os.path.join(config.DATA_PATH, market_type),
