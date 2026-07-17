@@ -46,10 +46,23 @@ window.DataRepository = (function () {
         }
     }
 
+    // 업비트 KRW 마켓 목록 (코인 티커 검색용). tickers.json과 동일한 [코드,이름,거래소] 형식.
+    async function loadCryptoMarkets() {
+        const url = `data/upbit_markets.json?t=${Date.now()}`;
+        try {
+            const res = await fetch(url);
+            if (!res.ok) return [];
+            return await res.json();
+        } catch (e) {
+            return [];
+        }
+    }
+
     return {
         loadStatus,
         loadHistory,
         loadDecisions,
-        loadTickers
+        loadTickers,
+        loadCryptoMarkets
     };
 })();

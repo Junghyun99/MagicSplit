@@ -122,6 +122,7 @@ GitHub Actions ?�크?�로??
 - `manual-trade.yml` - Actions UI?�서 ?�동 매수/매도 주문 (market_type, ticker, action, quantity ?�력)
 - `run-backtest.yml` - 백테?�트 ?�행 (?�작/종료?? 초기 ?�본, 마켓 ?�???�택). 결과�?`docs/data/backtest/`??커밋
 - `download-market-data.yml` - yfinance�?종목 ?�세�?받아 `src/backtest/cache/`??parquet 캐시�?커밋
+- `download-upbit-markets.yml` - 업비트 KRW 마켓 목록을 받아 `docs/data/upbit_markets.json`에 커밋 (config-editor 코인 티커 검색용, ubuntu 러너)
 
 ## ?�크?�로??규칙
 - 코드 ?�정 ?�청 ???�업 브랜치�? ?�성?�여 커밋?�고 PR ?�성까�? ?�료?�다
