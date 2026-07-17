@@ -13,16 +13,13 @@
             "preset": "major_coin"
         },
         {
-            "ticker": "KRW-XRP",
+            "ticker": "KRW-USDT",
+            "enabled": true,
+            "max_lots": 100,
             "market_type": "crypto",
-            "enabled": false,
-            "preset": "alt_coin"
-        },
-        {
-            "ticker": "KRW-SOL",
-            "market_type": "crypto",
-            "enabled": false,
-            "preset": "alt_coin"
+            "buy_threshold_pct": -1,
+            "sell_threshold_pct": 2,
+            "buy_amount": 10000
         }
     ],
     "global": {
