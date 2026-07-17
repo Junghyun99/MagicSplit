@@ -22,7 +22,7 @@ from src.core.models import (
 from src.core.logic import SplitEvaluator, detect_mismatches, build_dashboard_status
 from src.core.engine.registry import register_engine
 from src.utils.ticker_reader import display_ticker
-from src.utils.currency import format_money
+from src.utils.currency import format_money, format_qty
 
 
 @register_engine(color="#1f77b4")
@@ -286,7 +286,7 @@ class MagicSplitEngine:
                 name = display_ticker(exe.ticker)
                 action_str = "BUY" if exe.action == OrderAction.BUY else "SELL"
                 price_str = format_money(exe.price, self.market_type)
-                line = f"  {action_str} {name} {exe.quantity}주 @{price_str} [Lv{exe.level}]"
+                line = f"  {action_str} {name} {format_qty(exe.quantity, self.market_type)} @{price_str} [Lv{exe.level}]"
                 if exe.action == OrderAction.SELL and exe.realized_pnl != 0:
                     sign = "+" if exe.realized_pnl > 0 else "-"
                     pnl_str = format_money(abs(exe.realized_pnl), self.market_type)
@@ -426,7 +426,7 @@ class MagicSplitEngine:
                 level = highest_level
                 is_bulk_sell = True
                 self.logger.info(
-                    f"일괄매도 수량 도출: {len(ticker_lots)}개 lot 합산 {order_qty}주 전량"
+                    f"일괄매도 수량 도출: {len(ticker_lots)}개 lot 합산 {format_qty(order_qty, self.market_type)} 전량"
                 )
             else:
                 # 매도: 자동매매와 동일하게 최고 차수 lot 전량 매도. 수량은 자동 도출.
@@ -440,7 +440,7 @@ class MagicSplitEngine:
                 target_lot_id = target_lot.lot_id
                 target_buy_price = target_lot.buy_price
                 self.logger.info(
-                    f"매도 수량 자동 도출: Lv{level} lot {order_qty}주 전량"
+                    f"매도 수량 자동 도출: Lv{level} lot {format_qty(order_qty, self.market_type)} 전량"
                 )
 
             signal = SplitSignal(
@@ -457,7 +457,7 @@ class MagicSplitEngine:
             )
             all_signals.append(signal)
             self.logger.info(
-                f"[{disp}] 수동 신호 생성: {action} Lv{level} {order_qty}주 "
+                f"[{disp}] 수동 신호 생성: {action} Lv{level} {format_qty(order_qty, self.market_type)} "
                 f"@{format_money(current_price, self.market_type)}"
             )
 
@@ -843,7 +843,7 @@ class MagicSplitEngine:
                 tag = " (PARTIAL)" if exe.status == ExecutionStatus.PARTIAL else ""
                 self.logger.info(
                     f"[Position] New lot{tag}: {lot_id} Lv{level} "
-                    f"{disp} {exe.quantity}주 @{format_money(exe.price, self.market_type)}"
+                    f"{disp} {format_qty(exe.quantity, self.market_type)} @{format_money(exe.price, self.market_type)}"
                 )
 
             elif exe.action == OrderAction.SELL:
@@ -892,7 +892,7 @@ class MagicSplitEngine:
                     updated[idx] = replace(target_lot, quantity=new_qty)
                     self.logger.info(
                         f"[Position] Partial sell: {target_lot.lot_id} "
-                        f"Lv{target_lot.level} ({exe.quantity}/{target_lot.quantity}주, "
+                        f"Lv{target_lot.level} ({exe.quantity}/{format_qty(target_lot.quantity, self.market_type)}, "
                         f"잔량 {new_qty})"
                     )
                 else:
@@ -901,8 +901,8 @@ class MagicSplitEngine:
                         # lot 은 제거하되 reconcile 단계에서 잡히도록 경고.
                         self.logger.warning(
                             f"[Position] Over-fill detected: {disp} sold "
-                            f"{exe.quantity}주 but lot {target_lot.lot_id} held "
-                            f"{target_lot.quantity}주 — removing lot. "
+                            f"{format_qty(exe.quantity, self.market_type)} but lot {target_lot.lot_id} held "
+                            f"{format_qty(target_lot.quantity, self.market_type)} — removing lot. "
                             f"scripts/reconcile_positions.py 로 정합성 확인 권장."
                         )
                     updated.remove(target_lot)
@@ -911,7 +911,7 @@ class MagicSplitEngine:
                         last_sell_prices[exe.ticker] = exe.price
                     self.logger.info(
                         f"[Position] Remove lot: {target_lot.lot_id} "
-                        f"Lv{target_lot.level} ({target_lot.quantity}주 전량 매도)"
+                        f"Lv{target_lot.level} ({format_qty(target_lot.quantity, self.market_type)} 전량 매도)"
                     )
 
         return updated
@@ -987,13 +987,13 @@ class MagicSplitEngine:
 
         remaining = [l for l in updated if l.ticker == exe.ticker]
         self.logger.info(
-            f"[Position] Bulk 청산: {disp} {consumed}주 소진 "
-            f"(잔여 {sum(l.quantity for l in remaining)}주), "
+            f"[Position] Bulk 청산: {disp} {format_qty(consumed, self.market_type)} 소진 "
+            f"(잔여 {format_qty(sum(l.quantity for l in remaining), self.market_type)}), "
             f"실현손익 {format_money(exe.realized_pnl, self.market_type)}"
         )
         if qty_left > 0:
             self.logger.warning(
-                f"[Position] Bulk 청산 초과 체결: {disp} 미차감 {qty_left}주 — "
+                f"[Position] Bulk 청산 초과 체결: {disp} 미차감 {format_qty(qty_left, self.market_type)} — "
                 f"scripts/reconcile_positions.py 로 정합성 확인 권장."
             )
 
@@ -1024,13 +1024,13 @@ class MagicSplitEngine:
 
         remaining = [l for l in updated if l.ticker == exe.ticker]
         self.logger.info(
-            f"[Position] 분할 청산: {disp} {consumed}주 소진 "
-            f"(잔여 {sum(l.quantity for l in remaining)}주), "
+            f"[Position] 분할 청산: {disp} {format_qty(consumed, self.market_type)} 소진 "
+            f"(잔여 {format_qty(sum(l.quantity for l in remaining), self.market_type)}), "
             f"실현손익 {format_money(exe.realized_pnl, self.market_type)}"
         )
         if qty_left > 0:
             self.logger.warning(
-                f"[Position] 분할 청산 초과 체결: {disp} 미차감 {qty_left}주 — "
+                f"[Position] 분할 청산 초과 체결: {disp} 미차감 {format_qty(qty_left, self.market_type)} — "
                 f"scripts/reconcile_positions.py 로 정합성 확인 권장."
             )
 
@@ -1084,13 +1084,13 @@ class MagicSplitEngine:
 
         remaining = [l for l in updated if l.ticker == exe.ticker]
         self.logger.info(
-            f"[Position] Trailing 벌크 청산: {disp} {consumed}주 소진 "
-            f"(잔여 {sum(l.quantity for l in remaining)}주), "
+            f"[Position] Trailing 벌크 청산: {disp} {format_qty(consumed, self.market_type)} 소진 "
+            f"(잔여 {format_qty(sum(l.quantity for l in remaining), self.market_type)}), "
             f"실현손익 {format_money(exe.realized_pnl, self.market_type)}"
         )
         if qty_left > 0:
             self.logger.warning(
-                f"[Position] Trailing 벌크 청산 초과 체결: {disp} 미차감 {qty_left}주 -- "
+                f"[Position] Trailing 벌크 청산 초과 체결: {disp} 미차감 {format_qty(qty_left, self.market_type)} -- "
                 f"scripts/reconcile_positions.py 로 정합성 확인 권장."
             )
         if regime_state is not None and not remaining:

@@ -29,3 +29,15 @@ def format_money(value: Optional[float], market_type: str,
     if code == "KRW":
         return f"{code} {value:,.0f}"
     return f"{code} {value:,.2f}"
+
+
+def format_qty(value: float, market_type: str) -> str:
+    """수량을 마켓에 맞는 단위와 함께 표기한다.
+
+    주식(domestic/overseas)은 정수 '주', 코인(crypto)은 소수 '개'.
+    코인 수량은 지수표기 없이 불필요한 0을 정리해 출력한다 (예: 0.00010696개).
+    """
+    if market_type == "crypto":
+        s = f"{value:.8f}".rstrip("0").rstrip(".")
+        return f"{s or '0'}개"
+    return f"{int(value)}주"

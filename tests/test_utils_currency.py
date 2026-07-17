@@ -1,7 +1,7 @@
 # tests/test_utils_currency.py
 import pytest
 
-from src.utils.currency import currency_code_for, format_money
+from src.utils.currency import currency_code_for, format_money, format_qty
 
 
 class TestCurrencyCode:
@@ -49,3 +49,23 @@ class TestFormatMoney:
 
     def test_currency_override_preserves_none(self):
         assert format_money(None, "overseas", currency="KRW") == "-"
+
+
+class TestFormatQty:
+    def test_stock_uses_ju_unit_integer(self):
+        assert format_qty(5, "overseas") == "5주"
+        assert format_qty(5.0, "domestic") == "5주"
+        assert format_qty(5.9, "domestic") == "5주"   # 정수화(주 단위)
+
+    def test_crypto_uses_gae_unit_fractional(self):
+        assert format_qty(0.00010696, "crypto") == "0.00010696개"
+        assert format_qty(5.0, "crypto") == "5개"       # 뒤 0 정리
+        assert format_qty(0.5, "crypto") == "0.5개"
+
+    def test_crypto_no_scientific_notation(self):
+        # 아주 작은 수량도 지수표기 없이
+        assert "e" not in format_qty(0.00000001, "crypto")
+        assert format_qty(0.00000001, "crypto") == "0.00000001개"
+
+    def test_crypto_zero(self):
+        assert format_qty(0, "crypto") == "0개"
