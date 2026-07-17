@@ -1071,7 +1071,7 @@ class SplitEvaluator:
             action=OrderAction.SELL,
             quantity=sell_qty,
             price=current_price,
-            reason=f"추세 이탈 분할 청산({sell_qty}/{format_qty(total_qty, rule.market_type)}, {pct:+.1f}%)",
+            reason=f"추세 이탈 분할 청산({format_qty(sell_qty, rule.market_type)}/{format_qty(total_qty, rule.market_type)}, {pct:+.1f}%)",
             pct_change=pct,
             level=max_level,
             regime_partial_liquidation=True,

@@ -892,8 +892,8 @@ class MagicSplitEngine:
                     updated[idx] = replace(target_lot, quantity=new_qty)
                     self.logger.info(
                         f"[Position] Partial sell: {target_lot.lot_id} "
-                        f"Lv{target_lot.level} ({exe.quantity}/{format_qty(target_lot.quantity, self.market_type)}, "
-                        f"잔량 {new_qty})"
+                        f"Lv{target_lot.level} ({format_qty(exe.quantity, self.market_type)}/{format_qty(target_lot.quantity, self.market_type)}, "
+                        f"잔량 {format_qty(new_qty, self.market_type)})"
                     )
                 else:
                     if exe.quantity > target_lot.quantity:

@@ -69,3 +69,7 @@ class TestFormatQty:
 
     def test_crypto_zero(self):
         assert format_qty(0, "crypto") == "0개"
+
+    def test_none_returns_dash(self):
+        assert format_qty(None, "crypto") == "-"
+        assert format_qty(None, "domestic") == "-"
