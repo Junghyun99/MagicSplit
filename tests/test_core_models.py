@@ -339,7 +339,7 @@ class TestStockRuleChannelRegime:
         assert rule.regime_algo == "ma_adx"
         assert rule.channel_lookback == 63
         assert rule.channel_stddev_k == 2.0
-        assert rule.channel_slope_band_pct == 5.0
+        assert rule.channel_slope_band_pct == 8.0
         assert rule.channel_breakdown_tolerance_pct == 0.0
 
     def test_channel_algo_accepted(self):

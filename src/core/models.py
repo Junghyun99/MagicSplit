@@ -80,7 +80,7 @@ class StockRule:
     # 회귀 채널 분류기 (regime_algo="channel" 전용)
     channel_lookback: int = 63                    # 회귀 윈도우 봉 수 (63 = 3개월)
     channel_stddev_k: float = 2.0                 # 채널 폭 = 중심선 +- k*잔차표준편차
-    channel_slope_band_pct: float = 5.0           # |윈도우 전체 기울기%| 이내면 횡보
+    channel_slope_band_pct: float = 8.0           # |윈도우 전체 기울기%| 이내면 횡보 (백테스트 근거 5.0 -> 8.0)
     channel_breakdown_tolerance_pct: float = 0.0  # 하단선*(1-tol%) 미만이면 이탈
     # 상승 레짐: 차수 매도를 잠그고 추세 눌림에 누적 매수
     uptrend_pullback_band_pct: float = 1.5   # 눌림 매수 상한: 20EMA + band% 이하면 허용 (하단 제한 없음)
