@@ -4,6 +4,7 @@ window.ConfigController = (function () {
 
     let githubApi = null;
     let allTickers = [];
+    let cryptoMarkets = [];   // 업비트 KRW 마켓 [코드,이름,'KRW'] — 코인 티커 검색용
     let tickerMap = {};
 
     async function init() {
@@ -34,6 +35,18 @@ window.ConfigController = (function () {
             }
         }).catch(err => {
             console.error("Failed to load tickers.json:", err);
+        });
+
+        // 코인 티커 검색용 업비트 KRW 마켓 목록 로드 (주식 tickers와 동일 형식)
+        DataRepository.loadCryptoMarkets().then(data => {
+            cryptoMarkets = data || [];
+            cryptoMarkets.forEach(m => { tickerMap[m[0]] = m[1]; });  // KRW-BTC -> 비트코인
+            console.log(`Loaded ${cryptoMarkets.length} Upbit markets for search.`);
+            if (ConfigModel.getConfig()) {
+                ConfigView.renderTickerList(ConfigModel.getConfig().stocks, ConfigModel.getActiveStockIndex(), onSelectTicker, getTickerDisplayName);
+            }
+        }).catch(err => {
+            console.error("Failed to load upbit_markets.json:", err);
         });
     }
 
@@ -183,15 +196,24 @@ window.ConfigController = (function () {
                 return;
             }
 
-            if (allTickers.length === 0) {
-                console.warn("Still loading tickers or load failed.");
+            // 코인(config_crypto.json): 업비트 KRW 마켓 목록에서 검색 (주식과 동일 UX).
+            // 주식 tickers 로드 여부와 무관하므로 그 체크보다 먼저 처리한다.
+            if (ConfigModel.getPath().includes('crypto.json')) {
+                const cryptoResults = cryptoMarkets.filter(m => {
+                    const code = m[0];
+                    const name = m[1];
+                    return (code && code.toLowerCase().includes(query)) ||
+                           (name && name.toLowerCase().includes(query));
+                }).slice(0, 50).map(m => ({ ticker: m[0], alias: m[1], exchange: m[2] }));
+                ConfigView.renderTickerSearchResults(cryptoResults, (selected) => {
+                    tickerInput.value = selected.ticker;
+                    saveCurrentTickerToModel();
+                });
                 return;
             }
 
-            // 코인(config_crypto.json)은 주식 티커 DB(tickers.json) 대상이 아니므로
-            // 자동완성을 제공하지 않는다 (KRW-BTC 등 마켓 코드는 직접 입력).
-            if (ConfigModel.getPath().includes('crypto.json')) {
-                ConfigView.hideTickerSearchResults();
+            if (allTickers.length === 0) {
+                console.warn("Still loading tickers or load failed.");
                 return;
             }
 
