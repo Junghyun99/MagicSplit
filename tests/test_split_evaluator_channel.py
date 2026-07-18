@@ -305,6 +305,66 @@ class TestChannelReentryBreakout:
         assert not signals[0].is_blocked
 
 
+class TestChannelUptrendExitMaHybrid:
+    """channel_uptrend_exit_ma=True: 상승 래치 중 이탈선을 50MA(ma_adx식)로 전환."""
+
+    def _uptrend_st(self):
+        return {"AAPL": {"regime": "uptrend", "adds": 0, "last_add_price": 100.0}}
+
+    def test_pullback_below_support_not_liquidated(self, evaluator):
+        # 상승 래치 + 하단 채널선 아래 & 50MA 위 -> 청산 없음 (정상 눌림으로 취급)
+        window = _uptrend_window()
+        rule = _channel_rule(channel_uptrend_exit_ma=True)
+        r = classify_for_rule(rule, window)
+        price = (r.channel_support + r.sma50) / 2  # 50MA 위, 지지선 아래
+        assert r.sma50 < price < r.channel_support
+        st = self._uptrend_st()
+        signals = _eval_until_confirmed(evaluator, rule, [_lot()], _pf(price), window, st)
+        assert all(s.action != OrderAction.SELL for s in signals)
+        assert st["AAPL"].get("breakdown_streak", 0) == 0
+
+    def test_break_below_sma50_liquidates(self, evaluator):
+        # 상승 래치 + 50MA 하향 이탈 -> ma_adx식 즉시 분할 청산
+        window = _uptrend_window()
+        rule = _channel_rule(channel_uptrend_exit_ma=True, trendbreak_partial_sell_pct=50.0)
+        r = classify_for_rule(rule, window)
+        price = r.sma50 * 0.99
+        st = self._uptrend_st()
+        signals = evaluator.evaluate_stock(
+            rule, [_lot(qty=10)], _pf(price, qty=10), ohlc_window=window, regime_state=st,
+        )
+        assert len(signals) == 1
+        assert signals[0].regime_partial_liquidation is True
+        assert signals[0].quantity == 5
+
+    def test_sideways_breakdown_still_channel_based(self, evaluator):
+        # 래치 없음(횡보) -> 하이브리드여도 하단 채널선 이탈 청산 유지
+        window = _sideways_window()
+        rule = _channel_rule(channel_uptrend_exit_ma=True, trendbreak_partial_sell_pct=100.0)
+        support = _support(rule, window)
+        signals = _eval_until_confirmed(
+            evaluator, rule, [_lot(qty=10)], _pf(support * 0.95, qty=10), window, {},
+        )
+        assert len(signals) == 1
+        assert signals[0].regime_liquidation is True
+
+    def test_trailing_lock_recovery_uses_sma50(self, evaluator):
+        # 상승 래치 + 락 활성: 지지선 아래여도 50MA 위면 회복 -> 락 해제
+        window = _uptrend_window()
+        rule = _channel_rule(channel_uptrend_exit_ma=True)
+        r = classify_for_rule(rule, window)
+        price = (r.channel_support + r.sma50) / 2
+        st = self._uptrend_st()
+        st["AAPL"]["trailing_lock"] = {
+            "active": True, "lock_price": price * 0.98, "drop_pct": 3.0,
+        }
+        signals = evaluator.evaluate_stock(
+            rule, [_lot(qty=5)], _pf(price), ohlc_window=window, regime_state=st,
+        )
+        assert signals == []
+        assert "trailing_lock" not in st["AAPL"]
+
+
 class TestChannelDowntrendLiquidation:
     def test_downtrend_latch_confirms_then_liquidates(self, evaluator):
         # 하락 기울기 확정(2봉 연속) -> 보유분 이탈 청산

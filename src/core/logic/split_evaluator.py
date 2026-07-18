@@ -1030,6 +1030,13 @@ class SplitEvaluator:
             st["breakdown_streak"] = 0
             return None
 
+        # channel_uptrend_exit_ma=True(하이브리드)면 상승 래치 중 하단 채널선 이탈을
+        # 건너뛴다. 상승 추세의 정상 눌림(2sigma 하단)에 청산되지 않도록
+        # 이탈 판정은 _evaluate_uptrend의 ma_adx식 이탈선(50MA/챈들리어)이 맡는다.
+        if rule.channel_uptrend_exit_ma and st.get("regime") == "uptrend":
+            st["breakdown_streak"] = 0
+            return None
+
         breakdown_line = support * (1 - rule.channel_breakdown_tolerance_pct / 100)
         if current_price < breakdown_line:
             st["breakdown_streak"] = st.get("breakdown_streak", 0) + 1
@@ -1105,8 +1112,10 @@ class SplitEvaluator:
         # use_sma50=False면 변동성 기반 Chandelier 스톱을 쓴다(버퍼는 사용자 책임).
         # 채널 모드는 이탈(하단 채널선)을 evaluate_stock 상단 _evaluate_channel_exit에서
         # 이미 판정했으므로 여기서는 건너뛴다.
+        # 단, 하이브리드(channel_uptrend_exit_ma)면 상승 래치 중 채널 이탈이 꺼지는
+        # 대신 여기의 ma_adx식 이탈선이 활성화된다.
 
-        if rule.regime_algo != "channel":
+        if rule.regime_algo != "channel" or rule.channel_uptrend_exit_ma:
             # 지표 결손(NaN) 감지 시 안전 최우선 필터: 오작동 및 청산 누락 방지
             target_indicator = reading.sma50 if rule.trendbreak_use_sma50 else reading.chandelier_stop
             if math.isnan(target_indicator):
@@ -1264,8 +1273,15 @@ class SplitEvaluator:
         lock_price = lock["lock_price"]
         drop_pct = lock["drop_pct"]
 
-        # 이탈 기준선: 채널 모드는 하단 채널선, ma_adx는 50MA 또는 Chandelier 스톱
-        if rule.regime_algo == "channel":
+        # 이탈 기준선: 채널 모드는 하단 채널선, ma_adx는 50MA 또는 Chandelier 스톱.
+        # 하이브리드(channel_uptrend_exit_ma)로 상승 래치 중이면 ma_adx식 기준선 사용
+        # (락 생성 트리거와 회복 판정 기준을 일치시킨다).
+        hybrid_uptrend = (
+            rule.regime_algo == "channel"
+            and rule.channel_uptrend_exit_ma
+            and st.get("regime") == "uptrend"
+        )
+        if rule.regime_algo == "channel" and not hybrid_uptrend:
             target_indicator = reading.channel_support
         elif rule.trendbreak_use_sma50:
             target_indicator = reading.sma50

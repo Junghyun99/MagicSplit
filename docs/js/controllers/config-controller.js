@@ -135,6 +135,7 @@ window.ConfigController = (function () {
         document.getElementById('global-channel-breakdown-tolerance-pct').addEventListener('input', saveGlobalConfigToModel);
         document.getElementById('global-channel-breakdown-uptrend-only').addEventListener('change', saveGlobalConfigToModel);
         document.getElementById('global-channel-reentry-breakout').addEventListener('change', saveGlobalConfigToModel);
+        document.getElementById('global-channel-uptrend-exit-ma').addEventListener('change', saveGlobalConfigToModel);
 
         document.getElementById('add-stock-btn').addEventListener('click', () => {
             if (!ConfigModel.getConfig()) return;
@@ -293,6 +294,7 @@ window.ConfigController = (function () {
             if (vals.channel_breakdown_tolerance_pct !== '') config.global.channel_breakdown_tolerance_pct = parseFloat(vals.channel_breakdown_tolerance_pct); else delete config.global.channel_breakdown_tolerance_pct;
             if (vals.channel_breakdown_uptrend_only) config.global.channel_breakdown_uptrend_only = true; else delete config.global.channel_breakdown_uptrend_only;
             if (vals.channel_reentry_breakout) config.global.channel_reentry_breakout = true; else delete config.global.channel_reentry_breakout;
+            if (vals.channel_uptrend_exit_ma) config.global.channel_uptrend_exit_ma = true; else delete config.global.channel_uptrend_exit_ma;
             ConfigView.updateDiffPreview(ConfigModel.getDiff());
         }
     }

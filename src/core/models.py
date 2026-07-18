@@ -88,6 +88,11 @@ class StockRule:
     # True면 이탈/하락 청산 후 재진입을 상단 저항선 상향 돌파 시에만 허용
     # (현재가 > 채널 상단선). 경계 왕복 재진입 churn을 구조적으로 차단한다.
     channel_reentry_breakout: bool = False
+    # True면 상승 래치 중 이탈 판정을 하단 채널선 대신 ma_adx식 이탈선
+    # (trendbreak_use_sma50에 따라 50MA 또는 챈들리어 스톱)으로 전환.
+    # 상승 추세의 정상 눌림(2sigma 하단 터치)이 청산되는 것을 방지하는 하이브리드.
+    # 횡보/하락 감지와 재진입 게이트는 채널 방식 유지.
+    channel_uptrend_exit_ma: bool = False
     # 상승 레짐: 차수 매도를 잠그고 추세 눌림에 누적 매수
     uptrend_pullback_band_pct: float = 1.5   # 눌림 매수 상한: 20EMA + band% 이하면 허용 (하단 제한 없음)
     uptrend_max_adds: int = 3                # 상승장 1사이클 최대 추가매수 횟수
