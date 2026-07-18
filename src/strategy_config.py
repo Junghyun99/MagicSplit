@@ -111,7 +111,7 @@ class StrategyConfig:
         "regime_enabled", "trendbreak_use_sma50", "channel_breakdown_uptrend_only",
         "channel_reentry_breakout", "channel_uptrend_exit_ma",
     )
-    _REGIME_KEYS_STR = ("regime_algo",)
+    _REGIME_KEYS_STR = ("regime_algo", "channel_reentry_line")
     _REGIME_KEYS_INT = (
         "regime_min_bars", "uptrend_max_adds",
         "uptrend_swing_lookback", "trendbreak_chandelier_lookback",

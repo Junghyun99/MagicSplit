@@ -85,9 +85,13 @@ class StockRule:
     # True면 하단 이탈 청산을 상승 래치 활성 중에만 발동 (횡보장은 분할매매에 맡기고
     # 하락 방어는 하락 래치 청산만 사용). False = 상승/횡보 모두 발동 (기존 동작)
     channel_breakdown_uptrend_only: bool = False
-    # True면 이탈/하락 청산 후 재진입을 상단 저항선 상향 돌파 시에만 허용
-    # (현재가 > 채널 상단선). 경계 왕복 재진입 churn을 구조적으로 차단한다.
+    # True면 이탈/하락 청산 후 재진입을 채널 기준선 상향 돌파 시에만 허용.
+    # 경계 왕복 재진입 churn을 구조적으로 차단한다.
     channel_reentry_breakout: bool = False
+    # 재진입 돌파 기준선: "resistance"(상단 2sigma, 보수적) | "mid"(회귀 중심선, 완화).
+    # 상단선은 통계적으로 돌파가 드물어 재진입 대기가 길다(백테스트 중앙값 91일).
+    # 중심선은 "채널 상반부 복귀"만 요구해 회복 종목 복귀가 빠르다.
+    channel_reentry_line: str = "resistance"
     # True면 상승 래치 중 이탈 판정을 하단 채널선 대신 ma_adx식 이탈선
     # (trendbreak_use_sma50에 따라 50MA 또는 챈들리어 스톱)으로 전환.
     # 상승 추세의 정상 눌림(2sigma 하단 터치)이 청산되는 것을 방지하는 하이브리드.
@@ -144,6 +148,11 @@ class StockRule:
                     f"got '{self.regime_algo}'"
                 )
             if self.regime_algo == "channel":
+                if self.channel_reentry_line not in ("resistance", "mid"):
+                    raise ValueError(
+                        f"StockRule({self.ticker}): channel_reentry_line은 "
+                        f"'resistance' 또는 'mid'여야 합니다. got '{self.channel_reentry_line}'"
+                    )
                 # 최소 1개월(21봉). 보조 지표(ema20/chandelier)는 전체 히스토리로
                 # 계산하므로 윈도우가 짧아도 안전하다. 회귀 유의성 확보용 하한.
                 if self.channel_lookback < 21:

@@ -304,6 +304,37 @@ class TestChannelReentryBreakout:
         assert len(signals) == 1
         assert not signals[0].is_blocked
 
+    def test_mid_line_allows_entry_between_mid_and_resistance(self, evaluator):
+        # reentry_line="mid": 중심선~상단 사이 가격이면 재진입 허용
+        window = _sideways_window()
+        rule = _channel_rule(channel_reentry_breakout=True, channel_reentry_line="mid")
+        reading = classify_for_rule(rule, window)
+        price = (reading.channel_mid + reading.channel_resistance) / 2
+        st = {"AAPL": {"post_liquidation": True}}
+        signals = evaluator.evaluate_stock(
+            rule, [], _pf(price), ohlc_window=window, regime_state=st,
+        )
+        assert len(signals) == 1
+        assert not signals[0].is_blocked
+        assert "post_liquidation" not in st["AAPL"]
+
+    def test_mid_line_blocks_below_mid(self, evaluator):
+        window = _sideways_window()
+        rule = _channel_rule(channel_reentry_breakout=True, channel_reentry_line="mid")
+        reading = classify_for_rule(rule, window)
+        price = (reading.channel_support + reading.channel_mid) / 2
+        st = {"AAPL": {"post_liquidation": True}}
+        signals = evaluator.evaluate_stock(
+            rule, [], _pf(price), ohlc_window=window, regime_state=st,
+        )
+        assert len(signals) == 1
+        assert signals[0].is_blocked is True
+
+    def test_invalid_reentry_line_rejected(self):
+        import pytest as _pytest
+        with _pytest.raises(ValueError, match="channel_reentry_line"):
+            _channel_rule(channel_reentry_line="upper")
+
 
 class TestChannelUptrendExitMaHybrid:
     """channel_uptrend_exit_ma=True: 상승 래치 중 이탈선을 50MA(ma_adx식)로 전환."""
