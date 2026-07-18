@@ -253,6 +253,58 @@ class TestChannelBreakdownUptrendOnly:
         assert signals[0].regime_liquidation is True
 
 
+class TestChannelReentryBreakout:
+    """channel_reentry_breakout=True: 이탈 청산 후 재진입은 상단 저항선 돌파 시에만."""
+
+    def test_below_resistance_blocked(self, evaluator):
+        window = _sideways_window()
+        rule = _channel_rule(channel_reentry_breakout=True)
+        reading = classify_for_rule(rule, window)
+        st = {"AAPL": {"post_liquidation": True}}
+        signals = evaluator.evaluate_stock(
+            rule, [], _pf(reading.channel_support * 1.01), ohlc_window=window, regime_state=st,
+        )
+        assert len(signals) == 1
+        assert signals[0].is_blocked is True
+        assert st["AAPL"]["post_liquidation"] is True  # 마커 유지
+
+    def test_above_resistance_allows_entry_and_clears_marker(self, evaluator):
+        window = _sideways_window()
+        rule = _channel_rule(channel_reentry_breakout=True)
+        reading = classify_for_rule(rule, window)
+        st = {"AAPL": {"post_liquidation": True}}
+        signals = evaluator.evaluate_stock(
+            rule, [], _pf(reading.channel_resistance * 1.01), ohlc_window=window, regime_state=st,
+        )
+        assert len(signals) == 1
+        assert signals[0].action == OrderAction.BUY
+        assert not signals[0].is_blocked
+        assert signals[0].quantity > 0
+        assert "post_liquidation" not in st["AAPL"]
+
+    def test_gate_inactive_without_marker(self, evaluator):
+        # 청산 이력이 없으면(첫 진입) 게이트 미적용
+        window = _sideways_window()
+        rule = _channel_rule(channel_reentry_breakout=True)
+        reading = classify_for_rule(rule, window)
+        signals = evaluator.evaluate_stock(
+            rule, [], _pf(reading.channel_support * 1.01), ohlc_window=window, regime_state={},
+        )
+        assert len(signals) == 1
+        assert not signals[0].is_blocked
+
+    def test_gate_inactive_when_option_off(self, evaluator):
+        window = _sideways_window()
+        rule = _channel_rule()  # 기본 False
+        reading = classify_for_rule(rule, window)
+        st = {"AAPL": {"post_liquidation": True}}
+        signals = evaluator.evaluate_stock(
+            rule, [], _pf(reading.channel_support * 1.01), ohlc_window=window, regime_state=st,
+        )
+        assert len(signals) == 1
+        assert not signals[0].is_blocked
+
+
 class TestChannelDowntrendLiquidation:
     def test_downtrend_latch_confirms_then_liquidates(self, evaluator):
         # 하락 기울기 확정(2봉 연속) -> 보유분 이탈 청산

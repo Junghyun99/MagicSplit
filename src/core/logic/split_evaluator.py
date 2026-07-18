@@ -179,6 +179,42 @@ class SplitEvaluator:
                     pct_change=0.0,
                     is_blocked=True,
                 )]
+
+            # 채널 모드 재진입 게이트: 이탈/하락 청산(post_liquidation) 후에는
+            # 상단 저항선 상향 돌파 전까지 신규 진입을 차단한다.
+            if (
+                rule.regime_algo == "channel"
+                and rule.channel_reentry_breakout
+                and regime_st.get("post_liquidation")
+            ):
+                resistance = (
+                    reading.channel_resistance if reading is not None else float("nan")
+                )
+                if math.isnan(resistance) or current_price <= resistance:
+                    reason = (
+                        f"이탈 청산 후 재진입 대기 - 상단 저항선 미돌파 "
+                        f"(현재가 {format_money(current_price, rule.market_type)} <= "
+                        f"저항선 {format_money(resistance, rule.market_type)})"
+                    )
+                    if self._logger:
+                        self._logger.info(f"[{display_ticker(rule.ticker)}] {reason}")
+                    return [SplitSignal(
+                        ticker=rule.ticker,
+                        lot_id=None,
+                        action=OrderAction.BUY,
+                        quantity=0,
+                        price=current_price,
+                        reason=reason,
+                        pct_change=0.0,
+                        is_blocked=True,
+                    )]
+                regime_st.pop("post_liquidation", None)
+                if self._logger:
+                    self._logger.info(
+                        f"[{display_ticker(rule.ticker)}] 상단 저항선 돌파 확인 "
+                        f"(현재가 {format_money(current_price, rule.market_type)} > "
+                        f"저항선 {format_money(resistance, rule.market_type)}) -> 재진입 허용"
+                    )
             last_sell_price = (
                 last_sell_prices.get(rule.ticker) if last_sell_prices else None
             )

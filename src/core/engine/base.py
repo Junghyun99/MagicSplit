@@ -962,22 +962,29 @@ class MagicSplitEngine:
         return updated, consumed
 
     @staticmethod
-    def _reset_regime_after_flat(regime_state: dict, ticker: str) -> None:
+    def _reset_regime_after_flat(
+        regime_state: dict, ticker: str, mark_liquidation: bool = False,
+    ) -> None:
         """전량 청산(잔여 0) 후 레짐 상태를 리셋하되 하락 래치 키는 보존한다.
 
         래치까지 지우면 하락장 한복판에서 다음 사이클에 즉시 1차수 재진입해
         청산-재매수 churn이 생긴다. 래치 해제는 비하락 판정 연속 확정
         (DOWNTREND_CONFIRM_BARS) 규칙에만 맡긴다.
+
+        mark_liquidation=True(이탈/하락 청산 경로)면 post_liquidation 마커를 남긴다.
+        channel_reentry_breakout 옵션이 이 마커를 보고 상단 저항선 돌파 전까지
+        재진입을 차단한다. (트레일링 벌크 등 통상 익절성 전량 매도에는 마커 없음)
         """
         st = regime_state.get(ticker)
         if not isinstance(st, dict):
-            regime_state.pop(ticker, None)
-            return
+            st = {}
         kept = {
             k: st[k]
             for k in ("downtrend", "downtrend_streak", "downtrend_exit_streak")
             if k in st
         }
+        if mark_liquidation:
+            kept["post_liquidation"] = True
         if kept:
             regime_state[ticker] = kept
         else:
@@ -1017,7 +1024,7 @@ class MagicSplitEngine:
         # 잔여 0일 때만 레짐 리셋(flat 재시작, 하락 래치는 보존).
         # 부분체결/거절이면 모드 유지 -> 다음 사이클 재청산.
         if regime_state is not None and not remaining:
-            self._reset_regime_after_flat(regime_state, exe.ticker)
+            self._reset_regime_after_flat(regime_state, exe.ticker, mark_liquidation=True)
         return updated
 
     def _apply_partial_liquidation(
@@ -1056,7 +1063,7 @@ class MagicSplitEngine:
         # 잔량이 없으면 trailing_lock 대신 레짐 상태를 완전히 초기화한다.
         if regime_state is not None:
             if not remaining:
-                self._reset_regime_after_flat(regime_state, exe.ticker)
+                self._reset_regime_after_flat(regime_state, exe.ticker, mark_liquidation=True)
                 self.logger.info(f"[{disp}] 분할 청산 후 잔량 없음 -> 레짐 상태 초기화 (하락 래치 보존)")
             else:
                 st = regime_state.setdefault(exe.ticker, {})
