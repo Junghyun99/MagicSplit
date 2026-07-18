@@ -585,6 +585,23 @@ class TestRepoConfigRegimeSeparation:
         assert sc.rules and all(r.regime_enabled is True for r in sc.rules)
 
 
+class TestRepoCryptoConfig:
+    """저장소 config_crypto.json 이 정상 로드되고 crypto 마켓 규칙인지 검증."""
+
+    def test_crypto_config_loads(self):
+        sc = StrategyConfig(os.path.join(REPO_ROOT, "config_crypto.json"))
+        assert sc.rules, "config_crypto.json 규칙이 비어있음"
+        # 전부 crypto 마켓, 소수 수량(정밀도 8)
+        assert all(r.market_type == "crypto" for r in sc.rules)
+        assert all(r.effective_qty_precision() == 8 for r in sc.rules)
+        # 최소 하나는 활성화되어 있고 티커는 업비트 마켓 코드 형식
+        active = [r for r in sc.rules if r.enabled]
+        assert active, "활성화된 crypto 종목이 없음"
+        assert all(r.ticker.startswith("KRW-") for r in sc.rules)
+        # 매수 금액이 업비트 최소주문(5000 KRW) 이상
+        assert all(r.buy_amount_at(1) >= 5000 for r in sc.rules)
+
+
 class TestCryptoMarketAndQtyPrecision:
     """코인 마켓(crypto) 수용 및 qty_precision 파싱."""
 

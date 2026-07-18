@@ -4,6 +4,7 @@ window.ConfigController = (function () {
 
     let githubApi = null;
     let allTickers = [];
+    let cryptoMarkets = [];   // 업비트 KRW 마켓 [코드,이름,'KRW'] — 코인 티커 검색용
     let tickerMap = {};
 
     async function init() {
@@ -11,16 +12,32 @@ window.ConfigController = (function () {
         bindGlobalEvents();
         bindEditorEvents();
 
-        // Load tickers for search
-        DataRepository.loadTickers().then(data => {
-            allTickers = data;
-            tickerMap = {};
-            data.forEach(t => {
-                tickerMap[t[0]] = t[1];
-            });
-            console.log(`Loaded ${allTickers.length} tickers for search.`);
+        // 주식 티커 + 코인 마켓을 병렬 로드하되, tickerMap 초기화/채우기는 둘 다
+        // 끝난 뒤 한 번만 수행한다 (개별 .then에서 채우면 loadTickers의 tickerMap={}가
+        // 먼저 끝난 코인 데이터를 덮어써 한글명이 유실되는 레이스 컨디션 발생).
+        Promise.all([
+            DataRepository.loadTickers().catch(err => {
+                console.error("Failed to load tickers.json:", err);
+                return [];
+            }),
+            DataRepository.loadCryptoMarkets().catch(err => {
+                console.error("Failed to load upbit_markets.json:", err);
+                return [];
+            }),
+        ]).then(([tickers, crypto]) => {
+            allTickers = tickers || [];
+            cryptoMarkets = crypto || [];
 
-            // If already loaded config, refresh list to show aliases
+            tickerMap = {};
+            allTickers.forEach(t => { tickerMap[t[0]] = t[1]; });       // 주식: 코드 -> 별칭
+            cryptoMarkets.forEach(m => { tickerMap[m[0]] = m[1]; });    // 코인: KRW-BTC -> 비트코인
+
+            console.log(`Loaded ${allTickers.length} tickers, ${cryptoMarkets.length} Upbit markets.`);
+            if (allTickers.length === 0) {
+                console.warn("Tickers data is empty. Stock search will not work.");
+            }
+
+            // 이미 config가 로드돼 있으면 별칭 표시를 위해 한 번만 갱신 (깜빡임 방지)
             if (ConfigModel.getConfig()) {
                 ConfigView.renderTickerList(ConfigModel.getConfig().stocks, ConfigModel.getActiveStockIndex(), onSelectTicker, getTickerDisplayName);
                 const activeStock = ConfigModel.getActiveStock();
@@ -28,12 +45,6 @@ window.ConfigController = (function () {
                     ConfigView.showTickerEditor(activeStock, ConfigModel.isPresetMode(), getTickerDisplayName(activeStock.ticker));
                 }
             }
-
-            if (allTickers.length === 0) {
-                console.warn("Tickers data is empty. Search will not work.");
-            }
-        }).catch(err => {
-            console.error("Failed to load tickers.json:", err);
         });
     }
 
@@ -190,6 +201,22 @@ window.ConfigController = (function () {
             const query = e.target.value.trim().toLowerCase();
             if (query.length < 1) {
                 ConfigView.hideTickerSearchResults();
+                return;
+            }
+
+            // 코인(config_crypto.json): 업비트 KRW 마켓 목록에서 검색 (주식과 동일 UX).
+            // 주식 tickers 로드 여부와 무관하므로 그 체크보다 먼저 처리한다.
+            if (ConfigModel.getPath().includes('crypto.json')) {
+                const cryptoResults = cryptoMarkets.filter(m => {
+                    const code = m[0];
+                    const name = m[1];
+                    return (code && code.toLowerCase().includes(query)) ||
+                           (name && name.toLowerCase().includes(query));
+                }).slice(0, 50).map(m => ({ ticker: m[0], alias: m[1], exchange: m[2] }));
+                ConfigView.renderTickerSearchResults(cryptoResults, (selected) => {
+                    tickerInput.value = selected.ticker;
+                    saveCurrentTickerToModel();
+                });
                 return;
             }
 

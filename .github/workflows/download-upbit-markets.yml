@@ -1,0 +1,45 @@
+name: Download Upbit Markets
+
+on:
+  # 상장/상폐 반영을 위해 주기적으로 갱신 (매주 월요일 00:10 UTC) + 수동 실행
+  schedule:
+    - cron: '10 0 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: download-upbit-markets
+  cancel-in-progress: false
+
+jobs:
+  download:
+    # 업비트 마켓 조회는 공개 API(무인증)이므로 GitHub 호스티드 러너로 충분하다.
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.10"
+        cache: pip
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install requests
+
+    - name: Download Upbit KRW markets
+      run: python scripts/download_upbit_markets.py
+
+    - name: Commit updated markets
+      uses: stefanzweifel/git-auto-commit-action@b863ae1933cb653a53c021fe36dbb774e1fb9403 # v5.2.0
+      with:
+        commit_message: "Update Upbit markets list [skip ci]"
+        file_pattern: "docs/data/upbit_markets.json"
+        commit_user_name: "github-actions[bot]"
+        commit_user_email: "github-actions[bot]@users.noreply.github.com"

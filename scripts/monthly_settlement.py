@@ -46,7 +46,8 @@ def _valid_date(text: str) -> str:
 def parse_args(argv=None):
     parser = argparse.ArgumentParser(description=__doc__,
                                      formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("--market", required=True, choices=["domestic", "overseas"],
+    parser.add_argument("--market", required=True,
+                        choices=["domestic", "overseas", "crypto"],
                         help="결산 대상 시장")
     parser.add_argument("--start", required=True, type=_valid_date,
                         help="조회 시작일 (YYYY-MM-DD, 예: 2026-04-01)")

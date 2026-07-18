@@ -1,0 +1,48 @@
+[
+    {
+        "id": "tx_20260717_065514",
+        "date": "2026-07-17 06:55:14",
+        "portfolio_value": 16968436.208204273,
+        "cash_balance": 1922.28970714,
+        "net_deposit": 11926.88,
+        "total_trade_amount": 9999.59312,
+        "reason": "KRW-BTC:BUY(수동 매매(Manual Trade))",
+        "executions": [
+            {
+                "ticker": "KRW-BTC",
+                "action": "BUY",
+                "quantity": 0.00010781,
+                "price": 92752000.0,
+                "fee": 4.99979656,
+                "date": "2026-07-17 06:55:11",
+                "status": "FILLED",
+                "reason": "uuid=8e3168c2-a8bf-43b3-a42b-fa5f93e140d2",
+                "level": 1,
+                "alias": "KRW-BTC"
+            }
+        ]
+    },
+    {
+        "id": "tx_20260718_002115",
+        "date": "2026-07-18 00:21:15",
+        "portfolio_value": 17211633.51939287,
+        "cash_balance": 91742.74795387,
+        "net_deposit": 99825.46,
+        "total_trade_amount": 9999.999999,
+        "reason": "KRW-USDT:BUY(수동 매매(Manual Trade))",
+        "executions": [
+            {
+                "ticker": "KRW-USDT",
+                "action": "BUY",
+                "quantity": 6.77506775,
+                "price": 1476.0,
+                "fee": 4.9999999995,
+                "date": "2026-07-18 00:21:12",
+                "status": "FILLED",
+                "reason": "uuid=820bb977-f430-4e0d-8fec-610992109964",
+                "level": 1,
+                "alias": "KRW-USDT"
+            }
+        ]
+    }
+]

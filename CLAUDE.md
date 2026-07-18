@@ -18,7 +18,7 @@
 - 커버리�? ?�함 ?�스?? `pytest --cov=src tests/` (80% ?�상 준???�수)
 - �?1???�행: `python -m src.main` (`config_overseas.json_PATH`�?�?��/?�외 ?�택)
 - ?��????�합: `python scripts/reconcile_positions.py`
-- 기간(월간) 결산: `python -m scripts.monthly_settlement --market domestic --start 2026-04-01 --end 2026-04-28` (해외는 USD/KRW 두 버전 출력)
+- 기간(월간) 결산: `python -m scripts.monthly_settlement --market domestic --start 2026-04-01 --end 2026-04-28` (해외는 USD/KRW 두 버전 출력, 코인은 --market crypto 로 KRW 결산)
 
 ## ?�로?�트 구조
 ```
@@ -129,9 +129,12 @@ GitHub Actions ?�크?�로??
 - `python-test.yml` - main 브랜�?Push/PR ???�위 ?�스??(80% 커버리�? ?�수, ?�패 ??Slack ?�림)
 - `trading-bot-overseas.yml` - ?�외 매매 �?(?�재 ?��?�?비활?? manual dispatch). `config_overseas.json_PATH=config_overseas.json`
 - `trading-bot-domestic.yml` - �?�� 매매 �?(?�재 ?��?�?비활?? manual dispatch). `config_overseas.json_PATH=config_domestic.json`
+- `trading-bot-crypto.yml` - 코인(업비트) 매매 봇 (self-hosted 러너, manual dispatch). `CONFIG_JSON_PATH=config_crypto.json`, IS_LIVE=true. 휴장/토큰캐시 없음(24시간 거래·요청마다 서명)
+- `upbit-broker-test.yml` - 업비트 브로커 라이브 테스트 (self-hosted, readonly/full 선택)
 - `manual-trade.yml` - Actions UI?�서 ?�동 매수/매도 주문 (market_type, ticker, action, quantity ?�력)
 - `run-backtest.yml` - 백테?�트 ?�행 (?�작/종료?? 초기 ?�본, 마켓 ?�???�택). 결과�?`docs/data/backtest/`??커밋
 - `download-market-data.yml` - yfinance�?종목 ?�세�?받아 `src/backtest/cache/`??parquet 캐시�?커밋
+- `download-upbit-markets.yml` - 업비트 KRW 마켓 목록을 받아 `docs/data/upbit_markets.json`에 커밋 (config-editor 코인 티커 검색용, ubuntu 러너)
 
 ## ?�크?�로??규칙
 - 코드 ?�정 ?�청 ???�업 브랜치�? ?�성?�여 커밋?�고 PR ?�성까�? ?�료?�다

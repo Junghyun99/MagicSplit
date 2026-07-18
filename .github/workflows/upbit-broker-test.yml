@@ -19,7 +19,7 @@ on:
 
 jobs:
   broker-live-test:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     timeout-minutes: 10
 
     steps:
@@ -29,7 +29,8 @@ jobs:
       uses: actions/setup-python@v5
       with:
         python-version: "3.10"
-        cache: pip
+        # cache: pip 제거 — self-hosted Windows 러너에서 pip 캐시 폴더 부재로
+        # 'Post Set up Python'(캐시 저장) 단계가 실패/경고. 상시 러너라 캐시 이점도 없음.
 
     - name: Install dependencies
       run: |
@@ -38,9 +39,9 @@ jobs:
 
     - name: Show runner time (KST)
       run: |
-        echo "Runner UTC : $(date -u '+%Y-%m-%d %H:%M:%S %Z')"
-        echo "KST equiv  : $(TZ=Asia/Seoul date '+%Y-%m-%d %H:%M:%S %Z')"
-        echo "업비트는 24시간 거래 — 시간대 제약 없음"
+        Write-Host "Runner UTC : $((Get-Date).ToUniversalTime().ToString('yyyy-MM-dd HH:mm:ss UTC'))"
+        Write-Host "KST equiv  : $((Get-Date).ToString('yyyy-MM-dd HH:mm:ss KST'))"
+        Write-Host "업비트는 24시간 거래 — 시간대 제약 없음"
 
     - name: Run broker live tests
       env:
@@ -53,14 +54,14 @@ jobs:
         PYTHONUTF8: '1'
         PYTHONUNBUFFERED: '1'
       run: |
-        if [ -z "${UPBIT_ACCESS_KEY:-}" ] || [ -z "${UPBIT_SECRET_KEY:-}" ]; then
-          echo "::error::UPBIT_ACCESS_KEY / UPBIT_SECRET_KEY 시크릿이 설정되지 않았습니다."
+        if ([string]::IsNullOrEmpty($env:UPBIT_ACCESS_KEY) -or [string]::IsNullOrEmpty($env:UPBIT_SECRET_KEY)) {
+          Write-Host "::error::UPBIT_ACCESS_KEY / UPBIT_SECRET_KEY 시크릿이 설정되지 않았습니다."
           exit 1
-        fi
-        echo "=== Upbit Broker Live Test ==="
-        echo "Test level   : $TEST_LEVEL"
-        echo "Order tests  : $RUN_ORDER_TESTS"
-        echo "Test market  : $TEST_MARKET"
-        echo "Broker       : UpbitLiveBroker (실거래 서버)"
-        echo "=============================="
+        }
+        Write-Host "=== Upbit Broker Live Test ==="
+        Write-Host "Test level   : $env:TEST_LEVEL"
+        Write-Host "Order tests  : $env:RUN_ORDER_TESTS"
+        Write-Host "Test market  : $env:TEST_MARKET"
+        Write-Host "Broker       : UpbitLiveBroker (실거래 서버)"
+        Write-Host "=============================="
         pytest tests/test_infra_broker_upbit_live.py -v -s

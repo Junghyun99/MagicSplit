@@ -16,5 +16,10 @@ window.FormatUtils = (function () {
         return `${alias} (${ticker})`;
     }
 
-    return { escapeHtml, formatTickerLabel };
+    // 원화(KRW) 마켓 여부. 국내주식과 코인(업비트 원화마켓)은 KRW, 해외는 USD.
+    function isKrwMode(mode) {
+        return mode === 'domestic' || mode === 'crypto';
+    }
+
+    return { escapeHtml, formatTickerLabel, isKrwMode };
 })();

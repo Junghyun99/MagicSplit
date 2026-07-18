@@ -32,14 +32,19 @@
     const cancelTradeBtn = document.getElementById('cancel-trade-btn');
     const statusFeedback = document.getElementById('status-feedback');
 
+    /** 원화(KRW) 마켓 여부. 국내주식·코인(업비트 원화마켓)은 KRW, 해외는 USD. */
+    function isKrwMarket(marketType) {
+        return marketType === 'domestic' || marketType === 'crypto';
+    }
+
     /** market_type에 맞춰 통화 단위와 함께 금액을 포매팅한다. */
     function formatAmount(value, marketType) {
-        const isDomestic = marketType === 'domestic';
-        return new Intl.NumberFormat(isDomestic ? 'ko-KR' : 'en-US', {
+        const isKrw = isKrwMarket(marketType);
+        return new Intl.NumberFormat(isKrw ? 'ko-KR' : 'en-US', {
             style: 'currency',
-            currency: isDomestic ? 'KRW' : 'USD',
-            minimumFractionDigits: isDomestic ? 0 : 2,
-            maximumFractionDigits: isDomestic ? 0 : 2,
+            currency: isKrw ? 'KRW' : 'USD',
+            minimumFractionDigits: isKrw ? 0 : 2,
+            maximumFractionDigits: isKrw ? 0 : 2,
         }).format(Number(value));
     }
 
@@ -90,7 +95,8 @@
             return;
         }
         const lowerPath = path.toLowerCase();
-        if (lowerPath.includes('overseas')) currentMarket = 'overseas';
+        if (lowerPath.includes('crypto')) currentMarket = 'crypto';
+        else if (lowerPath.includes('overseas')) currentMarket = 'overseas';
         else if (lowerPath.includes('domestic')) currentMarket = 'domestic';
         else currentMarket = 'domestic';
     }
@@ -350,7 +356,7 @@
                 amt.step = '1';
                 amt.className = 'chip-amount';
                 amt.value = e.amount || 0;
-                amt.title = `매수 금액 (${e.marketType === 'domestic' ? '원' : 'USD'})`;
+                amt.title = `매수 금액 (${isKrwMarket(e.marketType) ? '원' : 'USD'})`;
                 amt.oninput = () => {
                     const v = parseFloat(amt.value);
                     e.amount = (!isNaN(v) && v > 0) ? v : 0;
@@ -415,14 +421,18 @@
             return o;
         });
 
+        // 코인은 별도 워크플로우(self-hosted+PowerShell, UPBIT). 입력도 market_type 없이 trades만.
+        const isCrypto = market === 'crypto';
+        const workflowFile = isCrypto ? 'manual-trade-crypto.yml' : 'manual-trade.yml';
+        const workflowInputs = isCrypto
+            ? { trades: JSON.stringify(trades) }
+            : { market_type: market, trades: JSON.stringify(trades) };
+
         try {
             setLoading(true);
             showFeedback('GitHub Action 트리거 중...', 'info');
 
-            await githubApi.triggerWorkflow('manual-trade.yml', {
-                market_type: market,
-                trades: JSON.stringify(trades),
-            });
+            await githubApi.triggerWorkflow(workflowFile, workflowInputs);
 
             showFeedback(`${trades.length}건 일괄 매매 요청 성공! 1~2분 후 대시보드 데이터 업데이트가 완료되면 반영됩니다.`, 'success');
             tray = [];
@@ -431,7 +441,7 @@
 
             setTimeout(async () => {
                 try {
-                    const run = await githubApi.getLatestWorkflowRun('manual-trade.yml');
+                    const run = await githubApi.getLatestWorkflowRun(workflowFile);
                     if (run) {
                         const link = document.createElement('a');
                         link.href = run.html_url;

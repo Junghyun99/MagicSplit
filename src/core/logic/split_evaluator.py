@@ -12,7 +12,7 @@ from src.core.models import (
     OrderAction,
 )
 from src.utils.ticker_reader import display_ticker
-from src.utils.currency import format_money
+from src.utils.currency import format_money, format_qty
 
 # 상승 레짐 진입 확정에 필요한 연속 UPTREND 판정 횟수 (독립 조정 가능)
 REGIME_CONFIRM_BARS = 2
@@ -377,7 +377,7 @@ class SplitEvaluator:
         if self._logger:
             self._logger.info(
                 f"[{display_ticker(rule.ticker)}] trailing 벌크 매도 발동: "
-                f"Lv{min_lv}~Lv{max_lv} {fired_qty}주 ({pct_change:+.1f}%)"
+                f"Lv{min_lv}~Lv{max_lv} {format_qty(fired_qty, rule.market_type)} ({pct_change:+.1f}%)"
             )
 
         bulk_signal = SplitSignal(
@@ -386,7 +386,7 @@ class SplitEvaluator:
             action=OrderAction.SELL,
             quantity=fired_qty,
             price=current_price,
-            reason=f"trailing 벌크 매도 Lv{min_lv}~Lv{max_lv} ({fired_qty}주 {pct_change:+.1f}%)",
+            reason=f"trailing 벌크 매도 Lv{min_lv}~Lv{max_lv} ({format_qty(fired_qty, rule.market_type)} {pct_change:+.1f}%)",
             pct_change=pct_change,
             level=max_lv,
             buy_price=avg_buy,
@@ -602,7 +602,7 @@ class SplitEvaluator:
         if self._logger:
             self._logger.info(
                 f"[{display_ticker(rule.ticker)}] 보유 lot 없음 -> "
-                f"초기 매수 Lv1 {buy_qty}주 @{format_money(current_price, rule.market_type)}"
+                f"초기 매수 Lv1 {format_qty(buy_qty, rule.market_type)} @{format_money(current_price, rule.market_type)}"
             )
         return SplitSignal(
             ticker=rule.ticker,
@@ -743,7 +743,7 @@ class SplitEvaluator:
         if portfolio.total_cash < required_cash:
             reason = (
                 f"현금 부족: 보유 현금 {format_money(portfolio.total_cash, rule.market_type)} "
-                f"< 매수 예정 금액 {format_money(required_cash, rule.market_type)} ({buy_qty}주)"
+                f"< 매수 예정 금액 {format_money(required_cash, rule.market_type)} ({format_qty(buy_qty, rule.market_type)})"
             )
             return False, reason
 
@@ -865,7 +865,7 @@ class SplitEvaluator:
                     self._logger.info(
                         f"[{display_ticker(rule.ticker)}] 동적 재매수: "
                         f"매도가 {format_money(last_sell_price, rule.market_type)} 대비 "
-                        f"{pct_from_ref:+.1f}% -> 추가 매수 Lv{next_level} {buy_qty}주 "
+                        f"{pct_from_ref:+.1f}% -> 추가 매수 Lv{next_level} {format_qty(buy_qty, rule.market_type)} "
                         f"@{format_money(current_price, rule.market_type)} "
                         f"(원래 기준 Lv{last_lot.level} {format_money(last_lot.buy_price, rule.market_type)})"
                     )
@@ -873,7 +873,7 @@ class SplitEvaluator:
                     self._logger.info(
                         f"[{display_ticker(rule.ticker)}] Lv{last_lot.level} "
                         f"매수가 {format_money(last_lot.buy_price, rule.market_type)} 대비 "
-                        f"{pct_from_ref:+.1f}% -> 추가 매수 Lv{next_level} {buy_qty}주 "
+                        f"{pct_from_ref:+.1f}% -> 추가 매수 Lv{next_level} {format_qty(buy_qty, rule.market_type)} "
                         f"@{format_money(current_price, rule.market_type)}"
                     )
             reason_detail = (
@@ -1178,7 +1178,7 @@ class SplitEvaluator:
             if self._logger:
                 self._logger.info(
                     f"[{display_ticker(rule.ticker)}] 추세 이탈 -> 통합 전량 청산(Bulk) "
-                    f"{total_qty}주 (평단 {format_money(avg_buy, rule.market_type)}, "
+                    f"{format_qty(total_qty, rule.market_type)} (평단 {format_money(avg_buy, rule.market_type)}, "
                     f"현재가 {format_money(current_price, rule.market_type)}, "
                     f"{indicator_txt})"
                 )
@@ -1188,7 +1188,7 @@ class SplitEvaluator:
                 action=OrderAction.SELL,
                 quantity=total_qty,
                 price=current_price,
-                reason=f"추세 이탈 통합 전량 청산(Bulk Sell, {total_qty}주 {pct:+.1f}%)",
+                reason=f"추세 이탈 통합 전량 청산(Bulk Sell, {format_qty(total_qty, rule.market_type)} {pct:+.1f}%)",
                 pct_change=pct,
                 level=max_level,
                 regime_liquidation=True,
@@ -1202,7 +1202,7 @@ class SplitEvaluator:
             if self._logger:
                 self._logger.info(
                     f"[{display_ticker(rule.ticker)}] 추세 이탈 -> 수량 부족으로 전량 청산(Bulk) "
-                    f"{total_qty}주 (평단 {format_money(avg_buy, rule.market_type)}, "
+                    f"{format_qty(total_qty, rule.market_type)} (평단 {format_money(avg_buy, rule.market_type)}, "
                     f"현재가 {format_money(current_price, rule.market_type)})"
                 )
             return [SplitSignal(
@@ -1211,7 +1211,7 @@ class SplitEvaluator:
                 action=OrderAction.SELL,
                 quantity=total_qty,
                 price=current_price,
-                reason=f"추세 이탈 전량 청산(수량 부족, {total_qty}주 {pct:+.1f}%)",
+                reason=f"추세 이탈 전량 청산(수량 부족, {format_qty(total_qty, rule.market_type)} {pct:+.1f}%)",
                 pct_change=pct,
                 level=max_level,
                 regime_liquidation=True,
@@ -1229,7 +1229,7 @@ class SplitEvaluator:
                 stop_price = current_price * (1 - rule.trendbreak_trailing_drop_pct / 100)
                 self._logger.info(
                     f"[{display_ticker(rule.ticker)}] 추세 이탈 -> 추종 데드라인 활성화 "
-                    f"(즉시 매도 0%, 전량 {total_qty}주 추적, "
+                    f"(즉시 매도 0%, 전량 {format_qty(total_qty, rule.market_type)} 추적, "
                     f"기준가 {format_money(current_price, rule.market_type)}, "
                     f"청산선 {format_money(stop_price, rule.market_type)})"
                 )
@@ -1240,8 +1240,8 @@ class SplitEvaluator:
             stop_price = current_price * (1 - rule.trendbreak_trailing_drop_pct / 100)
             self._logger.info(
                 f"[{display_ticker(rule.ticker)}] 추세 이탈 -> 분할 청산 "
-                f"{sell_qty}주/{total_qty}주 ({partial_pct:.0f}%) 즉시 매도, "
-                f"잔량 {remain_qty}주 추종 데드라인 "
+                f"{format_qty(sell_qty, rule.market_type)}/{format_qty(total_qty, rule.market_type)} ({partial_pct:.0f}%) 즉시 매도, "
+                f"잔량 {format_qty(remain_qty, rule.market_type)} 추종 데드라인 "
                 f"(기준가 {format_money(current_price, rule.market_type)}, "
                 f"청산선 {format_money(stop_price, rule.market_type)}, "
                 f"평단 {format_money(avg_buy, rule.market_type)}, "
@@ -1253,7 +1253,7 @@ class SplitEvaluator:
             action=OrderAction.SELL,
             quantity=sell_qty,
             price=current_price,
-            reason=f"추세 이탈 분할 청산({sell_qty}/{total_qty}주, {pct:+.1f}%)",
+            reason=f"추세 이탈 분할 청산({format_qty(sell_qty, rule.market_type)}/{format_qty(total_qty, rule.market_type)}, {pct:+.1f}%)",
             pct_change=pct,
             level=max_level,
             regime_partial_liquidation=True,
@@ -1312,7 +1312,7 @@ class SplitEvaluator:
                     f"[{display_ticker(rule.ticker)}] ✅ 추종 데드라인 해제! "
                     f"가격 {format_money(current_price, rule.market_type)}이 "
                     f"이탈 기준선 위로 회복 -> 상승 레짐 복귀 "
-                    f"(잔량 {sum(l.quantity for l in ticker_lots)}주 보유 유지)"
+                    f"(잔량 {format_qty(sum(l.quantity for l in ticker_lots), rule.market_type)} 보유 유지)"
                 )
             return []
 
@@ -1336,7 +1336,7 @@ class SplitEvaluator:
                     f"[{display_ticker(rule.ticker)}] 🔻 추종 데드라인 발동! "
                     f"기준가 {format_money(lock_price, rule.market_type)} 대비 "
                     f"-{drop:.1f}% (허용 -{drop_pct}%) "
-                    f"-> 잔량 {total_qty}주 전량 청산"
+                    f"-> 잔량 {format_qty(total_qty, rule.market_type)} 전량 청산"
                 )
             # trailing_lock 상태 리셋은 엔진에서 체결 확정 시 수행
             return [SplitSignal(
@@ -1345,7 +1345,7 @@ class SplitEvaluator:
                 action=OrderAction.SELL,
                 quantity=total_qty,
                 price=current_price,
-                reason=f"추종 데드라인 발동 잔량 청산({total_qty}주, 기준가 대비 -{drop:.1f}%)",
+                reason=f"추종 데드라인 발동 잔량 청산({format_qty(total_qty, rule.market_type)}, 기준가 대비 -{drop:.1f}%)",
                 pct_change=pct,
                 level=max_level,
                 regime_liquidation=True,  # 전량 청산 -> 레짐 리셋
@@ -1457,7 +1457,7 @@ class SplitEvaluator:
         if self._logger:
             self._logger.info(
                 f"[{display_ticker(rule.ticker)}] 상승장 누적 매수 Lv{next_level} "
-                f"{buy_qty}주 @{format_money(current_price, rule.market_type)} "
+                f"{format_qty(buy_qty, rule.market_type)} @{format_money(current_price, rule.market_type)} "
                 f"(20EMA {format_money(ema20, rule.market_type)} 눌림, add {adds + 1}/{rule.uptrend_max_adds})"
             )
         return SplitSignal(

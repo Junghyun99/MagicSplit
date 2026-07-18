@@ -1,0 +1,29 @@
+{
+    "stocks": [
+        {
+            "ticker": "KRW-BTC",
+            "market_type": "crypto",
+            "enabled": false,
+            "preset": "major_coin"
+        },
+        {
+            "ticker": "KRW-ETH",
+            "market_type": "crypto",
+            "enabled": false,
+            "preset": "major_coin"
+        },
+        {
+            "ticker": "KRW-USDT",
+            "enabled": true,
+            "max_lots": 100,
+            "market_type": "crypto",
+            "buy_threshold_pct": -1,
+            "sell_threshold_pct": 2,
+            "buy_amount": 10000
+        }
+    ],
+    "global": {
+        "max_exposure_pct": 30,
+        "notification_enabled": true
+    }
+}
