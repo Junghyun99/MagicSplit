@@ -123,7 +123,7 @@ class StrategyConfig:
         "trendbreak_chandelier_k", "uptrend_add_reset_pct",
         "trendbreak_partial_sell_pct", "trendbreak_trailing_drop_pct",
         "channel_stddev_k", "channel_slope_band_pct",
-        "channel_breakdown_tolerance_pct",
+        "channel_slope_up_band_pct", "channel_breakdown_tolerance_pct",
     )
     _REGIME_KEYS_LIST = ("uptrend_add_amounts",)
 

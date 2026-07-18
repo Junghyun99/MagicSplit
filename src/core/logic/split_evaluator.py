@@ -30,6 +30,7 @@ def classify_for_rule(rule: StockRule, ohlc_window):
             lookback=rule.channel_lookback,
             stddev_k=rule.channel_stddev_k,
             slope_band_pct=rule.channel_slope_band_pct,
+            slope_up_band_pct=rule.channel_slope_up_band_pct,
             chandelier_k=rule.trendbreak_chandelier_k,
             chandelier_lookback=rule.trendbreak_chandelier_lookback,
             swing_lookback=rule.uptrend_swing_lookback,

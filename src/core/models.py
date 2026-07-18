@@ -81,6 +81,9 @@ class StockRule:
     channel_lookback: int = 63                    # 회귀 윈도우 봉 수 (63 = 3개월)
     channel_stddev_k: float = 2.0                 # 채널 폭 = 중심선 +- k*잔차표준편차
     channel_slope_band_pct: float = 8.0           # |윈도우 전체 기울기%| 이내면 횡보 (백테스트 근거 5.0 -> 8.0)
+    # 상승 선언 전용 문턱 (비대칭 밴드). None이면 slope_band_pct 대칭 사용.
+    # 올릴수록 상승 래치(매도 잠금) 빈도가 줄어 횡보=익절 사이클이 넓어진다.
+    channel_slope_up_band_pct: Optional[float] = None
     channel_breakdown_tolerance_pct: float = 0.0  # 하단선*(1-tol%) 미만이면 이탈
     # True면 하단 이탈 청산을 상승 래치 활성 중에만 발동 (횡보장은 분할매매에 맡기고
     # 하락 방어는 하락 래치 청산만 사용). False = 상승/횡보 모두 발동 (기존 동작)
@@ -168,6 +171,13 @@ class StockRule:
                 if self.channel_slope_band_pct < 0:
                     raise ValueError(
                         f"StockRule({self.ticker}): channel_slope_band_pct는 음수일 수 없습니다."
+                    )
+                if (
+                    self.channel_slope_up_band_pct is not None
+                    and self.channel_slope_up_band_pct < 0
+                ):
+                    raise ValueError(
+                        f"StockRule({self.ticker}): channel_slope_up_band_pct는 음수일 수 없습니다."
                     )
                 if not (0 <= self.channel_breakdown_tolerance_pct < 100):
                     raise ValueError(

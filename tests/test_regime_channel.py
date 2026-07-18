@@ -86,6 +86,17 @@ class TestClassifyChannel:
         r = classify_channel(df, lookback=63, slope_band_pct=5.0)
         assert r.regime == Regime.SIDEWAYS
 
+    def test_asymmetric_up_band(self):
+        # 63봉간 +13.2% 기울기: 대칭 밴드8이면 상승, 상승밴드 15면 횡보
+        df = _ohlc(_geometric_trend(63, 100.0, 0.2))
+        assert classify_channel(df, lookback=63, slope_band_pct=8.0).regime == Regime.UPTREND
+        r = classify_channel(df, lookback=63, slope_band_pct=8.0, slope_up_band_pct=15.0)
+        assert r.regime == Regime.SIDEWAYS
+        # 하락 문턱은 slope_band_pct 유지
+        df_dn = _ohlc(_geometric_trend(63, 100.0, -0.2))
+        r_dn = classify_channel(df_dn, lookback=63, slope_band_pct=8.0, slope_up_band_pct=15.0)
+        assert r_dn.regime == Regime.DOWNTREND
+
     def test_band_is_inclusive_boundary_sideways(self):
         # 평탄 시계열은 미세 밴드에서도 횡보 (밴드 '초과'일 때만 상승/하락)
         df = _ohlc(_geometric_trend(63, 100.0, 0.0))
