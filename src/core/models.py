@@ -139,10 +139,11 @@ class StockRule:
                     f"got '{self.regime_algo}'"
                 )
             if self.regime_algo == "channel":
-                # ema20/chandelier(22) 등 보조 지표 계산이 보장되는 최소 윈도우
-                if self.channel_lookback < 30:
+                # 최소 1개월(21봉). 보조 지표(ema20/chandelier)는 전체 히스토리로
+                # 계산하므로 윈도우가 짧아도 안전하다. 회귀 유의성 확보용 하한.
+                if self.channel_lookback < 21:
                     raise ValueError(
-                        f"StockRule({self.ticker}): channel_lookback은 30 이상이어야 합니다. "
+                        f"StockRule({self.ticker}): channel_lookback은 21(1개월) 이상이어야 합니다. "
                         f"got {self.channel_lookback}"
                     )
                 if self.channel_stddev_k <= 0:
