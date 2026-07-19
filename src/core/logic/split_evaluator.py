@@ -181,12 +181,8 @@ class SplitEvaluator:
                 )]
 
             # 채널 모드 재진입 게이트: 이탈/하락 청산(post_liquidation) 후에는
-            # 상단 저항선 상향 돌파 전까지 신규 진입을 차단한다.
-            if (
-                rule.regime_algo == "channel"
-                and rule.channel_reentry_breakout
-                and regime_st.get("post_liquidation")
-            ):
+            # 상단 저항선 상향 돌파 전까지 신규 진입을 차단한다 (알고리즘 고정 동작).
+            if rule.regime_algo == "channel" and regime_st.get("post_liquidation"):
                 gate_line = (
                     reading.channel_resistance if reading is not None else float("nan")
                 )

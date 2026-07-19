@@ -974,8 +974,8 @@ class MagicSplitEngine:
         (DOWNTREND_CONFIRM_BARS) 규칙에만 맡긴다.
 
         mark_liquidation=True(이탈/하락 청산 경로)면 post_liquidation 마커를 남긴다.
-        channel_reentry_breakout 옵션이 이 마커를 보고 상단 저항선 돌파 전까지
-        재진입을 차단한다. (트레일링 벌크 등 통상 익절성 전량 매도에는 마커 없음)
+        채널 모드가 이 마커를 보고 상단 저항선 돌파 전까지
+        재진입을 차단한다 (알고리즘 고정 동작). (트레일링 벌크 등 통상 익절성 전량 매도에는 마커 없음)
         """
         st = regime_state.get(ticker)
         if not isinstance(st, dict):

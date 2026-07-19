@@ -24,7 +24,6 @@ window.ConfigView = (function () {
         document.getElementById('global-channel-stddev-k').value = globalConfig?.channel_stddev_k !== undefined ? globalConfig.channel_stddev_k : '';
         document.getElementById('global-channel-slope-band-pct').value = globalConfig?.channel_slope_band_pct !== undefined ? globalConfig.channel_slope_band_pct : '';
         document.getElementById('global-channel-breakdown-tolerance-pct').value = globalConfig?.channel_breakdown_tolerance_pct !== undefined ? globalConfig.channel_breakdown_tolerance_pct : '';
-        document.getElementById('global-channel-reentry-breakout').checked = globalConfig?.channel_reentry_breakout === true;
     }
 
     function renderTickerList(stocks, activeIndex, onSelect, getDisplayName) {
@@ -245,7 +244,6 @@ window.ConfigView = (function () {
             channel_stddev_k: document.getElementById('global-channel-stddev-k').value,
             channel_slope_band_pct: document.getElementById('global-channel-slope-band-pct').value,
             channel_breakdown_tolerance_pct: document.getElementById('global-channel-breakdown-tolerance-pct').value,
-            channel_reentry_breakout: document.getElementById('global-channel-reentry-breakout').checked,
         };
     }
 

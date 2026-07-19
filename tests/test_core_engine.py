@@ -1348,7 +1348,7 @@ class TestRunManualTrade:
         _, kwargs = mock_build.call_args
         passed_regime = kwargs.get("regime_state_by_ticker")
         # AAPL은 전량 청산 후 상승 상태 제거 + 청산 마커만 잔류
-        # (마커는 channel_reentry_breakout=True일 때만 소비됨)
+        # (마커는 채널 모드의 재진입 게이트가 소비)
         assert passed_regime.get("AAPL") == {"post_liquidation": True}
         # MSFT는 건드리지 않음
         assert passed_regime.get("MSFT", {}).get("adds") == 1

@@ -82,9 +82,8 @@ class StockRule:
     channel_stddev_k: float = 2.0                 # 채널 폭 = 중심선 +- k*잔차표준편차
     channel_slope_band_pct: float = 8.0           # |윈도우 전체 기울기%| 이내면 횡보 (백테스트 근거 5.0 -> 8.0)
     channel_breakdown_tolerance_pct: float = 0.0  # 하단선*(1-tol%) 미만이면 이탈
-    # True면 이탈/하락 청산 후 재진입을 상단 저항선(2sigma) 상향 돌파 시에만 허용.
-    # 경계 왕복 재진입 churn을 구조적으로 차단한다. (권장 조합의 핵심 옵션)
-    channel_reentry_breakout: bool = False
+    # 참고: 이탈/하락 청산 후 재진입은 상단 저항선(2sigma) 상향 돌파 시에만 허용된다
+    # (채널 모드 알고리즘 고정 동작. 경계 왕복 재진입 churn 차단 - 백테스트로 확정)
     # 상승 레짐: 차수 매도를 잠그고 추세 눌림에 누적 매수
     uptrend_pullback_band_pct: float = 1.5   # 눌림 매수 상한: 20EMA + band% 이하면 허용 (하단 제한 없음)
     uptrend_max_adds: int = 3                # 상승장 1사이클 최대 추가매수 횟수

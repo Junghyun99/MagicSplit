@@ -202,11 +202,11 @@ class TestChannelSidewaysBreakdown:
 
 
 class TestChannelReentryBreakout:
-    """channel_reentry_breakout=True: 이탈 청산 후 재진입은 상단 저항선 돌파 시에만."""
+    """채널 모드 재진입 게이트(고정 동작): 이탈 청산 후 재진입은 상단 저항선 돌파 시에만."""
 
     def test_below_resistance_blocked(self, evaluator):
         window = _sideways_window()
-        rule = _channel_rule(channel_reentry_breakout=True)
+        rule = _channel_rule()
         reading = classify_for_rule(rule, window)
         st = {"AAPL": {"post_liquidation": True}}
         signals = evaluator.evaluate_stock(
@@ -218,7 +218,7 @@ class TestChannelReentryBreakout:
 
     def test_above_resistance_allows_entry_and_clears_marker(self, evaluator):
         window = _sideways_window()
-        rule = _channel_rule(channel_reentry_breakout=True)
+        rule = _channel_rule()
         reading = classify_for_rule(rule, window)
         st = {"AAPL": {"post_liquidation": True}}
         signals = evaluator.evaluate_stock(
@@ -233,7 +233,7 @@ class TestChannelReentryBreakout:
     def test_gate_inactive_without_marker(self, evaluator):
         # 청산 이력이 없으면(첫 진입) 게이트 미적용
         window = _sideways_window()
-        rule = _channel_rule(channel_reentry_breakout=True)
+        rule = _channel_rule()
         reading = classify_for_rule(rule, window)
         signals = evaluator.evaluate_stock(
             rule, [], _pf(reading.channel_support * 1.01), ohlc_window=window, regime_state={},
@@ -255,7 +255,7 @@ class TestChannelReentryBreakout:
     def test_between_mid_and_resistance_still_blocked(self, evaluator):
         # 기준선은 상단 저항선 고정: 중심선~상단 사이 가격은 여전히 차단
         window = _sideways_window()
-        rule = _channel_rule(channel_reentry_breakout=True)
+        rule = _channel_rule()
         reading = classify_for_rule(rule, window)
         price = (reading.channel_mid + reading.channel_resistance) / 2
         st = {"AAPL": {"post_liquidation": True}}
