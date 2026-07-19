@@ -30,7 +30,6 @@ def classify_for_rule(rule: StockRule, ohlc_window):
             lookback=rule.channel_lookback,
             stddev_k=rule.channel_stddev_k,
             slope_band_pct=rule.channel_slope_band_pct,
-            slope_up_band_pct=rule.channel_slope_up_band_pct,
             chandelier_k=rule.trendbreak_chandelier_k,
             chandelier_lookback=rule.trendbreak_chandelier_lookback,
             swing_lookback=rule.uptrend_swing_lookback,
@@ -182,24 +181,20 @@ class SplitEvaluator:
                 )]
 
             # 채널 모드 재진입 게이트: 이탈/하락 청산(post_liquidation) 후에는
-            # 기준선(상단 저항선 또는 중심선) 상향 돌파 전까지 신규 진입을 차단한다.
+            # 상단 저항선 상향 돌파 전까지 신규 진입을 차단한다.
             if (
                 rule.regime_algo == "channel"
                 and rule.channel_reentry_breakout
                 and regime_st.get("post_liquidation")
             ):
-                if reading is None:
-                    gate_line = float("nan")
-                elif rule.channel_reentry_line == "mid":
-                    gate_line = reading.channel_mid
-                else:
-                    gate_line = reading.channel_resistance
-                line_name = "중심선" if rule.channel_reentry_line == "mid" else "상단 저항선"
+                gate_line = (
+                    reading.channel_resistance if reading is not None else float("nan")
+                )
                 if math.isnan(gate_line) or current_price <= gate_line:
                     reason = (
-                        f"이탈 청산 후 재진입 대기 - {line_name} 미돌파 "
+                        f"이탈 청산 후 재진입 대기 - 상단 저항선 미돌파 "
                         f"(현재가 {format_money(current_price, rule.market_type)} <= "
-                        f"{line_name} {format_money(gate_line, rule.market_type)})"
+                        f"저항선 {format_money(gate_line, rule.market_type)})"
                     )
                     if self._logger:
                         self._logger.info(f"[{display_ticker(rule.ticker)}] {reason}")
@@ -216,9 +211,9 @@ class SplitEvaluator:
                 regime_st.pop("post_liquidation", None)
                 if self._logger:
                     self._logger.info(
-                        f"[{display_ticker(rule.ticker)}] {line_name} 돌파 확인 "
+                        f"[{display_ticker(rule.ticker)}] 상단 저항선 돌파 확인 "
                         f"(현재가 {format_money(current_price, rule.market_type)} > "
-                        f"{line_name} {format_money(gate_line, rule.market_type)}) -> 재진입 허용"
+                        f"저항선 {format_money(gate_line, rule.market_type)}) -> 재진입 허용"
                     )
             last_sell_price = (
                 last_sell_prices.get(rule.ticker) if last_sell_prices else None
@@ -1029,12 +1024,6 @@ class SplitEvaluator:
             return self._handle_trendbreak(rule, ticker_lots, current_price, reading, st)
 
         # 3. 상승/횡보 중 하단 채널선 하향 돌파 -> 연속 확정 후 이탈 청산
-        # channel_breakdown_uptrend_only=True면 상승 래치 활성 중에만 발동.
-        # 횡보장은 분할매매(물타기/익절)에 맡기고 하락 방어는 하락 래치 청산만 쓴다.
-        if rule.channel_breakdown_uptrend_only and st.get("regime") != "uptrend":
-            st["breakdown_streak"] = 0
-            return None
-
         # channel_uptrend_exit_ma=True(하이브리드)면 상승 래치 중 하단 채널선 이탈을
         # 건너뛴다. 상승 추세의 정상 눌림(2sigma 하단)에 청산되지 않도록
         # 이탈 판정은 _evaluate_uptrend의 ma_adx식 이탈선(50MA/챈들리어)이 맡는다.

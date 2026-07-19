@@ -86,13 +86,10 @@ presets.json             # 차수�?배열 공유 ?�리??(?�택)
   - `regime_algo="ma_adx"`(기본): EMA20/SMA50/SMA200 정배열 + ADX로 상승/횡보/하락 판정
   - `regime_algo="channel"`: 최근 `channel_lookback`(기본 63=3m)봉 로그 종가의 회귀 채널(중심선 +- `channel_stddev_k`*sigma)로 판정 (give-me-the-money simulate_trend 이식)
     - 중심선 기울기(윈도우 전체 %변화)가 `channel_slope_band_pct`(기본 8.0) 이내면 횡보, 초과는 상승, 미만은 하락
-    - `channel_slope_up_band_pct`: 상승 선언 전용 문턱 (비대칭 밴드, None=대칭). 올릴수록 매도 잠금 빈도 감소 -> 익절 사이클 확대
     - 이탈 판정 = 하락 레짐 확정(2봉 연속) OR 상승/횡보 중 현재가 < 하단 채널선*(1 - `channel_breakdown_tolerance_pct`%) 2봉 연속 (단봉 스파이크 무시)
     - 이탈 시 `trendbreak_partial_sell_pct`(50=절반 매도+추종 데드라인, 100=전량)로 청산
     - 상승 레짐 확정 시 차수 매도 잠금 + 눌림 누적매수, 하락 확정 중 신규/추가 매수 차단 (기존 레짐 동작 공유)
-    - `channel_reentry_breakout=true`: 이탈 청산 후 재진입을 채널 기준선 상향 돌파 시에만 허용 (경계 왕복 재진입 churn 차단, 하락 종목군 백테스트에서 유일한 플러스 수익 조합)
-    - `channel_reentry_line`: 재진입 기준선 "resistance"(상단 2sigma, 기본, 보수적) | "mid"(중심선, 회복 종목 복귀 빠름)
-    - `channel_breakdown_uptrend_only=true`: 하단 이탈 청산을 상승 래치 중에만 발동 (백테스트상 효과 미미, 기본 false 권장)
+    - `channel_reentry_breakout=true`: 이탈 청산 후 재진입을 상단 저항선(2sigma) 상향 돌파 시에만 허용 (경계 왕복 재진입 churn 차단, 권장 조합의 핵심)
     - `channel_uptrend_exit_ma=true`: 상승 래치 중 이탈선을 하단 채널선 대신 ma_adx식(50MA/챈들리어)으로 전환하는 하이브리드 (상승 눌림 청산 방지)
     - **권장 조합(확정)**: `regime_algo="channel"` + `channel_slope_band_pct=8` + `channel_reentry_breakout=true` + `trendbreak_partial_sell_pct=50`. 다수 종목(성격 혼합)일수록 유리 - 하락 종목 청산 현금이 상승 종목으로 재배치됨 (혼합 16종목 백테스트에서 ma_adx/OFF 모두 상회)
 - **???�이?�에 ??종목??매도 OR 매수 �??�나�?* ?�행 (매도 ?�선)

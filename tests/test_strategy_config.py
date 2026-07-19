@@ -514,7 +514,7 @@ class TestStrategyConfigRegime:
                 "channel_stddev_k": 1.5,
                 "channel_slope_band_pct": 3.0,
                 "channel_breakdown_tolerance_pct": 1.0,
-                "channel_breakdown_uptrend_only": True,
+                "channel_reentry_breakout": True,
             }]
         }
         config_file = tmp_path / "config_overseas.json"
@@ -526,7 +526,7 @@ class TestStrategyConfigRegime:
         assert rule.channel_stddev_k == 1.5
         assert rule.channel_slope_band_pct == 3.0
         assert rule.channel_breakdown_tolerance_pct == 1.0
-        assert rule.channel_breakdown_uptrend_only is True
+        assert rule.channel_reentry_breakout is True
 
     def test_channel_absent_defaults_ma_adx(self, tmp_path):
         config = {"stocks": [{"ticker": "AAPL", "regime_enabled": True}]}

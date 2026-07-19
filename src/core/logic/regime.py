@@ -206,7 +206,6 @@ def classify_channel(
     lookback: int = 63,
     stddev_k: float = 2.0,
     slope_band_pct: float = 8.0,
-    slope_up_band_pct: Optional[float] = None,
     chandelier_k: float = 3.0,
     chandelier_lookback: int = 22,
     swing_lookback: int = 10,
@@ -217,9 +216,7 @@ def classify_channel(
     give-me-the-money simulate_trend의 회귀 채널(중심선 +- k*sigma)을 이식한 분류기.
     - 중심선: ln(Close)에 대한 OLS 회귀선 (로그 공간 -> 가격 대비 % 대칭 채널)
     - 기울기 %: 윈도우 전체 중심선 변화율 (exp(m*(lookback-1)) - 1) * 100
-    - 분류: 기울기 > +상승밴드 -> UPTREND, < -band -> DOWNTREND, 그 외 SIDEWAYS
-      (상승밴드 = slope_up_band_pct가 있으면 그 값, 없으면 slope_band_pct 대칭.
-       상승 문턱만 올리면 매도 잠금 빈도가 줄어 횡보=익절 사이클이 넓어진다)
+    - 분류: 기울기 > +band -> UPTREND, < -band -> DOWNTREND, 그 외 SIDEWAYS
     - channel_support/resistance/mid: "오늘"(x=lookback)으로 외삽한 실가격.
       하단 이탈(현재가 < support) 판정은 호출부(평가기)가 라이브 현재가로 수행한다.
     - 히스토리가 lookback 미만이거나 윈도우에 비정상 가격(<=0, NaN)이 있으면 UNKNOWN.
@@ -255,8 +252,7 @@ def classify_channel(
     support = float(np.exp(m * lookback + c - offset))
     resistance = float(np.exp(m * lookback + c + offset))
 
-    up_band = slope_up_band_pct if slope_up_band_pct is not None else slope_band_pct
-    if slope_pct > up_band:
+    if slope_pct > slope_band_pct:
         regime = Regime.UPTREND
     elif slope_pct < -slope_band_pct:
         regime = Regime.DOWNTREND

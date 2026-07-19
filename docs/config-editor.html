@@ -105,30 +105,13 @@
                     <input type="number" step="0.1" id="global-channel-slope-band-pct" class="form-control" placeholder="8.0">
                 </div>
                 <div class="form-group">
-                    <label>상승 선언 밴드 (%)</label>
-                    <input type="number" step="0.1" id="global-channel-slope-up-band-pct" class="form-control" placeholder="(비우면 대칭)">
-                </div>
-                <div class="form-group">
                     <label>하단 이탈 허용 (%)</label>
                     <input type="number" step="0.1" id="global-channel-breakdown-tolerance-pct" class="form-control" placeholder="0.0">
                 </div>
                 <div class="form-group"
                     style="display:flex; flex-direction:column; justify-content:center; align-items:center;">
-                    <label>이탈청산 상승장 전용</label>
-                    <input type="checkbox" id="global-channel-breakdown-uptrend-only" style="width:20px; height:20px;">
-                </div>
-                <div class="form-group"
-                    style="display:flex; flex-direction:column; justify-content:center; align-items:center;">
                     <label>재진입 돌파 확인</label>
                     <input type="checkbox" id="global-channel-reentry-breakout" style="width:20px; height:20px;">
-                </div>
-                <div class="form-group">
-                    <label>재진입 기준선</label>
-                    <select id="global-channel-reentry-line" class="form-control">
-                        <option value="">(기본: resistance)</option>
-                        <option value="resistance">resistance (상단 2σ)</option>
-                        <option value="mid">mid (중심선)</option>
-                    </select>
                 </div>
                 <div class="form-group"
                     style="display:flex; flex-direction:column; justify-content:center; align-items:center;">
@@ -303,8 +286,8 @@
     <script src="js/services/data-repository.js?v=20260717-1"></script>
     <script src="js/services/github-api.js?v=20260508-1"></script>
     <script src="js/models/config-model.js?v=20260716-1"></script>
-    <script src="js/views/config-view.js?v=20260718-4"></script>
-    <script src="js/controllers/config-controller.js?v=20260718-5"></script>
+    <script src="js/views/config-view.js?v=20260719-1"></script>
+    <script src="js/controllers/config-controller.js?v=20260719-1"></script>
     <script src="js/config-editor.js?v=20260508-1"></script>
 </body>
 

@@ -201,58 +201,6 @@ class TestChannelSidewaysBreakdown:
         assert signals[0].regime_partial_liquidation is True
 
 
-class TestChannelBreakdownUptrendOnly:
-    """channel_breakdown_uptrend_only=True: 하단 이탈 청산을 상승 래치 중에만 발동."""
-
-    def test_sideways_breakdown_skipped(self, evaluator):
-        # 횡보(래치 없음) + 하단 이탈 지속 -> 청산 없이 통상 분할매매 유지
-        window = _sideways_window()
-        rule = _channel_rule(channel_breakdown_uptrend_only=True)
-        support = _support(rule, window)
-        lots = [_lot(buy_price=100.0, qty=10)]
-        st = {}
-        signals = _eval_until_confirmed(
-            evaluator, rule, lots, _pf(support * 0.95, qty=10), window, st,
-        )
-        assert all(
-            not s.regime_liquidation and not s.regime_partial_liquidation
-            for s in signals
-        )
-        assert st["AAPL"].get("breakdown_streak", 0) == 0
-
-    def test_uptrend_breakdown_still_fires(self, evaluator):
-        window = _uptrend_window()
-        rule = _channel_rule(
-            channel_breakdown_uptrend_only=True, trendbreak_partial_sell_pct=100.0,
-        )
-        support = _support(rule, window)
-        lots = [_lot(buy_price=100.0)]
-        st = {"AAPL": {"regime": "uptrend", "adds": 0, "last_add_price": 100.0}}
-        signals = _eval_until_confirmed(
-            evaluator, rule, lots, _pf(support * 0.95), window, st,
-        )
-        assert len(signals) == 1
-        assert signals[0].regime_liquidation is True
-
-    def test_downtrend_latch_liquidation_unaffected(self, evaluator):
-        # 하락 래치 청산은 옵션과 무관하게 유지
-        window = _downtrend_window()
-        rule = _channel_rule(
-            channel_breakdown_uptrend_only=True, trendbreak_partial_sell_pct=100.0,
-        )
-        support = _support(rule, window)
-        lots = [_lot(buy_price=150.0)]
-        st = {}
-        evaluator.evaluate_stock(
-            rule, lots, _pf(support * 1.02), ohlc_window=window, regime_state=st,
-        )
-        signals = evaluator.evaluate_stock(
-            rule, lots, _pf(support * 1.02), ohlc_window=window, regime_state=st,
-        )
-        assert len(signals) == 1
-        assert signals[0].regime_liquidation is True
-
-
 class TestChannelReentryBreakout:
     """channel_reentry_breakout=True: 이탈 청산 후 재진입은 상단 저항선 돌파 시에만."""
 
@@ -304,10 +252,10 @@ class TestChannelReentryBreakout:
         assert len(signals) == 1
         assert not signals[0].is_blocked
 
-    def test_mid_line_allows_entry_between_mid_and_resistance(self, evaluator):
-        # reentry_line="mid": 중심선~상단 사이 가격이면 재진입 허용
+    def test_between_mid_and_resistance_still_blocked(self, evaluator):
+        # 기준선은 상단 저항선 고정: 중심선~상단 사이 가격은 여전히 차단
         window = _sideways_window()
-        rule = _channel_rule(channel_reentry_breakout=True, channel_reentry_line="mid")
+        rule = _channel_rule(channel_reentry_breakout=True)
         reading = classify_for_rule(rule, window)
         price = (reading.channel_mid + reading.channel_resistance) / 2
         st = {"AAPL": {"post_liquidation": True}}
@@ -315,25 +263,7 @@ class TestChannelReentryBreakout:
             rule, [], _pf(price), ohlc_window=window, regime_state=st,
         )
         assert len(signals) == 1
-        assert not signals[0].is_blocked
-        assert "post_liquidation" not in st["AAPL"]
-
-    def test_mid_line_blocks_below_mid(self, evaluator):
-        window = _sideways_window()
-        rule = _channel_rule(channel_reentry_breakout=True, channel_reentry_line="mid")
-        reading = classify_for_rule(rule, window)
-        price = (reading.channel_support + reading.channel_mid) / 2
-        st = {"AAPL": {"post_liquidation": True}}
-        signals = evaluator.evaluate_stock(
-            rule, [], _pf(price), ohlc_window=window, regime_state=st,
-        )
-        assert len(signals) == 1
         assert signals[0].is_blocked is True
-
-    def test_invalid_reentry_line_rejected(self):
-        import pytest as _pytest
-        with _pytest.raises(ValueError, match="channel_reentry_line"):
-            _channel_rule(channel_reentry_line="upper")
 
 
 class TestChannelUptrendExitMaHybrid:

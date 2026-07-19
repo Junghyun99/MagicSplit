@@ -23,12 +23,9 @@ window.ConfigView = (function () {
         document.getElementById('global-channel-lookback').value = globalConfig?.channel_lookback !== undefined ? globalConfig.channel_lookback : '';
         document.getElementById('global-channel-stddev-k').value = globalConfig?.channel_stddev_k !== undefined ? globalConfig.channel_stddev_k : '';
         document.getElementById('global-channel-slope-band-pct').value = globalConfig?.channel_slope_band_pct !== undefined ? globalConfig.channel_slope_band_pct : '';
-        document.getElementById('global-channel-slope-up-band-pct').value = globalConfig?.channel_slope_up_band_pct !== undefined ? globalConfig.channel_slope_up_band_pct : '';
         document.getElementById('global-channel-breakdown-tolerance-pct').value = globalConfig?.channel_breakdown_tolerance_pct !== undefined ? globalConfig.channel_breakdown_tolerance_pct : '';
-        document.getElementById('global-channel-breakdown-uptrend-only').checked = globalConfig?.channel_breakdown_uptrend_only === true;
         document.getElementById('global-channel-reentry-breakout').checked = globalConfig?.channel_reentry_breakout === true;
         document.getElementById('global-channel-uptrend-exit-ma').checked = globalConfig?.channel_uptrend_exit_ma === true;
-        document.getElementById('global-channel-reentry-line').value = globalConfig?.channel_reentry_line !== undefined ? globalConfig.channel_reentry_line : '';
     }
 
     function renderTickerList(stocks, activeIndex, onSelect, getDisplayName) {
@@ -248,12 +245,9 @@ window.ConfigView = (function () {
             channel_lookback: document.getElementById('global-channel-lookback').value,
             channel_stddev_k: document.getElementById('global-channel-stddev-k').value,
             channel_slope_band_pct: document.getElementById('global-channel-slope-band-pct').value,
-            channel_slope_up_band_pct: document.getElementById('global-channel-slope-up-band-pct').value,
             channel_breakdown_tolerance_pct: document.getElementById('global-channel-breakdown-tolerance-pct').value,
-            channel_breakdown_uptrend_only: document.getElementById('global-channel-breakdown-uptrend-only').checked,
             channel_reentry_breakout: document.getElementById('global-channel-reentry-breakout').checked,
             channel_uptrend_exit_ma: document.getElementById('global-channel-uptrend-exit-ma').checked,
-            channel_reentry_line: document.getElementById('global-channel-reentry-line').value
         };
     }
 
