@@ -90,7 +90,6 @@ presets.json             # 차수�?배열 공유 ?�리??(?�택)
     - 이탈 시 `trendbreak_partial_sell_pct`(50=절반 매도+추종 데드라인, 100=전량)로 청산
     - 상승 레짐 확정 시 차수 매도 잠금 + 눌림 누적매수, 하락 확정 중 신규/추가 매수 차단 (기존 레짐 동작 공유)
     - `channel_reentry_breakout=true`: 이탈 청산 후 재진입을 상단 저항선(2sigma) 상향 돌파 시에만 허용 (경계 왕복 재진입 churn 차단, 권장 조합의 핵심)
-    - `channel_uptrend_exit_ma=true`: 상승 래치 중 이탈선을 하단 채널선 대신 ma_adx식(50MA/챈들리어)으로 전환하는 하이브리드 (상승 눌림 청산 방지)
     - **권장 조합(확정)**: `regime_algo="channel"` + `channel_slope_band_pct=8` + `channel_reentry_breakout=true` + `trendbreak_partial_sell_pct=50`. 다수 종목(성격 혼합)일수록 유리 - 하락 종목 청산 현금이 상승 종목으로 재배치됨 (혼합 16종목 백테스트에서 ma_adx/OFF 모두 상회)
 - **???�이?�에 ??종목??매도 OR 매수 �??�나�?* ?�행 (매도 ?�선)
 - 종목�??�차 ?�행: ??종목 ?��?->주문->반영 ???�음 종목
