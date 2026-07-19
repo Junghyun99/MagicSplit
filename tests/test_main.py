@@ -133,3 +133,41 @@ class TestMagicSplitBot:
 
         with pytest.raises(ValueError, match="활성화된 종목이 없습니다"):
             MagicSplitBot()
+
+
+class TestCreateMarketData:
+    """레짐 필터 사용 여부에 따른 과거 일봉 제공자 주입 판단."""
+
+    def _bot_stub(self, market_type):
+        bot = MagicSplitBot.__new__(MagicSplitBot)  # __init__ 우회
+        bot.market_type = market_type
+        bot.logger = MagicMock()
+        return bot
+
+    def _rule(self, **over):
+        from src.core.models import StockRule
+        base = dict(ticker="AAPL", buy_threshold_pct=-5.0, sell_threshold_pct=10.0,
+                    buy_amount=500, max_lots=10)
+        base.update(over)
+        return StockRule(**base)
+
+    def test_none_when_regime_disabled(self):
+        bot = self._bot_stub("overseas")
+        assert bot._create_market_data([self._rule()]) is None
+
+    def test_yfinance_provider_for_overseas(self):
+        from src.infra.data import YFinanceMarketDataProvider
+        bot = self._bot_stub("overseas")
+        rules = [self._rule(regime_enabled=True, regime_algo="channel")]
+        provider = bot._create_market_data(rules)
+        assert isinstance(provider, YFinanceMarketDataProvider)
+        # ma_adx 기본 min_bars 200 + 60 여유
+        assert provider.window_size == 260
+
+    def test_upbit_provider_for_crypto(self):
+        from src.infra.data import UpbitMarketDataProvider
+        bot = self._bot_stub("crypto")
+        rules = [self._rule(ticker="KRW-BTC", market_type="crypto",
+                            regime_enabled=True, regime_algo="channel")]
+        provider = bot._create_market_data(rules)
+        assert isinstance(provider, UpbitMarketDataProvider)

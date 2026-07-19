@@ -1347,8 +1347,9 @@ class TestRunManualTrade:
 
         _, kwargs = mock_build.call_args
         passed_regime = kwargs.get("regime_state_by_ticker")
-        # AAPL은 전량 청산 후 pop
-        assert "AAPL" not in passed_regime
+        # AAPL은 전량 청산 후 상승 상태 제거 + 청산 마커만 잔류
+        # (마커는 채널 모드의 재진입 게이트가 소비)
+        assert passed_regime.get("AAPL") == {"post_liquidation": True}
         # MSFT는 건드리지 않음
         assert passed_regime.get("MSFT", {}).get("adds") == 1
 
@@ -1463,7 +1464,8 @@ class TestBulkLiquidation:
         )
         assert result == []
         assert last_sell["AAPL"] == 90.0
-        assert "AAPL" not in regime_state  # flat 재시작
+        # flat 재시작: 상승 상태는 제거, 이탈 청산 마커만 남는다
+        assert regime_state["AAPL"] == {"post_liquidation": True}
 
     def test_realized_pnl_aggregates_over_lots(self, engine):
         exe = self._exe(15)
@@ -1512,6 +1514,35 @@ class TestBulkLiquidation:
         )
         assert len(result) == 3                    # 아무것도 안 지워짐
         assert regime_state["AAPL"]["regime"] == "uptrend"
+
+    def test_full_liquidation_preserves_downtrend_latch(self, engine):
+        # 하락 래치 활성 중 전량 청산 -> 상승 관련 키만 리셋, 래치는 보존
+        # (래치까지 지우면 하락장에서 다음 사이클 즉시 재진입하는 churn 발생)
+        regime_state = {"AAPL": {
+            "regime": "uptrend", "adds": 3, "last_add_swing_high": 200.0,
+            "trailing_lock": {"active": True, "lock_price": 90.0, "drop_pct": 3.0},
+            "breakdown_streak": 1,
+            "downtrend": "active", "downtrend_streak": 0, "downtrend_exit_streak": 1,
+        }}
+        result = engine._update_positions(
+            self._positions(), [self._bulk_signal(15)], [self._exe(15)],
+            "2024-01-02", last_sell_prices={}, regime_state=regime_state,
+        )
+        assert result == []
+        st = regime_state["AAPL"]
+        assert st == {
+            "downtrend": "active", "downtrend_streak": 0, "downtrend_exit_streak": 1,
+            "post_liquidation": True,
+        }
+
+    def test_full_liquidation_without_latch_keeps_marker_only(self, engine):
+        # 래치 키가 없으면 상승 상태는 전부 제거되고 청산 마커만 남는다
+        regime_state = {"AAPL": {"regime": "uptrend", "adds": 3}}
+        engine._update_positions(
+            self._positions(), [self._bulk_signal(15)], [self._exe(15)],
+            "2024-01-02", last_sell_prices={}, regime_state=regime_state,
+        )
+        assert regime_state["AAPL"] == {"post_liquidation": True}
 
 
 class TestPartialLiquidation:

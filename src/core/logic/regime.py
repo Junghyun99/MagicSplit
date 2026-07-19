@@ -96,10 +96,41 @@ class RegimeReading:
     swing_high: float
     chandelier_stop: float
     n_bars: int
+    # --- 회귀 채널 분류기(classify_channel) 전용 필드 ---
+    # ma_adx 분류기(classify)에서는 전부 NaN으로 남는다.
+    # channel_* 가격은 "오늘"(윈도우 다음 봉, x=lookback) 위치로 외삽한 실가격이다.
+    channel_slope_pct: float = float("nan")   # 윈도우 전체 중심선 % 변화
+    channel_mid: float = float("nan")         # 중심선(회귀선) 외삽 가격
+    channel_support: float = float("nan")     # 하단 채널선 외삽 가격 (mid / exp(k*sigma))
+    channel_resistance: float = float("nan")  # 상단 채널선 외삽 가격 (mid * exp(k*sigma))
 
 
 def _is_nan(*values: float) -> bool:
     return any(v is None or (isinstance(v, float) and np.isnan(v)) for v in values)
+
+
+def linreg_channel(values: np.ndarray) -> "tuple[float, float, float]":
+    """단순 선형회귀 y = m*x + c (x=0..n-1) 와 잔차 표준편차(모집단)를 반환한다.
+
+    give-me-the-money의 calcLinearRegressionChannel과 동일한 수식:
+    - m = (n*Sxy - Sx*Sy) / (n*Sxx - Sx^2), 분모 0이면 1로 대체
+    - sigma = sqrt(sum(residual^2) / n)
+    """
+    y = np.asarray(values, dtype=float)
+    n = len(y)
+    if n == 0:
+        return 0.0, 0.0, 0.0
+    x = np.arange(n, dtype=float)
+    sx = x.sum()
+    sy = y.sum()
+    sxy = float((x * y).sum())
+    sxx = float((x * x).sum())
+    denom = n * sxx - sx * sx
+    m = (n * sxy - sx * sy) / (denom if denom != 0 else 1.0)
+    c = (sy - m * sx) / n
+    resid = y - (m * x + c)
+    sigma = float(np.sqrt(float((resid * resid).sum()) / n))
+    return float(m), float(c), sigma
 
 
 def classify(
@@ -166,4 +197,85 @@ def classify(
         ema20=ema20, sma50=sma50, sma200=sma200, adx=adx_val, atr=atr_val,
         aligned_up=aligned_up, swing_high=sh, chandelier_stop=chandelier_stop,
         n_bars=n_bars,
+    )
+
+
+def classify_channel(
+    df: pd.DataFrame,
+    *,
+    lookback: int = 63,
+    stddev_k: float = 2.0,
+    slope_band_pct: float = 8.0,
+    chandelier_k: float = 3.0,
+    chandelier_lookback: int = 22,
+    swing_lookback: int = 10,
+    atr_period: int = 14,
+) -> RegimeReading:
+    """말단 lookback봉의 로그 종가 회귀 채널로 레짐을 분류한다.
+
+    give-me-the-money simulate_trend의 회귀 채널(중심선 +- k*sigma)을 이식한 분류기.
+    - 중심선: ln(Close)에 대한 OLS 회귀선 (로그 공간 -> 가격 대비 % 대칭 채널)
+    - 기울기 %: 윈도우 전체 중심선 변화율 (exp(m*(lookback-1)) - 1) * 100
+    - 분류: 기울기 > +band -> UPTREND, < -band -> DOWNTREND, 그 외 SIDEWAYS
+    - channel_support/resistance/mid: "오늘"(x=lookback)으로 외삽한 실가격.
+      하단 이탈(현재가 < support) 판정은 호출부(평가기)가 라이브 현재가로 수행한다.
+    - 히스토리가 lookback 미만이거나 윈도우에 비정상 가격(<=0, NaN)이 있으면 UNKNOWN.
+
+    ema20/atr/chandelier/swing_high는 상승 레짐 로직(눌림 매수 등)이 소비하므로
+    분류와 무관하게 채운다. sma200/adx는 채널 분류에 불필요해 계산하지 않는다(NaN).
+    """
+    n_bars = int(len(df))
+    close = float(df["Close"].iloc[-1]) if n_bars >= 1 else float("nan")
+    prev_close = float(df["Close"].iloc[-2]) if n_bars >= 2 else close
+
+    def _unknown() -> RegimeReading:
+        return RegimeReading(
+            regime=Regime.UNKNOWN, close=close, prev_close=prev_close,
+            ema20=float("nan"), sma50=float("nan"), sma200=float("nan"),
+            adx=float("nan"), atr=float("nan"), aligned_up=False,
+            swing_high=float("nan"), chandelier_stop=float("nan"), n_bars=n_bars,
+        )
+
+    if n_bars < lookback:
+        return _unknown()
+
+    window = df["Close"].tail(lookback).to_numpy(dtype=float)
+    if not np.all(np.isfinite(window)) or np.any(window <= 0):
+        return _unknown()
+
+    m, c, sigma = linreg_channel(np.log(window))
+    slope_pct = float((np.exp(m * (lookback - 1)) - 1.0) * 100.0)
+
+    # 오늘(윈도우 다음 봉, x=lookback) 위치로 외삽
+    mid = float(np.exp(m * lookback + c))
+    offset = stddev_k * sigma
+    support = float(np.exp(m * lookback + c - offset))
+    resistance = float(np.exp(m * lookback + c + offset))
+
+    if slope_pct > slope_band_pct:
+        regime = Regime.UPTREND
+    elif slope_pct < -slope_band_pct:
+        regime = Regime.DOWNTREND
+    else:
+        regime = Regime.SIDEWAYS
+
+    # 상승 레짐 로직(눌림 매수, 추종 데드라인 등)이 소비하는 보조 지표
+    ema20 = float(ema(df["Close"], 20).iloc[-1])
+    sma50_val = float(sma(df["Close"], 50).iloc[-1]) if n_bars >= 50 else float("nan")
+    atr_val = float(atr(df, atr_period).iloc[-1])
+    sh = swing_high(df, swing_lookback)
+    highest_high = float(df["High"].tail(chandelier_lookback).max())
+    chandelier_stop = highest_high - chandelier_k * atr_val
+
+    if _is_nan(ema20, atr_val, mid, support, resistance):
+        return _unknown()
+
+    return RegimeReading(
+        regime=regime, close=close, prev_close=prev_close,
+        ema20=ema20, sma50=sma50_val, sma200=float("nan"),
+        adx=float("nan"), atr=atr_val,
+        aligned_up=regime == Regime.UPTREND,
+        swing_high=sh, chandelier_stop=chandelier_stop, n_bars=n_bars,
+        channel_slope_pct=slope_pct, channel_mid=mid,
+        channel_support=support, channel_resistance=resistance,
     )

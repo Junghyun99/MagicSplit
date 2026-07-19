@@ -93,6 +93,7 @@ class MagicSplitBot:
             os.path.join(self.config.DATA_PATH, self.market_type),
             max_history_records=self.config.MAX_HISTORY_RECORDS,
         )
+        market_data = self._create_market_data(rules)
         self.engine = MagicSplitEngine(
             broker=broker,
             repo=repo,
@@ -100,7 +101,39 @@ class MagicSplitBot:
             stock_rules=rules,
             notifier=self.notifier,
             is_live_trading=self.config.IS_LIVE,
+            market_data=market_data,
         )
+
+    def _create_market_data(self, rules):
+        """레짐 필터 사용 종목이 있으면 마켓별 과거 일봉 제공자를 생성한다.
+
+        레짐 미사용이면 None (기존 동작 - 다운로드 비용 없음).
+        domestic/overseas -> yfinance, crypto -> 업비트 공개 캔들 API.
+        """
+        regime_rules = [r for r in rules if r.regime_enabled]
+        if not regime_rules:
+            return None
+
+        # ma_adx는 regime_min_bars(기본 200), channel은 channel_lookback(기본 63)만큼
+        # 필요하므로 큰 쪽 기준 + 지표 워밍업 여유
+        window_size = max(
+            max((r.regime_min_bars for r in regime_rules), default=200),
+            max((r.channel_lookback for r in regime_rules), default=63),
+        ) + 60
+
+        from src.infra.data import UpbitMarketDataProvider, YFinanceMarketDataProvider
+        if self.market_type == "crypto":
+            provider = UpbitMarketDataProvider(self.logger, window_size=window_size)
+        else:
+            provider = YFinanceMarketDataProvider(
+                self.logger, window_size=window_size,
+                tickers=[r.ticker for r in regime_rules],
+            )
+        self.logger.info(
+            f"[MarketData] 레짐 필터 활성 종목 {len(regime_rules)}개 -> "
+            f"{type(provider).__name__} 주입 (window {window_size}봉)"
+        )
+        return provider
 
     def run(self):
         """매매 사이클을 실행한다."""

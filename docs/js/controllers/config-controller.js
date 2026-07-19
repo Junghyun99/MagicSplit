@@ -139,6 +139,11 @@ window.ConfigController = (function () {
         document.getElementById('global-uptrend-add-reset-pct').addEventListener('input', saveGlobalConfigToModel);
         document.getElementById('global-trendbreak-use-sma50').addEventListener('change', saveGlobalConfigToModel);
         document.getElementById('global-trendbreak-chandelier-k').addEventListener('input', saveGlobalConfigToModel);
+        document.getElementById('global-regime-algo').addEventListener('change', saveGlobalConfigToModel);
+        document.getElementById('global-channel-lookback').addEventListener('input', saveGlobalConfigToModel);
+        document.getElementById('global-channel-stddev-k').addEventListener('input', saveGlobalConfigToModel);
+        document.getElementById('global-channel-slope-band-pct').addEventListener('input', saveGlobalConfigToModel);
+        document.getElementById('global-channel-breakdown-tolerance-pct').addEventListener('input', saveGlobalConfigToModel);
 
         document.getElementById('add-stock-btn').addEventListener('click', () => {
             if (!ConfigModel.getConfig()) return;
@@ -306,6 +311,11 @@ window.ConfigController = (function () {
             if (vals.uptrend_add_reset_pct !== '') config.global.uptrend_add_reset_pct = parseFloat(vals.uptrend_add_reset_pct); else delete config.global.uptrend_add_reset_pct;
             config.global.trendbreak_use_sma50 = vals.trendbreak_use_sma50;
             if (vals.trendbreak_chandelier_k !== '') config.global.trendbreak_chandelier_k = parseFloat(vals.trendbreak_chandelier_k); else delete config.global.trendbreak_chandelier_k;
+            if (vals.regime_algo !== '') config.global.regime_algo = vals.regime_algo; else delete config.global.regime_algo;
+            if (vals.channel_lookback !== '') config.global.channel_lookback = parseInt(vals.channel_lookback, 10); else delete config.global.channel_lookback;
+            if (vals.channel_stddev_k !== '') config.global.channel_stddev_k = parseFloat(vals.channel_stddev_k); else delete config.global.channel_stddev_k;
+            if (vals.channel_slope_band_pct !== '') config.global.channel_slope_band_pct = parseFloat(vals.channel_slope_band_pct); else delete config.global.channel_slope_band_pct;
+            if (vals.channel_breakdown_tolerance_pct !== '') config.global.channel_breakdown_tolerance_pct = parseFloat(vals.channel_breakdown_tolerance_pct); else delete config.global.channel_breakdown_tolerance_pct;
             ConfigView.updateDiffPreview(ConfigModel.getDiff());
         }
     }

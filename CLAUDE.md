@@ -82,6 +82,16 @@ presets.json             # 차수�?배열 공유 ?�리??(?�택)
   - 매수 ??`(?�재 보유 ?��???+ 매수 ?�정 금액) / �??�산`???�한???�으�?매수 차단
   - **글로벌/개별 계층**: `global.max_exposure_pct`�?기본값으�? 종목�??�정???�으�??�버?�이??
   - None?�면 비중 ?�한 ?�음 (?�위 ?�환)
+- **레짐 필터** (`regime_enabled`, 기본 OFF):
+  - `regime_algo="ma_adx"`(기본): EMA20/SMA50/SMA200 정배열 + ADX로 상승/횡보/하락 판정
+  - `regime_algo="channel"`: 최근 `channel_lookback`(기본 63=3m)봉 로그 종가의 회귀 채널(중심선 +- `channel_stddev_k`*sigma)로 판정 (give-me-the-money simulate_trend 이식)
+    - 중심선 기울기(윈도우 전체 %변화)가 `channel_slope_band_pct`(기본 8.0) 이내면 횡보, 초과는 상승, 미만은 하락
+    - 이탈 판정 = 하락 레짐 확정(2봉 연속) OR 상승/횡보 중 현재가 < 하단 채널선*(1 - `channel_breakdown_tolerance_pct`%) 2봉 연속 (단봉 스파이크 무시)
+    - 이탈 시 `trendbreak_partial_sell_pct`(50=절반 매도+추종 데드라인, 100=전량)로 청산
+    - 상승 레짐 확정 시 차수 매도 잠금 + 눌림 누적매수, 하락 확정 중 신규/추가 매수 차단 (기존 레짐 동작 공유)
+    - 이탈 청산 후 재진입은 상단 저항선(2sigma) 상향 돌파 시에만 허용 (알고리즘 고정 동작 - 경계 왕복 재진입 churn 차단)
+    - 라이브 배선: 레짐 사용 종목이 있으면 main.py가 과거 일봉 제공자를 자동 주입 (domestic/overseas=yfinance, crypto=업비트 공개 캔들). 미사용 시 다운로드 없음
+    - **권장 설정(확정)**: `regime_enabled=true` + `regime_algo="channel"` + `trendbreak_partial_sell_pct=50` (나머지는 기본값이 확정값). 다수 종목(성격 혼합)일수록 유리 - 하락 종목 청산 현금이 상승 종목으로 재배치됨 (혼합 16종목 백테스트에서 ma_adx/OFF 모두 상회)
 - **???�이?�에 ??종목??매도 OR 매수 �??�나�?* ?�행 (매도 ?�선)
 - 종목�??�차 ?�행: ??종목 ?��?->주문->반영 ???�음 종목
 - ?�러 종목 �?매도 ?�호�?먼�? ?�행????매수 진행 (?�금 부�?방�?)

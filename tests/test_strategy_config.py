@@ -504,6 +504,71 @@ class TestStrategyConfigRegime:
         assert rule.regime_enabled is True
         assert rule.uptrend_add_amounts == [1500.0, 1000.0, 600.0]
 
+    def test_channel_fields_parsed_from_stock(self, tmp_path):
+        config = {
+            "stocks": [{
+                "ticker": "AAPL",
+                "regime_enabled": True,
+                "regime_algo": "channel",
+                "channel_lookback": 40,
+                "channel_stddev_k": 1.5,
+                "channel_slope_band_pct": 3.0,
+                "channel_breakdown_tolerance_pct": 1.0,
+            }]
+        }
+        config_file = tmp_path / "config_overseas.json"
+        config_file.write_text(json.dumps(config))
+
+        rule = StrategyConfig(str(config_file)).rules[0]
+        assert rule.regime_algo == "channel"
+        assert rule.channel_lookback == 40
+        assert rule.channel_stddev_k == 1.5
+        assert rule.channel_slope_band_pct == 3.0
+        assert rule.channel_breakdown_tolerance_pct == 1.0
+
+    def test_channel_absent_defaults_ma_adx(self, tmp_path):
+        config = {"stocks": [{"ticker": "AAPL", "regime_enabled": True}]}
+        config_file = tmp_path / "config_overseas.json"
+        config_file.write_text(json.dumps(config))
+
+        rule = StrategyConfig(str(config_file)).rules[0]
+        assert rule.regime_algo == "ma_adx"
+        assert rule.channel_lookback == 63
+
+    def test_channel_algo_global_inheritance_and_override(self, tmp_path):
+        config = {
+            "stocks": [
+                {"ticker": "AAPL"},                        # 글로벌 상속
+                {"ticker": "MSFT", "regime_algo": "ma_adx"},  # 개별 오버라이드
+            ],
+            "global": {
+                "regime_enabled": True,
+                "regime_algo": "channel",
+                "channel_slope_band_pct": 4.0,
+            },
+        }
+        config_file = tmp_path / "config_overseas.json"
+        config_file.write_text(json.dumps(config))
+
+        rules = StrategyConfig(str(config_file)).rules
+        assert rules[0].regime_algo == "channel"
+        assert rules[0].channel_slope_band_pct == 4.0
+        assert rules[1].regime_algo == "ma_adx"
+        assert rules[1].channel_slope_band_pct == 4.0  # 글로벌 값 (미사용)
+
+    def test_invalid_channel_algo_raises(self, tmp_path):
+        config = {
+            "stocks": [{
+                "ticker": "AAPL",
+                "regime_enabled": True,
+                "regime_algo": "slope",
+            }]
+        }
+        config_file = tmp_path / "config_overseas.json"
+        config_file.write_text(json.dumps(config))
+
+        with pytest.raises(ValueError, match="regime_algo"):
+            StrategyConfig(str(config_file))
 
 
 class TestRepoConfigRegimeSeparation:

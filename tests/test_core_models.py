@@ -331,3 +331,72 @@ class TestStockRuleRegime:
     def test_empty_uptrend_add_amounts_rejected(self):
         with pytest.raises(ValueError, match="uptrend_add_amounts"):
             StockRule("AAPL", -5.0, 10.0, 500, 10, uptrend_add_amounts=[])
+
+
+class TestStockRuleChannelRegime:
+    def test_channel_defaults(self):
+        rule = StockRule("AAPL", -5.0, 10.0, 500, 10)
+        assert rule.regime_algo == "ma_adx"
+        assert rule.channel_lookback == 63
+        assert rule.channel_stddev_k == 2.0
+        assert rule.channel_slope_band_pct == 8.0
+        assert rule.channel_breakdown_tolerance_pct == 0.0
+
+    def test_channel_algo_accepted(self):
+        rule = StockRule(
+            "AAPL", -5.0, 10.0, 500, 10,
+            regime_enabled=True, regime_algo="channel",
+        )
+        assert rule.regime_algo == "channel"
+
+    def test_unknown_algo_rejected(self):
+        with pytest.raises(ValueError, match="regime_algo"):
+            StockRule(
+                "AAPL", -5.0, 10.0, 500, 10,
+                regime_enabled=True, regime_algo="slope",
+            )
+
+    def test_lookback_too_small_rejected(self):
+        with pytest.raises(ValueError, match="channel_lookback"):
+            StockRule(
+                "AAPL", -5.0, 10.0, 500, 10,
+                regime_enabled=True, regime_algo="channel", channel_lookback=20,
+            )
+
+    def test_non_positive_stddev_k_rejected(self):
+        with pytest.raises(ValueError, match="channel_stddev_k"):
+            StockRule(
+                "AAPL", -5.0, 10.0, 500, 10,
+                regime_enabled=True, regime_algo="channel", channel_stddev_k=0.0,
+            )
+
+    def test_negative_slope_band_rejected(self):
+        with pytest.raises(ValueError, match="channel_slope_band_pct"):
+            StockRule(
+                "AAPL", -5.0, 10.0, 500, 10,
+                regime_enabled=True, regime_algo="channel",
+                channel_slope_band_pct=-1.0,
+            )
+
+    def test_breakdown_tolerance_out_of_range_rejected(self):
+        with pytest.raises(ValueError, match="channel_breakdown_tolerance_pct"):
+            StockRule(
+                "AAPL", -5.0, 10.0, 500, 10,
+                regime_enabled=True, regime_algo="channel",
+                channel_breakdown_tolerance_pct=100.0,
+            )
+
+    def test_channel_guards_inactive_when_algo_ma_adx(self):
+        # ma_adx 모드에서는 채널 파라미터가 비정상이어도 통과 (미사용)
+        rule = StockRule(
+            "AAPL", -5.0, 10.0, 500, 10,
+            regime_enabled=True, channel_lookback=5, channel_stddev_k=-1.0,
+        )
+        assert rule.regime_algo == "ma_adx"
+
+    def test_channel_guards_inactive_when_regime_disabled(self):
+        rule = StockRule(
+            "AAPL", -5.0, 10.0, 500, 10,
+            regime_algo="channel", channel_lookback=5,
+        )
+        assert rule.regime_enabled is False
