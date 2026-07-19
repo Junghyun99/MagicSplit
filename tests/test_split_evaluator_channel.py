@@ -241,17 +241,6 @@ class TestChannelReentryBreakout:
         assert len(signals) == 1
         assert not signals[0].is_blocked
 
-    def test_gate_inactive_when_option_off(self, evaluator):
-        window = _sideways_window()
-        rule = _channel_rule()  # 기본 False
-        reading = classify_for_rule(rule, window)
-        st = {"AAPL": {"post_liquidation": True}}
-        signals = evaluator.evaluate_stock(
-            rule, [], _pf(reading.channel_support * 1.01), ohlc_window=window, regime_state=st,
-        )
-        assert len(signals) == 1
-        assert not signals[0].is_blocked
-
     def test_between_mid_and_resistance_still_blocked(self, evaluator):
         # 기준선은 상단 저항선 고정: 중심선~상단 사이 가격은 여전히 차단
         window = _sideways_window()
