@@ -94,6 +94,7 @@ presets.json             # 차수�?배열 공유 ?�리??(?�택)
     - `channel_reentry_line`: 재진입 기준선 "resistance"(상단 2sigma, 기본, 보수적) | "mid"(중심선, 회복 종목 복귀 빠름)
     - `channel_breakdown_uptrend_only=true`: 하단 이탈 청산을 상승 래치 중에만 발동 (백테스트상 효과 미미, 기본 false 권장)
     - `channel_uptrend_exit_ma=true`: 상승 래치 중 이탈선을 하단 채널선 대신 ma_adx식(50MA/챈들리어)으로 전환하는 하이브리드 (상승 눌림 청산 방지)
+    - **권장 조합(확정)**: `regime_algo="channel"` + `channel_slope_band_pct=8` + `channel_reentry_breakout=true` + `trendbreak_partial_sell_pct=50`. 다수 종목(성격 혼합)일수록 유리 - 하락 종목 청산 현금이 상승 종목으로 재배치됨 (혼합 16종목 백테스트에서 ma_adx/OFF 모두 상회)
 - **???�이?�에 ??종목??매도 OR 매수 �??�나�?* ?�행 (매도 ?�선)
 - 종목�??�차 ?�행: ??종목 ?��?->주문->반영 ???�음 종목
 - ?�러 종목 �?매도 ?�호�?먼�? ?�행????매수 진행 (?�금 부�?방�?)
