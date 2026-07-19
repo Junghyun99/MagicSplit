@@ -125,7 +125,10 @@ class MagicSplitBot:
         if self.market_type == "crypto":
             provider = UpbitMarketDataProvider(self.logger, window_size=window_size)
         else:
-            provider = YFinanceMarketDataProvider(self.logger, window_size=window_size)
+            provider = YFinanceMarketDataProvider(
+                self.logger, window_size=window_size,
+                tickers=[r.ticker for r in regime_rules],
+            )
         self.logger.info(
             f"[MarketData] 레짐 필터 활성 종목 {len(regime_rules)}개 -> "
             f"{type(provider).__name__} 주입 (window {window_size}봉)"

@@ -60,6 +60,27 @@ class TestYFinanceMarketDataProvider:
              patch("src.utils.ticker_reader.to_yfinance_ticker", return_value="AAPL"):
             assert p.get_ohlc_window("AAPL", "2025-06-01") is None
 
+    def test_batch_prefetch_single_download_for_all_tickers(self):
+        # 티커 목록 제공 시 전 종목을 1회 배치 다운로드로 캐시
+        n = 300
+        idx = pd.date_range("2025-01-01", periods=n, freq="D")
+        closes = np.linspace(100, 130, n)
+        cols = pd.MultiIndex.from_product(
+            [["High", "Low", "Close"], ["AAPL", "MSFT"]]
+        )
+        data = np.column_stack([closes + 1, closes + 2, closes - 1, closes - 2, closes, closes])
+        batch_df = pd.DataFrame(data, index=idx, columns=cols)
+
+        logger = MagicMock()
+        p = YFinanceMarketDataProvider(logger, window_size=100, tickers=["AAPL", "MSFT"])
+        with patch("yfinance.download", return_value=batch_df) as dl, \
+             patch("src.utils.ticker_reader.to_yfinance_ticker", side_effect=lambda t: t):
+            w1 = p.get_ohlc_window("AAPL", "2025-09-01")
+            w2 = p.get_ohlc_window("MSFT", "2025-09-01")
+        assert dl.call_count == 1  # 배치 1회로 전 종목 커버
+        assert w1 is not None and w2 is not None
+        assert len(w1) == 100 and len(w2) == 100
+
 
 def _fake_upbit_batch(n, end="2026-07-18"):
     dates = pd.date_range(end=end, periods=n, freq="D")[::-1]  # 최신부터

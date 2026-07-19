@@ -13,20 +13,25 @@ from src.core.interfaces import IMarketDataProvider
 class YFinanceMarketDataProvider(IMarketDataProvider):
     """yfinance 일봉으로 레짐 지표용 OHLC 윈도우를 제공한다 (domestic/overseas).
 
-    사이클당 종목별 1회 다운로드 후 메모리 캐시. 오늘(미완성) 봉은 제외한다.
+    생성 시 받은 티커 목록을 첫 조회 때 **1회 배치 다운로드**해 메모리 캐시한다
+    (사이클당 yfinance 요청 1건). 목록에 없는 티커는 개별 다운로드로 폴백.
+    오늘(미완성) 봉은 제외한다.
     """
 
-    def __init__(self, logger, window_size: int = 260):
+    def __init__(self, logger, window_size: int = 260, tickers: Optional[list] = None):
         self.logger = logger
         self.window_size = window_size
+        self._tickers = list(tickers) if tickers else []
+        self._prefetched = False
         self._cache: dict = {}
 
     def get_ohlc_window(self, ticker: str, asof: Any) -> Optional[Any]:
         import pandas as pd
 
+        self._ensure_prefetch()
         cached = self._cache.get(ticker)
         if cached is None:
-            cached = self._download(ticker)
+            cached = self._download_one(ticker)
             self._cache[ticker] = cached if cached is not None else "failed"
         if cached is None or isinstance(cached, str):
             return None
@@ -35,16 +40,58 @@ class YFinanceMarketDataProvider(IMarketDataProvider):
         window = cached.loc[cached.index < asof_ts].tail(self.window_size)
         return window if len(window) > 0 else None
 
-    def _download(self, ticker: str):
+    def _period_days(self) -> int:
+        # 캘린더일 여유 포함 (거래일 window_size 확보용 약 1.6배)
+        return int(self.window_size * 1.6) + 30
+
+    def _ensure_prefetch(self) -> None:
+        """티커 목록 전체를 한 번의 yf.download 호출로 받아 캐시한다."""
+        if self._prefetched or not self._tickers:
+            return
+        self._prefetched = True
+        try:
+            import pandas as pd
+            import yfinance as yf
+            from src.utils.ticker_reader import to_yfinance_ticker
+
+            yf_to_std = {to_yfinance_ticker(t): t for t in self._tickers}
+            df = yf.download(
+                list(yf_to_std.keys()), period=f"{self._period_days()}d",
+                auto_adjust=False, progress=False,
+            )
+            if df is None or df.empty:
+                self.logger.warning("[MarketData] 배치 다운로드 결과 없음 - 개별 폴백 사용")
+                return
+            if not isinstance(df.columns, pd.MultiIndex):
+                # 단일 티커: 컬럼이 필드명
+                std = next(iter(yf_to_std.values()))
+                out = df[["High", "Low", "Close"]].dropna()
+                out.index = pd.to_datetime(out.index).normalize()
+                self._cache[std] = out
+                return
+            for yf_ticker, std in yf_to_std.items():
+                try:
+                    sub = df.xs(yf_ticker, axis=1, level=1)[["High", "Low", "Close"]].dropna()
+                    if sub.empty:
+                        continue
+                    sub.index = pd.to_datetime(sub.index).normalize()
+                    self._cache[std] = sub
+                except KeyError:
+                    continue  # 해당 티커만 개별 폴백에 맡김
+            self.logger.info(
+                f"[MarketData] 배치 다운로드 완료: {len(self._cache)}/{len(self._tickers)}종목"
+            )
+        except Exception as e:
+            self.logger.error(f"[MarketData] 배치 다운로드 실패 - 개별 폴백 사용: {e}")
+
+    def _download_one(self, ticker: str):
         try:
             import yfinance as yf
             from src.utils.ticker_reader import to_yfinance_ticker
 
             yf_ticker = to_yfinance_ticker(ticker)
-            # 캘린더일 여유 포함 (거래일 window_size 확보용 약 1.6배)
-            period_days = int(self.window_size * 1.6) + 30
             df = yf.download(
-                yf_ticker, period=f"{period_days}d",
+                yf_ticker, period=f"{self._period_days()}d",
                 auto_adjust=False, progress=False,
             )
             if df is None or df.empty:
