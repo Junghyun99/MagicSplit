@@ -1012,7 +1012,9 @@ class SplitEvaluator:
 
         # 2. 하락 래치 확정 -> 이탈 청산
         if downtrend_blocked:
-            st["breakdown_streak"] = 0
+            st["breakdown_days"] = []
+            st["breakdown_today_state"] = ""
+            st["breakdown_prev_date"] = ""
             if self._logger:
                 self._logger.info(
                     f"[{display_ticker(rule.ticker)}] 채널 기울기 하락 전환 확정 "
