@@ -1,26 +1,26 @@
 {
-    "last_updated": "2026-07-20 13:31:06",
+    "last_updated": "2026-07-20 14:31:05",
     "last_run_date": "2026-07-20",
     "market_type": "crypto",
     "reason": "모니터링 - 신호 없음",
     "exchange_rate": null,
     "portfolio": {
-        "total_value": 17378200.220770866,
+        "total_value": 17356015.272540867,
         "cash_balance": 91742.74795387,
         "holdings": [
             {
                 "ticker": "KRW-BTC",
                 "alias": "KRW-BTC",
                 "qty": 0.13703789,
-                "price": 95000000.0,
-                "value": 13018599.549999999
+                "price": 94917000.0,
+                "value": 13007225.405129999
             },
             {
                 "ticker": "KRW-ETH",
                 "alias": "KRW-ETH",
                 "qty": 1.54440048,
-                "price": 2757000.0,
-                "value": 4257912.12336
+                "price": 2750000.0,
+                "value": 4247101.32
             },
             {
                 "ticker": "KRW-USDT",
@@ -36,7 +36,7 @@
             "total_qty": 0.00010781,
             "lot_count": 1,
             "total_invested": 9999.59,
-            "current_value": 10241.95,
+            "current_value": 10233.0,
             "lots": [
                 {
                     "lot_id": "lot_20260717_065511_KRW-BTC_001",
@@ -44,17 +44,17 @@
                     "quantity": 0.00010781,
                     "buy_date": "2026-07-17",
                     "level": 1,
-                    "current_price": 95000000.0,
-                    "pct_change": 2.42
+                    "current_price": 94917000.0,
+                    "pct_change": 2.33
                 }
             ],
-            "current_price": 95000000.0,
+            "current_price": 94917000.0,
             "alias": "KRW-BTC",
             "avg_buy_price": 92752000.0,
-            "unrealized_pnl": 242.36,
-            "unrealized_pnl_pct": 2.42,
+            "unrealized_pnl": 233.41,
+            "unrealized_pnl_pct": 2.33,
             "realized_pnl": 0.0,
-            "total_pnl": 242.36
+            "total_pnl": 233.41
         },
         "KRW-USDT": {
             "total_qty": 6.77506775,
@@ -109,7 +109,7 @@
             }
         ],
         "sync_error": true,
-        "alerts": ["⚠️ [KRW-ETH] 잔고 불일치 (봇: 0, 계좌: 1.54440048)", "⚠️ [KRW-BTC] 잔고 불일치 (봇: 0.00010781, 계좌: 0.13703789)", "⚠️ 현금 비중 부족 (0.5%)"],
+        "alerts": ["⚠️ [KRW-BTC] 잔고 불일치 (봇: 0.00010781, 계좌: 0.13703789)", "⚠️ [KRW-ETH] 잔고 불일치 (봇: 0, 계좌: 1.54440048)", "⚠️ 현금 비중 부족 (0.5%)"],
         "max_ticker_concentration": 0.06,
         "high_level_ratio": 0.0
     }
