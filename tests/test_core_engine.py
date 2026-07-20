@@ -1521,7 +1521,7 @@ class TestBulkLiquidation:
         regime_state = {"AAPL": {
             "regime": "uptrend", "adds": 3, "last_add_swing_high": 200.0,
             "trailing_lock": {"active": True, "lock_price": 90.0, "drop_pct": 3.0},
-            "breakdown_streak": 1,
+            "breakdown_days": ["2024-01-01"],
             "downtrend": "active", "downtrend_streak": 0, "downtrend_exit_streak": 1,
         }}
         result = engine._update_positions(

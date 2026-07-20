@@ -86,7 +86,7 @@ presets.json             # 차수�?배열 공유 ?�리??(?�택)
   - `regime_algo="ma_adx"`(기본): EMA20/SMA50/SMA200 정배열 + ADX로 상승/횡보/하락 판정
   - `regime_algo="channel"`: 최근 `channel_lookback`(기본 63=3m)봉 로그 종가의 회귀 채널(중심선 +- `channel_stddev_k`*sigma)로 판정 (give-me-the-money simulate_trend 이식)
     - 중심선 기울기(윈도우 전체 %변화)가 `channel_slope_band_pct`(기본 8.0) 이내면 횡보, 초과는 상승, 미만은 하락
-    - 이탈 판정 = 하락 레짐 확정(2봉 연속) OR 상승/횡보 중 현재가 < 하단 채널선*(1 - `channel_breakdown_tolerance_pct`%) 2봉 연속 (단봉 스파이크 무시)
+    - 이탈 판정 = 하락 레짐 확정(2봉 연속) OR 상승/횡보 중 현재가 < 하단 채널선*(1 - `channel_breakdown_tolerance_pct`%) 2**일** 연속 (날짜 기반 카운팅 - 동일 날짜 내 다회 사이클은 마지막 사이클 결과가 해당 일의 최종 상태, 장중 회복 시 당일 카운트 취소)
     - 이탈 시 `trendbreak_partial_sell_pct`(50=절반 매도+추종 데드라인, 100=전량)로 청산
     - 상승 레짐 확정 시 차수 매도 잠금 + 눌림 누적매수, 하락 확정 중 신규/추가 매수 차단 (기존 레짐 동작 공유)
     - 이탈 청산 후 재진입은 상단 저항선(2sigma) 상향 돌파 시에만 허용 (알고리즘 고정 동작 - 경계 왕복 재진입 churn 차단)
