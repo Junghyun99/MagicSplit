@@ -2761,5 +2761,119 @@
                 "alias": "KODEX 반도체레버리지"
             }
         ]
+    },
+    {
+        "id": "tx_20260720_120100",
+        "date": "2026-07-20 12:01:00",
+        "portfolio_value": 27449000.0,
+        "cash_balance": 8219943.0,
+        "net_deposit": 0.0,
+        "total_trade_amount": 8850865.0,
+        "reason": "KODEX 반도체레버리지(494310):SELL(추세 이탈 분할 청산(16/31주, -10.3%)),\nTIGER 지주회사(307520):SELL(추세 이탈 분할 청산(42/83주, -16.2%)),\nACE 엔비디아밸류체인액티브(483320):SELL(추세 이탈 분할 청산(33/66주, -17.6%)),\nKODEX 증권(102970):SELL(추세 이탈 분할 청산(51/102주, -14.8%)),\nACE 테슬라밸류체인액티브(457480):SELL(추세 이탈 분할 청산(33/65주, -17.7%)),\n삼성전자(005930):SELL(추세 이탈 분할 청산(9/17주, -27.8%)),\n삼성전자우(005935):SELL(추세 이탈 분할 청산(9/17주, -22.3%)),\n삼성증권(016360):BUY(추가 매수 Lv2 (Lv1 대비 -6.2%))",
+        "executions": [
+            {
+                "ticker": "494310",
+                "action": "SELL",
+                "quantity": 16,
+                "price": 85920.0,
+                "fee": 206.208,
+                "date": "2026-07-20 12:01:05",
+                "status": "FILLED",
+                "reason": "migration:12시분할청산",
+                "level": 1,
+                "realized_pnl": -158606.0,
+                "alias": "KODEX 반도체레버리지"
+            },
+            {
+                "ticker": "307520",
+                "action": "SELL",
+                "quantity": 42,
+                "price": 19800.0,
+                "fee": 124.74,
+                "date": "2026-07-20 12:01:10",
+                "status": "FILLED",
+                "reason": "migration:12시분할청산",
+                "level": 3,
+                "realized_pnl": -72875.0,
+                "alias": "TIGER 지주회사"
+            },
+            {
+                "ticker": "483320",
+                "action": "SELL",
+                "quantity": 33,
+                "price": 24600.0,
+                "fee": 121.77,
+                "date": "2026-07-20 12:01:15",
+                "status": "FILLED",
+                "reason": "migration:12시분할청산",
+                "level": 3,
+                "realized_pnl": -99312.0,
+                "alias": "ACE 엔비디아밸류체인액티브"
+            },
+            {
+                "ticker": "102970",
+                "action": "SELL",
+                "quantity": 51,
+                "price": 20350.0,
+                "fee": 155.677,
+                "date": "2026-07-20 12:01:20",
+                "status": "FILLED",
+                "reason": "migration:12시분할청산",
+                "level": 4,
+                "realized_pnl": -83136.0,
+                "alias": "KODEX 증권"
+            },
+            {
+                "ticker": "457480",
+                "action": "SELL",
+                "quantity": 33,
+                "price": 19465.0,
+                "fee": 96.352,
+                "date": "2026-07-20 12:01:25",
+                "status": "FILLED",
+                "reason": "migration:12시분할청산",
+                "level": 1,
+                "realized_pnl": -90226.0,
+                "alias": "ACE 테슬라밸류체인액티브"
+            },
+            {
+                "ticker": "005930",
+                "action": "SELL",
+                "quantity": 9,
+                "price": 245750.0,
+                "fee": 331.762,
+                "date": "2026-07-20 12:01:30",
+                "status": "FILLED",
+                "reason": "migration:12시분할청산",
+                "level": 6,
+                "realized_pnl": -873332.0,
+                "alias": "삼성전자"
+            },
+            {
+                "ticker": "005935",
+                "action": "SELL",
+                "quantity": 9,
+                "price": 169600.0,
+                "fee": 228.96,
+                "date": "2026-07-20 12:01:35",
+                "status": "FILLED",
+                "reason": "migration:12시분할청산",
+                "level": 5,
+                "realized_pnl": -337429.0,
+                "alias": "삼성전자우"
+            },
+            {
+                "ticker": "016360",
+                "action": "BUY",
+                "quantity": 4,
+                "price": 103600.0,
+                "fee": 62.16,
+                "date": "2026-07-20 12:01:40",
+                "status": "FILLED",
+                "reason": "migration:12시분할청산",
+                "level": 2,
+                "alias": "삼성증권"
+            }
+        ]
     }
 ]
