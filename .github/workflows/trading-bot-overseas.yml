@@ -146,6 +146,10 @@ jobs:
         git add --force docs/data/overseas/*.json || true
         git add --force logs/overseas/*.log || true
 
+    - name: Rebase before push
+      if: ${{ success() && steps.holiday.outputs.is_holiday != 'true' }}
+      run: git pull --rebase origin main
+
     - name: Push updated data and logs
       if: ${{ success() && steps.holiday.outputs.is_holiday != 'true' }}
       uses: stefanzweifel/git-auto-commit-action@b863ae1933cb653a53c021fe36dbb774e1fb9403 # v5.2.0
