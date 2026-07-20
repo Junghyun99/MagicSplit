@@ -86,6 +86,7 @@ jobs:
         git diff --cached --quiet
         if ($LASTEXITCODE -ne 0) {
           git commit -m "Auto-update crypto trading data and logs [skip ci]"
+          git pull --rebase origin $env:TARGET_REF
           git push origin "HEAD:$env:TARGET_REF"
         } else {
           Write-Host "커밋할 변경 사항 없음 - 생략"
