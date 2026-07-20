@@ -63,11 +63,12 @@ class MagicSplitBot:
         self.logger = TradeLogger(log_dir)
         self.logger.info(f"=== Initializing MagicSplit Bot ({self.market_type}) ===")
 
+        webhook_url, channel_id = self.config.slack_config_for(self.market_type)
         self.notifier = SlackNotifier(
-            webhook_url=self.config.SLACK_WEBHOOK_URL,
+            webhook_url=webhook_url,
             logger=self.logger,
             bot_token=self.config.SLACK_BOT_TOKEN,
-            channel_id=self.config.SLACK_CHANNEL_ID
+            channel_id=channel_id,
         )
 
         self.logger.info(

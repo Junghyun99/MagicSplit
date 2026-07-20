@@ -70,8 +70,12 @@ jobs:
       env:
         CONFIG_JSON_PATH: config_${{ github.event.inputs.market_type }}.json
         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_LIVE }}
+        SLACK_WEBHOOK_DOMESTIC: ${{ secrets.SLACK_WEBHOOK_DOMESTIC }}
+        SLACK_WEBHOOK_OVERSEAS: ${{ secrets.SLACK_WEBHOOK_OVERSEAS }}
         SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
         SLACK_CHANNEL_ID: ${{ secrets.SLACK_CHANNEL_ID }}
+        SLACK_CHANNEL_ID_DOMESTIC: ${{ secrets.SLACK_CHANNEL_ID_DOMESTIC }}
+        SLACK_CHANNEL_ID_OVERSEAS: ${{ secrets.SLACK_CHANNEL_ID_OVERSEAS }}
         KIS_APP_KEY: ${{ secrets.KIS_APP_KEY }}
         KIS_APP_SECRET: ${{ secrets.KIS_APP_SECRET }}
         KIS_ACC_NO: ${{ secrets.KIS_ACC_NO }}

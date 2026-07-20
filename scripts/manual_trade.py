@@ -157,11 +157,12 @@ def main():
         os.path.join(config.DATA_PATH, market_type),
         max_history_records=config.MAX_HISTORY_RECORDS,
     )
+    webhook_url, channel_id = config.slack_config_for(market_type)
     notifier = SlackNotifier(
-        webhook_url=config.SLACK_WEBHOOK_URL,
+        webhook_url=webhook_url,
         logger=logger,
         bot_token=config.SLACK_BOT_TOKEN,
-        channel_id=config.SLACK_CHANNEL_ID,
+        channel_id=channel_id,
     )
     engine = MagicSplitEngine(
         broker=broker,

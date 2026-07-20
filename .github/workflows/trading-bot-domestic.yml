@@ -103,8 +103,10 @@ jobs:
       env:
         CONFIG_JSON_PATH: config_domestic.json
         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_LIVE }}
+        SLACK_WEBHOOK_DOMESTIC: ${{ secrets.SLACK_WEBHOOK_DOMESTIC }}
         SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
         SLACK_CHANNEL_ID: ${{ secrets.SLACK_CHANNEL_ID }}
+        SLACK_CHANNEL_ID_DOMESTIC: ${{ secrets.SLACK_CHANNEL_ID_DOMESTIC }}
         KIS_APP_KEY: ${{ secrets.KIS_APP_KEY }}
         KIS_APP_SECRET: ${{ secrets.KIS_APP_SECRET }}
         KIS_ACC_NO: ${{ secrets.KIS_ACC_NO }}
@@ -163,7 +165,7 @@ jobs:
     - name: Notify Slack on failure
       if: ${{ failure() && steps.holiday.outputs.is_holiday != 'true' }}
       env:
-        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_LIVE }}
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_DOMESTIC || secrets.SLACK_WEBHOOK_LIVE }}
       run: |
         if [ -z "${SLACK_WEBHOOK_URL:-}" ]; then
           echo "SLACK_WEBHOOK_URL not set, skipping Slack notification"

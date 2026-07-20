@@ -65,10 +65,22 @@ class Config:
         self.UPBIT_ACCESS_KEY = os.getenv("UPBIT_ACCESS_KEY", "")
         self.UPBIT_SECRET_KEY = os.getenv("UPBIT_SECRET_KEY", "")
 
-        # 알림
+        # 알림 (공통 폴백)
         self.SLACK_WEBHOOK_URL = os.getenv("SLACK_WEBHOOK_URL", "")
         self.SLACK_BOT_TOKEN = os.getenv("SLACK_BOT_TOKEN", "")
         self.SLACK_CHANNEL_ID = os.getenv("SLACK_CHANNEL_ID", "")
+
+        # 마켓별 Slack 채널 분리 (미설정 시 공통값으로 폴백)
+        self._slack_webhook_by_market = {
+            "domestic": os.getenv("SLACK_WEBHOOK_DOMESTIC", ""),
+            "overseas": os.getenv("SLACK_WEBHOOK_OVERSEAS", ""),
+            "crypto": os.getenv("SLACK_WEBHOOK_CRYPTO", ""),
+        }
+        self._slack_channel_by_market = {
+            "domestic": os.getenv("SLACK_CHANNEL_ID_DOMESTIC", ""),
+            "overseas": os.getenv("SLACK_CHANNEL_ID_OVERSEAS", ""),
+            "crypto": os.getenv("SLACK_CHANNEL_ID_CRYPTO", ""),
+        }
 
         # 종목별 매매 규칙 설정 파일 경로 (국내/해외 분리: config_domestic.json | config_overseas.json)
         self.CONFIG_JSON_PATH = os.getenv("CONFIG_JSON_PATH", "config_overseas.json")
@@ -79,4 +91,11 @@ class Config:
 
         # 저장소 크기 제한
         self.MAX_HISTORY_RECORDS = 100000
+
+    def slack_config_for(self, market_type: str) -> tuple[str, str]:
+        """마켓별 Slack (webhook_url, channel_id)를 반환한다. 미설정 시 공통값으로 폴백."""
+        market_key = market_type.lower()
+        webhook = self._slack_webhook_by_market.get(market_key) or self.SLACK_WEBHOOK_URL
+        channel = self._slack_channel_by_market.get(market_key) or self.SLACK_CHANNEL_ID
+        return webhook, channel
 

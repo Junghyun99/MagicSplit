@@ -46,8 +46,10 @@ jobs:
       env:
         CONFIG_JSON_PATH: config_crypto.json
         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_LIVE }}
+        SLACK_WEBHOOK_CRYPTO: ${{ secrets.SLACK_WEBHOOK_CRYPTO }}
         SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
         SLACK_CHANNEL_ID: ${{ secrets.SLACK_CHANNEL_ID }}
+        SLACK_CHANNEL_ID_CRYPTO: ${{ secrets.SLACK_CHANNEL_ID_CRYPTO }}
         UPBIT_ACCESS_KEY: ${{ secrets.UPBIT_ACCESS_KEY }}
         UPBIT_SECRET_KEY: ${{ secrets.UPBIT_SECRET_KEY }}
         IS_LIVE: 'true'
@@ -95,7 +97,7 @@ jobs:
     - name: Notify Slack on failure
       if: ${{ failure() }}
       env:
-        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_LIVE }}
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_CRYPTO || secrets.SLACK_WEBHOOK_LIVE }}
       run: |
         if ([string]::IsNullOrEmpty($env:SLACK_WEBHOOK_URL)) {
           Write-Host "SLACK_WEBHOOK_URL 미설정 — Slack 알림 생략"
