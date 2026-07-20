@@ -1,24 +1,38 @@
 [
     {
-        "id": "tx_20260717_065514",
-        "date": "2026-07-17 06:55:14",
+        "id": "tx_20260717_000000_migrate",
+        "date": "2026-07-17 00:00:00",
         "portfolio_value": 16968436.208204273,
         "cash_balance": 1922.28970714,
-        "net_deposit": 11926.88,
-        "total_trade_amount": 9999.59312,
-        "reason": "KRW-BTC:BUY(수동 매매(Manual Trade))",
+        "net_deposit": 1922.29,
+        "total_trade_amount": 21658699.99,
+        "reason": "KRW-BTC:BUY,KRW-ETH:BUY(마이그레이션 - 기존 보유 잔고 등록)",
         "executions": [
             {
                 "ticker": "KRW-BTC",
                 "action": "BUY",
-                "quantity": 0.00010781,
-                "price": 92752000.0,
-                "fee": 4.99979656,
-                "date": "2026-07-17 06:55:11",
+                "quantity": 0.13703789,
+                "price": 114690236.0,
+                "fee": 0.0,
+                "date": "2026-07-17 00:00:00",
                 "status": "FILLED",
-                "reason": "uuid=8e3168c2-a8bf-43b3-a42b-fa5f93e140d2",
+                "reason": "마이그레이션 - 기존 보유 잔고 등록",
+                "lot_id": "lot_20260717_000000_KRW-BTC_001_migrate",
                 "level": 1,
                 "alias": "KRW-BTC"
+            },
+            {
+                "ticker": "KRW-ETH",
+                "action": "BUY",
+                "quantity": 1.54440048,
+                "price": 3847313.0,
+                "fee": 0.0,
+                "date": "2026-07-17 00:00:00",
+                "status": "FILLED",
+                "reason": "마이그레이션 - 기존 보유 잔고 등록",
+                "lot_id": "lot_20260717_000000_KRW-ETH_001_migrate",
+                "level": 1,
+                "alias": "KRW-ETH"
             }
         ]
     },
