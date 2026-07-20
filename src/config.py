@@ -92,9 +92,10 @@ class Config:
         # 저장소 크기 제한
         self.MAX_HISTORY_RECORDS = 100000
 
-    def slack_config_for(self, market_type: str) -> tuple:
+    def slack_config_for(self, market_type: str) -> tuple[str, str]:
         """마켓별 Slack (webhook_url, channel_id)를 반환한다. 미설정 시 공통값으로 폴백."""
-        webhook = self._slack_webhook_by_market.get(market_type) or self.SLACK_WEBHOOK_URL
-        channel = self._slack_channel_by_market.get(market_type) or self.SLACK_CHANNEL_ID
+        market_key = market_type.lower()
+        webhook = self._slack_webhook_by_market.get(market_key) or self.SLACK_WEBHOOK_URL
+        channel = self._slack_channel_by_market.get(market_key) or self.SLACK_CHANNEL_ID
         return webhook, channel
 
