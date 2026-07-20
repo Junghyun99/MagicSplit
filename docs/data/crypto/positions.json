@@ -1,15 +1,5 @@
 [
     {
-        "lot_id": "lot_20260717_065511_KRW-BTC_001",
-        "ticker": "KRW-BTC",
-        "buy_price": 92752000.0,
-        "quantity": 0.00010781,
-        "buy_date": "2026-07-17",
-        "level": 1,
-        "trailing_highest_price": null,
-        "alias": "KRW-BTC"
-    },
-    {
         "lot_id": "lot_20260718_002112_KRW-USDT_001",
         "ticker": "KRW-USDT",
         "buy_price": 1476.0,
@@ -18,5 +8,25 @@
         "level": 1,
         "trailing_highest_price": null,
         "alias": "KRW-USDT"
+    },
+    {
+        "lot_id": "lot_20260717_000000_KRW-BTC_001_migrate",
+        "ticker": "KRW-BTC",
+        "buy_price": 114690236.0,
+        "quantity": 0.13703789,
+        "buy_date": "2026-07-17",
+        "level": 1,
+        "trailing_highest_price": null,
+        "alias": "KRW-BTC"
+    },
+    {
+        "lot_id": "lot_20260717_000000_KRW-ETH_001_migrate",
+        "ticker": "KRW-ETH",
+        "buy_price": 3847313.0,
+        "quantity": 1.54440048,
+        "buy_date": "2026-07-17",
+        "level": 1,
+        "trailing_highest_price": null,
+        "alias": "KRW-ETH"
     }
 ]
