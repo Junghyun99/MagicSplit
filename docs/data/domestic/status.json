@@ -587,91 +587,151 @@
         }
     },
     "realized_pnl_by_ticker": {
-        "483320": 183279.46999999997,
+        "483320": 83967.46999999997,
         "006800": -740139.4,
         "475300": 795270.11,
-        "307520": 62253.79,
+        "307520": -10621.21,
         "005380": -267033.17,
-        "005930": 335645.42000000004,
+        "005930": -537686.58,
         "035420": -37477.15,
         "095610": 541049.8799999999,
         "0174B0": -123995.24,
-        "102970": 59044.58,
+        "102970": -24091.42,
         "138040": 47070.34,
         "473640": -20424.11,
         "218420": -118361.07,
-        "005935": 34923.81,
+        "005935": -302505.19,
         "240810": 104782.41,
         "0023A0": -362528.31,
-        "494310": 638849.3
+        "494310": 480243.30000000005,
+        "457480": -90226.0
     },
     "regime_state_by_ticker": {
         "494310": {
             "downtrend_streak": 0,
             "downtrend_exit_streak": 0,
-            "breakdown_streak": 1,
-            "uptrend_streak": 1
+            "uptrend_streak": 1,
+            "trailing_lock": {
+                "active": true,
+                "lock_price": 85920.0,
+                "drop_pct": 3.0
+            },
+            "post_liquidation": true,
+            "breakdown_days": [],
+            "breakdown_today_state": "",
+            "breakdown_prev_date": ""
         },
         "016360": {
             "downtrend_streak": 0,
             "downtrend_exit_streak": 0,
-            "breakdown_streak": 0,
             "uptrend_streak": 0
         },
         "307520": {
-            "downtrend_streak": 1,
-            "breakdown_streak": 0,
-            "uptrend_streak": 0
+            "downtrend_streak": 0,
+            "uptrend_streak": 0,
+            "trailing_lock": {
+                "active": true,
+                "lock_price": 19800.0,
+                "drop_pct": 3.0
+            },
+            "post_liquidation": true,
+            "breakdown_days": [],
+            "breakdown_today_state": "",
+            "breakdown_prev_date": "",
+            "downtrend": "active"
         },
         "138040": {
             "downtrend_streak": 0,
             "downtrend_exit_streak": 0,
-            "breakdown_streak": 0,
             "uptrend_streak": 0
         },
         "102970": {
-            "downtrend_streak": 1,
-            "breakdown_streak": 0,
-            "uptrend_streak": 0
+            "downtrend_streak": 0,
+            "uptrend_streak": 0,
+            "trailing_lock": {
+                "active": true,
+                "lock_price": 20350.0,
+                "drop_pct": 3.0
+            },
+            "post_liquidation": true,
+            "breakdown_days": [],
+            "breakdown_today_state": "",
+            "breakdown_prev_date": "",
+            "downtrend": "active"
         },
         "457480": {
             "downtrend_streak": 0,
             "downtrend_exit_streak": 0,
-            "breakdown_streak": 1,
-            "uptrend_streak": 0
+            "uptrend_streak": 0,
+            "trailing_lock": {
+                "active": true,
+                "lock_price": 19465.0,
+                "drop_pct": 3.0
+            },
+            "post_liquidation": true,
+            "breakdown_days": [],
+            "breakdown_today_state": "",
+            "breakdown_prev_date": ""
         },
         "005935": {
             "downtrend_streak": 0,
             "downtrend_exit_streak": 0,
-            "breakdown_streak": 1,
-            "uptrend_streak": 1
+            "uptrend_streak": 1,
+            "trailing_lock": {
+                "active": true,
+                "lock_price": 169600.0,
+                "drop_pct": 3.0
+            },
+            "post_liquidation": true,
+            "breakdown_days": [],
+            "breakdown_today_state": "",
+            "breakdown_prev_date": ""
         },
         "483320": {
             "downtrend_streak": 0,
             "downtrend_exit_streak": 0,
-            "breakdown_streak": 1,
-            "uptrend_streak": 1
+            "uptrend_streak": 1,
+            "trailing_lock": {
+                "active": true,
+                "lock_price": 24600.0,
+                "drop_pct": 3.0
+            },
+            "post_liquidation": true,
+            "breakdown_days": [],
+            "breakdown_today_state": "",
+            "breakdown_prev_date": ""
         },
         "475300": {
             "downtrend_streak": 0,
             "downtrend_exit_streak": 0,
-            "breakdown_streak": 1,
             "uptrend_streak": 0,
             "regime": "uptrend",
             "adds": 0,
             "last_add_swing_high": 27315.0,
-            "last_add_price": 22535.0
+            "last_add_price": 22535.0,
+            "breakdown_days": [
+                "2026-07-20"
+            ],
+            "breakdown_today_state": "bd",
+            "breakdown_prev_date": "2026-07-20"
         },
         "005930": {
             "downtrend_streak": 0,
             "downtrend_exit_streak": 0,
-            "breakdown_streak": 1,
-            "uptrend_streak": 1
+            "uptrend_streak": 1,
+            "trailing_lock": {
+                "active": true,
+                "lock_price": 245750.0,
+                "drop_pct": 3.0
+            },
+            "post_liquidation": true,
+            "breakdown_days": [],
+            "breakdown_today_state": "",
+            "breakdown_prev_date": ""
         },
         "095610": {
             "downtrend_streak": 0,
             "downtrend_exit_streak": 0,
-            "breakdown_streak": 0,
             "uptrend_streak": 0,
             "regime": "uptrend",
             "adds": 0,
@@ -679,7 +739,19 @@
             "last_add_price": 170300.0
         }
     },
-    "enabled_tickers": ["005930", "483320", "102970", "307520", "138040", "457480", "475300", "095610", "005935", "016360", "494310"],
+    "enabled_tickers": [
+        "005930",
+        "483320",
+        "102970",
+        "307520",
+        "138040",
+        "457480",
+        "475300",
+        "095610",
+        "005935",
+        "016360",
+        "494310"
+    ],
     "risk_summary": {
         "next_level_needs": 5500000.0,
         "max_potential_exposure": 470500000.0,
@@ -775,7 +847,16 @@
             }
         ],
         "sync_error": true,
-        "alerts": ["⚠️ [ACE 테슬라밸류체인액티브] 잔고 불일치 (봇: 65, 계좌: 32)", "⚠️ [삼성전자우] 잔고 불일치 (봇: 17, 계좌: 8)", "⚠️ [삼성증권] 잔고 불일치 (봇: 9, 계좌: 13)", "⚠️ [삼성전자] 잔고 불일치 (봇: 17, 계좌: 8)", "⚠️ [ACE 엔비디아밸류체인액티브] 잔고 불일치 (봇: 66, 계좌: 33)", "⚠️ [TIGER 지주회사] 잔고 불일치 (봇: 83, 계좌: 41)", "⚠️ [KODEX 증권] 잔고 불일치 (봇: 102, 계좌: 51)", "⚠️ [KODEX 반도체레버리지] 잔고 불일치 (봇: 31, 계좌: 15)"],
+        "alerts": [
+            "⚠️ [ACE 테슬라밸류체인액티브] 잔고 불일치 (봇: 65, 계좌: 32)",
+            "⚠️ [삼성전자우] 잔고 불일치 (봇: 17, 계좌: 8)",
+            "⚠️ [삼성증권] 잔고 불일치 (봇: 9, 계좌: 13)",
+            "⚠️ [삼성전자] 잔고 불일치 (봇: 17, 계좌: 8)",
+            "⚠️ [ACE 엔비디아밸류체인액티브] 잔고 불일치 (봇: 66, 계좌: 33)",
+            "⚠️ [TIGER 지주회사] 잔고 불일치 (봇: 83, 계좌: 41)",
+            "⚠️ [KODEX 증권] 잔고 불일치 (봇: 102, 계좌: 51)",
+            "⚠️ [KODEX 반도체레버리지] 잔고 불일치 (봇: 31, 계좌: 15)"
+        ],
         "max_ticker_concentration": 19.77,
         "high_level_ratio": 0.0
     }
