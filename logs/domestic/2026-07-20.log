@@ -40,3 +40,44 @@
 2026-07-20 10:01:17,738 [INFO] >>> Processing 테스(095610)
 2026-07-20 10:01:17,741 [INFO] [테스(095610)] 현금 부족: 보유 현금 KRW 199,206 < 매수 예정 금액 KRW 346,000 (2주) -> 매수 보류
 2026-07-20 10:01:18,248 [INFO] >>> Step 6: Persist
+2026-07-20 14:01:02,261 [INFO] === Initializing MagicSplit Bot (domestic) ===
+2026-07-20 14:01:02,262 [INFO] Loaded 23 stock rule(s) from config_domestic.json
+2026-07-20 14:01:02,262 [INFO] [domestic] 11 rule(s), mode=LIVE
+2026-07-20 14:01:02,262 [INFO] [KisBroker] 캐시에서 토큰 로드 (API 호출 생략)
+2026-07-20 14:01:02,262 [INFO] [KisDomesticLiveBroker] Mode: LIVE TRADING
+2026-07-20 14:01:02,264 [INFO] [MarketData] 레짐 필터 활성 종목 11개 -> YFinanceMarketDataProvider 주입 (window 260봉)
+2026-07-20 14:01:02,264 [INFO] === Running domestic engine ===
+2026-07-20 14:01:02,264 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-07-20 14:01:03,178 [INFO] Fetching real-time prices from Broker...
+2026-07-20 14:01:05,823 [INFO] Portfolio: Cash=KRW 8,212,557, Value=KRW 27,292,057
+2026-07-20 14:01:05,823 [INFO] >>> Step 2: Load Positions
+2026-07-20 14:01:05,824 [INFO] Loaded 32 position lot(s)
+2026-07-20 14:01:05,827 [ERROR] >>> Step 2.5: 수량 불일치 8건 감지 — 해당 종목 매매 중단
+[삼성전자(005930)] Qty Mismatch: broker=8, positions=17 (lots=6, levels=[1, 2, 3, 4, 5, 6])
+[삼성전자우(005935)] Qty Mismatch: broker=8, positions=17 (lots=5, levels=[1, 2, 3, 4, 5])
+[삼성증권(016360)] Qty Mismatch: broker=13, positions=9 (lots=1, levels=[1])
+[KODEX 증권(102970)] Qty Mismatch: broker=51, positions=102 (lots=4, levels=[1, 2, 3, 4])
+[TIGER 지주회사(307520)] Qty Mismatch: broker=41, positions=83 (lots=3, levels=[1, 2, 3])
+[ACE 테슬라밸류체인액티브(457480)] Qty Mismatch: broker=32, positions=65 (lots=2, levels=[1, 2])
+[ACE 엔비디아밸류체인액티브(483320)] Qty Mismatch: broker=33, positions=66 (lots=3, levels=[1, 2, 3])
+[KODEX 반도체레버리지(494310)] Qty Mismatch: broker=15, positions=31 (lots=1, levels=[1])
+실행 권장: scripts/reconcile_positions.py
+2026-07-20 14:01:06,296 [WARNING] [삼성증권(016360)] 수량 불일치로 매매 중단. scripts/reconcile_positions.py 로 보정 후 재실행.
+2026-07-20 14:01:06,297 [WARNING] [KODEX 반도체레버리지(494310)] 수량 불일치로 매매 중단. scripts/reconcile_positions.py 로 보정 후 재실행.
+2026-07-20 14:01:06,297 [INFO] >>> Processing SOL 반도체전공정(475300)
+2026-07-20 14:01:07,638 [INFO] [MarketData] 배치 다운로드 완료: 11/11종목
+2026-07-20 14:01:07,641 [INFO] [SOL 반도체전공정(475300)] 하단 채널선 이탈 감지 (1/2봉, 현재가 KRW 22,535 < 이탈선 KRW 22,751) -> 확정 대기
+2026-07-20 14:01:07,642 [INFO] [SOL 반도체전공정(475300)] 강한 상승 추세 진입 확정! (회귀 채널 기울기 +27.69% 밴드 상향 돌파, 2봉 연속)
+2026-07-20 14:01:07,644 [INFO]   [SOL 반도체전공정(475300)] 📈 상승 레짐 유지 | Lv3 매수 KRW 24,150 -> 현재 KRW 22,535 (-6.69%) | 채널하단(이탈선) KRW 22,751 | 20EMA(눌림) KRW 25,094 (이격 -10.20%) | adds 0/3
+2026-07-20 14:01:07,644 [WARNING] [KODEX 증권(102970)] 수량 불일치로 매매 중단. scripts/reconcile_positions.py 로 보정 후 재실행.
+2026-07-20 14:01:07,644 [INFO] >>> Processing 메리츠금융지주(138040)
+2026-07-20 14:01:07,647 [INFO]   [메리츠금융지주(138040)] 신호 없음 | Lv1 매수 KRW 109,100 -> 현재 KRW 112,800 (+3.39%) | 익절 +10.0% / 추매 -5.0%
+2026-07-20 14:01:07,647 [WARNING] [삼성전자우(005935)] 수량 불일치로 매매 중단. scripts/reconcile_positions.py 로 보정 후 재실행.
+2026-07-20 14:01:07,647 [WARNING] [TIGER 지주회사(307520)] 수량 불일치로 매매 중단. scripts/reconcile_positions.py 로 보정 후 재실행.
+2026-07-20 14:01:07,647 [WARNING] [ACE 엔비디아밸류체인액티브(483320)] 수량 불일치로 매매 중단. scripts/reconcile_positions.py 로 보정 후 재실행.
+2026-07-20 14:01:07,648 [INFO] >>> Processing 테스(095610)
+2026-07-20 14:01:07,650 [INFO] [테스(095610)] 강한 상승 추세 진입 확정! (회귀 채널 기울기 +148.78% 밴드 상향 돌파, 2봉 연속)
+2026-07-20 14:01:07,652 [INFO]   [테스(095610)] 📈 상승 레짐 유지 | Lv1 매수 KRW 191,900 -> 현재 KRW 170,300 (-11.26%) | 채널하단(이탈선) KRW 166,232 | 20EMA(눌림) KRW 176,909 (이격 -3.74%) | adds 0/3
+2026-07-20 14:01:07,652 [WARNING] [삼성전자(005930)] 수량 불일치로 매매 중단. scripts/reconcile_positions.py 로 보정 후 재실행.
+2026-07-20 14:01:07,652 [WARNING] [ACE 테슬라밸류체인액티브(457480)] 수량 불일치로 매매 중단. scripts/reconcile_positions.py 로 보정 후 재실행.
+2026-07-20 14:01:07,653 [INFO] >>> Step 6: Persist
