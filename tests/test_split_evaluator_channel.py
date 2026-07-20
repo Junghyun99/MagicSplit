@@ -4,6 +4,9 @@
 이탈 판정 = (하락 래치 확정) OR (상승/횡보 중 하단 채널선 하향 돌파).
 청산 방식은 trendbreak_partial_sell_pct(50=절반+추종 데드라인, 100=전량)를 따른다.
 """
+import datetime
+from unittest.mock import patch
+
 import numpy as np
 import pandas as pd
 import pytest
@@ -75,12 +78,16 @@ def _support(rule, window):
 
 
 def _eval_until_confirmed(evaluator, rule, lots, pf, window, st):
-    """이탈 확정 봉수만큼 반복 평가해 마지막 신호를 반환한다."""
+    """이탈 확정 일수만큼 날짜를 변경하며 반복 평가해 마지막 신호를 반환한다."""
+    base = datetime.date(2024, 6, 1)
     signals = []
-    for _ in range(BREAKDOWN_CONFIRM_BARS):
-        signals = evaluator.evaluate_stock(
-            rule, lots, pf, ohlc_window=window, regime_state=st,
-        )
+    for i in range(BREAKDOWN_CONFIRM_BARS):
+        with patch("src.core.logic.split_evaluator.datetime") as mock_dt:
+            mock_dt.date.today.return_value = base + datetime.timedelta(days=i)
+            mock_dt.date.side_effect = lambda *a, **k: datetime.date(*a, **k)
+            signals = evaluator.evaluate_stock(
+                rule, lots, pf, ohlc_window=window, regime_state=st,
+            )
     return signals
 
 
@@ -130,38 +137,107 @@ class TestChannelSidewaysBreakdown:
         assert "trailing_lock" not in st.get("AAPL", {})
 
     def test_breakdown_requires_confirm_bars(self, evaluator):
-        # 1봉째 이탈은 확정 대기 -> 청산 신호 없음
+        # 1일째 이탈은 확정 대기 -> 청산 신호 없음
         window = _sideways_window()
         rule = _channel_rule()
         support = _support(rule, window)
         lots = [_lot(buy_price=100.0, qty=10)]
         st = {}
-        signals = evaluator.evaluate_stock(
-            rule, lots, _pf(support * 0.95, qty=10), ohlc_window=window, regime_state=st,
-        )
+        with patch("src.core.logic.split_evaluator.datetime") as mock_dt:
+            mock_dt.date.today.return_value = datetime.date(2024, 6, 1)
+            mock_dt.date.side_effect = lambda *a, **k: datetime.date(*a, **k)
+            signals = evaluator.evaluate_stock(
+                rule, lots, _pf(support * 0.95, qty=10), ohlc_window=window, regime_state=st,
+            )
         assert all(
             not s.regime_liquidation and not s.regime_partial_liquidation
             for s in signals
         )
-        assert st["AAPL"]["breakdown_streak"] == 1
+        assert st["AAPL"]["breakdown_days"] == ["2024-06-01"]
 
     def test_breakdown_streak_resets_on_recovery(self, evaluator):
-        # 이탈 1봉 -> 회복 1봉 -> 다시 이탈 1봉: 스파이크는 청산으로 이어지지 않음
+        # Day1 이탈 -> Day2 회복 -> Day3 이탈: Day2 회복으로 연속 끊김 -> Day3만 1일
         window = _sideways_window()
         rule = _channel_rule()
         support = _support(rule, window)
         lots = [_lot(buy_price=100.0, qty=10)]
         st = {}
-        evaluator.evaluate_stock(
-            rule, lots, _pf(support * 0.95, qty=10), ohlc_window=window, regime_state=st,
+        with patch("src.core.logic.split_evaluator.datetime") as mock_dt:
+            mock_dt.date.today.return_value = datetime.date(2024, 6, 1)
+            mock_dt.date.side_effect = lambda *a, **k: datetime.date(*a, **k)
+            evaluator.evaluate_stock(
+                rule, lots, _pf(support * 0.95, qty=10), ohlc_window=window, regime_state=st,
+            )
+        with patch("src.core.logic.split_evaluator.datetime") as mock_dt:
+            mock_dt.date.today.return_value = datetime.date(2024, 6, 2)
+            mock_dt.date.side_effect = lambda *a, **k: datetime.date(*a, **k)
+            evaluator.evaluate_stock(
+                rule, lots, _pf(support * 1.02, qty=10), ohlc_window=window, regime_state=st,
+            )
+        # Day2 회복: Day1 기록은 아직 남아있지만 Day3 시작 시 정리됨
+        with patch("src.core.logic.split_evaluator.datetime") as mock_dt:
+            mock_dt.date.today.return_value = datetime.date(2024, 6, 3)
+            mock_dt.date.side_effect = lambda *a, **k: datetime.date(*a, **k)
+            signals = evaluator.evaluate_stock(
+                rule, lots, _pf(support * 0.95, qty=10), ohlc_window=window, regime_state=st,
+            )
+        # Day3 이탈이지만 Day2가 회복이어서 스트릭 리셋, Day3만 1일 -> 확정 안 됨
+        assert st["AAPL"]["breakdown_days"] == ["2024-06-03"]
+        assert all(
+            not s.regime_liquidation and not s.regime_partial_liquidation
+            for s in signals
         )
-        evaluator.evaluate_stock(
-            rule, lots, _pf(support * 1.02, qty=10), ohlc_window=window, regime_state=st,
+
+    def test_same_day_cycles_do_not_stack(self, evaluator):
+        # 같은 날 2사이클 이탈 -> 1일로만 카운트, 확정 안 됨
+        window = _sideways_window()
+        rule = _channel_rule()
+        support = _support(rule, window)
+        lots = [_lot(buy_price=100.0, qty=10)]
+        st = {}
+        with patch("src.core.logic.split_evaluator.datetime") as mock_dt:
+            mock_dt.date.today.return_value = datetime.date(2024, 6, 1)
+            mock_dt.date.side_effect = lambda *a, **k: datetime.date(*a, **k)
+            evaluator.evaluate_stock(
+                rule, lots, _pf(support * 0.95, qty=10), ohlc_window=window, regime_state=st,
+            )
+            signals = evaluator.evaluate_stock(
+                rule, lots, _pf(support * 0.95, qty=10), ohlc_window=window, regime_state=st,
+            )
+        assert all(
+            not s.regime_liquidation and not s.regime_partial_liquidation
+            for s in signals
         )
-        assert st["AAPL"]["breakdown_streak"] == 0
-        signals = evaluator.evaluate_stock(
-            rule, lots, _pf(support * 0.95, qty=10), ohlc_window=window, regime_state=st,
-        )
+        assert st["AAPL"]["breakdown_days"] == ["2024-06-01"]
+
+    def test_intraday_recovery_cancels_today(self, evaluator):
+        # Day1 장초 이탈 -> Day1 장말 회복 -> Day2+Day3 이탈해야 확정
+        window = _sideways_window()
+        rule = _channel_rule()
+        support = _support(rule, window)
+        lots = [_lot(buy_price=100.0, qty=10)]
+        st = {}
+        # Day1 10am: 이탈
+        with patch("src.core.logic.split_evaluator.datetime") as mock_dt:
+            mock_dt.date.today.return_value = datetime.date(2024, 6, 1)
+            mock_dt.date.side_effect = lambda *a, **k: datetime.date(*a, **k)
+            evaluator.evaluate_stock(
+                rule, lots, _pf(support * 0.95, qty=10), ohlc_window=window, regime_state=st,
+            )
+            assert st["AAPL"]["breakdown_days"] == ["2024-06-01"]
+            # Day1 12pm: 회복 -> 오늘 카운트 취소
+            evaluator.evaluate_stock(
+                rule, lots, _pf(support * 1.02, qty=10), ohlc_window=window, regime_state=st,
+            )
+            assert st["AAPL"]["breakdown_days"] == []
+        # Day2: 이탈 (Day1이 취소되어 스트릭 1일)
+        with patch("src.core.logic.split_evaluator.datetime") as mock_dt:
+            mock_dt.date.today.return_value = datetime.date(2024, 6, 2)
+            mock_dt.date.side_effect = lambda *a, **k: datetime.date(*a, **k)
+            signals = evaluator.evaluate_stock(
+                rule, lots, _pf(support * 0.95, qty=10), ohlc_window=window, regime_state=st,
+            )
+        assert st["AAPL"]["breakdown_days"] == ["2024-06-02"]
         assert all(
             not s.regime_liquidation and not s.regime_partial_liquidation
             for s in signals

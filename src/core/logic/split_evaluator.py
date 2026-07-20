@@ -1,4 +1,5 @@
 # src/core/logic/split_evaluator.py
+import datetime
 import math
 from typing import Dict, List, Optional
 
@@ -1011,7 +1012,9 @@ class SplitEvaluator:
 
         # 2. 하락 래치 확정 -> 이탈 청산
         if downtrend_blocked:
-            st["breakdown_streak"] = 0
+            st["breakdown_days"] = []
+            st["breakdown_today_state"] = ""
+            st["breakdown_prev_date"] = ""
             if self._logger:
                 self._logger.info(
                     f"[{display_ticker(rule.ticker)}] 채널 기울기 하락 전환 확정 "
@@ -1019,24 +1022,43 @@ class SplitEvaluator:
                 )
             return self._handle_trendbreak(rule, ticker_lots, current_price, reading, st)
 
-        # 3. 상승/횡보 중 하단 채널선 하향 돌파 -> 연속 확정 후 이탈 청산
+        # 3. 상승/횡보 중 하단 채널선 하향 돌파 -> 연속 일(日) 확정 후 이탈 청산
+        #    동일 날짜에 여러 사이클이 돌면 마지막 사이클 결과가 해당 날짜의 최종 상태.
         breakdown_line = support * (1 - rule.channel_breakdown_tolerance_pct / 100)
+        today_str = datetime.date.today().isoformat()
+        bd_days: list = st.get("breakdown_days", [])
+        bd_prev_date: str = st.get("breakdown_prev_date", "")
+
+        if bd_prev_date and bd_prev_date != today_str:
+            prev_state = st.get("breakdown_today_state", "")
+            if prev_state != "bd":
+                bd_days = []
+            st["breakdown_today_state"] = ""
+
+        st["breakdown_prev_date"] = today_str
+
         if current_price < breakdown_line:
-            st["breakdown_streak"] = st.get("breakdown_streak", 0) + 1
-            if st["breakdown_streak"] < BREAKDOWN_CONFIRM_BARS:
+            st["breakdown_today_state"] = "bd"
+            if today_str not in bd_days:
+                bd_days.append(today_str)
+            st["breakdown_days"] = bd_days
+
+            if len(bd_days) < BREAKDOWN_CONFIRM_BARS:
                 if self._logger:
                     self._logger.info(
                         f"[{display_ticker(rule.ticker)}] 하단 채널선 이탈 감지 "
-                        f"({st['breakdown_streak']}/{BREAKDOWN_CONFIRM_BARS}봉, "
+                        f"({len(bd_days)}/{BREAKDOWN_CONFIRM_BARS}일, "
                         f"현재가 {format_money(current_price, rule.market_type)} < "
                         f"이탈선 {format_money(breakdown_line, rule.market_type)}) -> 확정 대기"
                     )
                 return None
-            st["breakdown_streak"] = 0
+            st["breakdown_days"] = []
+            st["breakdown_today_state"] = ""
+            st["breakdown_prev_date"] = ""
             if self._logger:
                 self._logger.info(
                     f"[{display_ticker(rule.ticker)}] 하단 채널선 이탈 확정 "
-                    f"({BREAKDOWN_CONFIRM_BARS}봉 연속, "
+                    f"({BREAKDOWN_CONFIRM_BARS}일 연속, "
                     f"현재가 {format_money(current_price, rule.market_type)} < "
                     f"이탈선 {format_money(breakdown_line, rule.market_type)}, "
                     f"채널하단 {format_money(support, rule.market_type)}, "
@@ -1044,7 +1066,10 @@ class SplitEvaluator:
                 )
             return self._handle_trendbreak(rule, ticker_lots, current_price, reading, st)
 
-        st["breakdown_streak"] = 0
+        st["breakdown_today_state"] = ""
+        if today_str in bd_days:
+            bd_days.remove(today_str)
+        st["breakdown_days"] = bd_days
         return None
 
     def _evaluate_uptrend(
