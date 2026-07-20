@@ -258,6 +258,29 @@ class TestRunOneCycle:
         mock_repo.save_positions.assert_called_once()
         mock_repo.save_status.assert_called_once()
 
+    def test_crypto_cycle_without_orders_does_not_notify(self, mock_broker, mock_repo, mock_logger):
+        """Crypto accounts suppress Slack messages for successful no-trade cycles."""
+        notifier = MagicMock()
+        rules = [StockRule("KRW-BTC", -5.0, 10.0, 500, 10, market_type="crypto")]
+        mock_repo.load_status.return_value = {"enabled_tickers": ["KRW-BTC"]}
+        mock_broker.get_portfolio.return_value = Portfolio(
+            total_cash=10000.0,
+            holdings={},
+            current_prices={"KRW-BTC": 100.0},
+        )
+        mock_broker.fetch_current_prices.return_value = {"KRW-BTC": 100.0}
+        engine = MagicSplitEngine(
+            broker=mock_broker,
+            repo=mock_repo,
+            logger=mock_logger,
+            stock_rules=rules,
+            notifier=notifier,
+        )
+
+        engine.run_one_cycle(sim_date="2026-04-10")
+
+        notifier.send_message.assert_not_called()
+
     def test_full_cycle_with_buy(self, engine, mock_broker, mock_repo):
         """초기 매수 시 전체 사이클"""
         execution = TradeExecution(

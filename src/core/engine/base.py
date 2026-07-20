@@ -299,12 +299,13 @@ class MagicSplitEngine:
                 detail=all_detail
             )
         elif portfolio is not None:
-            self._notify_message(
-                f"모니터링 완료. 신호 없음 | "
-                f"{format_money(portfolio.total_value, self.market_type)}"
-                f"{reject_suffix}{fail_suffix}",
-                detail=all_detail
-            )
+            if self.market_type != "crypto" or all_executions or failed_tickers:
+                self._notify_message(
+                    f"모니터링 완료. 신호 없음 | "
+                    f"{format_money(portfolio.total_value, self.market_type)}"
+                    f"{reject_suffix}{fail_suffix}",
+                    detail=all_detail
+                )
         else:
             self._notify_message(f"사이클 실패{reject_suffix}{fail_suffix}", detail=all_detail)
 
