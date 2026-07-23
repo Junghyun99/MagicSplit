@@ -2875,5 +2875,46 @@
                 "alias": "삼성증권"
             }
         ]
+    },
+    {
+        "id": "tx_20260721_100100",
+        "date": "2026-07-21 10:01:00",
+        "portfolio_value": 27084338.9,
+        "cash_balance": 8999798.896,
+        "net_deposit": -7386.0,
+        "total_trade_amount": 787360.0,
+        "reason": "SOL ??????(475300):SELL(?? ?? ?? ??(37/73?, -20.5%))",
+        "executions": [
+            {
+                "ticker": "475300",
+                "action": "SELL",
+                "quantity": 20,
+                "price": 21280.0,
+                "fee": 118.104,
+                "date": "2026-07-21 10:01:00",
+                "status": "FILLED",
+                "reason": "ODNO=0006783200",
+                "lot_id": "lot_20260713_140138_475300_003",
+                "level": 3,
+                "buy_price": 24150.0,
+                "realized_pnl": -57400.0,
+                "alias": "SOL ??????"
+            },
+            {
+                "ticker": "475300",
+                "action": "SELL",
+                "quantity": 17,
+                "price": 21280.0,
+                "fee": 118.104,
+                "date": "2026-07-21 10:01:00",
+                "status": "FILLED",
+                "reason": "ODNO=0006783200",
+                "lot_id": "lot_20260702_140112_475300_002",
+                "level": 2,
+                "buy_price": 26695.0,
+                "realized_pnl": -92173.1,
+                "alias": "SOL ??????"
+            }
+        ]
     }
 ]
