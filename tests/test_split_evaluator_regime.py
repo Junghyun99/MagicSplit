@@ -2,6 +2,8 @@
 import numpy as np
 import pandas as pd
 import pytest
+import datetime
+from unittest.mock import patch
 
 from src.core.logic.split_evaluator import SplitEvaluator, DOWNTREND_CONFIRM_BARS
 from src.core.logic.regime import Regime, classify
@@ -263,22 +265,35 @@ class TestNanGuard:
 
 
 class TestResolveRegimeHysteresis:
-    def test_requires_confirm_bars_to_enter_uptrend(self, evaluator):
+    def test_requires_confirm_days_to_enter_uptrend(self, evaluator):
         rule = _regime_rule()
         window = _uptrend_window()
         r = _reading(window, rule)
         lot = _lot(level=1, buy_price=50.0)
         state = {}
         # 1회차: 아직 확정 전 -> 상승 미진입 (state에 uptrend 미기록)
-        evaluator.evaluate_stock(
-            rule, [lot], _pf(price=r.ema20 * 1.005), ohlc_window=window, regime_state=state,
-        )
+        with patch("src.core.logic.split_evaluator.datetime") as mock_dt:
+            mock_dt.date.today.return_value = datetime.date(2024, 6, 1)
+            mock_dt.date.side_effect = lambda *a, **k: datetime.date(*a, **k)
+            evaluator.evaluate_stock(
+                rule, [lot], _pf(price=r.ema20 * 1.005), ohlc_window=window, regime_state=state,
+            )
         assert state["AAPL"].get("regime") != "uptrend"
         assert state["AAPL"]["uptrend_streak"] == 1
         # 2회차: 연속 확정 -> 상승 진입
-        evaluator.evaluate_stock(
-            rule, [lot], _pf(price=r.ema20 * 1.005), ohlc_window=window, regime_state=state,
-        )
+        with patch("src.core.logic.split_evaluator.datetime") as mock_dt:
+            mock_dt.date.today.return_value = datetime.date(2024, 6, 1)
+            mock_dt.date.side_effect = lambda *a, **k: datetime.date(*a, **k)
+            evaluator.evaluate_stock(
+                rule, [lot], _pf(price=r.ema20 * 1.005), ohlc_window=window, regime_state=state,
+            )
+        assert state["AAPL"].get("regime") != "uptrend"
+        with patch("src.core.logic.split_evaluator.datetime") as mock_dt:
+            mock_dt.date.today.return_value = datetime.date(2024, 6, 2)
+            mock_dt.date.side_effect = lambda *a, **k: datetime.date(*a, **k)
+            evaluator.evaluate_stock(
+                rule, [lot], _pf(price=r.ema20 * 1.005), ohlc_window=window, regime_state=state,
+            )
         assert state["AAPL"]["regime"] == "uptrend"
 
 
@@ -566,10 +581,23 @@ class TestDowntrendBuyBlock:
             pytest.skip("window did not produce DOWNTREND regime")
 
         lot = _lot(level=1, buy_price=200.0)
-        state = {"AAPL": {"downtrend_streak": 1}}
-        signals = evaluator.evaluate_stock(
-            rule, [lot], _pf(price=100.0, cash=500000), ohlc_window=window, regime_state=state
-        )
+        state = {"AAPL": {}}
+        with patch("src.core.logic.split_evaluator.datetime") as mock_dt:
+            mock_dt.date.today.return_value = datetime.date(2024, 6, 1)
+            mock_dt.date.side_effect = lambda *a, **k: datetime.date(*a, **k)
+            evaluator.evaluate_stock(
+                rule, [lot], _pf(price=100.0, cash=500000), ohlc_window=window, regime_state=state
+            )
+            signals = evaluator.evaluate_stock(
+                rule, [lot], _pf(price=100.0, cash=500000), ohlc_window=window, regime_state=state
+            )
+        assert state["AAPL"].get("downtrend") != "active"
+        with patch("src.core.logic.split_evaluator.datetime") as mock_dt:
+            mock_dt.date.today.return_value = datetime.date(2024, 6, 2)
+            mock_dt.date.side_effect = lambda *a, **k: datetime.date(*a, **k)
+            signals = evaluator.evaluate_stock(
+                rule, [lot], _pf(price=100.0, cash=500000), ohlc_window=window, regime_state=state
+            )
         assert state["AAPL"].get("downtrend") == "active"
         buys = [s for s in signals if s.action == OrderAction.BUY]
         assert len(buys) >= 1
@@ -627,10 +655,19 @@ class TestDowntrendBuyBlock:
         window = _uptrend_window()
         lot = _lot(level=1, buy_price=300.0)
         # 이미 exit_streak=1 상태에서 한 봉 더 -> 총 2봉 -> 해제
-        state = {"AAPL": {"downtrend": "active", "downtrend_exit_streak": 1}}
-        evaluator.evaluate_stock(
-            rule, [lot], _pf(price=250.0, cash=500000), ohlc_window=window, regime_state=state
-        )
+        state = {"AAPL": {"downtrend": "active"}}
+        with patch("src.core.logic.split_evaluator.datetime") as mock_dt:
+            mock_dt.date.today.return_value = datetime.date(2024, 6, 1)
+            mock_dt.date.side_effect = lambda *a, **k: datetime.date(*a, **k)
+            evaluator.evaluate_stock(
+                rule, [lot], _pf(price=250.0, cash=500000), ohlc_window=window, regime_state=state
+            )
+        with patch("src.core.logic.split_evaluator.datetime") as mock_dt:
+            mock_dt.date.today.return_value = datetime.date(2024, 6, 2)
+            mock_dt.date.side_effect = lambda *a, **k: datetime.date(*a, **k)
+            evaluator.evaluate_stock(
+                rule, [lot], _pf(price=250.0, cash=500000), ohlc_window=window, regime_state=state
+            )
         assert state["AAPL"].get("downtrend") is None
         assert state["AAPL"]["downtrend_exit_streak"] == 0
         assert state["AAPL"]["downtrend_streak"] == 0

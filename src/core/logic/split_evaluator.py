@@ -899,24 +899,46 @@ class SplitEvaluator:
         if st.get("regime") == "uptrend":
             return Regime.UPTREND
 
+        # 동일 날짜의 반복 실행은 한 번만 세고, 장중 상승 조건이 해제되면
+        # 그 날짜의 카운트를 취소한다. 하락 레짐/하단 이탈의 날짜 기준과 동일하다.
+        today_str = datetime.date.today().isoformat()
+        days: list = st.get("uptrend_days", [])
+        prev_date: str = st.get("uptrend_prev_date", "")
+        if prev_date and prev_date != today_str:
+            if st.get("uptrend_today_state", "") != "uptrend":
+                days = []
+            st["uptrend_today_state"] = ""
+        st["uptrend_prev_date"] = today_str
+
         if reading.regime == Regime.UPTREND:
-            st["uptrend_streak"] = st.get("uptrend_streak", 0) + 1
+            st["uptrend_today_state"] = "uptrend"
+            if today_str not in days:
+                days.append(today_str)
+            st["uptrend_days"] = days
+            st["uptrend_streak"] = len(days)
         else:
+            st["uptrend_today_state"] = ""
+            if today_str in days:
+                days.remove(today_str)
+            st["uptrend_days"] = days
             st["uptrend_streak"] = 0
 
-        if st.get("uptrend_streak", 0) >= REGIME_CONFIRM_BARS:
+        if len(days) >= REGIME_CONFIRM_BARS:
             st["regime"] = "uptrend"
             st["adds"] = 0
             st["last_add_swing_high"] = reading.swing_high
             st["last_add_price"] = current_price
             st["uptrend_streak"] = 0
+            st["uptrend_days"] = []
+            st["uptrend_today_state"] = ""
+            st["uptrend_prev_date"] = ""
             if self._logger:
                 if math.isnan(reading.adx):
                     # 채널 분류기: ADX 미사용 -> 기울기 기준 메시지
                     self._logger.info(
                         f"[{display_ticker(ticker)}] 강한 상승 추세 진입 확정! "
                         f"(회귀 채널 기울기 {reading.channel_slope_pct:+.2f}% 밴드 상향 돌파, "
-                        f"{REGIME_CONFIRM_BARS}봉 연속)"
+                        f"{REGIME_CONFIRM_BARS}일 연속)"
                     )
                 else:
                     self._logger.info(
@@ -929,38 +951,80 @@ class SplitEvaluator:
     def _resolve_downtrend_block(self, reading, st: dict, ticker: str) -> bool:
         """DOWNTREND 매수 차단 래치를 관리한다 (st in-place 변이).
 
-        진입: DOWNTREND_CONFIRM_BARS 연속 DOWNTREND -> "active" 래치
+        진입: 서로 다른 거래일에 DOWNTREND_CONFIRM_BARS일 연속 DOWNTREND -> "active" 래치
         유지: SIDEWAYS 1봉으로 해제되지 않음 (UPTREND 래치와 대칭)
-        탈출: 비-DOWNTREND DOWNTREND_CONFIRM_BARS 연속 -> 래치 해제
+        탈출: 서로 다른 거래일에 비-DOWNTREND DOWNTREND_CONFIRM_BARS일 연속 -> 래치 해제
+
+        같은 날짜에 봇이 여러 번 실행될 수 있으므로, 당일의 마지막 판정만 카운트한다.
         """
+        today_str = datetime.date.today().isoformat()
+
         if st.get("downtrend") == "active":
+            exit_days: list = st.get("downtrend_exit_days", [])
+            prev_date: str = st.get("downtrend_exit_prev_date", "")
+            if prev_date and prev_date != today_str:
+                if st.get("downtrend_exit_today_state", "") != "non_downtrend":
+                    exit_days = []
+                st["downtrend_exit_today_state"] = ""
+            st["downtrend_exit_prev_date"] = today_str
+
             if reading.regime != Regime.DOWNTREND:
-                st["downtrend_exit_streak"] = st.get("downtrend_exit_streak", 0) + 1
-                if st["downtrend_exit_streak"] >= DOWNTREND_CONFIRM_BARS:
+                st["downtrend_exit_today_state"] = "non_downtrend"
+                if today_str not in exit_days:
+                    exit_days.append(today_str)
+                st["downtrend_exit_days"] = exit_days
+                st["downtrend_exit_streak"] = len(exit_days)
+                if len(exit_days) >= DOWNTREND_CONFIRM_BARS:
                     st["downtrend"] = None
                     st["downtrend_streak"] = 0
                     st["downtrend_exit_streak"] = 0
+                    st["downtrend_exit_days"] = []
+                    st["downtrend_exit_today_state"] = ""
+                    st["downtrend_exit_prev_date"] = ""
                     if self._logger:
                         self._logger.info(
-                            f"[{display_ticker(ticker)}] 하락 추세 해제 - 매수 차단 해제"
+                            f"[{display_ticker(ticker)}] 하락 추세 {DOWNTREND_CONFIRM_BARS}일 해제 - 매수 차단 해제"
                         )
                     return False
             else:
+                st["downtrend_exit_today_state"] = ""
+                if today_str in exit_days:
+                    exit_days.remove(today_str)
+                st["downtrend_exit_days"] = exit_days
                 st["downtrend_exit_streak"] = 0
             return True
 
+        days: list = st.get("downtrend_days", [])
+        prev_date: str = st.get("downtrend_prev_date", "")
+        if prev_date and prev_date != today_str:
+            if st.get("downtrend_today_state", "") != "downtrend":
+                days = []
+            st["downtrend_today_state"] = ""
+        st["downtrend_prev_date"] = today_str
+
         if reading.regime == Regime.DOWNTREND:
-            st["downtrend_streak"] = st.get("downtrend_streak", 0) + 1
+            st["downtrend_today_state"] = "downtrend"
+            if today_str not in days:
+                days.append(today_str)
+            st["downtrend_days"] = days
+            st["downtrend_streak"] = len(days)
         else:
+            st["downtrend_today_state"] = ""
+            if today_str in days:
+                days.remove(today_str)
+            st["downtrend_days"] = days
             st["downtrend_streak"] = 0
             st["downtrend_exit_streak"] = 0
 
-        if st.get("downtrend_streak", 0) >= DOWNTREND_CONFIRM_BARS:
+        if len(days) >= DOWNTREND_CONFIRM_BARS:
             st["downtrend"] = "active"
             st["downtrend_streak"] = 0
+            st["downtrend_days"] = []
+            st["downtrend_today_state"] = ""
+            st["downtrend_prev_date"] = ""
             if self._logger:
                 self._logger.info(
-                    f"[{display_ticker(ticker)}] DOWNTREND {DOWNTREND_CONFIRM_BARS}봉 확정 - 매수 차단"
+                    f"[{display_ticker(ticker)}] DOWNTREND {DOWNTREND_CONFIRM_BARS}일 확정 - 매수 차단"
                 )
             return True
 

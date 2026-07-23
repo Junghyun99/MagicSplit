@@ -983,7 +983,12 @@ class MagicSplitEngine:
             st = {}
         kept = {
             k: st[k]
-            for k in ("downtrend", "downtrend_streak", "downtrend_exit_streak")
+            for k in (
+                "downtrend", "downtrend_streak", "downtrend_days",
+                "downtrend_today_state", "downtrend_prev_date",
+                "downtrend_exit_streak", "downtrend_exit_days",
+                "downtrend_exit_today_state", "downtrend_exit_prev_date",
+            )
             if k in st
         }
         if mark_liquidation:

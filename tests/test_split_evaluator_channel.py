@@ -342,15 +342,21 @@ class TestChannelDowntrendLiquidation:
         st = {}
 
         # 1봉째: 래치 미확정 -> 청산 없음
-        signals = evaluator.evaluate_stock(
-            rule, lots, _pf(price), ohlc_window=window, regime_state=st,
-        )
+        with patch("src.core.logic.split_evaluator.datetime") as mock_dt:
+            mock_dt.date.today.return_value = datetime.date(2024, 6, 1)
+            mock_dt.date.side_effect = lambda *a, **k: datetime.date(*a, **k)
+            signals = evaluator.evaluate_stock(
+                rule, lots, _pf(price), ohlc_window=window, regime_state=st,
+            )
         assert all(not s.regime_liquidation for s in signals)
 
         # 2봉째: 래치 확정 -> 전량 청산
-        signals = evaluator.evaluate_stock(
-            rule, lots, _pf(price), ohlc_window=window, regime_state=st,
-        )
+        with patch("src.core.logic.split_evaluator.datetime") as mock_dt:
+            mock_dt.date.today.return_value = datetime.date(2024, 6, 2)
+            mock_dt.date.side_effect = lambda *a, **k: datetime.date(*a, **k)
+            signals = evaluator.evaluate_stock(
+                rule, lots, _pf(price), ohlc_window=window, regime_state=st,
+            )
         assert len(signals) == 1
         assert signals[0].action == OrderAction.SELL
         assert signals[0].regime_liquidation is True
@@ -361,10 +367,16 @@ class TestChannelDowntrendLiquidation:
         support = _support(rule, window)
         st = {}
         # 래치 확정까지 2회 (보유 없음)
-        evaluator.evaluate_stock(rule, [], _pf(support * 1.02), ohlc_window=window, regime_state=st)
-        signals = evaluator.evaluate_stock(
-            rule, [], _pf(support * 0.5), ohlc_window=window, regime_state=st,
-        )
+        with patch("src.core.logic.split_evaluator.datetime") as mock_dt:
+            mock_dt.date.today.return_value = datetime.date(2024, 6, 1)
+            mock_dt.date.side_effect = lambda *a, **k: datetime.date(*a, **k)
+            evaluator.evaluate_stock(rule, [], _pf(support * 1.02), ohlc_window=window, regime_state=st)
+        with patch("src.core.logic.split_evaluator.datetime") as mock_dt:
+            mock_dt.date.today.return_value = datetime.date(2024, 6, 2)
+            mock_dt.date.side_effect = lambda *a, **k: datetime.date(*a, **k)
+            signals = evaluator.evaluate_stock(
+                rule, [], _pf(support * 0.5), ohlc_window=window, regime_state=st,
+            )
         assert len(signals) == 1
         assert signals[0].is_blocked is True
         assert signals[0].quantity == 0
@@ -383,17 +395,28 @@ class TestChannelUptrend:
         # 매도 잠금: 익절 신호가 나오면 안 됨 (눌림 매수 조건도 미충족 -> 빈 결과)
         assert all(s.action != OrderAction.SELL for s in signals)
 
-    def test_uptrend_confirm_requires_two_bars(self, evaluator):
+    def test_uptrend_confirm_requires_two_days(self, evaluator):
         window = _uptrend_window()
         rule = _channel_rule()
         lots = [_lot(buy_price=100.0)]
         pf = _pf(130.0)
         st = {}
         # 1봉째: 아직 SIDEWAYS 취급 -> 통상 익절 매도
-        signals = evaluator.evaluate_stock(rule, lots, pf, ohlc_window=window, regime_state=st)
+        with patch("src.core.logic.split_evaluator.datetime") as mock_dt:
+            mock_dt.date.today.return_value = datetime.date(2024, 6, 1)
+            mock_dt.date.side_effect = lambda *a, **k: datetime.date(*a, **k)
+            signals = evaluator.evaluate_stock(rule, lots, pf, ohlc_window=window, regime_state=st)
         assert any(s.action == OrderAction.SELL for s in signals)
         # 2봉째: 상승 확정 -> 매도 잠금
-        signals = evaluator.evaluate_stock(rule, lots, pf, ohlc_window=window, regime_state=st)
+        with patch("src.core.logic.split_evaluator.datetime") as mock_dt:
+            mock_dt.date.today.return_value = datetime.date(2024, 6, 1)
+            mock_dt.date.side_effect = lambda *a, **k: datetime.date(*a, **k)
+            signals = evaluator.evaluate_stock(rule, lots, pf, ohlc_window=window, regime_state=st)
+        assert st["AAPL"].get("regime") != "uptrend"
+        with patch("src.core.logic.split_evaluator.datetime") as mock_dt:
+            mock_dt.date.today.return_value = datetime.date(2024, 6, 2)
+            mock_dt.date.side_effect = lambda *a, **k: datetime.date(*a, **k)
+            signals = evaluator.evaluate_stock(rule, lots, pf, ohlc_window=window, regime_state=st)
         assert all(s.action != OrderAction.SELL for s in signals)
         assert st["AAPL"]["regime"] == "uptrend"
 
