@@ -118,3 +118,45 @@
 2026-07-24 02:01:45,825 [INFO]   [애플(AAPL)] 📈 상승 레짐 유지 | Lv1 매수 USD 291.90 -> 현재 USD 320.88 (+9.93%) | 채널하단(이탈선) USD 296.38 | 20EMA(눌림) USD 316.04 (이격 +1.53%) | adds 0/3
 2026-07-24 02:01:45,825 [WARNING] [펩시코(PEP)] 수량 불일치로 매매 중단. scripts/reconcile_positions.py 로 보정 후 재실행.
 2026-07-24 02:01:45,825 [INFO] >>> Step 6: Persist
+2026-07-24 04:01:02,471 [INFO] === Initializing MagicSplit Bot (overseas) ===
+2026-07-24 04:01:02,471 [INFO] Loaded 22 stock rule(s) from config_overseas.json
+2026-07-24 04:01:02,471 [INFO] [overseas] 10 rule(s), mode=LIVE
+2026-07-24 04:01:02,471 [INFO] [KisBroker] 캐시에서 토큰 로드 (API 호출 생략)
+2026-07-24 04:01:02,471 [INFO] [KisOverseasLiveBroker] Mode: LIVE TRADING
+2026-07-24 04:01:02,473 [INFO] [MarketData] 레짐 필터 활성 종목 10개 -> YFinanceMarketDataProvider 주입 (window 260봉)
+2026-07-24 04:01:02,473 [INFO] === Running overseas engine ===
+2026-07-24 04:01:02,473 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-07-24 04:01:05,081 [INFO] Fetching real-time prices from Broker...
+2026-07-24 04:01:08,449 [INFO] Portfolio: Cash=USD 3,825.47, Value=USD 17,693.32
+2026-07-24 04:01:08,449 [INFO] >>> Step 2: Load Positions
+2026-07-24 04:01:08,449 [INFO] Loaded 25 position lot(s)
+2026-07-24 04:01:08,451 [ERROR] >>> Step 2.5: 수량 불일치 2건 감지 — 해당 종목 매매 중단
+[델 테크놀로지스(DELL)] Qty Mismatch: broker=4, positions=3 (lots=2, levels=[1, 2])
+[펩시코(PEP)] Qty Mismatch: broker=9, positions=6 (lots=2, levels=[1, 2])
+실행 권장: scripts/reconcile_positions.py
+2026-07-24 04:01:08,956 [WARNING] [델 테크놀로지스(DELL)] 수량 불일치로 매매 중단. scripts/reconcile_positions.py 로 보정 후 재실행.
+2026-07-24 04:01:08,956 [INFO] >>> Processing 테슬라(TSLA)
+2026-07-24 04:01:10,447 [INFO] [MarketData] 배치 다운로드 완료: 10/10종목
+2026-07-24 04:01:10,450 [INFO] [테슬라(TSLA)] 하단 채널선 이탈 감지 (1/2일, 현재가 USD 321.68 < 이탈선 USD 349.52) -> 확정 대기
+2026-07-24 04:01:10,451 [INFO]   [테슬라(TSLA)] 신호 없음 | Lv5 매수 USD 323.27 -> 현재 USD 321.68 (-0.49%) | 익절 +10.0% / 추매 -5.0%
+2026-07-24 04:01:10,451 [INFO] >>> Processing SCHWAB US DIVIDEND EQUITY(SCHD)
+2026-07-24 04:01:10,453 [INFO]   [SCHWAB US DIVIDEND EQUITY(SCHD)] 신호 없음 | Lv1 매수 USD 31.74 -> 현재 USD 32.76 (+3.21%) | 익절 +10.0% / 추매 -5.0%
+2026-07-24 04:01:10,454 [INFO] >>> Processing 알파벳 A(GOOGL)
+2026-07-24 04:01:10,456 [INFO] [알파벳 A(GOOGL)] 추종 데드라인 추적 중 (현재가 USD 318.96, 기준가 USD 319.51, 대비 -0.2%, 청산선 USD 309.92)
+2026-07-24 04:01:10,457 [INFO]   [알파벳 A(GOOGL)] 신호 없음 | Lv2 매수 USD 369.66 -> 현재 USD 318.96 (-13.72%) | 익절 +10.0% / 추매 -5.0%
+2026-07-24 04:01:10,457 [WARNING] [펩시코(PEP)] 수량 불일치로 매매 중단. scripts/reconcile_positions.py 로 보정 후 재실행.
+2026-07-24 04:01:10,457 [INFO] >>> Processing ARK INNOVATION(ARKK)
+2026-07-24 04:01:10,460 [INFO] [ARK INNOVATION(ARKK)] 하단 채널선 이탈 감지 (1/2일, 현재가 USD 73.91 < 이탈선 USD 74.21) -> 확정 대기
+2026-07-24 04:01:10,460 [INFO]   [ARK INNOVATION(ARKK)] 신호 없음 | Lv2 매수 USD 74.82 -> 현재 USD 73.91 (-1.22%) | 익절 +10.0% / 추매 -5.0%
+2026-07-24 04:01:10,460 [INFO] >>> Processing 카메코(CCJ)
+2026-07-24 04:01:10,463 [INFO] [카메코(CCJ)] ✅ 추종 데드라인 해제! 가격 USD 89.27이 이탈 기준선 위로 회복 -> 상승 레짐 복귀 (잔량 7주 보유 유지)
+2026-07-24 04:01:10,463 [INFO]   [카메코(CCJ)] 신호 없음 | Lv1 매수 USD 94.06 -> 현재 USD 89.27 (-5.09%) | 익절 +10.0% / 추매 -5.0%
+2026-07-24 04:01:10,463 [INFO] >>> Processing ISHARES GLOBAL CLEAN ENERGY(ICLN)
+2026-07-24 04:01:10,466 [INFO] [ISHARES GLOBAL CLEAN ENERGY(ICLN)] ✅ 추종 데드라인 해제! 가격 USD 18.36이 이탈 기준선 위로 회복 -> 상승 레짐 복귀 (잔량 48주 보유 유지)
+2026-07-24 04:01:10,467 [INFO]   [ISHARES GLOBAL CLEAN ENERGY(ICLN)] 신호 없음 | Lv3 매수 USD 19.75 -> 현재 USD 18.36 (-7.06%) | 익절 +10.0% / 추매 -5.0%
+2026-07-24 04:01:10,467 [INFO] >>> Processing 브로드컴(AVGO)
+2026-07-24 04:01:10,469 [INFO] [브로드컴(AVGO)] ✅ 추종 데드라인 해제! 가격 USD 389.88이 이탈 기준선 위로 회복 -> 상승 레짐 복귀 (잔량 1주 보유 유지)
+2026-07-24 04:01:10,470 [INFO]   [브로드컴(AVGO)] 신호 없음 | Lv1 매수 USD 382.60 -> 현재 USD 389.88 (+1.90%) | 익절 +10.0% / 추매 -5.0%
+2026-07-24 04:01:10,470 [INFO] >>> Processing 애플(AAPL)
+2026-07-24 04:01:10,474 [INFO]   [애플(AAPL)] 📈 상승 레짐 유지 | Lv1 매수 USD 291.90 -> 현재 USD 320.90 (+9.94%) | 채널하단(이탈선) USD 296.39 | 20EMA(눌림) USD 316.05 (이격 +1.53%) | adds 0/3
+2026-07-24 04:01:10,474 [INFO] >>> Step 6: Persist
