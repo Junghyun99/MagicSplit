@@ -1458,5 +1458,121 @@
                 "alias": "알파벳 A"
             }
         ]
+    },
+    {
+        "id": "tx_20260724_020145",
+        "date": "2026-07-24 02:01:45",
+        "portfolio_value": 17790.5698,
+        "cash_balance": 3825.47,
+        "net_deposit": -28.46,
+        "total_trade_amount": 2636.1800000000003,
+        "reason": "알파벳 A(GOOGL):SELL(추세 이탈 분할 청산(2주/4주, -10.3%)),\n카메코(CCJ):SELL(추세 이탈 분할 청산(8주/15주, -1.7%)),\n브로드컴(AVGO):SELL(추세 이탈 분할 청산(1주/2주, +2.2%)),\nISHARES GLOBAL CLEAN ENERGY(ICLN):SELL(추세 이탈 분할 청산(48주/96주, -9.1%))",
+        "executions": [
+            {
+                "ticker": "GOOGL",
+                "action": "SELL",
+                "quantity": 1,
+                "price": 319.51,
+                "fee": 0.0,
+                "date": "2026-07-24 02:01:12",
+                "status": "FILLED",
+                "reason": "ODNO=0031201581",
+                "lot_id": "lot_20260724_000138_GOOGL_004",
+                "level": 4,
+                "buy_price": 317.05,
+                "realized_pnl": 2.46,
+                "alias": "알파벳 A"
+            },
+            {
+                "ticker": "GOOGL",
+                "action": "SELL",
+                "quantity": 1,
+                "price": 319.51,
+                "fee": 0.0,
+                "date": "2026-07-24 02:01:12",
+                "status": "FILLED",
+                "reason": "ODNO=0031201581",
+                "lot_id": "lot_20260623_000124_GOOGL_003",
+                "level": 3,
+                "buy_price": 345.13,
+                "realized_pnl": -25.62,
+                "alias": "알파벳 A"
+            },
+            {
+                "ticker": "CCJ",
+                "action": "SELL",
+                "quantity": 5,
+                "price": 90.24,
+                "fee": 0.0,
+                "date": "2026-07-24 02:01:21",
+                "status": "FILLED",
+                "reason": "ODNO=0031201634",
+                "lot_id": "lot_20260717_000128_CCJ_002",
+                "level": 2,
+                "buy_price": 87.52,
+                "realized_pnl": 13.6,
+                "alias": "카메코"
+            },
+            {
+                "ticker": "CCJ",
+                "action": "SELL",
+                "quantity": 3,
+                "price": 90.24,
+                "fee": 0.0,
+                "date": "2026-07-24 02:01:21",
+                "status": "FILLED",
+                "reason": "ODNO=0031201634",
+                "lot_id": "lot_20260708_000149_CCJ_001",
+                "level": 1,
+                "buy_price": 94.06,
+                "realized_pnl": -11.46,
+                "alias": "카메코"
+            },
+            {
+                "ticker": "AVGO",
+                "action": "SELL",
+                "quantity": 1,
+                "price": 391.08,
+                "fee": 0.0,
+                "date": "2026-07-24 02:01:31",
+                "status": "FILLED",
+                "reason": "ODNO=0031201668",
+                "lot_id": "lot_20260617_000129_AVGO_001",
+                "level": 1,
+                "buy_price": 382.6,
+                "realized_pnl": 8.48,
+                "alias": "브로드컴"
+            },
+            {
+                "ticker": "ICLN",
+                "action": "SELL",
+                "quantity": 26,
+                "price": 18.42,
+                "fee": 0.0,
+                "date": "2026-07-24 02:01:40",
+                "status": "FILLED",
+                "reason": "ODNO=0031201703",
+                "lot_id": "lot_20260714_020147_ICLN_004",
+                "level": 4,
+                "buy_price": 18.75,
+                "realized_pnl": -8.58,
+                "alias": "ISHARES GLOBAL CLEAN ENERGY"
+            },
+            {
+                "ticker": "ICLN",
+                "action": "SELL",
+                "quantity": 22,
+                "price": 18.42,
+                "fee": 0.0,
+                "date": "2026-07-24 02:01:40",
+                "status": "FILLED",
+                "reason": "ODNO=0031201703",
+                "lot_id": "lot_20260627_020129_ICLN_003",
+                "level": 3,
+                "buy_price": 19.75,
+                "realized_pnl": -29.26,
+                "alias": "ISHARES GLOBAL CLEAN ENERGY"
+            }
+        ]
     }
 ]
