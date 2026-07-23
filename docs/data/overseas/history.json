@@ -1423,5 +1423,40 @@
                 "alias": "ARK INNOVATION"
             }
         ]
+    },
+    {
+        "id": "tx_20260724_000143",
+        "date": "2026-07-24 00:01:43",
+        "portfolio_value": 17741.094999999998,
+        "cash_balance": 1217.75,
+        "net_deposit": -784.32,
+        "total_trade_amount": 640.3199999999999,
+        "reason": "테슬라(TSLA):BUY(추가 매수 Lv5 (Lv4 대비 -16.9%)),\n알파벳 A(GOOGL):BUY(추가 매수 Lv4 (Lv3 대비 -8.2%))",
+        "executions": [
+            {
+                "ticker": "TSLA",
+                "action": "BUY",
+                "quantity": 1,
+                "price": 323.27,
+                "fee": 0.0,
+                "date": "2026-07-24 00:01:27",
+                "status": "FILLED",
+                "reason": "ODNO=0031152706",
+                "level": 5,
+                "alias": "테슬라"
+            },
+            {
+                "ticker": "GOOGL",
+                "action": "BUY",
+                "quantity": 1,
+                "price": 317.05,
+                "fee": 0.0,
+                "date": "2026-07-24 00:01:38",
+                "status": "FILLED",
+                "reason": "ODNO=0031152835",
+                "level": 4,
+                "alias": "알파벳 A"
+            }
+        ]
     }
 ]
