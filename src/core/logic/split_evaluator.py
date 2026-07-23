@@ -99,6 +99,7 @@ class SplitEvaluator:
         last_sell_prices: Optional[Dict[str, float]] = None,
         ohlc_window=None,
         regime_state: Optional[dict] = None,
+        evaluation_date: Optional[str] = None,
     ) -> List[SplitSignal]:
         """단일 종목에 대해 매수/매도 신호를 평가한다.
 
@@ -141,19 +142,24 @@ class SplitEvaluator:
             reading = classify_for_rule(rule, ohlc_window)
             regime_st = regime_state.setdefault(rule.ticker, {}) if regime_state is not None else {}
             # 하락 래치 갱신: UPTREND 모드 중에도 항상 실행해 레짐 탈출 후 즉시 차단 가능하게 함
-            downtrend_blocked = self._resolve_downtrend_block(reading, regime_st, rule.ticker)
+            downtrend_blocked = self._resolve_downtrend_block(
+                reading, regime_st, rule.ticker, evaluation_date=evaluation_date
+            )
             if ticker_lots:
                 # 채널 모드 이탈 처리: 추종 데드라인 -> 하락 래치 청산 -> 하단 이탈 청산.
                 # None이면 이탈 아님 -> 통상 흐름(상승/횡보) 계속.
                 if rule.regime_algo == "channel":
                     exit_signals = self._evaluate_channel_exit(
                         rule, ticker_lots, current_price, reading, regime_st,
-                        downtrend_blocked, portfolio,
+                        downtrend_blocked, portfolio, evaluation_date=evaluation_date,
                     )
                     if exit_signals is not None:
                         return exit_signals
                 uptrend_resolved = (
-                    self._resolve_regime(reading, regime_st, rule.ticker, current_price) == Regime.UPTREND
+                    self._resolve_regime(
+                        reading, regime_st, rule.ticker, current_price,
+                        evaluation_date=evaluation_date,
+                    ) == Regime.UPTREND
                 )
                 if uptrend_resolved:
                     return self._evaluate_uptrend(
@@ -889,7 +895,10 @@ class SplitEvaluator:
 
     # ── 레짐(상승장) 분기 ──────────────────────────────────────
 
-    def _resolve_regime(self, reading, st: dict, ticker: str, current_price: float) -> Regime:
+    def _resolve_regime(
+        self, reading, st: dict, ticker: str, current_price: float,
+        evaluation_date: Optional[str] = None,
+    ) -> Regime:
         """레짐 히스테리시스를 적용해 유효 레짐을 반환한다 (st를 in-place 변이).
 
         - 상승 진입은 REGIME_CONFIRM_BARS 연속 UPTREND 판정 후에만.
@@ -901,7 +910,7 @@ class SplitEvaluator:
 
         # 동일 날짜의 반복 실행은 한 번만 세고, 장중 상승 조건이 해제되면
         # 그 날짜의 카운트를 취소한다. 하락 레짐/하단 이탈의 날짜 기준과 동일하다.
-        today_str = datetime.date.today().isoformat()
+        today_str = evaluation_date or datetime.date.today().isoformat()
         days: list = st.get("uptrend_days", [])
         prev_date: str = st.get("uptrend_prev_date", "")
         if prev_date and prev_date != today_str:
@@ -948,7 +957,10 @@ class SplitEvaluator:
             return Regime.UPTREND
         return Regime.SIDEWAYS
 
-    def _resolve_downtrend_block(self, reading, st: dict, ticker: str) -> bool:
+    def _resolve_downtrend_block(
+        self, reading, st: dict, ticker: str,
+        evaluation_date: Optional[str] = None,
+    ) -> bool:
         """DOWNTREND 매수 차단 래치를 관리한다 (st in-place 변이).
 
         진입: 서로 다른 거래일에 DOWNTREND_CONFIRM_BARS일 연속 DOWNTREND -> "active" 래치
@@ -957,7 +969,7 @@ class SplitEvaluator:
 
         같은 날짜에 봇이 여러 번 실행될 수 있으므로, 당일의 마지막 판정만 카운트한다.
         """
-        today_str = datetime.date.today().isoformat()
+        today_str = evaluation_date or datetime.date.today().isoformat()
 
         if st.get("downtrend") == "active":
             exit_days: list = st.get("downtrend_exit_days", [])
@@ -1039,6 +1051,7 @@ class SplitEvaluator:
         st: dict,
         downtrend_blocked: bool,
         portfolio: Optional[Portfolio],
+        evaluation_date: Optional[str] = None,
     ) -> Optional[List[SplitSignal]]:
         """채널 모드(regime_algo="channel")의 이탈 판정을 통상 흐름 앞에서 수행한다.
 
@@ -1089,7 +1102,7 @@ class SplitEvaluator:
         # 3. 상승/횡보 중 하단 채널선 하향 돌파 -> 연속 일(日) 확정 후 이탈 청산
         #    동일 날짜에 여러 사이클이 돌면 마지막 사이클 결과가 해당 날짜의 최종 상태.
         breakdown_line = support * (1 - rule.channel_breakdown_tolerance_pct / 100)
-        today_str = datetime.date.today().isoformat()
+        today_str = evaluation_date or datetime.date.today().isoformat()
         bd_days: list = st.get("breakdown_days", [])
         bd_prev_date: str = st.get("breakdown_prev_date", "")
 

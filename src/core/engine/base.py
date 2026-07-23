@@ -148,6 +148,7 @@ class MagicSplitEngine:
                         rule, positions, portfolio, last_sell_prices,
                         ohlc_window=ohlc_window,
                         regime_state=regime_state,
+                        evaluation_date=today,
                     )
 
                     # 신호 3-way 분류: blocked(경고) / info(상태보고) / active(주문)
