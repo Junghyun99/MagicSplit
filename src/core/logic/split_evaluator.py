@@ -99,6 +99,7 @@ class SplitEvaluator:
         last_sell_prices: Optional[Dict[str, float]] = None,
         ohlc_window=None,
         regime_state: Optional[dict] = None,
+        evaluation_date: Optional[str] = None,
     ) -> List[SplitSignal]:
         """단일 종목에 대해 매수/매도 신호를 평가한다.
 
@@ -141,19 +142,24 @@ class SplitEvaluator:
             reading = classify_for_rule(rule, ohlc_window)
             regime_st = regime_state.setdefault(rule.ticker, {}) if regime_state is not None else {}
             # 하락 래치 갱신: UPTREND 모드 중에도 항상 실행해 레짐 탈출 후 즉시 차단 가능하게 함
-            downtrend_blocked = self._resolve_downtrend_block(reading, regime_st, rule.ticker)
+            downtrend_blocked = self._resolve_downtrend_block(
+                reading, regime_st, rule.ticker, evaluation_date=evaluation_date
+            )
             if ticker_lots:
                 # 채널 모드 이탈 처리: 추종 데드라인 -> 하락 래치 청산 -> 하단 이탈 청산.
                 # None이면 이탈 아님 -> 통상 흐름(상승/횡보) 계속.
                 if rule.regime_algo == "channel":
                     exit_signals = self._evaluate_channel_exit(
                         rule, ticker_lots, current_price, reading, regime_st,
-                        downtrend_blocked, portfolio,
+                        downtrend_blocked, portfolio, evaluation_date=evaluation_date,
                     )
                     if exit_signals is not None:
                         return exit_signals
                 uptrend_resolved = (
-                    self._resolve_regime(reading, regime_st, rule.ticker, current_price) == Regime.UPTREND
+                    self._resolve_regime(
+                        reading, regime_st, rule.ticker, current_price,
+                        evaluation_date=evaluation_date,
+                    ) == Regime.UPTREND
                 )
                 if uptrend_resolved:
                     return self._evaluate_uptrend(
@@ -889,7 +895,10 @@ class SplitEvaluator:
 
     # ── 레짐(상승장) 분기 ──────────────────────────────────────
 
-    def _resolve_regime(self, reading, st: dict, ticker: str, current_price: float) -> Regime:
+    def _resolve_regime(
+        self, reading, st: dict, ticker: str, current_price: float,
+        evaluation_date: Optional[str] = None,
+    ) -> Regime:
         """레짐 히스테리시스를 적용해 유효 레짐을 반환한다 (st를 in-place 변이).
 
         - 상승 진입은 REGIME_CONFIRM_BARS 연속 UPTREND 판정 후에만.
@@ -899,24 +908,46 @@ class SplitEvaluator:
         if st.get("regime") == "uptrend":
             return Regime.UPTREND
 
+        # 동일 날짜의 반복 실행은 한 번만 세고, 장중 상승 조건이 해제되면
+        # 그 날짜의 카운트를 취소한다. 하락 레짐/하단 이탈의 날짜 기준과 동일하다.
+        today_str = evaluation_date or datetime.date.today().isoformat()
+        days: list = st.get("uptrend_days", [])
+        prev_date: str = st.get("uptrend_prev_date", "")
+        if prev_date and prev_date != today_str:
+            if st.get("uptrend_today_state", "") != "uptrend":
+                days = []
+            st["uptrend_today_state"] = ""
+        st["uptrend_prev_date"] = today_str
+
         if reading.regime == Regime.UPTREND:
-            st["uptrend_streak"] = st.get("uptrend_streak", 0) + 1
+            st["uptrend_today_state"] = "uptrend"
+            if today_str not in days:
+                days.append(today_str)
+            st["uptrend_days"] = days
+            st["uptrend_streak"] = len(days)
         else:
+            st["uptrend_today_state"] = ""
+            if today_str in days:
+                days.remove(today_str)
+            st["uptrend_days"] = days
             st["uptrend_streak"] = 0
 
-        if st.get("uptrend_streak", 0) >= REGIME_CONFIRM_BARS:
+        if len(days) >= REGIME_CONFIRM_BARS:
             st["regime"] = "uptrend"
             st["adds"] = 0
             st["last_add_swing_high"] = reading.swing_high
             st["last_add_price"] = current_price
             st["uptrend_streak"] = 0
+            st["uptrend_days"] = []
+            st["uptrend_today_state"] = ""
+            st["uptrend_prev_date"] = ""
             if self._logger:
                 if math.isnan(reading.adx):
                     # 채널 분류기: ADX 미사용 -> 기울기 기준 메시지
                     self._logger.info(
                         f"[{display_ticker(ticker)}] 강한 상승 추세 진입 확정! "
                         f"(회귀 채널 기울기 {reading.channel_slope_pct:+.2f}% 밴드 상향 돌파, "
-                        f"{REGIME_CONFIRM_BARS}봉 연속)"
+                        f"{REGIME_CONFIRM_BARS}일 연속)"
                     )
                 else:
                     self._logger.info(
@@ -926,41 +957,86 @@ class SplitEvaluator:
             return Regime.UPTREND
         return Regime.SIDEWAYS
 
-    def _resolve_downtrend_block(self, reading, st: dict, ticker: str) -> bool:
+    def _resolve_downtrend_block(
+        self, reading, st: dict, ticker: str,
+        evaluation_date: Optional[str] = None,
+    ) -> bool:
         """DOWNTREND 매수 차단 래치를 관리한다 (st in-place 변이).
 
-        진입: DOWNTREND_CONFIRM_BARS 연속 DOWNTREND -> "active" 래치
+        진입: 서로 다른 거래일에 DOWNTREND_CONFIRM_BARS일 연속 DOWNTREND -> "active" 래치
         유지: SIDEWAYS 1봉으로 해제되지 않음 (UPTREND 래치와 대칭)
-        탈출: 비-DOWNTREND DOWNTREND_CONFIRM_BARS 연속 -> 래치 해제
+        탈출: 서로 다른 거래일에 비-DOWNTREND DOWNTREND_CONFIRM_BARS일 연속 -> 래치 해제
+
+        같은 날짜에 봇이 여러 번 실행될 수 있으므로, 당일의 마지막 판정만 카운트한다.
         """
+        today_str = evaluation_date or datetime.date.today().isoformat()
+
         if st.get("downtrend") == "active":
+            exit_days: list = st.get("downtrend_exit_days", [])
+            prev_date: str = st.get("downtrend_exit_prev_date", "")
+            if prev_date and prev_date != today_str:
+                if st.get("downtrend_exit_today_state", "") != "non_downtrend":
+                    exit_days = []
+                st["downtrend_exit_today_state"] = ""
+            st["downtrend_exit_prev_date"] = today_str
+
             if reading.regime != Regime.DOWNTREND:
-                st["downtrend_exit_streak"] = st.get("downtrend_exit_streak", 0) + 1
-                if st["downtrend_exit_streak"] >= DOWNTREND_CONFIRM_BARS:
+                st["downtrend_exit_today_state"] = "non_downtrend"
+                if today_str not in exit_days:
+                    exit_days.append(today_str)
+                st["downtrend_exit_days"] = exit_days
+                st["downtrend_exit_streak"] = len(exit_days)
+                if len(exit_days) >= DOWNTREND_CONFIRM_BARS:
                     st["downtrend"] = None
                     st["downtrend_streak"] = 0
                     st["downtrend_exit_streak"] = 0
+                    st["downtrend_exit_days"] = []
+                    st["downtrend_exit_today_state"] = ""
+                    st["downtrend_exit_prev_date"] = ""
                     if self._logger:
                         self._logger.info(
-                            f"[{display_ticker(ticker)}] 하락 추세 해제 - 매수 차단 해제"
+                            f"[{display_ticker(ticker)}] 하락 추세 {DOWNTREND_CONFIRM_BARS}일 해제 - 매수 차단 해제"
                         )
                     return False
             else:
+                st["downtrend_exit_today_state"] = ""
+                if today_str in exit_days:
+                    exit_days.remove(today_str)
+                st["downtrend_exit_days"] = exit_days
                 st["downtrend_exit_streak"] = 0
             return True
 
+        days: list = st.get("downtrend_days", [])
+        prev_date: str = st.get("downtrend_prev_date", "")
+        if prev_date and prev_date != today_str:
+            if st.get("downtrend_today_state", "") != "downtrend":
+                days = []
+            st["downtrend_today_state"] = ""
+        st["downtrend_prev_date"] = today_str
+
         if reading.regime == Regime.DOWNTREND:
-            st["downtrend_streak"] = st.get("downtrend_streak", 0) + 1
+            st["downtrend_today_state"] = "downtrend"
+            if today_str not in days:
+                days.append(today_str)
+            st["downtrend_days"] = days
+            st["downtrend_streak"] = len(days)
         else:
+            st["downtrend_today_state"] = ""
+            if today_str in days:
+                days.remove(today_str)
+            st["downtrend_days"] = days
             st["downtrend_streak"] = 0
             st["downtrend_exit_streak"] = 0
 
-        if st.get("downtrend_streak", 0) >= DOWNTREND_CONFIRM_BARS:
+        if len(days) >= DOWNTREND_CONFIRM_BARS:
             st["downtrend"] = "active"
             st["downtrend_streak"] = 0
+            st["downtrend_days"] = []
+            st["downtrend_today_state"] = ""
+            st["downtrend_prev_date"] = ""
             if self._logger:
                 self._logger.info(
-                    f"[{display_ticker(ticker)}] DOWNTREND {DOWNTREND_CONFIRM_BARS}봉 확정 - 매수 차단"
+                    f"[{display_ticker(ticker)}] DOWNTREND {DOWNTREND_CONFIRM_BARS}일 확정 - 매수 차단"
                 )
             return True
 
@@ -975,6 +1051,7 @@ class SplitEvaluator:
         st: dict,
         downtrend_blocked: bool,
         portfolio: Optional[Portfolio],
+        evaluation_date: Optional[str] = None,
     ) -> Optional[List[SplitSignal]]:
         """채널 모드(regime_algo="channel")의 이탈 판정을 통상 흐름 앞에서 수행한다.
 
@@ -1025,7 +1102,7 @@ class SplitEvaluator:
         # 3. 상승/횡보 중 하단 채널선 하향 돌파 -> 연속 일(日) 확정 후 이탈 청산
         #    동일 날짜에 여러 사이클이 돌면 마지막 사이클 결과가 해당 날짜의 최종 상태.
         breakdown_line = support * (1 - rule.channel_breakdown_tolerance_pct / 100)
-        today_str = datetime.date.today().isoformat()
+        today_str = evaluation_date or datetime.date.today().isoformat()
         bd_days: list = st.get("breakdown_days", [])
         bd_prev_date: str = st.get("breakdown_prev_date", "")
 

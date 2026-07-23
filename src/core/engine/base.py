@@ -148,6 +148,7 @@ class MagicSplitEngine:
                         rule, positions, portfolio, last_sell_prices,
                         ohlc_window=ohlc_window,
                         regime_state=regime_state,
+                        evaluation_date=today,
                     )
 
                     # 신호 3-way 분류: blocked(경고) / info(상태보고) / active(주문)
@@ -983,7 +984,12 @@ class MagicSplitEngine:
             st = {}
         kept = {
             k: st[k]
-            for k in ("downtrend", "downtrend_streak", "downtrend_exit_streak")
+            for k in (
+                "downtrend", "downtrend_streak", "downtrend_days",
+                "downtrend_today_state", "downtrend_prev_date",
+                "downtrend_exit_streak", "downtrend_exit_days",
+                "downtrend_exit_today_state", "downtrend_exit_prev_date",
+            )
             if k in st
         }
         if mark_liquidation:
