@@ -255,6 +255,7 @@ class TestChannelSidewaysBreakdown:
         assert signals[0].action == OrderAction.SELL
         assert signals[0].quantity == 10
         assert signals[0].regime_liquidation is True
+        assert signals[0].reentry_gate == "midline"
 
     def test_breakdown_tolerance_delays_trigger(self, evaluator):
         # 허용 오차 5%: 지지선 바로 아래로는 이탈 아님, 5% 넘게 뚫어야 이탈
@@ -277,14 +278,17 @@ class TestChannelSidewaysBreakdown:
         assert signals[0].regime_partial_liquidation is True
 
 
-class TestChannelReentryBreakout:
-    """채널 모드 재진입 게이트(고정 동작): 이탈 청산 후 재진입은 상단 저항선 돌파 시에만."""
+class TestChannelReentryGate:
+    """채널 모드 재진입: 상승/횡보 이탈은 중심선, 하락 청산은 상단선 게이트."""
 
-    def test_below_resistance_blocked(self, evaluator):
+    def test_midline_gate_blocks_at_or_below_midline(self, evaluator):
         window = _sideways_window()
         rule = _channel_rule()
         reading = classify_for_rule(rule, window)
-        st = {"AAPL": {"post_liquidation": True}}
+        st = {"AAPL": {
+            "post_liquidation": True,
+            "post_liquidation_reentry_gate": "midline",
+        }}
         signals = evaluator.evaluate_stock(
             rule, [], _pf(reading.channel_support * 1.01), ohlc_window=window, regime_state=st,
         )
@@ -292,19 +296,24 @@ class TestChannelReentryBreakout:
         assert signals[0].is_blocked is True
         assert st["AAPL"]["post_liquidation"] is True  # 마커 유지
 
-    def test_above_resistance_allows_entry_and_clears_marker(self, evaluator):
+    def test_midline_gate_allows_entry_before_resistance(self, evaluator):
         window = _sideways_window()
         rule = _channel_rule()
         reading = classify_for_rule(rule, window)
-        st = {"AAPL": {"post_liquidation": True}}
+        price = (reading.channel_mid + reading.channel_resistance) / 2
+        st = {"AAPL": {
+            "post_liquidation": True,
+            "post_liquidation_reentry_gate": "midline",
+        }}
         signals = evaluator.evaluate_stock(
-            rule, [], _pf(reading.channel_resistance * 1.01), ohlc_window=window, regime_state=st,
+            rule, [], _pf(price), ohlc_window=window, regime_state=st,
         )
         assert len(signals) == 1
         assert signals[0].action == OrderAction.BUY
         assert not signals[0].is_blocked
         assert signals[0].quantity > 0
         assert "post_liquidation" not in st["AAPL"]
+        assert "post_liquidation_reentry_gate" not in st["AAPL"]
 
     def test_gate_inactive_without_marker(self, evaluator):
         # 청산 이력이 없으면(첫 진입) 게이트 미적용
@@ -317,8 +326,24 @@ class TestChannelReentryBreakout:
         assert len(signals) == 1
         assert not signals[0].is_blocked
 
-    def test_between_mid_and_resistance_still_blocked(self, evaluator):
-        # 기준선은 상단 저항선 고정: 중심선~상단 사이 가격은 여전히 차단
+    def test_resistance_gate_blocks_between_mid_and_resistance(self, evaluator):
+        # 하락채널 청산은 중심선~상단 사이에서도 계속 차단한다.
+        window = _sideways_window()
+        rule = _channel_rule()
+        reading = classify_for_rule(rule, window)
+        price = (reading.channel_mid + reading.channel_resistance) / 2
+        st = {"AAPL": {
+            "post_liquidation": True,
+            "post_liquidation_reentry_gate": "resistance",
+        }}
+        signals = evaluator.evaluate_stock(
+            rule, [], _pf(price), ohlc_window=window, regime_state=st,
+        )
+        assert len(signals) == 1
+        assert signals[0].is_blocked is True
+
+    def test_legacy_post_liquidation_defaults_to_resistance(self, evaluator):
+        # 기존 저장 상태에는 게이트 키가 없으므로 보수적으로 상단선 기준을 유지한다.
         window = _sideways_window()
         rule = _channel_rule()
         reading = classify_for_rule(rule, window)
@@ -360,6 +385,7 @@ class TestChannelDowntrendLiquidation:
         assert len(signals) == 1
         assert signals[0].action == OrderAction.SELL
         assert signals[0].regime_liquidation is True
+        assert signals[0].reentry_gate == "resistance"
 
     def test_downtrend_latch_blocks_initial_buy(self, evaluator):
         window = _downtrend_window()
