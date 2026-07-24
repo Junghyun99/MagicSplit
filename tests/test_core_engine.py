@@ -1370,9 +1370,12 @@ class TestRunManualTrade:
 
         _, kwargs = mock_build.call_args
         passed_regime = kwargs.get("regime_state_by_ticker")
-        # AAPL은 전량 청산 후 상승 상태 제거 + 청산 마커만 잔류
+        # AAPL은 전량 청산 후 상승 상태 제거 + 청산 마커/기본 게이트만 잔류
         # (마커는 채널 모드의 재진입 게이트가 소비)
-        assert passed_regime.get("AAPL") == {"post_liquidation": True}
+        assert passed_regime.get("AAPL") == {
+            "post_liquidation": True,
+            "post_liquidation_reentry_gate": "resistance",
+        }
         # MSFT는 건드리지 않음
         assert passed_regime.get("MSFT", {}).get("adds") == 1
 
@@ -1470,10 +1473,11 @@ class TestBulkLiquidation:
             PositionLot("lotC", "AAPL", 70.0, 5, "2024-01-01", level=3),
         ]
 
-    def _bulk_signal(self, total_qty=15, price=90.0):
+    def _bulk_signal(self, total_qty=15, price=90.0, reentry_gate=None):
         # lot_id=None + regime_liquidation=True -> 통합 청산
         return SplitSignal("AAPL", None, OrderAction.SELL, total_qty, price,
-                           "Bulk 청산", 0.0, 3, regime_liquidation=True)
+                           "Bulk 청산", 0.0, 3, regime_liquidation=True,
+                           reentry_gate=reentry_gate)
 
     def _exe(self, qty, price=90.0, status=ExecutionStatus.FILLED):
         return TradeExecution("AAPL", OrderAction.SELL, qty, price, 0.0, "2024-01-01", status)
@@ -1487,8 +1491,22 @@ class TestBulkLiquidation:
         )
         assert result == []
         assert last_sell["AAPL"] == 90.0
-        # flat 재시작: 상승 상태는 제거, 이탈 청산 마커만 남는다
-        assert regime_state["AAPL"] == {"post_liquidation": True}
+        # flat 재시작: 상승 상태는 제거, 이탈 청산 마커와 기본 게이트만 남는다
+        assert regime_state["AAPL"] == {
+            "post_liquidation": True,
+            "post_liquidation_reentry_gate": "resistance",
+        }
+
+    def test_full_fill_persists_midline_reentry_gate(self, engine):
+        regime_state = {"AAPL": {"regime": "uptrend", "adds": 1}}
+        engine._update_positions(
+            self._positions(), [self._bulk_signal(15, reentry_gate="midline")], [self._exe(15)],
+            "2024-01-02", last_sell_prices={}, regime_state=regime_state,
+        )
+        assert regime_state["AAPL"] == {
+            "post_liquidation": True,
+            "post_liquidation_reentry_gate": "midline",
+        }
 
     def test_realized_pnl_aggregates_over_lots(self, engine):
         exe = self._exe(15)
@@ -1556,16 +1574,20 @@ class TestBulkLiquidation:
         assert st == {
             "downtrend": "active", "downtrend_streak": 0, "downtrend_exit_streak": 1,
             "post_liquidation": True,
+            "post_liquidation_reentry_gate": "resistance",
         }
 
     def test_full_liquidation_without_latch_keeps_marker_only(self, engine):
-        # 래치 키가 없으면 상승 상태는 전부 제거되고 청산 마커만 남는다
+        # 래치 키가 없으면 상승 상태는 전부 제거되고 청산 마커/기본 게이트만 남는다
         regime_state = {"AAPL": {"regime": "uptrend", "adds": 3}}
         engine._update_positions(
             self._positions(), [self._bulk_signal(15)], [self._exe(15)],
             "2024-01-02", last_sell_prices={}, regime_state=regime_state,
         )
-        assert regime_state["AAPL"] == {"post_liquidation": True}
+        assert regime_state["AAPL"] == {
+            "post_liquidation": True,
+            "post_liquidation_reentry_gate": "resistance",
+        }
 
 
 class TestPartialLiquidation:
@@ -1612,6 +1634,7 @@ class TestPartialLiquidation:
         assert lock["lock_price"] == 90.0
         # 기본 3.0% 설정 확인
         assert lock["drop_pct"] == 3.0
+        assert lock["reentry_gate"] == "resistance"
 
 
 class TestNormalSingleSell:

@@ -853,14 +853,16 @@ class MagicSplitEngine:
                 # 각 lot의 매수가 대비로 합산해 단일 체결 내역에 기록한다.
                 if sig is not None and sig.regime_liquidation and sig.lot_id is None:
                     updated = self._apply_bulk_liquidation(
-                        updated, exe, disp, last_sell_prices, regime_state
+                        updated, exe, disp, last_sell_prices, regime_state,
+                        reentry_gate=sig.reentry_gate or "resistance",
                     )
                     continue
 
                 # 통합 분할청산(Partial Liquidation): lot_id 없는 분할 청산 매도
                 if sig is not None and sig.regime_partial_liquidation and sig.lot_id is None:
                     updated = self._apply_partial_liquidation(
-                        updated, exe, disp, last_sell_prices, regime_state
+                        updated, exe, disp, last_sell_prices, regime_state,
+                        reentry_gate=sig.reentry_gate or "resistance",
                     )
                     continue
 
@@ -968,6 +970,7 @@ class MagicSplitEngine:
     @staticmethod
     def _reset_regime_after_flat(
         regime_state: dict, ticker: str, mark_liquidation: bool = False,
+        reentry_gate: str = "resistance",
     ) -> None:
         """전량 청산(잔여 0) 후 레짐 상태를 리셋하되 하락 래치 키는 보존한다.
 
@@ -975,9 +978,10 @@ class MagicSplitEngine:
         청산-재매수 churn이 생긴다. 래치 해제는 비하락 판정 연속 확정
         (DOWNTREND_CONFIRM_BARS) 규칙에만 맡긴다.
 
-        mark_liquidation=True(이탈/하락 청산 경로)면 post_liquidation 마커를 남긴다.
-        채널 모드가 이 마커를 보고 상단 저항선 돌파 전까지
-        재진입을 차단한다 (알고리즘 고정 동작). (트레일링 벌크 등 통상 익절성 전량 매도에는 마커 없음)
+        mark_liquidation=True(이탈/하락 청산 경로)면 post_liquidation 마커와
+        청산 원인별 재진입 게이트를 남긴다. 채널 모드는 상승/횡보 이탈 뒤에는
+        중심선 회복, 하락 채널 청산 뒤에는 상단 저항선 돌파까지 재진입을 차단한다.
+        (트레일링 벌크 등 통상 익절성 전량 매도에는 마커 없음)
         """
         st = regime_state.get(ticker)
         if not isinstance(st, dict):
@@ -994,6 +998,7 @@ class MagicSplitEngine:
         }
         if mark_liquidation:
             kept["post_liquidation"] = True
+            kept["post_liquidation_reentry_gate"] = reentry_gate
         if kept:
             regime_state[ticker] = kept
         else:
@@ -1006,6 +1011,7 @@ class MagicSplitEngine:
         disp: str,
         last_sell_prices: Optional[dict],
         regime_state: Optional[dict],
+        reentry_gate: str = "resistance",
     ) -> List[PositionLot]:
         """통합 전량청산 체결을 고차수부터 순차 차감하여 반영한다.
 
@@ -1033,7 +1039,10 @@ class MagicSplitEngine:
         # 잔여 0일 때만 레짐 리셋(flat 재시작, 하락 래치는 보존).
         # 부분체결/거절이면 모드 유지 -> 다음 사이클 재청산.
         if regime_state is not None and not remaining:
-            self._reset_regime_after_flat(regime_state, exe.ticker, mark_liquidation=True)
+            self._reset_regime_after_flat(
+                regime_state, exe.ticker, mark_liquidation=True,
+                reentry_gate=reentry_gate,
+            )
         return updated
 
     def _apply_partial_liquidation(
@@ -1043,6 +1052,7 @@ class MagicSplitEngine:
         disp: str,
         last_sell_prices: Optional[dict],
         regime_state: Optional[dict],
+        reentry_gate: str = "resistance",
     ) -> List[PositionLot]:
         """통합 분할청산(Trailing Lock 1단계) 체결을 고차수부터 순차 차감하여 반영한다.
 
@@ -1072,7 +1082,10 @@ class MagicSplitEngine:
         # 잔량이 없으면 trailing_lock 대신 레짐 상태를 완전히 초기화한다.
         if regime_state is not None:
             if not remaining:
-                self._reset_regime_after_flat(regime_state, exe.ticker, mark_liquidation=True)
+                self._reset_regime_after_flat(
+                    regime_state, exe.ticker, mark_liquidation=True,
+                    reentry_gate=reentry_gate,
+                )
                 self.logger.info(f"[{disp}] 분할 청산 후 잔량 없음 -> 레짐 상태 초기화 (하락 래치 보존)")
             else:
                 st = regime_state.setdefault(exe.ticker, {})
@@ -1087,6 +1100,7 @@ class MagicSplitEngine:
                     "active": True,
                     "lock_price": exe.price,
                     "drop_pct": drop_pct,
+                    "reentry_gate": reentry_gate,
                 }
                 self.logger.info(
                     f"[{disp}] 추종 데드라인(Trailing Lock) 상태 활성화 "

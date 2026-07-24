@@ -340,6 +340,9 @@ class SplitSignal:
     regime_add_swing_high: Optional[float] = None
     # 추세이탈 전량청산 매도 표식. 매도 체결이 확정될 때 regime_state를 리셋(flat 재시작)한다.
     regime_liquidation: bool = False
+    # 채널 이탈 청산 뒤 적용할 신규 진입 게이트. 체결 확정 시 regime_state에 저장한다.
+    # "midline"은 상승/횡보 채널 이탈, "resistance"는 하락 채널 청산에 사용한다.
+    reentry_gate: Optional[str] = None
     # 추세이탈 분할청산(Trailing Lock 1단계) 매도 표식.
     # 체결 시 잔량은 유지하고 trailing_lock 상태를 활성화한다.
     regime_partial_liquidation: bool = False

@@ -188,16 +188,19 @@ class SplitEvaluator:
                 )]
 
             # 채널 모드 재진입 게이트: 이탈/하락 청산(post_liquidation) 후에는
-            # 상단 저항선 상향 돌파 전까지 신규 진입을 차단한다 (알고리즘 고정 동작).
+            # 청산 원인별 기준선 회복 전까지 신규 진입을 차단한다.
             if rule.regime_algo == "channel" and regime_st.get("post_liquidation"):
+                gate = regime_st.get("post_liquidation_reentry_gate", "resistance")
                 gate_line = (
-                    reading.channel_resistance if reading is not None else float("nan")
-                )
+                    reading.channel_mid if gate == "midline"
+                    else reading.channel_resistance
+                ) if reading is not None else float("nan")
+                gate_name = "채널 중심선" if gate == "midline" else "상단 저항선"
                 if math.isnan(gate_line) or current_price <= gate_line:
                     reason = (
-                        f"이탈 청산 후 재진입 대기 - 상단 저항선 미돌파 "
+                        f"이탈 청산 후 재진입 대기 - {gate_name} 미회복 "
                         f"(현재가 {format_money(current_price, rule.market_type)} <= "
-                        f"저항선 {format_money(gate_line, rule.market_type)})"
+                        f"기준선 {format_money(gate_line, rule.market_type)})"
                     )
                     if self._logger:
                         self._logger.info(f"[{display_ticker(rule.ticker)}] {reason}")
@@ -212,11 +215,12 @@ class SplitEvaluator:
                         is_blocked=True,
                     )]
                 regime_st.pop("post_liquidation", None)
+                regime_st.pop("post_liquidation_reentry_gate", None)
                 if self._logger:
                     self._logger.info(
-                        f"[{display_ticker(rule.ticker)}] 상단 저항선 돌파 확인 "
+                        f"[{display_ticker(rule.ticker)}] {gate_name} 회복 확인 "
                         f"(현재가 {format_money(current_price, rule.market_type)} > "
-                        f"저항선 {format_money(gate_line, rule.market_type)}) -> 재진입 허용"
+                        f"기준선 {format_money(gate_line, rule.market_type)}) -> 재진입 허용"
                     )
             last_sell_price = (
                 last_sell_prices.get(rule.ticker) if last_sell_prices else None
@@ -1097,7 +1101,9 @@ class SplitEvaluator:
                     f"[{display_ticker(rule.ticker)}] 채널 기울기 하락 전환 확정 "
                     f"({reading.channel_slope_pct:+.2f}%/{rule.channel_lookback}봉) -> 이탈 청산 진행"
                 )
-            return self._handle_trendbreak(rule, ticker_lots, current_price, reading, st)
+            return self._handle_trendbreak(
+                rule, ticker_lots, current_price, reading, st, reentry_gate="resistance"
+            )
 
         # 3. 상승/횡보 중 하단 채널선 하향 돌파 -> 연속 일(日) 확정 후 이탈 청산
         #    동일 날짜에 여러 사이클이 돌면 마지막 사이클 결과가 해당 날짜의 최종 상태.
@@ -1141,7 +1147,9 @@ class SplitEvaluator:
                     f"채널하단 {format_money(support, rule.market_type)}, "
                     f"허용 -{rule.channel_breakdown_tolerance_pct}%) -> 이탈 청산 진행"
                 )
-            return self._handle_trendbreak(rule, ticker_lots, current_price, reading, st)
+            return self._handle_trendbreak(
+                rule, ticker_lots, current_price, reading, st, reentry_gate="midline"
+            )
 
         st["breakdown_today_state"] = ""
         if today_str in bd_days:
@@ -1232,6 +1240,7 @@ class SplitEvaluator:
         current_price: float,
         reading,
         st: dict,
+        reentry_gate: str = "resistance",
     ) -> List[SplitSignal]:
         """추세 이탈 감지 시 전량 청산 또는 분할 매도+추종 데드라인 활성화를 결정한다."""
         total_qty = sum(l.quantity for l in ticker_lots)
@@ -1270,6 +1279,7 @@ class SplitEvaluator:
                 pct_change=pct,
                 level=max_level,
                 regime_liquidation=True,
+                reentry_gate=reentry_gate,
             )]
 
         # 분할 매도: partial_pct% 만큼 즉시 매도, 나머지는 추종 데드라인
@@ -1293,6 +1303,7 @@ class SplitEvaluator:
                 pct_change=pct,
                 level=max_level,
                 regime_liquidation=True,
+                reentry_gate=reentry_gate,
             )]
 
         if sell_qty <= 0:
@@ -1302,6 +1313,7 @@ class SplitEvaluator:
                 "active": True,
                 "lock_price": current_price,
                 "drop_pct": rule.trendbreak_trailing_drop_pct,
+                "reentry_gate": reentry_gate,
             }
             if self._logger:
                 stop_price = current_price * (1 - rule.trendbreak_trailing_drop_pct / 100)
@@ -1335,6 +1347,7 @@ class SplitEvaluator:
             pct_change=pct,
             level=max_level,
             regime_partial_liquidation=True,
+            reentry_gate=reentry_gate,
         )]
 
     def _evaluate_trailing_lock(
@@ -1420,6 +1433,7 @@ class SplitEvaluator:
                 pct_change=pct,
                 level=max_level,
                 regime_liquidation=True,  # 전량 청산 -> 레짐 리셋
+                reentry_gate=lock.get("reentry_gate", "resistance"),
             )]
 
         # 3. 대기 (매수/매도 없음)
