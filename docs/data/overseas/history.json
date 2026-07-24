@@ -1751,5 +1751,121 @@
                 "alias": "알파벳 A"
             }
         ]
+    },
+    {
+        "id": "tx_20260725_020200",
+        "date": "2026-07-25 02:02:00",
+        "portfolio_value": 17329.153,
+        "cash_balance": 5281.67,
+        "net_deposit": -26.13,
+        "total_trade_amount": 2424.76,
+        "reason": "펩시코(PEP):SELL(추세 이탈 분할 청산(5주/9주, -4.3%)),\nISHARES GLOBAL CLEAN ENERGY(ICLN):SKIP(DOWNTREND 확정 - 신규 진입 차단),\n브로드컴(AVGO):SELL(추세 이탈 전량 청산(수량 부족, 1주 +0.5%)),\n카메코(CCJ):SKIP(DOWNTREND 확정 - 신규 진입 차단),\nARK INNOVATION(ARKK):SELL(추세 이탈 분할 청산(6주/12주, -6.7%)),\n테슬라(TSLA):SELL(추세 이탈 분할 청산(3주/5주, -22.7%)),\nSCHWAB US DIVIDEND EQUITY(SCHD):SKIP(이탈 청산 후 재진입 대기 - 상단 저항선 미회복 (현재가 USD 33.20 <= 기준선 USD 33.44))",
+        "executions": [
+            {
+                "ticker": "PEP",
+                "action": "SELL",
+                "quantity": 3,
+                "price": 136.18,
+                "fee": 0.0,
+                "date": "2026-07-25 02:01:29",
+                "status": "FILLED",
+                "reason": "ODNO=0031492667",
+                "lot_id": "lot_20260721_020112_PEP_003",
+                "level": 3,
+                "buy_price": 134.46,
+                "realized_pnl": 5.16,
+                "alias": "펩시코"
+            },
+            {
+                "ticker": "PEP",
+                "action": "SELL",
+                "quantity": 2,
+                "price": 136.18,
+                "fee": 0.0,
+                "date": "2026-07-25 02:01:29",
+                "status": "FILLED",
+                "reason": "ODNO=0031492667",
+                "lot_id": "lot_20260605_023704_PEP_002",
+                "level": 2,
+                "buy_price": 142.33,
+                "realized_pnl": -12.3,
+                "alias": "펩시코"
+            },
+            {
+                "ticker": "AVGO",
+                "action": "SELL",
+                "quantity": 1,
+                "price": 384.44,
+                "fee": 0.0,
+                "date": "2026-07-25 02:01:38",
+                "status": "FILLED",
+                "reason": "ODNO=0031492710",
+                "lot_id": "lot_20260617_000129_AVGO_001",
+                "level": 1,
+                "buy_price": 382.6,
+                "realized_pnl": 1.84,
+                "alias": "브로드컴"
+            },
+            {
+                "ticker": "ARKK",
+                "action": "SELL",
+                "quantity": 6,
+                "price": 72.21,
+                "fee": 0.0,
+                "date": "2026-07-25 02:01:46",
+                "status": "FILLED",
+                "reason": "ODNO=0031492750",
+                "lot_id": "lot_20260718_000126_ARKK_002",
+                "level": 2,
+                "buy_price": 74.82,
+                "realized_pnl": -15.66,
+                "alias": "ARK INNOVATION"
+            },
+            {
+                "ticker": "TSLA",
+                "action": "SELL",
+                "quantity": 1,
+                "price": 308.72,
+                "fee": 0.0,
+                "date": "2026-07-25 02:01:55",
+                "status": "FILLED",
+                "reason": "ODNO=0031492786",
+                "lot_id": "lot_20260724_000127_TSLA_005",
+                "level": 5,
+                "buy_price": 323.27,
+                "realized_pnl": -14.55,
+                "alias": "테슬라"
+            },
+            {
+                "ticker": "TSLA",
+                "action": "SELL",
+                "quantity": 1,
+                "price": 308.72,
+                "fee": 0.0,
+                "date": "2026-07-25 02:01:55",
+                "status": "FILLED",
+                "reason": "ODNO=0031492786",
+                "lot_id": "lot_20260619_000124_TSLA_004",
+                "level": 4,
+                "buy_price": 389.0,
+                "realized_pnl": -80.28,
+                "alias": "테슬라"
+            },
+            {
+                "ticker": "TSLA",
+                "action": "SELL",
+                "quantity": 1,
+                "price": 308.72,
+                "fee": 0.0,
+                "date": "2026-07-25 02:01:55",
+                "status": "FILLED",
+                "reason": "ODNO=0031492786",
+                "lot_id": "lot_20260519_022217_TSLA_003",
+                "level": 3,
+                "buy_price": 409.9,
+                "realized_pnl": -101.18,
+                "alias": "테슬라"
+            }
+        ]
     }
 ]
