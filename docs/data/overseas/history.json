@@ -1728,5 +1728,28 @@
                 "alias": "SCHWAB US DIVIDEND EQUITY"
             }
         ]
+    },
+    {
+        "id": "tx_20260725_003221",
+        "date": "2026-07-25 00:32:21",
+        "portfolio_value": 17408.26,
+        "cash_balance": 2883.04,
+        "net_deposit": 0.01,
+        "total_trade_amount": 2897.37,
+        "reason": "알파벳 A(GOOGL):BUY(수동 매매(Manual Trade))",
+        "executions": [
+            {
+                "ticker": "GOOGL",
+                "action": "BUY",
+                "quantity": 9,
+                "price": 321.93,
+                "fee": 0.0,
+                "date": "2026-07-25 00:32:16",
+                "status": "FILLED",
+                "reason": "ODNO=0031468914",
+                "level": 3,
+                "alias": "알파벳 A"
+            }
+        ]
     }
 ]

@@ -13,3 +13,23 @@
 2026-07-25 00:02:41,271 [ERROR] [KisBroker] Error getting portfolio (AMEX): HTTPSConnectionPool(host='openapi.koreainvestment.com', port=9443): Max retries exceeded with url: /uapi/overseas-stock/v1/trading/inquire-balance?CANO=73297247&ACNT_PRDT_CD=01&OVRS_EXCG_CD=AMEX&TR_CRCY_CD=USD&CTX_AREA_FK200=&CTX_AREA_NK200= (Caused by ConnectTimeoutError(<HTTPSConnection(host='openapi.koreainvestment.com', port=9443) at 0x7f9d42dcc910>, 'Connection to openapi.koreainvestment.com timed out. (connect timeout=20.0)'))
 2026-07-25 00:02:41,271 [ERROR] 사이클 초기화 실패: 모든 거래소(NASD/NYSE/AMEX) 잔고 조회 실패(현금 조회 오류) — 사이클을 중단합니다.
 2026-07-25 00:02:41,564 [ERROR] >>> Step 6: 포트폴리오, 포지션 조회 실패로 저장 생략. 수동 데이터 복구 필요
+2026-07-25 00:32:05,399 [INFO] === Manual Trade CLI (overseas) [1건]: GOOGL:buy(3000.0) ===
+2026-07-25 00:32:05,401 [INFO] [KisBroker] 캐시에서 토큰 로드 (API 호출 생략)
+2026-07-25 00:32:05,401 [INFO] [KisOverseasLiveBroker] Mode: LIVE TRADING
+2026-07-25 00:32:05,401 [INFO] === Manual Trade: 알파벳 A(GOOGL) BUY ===
+2026-07-25 00:32:05,401 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-07-25 00:32:07,793 [INFO] Fetching real-time prices from Broker...
+2026-07-25 00:32:11,197 [INFO] Portfolio: Cash=USD 5,780.40, Value=USD 17,420.07
+2026-07-25 00:32:11,198 [INFO] >>> Step 2: Load Positions
+2026-07-25 00:32:11,198 [INFO] Loaded 22 position lot(s)
+2026-07-25 00:32:11,198 [INFO] 매수 금액 수동 지정: USD 3,000.00
+2026-07-25 00:32:11,198 [INFO] 매수 수량 도출: Lv3 buy_amount=USD 3,000.00 / 현재가=USD 321.92 = 9
+2026-07-25 00:32:11,198 [INFO] [알파벳 A(GOOGL)] 수동 신호 생성: BUY Lv3 9주 @USD 321.92
+2026-07-25 00:32:11,198 [INFO] Executing 1 order(s)...
+2026-07-25 00:32:13,013 [INFO] [KisBroker] Available Cash for BUY: 5,780
+2026-07-25 00:32:14,423 [INFO] [KisBroker] Order Sent: BUY 알파벳 A(GOOGL) 9 @ 321.93 (ODNO=0031468914)
+2026-07-25 00:32:16,960 [INFO] [KisBroker] Order FILLED: 알파벳 A(GOOGL) ODNO=0031468914 price=321.93 qty=9 fee=0.0
+2026-07-25 00:32:17,161 [INFO] [알파벳 A(GOOGL)] 동적 재매수 기준 초기화 (매도가 USD 319.51 -> 소비됨)
+2026-07-25 00:32:17,161 [INFO] [Position] New lot: lot_20260725_003217_GOOGL_003 Lv3 알파벳 A(GOOGL) 9주 @USD 321.93
+2026-07-25 00:32:21,977 [INFO] >>> Step 6: Persist
+2026-07-25 00:32:22,316 [INFO] === Manual Trade 완료: 체결 1건 [GOOGL BUY], 실패 0건 ===
