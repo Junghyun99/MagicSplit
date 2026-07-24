@@ -3079,5 +3079,42 @@
                 "alias": "SOL 반도체전공정"
             }
         ]
+    },
+    {
+        "id": "tx_20260724_140150",
+        "date": "2026-07-24 14:01:50",
+        "portfolio_value": 27020752.0,
+        "cash_balance": 9536762.0,
+        "net_deposit": -1.42,
+        "total_trade_amount": 257205.0,
+        "reason": "KODEX 증권(102970):SELL(추세 이탈 분할 청산(13주/25주, -24.8%)),\nSOL 반도체전공정(475300):SKIP(이탈 청산 후 재진입 대기 - 상단 저항선 미돌파 (현재가 KRW 19,297 <= 저항선 KRW 31,042)),\nTIGER 지주회사(307520):SKIP(주문 미전송: 추세 이탈 분할 청산(10주/20주, -18.0%))",
+        "executions": [
+            {
+                "ticker": "102970",
+                "action": "SELL",
+                "quantity": 13,
+                "price": 19785.0,
+                "fee": 38.580749999999995,
+                "date": "2026-07-24 14:01:09",
+                "status": "FILLED",
+                "reason": "ODNO=0020137200",
+                "lot_id": "lot_20260519_143320_102970_001",
+                "level": 1,
+                "buy_price": 26355.0,
+                "realized_pnl": -85448.58,
+                "alias": "KODEX 증권"
+            },
+            {
+                "ticker": "307520",
+                "action": "SELL",
+                "quantity": 0,
+                "price": 21305.0,
+                "fee": 0.0,
+                "date": "2026-07-24 14:01:46",
+                "status": "REJECTED",
+                "reason": "ODNO=0020141700",
+                "alias": "TIGER 지주회사"
+            }
+        ]
     }
 ]
