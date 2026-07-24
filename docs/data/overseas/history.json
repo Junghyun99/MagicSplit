@@ -1620,5 +1620,113 @@
                 "alias": "ISHARES GLOBAL CLEAN ENERGY"
             }
         ]
+    },
+    {
+        "id": "tx_20260724_234634",
+        "date": "2026-07-24 23:46:34",
+        "portfolio_value": 17283.88,
+        "cash_balance": 4440.16,
+        "net_deposit": 6.67,
+        "total_trade_amount": 608.02,
+        "reason": "카메코(CCJ):SELL(수동 매매(Manual Trade))",
+        "executions": [
+            {
+                "ticker": "CCJ",
+                "action": "SELL",
+                "quantity": 7,
+                "price": 86.86,
+                "fee": 0.0,
+                "date": "2026-07-24 23:46:29",
+                "status": "FILLED",
+                "reason": "ODNO=0031444104",
+                "lot_id": "lot_20260708_000149_CCJ_001",
+                "level": 1,
+                "buy_price": 94.06,
+                "realized_pnl": -50.4,
+                "alias": "카메코"
+            }
+        ]
+    },
+    {
+        "id": "tx_20260724_234648",
+        "date": "2026-07-24 23:46:48",
+        "portfolio_value": 17279.1712,
+        "cash_balance": 5288.07,
+        "net_deposit": -9.37,
+        "total_trade_amount": 857.28,
+        "reason": "ISHARES GLOBAL CLEAN ENERGY(ICLN):SELL(수동 일괄매도(Manual Bulk Sell))",
+        "executions": [
+            {
+                "ticker": "ICLN",
+                "action": "SELL",
+                "quantity": 3,
+                "price": 17.86,
+                "fee": 0.0,
+                "date": "2026-07-24 23:46:43",
+                "status": "FILLED",
+                "reason": "ODNO=0031444228",
+                "lot_id": "lot_20260627_020129_ICLN_003",
+                "level": 3,
+                "buy_price": 19.75,
+                "realized_pnl": -5.67,
+                "alias": "ISHARES GLOBAL CLEAN ENERGY"
+            },
+            {
+                "ticker": "ICLN",
+                "action": "SELL",
+                "quantity": 23,
+                "price": 17.86,
+                "fee": 0.0,
+                "date": "2026-07-24 23:46:43",
+                "status": "FILLED",
+                "reason": "ODNO=0031444228",
+                "lot_id": "lot_20260618_000135_ICLN_002",
+                "level": 2,
+                "buy_price": 20.86,
+                "realized_pnl": -69.0,
+                "alias": "ISHARES GLOBAL CLEAN ENERGY"
+            },
+            {
+                "ticker": "ICLN",
+                "action": "SELL",
+                "quantity": 22,
+                "price": 17.86,
+                "fee": 0.0,
+                "date": "2026-07-24 23:46:43",
+                "status": "FILLED",
+                "reason": "ODNO=0031444228",
+                "lot_id": "lot_20260512_003559_ICLN_001",
+                "level": 1,
+                "buy_price": 22.01,
+                "realized_pnl": -91.3,
+                "alias": "ISHARES GLOBAL CLEAN ENERGY"
+            }
+        ]
+    },
+    {
+        "id": "tx_20260724_234702",
+        "date": "2026-07-24 23:47:02",
+        "portfolio_value": 17284.1927,
+        "cash_balance": 5780.4,
+        "net_deposit": -5.37,
+        "total_trade_amount": 497.7,
+        "reason": "SCHWAB US DIVIDEND EQUITY(SCHD):SELL(수동 일괄매도(Manual Bulk Sell))",
+        "executions": [
+            {
+                "ticker": "SCHD",
+                "action": "SELL",
+                "quantity": 15,
+                "price": 33.18,
+                "fee": 0.0,
+                "date": "2026-07-24 23:46:57",
+                "status": "FILLED",
+                "reason": "ODNO=0031444346",
+                "lot_id": "lot_20260512_003547_SCHD_001",
+                "level": 1,
+                "buy_price": 31.74,
+                "realized_pnl": 21.6,
+                "alias": "SCHWAB US DIVIDEND EQUITY"
+            }
+        ]
     }
 ]

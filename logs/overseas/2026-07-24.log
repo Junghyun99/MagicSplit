@@ -213,3 +213,49 @@
 2026-07-24 13:01:56,769 [WARNING] [KisBroker] 호가 조회 실패 — 브로드컴(AVGO) 현재가 기반 주문 진행
 2026-07-24 13:01:57,518 [ERROR] [KisBroker] Order Failed: 장운영시간이 아닙니다.(단,주간거래시간이면 전용화면 주문가능, 주문시간 외 불가)
 2026-07-24 13:01:57,895 [INFO] >>> Step 6: Persist
+2026-07-24 23:46:20,305 [INFO] === Manual Trade CLI (overseas) [3건]: CCJ:sell, ICLN:sell_all, SCHD:sell_all ===
+2026-07-24 23:46:20,306 [INFO] [KisBroker] 캐시에서 토큰 로드 (API 호출 생략)
+2026-07-24 23:46:20,306 [INFO] [KisOverseasLiveBroker] Mode: LIVE TRADING
+2026-07-24 23:46:20,306 [INFO] === Manual Trade: 카메코(CCJ) SELL ===
+2026-07-24 23:46:20,306 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-07-24 23:46:23,077 [INFO] Fetching real-time prices from Broker...
+2026-07-24 23:46:26,491 [INFO] Portfolio: Cash=USD 3,838.47, Value=USD 17,291.09
+2026-07-24 23:46:26,491 [INFO] >>> Step 2: Load Positions
+2026-07-24 23:46:26,492 [INFO] Loaded 27 position lot(s)
+2026-07-24 23:46:26,492 [INFO] 매도 수량 자동 도출: Lv1 lot 7주 전량
+2026-07-24 23:46:26,492 [INFO] [카메코(CCJ)] 수동 신호 생성: SELL Lv1 7주 @USD 86.94
+2026-07-24 23:46:26,492 [INFO] Executing 1 order(s)...
+2026-07-24 23:46:26,492 [INFO] [KisBroker] Processing 1 SELL orders...
+2026-07-24 23:46:27,409 [INFO] [KisBroker] Order Sent: SELL 카메코(CCJ) 7 @ 86.86 (ODNO=0031444104)
+2026-07-24 23:46:29,837 [INFO] [KisBroker] Order FILLED: 카메코(CCJ) ODNO=0031444104 price=86.86 qty=7 fee=0.0
+2026-07-24 23:46:30,038 [INFO] [Position] Remove lot: lot_20260708_000149_CCJ_001 Lv1 (7주 전량 매도)
+2026-07-24 23:46:34,635 [INFO] >>> Step 6: Persist
+2026-07-24 23:46:35,222 [INFO] === Manual Trade: ISHARES GLOBAL CLEAN ENERGY(ICLN) SELL ===
+2026-07-24 23:46:35,222 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-07-24 23:46:36,826 [INFO] Fetching real-time prices from Broker...
+2026-07-24 23:46:40,244 [INFO] Portfolio: Cash=USD 4,440.16, Value=USD 17,285.52
+2026-07-24 23:46:40,244 [INFO] >>> Step 2: Load Positions
+2026-07-24 23:46:40,244 [INFO] Loaded 26 position lot(s)
+2026-07-24 23:46:40,245 [INFO] 일괄매도 수량 도출: 3개 lot 합산 48주 전량
+2026-07-24 23:46:40,245 [INFO] [ISHARES GLOBAL CLEAN ENERGY(ICLN)] 수동 신호 생성: SELL Lv3 48주 @USD 17.86
+2026-07-24 23:46:40,245 [INFO] Executing 1 order(s)...
+2026-07-24 23:46:40,245 [INFO] [KisBroker] Processing 1 SELL orders...
+2026-07-24 23:46:41,214 [INFO] [KisBroker] Order Sent: SELL ISHARES GLOBAL CLEAN ENERGY(ICLN) 48 @ 17.86 (ODNO=0031444228)
+2026-07-24 23:46:43,641 [INFO] [KisBroker] Order FILLED: ISHARES GLOBAL CLEAN ENERGY(ICLN) ODNO=0031444228 price=17.86 qty=48 fee=0.0
+2026-07-24 23:46:43,842 [INFO] [Position] Bulk 청산: ISHARES GLOBAL CLEAN ENERGY(ICLN) 48주 소진 (잔여 0주), 실현손익 USD -165.97
+2026-07-24 23:46:48,432 [INFO] >>> Step 6: Persist
+2026-07-24 23:46:48,984 [INFO] === Manual Trade: SCHWAB US DIVIDEND EQUITY(SCHD) SELL ===
+2026-07-24 23:46:48,985 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-07-24 23:46:50,578 [INFO] Fetching real-time prices from Broker...
+2026-07-24 23:46:53,982 [INFO] Portfolio: Cash=USD 5,288.07, Value=USD 17,277.18
+2026-07-24 23:46:53,983 [INFO] >>> Step 2: Load Positions
+2026-07-24 23:46:53,983 [INFO] Loaded 23 position lot(s)
+2026-07-24 23:46:53,983 [INFO] 일괄매도 수량 도출: 1개 lot 합산 15주 전량
+2026-07-24 23:46:53,983 [INFO] [SCHWAB US DIVIDEND EQUITY(SCHD)] 수동 신호 생성: SELL Lv1 15주 @USD 33.19
+2026-07-24 23:46:53,983 [INFO] Executing 1 order(s)...
+2026-07-24 23:46:53,983 [INFO] [KisBroker] Processing 1 SELL orders...
+2026-07-24 23:46:54,956 [INFO] [KisBroker] Order Sent: SELL SCHWAB US DIVIDEND EQUITY(SCHD) 15 @ 33.18 (ODNO=0031444346)
+2026-07-24 23:46:57,386 [INFO] [KisBroker] Order FILLED: SCHWAB US DIVIDEND EQUITY(SCHD) ODNO=0031444346 price=33.18 qty=15 fee=0.0
+2026-07-24 23:46:57,587 [INFO] [Position] Bulk 청산: SCHWAB US DIVIDEND EQUITY(SCHD) 15주 소진 (잔여 0주), 실현손익 USD 21.60
+2026-07-24 23:47:02,181 [INFO] >>> Step 6: Persist
+2026-07-24 23:47:02,725 [INFO] === Manual Trade 완료: 체결 3건 [CCJ SELL, ICLN SELL_ALL, SCHD SELL_ALL], 실패 0건 ===
