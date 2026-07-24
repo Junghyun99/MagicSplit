@@ -2916,5 +2916,168 @@
                 "alias": "SOL 반도체전공정"
             }
         ]
+    },
+    {
+        "id": "tx_20260724_100151",
+        "date": "2026-07-24 10:01:51",
+        "portfolio_value": 27595337.0,
+        "cash_balance": 9413097.0,
+        "net_deposit": 37.54,
+        "total_trade_amount": 2262930.0,
+        "reason": "KODEX 반도체레버리지(494310):BUY(추가 매수 Lv2 (Lv1 대비 -10.3%)),\nSOL 반도체전공정(475300):SELL(추세 이탈 분할 청산(18주/36주, -28.6%)),\nKODEX 증권(102970):SELL(추세 이탈 분할 청산(26주/51주, -21.6%)),\nTIGER 지주회사(307520):SELL(추세 이탈 분할 청산(21주/41주, -16.2%)),\nACE 테슬라밸류체인액티브(457480):BUY(추가 매수 Lv2 (Lv1 대비 -22.6%))",
+        "executions": [
+            {
+                "ticker": "494310",
+                "action": "BUY",
+                "quantity": 5,
+                "price": 86140.0,
+                "fee": 64.60499999999999,
+                "date": "2026-07-24 10:01:26",
+                "status": "FILLED",
+                "reason": "ODNO=0008809200",
+                "level": 2,
+                "alias": "KODEX 반도체레버리지"
+            },
+            {
+                "ticker": "475300",
+                "action": "SELL",
+                "quantity": 1,
+                "price": 20170.0,
+                "fee": 54.458999999999996,
+                "date": "2026-07-24 10:01:31",
+                "status": "FILLED",
+                "reason": "ODNO=0008838300",
+                "lot_id": "lot_20260702_140112_475300_002",
+                "level": 2,
+                "buy_price": 26695.0,
+                "realized_pnl": -6528.03,
+                "alias": "SOL 반도체전공정"
+            },
+            {
+                "ticker": "475300",
+                "action": "SELL",
+                "quantity": 17,
+                "price": 20170.0,
+                "fee": 54.458999999999996,
+                "date": "2026-07-24 10:01:31",
+                "status": "FILLED",
+                "reason": "ODNO=0008838300",
+                "lot_id": "lot_20260616_120106_475300_001",
+                "level": 1,
+                "buy_price": 28365.0,
+                "realized_pnl": -139366.43,
+                "alias": "SOL 반도체전공정"
+            },
+            {
+                "ticker": "102970",
+                "action": "SELL",
+                "quantity": 14,
+                "price": 20090.0,
+                "fee": 78.351,
+                "date": "2026-07-24 10:01:36",
+                "status": "FILLED",
+                "reason": "ODNO=0008844100",
+                "lot_id": "lot_20260618_120103_102970_002",
+                "level": 2,
+                "buy_price": 23865.0,
+                "realized_pnl": -52892.19,
+                "alias": "KODEX 증권"
+            },
+            {
+                "ticker": "102970",
+                "action": "SELL",
+                "quantity": 12,
+                "price": 20090.0,
+                "fee": 78.351,
+                "date": "2026-07-24 10:01:36",
+                "status": "FILLED",
+                "reason": "ODNO=0008844100",
+                "lot_id": "lot_20260519_143320_102970_001",
+                "level": 1,
+                "buy_price": 26355.0,
+                "realized_pnl": -75216.16,
+                "alias": "KODEX 증권"
+            },
+            {
+                "ticker": "307520",
+                "action": "SELL",
+                "quantity": 3,
+                "price": 21565.0,
+                "fee": 67.92975,
+                "date": "2026-07-24 10:01:42",
+                "status": "FILLED",
+                "reason": "ODNO=0008850200",
+                "lot_id": "lot_20260623_140117_307520_002",
+                "level": 2,
+                "buy_price": 23055.0,
+                "realized_pnl": -4479.7,
+                "alias": "TIGER 지주회사"
+            },
+            {
+                "ticker": "307520",
+                "action": "SELL",
+                "quantity": 18,
+                "price": 21565.0,
+                "fee": 67.92975,
+                "date": "2026-07-24 10:01:42",
+                "status": "FILLED",
+                "reason": "ODNO=0008850200",
+                "lot_id": "lot_20260529_090450_307520_001",
+                "level": 1,
+                "buy_price": 26000.0,
+                "realized_pnl": -79888.23,
+                "alias": "TIGER 지주회사"
+            },
+            {
+                "ticker": "457480",
+                "action": "BUY",
+                "quantity": 27,
+                "price": 18295.0,
+                "fee": 74.09474999999999,
+                "date": "2026-07-24 10:01:47",
+                "status": "FILLED",
+                "reason": "ODNO=0008857400",
+                "level": 2,
+                "alias": "ACE 테슬라밸류체인액티브"
+            }
+        ]
+    },
+    {
+        "id": "tx_20260724_120116",
+        "date": "2026-07-24 12:01:16",
+        "portfolio_value": 26964962.0,
+        "cash_balance": 9279597.0,
+        "net_deposit": 3.77,
+        "total_trade_amount": 825120.0,
+        "reason": "KODEX 반도체레버리지(494310):BUY(추가 매수 Lv3 (Lv2 대비 -7.1%)),\n메리츠금융지주(138040):SKIP(Lv1: trailing 활성화 (매수가 대비 +11.4%, 스톱가 KRW 115,425)),\nSOL 반도체전공정(475300):SELL(추종 데드라인 발동 잔량 청산(18주, 기준가 대비 -4.7%))",
+        "executions": [
+            {
+                "ticker": "494310",
+                "action": "BUY",
+                "quantity": 6,
+                "price": 79875.0,
+                "fee": 71.88749999999999,
+                "date": "2026-07-24 12:01:07",
+                "status": "FILLED",
+                "reason": "ODNO=0015501500",
+                "level": 3,
+                "alias": "KODEX 반도체레버리지"
+            },
+            {
+                "ticker": "475300",
+                "action": "SELL",
+                "quantity": 18,
+                "price": 19215.0,
+                "fee": 51.8805,
+                "date": "2026-07-24 12:01:12",
+                "status": "FILLED",
+                "reason": "ODNO=0015508400",
+                "lot_id": "lot_20260616_120106_475300_001",
+                "level": 1,
+                "buy_price": 28365.0,
+                "realized_pnl": -164751.88,
+                "alias": "SOL 반도체전공정"
+            }
+        ]
     }
 ]
