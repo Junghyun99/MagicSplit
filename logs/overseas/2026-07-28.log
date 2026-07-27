@@ -95,3 +95,50 @@
 2026-07-28 02:01:23,474 [INFO] [KisBroker] Order FILLED: 델 테크놀로지스(DELL) ODNO=0030244248 price=423.42 qty=2 fee=0.0
 2026-07-28 02:01:23,675 [INFO] [Position] New lot: lot_20260728_020123_DELL_005 Lv5 델 테크놀로지스(DELL) 2주 @USD 423.42
 2026-07-28 02:01:28,735 [INFO] >>> Step 6: Persist
+2026-07-28 04:01:05,508 [INFO] === Initializing MagicSplit Bot (overseas) ===
+2026-07-28 04:01:05,508 [INFO] Loaded 22 stock rule(s) from config_overseas.json
+2026-07-28 04:01:05,508 [INFO] [overseas] 9 rule(s), mode=LIVE
+2026-07-28 04:01:05,509 [INFO] [KisBroker] 캐시에서 토큰 로드 (API 호출 생략)
+2026-07-28 04:01:05,509 [INFO] [KisOverseasLiveBroker] Mode: LIVE TRADING
+2026-07-28 04:01:05,511 [INFO] [MarketData] 레짐 필터 활성 종목 9개 -> YFinanceMarketDataProvider 주입 (window 260봉)
+2026-07-28 04:01:05,511 [INFO] === Running overseas engine ===
+2026-07-28 04:01:05,511 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-07-28 04:01:07,998 [INFO] Fetching real-time prices from Broker...
+2026-07-28 04:01:10,978 [INFO] Portfolio: Cash=USD 2,925.56, Value=USD 17,032.26
+2026-07-28 04:01:10,978 [INFO] >>> Step 2: Load Positions
+2026-07-28 04:01:10,978 [INFO] Loaded 19 position lot(s)
+2026-07-28 04:01:10,979 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-07-28 04:01:10,979 [INFO] >>> Processing ARK INNOVATION(ARKK)
+2026-07-28 04:01:11,957 [INFO] [MarketData] 배치 다운로드 완료: 9/9종목
+2026-07-28 04:01:11,960 [INFO] [ARK INNOVATION(ARKK)] 추종 데드라인 추적 중 (현재가 USD 72.27, 기준가 USD 72.21, 대비 --0.1%, 청산선 USD 70.04)
+2026-07-28 04:01:11,961 [INFO]   [ARK INNOVATION(ARKK)] 신호 없음 | Lv1 매수 USD 79.92 -> 현재 USD 72.27 (-9.57%) | 익절 +10.0% / 추매 -5.0%
+2026-07-28 04:01:11,961 [INFO] >>> Processing 카메코(CCJ)
+2026-07-28 04:01:11,963 [INFO] [카메코(CCJ)] DOWNTREND 확정 - 신규 진입 차단
+2026-07-28 04:01:12,426 [INFO] >>> Processing SCHWAB US DIVIDEND EQUITY(SCHD)
+2026-07-28 04:01:12,429 [INFO]   [SCHWAB US DIVIDEND EQUITY(SCHD)] 신호 없음 | Lv1 매수 USD 33.55 -> 현재 USD 33.48 (-0.21%) | 익절 +10.0% / 추매 -5.0%
+2026-07-28 04:01:12,429 [INFO] >>> Processing 브로드컴(AVGO)
+2026-07-28 04:01:12,432 [INFO] [브로드컴(AVGO)] DOWNTREND 확정 - 신규 진입 차단
+2026-07-28 04:01:12,849 [INFO] >>> Processing 애플(AAPL)
+2026-07-28 04:01:12,854 [INFO]   [애플(AAPL)] 📈 상승 레짐 유지 | Lv1 매수 USD 291.90 -> 현재 USD 335.70 (+15.01%) | 채널하단(이탈선) USD 297.51 | 20EMA(눌림) USD 318.00 (이격 +5.57%) | adds 0/3
+2026-07-28 04:01:12,855 [INFO] >>> Processing 테슬라(TSLA)
+2026-07-28 04:01:12,857 [INFO] [테슬라(TSLA)] 추종 데드라인 추적 중 (현재가 USD 307.55, 기준가 USD 308.72, 대비 -0.4%, 청산선 USD 299.46)
+2026-07-28 04:01:12,857 [INFO]   [테슬라(TSLA)] 신호 없음 | Lv2 매수 USD 435.49 -> 현재 USD 307.55 (-29.38%) | 익절 +10.0% / 추매 -5.0%
+2026-07-28 04:01:12,858 [INFO] >>> Processing 델 테크놀로지스(DELL)
+2026-07-28 04:01:12,861 [INFO] [델 테크놀로지스(DELL)] 상승장 누적 매수 Lv6 2주 @USD 420.22 (20EMA USD 415.26 눌림, add 3/3)
+2026-07-28 04:01:12,861 [INFO] Executing 1 order(s)...
+2026-07-28 04:01:14,650 [INFO] [KisBroker] Available Cash for BUY: 2,926
+2026-07-28 04:01:15,745 [INFO] [KisBroker] Order Sent: BUY 델 테크놀로지스(DELL) 2 @ 420.93 (ODNO=0030263352)
+2026-07-28 04:01:18,175 [INFO] [KisBroker] Order FILLED: 델 테크놀로지스(DELL) ODNO=0030263352 price=420.93 qty=2 fee=0.0
+2026-07-28 04:01:18,376 [INFO] [Position] New lot: lot_20260728_040118_DELL_006 Lv6 델 테크놀로지스(DELL) 2주 @USD 420.93
+2026-07-28 04:01:23,025 [INFO] >>> Processing 펩시코(PEP)
+2026-07-28 04:01:23,028 [INFO] [펩시코(PEP)] 채널 기울기 하락 전환 확정 (-13.10%/63봉) -> 이탈 청산 진행
+2026-07-28 04:01:23,028 [INFO] [펩시코(PEP)] 추세 이탈 -> 분할 청산 1주/2주 (50%) 즉시 매도, 잔량 1주 추종 데드라인 (기준가 USD 139.93, 청산선 USD 135.73, 평단 USD 150.05, 채널하단 USD 130.06)
+2026-07-28 04:01:23,028 [INFO] Executing 1 order(s)...
+2026-07-28 04:01:23,028 [INFO] [KisBroker] Processing 1 SELL orders...
+2026-07-28 04:01:23,898 [INFO] [KisBroker] Order Sent: SELL 펩시코(PEP) 1 @ 139.9 (ODNO=0030263383)
+2026-07-28 04:01:26,299 [INFO] [KisBroker] Order FILLED: 펩시코(PEP) ODNO=0030263383 price=139.9 qty=1 fee=0.0
+2026-07-28 04:01:26,500 [INFO] [Position] 분할 청산: 펩시코(PEP) 1주 소진 (잔여 1주), 실현손익 USD -10.15
+2026-07-28 04:01:26,500 [INFO] [펩시코(PEP)] 추종 데드라인(Trailing Lock) 상태 활성화 (기준가 USD 139.90, 하락 허용치 3.0%)
+2026-07-28 04:01:31,303 [INFO] >>> Processing ISHARES GLOBAL CLEAN ENERGY(ICLN)
+2026-07-28 04:01:31,306 [INFO] [ISHARES GLOBAL CLEAN ENERGY(ICLN)] DOWNTREND 확정 - 신규 진입 차단
+2026-07-28 04:01:31,730 [INFO] >>> Step 6: Persist

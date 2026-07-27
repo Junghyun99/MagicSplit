@@ -1955,5 +1955,43 @@
                 "alias": "델 테크놀로지스"
             }
         ]
+    },
+    {
+        "id": "tx_20260728_040131",
+        "date": "2026-07-28 04:01:31",
+        "portfolio_value": 17038.214999999997,
+        "cash_balance": 2222.26,
+        "net_deposit": -1.34,
+        "total_trade_amount": 981.76,
+        "reason": "카메코(CCJ):SKIP(DOWNTREND 확정 - 신규 진입 차단),\n브로드컴(AVGO):SKIP(DOWNTREND 확정 - 신규 진입 차단),\n델 테크놀로지스(DELL):BUY(상승장 누적 매수 Lv6 (20EMA 눌림, add 3)),\n펩시코(PEP):SELL(추세 이탈 분할 청산(1주/2주, -6.7%)),\nISHARES GLOBAL CLEAN ENERGY(ICLN):SKIP(DOWNTREND 확정 - 신규 진입 차단)",
+        "executions": [
+            {
+                "ticker": "DELL",
+                "action": "BUY",
+                "quantity": 2,
+                "price": 420.93,
+                "fee": 0.0,
+                "date": "2026-07-28 04:01:18",
+                "status": "FILLED",
+                "reason": "ODNO=0030263352",
+                "level": 6,
+                "alias": "델 테크놀로지스"
+            },
+            {
+                "ticker": "PEP",
+                "action": "SELL",
+                "quantity": 1,
+                "price": 139.9,
+                "fee": 0.0,
+                "date": "2026-07-28 04:01:26",
+                "status": "FILLED",
+                "reason": "ODNO=0030263383",
+                "lot_id": "lot_20260512_003512_PEP_001",
+                "level": 1,
+                "buy_price": 150.05,
+                "realized_pnl": -10.15,
+                "alias": "펩시코"
+            }
+        ]
     }
 ]
