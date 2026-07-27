@@ -14,7 +14,8 @@ scripts/manual_trade.py 와의 차이:
     history.json           체결 내역 1건 (차수별 실현손익 포함)
     last_sell_prices.json  매도 체결가 기록 (동적 재매수 기준 - 엔진과 동일)
     snapshots.json         체결분이 순입금(입출금)으로 잘못 잡힌 스냅샷 보정
-    status.json            누적 실현손익(realized_pnl_by_ticker)에 이번 손익 가산
+    decisions.json         판단 내역에 체결 사유 1건 추가
+    status.json            누적 실현손익 가산 + 보정된 포지션으로 대시보드 상태 재생성
 
 사용법:
     python -m scripts.migrate_manual_trade --market crypto --dry-run --trades-json \\
@@ -45,8 +46,10 @@ from src.core.models import (
     DEFAULT_QTY_PRECISION, ExecutionStatus, OrderAction, Portfolio,
     PositionLot, TradeExecution,
 )
+from src.core.logic.status_builder import build_dashboard_status
 from src.infra.repo import JsonRepository, trade_cash_impact
 from src.utils.currency import format_money, format_qty
+from src.utils.ticker_reader import display_ticker
 
 DATE_FMT = "%Y-%m-%d"
 DEFAULT_REASON = "마이그레이션 - 브로커 앱 수동매매 사후 반영"
@@ -79,7 +82,14 @@ def parse_args(argv=None):
     parser.add_argument("--cash", type=float,
                         help="체결 직후 실제 현금 잔고. 생략 시 직전 기록 + 체결 현금영향으로 "
                              "추정한다. 실제 값을 주면 차액이 순입금(입출금)으로 기록된다.")
-    parser.add_argument("--reason", default=DEFAULT_REASON, help="기록에 남길 사유")
+    parser.add_argument("--reason", default=DEFAULT_REASON,
+                        help="원소별 reason 이 없을 때 쓸 기본 사유")
+    parser.add_argument("--config",
+                        help="종목 설정 파일 경로 (기본: config_<market>.json). "
+                             "status.json 리스크 지표 계산에 쓰인다")
+    parser.add_argument("--skip-status-rebuild", action="store_true",
+                        help="status.json 대시보드 상태 재생성을 건너뛴다 "
+                             "(누적 실현손익만 갱신)")
     parser.add_argument("--data-root", default="docs/data", help="데이터 루트 경로")
     parser.add_argument("--skip-snapshot-fix", action="store_true",
                         help="snapshots.json 순입금 보정을 건너뛴다")
@@ -156,6 +166,7 @@ def _next_level(positions: List[PositionLot], ticker: str) -> int:
 
 def apply_trades(positions: List[PositionLot], trades: List[dict],
                  last_sell_prices: Dict[str, float], market_type: str,
+                 default_reason: str = DEFAULT_REASON,
                  warn=print) -> List[TradeExecution]:
     """체결 목록을 positions/last_sell_prices 에 in-place 반영하고 체결 내역을 만든다."""
     precision = DEFAULT_QTY_PRECISION.get(market_type, 0)
@@ -170,7 +181,7 @@ def apply_trades(positions: List[PositionLot], trades: List[dict],
             fee=t["fee"],
             date=f"{t['date']} 00:00:00",
             status=ExecutionStatus.FILLED,
-            reason=t["reason"] or DEFAULT_REASON,
+            reason=t["reason"] or default_reason,
         )
 
         if exe.action == OrderAction.SELL:
@@ -266,6 +277,67 @@ def accrue_realized_pnl(status: dict, executions: List[TradeExecution]) -> Dict[
     return accrued
 
 
+def compose_reason(executions: List[TradeExecution]) -> str:
+    """엔진의 _build_reason 과 같은 형식으로 사유 문자열을 만든다.
+
+    "TICKER:ACTION(사유)" 를 종목별로 줄바꿈 구분해 잇는다 (대시보드 표기 통일).
+    """
+    return ",\n".join(
+        f"{display_ticker(e.ticker)}:{e.action.value}({e.reason})" for e in executions
+    )
+
+
+def rebuild_status(repo: JsonRepository, positions: List[PositionLot],
+                   accrued_pnl: Dict[str, float], market_type: str,
+                   stock_rules=None) -> Optional[dict]:
+    """직전 status.json 의 계좌 상태 + 보정된 포지션으로 대시보드 상태를 다시 조립한다.
+
+    status.json 은 매 실행마다 통째로 재생성되는 "최신 상태" 스냅샷이라, 사후
+    반영 뒤 다음 실행 전까지 낡은 수량/불일치 경보를 그대로 보여준다. 계좌 쪽
+    수치(현금/보유수량/현재가)는 원래 정확했으므로, 그대로 두고 봇 포지션만
+    교체해 엔진과 같은 함수로 다시 만든다. 직전 상태가 없으면 None.
+    """
+    prev = repo.load_status() or {}
+    pf_block = prev.get("portfolio") or {}
+    rows = pf_block.get("holdings")
+    if not rows or pf_block.get("cash_balance") is None:
+        return None
+
+    portfolio = Portfolio(
+        total_cash=float(pf_block["cash_balance"]),
+        holdings={r["ticker"]: r["qty"] for r in rows},
+        current_prices={r["ticker"]: r["price"] for r in rows},
+        exchange_rate=prev.get("exchange_rate"),
+    )
+    return build_dashboard_status(
+        portfolio=portfolio,
+        positions=positions,
+        reason=prev.get("reason", ""),
+        old_realized_pnl_by_ticker=accrued_pnl,
+        recent_executions=[],
+        enabled_tickers=prev.get("enabled_tickers") or [],
+        # 새 실행 시각을 지어내지 않도록 직전 실행일을 그대로 쓴다.
+        sim_date=prev.get("last_run_date"),
+        stock_rules=stock_rules,
+        last_trade_dates=repo.get_last_trade_dates(),
+        market_type=market_type,
+        regime_state_by_ticker=prev.get("regime_state_by_ticker") or {},
+    )
+
+
+def _load_enabled_rules(config_path: str, warn=print):
+    """config_*.json 에서 활성 종목 규칙을 읽는다 (실패해도 진행)."""
+    if not os.path.exists(config_path):
+        warn(f"  ! 설정 파일 없음: {config_path} — 리스크 지표(최대 투입액 등) 생략")
+        return None
+    try:
+        from src.strategy_config import StrategyConfig
+        return [r for r in StrategyConfig(config_path).rules if r.enabled]
+    except Exception as e:  # 설정 오류가 마이그레이션을 막지 않도록 격리
+        warn(f"  ! 설정 파일 로드 실패({config_path}): {e} — 리스크 지표 생략")
+        return None
+
+
 def _print_plan(market_type: str, executions: List[TradeExecution],
                 positions: List[PositionLot], portfolio: Portfolio,
                 cash_impact: float, net_deposit: float) -> None:
@@ -334,11 +406,14 @@ def main(argv=None) -> int:
     positions = repo.load_positions()
     last_sell_prices = repo.load_last_sell_prices()
     try:
-        executions = apply_trades(positions, trades, last_sell_prices, market_type)
+        executions = apply_trades(
+            positions, trades, last_sell_prices, market_type, args.reason,
+        )
     except ValueError as e:
         print(f"에러: {e}")
         return 1
 
+    reason = compose_reason(executions)
     cash_impact = trade_cash_impact(executions)
 
     history = repo.load_history()
@@ -373,6 +448,20 @@ def main(argv=None) -> int:
         for ticker in sorted({e.ticker for e in executions if e.realized_pnl}):
             print(f"  {ticker}: {format_money(accrued_pnl[ticker], market_type)}")
 
+    new_status = None
+    if not args.skip_status_rebuild:
+        print()
+        print("── status.json 재생성 ──")
+        rules = _load_enabled_rules(args.config or f"config_{market_type}.json")
+        new_status = rebuild_status(repo, positions, accrued_pnl, market_type, rules)
+        if new_status is None:
+            print("  직전 status.json 에 계좌 정보 없음 — 실현손익만 갱신")
+        else:
+            risk = new_status["risk_summary"]
+            print(f"  기준 시점  : {new_status['last_run_date']} (직전 실행 상태 재사용)")
+            print(f"  sync_error : {risk['sync_error']}")
+            print(f"  경보       : {risk['alerts'] or '없음'}")
+
     snapshots = repo.load_snapshots()
     fixed_snap = None
     if not args.skip_snapshot_fix:
@@ -393,8 +482,11 @@ def main(argv=None) -> int:
 
     repo.save_positions(positions)
     repo.save_last_sell_prices(last_sell_prices)
-    repo.save_trade_history(executions, portfolio, args.reason, sim_date=trade_date)
-    if status:
+    repo.save_trade_history(executions, portfolio, reason, sim_date=trade_date)
+    repo.save_decision_log(f"{trade_date} 00:00:00", reason)
+    if new_status is not None:
+        repo.save_status(new_status)
+    elif status:
         status["realized_pnl_by_ticker"] = accrued_pnl
         repo.save_status(status)
     if not args.skip_snapshot_fix:
@@ -404,7 +496,7 @@ def main(argv=None) -> int:
             repo.save_snapshot(portfolio, executions, sim_date=trade_date)
 
     print()
-    print("✓ 저장 완료 (positions / history / last_sell_prices / status"
+    print("✓ 저장 완료 (positions / history / last_sell_prices / decisions / status"
           + ("" if args.skip_snapshot_fix else " / snapshots") + ").")
     print("  다음 실행 전 scripts/reconcile_positions.py 로 계좌 수량과 일치하는지 확인하세요.")
     return 0

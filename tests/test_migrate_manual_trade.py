@@ -6,9 +6,11 @@ import os
 import pytest
 
 from scripts.migrate_manual_trade import (
-    accrue_realized_pnl, apply_trades, fix_snapshot_net_deposit, main, parse_trades,
+    accrue_realized_pnl, apply_trades, compose_reason, fix_snapshot_net_deposit,
+    main, parse_trades, rebuild_status,
 )
 from src.core.models import ExecutionStatus, OrderAction, PositionLot, TradeExecution
+from src.infra.repo import JsonRepository
 
 
 def _lot(ticker, qty, level, buy_price=100.0, lot_id=None):
@@ -209,6 +211,18 @@ def _seed_data_root(tmp_path):
         "net_deposit": 0.0, "total_trade_amount": 0.0, "reason": "seed",
         "executions": [],
     }]), encoding="utf-8")
+    (root / "status.json").write_text(json.dumps({
+        "last_run_date": "2026-07-27",
+        "reason": "모니터링 - 신호 없음",
+        "enabled_tickers": ["KRW-ETH"],
+        "realized_pnl_by_ticker": {},
+        "portfolio": {
+            "cash_balance": 2209542.6,
+            "holdings": [
+                {"ticker": "KRW-ETH", "qty": 0.77220024, "price": 2840000.0},
+            ],
+        },
+    }), encoding="utf-8")
     (root / "snapshots.json").write_text(json.dumps([
         {"date": "2026-07-23", "portfolio_value": 1.0, "cash_balance": 81737.75,
          "stock_value": 0.0, "net_deposit": 0.0, "exchange_rate": None},
@@ -269,6 +283,16 @@ class TestMainEndToEnd:
         gross = 0.77220024 * 2742000
         cash_impact = gross - gross * 0.0005
         assert snapshots[1]["net_deposit"] == pytest.approx(2117373.0 - cash_impact, abs=0.01)
+
+        decisions = json.loads((crypto / "decisions.json").read_text(encoding="utf-8"))
+        assert decisions[-1]["date"] == "2026-07-24 00:00:00"
+        assert decisions[-1]["reason"].startswith("KRW-ETH:SELL(")
+
+        # status.json 은 보정된 포지션으로 재생성되어 불일치 경보가 사라져야 한다
+        status = json.loads((crypto / "status.json").read_text(encoding="utf-8"))
+        assert status["risk_summary"]["sync_error"] is False
+        assert status["realized_pnl_by_ticker"]["KRW-ETH"] == exe["realized_pnl"]
+        assert status["positions"]["KRW-ETH"]["total_qty"] == 0.77220024
 
     def test_appends_snapshot_when_none_after_trade_date(self, tmp_path):
         data_root = _seed_data_root(tmp_path)
@@ -357,3 +381,88 @@ class TestAccrueRealizedPnl:
 
     def test_zero_pnl_execution_is_ignored(self):
         assert accrue_realized_pnl({}, [self._sell("A", 0.0)]) == {}
+
+
+class TestComposeReason:
+    def _sell(self, ticker, reason):
+        return TradeExecution(
+            ticker=ticker, action=OrderAction.SELL, quantity=1, price=10, fee=0,
+            date="2026-07-24 00:00:00", status=ExecutionStatus.FILLED, reason=reason,
+        )
+
+    def test_engine_format_per_execution(self):
+        out = compose_reason([self._sell("KRW-ETH", "MTS 수동 매도")])
+        assert out == "KRW-ETH:SELL(MTS 수동 매도)"
+
+    def test_multiple_executions_are_newline_joined(self):
+        out = compose_reason([self._sell("KRW-ETH", "r1"), self._sell("KRW-BTC", "r2")])
+        assert out == "KRW-ETH:SELL(r1),\nKRW-BTC:SELL(r2)"
+
+
+class TestRebuildStatus:
+    def _repo(self, tmp_path, status):
+        root = tmp_path / "crypto"
+        root.mkdir(parents=True)
+        (root / "status.json").write_text(json.dumps(status), encoding="utf-8")
+        return JsonRepository(str(root))
+
+    def _status(self):
+        return {
+            "last_run_date": "2026-07-27",
+            "reason": "모니터링 - 신호 없음",
+            "enabled_tickers": ["KRW-ETH"],
+            "portfolio": {
+                "cash_balance": 2209542.6,
+                "holdings": [
+                    {"ticker": "KRW-ETH", "qty": 0.77220024, "price": 2840000.0},
+                ],
+            },
+        }
+
+    def test_uses_account_state_with_corrected_positions(self, tmp_path):
+        repo = self._repo(tmp_path, self._status())
+        positions = [_lot("KRW-ETH", 0.77220024, 1, buy_price=3847313.0)]
+
+        out = rebuild_status(repo, positions, {"KRW-ETH": -854581.65}, "crypto")
+
+        assert out["risk_summary"]["sync_error"] is False
+        assert not [a for a in out["risk_summary"]["alerts"] if "잔고 불일치" in a]
+        assert out["realized_pnl_by_ticker"] == {"KRW-ETH": -854581.65}
+        assert out["positions"]["KRW-ETH"]["total_qty"] == 0.77220024
+
+    def test_keeps_previous_run_date_instead_of_now(self, tmp_path):
+        repo = self._repo(tmp_path, self._status())
+
+        out = rebuild_status(repo, [_lot("KRW-ETH", 0.77220024, 1)], {}, "crypto")
+
+        assert out["last_run_date"] == "2026-07-27"
+        assert out["last_updated"] == "2026-07-27"
+
+    def test_stale_positions_still_flagged_as_mismatch(self, tmp_path):
+        """계좌와 어긋난 포지션을 넘기면 여전히 경보가 나와야 한다 (무조건 통과 방지)."""
+        repo = self._repo(tmp_path, self._status())
+
+        out = rebuild_status(repo, [_lot("KRW-ETH", 1.54440048, 1)], {}, "crypto")
+
+        assert out["risk_summary"]["sync_error"] is True
+
+    def test_returns_none_without_prior_account_state(self, tmp_path):
+        repo = self._repo(tmp_path, {"last_run_date": "2026-07-27"})
+        assert rebuild_status(repo, [], {}, "crypto") is None
+
+
+class TestSkipStatusRebuild:
+    def test_skip_flag_keeps_previous_status_body(self, tmp_path):
+        data_root = _seed_data_root(tmp_path)
+        crypto = tmp_path / "data" / "crypto"
+
+        rc = main([
+            "--market", "crypto", "--data-root", data_root,
+            "--fee-rate", "0.05", "--skip-status-rebuild", "--trades-json", TRADES,
+        ])
+        assert rc == 0
+
+        status = json.loads((crypto / "status.json").read_text(encoding="utf-8"))
+        # 대시보드 블록은 그대로, 누적 실현손익만 갱신된다
+        assert "risk_summary" not in status
+        assert status["realized_pnl_by_ticker"]["KRW-ETH"] < 0
