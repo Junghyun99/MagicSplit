@@ -13,7 +13,7 @@
         "lot_id": "lot_20260512_003512_PEP_001",
         "ticker": "PEP",
         "buy_price": 150.05,
-        "quantity": 3,
+        "quantity": 2,
         "buy_date": "2026-05-12",
         "level": 1,
         "trailing_highest_price": null,
@@ -58,16 +58,6 @@
         "level": 2,
         "trailing_highest_price": null,
         "alias": "테슬라"
-    },
-    {
-        "lot_id": "lot_20260605_023704_PEP_002",
-        "ticker": "PEP",
-        "buy_price": 142.33,
-        "quantity": 1,
-        "buy_date": "2026-06-05",
-        "level": 2,
-        "trailing_highest_price": null,
-        "alias": "펩시코"
     },
     {
         "lot_id": "lot_20260606_020600_GOOGL_002",
@@ -156,7 +146,7 @@
         "quantity": 1,
         "buy_date": "2026-07-21",
         "level": 3,
-        "trailing_highest_price": 439.34,
+        "trailing_highest_price": null,
         "alias": "델 테크놀로지스"
     },
     {
@@ -168,5 +158,25 @@
         "level": 3,
         "trailing_highest_price": null,
         "alias": "알파벳 A"
+    },
+    {
+        "lot_id": "lot_20260728_000119_SCHD_001",
+        "ticker": "SCHD",
+        "buy_price": 33.55,
+        "quantity": 29,
+        "buy_date": "2026-07-28",
+        "level": 1,
+        "trailing_highest_price": null,
+        "alias": "SCHWAB US DIVIDEND EQUITY"
+    },
+    {
+        "lot_id": "lot_20260728_000137_DELL_004",
+        "ticker": "DELL",
+        "buy_price": 421.34,
+        "quantity": 2,
+        "buy_date": "2026-07-28",
+        "level": 4,
+        "trailing_highest_price": null,
+        "alias": "델 테크놀로지스"
     }
 ]
