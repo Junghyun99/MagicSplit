@@ -1,7 +1,9 @@
 # src/core/logic/status_builder.py
 from typing import List, Dict, Optional
 from datetime import datetime
+from src.core.logic.position_reconciler import QTY_MATCH_TOL
 from src.core.models import Portfolio, PositionLot, TradeExecution, StockRule
+from src.utils.currency import format_qty
 from src.utils.ticker_reader import get_alias
 
 def build_dashboard_status(
@@ -137,10 +139,15 @@ def build_dashboard_status(
     for t in all_tickers:
         l_qty = local_sums.get(t, 0)
         p_qty = portfolio.holdings.get(t, 0)
-        if l_qty != p_qty:
+        # 코인 수량은 부동소수라 lot 합산 시 표현 오차(~1e-15)가 남는다.
+        # 정확히 같은지(!=) 보지 말고 detect_mismatches와 동일한 허용오차를 쓴다.
+        if abs(l_qty - p_qty) > QTY_MATCH_TOL:
             sync_error = True
             alias = get_alias(t) or t
-            alerts.append(f"⚠️ [{alias}] 잔고 불일치 (봇: {l_qty}, 계좌: {p_qty})")
+            alerts.append(
+                f"⚠️ [{alias}] 잔고 불일치 "
+                f"(봇: {format_qty(l_qty, market_type)}, 계좌: {format_qty(p_qty, market_type)})"
+            )
 
     # 2. Metrics for Scoring
     total_val = portfolio.total_value

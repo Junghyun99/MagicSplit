@@ -81,5 +81,46 @@
                 "alias": "KRW-USDT"
             }
         ]
+    },
+    {
+        "id": "tx_20260724",
+        "date": "2026-07-24",
+        "portfolio_value": 10859192.00704756,
+        "cash_balance": 2209542.60322733,
+        "net_deposit": -6497739.25,
+        "total_trade_amount": 8629859.03694152,
+        "reason": "마이그레이션 - MTS 수동 매도 사후 반영 (2026-07-24)",
+        "executions": [
+            {
+                "ticker": "KRW-ETH",
+                "action": "SELL",
+                "quantity": 0.77220024,
+                "price": 2742000.0,
+                "fee": 1058.68652904,
+                "date": "2026-07-24 00:00:00",
+                "status": "FILLED",
+                "reason": "MTS 수동 매도 (업비트 앱)",
+                "lot_id": "lot_20260717_000000_KRW-ETH_001_migrate",
+                "level": 1,
+                "buy_price": 3847313.0,
+                "realized_pnl": -854581.65,
+                "alias": "KRW-ETH"
+            },
+            {
+                "ticker": "KRW-BTC",
+                "action": "SELL",
+                "quantity": 0.06851894,
+                "price": 95046508.0,
+                "fee": 3256.2429894307606,
+                "date": "2026-07-24 00:00:00",
+                "status": "FILLED",
+                "reason": "MTS 수동 매도 (업비트 앱)",
+                "lot_id": "lot_20260717_000000_KRW-BTC_001_migrate",
+                "level": 1,
+                "buy_price": 114690236.0,
+                "realized_pnl": -1349223.66,
+                "alias": "KRW-BTC"
+            }
+        ]
     }
 ]

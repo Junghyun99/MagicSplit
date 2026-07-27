@@ -13,6 +13,20 @@ from src.core.interfaces import IRepository
 from src.utils.ticker_reader import get_alias
 
 
+def trade_cash_impact(executions: List[TradeExecution]) -> float:
+    """체결로 인한 순 현금 변동을 계산한다.
+
+    BUY는 현금 감소(-), SELL은 현금 증가(+), 각각 수수료만큼 추가 차감.
+    입출금(순입금) 역산 시 시세 변동/거래를 제외하기 위해 사용한다.
+    """
+    return sum(
+        (-e.price * e.quantity - e.fee) if e.action == OrderAction.BUY
+        else (e.price * e.quantity - e.fee)
+        for e in executions
+        if e.quantity > 0
+    )
+
+
 class JsonRepository(IRepository):
     """JSON 파일 기반 저장소.
 
@@ -197,17 +211,12 @@ class JsonRepository(IRepository):
 
     @staticmethod
     def _trade_cash_impact(executions: List[TradeExecution]) -> float:
-        """체결로 인한 순 현금 변동을 계산한다.
+        """체결로 인한 순 현금 변동 (모듈 함수 trade_cash_impact 에 위임)."""
+        return trade_cash_impact(executions)
 
-        BUY는 현금 감소(-), SELL은 현금 증가(+), 각각 수수료만큼 추가 차감.
-        입출금(순입금) 역산 시 시세 변동/거래를 제외하기 위해 사용한다.
-        """
-        return sum(
-            (-e.price * e.quantity - e.fee) if e.action == OrderAction.BUY
-            else (e.price * e.quantity - e.fee)
-            for e in executions
-            if e.quantity > 0
-        )
+    def load_history(self) -> List[dict]:
+        """매매 내역을 로드한다 (저장 순서 = 시간 오름차순)."""
+        return self._load_json(self.history_file, default=[])
 
     # === Snapshots (일별 자산 스냅샷 — 결산용) ===
 
@@ -273,6 +282,14 @@ class JsonRepository(IRepository):
     def load_snapshots(self) -> List[dict]:
         """일별 자산 스냅샷 목록을 로드한다 (날짜 오름차순 저장 순서)."""
         return self._load_json(self.snapshots_file, default=[])
+
+    def save_snapshots(self, snapshots: List[dict]) -> None:
+        """일별 자산 스냅샷 목록을 통째로 저장한다 (사후 보정용).
+
+        정상 운영 경로는 save_snapshot()이며, 이 메서드는 봇이 보지 못한 외부
+        체결을 사후 반영할 때 기존 레코드를 고쳐 쓰기 위한 통로다.
+        """
+        self._save_json(self.snapshots_file, snapshots)
 
     # === Status ===
 

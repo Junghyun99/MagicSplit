@@ -19,7 +19,9 @@ from src.core.models import (
     DayResult,
     REASON_NO_SIGNAL,
 )
-from src.core.logic import SplitEvaluator, detect_mismatches, build_dashboard_status
+from src.core.logic import (
+    SplitEvaluator, build_dashboard_status, detect_mismatches, drain_lots_by_qty,
+)
 from src.core.engine.registry import register_engine
 from src.utils.ticker_reader import display_ticker
 from src.utils.currency import format_money, format_qty
@@ -921,51 +923,15 @@ class MagicSplitEngine:
         self,
         updated: List[PositionLot],
         ticker: str,
-        qty: int,
+        qty: float,
         exe: TradeExecution,
     ) -> tuple:
         """고차수부터 qty만큼 lot을 차감하고, exe에 손익을 기록한다.
 
-        Returns: (updated_positions, consumed)
-        exe.buy_price, exe.realized_pnl, exe.liquidation_lots 를 in-place 갱신.
-        last_sell_prices 갱신 및 regime_state 처리는 호출부 책임.
+        실제 로직은 core.logic.position_reconciler.drain_lots_by_qty 에 있다
+        (scripts/migrate_manual_trade.py 의 외부 체결 사후 반영과 공유).
         """
-        qty_left = qty
-        lots_desc = sorted(
-            [l for l in updated if l.ticker == ticker],
-            key=lambda l: l.level, reverse=True,
-        )
-        total_pnl = 0.0
-        total_cost = 0.0
-        consumed = 0
-        breakdown = []
-        for lot in lots_desc:
-            if qty_left <= 0:
-                break
-            take = min(qty_left, lot.quantity)
-            gross = (exe.price - lot.buy_price) * take
-            total_pnl += gross
-            total_cost += lot.buy_price * take
-            consumed += take
-            breakdown.append({
-                "lot_id": lot.lot_id, "level": lot.level,
-                "buy_price": lot.buy_price, "quantity": take, "_gross": gross,
-            })
-            if take >= lot.quantity:
-                updated.remove(lot)
-            else:
-                updated[updated.index(lot)] = replace(lot, quantity=lot.quantity - take)
-            qty_left -= take
-
-        if consumed > 0:
-            exe.buy_price = round(total_cost / consumed, 4)
-            exe.realized_pnl = round(total_pnl - exe.fee, 2)
-            for item in breakdown:
-                lot_fee = exe.fee * (item["quantity"] / consumed)
-                item["realized_pnl"] = round(item.pop("_gross") - lot_fee, 2)
-            exe.liquidation_lots = breakdown
-
-        return updated, consumed
+        return drain_lots_by_qty(updated, ticker, qty, exe)
 
     @staticmethod
     def _reset_regime_after_flat(

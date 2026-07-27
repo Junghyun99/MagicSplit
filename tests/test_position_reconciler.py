@@ -1,6 +1,10 @@
 # tests/test_position_reconciler.py
-from src.core.logic.position_reconciler import QuantityMismatch, detect_mismatches
-from src.core.models import PositionLot, Portfolio, StockRule
+from src.core.logic.position_reconciler import (
+    QuantityMismatch, detect_mismatches, drain_lots_by_qty,
+)
+from src.core.models import (
+    ExecutionStatus, OrderAction, PositionLot, Portfolio, StockRule, TradeExecution,
+)
 
 
 def _rule(ticker: str, enabled: bool = True) -> StockRule:
@@ -104,3 +108,79 @@ class TestDetectMismatches:
         assert len(out) == 1
         assert out[0].broker_qty == 0.001
         assert out[0].positions_qty == 0.00066666
+
+
+class TestDrainLotsByQty:
+    """엔진 통합청산과 수동매매 사후 반영이 공유하는 lot 차감 로직."""
+
+    def _exe(self, ticker: str, qty: float, price: float, fee: float = 0.0):
+        return TradeExecution(
+            ticker=ticker, action=OrderAction.SELL, quantity=qty, price=price,
+            fee=fee, date="2026-07-24 00:00:00", status=ExecutionStatus.FILLED,
+        )
+
+    def test_drains_highest_level_first(self):
+        positions = [_lot("AAPL", 5, 1, "a1"), _lot("AAPL", 5, 2, "a2")]
+        exe = self._exe("AAPL", 5, 120.0)
+
+        out, consumed = drain_lots_by_qty(positions, "AAPL", 5, exe)
+
+        assert consumed == 5
+        assert [l.lot_id for l in out] == ["a1"]
+        assert exe.liquidation_lots[0]["level"] == 2
+
+    def test_partial_drain_keeps_lot_with_remainder(self):
+        positions = [_lot("AAPL", 5, 1, "a1")]
+        exe = self._exe("AAPL", 2, 120.0)
+
+        out, consumed = drain_lots_by_qty(positions, "AAPL", 2, exe)
+
+        assert consumed == 2
+        assert len(out) == 1
+        assert out[0].quantity == 3
+        assert out[0].buy_price == 100.0  # 단가는 그대로
+
+    def test_realized_pnl_nets_out_fee(self):
+        positions = [_lot("AAPL", 5, 1, "a1")]
+        exe = self._exe("AAPL", 5, 120.0, fee=10.0)
+
+        drain_lots_by_qty(positions, "AAPL", 5, exe)
+
+        assert exe.buy_price == 100.0
+        assert exe.realized_pnl == (120.0 - 100.0) * 5 - 10.0
+
+    def test_fee_is_split_across_consumed_lots(self):
+        positions = [_lot("AAPL", 5, 1, "a1"), _lot("AAPL", 5, 2, "a2")]
+        exe = self._exe("AAPL", 10, 120.0, fee=10.0)
+
+        drain_lots_by_qty(positions, "AAPL", 10, exe)
+
+        per_lot = [b["realized_pnl"] for b in exe.liquidation_lots]
+        assert per_lot == [95.0, 95.0]
+        assert sum(per_lot) == exe.realized_pnl
+
+    def test_shortfall_when_qty_exceeds_holdings(self):
+        positions = [_lot("AAPL", 5, 1, "a1")]
+        exe = self._exe("AAPL", 8, 120.0)
+
+        out, consumed = drain_lots_by_qty(positions, "AAPL", 8, exe)
+
+        assert consumed == 5
+        assert out == []
+
+    def test_no_lots_leaves_execution_untouched(self):
+        exe = self._exe("AAPL", 5, 120.0)
+
+        out, consumed = drain_lots_by_qty([], "AAPL", 5, exe)
+
+        assert (out, consumed) == ([], 0)
+        assert exe.realized_pnl == 0.0
+        assert exe.liquidation_lots is None
+
+    def test_other_tickers_are_untouched(self):
+        positions = [_lot("AAPL", 5, 1, "a1"), _lot("MSFT", 5, 1, "m1")]
+        exe = self._exe("AAPL", 5, 120.0)
+
+        out, _ = drain_lots_by_qty(positions, "AAPL", 5, exe)
+
+        assert [l.lot_id for l in out] == ["m1"]

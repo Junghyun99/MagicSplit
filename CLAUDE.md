@@ -18,6 +18,7 @@
 - 커버리�? ?�함 ?�스?? `pytest --cov=src tests/` (80% ?�상 준???�수)
 - �?1???�행: `python -m src.main` (`config_overseas.json_PATH`�?�?��/?�외 ?�택)
 - ?��????�합: `python scripts/reconcile_positions.py`
+- 수동매매(MTS) 사후 반영: `python -m scripts.migrate_manual_trade --market crypto --fee-rate 0.05 --dry-run --trades-json '[{"ticker":"KRW-ETH","action":"sell","quantity":0.7722,"price":2742000,"date":"2026-07-24"}]'` (봇을 거치지 않고 체결된 거래로 수량 불일치가 났을 때. `--dry-run`으로 먼저 확인)
 - 기간(월간) 결산: `python -m scripts.monthly_settlement --market domestic --start 2026-04-01 --end 2026-04-28` (해외는 USD/KRW 두 버전 출력, 코인은 --market crypto 로 KRW 결산)
 
 ## ?�로?�트 구조
@@ -41,6 +42,7 @@ src/
 scripts/
 ?��??� manual_trade.py      # Actions/CLI?�서 ?�동 매수·매도 주문
 ?��??� reconcile_positions.py  # ?�계�??�고?� positions.json ?�합
+?��??� migrate_manual_trade.py  # 브로커 앱(MTS)에서 직접 체결한 매매를 봇 장부에 사후 반영
 ?��??� monthly_settlement.py   # snapshots.json 기반 기간 결산 (기초/기말자산, 순입금, 기간손익, TWR)
 tests/                   # ?�스??(80% 커버리�? ?�구)
 docs/                    # ???�?�보??GitHub Pages) + config-editor + data ?�??
