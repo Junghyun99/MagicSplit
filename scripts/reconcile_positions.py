@@ -27,8 +27,10 @@ from typing import Dict, List, Optional
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/..")
 
 from src.config import Config
-from src.core.logic.position_reconciler import QuantityMismatch, detect_mismatches
-from src.core.models import PositionLot
+from src.core.logic.position_reconciler import (
+    QTY_MATCH_TOL, QuantityMismatch, detect_mismatches,
+)
+from src.core.models import DEFAULT_QTY_PRECISION, PositionLot
 from src.main import _create_broker
 from src.infra.repo import JsonRepository
 from src.strategy_config import StrategyConfig
@@ -65,7 +67,41 @@ def _prompt_float(msg: str, default: Optional[float] = None) -> Optional[float]:
         return _prompt_float(msg, default)
 
 
-def _shrink_to(lots: List[PositionLot], ticker: str, target_qty: int) -> List[PositionLot]:
+def _prompt_qty(msg: str, market_type: str,
+                default: Optional[float] = None) -> Optional[float]:
+    """수량 입력. 주식은 정수, 코인(crypto)은 소수 수량을 허용한다."""
+    default_str = _fmt_qty(default, market_type) if default is not None else ""
+    val = _prompt(msg, default_str)
+    if not val:
+        return None
+    try:
+        qty = float(val)
+    except ValueError:
+        print(f"  ⚠️  숫자가 아닙니다: {val!r}")
+        return _prompt_qty(msg, market_type, default)
+    if market_type != "crypto":
+        if qty != int(qty):
+            print(f"  ⚠️  주식 수량은 정수여야 합니다: {val!r}")
+            return _prompt_qty(msg, market_type, default)
+        return float(int(qty))
+    return qty
+
+
+def _fmt_qty(value: float, market_type: str) -> str:
+    """수량을 마켓 정밀도에 맞춰 표기한다 (지수표기/부동소수 잡음 제거)."""
+    if market_type == "crypto":
+        return f"{value:.8f}".rstrip("0").rstrip(".") or "0"
+    return f"{value:.0f}"
+
+
+def _fmt_diff(value: float, market_type: str) -> str:
+    """부호를 유지한 수량 차이 표기. 수량이 float이므로 ':+d'를 쓰면 안 된다."""
+    sign = "+" if value >= 0 else "-"
+    return f"{sign}{_fmt_qty(abs(value), market_type)}"
+
+
+def _shrink_to(lots: List[PositionLot], ticker: str, target_qty: float,
+               market_type: str = "overseas") -> List[PositionLot]:
     """최고 차수 lot 부터 수량을 축소하여 전체 합을 target_qty 로 맞춘다."""
     ticker_lots = sorted(
         [l for l in lots if l.ticker == ticker],
@@ -73,24 +109,25 @@ def _shrink_to(lots: List[PositionLot], ticker: str, target_qty: int) -> List[Po
         reverse=True,
     )
     remaining = sum(l.quantity for l in ticker_lots) - target_qty
-    if remaining < 0:
+    if remaining < -QTY_MATCH_TOL:
         raise ValueError(
             f"target_qty({target_qty}) 가 현재 수량 합보다 큽니다. pad 를 사용하세요."
         )
 
     out = [l for l in lots if l.ticker != ticker]
     for lot in ticker_lots:
-        if remaining <= 0:
+        if remaining <= QTY_MATCH_TOL:
             out.append(lot)
             continue
-        if remaining >= lot.quantity:
+        if remaining >= lot.quantity - QTY_MATCH_TOL:
             remaining -= lot.quantity
             continue
         out.append(PositionLot(
             lot_id=lot.lot_id,
             ticker=lot.ticker,
             buy_price=lot.buy_price,
-            quantity=lot.quantity - remaining,
+            # 코인은 소수 수량 -> 뺄셈 잔차(1e-17 등)를 최소 주문단위로 정리
+            quantity=_round_qty(lot.quantity - remaining, market_type),
             buy_date=lot.buy_date,
             level=lot.level,
             trailing_highest_price=lot.trailing_highest_price,
@@ -99,11 +136,17 @@ def _shrink_to(lots: List[PositionLot], ticker: str, target_qty: int) -> List[Po
     return out
 
 
+def _round_qty(value: float, market_type: str) -> float:
+    """마켓 정밀도(주식=정수, 코인=소수 8자리)로 수량을 정규화한다."""
+    precision = DEFAULT_QTY_PRECISION.get(market_type, 0)
+    return round(value, precision) if precision else float(round(value))
+
+
 def _pad_with_lot(
     lots: List[PositionLot],
     ticker: str,
     level: int,
-    quantity: int,
+    quantity: float,
     buy_price: float,
 ) -> List[PositionLot]:
     """브로커 초과분을 포함하는 새 lot 을 추가한다."""
@@ -125,18 +168,23 @@ def _apply_split_ratio(
     num: int,
     den: int,
     last_sell_prices: Optional[Dict[str, float]] = None,
+    market_type: str = "overseas",
 ) -> List[PositionLot]:
     """주식분할/병합 비율 적용 (num:den, 예 1:2 -> 1주를 2주로)."""
     if num <= 0 or den <= 0:
         raise ValueError("비율은 양수여야 합니다.")
-    
+
     # 1. 포지션 단가/수량/최고가 조정
     out: List[PositionLot] = []
     for lot in lots:
         if lot.ticker != ticker:
             out.append(lot)
             continue
-        new_qty = lot.quantity * den // num
+        # 주식은 단주가 생기지 않도록 내림, 코인은 소수 수량을 유지한다.
+        if market_type == "crypto":
+            new_qty = _round_qty(lot.quantity * den / num, market_type)
+        else:
+            new_qty = lot.quantity * den // num
         new_price = lot.buy_price * num / den
         
         # 트레일링 최고가도 비율에 맞춰 조정
@@ -167,20 +215,22 @@ def _apply_split_ratio(
     return out
 
 
-def _print_mismatch(m: QuantityMismatch) -> None:
+def _print_mismatch(m: QuantityMismatch, market_type: str) -> None:
     print()
     print(f"── [{m.ticker}] ─────────────────────────────")
-    print(f"  broker_qty   : {m.broker_qty}")
-    print(f"  positions_qty: {m.positions_qty}  (lots={m.lot_count}, levels={m.levels})")
-    print(f"  diff         : {m.diff:+d}")
+    print(f"  broker_qty   : {_fmt_qty(m.broker_qty, market_type)}")
+    print(f"  positions_qty: {_fmt_qty(m.positions_qty, market_type)}"
+          f"  (lots={m.lot_count}, levels={m.levels})")
+    print(f"  diff         : {_fmt_diff(m.diff, market_type)}")
 
 
 def _handle_ticker(
     mismatch: QuantityMismatch,
     lots: List[PositionLot],
     last_sell_prices: Optional[Dict[str, float]] = None,
+    market_type: str = "overseas",
 ) -> List[PositionLot]:
-    _print_mismatch(mismatch)
+    _print_mismatch(mismatch, market_type)
     while True:
         choice = _prompt(
             "  액션 [s=shrink / p=pad / r=ratio / k=keep]", default="k",
@@ -190,20 +240,21 @@ def _handle_ticker(
             return lots
 
         if choice == "s":
-            target = _prompt_int(
-                "  목표 수량(브로커와 일치시킬 값)", default=mismatch.broker_qty,
+            target = _prompt_qty(
+                "  목표 수량(브로커와 일치시킬 값)", market_type,
+                default=mismatch.broker_qty,
             )
             if target is None:
                 continue
             try:
-                return _shrink_to(lots, mismatch.ticker, target)
+                return _shrink_to(lots, mismatch.ticker, target, market_type)
             except ValueError as e:
                 print(f"  ⚠️  {e}")
                 continue
 
         if choice == "p":
-            qty = _prompt_int(
-                "  새 lot 수량", default=max(0, mismatch.diff),
+            qty = _prompt_qty(
+                "  새 lot 수량", market_type, default=max(0.0, mismatch.diff),
             )
             if qty is None or qty <= 0:
                 continue
@@ -225,7 +276,9 @@ def _handle_ticker(
                 print("  ⚠️  정수 형식 오류")
                 continue
             try:
-                return _apply_split_ratio(lots, mismatch.ticker, num, den, last_sell_prices)
+                return _apply_split_ratio(
+                    lots, mismatch.ticker, num, den, last_sell_prices, market_type,
+                )
             except ValueError as e:
                 print(f"  ⚠️  {e}")
                 continue
@@ -285,7 +338,7 @@ def main() -> int:
     last_sell_prices = repo.load_last_sell_prices()
 
     for m in mismatches:
-        lots = _handle_ticker(m, lots, last_sell_prices)
+        lots = _handle_ticker(m, lots, last_sell_prices, market_type)
 
     print()
     print("── 변경 후 수량 요약 ──")
@@ -293,7 +346,7 @@ def main() -> int:
     for ticker in sorted({m.ticker for m in mismatches}):
         after = [a for a in after_mismatches if a.ticker == ticker]
         if after:
-            print(f"  {ticker}: 여전히 불일치 {after[0].diff:+d}")
+            print(f"  {ticker}: 여전히 불일치 {_fmt_diff(after[0].diff, market_type)}")
         else:
             print(f"  {ticker}: ✓ 일치")
 
