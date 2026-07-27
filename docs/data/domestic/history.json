@@ -3241,5 +3241,58 @@
                 "alias": "삼성전자우"
             }
         ]
+    },
+    {
+        "id": "tx_20260727_120123",
+        "date": "2026-07-27 12:01:23",
+        "portfolio_value": 27004293.0,
+        "cash_balance": 9259503.0,
+        "net_deposit": -544.27,
+        "total_trade_amount": 1284850.0,
+        "reason": "SOL 반도체전공정(475300):SKIP(이탈 청산 후 재진입 대기 - 상단 저항선 미회복 (현재가 KRW 19,485 <= 기준선 KRW 30,794)),\n삼성전자우(005935):BUY(상승장 누적 매수 Lv4 (20EMA 눌림, add 2)),\nKODEX 증권(102970):SELL(추세 이탈 분할 청산(6주/12주, -24.2%)),\n테스(095610):SELL(추종 데드라인 발동 잔량 청산(2주, 기준가 대비 -3.7%))",
+        "executions": [
+            {
+                "ticker": "005935",
+                "action": "BUY",
+                "quantity": 5,
+                "price": 177300.0,
+                "fee": 132.975,
+                "date": "2026-07-27 12:01:10",
+                "status": "FILLED",
+                "reason": "ODNO=0013036900",
+                "level": 4,
+                "alias": "삼성전자우"
+            },
+            {
+                "ticker": "102970",
+                "action": "SELL",
+                "quantity": 6,
+                "price": 19925.0,
+                "fee": 17.932499999999997,
+                "date": "2026-07-27 12:01:15",
+                "status": "FILLED",
+                "reason": "ODNO=0013038500",
+                "lot_id": "lot_20260519_143320_102970_001",
+                "level": 1,
+                "buy_price": 26355.0,
+                "realized_pnl": -38597.93,
+                "alias": "KODEX 증권"
+            },
+            {
+                "ticker": "095610",
+                "action": "SELL",
+                "quantity": 2,
+                "price": 139400.0,
+                "fee": 41.81999999999999,
+                "date": "2026-07-27 12:01:20",
+                "status": "FILLED",
+                "reason": "ODNO=0013040500",
+                "lot_id": "lot_20260716_100142_095610_001",
+                "level": 1,
+                "buy_price": 191900.0,
+                "realized_pnl": -105041.82,
+                "alias": "테스"
+            }
+        ]
     }
 ]
