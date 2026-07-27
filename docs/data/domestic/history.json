@@ -3294,5 +3294,70 @@
                 "alias": "테스"
             }
         ]
+    },
+    {
+        "id": "tx_20260727_140129",
+        "date": "2026-07-27 14:01:29",
+        "portfolio_value": 27214098.0,
+        "cash_balance": 8017658.0,
+        "net_deposit": -586.67,
+        "total_trade_amount": 2055550.0,
+        "reason": "삼성증권(016360):SELL(추세 이탈 분할 청산(3주/6주, -8.3%)),\n삼성전자(005930):BUY(상승장 누적 매수 Lv6 (20EMA 눌림, add 2)),\nTIGER 지주회사(307520):SELL(추세 이탈 분할 청산(5주/10주, -20.2%)),\n삼성전자우(005935):BUY(상승장 누적 매수 Lv5 (20EMA 눌림, add 3)),\n테스(095610):SKIP(이탈 청산 후 재진입 대기 - 채널 중심선 미회복 (현재가 KRW 141,000 <= 기준선 KRW 206,447)),\nSOL 반도체전공정(475300):SKIP(이탈 청산 후 재진입 대기 - 상단 저항선 미회복 (현재가 KRW 19,645 <= 기준선 KRW 30,794))",
+        "executions": [
+            {
+                "ticker": "016360",
+                "action": "SELL",
+                "quantity": 3,
+                "price": 101100.0,
+                "fee": 45.495,
+                "date": "2026-07-27 14:01:07",
+                "status": "FILLED",
+                "reason": "ODNO=0015993400",
+                "lot_id": "lot_20260709_100130_016360_001",
+                "level": 1,
+                "buy_price": 110400.0,
+                "realized_pnl": -27945.49,
+                "alias": "삼성증권"
+            },
+            {
+                "ticker": "005930",
+                "action": "BUY",
+                "quantity": 3,
+                "price": 251250.0,
+                "fee": 113.06249999999999,
+                "date": "2026-07-27 14:01:13",
+                "status": "FILLED",
+                "reason": "ODNO=0015997300",
+                "level": 6,
+                "alias": "삼성전자"
+            },
+            {
+                "ticker": "307520",
+                "action": "SELL",
+                "quantity": 5,
+                "price": 20800.0,
+                "fee": 15.599999999999998,
+                "date": "2026-07-27 14:01:18",
+                "status": "FILLED",
+                "reason": "ODNO=0015999300",
+                "lot_id": "lot_20260529_090450_307520_001",
+                "level": 1,
+                "buy_price": 26000.0,
+                "realized_pnl": -26015.6,
+                "alias": "TIGER 지주회사"
+            },
+            {
+                "ticker": "005935",
+                "action": "BUY",
+                "quantity": 5,
+                "price": 178900.0,
+                "fee": 134.17499999999998,
+                "date": "2026-07-27 14:01:24",
+                "status": "FILLED",
+                "reason": "ODNO=0016002200",
+                "level": 5,
+                "alias": "삼성전자우"
+            }
+        ]
     }
 ]

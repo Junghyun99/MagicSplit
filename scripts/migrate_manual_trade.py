@@ -309,7 +309,7 @@ def rebuild_status(repo: JsonRepository, positions: List[PositionLot],
         current_prices={r["ticker"]: r["price"] for r in rows},
         exchange_rate=prev.get("exchange_rate"),
     )
-    return build_dashboard_status(
+    status = build_dashboard_status(
         portfolio=portfolio,
         positions=positions,
         reason=prev.get("reason", ""),
@@ -323,6 +323,10 @@ def rebuild_status(repo: JsonRepository, positions: List[PositionLot],
         market_type=market_type,
         regime_state_by_ticker=prev.get("regime_state_by_ticker") or {},
     )
+    # sim_date 는 날짜 단위라 시:분:초가 잘린다. 실제 실행 시각을 그대로 보존한다.
+    if prev.get("last_updated"):
+        status["last_updated"] = prev["last_updated"]
+    return status
 
 
 def _load_enabled_rules(config_path: str, warn=print):

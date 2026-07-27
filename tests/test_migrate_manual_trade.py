@@ -430,12 +430,22 @@ class TestRebuildStatus:
         assert out["realized_pnl_by_ticker"] == {"KRW-ETH": -854581.65}
         assert out["positions"]["KRW-ETH"]["total_qty"] == 0.77220024
 
-    def test_keeps_previous_run_date_instead_of_now(self, tmp_path):
-        repo = self._repo(tmp_path, self._status())
+    def test_keeps_previous_run_timestamp_instead_of_now(self, tmp_path):
+        status = self._status()
+        status["last_updated"] = "2026-07-27 06:31:03"
+        repo = self._repo(tmp_path, status)
 
         out = rebuild_status(repo, [_lot("KRW-ETH", 0.77220024, 1)], {}, "crypto")
 
         assert out["last_run_date"] == "2026-07-27"
+        # 실제 실행 시각이 날짜만 남고 잘리면 안 된다
+        assert out["last_updated"] == "2026-07-27 06:31:03"
+
+    def test_falls_back_to_run_date_without_prior_timestamp(self, tmp_path):
+        repo = self._repo(tmp_path, self._status())
+
+        out = rebuild_status(repo, [_lot("KRW-ETH", 0.77220024, 1)], {}, "crypto")
+
         assert out["last_updated"] == "2026-07-27"
 
     def test_stale_positions_still_flagged_as_mismatch(self, tmp_path):
