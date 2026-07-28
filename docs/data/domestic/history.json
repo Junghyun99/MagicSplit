@@ -3518,5 +3518,51 @@
                 "alias": "메리츠금융지주"
             }
         ]
+    },
+    {
+        "id": "tx_20260728_150723",
+        "date": "2026-07-28 15:07:23",
+        "portfolio_value": 24754398.0,
+        "cash_balance": 6447198.0,
+        "net_deposit": 24.45,
+        "total_trade_amount": 1563000.0,
+        "reason": "SK하이닉스(000660):BUY(수동 매매(Manual Trade))",
+        "executions": [
+            {
+                "ticker": "000660",
+                "action": "BUY",
+                "quantity": 1,
+                "price": 1563000.0,
+                "fee": 234.45,
+                "date": "2026-07-28 15:07:19",
+                "status": "FILLED",
+                "reason": "ODNO=0023154300",
+                "level": 2,
+                "alias": "SK하이닉스"
+            }
+        ]
+    },
+    {
+        "id": "tx_20260728_150735",
+        "date": "2026-07-28 15:07:35",
+        "portfolio_value": 24747444.0,
+        "cash_balance": 5656103.0,
+        "net_deposit": 8.65,
+        "total_trade_amount": 790985.0,
+        "reason": "KODEX 반도체레버리지(494310):BUY(수동 매매(Manual Trade))",
+        "executions": [
+            {
+                "ticker": "494310",
+                "action": "BUY",
+                "quantity": 13,
+                "price": 60845.0,
+                "fee": 118.64774999999999,
+                "date": "2026-07-28 15:07:32",
+                "status": "FILLED",
+                "reason": "ODNO=0023164900",
+                "level": 6,
+                "alias": "KODEX 반도체레버리지"
+            }
+        ]
     }
 ]

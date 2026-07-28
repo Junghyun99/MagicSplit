@@ -185,3 +185,39 @@
 2026-07-28 14:01:30,272 [INFO] >>> Processing ACE 테슬라밸류체인액티브(457480)
 2026-07-28 14:01:30,275 [INFO] [ACE 테슬라밸류체인액티브(457480)] DOWNTREND 확정 - 신규 진입 차단
 2026-07-28 14:01:30,832 [INFO] >>> Step 6: Persist
+2026-07-28 15:07:12,665 [INFO] === Manual Trade CLI (domestic) [2건]: 000660:buy(3000000.0), 494310:buy(800000.0) ===
+2026-07-28 15:07:12,665 [INFO] [KisBroker] 캐시에서 토큰 로드 (API 호출 생략)
+2026-07-28 15:07:12,665 [INFO] [KisDomesticLiveBroker] Mode: LIVE TRADING
+2026-07-28 15:07:12,665 [INFO] === Manual Trade: SK하이닉스(000660) BUY ===
+2026-07-28 15:07:12,666 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-07-28 15:07:13,630 [INFO] Fetching real-time prices from Broker...
+2026-07-28 15:07:16,980 [INFO] Portfolio: Cash=KRW 8,010,408, Value=KRW 24,743,423
+2026-07-28 15:07:16,980 [INFO] >>> Step 2: Load Positions
+2026-07-28 15:07:16,980 [INFO] Loaded 24 position lot(s)
+2026-07-28 15:07:16,981 [INFO] 매수 금액 수동 지정: KRW 3,000,000
+2026-07-28 15:07:16,981 [INFO] 매수 수량 도출: Lv2 buy_amount=KRW 3,000,000 / 현재가=KRW 1,563,000 = 1
+2026-07-28 15:07:16,981 [INFO] [SK하이닉스(000660)] 수동 신호 생성: BUY Lv2 1주 @KRW 1,563,000
+2026-07-28 15:07:16,981 [INFO] Executing 1 order(s)...
+2026-07-28 15:07:17,591 [INFO] [KisBroker] Available Cash for BUY: 8,010,408
+2026-07-28 15:07:19,038 [INFO] [KisDomestic] Order Sent: BUY SK하이닉스(000660) 1 @ 1563000 (ODNO=0023154300)
+2026-07-28 15:07:19,446 [INFO] [KisDomestic] Order FILLED: SK하이닉스(000660) ODNO=0023154300 price=1563000.0 qty=1 fee=234.45
+2026-07-28 15:07:19,647 [INFO] [Position] New lot: lot_20260728_150719_000660_002 Lv2 SK하이닉스(000660) 1주 @KRW 1,563,000
+2026-07-28 15:07:23,260 [INFO] >>> Step 6: Persist
+2026-07-28 15:07:23,511 [INFO] === Manual Trade: KODEX 반도체레버리지(494310) BUY ===
+2026-07-28 15:07:23,511 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-07-28 15:07:23,905 [WARNING] [KisBroker] 초당 거래건수 초과(EGW00201/429) 감지 — 0.5s 대기 후 재시도 (1/3)
+2026-07-28 15:07:25,072 [WARNING] [KisBroker] 초당 거래건수 초과(EGW00201/429) 감지 — 1.0s 대기 후 재시도 (2/3)
+2026-07-28 15:07:26,735 [INFO] Fetching real-time prices from Broker...
+2026-07-28 15:07:29,970 [INFO] Portfolio: Cash=KRW 6,447,198, Value=KRW 24,747,544
+2026-07-28 15:07:29,970 [INFO] >>> Step 2: Load Positions
+2026-07-28 15:07:29,970 [INFO] Loaded 25 position lot(s)
+2026-07-28 15:07:29,971 [INFO] 매수 금액 수동 지정: KRW 800,000
+2026-07-28 15:07:29,971 [INFO] 매수 수량 도출: Lv6 buy_amount=KRW 800,000 / 현재가=KRW 60,850 = 13
+2026-07-28 15:07:29,971 [INFO] [KODEX 반도체레버리지(494310)] 수동 신호 생성: BUY Lv6 13주 @KRW 60,850
+2026-07-28 15:07:29,971 [INFO] Executing 1 order(s)...
+2026-07-28 15:07:30,386 [INFO] [KisBroker] Available Cash for BUY: 6,447,198
+2026-07-28 15:07:31,796 [INFO] [KisDomestic] Order Sent: BUY KODEX 반도체레버리지(494310) 13 @ 60850 (ODNO=0023164900)
+2026-07-28 15:07:32,189 [INFO] [KisDomestic] Order FILLED: KODEX 반도체레버리지(494310) ODNO=0023164900 price=60845.0 qty=13 fee=118.64774999999999
+2026-07-28 15:07:32,390 [INFO] [Position] New lot: lot_20260728_150732_494310_006 Lv6 KODEX 반도체레버리지(494310) 13주 @KRW 60,845
+2026-07-28 15:07:35,806 [INFO] >>> Step 6: Persist
+2026-07-28 15:07:36,127 [INFO] === Manual Trade 완료: 체결 2건 [000660 BUY, 494310 BUY], 실패 0건 ===
