@@ -1993,5 +1993,31 @@
                 "alias": "펩시코"
             }
         ]
+    },
+    {
+        "id": "tx_20260729_020118",
+        "date": "2026-07-29 02:01:18",
+        "portfolio_value": 16221.3741,
+        "cash_balance": 2378.16,
+        "net_deposit": 14.07,
+        "total_trade_amount": 141.83,
+        "reason": "펩시코(PEP):SELL(추세 이탈 전량 청산(수량 부족, 1주 -5.5%)),\n카메코(CCJ):SKIP(DOWNTREND 확정 - 신규 진입 차단),\n브로드컴(AVGO):SKIP(DOWNTREND 확정 - 신규 진입 차단),\nISHARES GLOBAL CLEAN ENERGY(ICLN):SKIP(DOWNTREND 확정 - 신규 진입 차단)",
+        "executions": [
+            {
+                "ticker": "PEP",
+                "action": "SELL",
+                "quantity": 1,
+                "price": 141.83,
+                "fee": 0.0,
+                "date": "2026-07-29 02:01:11",
+                "status": "FILLED",
+                "reason": "ODNO=0030583720",
+                "lot_id": "lot_20260512_003512_PEP_001",
+                "level": 1,
+                "buy_price": 150.05,
+                "realized_pnl": -8.22,
+                "alias": "펩시코"
+            }
+        ]
     }
 ]

@@ -35,3 +35,44 @@
 2026-07-29 00:01:18,279 [INFO] >>> Processing SCHWAB US DIVIDEND EQUITY(SCHD)
 2026-07-29 00:01:18,281 [INFO]   [SCHWAB US DIVIDEND EQUITY(SCHD)] 신호 없음 | Lv1 매수 USD 33.55 -> 현재 USD 34.10 (+1.65%) | 익절 +10.0% / 추매 -5.0%
 2026-07-29 00:01:18,281 [INFO] >>> Step 6: Persist
+2026-07-29 02:01:00,946 [INFO] === Initializing MagicSplit Bot (overseas) ===
+2026-07-29 02:01:00,946 [INFO] Loaded 22 stock rule(s) from config_overseas.json
+2026-07-29 02:01:00,946 [INFO] [overseas] 9 rule(s), mode=LIVE
+2026-07-29 02:01:00,946 [INFO] [KisBroker] 캐시에서 토큰 로드 (API 호출 생략)
+2026-07-29 02:01:00,946 [INFO] [KisOverseasLiveBroker] Mode: LIVE TRADING
+2026-07-29 02:01:00,948 [INFO] [MarketData] 레짐 필터 활성 종목 9개 -> YFinanceMarketDataProvider 주입 (window 260봉)
+2026-07-29 02:01:00,948 [INFO] === Running overseas engine ===
+2026-07-29 02:01:00,948 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-07-29 02:01:03,903 [INFO] Fetching real-time prices from Broker...
+2026-07-29 02:01:06,938 [INFO] Portfolio: Cash=USD 2,237.88, Value=USD 16,206.24
+2026-07-29 02:01:06,938 [INFO] >>> Step 2: Load Positions
+2026-07-29 02:01:06,938 [INFO] Loaded 20 position lot(s)
+2026-07-29 02:01:06,939 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-07-29 02:01:06,939 [INFO] >>> Processing 펩시코(PEP)
+2026-07-29 02:01:08,566 [INFO] [MarketData] 배치 다운로드 완료: 9/9종목
+2026-07-29 02:01:08,569 [INFO] [펩시코(PEP)] 채널 기울기 하락 전환 확정 (-12.60%/63봉) -> 이탈 청산 진행
+2026-07-29 02:01:08,569 [INFO] [펩시코(PEP)] 추세 이탈 -> 수량 부족으로 전량 청산(Bulk) 1주 (평단 USD 150.05, 현재가 USD 141.85)
+2026-07-29 02:01:08,569 [INFO] Executing 1 order(s)...
+2026-07-29 02:01:08,569 [INFO] [KisBroker] Processing 1 SELL orders...
+2026-07-29 02:01:09,455 [INFO] [KisBroker] Order Sent: SELL 펩시코(PEP) 1 @ 141.83 (ODNO=0030583720)
+2026-07-29 02:01:11,877 [INFO] [KisBroker] Order FILLED: 펩시코(PEP) ODNO=0030583720 price=141.83 qty=1 fee=0.0
+2026-07-29 02:01:12,078 [INFO] [Position] Bulk 청산: 펩시코(PEP) 1주 소진 (잔여 0주), 실현손익 USD -8.22
+2026-07-29 02:01:16,954 [INFO] >>> Processing 테슬라(TSLA)
+2026-07-29 02:01:16,957 [INFO] [테슬라(TSLA)] 추종 데드라인 추적 중 (현재가 USD 307.67, 기준가 USD 308.72, 대비 -0.3%, 청산선 USD 299.46)
+2026-07-29 02:01:16,957 [INFO]   [테슬라(TSLA)] 신호 없음 | Lv2 매수 USD 435.49 -> 현재 USD 307.67 (-29.35%) | 익절 +10.0% / 추매 -5.0%
+2026-07-29 02:01:16,957 [INFO] >>> Processing 델 테크놀로지스(DELL)
+2026-07-29 02:01:16,960 [INFO]   [델 테크놀로지스(DELL)] 📈 상승 레짐 유지 | Lv6 매수 USD 420.93 -> 현재 USD 386.42 (-8.20%) | 채널하단(이탈선) USD 383.80 | 20EMA(눌림) USD 414.75 (이격 -6.83%) | adds 3/3
+2026-07-29 02:01:16,961 [INFO] >>> Processing 카메코(CCJ)
+2026-07-29 02:01:16,962 [INFO] [카메코(CCJ)] DOWNTREND 확정 - 신규 진입 차단
+2026-07-29 02:01:17,540 [INFO] >>> Processing 브로드컴(AVGO)
+2026-07-29 02:01:17,543 [INFO] [브로드컴(AVGO)] DOWNTREND 확정 - 신규 진입 차단
+2026-07-29 02:01:18,054 [INFO] >>> Processing SCHWAB US DIVIDEND EQUITY(SCHD)
+2026-07-29 02:01:18,057 [INFO]   [SCHWAB US DIVIDEND EQUITY(SCHD)] 신호 없음 | Lv1 매수 USD 33.55 -> 현재 USD 33.91 (+1.07%) | 익절 +10.0% / 추매 -5.0%
+2026-07-29 02:01:18,057 [INFO] >>> Processing ISHARES GLOBAL CLEAN ENERGY(ICLN)
+2026-07-29 02:01:18,059 [INFO] [ISHARES GLOBAL CLEAN ENERGY(ICLN)] DOWNTREND 확정 - 신규 진입 차단
+2026-07-29 02:01:18,593 [INFO] >>> Processing 애플(AAPL)
+2026-07-29 02:01:18,597 [INFO]   [애플(AAPL)] 📈 상승 레짐 유지 | Lv1 매수 USD 291.90 -> 현재 USD 339.82 (+16.42%) | 채널하단(이탈선) USD 299.63 | 20EMA(눌림) USD 321.49 (이격 +5.70%) | adds 0/3
+2026-07-29 02:01:18,598 [INFO] >>> Processing ARK INNOVATION(ARKK)
+2026-07-29 02:01:18,600 [INFO] [ARK INNOVATION(ARKK)] ✅ 추종 데드라인 해제! 가격 USD 72.68이 이탈 기준선 위로 회복 -> 상승 레짐 복귀 (잔량 6주 보유 유지)
+2026-07-29 02:01:18,600 [INFO]   [ARK INNOVATION(ARKK)] 신호 없음 | Lv1 매수 USD 79.92 -> 현재 USD 72.68 (-9.06%) | 익절 +10.0% / 추매 -5.0%
+2026-07-29 02:01:18,600 [INFO] >>> Step 6: Persist
