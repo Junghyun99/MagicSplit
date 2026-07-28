@@ -3359,5 +3359,43 @@
                 "alias": "삼성전자우"
             }
         ]
+    },
+    {
+        "id": "tx_20260728_100118",
+        "date": "2026-07-28 10:01:18",
+        "portfolio_value": 25481603.0,
+        "cash_balance": 7608728.0,
+        "net_deposit": 12.08,
+        "total_trade_amount": 520554.0,
+        "reason": "KODEX 반도체레버리지(494310):BUY(추가 매수 Lv4 (Lv3 대비 -16.9%)),\n테스(095610):SKIP(이탈 청산 후 재진입 대기 - 채널 중심선 미회복 (현재가 KRW 121,700 <= 기준선 KRW 204,243)),\nSOL 반도체전공정(475300):SKIP(이탈 청산 후 재진입 대기 - 상단 저항선 미회복 (현재가 KRW 17,590 <= 기준선 KRW 30,500)),\nKODEX 증권(102970):SELL(추세 이탈 분할 청산(3주/6주, -29.3%))",
+        "executions": [
+            {
+                "ticker": "494310",
+                "action": "BUY",
+                "quantity": 7,
+                "price": 66387.0,
+                "fee": 69.70724999999999,
+                "date": "2026-07-28 10:01:09",
+                "status": "FILLED",
+                "reason": "ODNO=0009565800",
+                "level": 4,
+                "alias": "KODEX 반도체레버리지"
+            },
+            {
+                "ticker": "102970",
+                "action": "SELL",
+                "quantity": 3,
+                "price": 18615.0,
+                "fee": 8.37675,
+                "date": "2026-07-28 10:01:15",
+                "status": "FILLED",
+                "reason": "ODNO=0009572300",
+                "lot_id": "lot_20260519_143320_102970_001",
+                "level": 1,
+                "buy_price": 26355.0,
+                "realized_pnl": -23228.38,
+                "alias": "KODEX 증권"
+            }
+        ]
     }
 ]
