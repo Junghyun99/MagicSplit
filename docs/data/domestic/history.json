@@ -3480,5 +3480,43 @@
                 "alias": "ACE 테슬라밸류체인액티브"
             }
         ]
+    },
+    {
+        "id": "tx_20260728_140130",
+        "date": "2026-07-28 14:01:30",
+        "portfolio_value": 25079398.0,
+        "cash_balance": 8010408.0,
+        "net_deposit": 6.94,
+        "total_trade_amount": 979620.0,
+        "reason": "SOL 반도체전공정(475300):SKIP(이탈 청산 후 재진입 대기 - 상단 저항선 미회복 (현재가 KRW 17,375 <= 기준선 KRW 30,500)),\n테스(095610):SKIP(이탈 청산 후 재진입 대기 - 채널 중심선 미회복 (현재가 KRW 121,400 <= 기준선 KRW 204,243)),\nKODEX 증권(102970):SELL(추세 이탈 분할 청산(2주/3주, -30.9%)),\n메리츠금융지주(138040):BUY(초기 매수 Lv1),\nACE 테슬라밸류체인액티브(457480):SKIP(DOWNTREND 확정 - 신규 진입 차단)",
+        "executions": [
+            {
+                "ticker": "102970",
+                "action": "SELL",
+                "quantity": 2,
+                "price": 18210.0,
+                "fee": 5.462999999999999,
+                "date": "2026-07-28 14:01:21",
+                "status": "FILLED",
+                "reason": "ODNO=0020301700",
+                "lot_id": "lot_20260519_143320_102970_001",
+                "level": 1,
+                "buy_price": 26355.0,
+                "realized_pnl": -16295.46,
+                "alias": "KODEX 증권"
+            },
+            {
+                "ticker": "138040",
+                "action": "BUY",
+                "quantity": 8,
+                "price": 117900.0,
+                "fee": 141.48,
+                "date": "2026-07-28 14:01:26",
+                "status": "FILLED",
+                "reason": "ODNO=0020306800",
+                "level": 1,
+                "alias": "메리츠금융지주"
+            }
+        ]
     }
 ]
