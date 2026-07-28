@@ -221,3 +221,22 @@
 2026-07-28 15:07:32,390 [INFO] [Position] New lot: lot_20260728_150732_494310_006 Lv6 KODEX 반도체레버리지(494310) 13주 @KRW 60,845
 2026-07-28 15:07:35,806 [INFO] >>> Step 6: Persist
 2026-07-28 15:07:36,127 [INFO] === Manual Trade 완료: 체결 2건 [000660 BUY, 494310 BUY], 실패 0건 ===
+2026-07-28 15:10:08,371 [INFO] === Manual Trade CLI (domestic) [1건]: 000660:buy(4000000.0) ===
+2026-07-28 15:10:08,371 [INFO] [KisBroker] 캐시에서 토큰 로드 (API 호출 생략)
+2026-07-28 15:10:08,371 [INFO] [KisDomesticLiveBroker] Mode: LIVE TRADING
+2026-07-28 15:10:08,372 [INFO] === Manual Trade: SK하이닉스(000660) BUY ===
+2026-07-28 15:10:08,372 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-07-28 15:10:09,501 [INFO] Fetching real-time prices from Broker...
+2026-07-28 15:10:12,795 [INFO] Portfolio: Cash=KRW 5,656,103, Value=KRW 24,715,468
+2026-07-28 15:10:12,795 [INFO] >>> Step 2: Load Positions
+2026-07-28 15:10:12,795 [INFO] Loaded 26 position lot(s)
+2026-07-28 15:10:12,796 [INFO] 매수 금액 수동 지정: KRW 4,000,000
+2026-07-28 15:10:12,796 [INFO] 매수 수량 도출: Lv3 buy_amount=KRW 4,000,000 / 현재가=KRW 1,558,000 = 2
+2026-07-28 15:10:12,796 [INFO] [SK하이닉스(000660)] 수동 신호 생성: BUY Lv3 2주 @KRW 1,558,000
+2026-07-28 15:10:12,796 [INFO] Executing 1 order(s)...
+2026-07-28 15:10:13,220 [INFO] [KisBroker] Available Cash for BUY: 5,656,103
+2026-07-28 15:10:14,622 [INFO] [KisDomestic] Order Sent: BUY SK하이닉스(000660) 2 @ 1559000 (ODNO=0023324300)
+2026-07-28 15:10:15,028 [INFO] [KisDomestic] Order FILLED: SK하이닉스(000660) ODNO=0023324300 price=1559000.0 qty=2 fee=467.69999999999993
+2026-07-28 15:10:15,229 [INFO] [Position] New lot: lot_20260728_151015_000660_003 Lv3 SK하이닉스(000660) 2주 @KRW 1,559,000
+2026-07-28 15:10:18,655 [INFO] >>> Step 6: Persist
+2026-07-28 15:10:18,948 [INFO] === Manual Trade 완료: 체결 1건 [000660 BUY], 실패 0건 ===
