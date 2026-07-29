@@ -77,3 +77,80 @@
 2026-07-29 10:01:38,009 [INFO] [Position] 분할 청산: TIGER 지주회사(307520) 1주 소진 (잔여 1주), 실현손익 KRW -6,688
 2026-07-29 10:01:38,010 [INFO] [TIGER 지주회사(307520)] 추종 데드라인(Trailing Lock) 상태 활성화 (기준가 KRW 19,315, 하락 허용치 3.0%)
 2026-07-29 10:01:41,519 [INFO] >>> Step 6: Persist
+2026-07-29 12:00:57,402 [INFO] === Initializing MagicSplit Bot (domestic) ===
+2026-07-29 12:00:57,402 [INFO] Loaded 24 stock rule(s) from config_domestic.json
+2026-07-29 12:00:57,402 [INFO] [domestic] 12 rule(s), mode=LIVE
+2026-07-29 12:00:57,403 [INFO] [KisBroker] 캐시에서 토큰 로드 (API 호출 생략)
+2026-07-29 12:00:57,403 [INFO] [KisDomesticLiveBroker] Mode: LIVE TRADING
+2026-07-29 12:00:57,405 [INFO] [MarketData] 레짐 필터 활성 종목 12개 -> YFinanceMarketDataProvider 주입 (window 260봉)
+2026-07-29 12:00:57,405 [INFO] === Running domestic engine ===
+2026-07-29 12:00:57,405 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-07-29 12:00:58,223 [INFO] Fetching real-time prices from Broker...
+2026-07-29 12:01:01,012 [INFO] Portfolio: Cash=KRW 1,608,898, Value=KRW 22,266,468
+2026-07-29 12:01:01,012 [INFO] >>> Step 2: Load Positions
+2026-07-29 12:01:01,012 [INFO] Loaded 27 position lot(s)
+2026-07-29 12:01:01,013 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-07-29 12:01:01,013 [INFO] >>> Processing KODEX 반도체레버리지(494310)
+2026-07-29 12:01:01,940 [INFO] [MarketData] 배치 다운로드 완료: 12/12종목
+2026-07-29 12:01:01,943 [INFO] [KODEX 반도체레버리지(494310)] 채널 기울기 하락 전환 확정 (-22.82%/63봉) -> 이탈 청산 진행
+2026-07-29 12:01:01,944 [INFO] [KODEX 반도체레버리지(494310)] 추세 이탈 -> 분할 청산 27주/54주 (50%) 즉시 매도, 잔량 27주 추종 데드라인 (기준가 KRW 47,530, 청산선 KRW 46,104, 평단 KRW 75,968, 채널하단 KRW 69,603)
+2026-07-29 12:01:01,944 [INFO] Executing 1 order(s)...
+2026-07-29 12:01:01,944 [INFO] [KisBroker] Processing 1 SELL orders...
+2026-07-29 12:01:02,753 [INFO] [KisDomestic] Order Sent: SELL KODEX 반도체레버리지(494310) 27 @ 47515 (ODNO=0016337400)
+2026-07-29 12:01:03,025 [INFO] [KisDomestic] Order FILLED: KODEX 반도체레버리지(494310) ODNO=0016337400 price=47568.0 qty=27 fee=192.654
+2026-07-29 12:01:03,225 [INFO] [Position] 분할 청산: KODEX 반도체레버리지(494310) 27주 소진 (잔여 27주), 실현손익 KRW -404,484
+2026-07-29 12:01:03,225 [INFO] [KODEX 반도체레버리지(494310)] 추종 데드라인(Trailing Lock) 상태 활성화 (기준가 KRW 47,568, 하락 허용치 3.0%)
+2026-07-29 12:01:06,703 [INFO] >>> Processing 삼성증권(016360)
+2026-07-29 12:01:06,706 [INFO] [삼성증권(016360)] DOWNTREND 확정 - 신규 진입 차단
+2026-07-29 12:01:07,147 [INFO] >>> Processing 한국쉘석유(002960)
+2026-07-29 12:01:07,150 [INFO]   [한국쉘석유(002960)] 신호 없음 | Lv1 매수 KRW 509,000 -> 현재 KRW 498,000 (-2.16%) | 익절 +10.0% / 추매 -5.0%
+2026-07-29 12:01:07,150 [INFO] >>> Processing KODEX 증권(102970)
+2026-07-29 12:01:07,152 [INFO] [KODEX 증권(102970)] 채널 기울기 하락 전환 확정 (-35.96%/63봉) -> 이탈 청산 진행
+2026-07-29 12:01:07,153 [INFO] [KODEX 증권(102970)] 추세 이탈 -> 수량 부족으로 전량 청산(Bulk) 1주 (평단 KRW 26,355, 현재가 KRW 16,885)
+2026-07-29 12:01:07,153 [INFO] Executing 1 order(s)...
+2026-07-29 12:01:07,153 [INFO] [KisBroker] Processing 1 SELL orders...
+2026-07-29 12:01:07,951 [INFO] [KisDomestic] Order Sent: SELL KODEX 증권(102970) 1 @ 16895 (ODNO=0016343600)
+2026-07-29 12:01:08,222 [INFO] [KisDomestic] Order FILLED: KODEX 증권(102970) ODNO=0016343600 price=16895.0 qty=1 fee=2.5342499999999997
+2026-07-29 12:01:08,423 [INFO] [Position] Bulk 청산: KODEX 증권(102970) 1주 소진 (잔여 0주), 실현손익 KRW -9,463
+2026-07-29 12:01:11,912 [INFO] >>> Processing 삼성전자우(005935)
+2026-07-29 12:01:11,915 [INFO] [삼성전자우(005935)] 하단 채널선 이탈 확정 (2일 연속, 현재가 KRW 147,500 < 이탈선 KRW 163,884, 채널하단 KRW 163,884, 허용 -0.0%) -> 이탈 청산 진행
+2026-07-29 12:01:11,915 [INFO] [삼성전자우(005935)] 추세 이탈 -> 분할 청산 12주/23주 (50%) 즉시 매도, 잔량 11주 추종 데드라인 (기준가 KRW 147,500, 청산선 KRW 143,075, 평단 KRW 197,696, 채널하단 KRW 163,884)
+2026-07-29 12:01:11,915 [INFO] Executing 1 order(s)...
+2026-07-29 12:01:11,915 [INFO] [KisBroker] Processing 1 SELL orders...
+2026-07-29 12:01:12,709 [INFO] [KisDomestic] Order Sent: SELL 삼성전자우(005935) 12 @ 147500 (ODNO=0016348300)
+2026-07-29 12:01:12,984 [INFO] [KisDomestic] Order FILLED: 삼성전자우(005935) ODNO=0016348300 price=147550.0 qty=12 fee=265.59
+2026-07-29 12:01:13,185 [INFO] [Position] 분할 청산: 삼성전자우(005935) 12주 소진 (잔여 11주), 실현손익 KRW -375,666
+2026-07-29 12:01:13,185 [INFO] [삼성전자우(005935)] 추종 데드라인(Trailing Lock) 상태 활성화 (기준가 KRW 147,550, 하락 허용치 3.0%)
+2026-07-29 12:01:16,667 [INFO] >>> Processing TIGER 지주회사(307520)
+2026-07-29 12:01:16,671 [INFO] [TIGER 지주회사(307520)] 🔻 추종 데드라인 발동! 기준가 KRW 19,315 대비 -7.1% (허용 -3.0%) -> 잔량 1주 전량 청산
+2026-07-29 12:01:16,671 [INFO] Executing 1 order(s)...
+2026-07-29 12:01:16,671 [INFO] [KisBroker] Processing 1 SELL orders...
+2026-07-29 12:01:17,492 [INFO] [KisDomestic] Order Sent: SELL TIGER 지주회사(307520) 1 @ 17915 (ODNO=0016352500)
+2026-07-29 12:01:19,894 [INFO] [KisDomestic] Order FILLED: TIGER 지주회사(307520) ODNO=0016352500 price=17915.0 qty=1 fee=2.6872499999999997
+2026-07-29 12:01:20,094 [INFO] [Position] Bulk 청산: TIGER 지주회사(307520) 1주 소진 (잔여 0주), 실현손익 KRW -8,088
+2026-07-29 12:01:23,456 [INFO] >>> Processing SOL 반도체전공정(475300)
+2026-07-29 12:01:23,459 [INFO] [SOL 반도체전공정(475300)] 이탈 청산 후 재진입 대기 - 상단 저항선 미회복 (현재가 KRW 15,280 <= 기준선 KRW 30,221)
+2026-07-29 12:01:23,843 [INFO] >>> Processing 메리츠금융지주(138040)
+2026-07-29 12:01:23,846 [INFO]   [메리츠금융지주(138040)] 신호 없음 | Lv1 매수 KRW 117,900 -> 현재 KRW 118,600 (+0.59%) | 익절 +10.0% / 추매 -5.0%
+2026-07-29 12:01:23,846 [INFO] >>> Processing ACE 테슬라밸류체인액티브(457480)
+2026-07-29 12:01:23,849 [INFO] [ACE 테슬라밸류체인액티브(457480)] DOWNTREND 확정 - 신규 진입 차단
+2026-07-29 12:01:24,249 [INFO] >>> Processing 삼성전자(005930)
+2026-07-29 12:01:24,252 [INFO] [삼성전자(005930)] 하단 채널선 이탈 확정 (2일 연속, 현재가 KRW 204,000 < 이탈선 KRW 228,279, 채널하단 KRW 228,279, 허용 -0.0%) -> 이탈 청산 진행
+2026-07-29 12:01:24,252 [INFO] [삼성전자(005930)] 추세 이탈 -> 분할 청산 9주/18주 (50%) 즉시 매도, 잔량 9주 추종 데드라인 (기준가 KRW 204,000, 청산선 KRW 197,880, 평단 KRW 291,833, 채널하단 KRW 228,279)
+2026-07-29 12:01:24,252 [INFO] Executing 1 order(s)...
+2026-07-29 12:01:24,253 [INFO] [KisBroker] Processing 1 SELL orders...
+2026-07-29 12:01:25,039 [INFO] [KisDomestic] Order Sent: SELL 삼성전자(005930) 9 @ 203500 (ODNO=0016359700)
+2026-07-29 12:01:57,065 [WARNING] [KisDomestic] Order NOT confirmed within 30s: 삼성전자(005930) ODNO=0016359700 — 취소 시도 후 재폴링·체결조회
+2026-07-29 12:01:57,660 [INFO] [KisDomestic] Order Cancelled: 삼성전자(005930) ODNO=0016359700
+2026-07-29 12:01:59,433 [INFO] [KisDomestic] Timeout outcome: 삼성전자(005930) ODNO=0016359700 REJECTED qty=0/9 detail=cancelled_no_fill
+2026-07-29 12:01:59,634 [WARNING] [Position] Skip: 삼성전자(005930) SELL rejected
+2026-07-29 12:02:03,225 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-07-29 12:02:03,228 [INFO] [ACE 엔비디아밸류체인액티브(483320)] 🔻 추종 데드라인 발동! 기준가 KRW 22,715 대비 -3.4% (허용 -3.0%) -> 잔량 16주 전량 청산
+2026-07-29 12:02:03,228 [INFO] Executing 1 order(s)...
+2026-07-29 12:02:03,228 [INFO] [KisBroker] Processing 1 SELL orders...
+2026-07-29 12:02:04,011 [INFO] [KisDomestic] Order Sent: SELL ACE 엔비디아밸류체인액티브(483320) 16 @ 21925 (ODNO=0016392400)
+2026-07-29 12:02:04,287 [INFO] [KisDomestic] Order FILLED: ACE 엔비디아밸류체인액티브(483320) ODNO=0016392400 price=21925.0 qty=16 fee=52.62
+2026-07-29 12:02:04,488 [INFO] [Position] Bulk 청산: ACE 엔비디아밸류체인액티브(483320) 16주 소진 (잔여 0주), 실현손익 KRW -163,573
+2026-07-29 12:02:07,852 [INFO] >>> Processing 테스(095610)
+2026-07-29 12:02:07,855 [INFO] [테스(095610)] 이탈 청산 후 재진입 대기 - 채널 중심선 미회복 (현재가 KRW 110,700 <= 기준선 KRW 199,728)
+2026-07-29 12:02:08,379 [INFO] >>> Step 6: Persist
