@@ -3587,5 +3587,111 @@
                 "alias": "SK하이닉스"
             }
         ]
+    },
+    {
+        "id": "tx_20260729_100141",
+        "date": "2026-07-29 10:01:41",
+        "portfolio_value": 24993703.0,
+        "cash_balance": 1608898.0,
+        "net_deposit": -1614881.15,
+        "total_trade_amount": 3540405.0,
+        "reason": "삼성증권(016360):SELL(추세 이탈 전량 청산(수량 부족, 1주 -15.5%)),\nKODEX 반도체레버리지(494310):SKIP(주문 미전송: 추세 이탈 분할 청산(27주/54주, -21.3%)),\n테스(095610):SKIP(이탈 청산 후 재진입 대기 - 채널 중심선 미회복 (현재가 KRW 122,300 <= 기준선 KRW 199,728)),\n한국쉘석유(002960):BUY(초기 매수 Lv1),\nSOL 반도체전공정(475300):SKIP(이탈 청산 후 재진입 대기 - 상단 저항선 미회복 (현재가 KRW 16,705 <= 기준선 KRW 30,221)),\nACE 엔비디아밸류체인액티브(483320):SELL(추세 이탈 분할 청산(17주/33주, -28.9%)),\nACE 테슬라밸류체인액티브(457480):SKIP(DOWNTREND 확정 - 신규 진입 차단),\n삼성전자(005930):BUY(상승장 누적 매수 Lv7 (20EMA 눌림, add 3)),\nTIGER 지주회사(307520):SELL(추세 이탈 분할 청산(1주/2주, -25.6%))",
+        "executions": [
+            {
+                "ticker": "016360",
+                "action": "SELL",
+                "quantity": 1,
+                "price": 93200.0,
+                "fee": 13.979999999999999,
+                "date": "2026-07-29 10:01:11",
+                "status": "FILLED",
+                "reason": "ODNO=0008100200",
+                "lot_id": "lot_20260709_100130_016360_001",
+                "level": 1,
+                "buy_price": 110400.0,
+                "realized_pnl": -17213.98,
+                "alias": "삼성증권"
+            },
+            {
+                "ticker": "494310",
+                "action": "SELL",
+                "quantity": 27,
+                "price": 59805.0,
+                "fee": 0.0,
+                "date": "2026-07-29 10:01:15",
+                "status": "REJECTED",
+                "reason": "",
+                "alias": "KODEX 반도체레버리지"
+            },
+            {
+                "ticker": "002960",
+                "action": "BUY",
+                "quantity": 1,
+                "price": 509000.0,
+                "fee": 76.35,
+                "date": "2026-07-29 10:01:21",
+                "status": "FILLED",
+                "reason": "ODNO=0008108300",
+                "level": 1,
+                "alias": "한국쉘석유"
+            },
+            {
+                "ticker": "483320",
+                "action": "SELL",
+                "quantity": 2,
+                "price": 22715.0,
+                "fee": 57.923249999999996,
+                "date": "2026-07-29 10:01:27",
+                "status": "FILLED",
+                "reason": "ODNO=0008114300",
+                "lot_id": "lot_20260702_100114_483320_002",
+                "level": 2,
+                "buy_price": 29975.0,
+                "realized_pnl": -14526.81,
+                "alias": "ACE 엔비디아밸류체인액티브"
+            },
+            {
+                "ticker": "483320",
+                "action": "SELL",
+                "quantity": 15,
+                "price": 22715.0,
+                "fee": 57.923249999999996,
+                "date": "2026-07-29 10:01:27",
+                "status": "FILLED",
+                "reason": "ODNO=0008114300",
+                "lot_id": "lot_20260701_120117_483320_001",
+                "level": 1,
+                "buy_price": 32145.0,
+                "realized_pnl": -141501.11,
+                "alias": "ACE 엔비디아밸류체인액티브"
+            },
+            {
+                "ticker": "005930",
+                "action": "BUY",
+                "quantity": 4,
+                "price": 229500.0,
+                "fee": 137.7,
+                "date": "2026-07-29 10:01:32",
+                "status": "FILLED",
+                "reason": "ODNO=0008120100",
+                "level": 7,
+                "alias": "삼성전자"
+            },
+            {
+                "ticker": "307520",
+                "action": "SELL",
+                "quantity": 1,
+                "price": 19315.0,
+                "fee": 2.8972499999999997,
+                "date": "2026-07-29 10:01:37",
+                "status": "FILLED",
+                "reason": "ODNO=0008124200",
+                "lot_id": "lot_20260529_090450_307520_001",
+                "level": 1,
+                "buy_price": 26000.0,
+                "realized_pnl": -6687.9,
+                "alias": "TIGER 지주회사"
+            }
+        ]
     }
 ]
