@@ -117,3 +117,22 @@
 2026-07-29 04:01:25,273 [INFO] >>> Processing 카메코(CCJ)
 2026-07-29 04:01:25,276 [INFO] [카메코(CCJ)] DOWNTREND 확정 - 신규 진입 차단
 2026-07-29 04:01:25,741 [INFO] >>> Step 6: Persist
+2026-07-29 23:05:12,803 [INFO] === Manual Trade CLI (overseas) [1건]: GLW:buy(1500.0) ===
+2026-07-29 23:05:12,805 [INFO] [KisBroker] 캐시에서 토큰 로드 (API 호출 생략)
+2026-07-29 23:05:12,805 [INFO] [KisOverseasLiveBroker] Mode: LIVE TRADING
+2026-07-29 23:05:12,805 [INFO] === Manual Trade: 코닝(GLW) BUY ===
+2026-07-29 23:05:12,805 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-07-29 23:05:15,473 [INFO] Fetching real-time prices from Broker...
+2026-07-29 23:05:19,022 [INFO] Portfolio: Cash=USD 1,947.85, Value=USD 16,429.70
+2026-07-29 23:05:19,022 [INFO] >>> Step 2: Load Positions
+2026-07-29 23:05:19,022 [INFO] Loaded 20 position lot(s)
+2026-07-29 23:05:19,023 [INFO] 매수 금액 수동 지정: USD 1,500.00
+2026-07-29 23:05:19,023 [INFO] 매수 수량 도출: Lv5 buy_amount=USD 1,500.00 / 현재가=USD 130.15 = 11
+2026-07-29 23:05:19,023 [INFO] [코닝(GLW)] 수동 신호 생성: BUY Lv5 11주 @USD 130.15
+2026-07-29 23:05:19,023 [INFO] Executing 1 order(s)...
+2026-07-29 23:05:20,957 [INFO] [KisBroker] Available Cash for BUY: 1,948
+2026-07-29 23:05:22,373 [INFO] [KisBroker] Order Sent: BUY 코닝(GLW) 11 @ 130.23 (ODNO=0030807318)
+2026-07-29 23:05:24,966 [INFO] [KisBroker] Order FILLED: 코닝(GLW) ODNO=0030807318 price=130.23 qty=11 fee=0.0
+2026-07-29 23:05:25,167 [INFO] [Position] New lot: lot_20260729_230525_GLW_005 Lv5 코닝(GLW) 11주 @USD 130.23
+2026-07-29 23:05:30,100 [INFO] >>> Step 6: Persist
+2026-07-29 23:05:30,339 [INFO] === Manual Trade 완료: 체결 1건 [GLW BUY], 실패 0건 ===
