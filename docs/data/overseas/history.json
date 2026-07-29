@@ -2065,5 +2065,31 @@
                 "alias": "코닝"
             }
         ]
+    },
+    {
+        "id": "tx_20260730_000118",
+        "date": "2026-07-30 00:01:18",
+        "portfolio_value": 16180.184,
+        "cash_balance": 938.76,
+        "net_deposit": -4.67,
+        "total_trade_amount": 426.84000000000003,
+        "reason": "펩시코(PEP):SKIP(DOWNTREND 확정 - 신규 진입 차단),\n브로드컴(AVGO):SKIP(DOWNTREND 확정 - 신규 진입 차단),\nARK INNOVATION(ARKK):SELL(추세 이탈 분할 청산(6주/12주, -6.4%)),\n카메코(CCJ):SKIP(DOWNTREND 확정 - 신규 진입 차단),\nISHARES GLOBAL CLEAN ENERGY(ICLN):SKIP(DOWNTREND 확정 - 신규 진입 차단)",
+        "executions": [
+            {
+                "ticker": "ARKK",
+                "action": "SELL",
+                "quantity": 6,
+                "price": 71.14,
+                "fee": 0.0,
+                "date": "2026-07-30 00:01:12",
+                "status": "FILLED",
+                "reason": "ODNO=0030846276",
+                "lot_id": "lot_20260729_040119_ARKK_002",
+                "level": 2,
+                "buy_price": 72.1,
+                "realized_pnl": -5.76,
+                "alias": "ARK INNOVATION"
+            }
+        ]
     }
 ]
