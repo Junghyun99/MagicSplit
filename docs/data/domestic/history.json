@@ -3872,5 +3872,27 @@
                 "alias": "KODEX 반도체레버리지"
             }
         ]
+    },
+    {
+        "id": "tx_20260730_100152",
+        "date": "2026-07-30 10:01:52",
+        "portfolio_value": 22411384.0,
+        "cash_balance": 5045459.0,
+        "net_deposit": 0.0,
+        "total_trade_amount": 0.0,
+        "reason": "삼성증권(016360):SKIP(DOWNTREND 확정 - 신규 진입 차단),\nKODEX 증권(102970):SKIP(DOWNTREND 확정 - 신규 진입 차단),\nACE 엔비디아밸류체인액티브(483320):SKIP(이탈 청산 후 재진입 대기 - 채널 중심선 미회복 (현재가 KRW 20,935 <= 기준선 KRW 28,389)),\n테스(095610):SKIP(이탈 청산 후 재진입 대기 - 채널 중심선 미회복 (현재가 KRW 109,600 <= 기준선 KRW 194,411)),\nACE 테슬라밸류체인액티브(457480):SKIP(DOWNTREND 확정 - 신규 진입 차단),\nSOL 반도체전공정(475300):SKIP(이탈 청산 후 재진입 대기 - 상단 저항선 미회복 (현재가 KRW 15,035 <= 기준선 KRW 29,962)),\nTIGER 지주회사(307520):SKIP(DOWNTREND 확정 - 신규 진입 차단),\n삼성전자(005930):SKIP(주문 미전송: 추세 이탈 분할 청산(9주/18주, -28.0%))",
+        "executions": [
+            {
+                "ticker": "005930",
+                "action": "SELL",
+                "quantity": 0,
+                "price": 210000.0,
+                "fee": 0.0,
+                "date": "2026-07-30 10:01:48",
+                "status": "REJECTED",
+                "reason": "ODNO=0007887300",
+                "alias": "삼성전자"
+            }
+        ]
     }
 ]
