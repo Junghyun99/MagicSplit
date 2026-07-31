@@ -130,7 +130,13 @@ window.DashboardController = (function () {
         );
     }
 
-    /** status.json의 positions/holdings에서 티커 -> 한글명 맵을 만든다. */
+    /**
+     * 티커 -> 한글명 맵을 만든다.
+     *
+     * alias_by_ticker가 활성 종목 전체를 담은 정본이다. positions/holdings는
+     * 보유 중인 종목만 있어 미보유 종목의 이름이 빠진다. 봇이 아직 새 형식으로
+     * status.json을 쓰기 전에도 이름이 보이도록 기존 두 곳을 폴백으로 남긴다.
+     */
     function buildAliasMap(data) {
         const map = {};
         if (!data) return map;
@@ -142,6 +148,7 @@ window.DashboardController = (function () {
         holdings.forEach((h) => {
             if (h && h.ticker && h.alias) map[h.ticker] = h.alias;
         });
+        Object.assign(map, data.alias_by_ticker || {});
         return map;
     }
 

@@ -220,6 +220,10 @@ def build_dashboard_status(
         "realized_pnl_by_ticker": realized_by_ticker,
         "regime_state_by_ticker": regime_state_by_ticker or {},
         "enabled_tickers": enabled_tickers,
+        # 보유 여부와 무관하게 활성 종목 전체의 한글명을 싣는다.
+        # positions/holdings에는 보유 중인 종목만 들어가므로, 활성 종목을 모두
+        # 나열하는 화면(차트 탭)에서는 미보유 종목의 이름을 찾을 곳이 없다.
+        "alias_by_ticker": {t: get_alias(t) or t for t in enabled_tickers},
         "risk_summary": {
             "next_level_needs": round(next_level_needs, 2),
             "max_potential_exposure": round(max_potential_exposure, 2),
