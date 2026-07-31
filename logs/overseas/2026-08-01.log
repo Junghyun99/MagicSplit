@@ -1,0 +1,35 @@
+2026-08-01 00:01:01,124 [INFO] === Initializing MagicSplit Bot (overseas) ===
+2026-08-01 00:01:01,124 [INFO] Loaded 22 stock rule(s) from config_overseas.json
+2026-08-01 00:01:01,125 [INFO] [overseas] 9 rule(s), mode=LIVE
+2026-08-01 00:01:01,125 [INFO] [KisBroker] 캐시에서 토큰 로드 (API 호출 생략)
+2026-08-01 00:01:01,125 [INFO] [KisOverseasLiveBroker] Mode: LIVE TRADING
+2026-08-01 00:01:01,128 [INFO] [MarketData] 레짐 필터 활성 종목 9개 -> YFinanceMarketDataProvider 주입 (window 260봉)
+2026-08-01 00:01:01,128 [INFO] === Running overseas engine ===
+2026-08-01 00:01:01,128 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-08-01 00:01:03,618 [INFO] Fetching real-time prices from Broker...
+2026-08-01 00:01:07,129 [INFO] Portfolio: Cash=USD 516.29, Value=USD 17,305.74
+2026-08-01 00:01:07,129 [INFO] >>> Step 2: Load Positions
+2026-08-01 00:01:07,130 [INFO] Loaded 21 position lot(s)
+2026-08-01 00:01:07,131 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-08-01 00:01:07,131 [INFO] >>> Processing ARK INNOVATION(ARKK)
+2026-08-01 00:01:07,941 [INFO] [MarketData] 배치 다운로드 완료: 9/9종목
+2026-08-01 00:01:07,944 [INFO] [ARK INNOVATION(ARKK)] 하단 채널선 이탈 감지 (1/2일, 현재가 USD 70.61 < 이탈선 USD 70.68) -> 확정 대기
+2026-08-01 00:01:07,944 [INFO]   [ARK INNOVATION(ARKK)] 신호 없음 | Lv2 매수 USD 71.93 -> 현재 USD 70.61 (-1.83%) | 익절 +10.0% / 추매 -5.0%
+2026-08-01 00:01:07,945 [INFO] >>> Processing 델 테크놀로지스(DELL)
+2026-08-01 00:01:07,949 [INFO]   [델 테크놀로지스(DELL)] 📈 상승 레짐 유지 | Lv6 매수 USD 420.93 -> 현재 USD 407.55 (-3.18%) | 채널하단(이탈선) USD 369.58 | 20EMA(눌림) USD 410.17 (이격 -0.64%) | adds 3/3
+2026-08-01 00:01:07,950 [INFO] >>> Processing SCHWAB US DIVIDEND EQUITY(SCHD)
+2026-08-01 00:01:07,952 [INFO]   [SCHWAB US DIVIDEND EQUITY(SCHD)] 신호 없음 | Lv1 매수 USD 33.55 -> 현재 USD 33.28 (-0.80%) | 익절 +10.0% / 추매 -5.0%
+2026-08-01 00:01:07,952 [INFO] >>> Processing 펩시코(PEP)
+2026-08-01 00:01:07,954 [INFO] [펩시코(PEP)] DOWNTREND 확정 - 신규 진입 차단
+2026-08-01 00:01:08,268 [INFO] >>> Processing 테슬라(TSLA)
+2026-08-01 00:01:08,271 [INFO] [테슬라(TSLA)] ✅ 추종 데드라인 해제! 가격 USD 307.94이 이탈 기준선 위로 회복 -> 상승 레짐 복귀 (잔량 2주 보유 유지)
+2026-08-01 00:01:08,272 [INFO]   [테슬라(TSLA)] 신호 없음 | Lv2 매수 USD 435.49 -> 현재 USD 307.94 (-29.29%) | 익절 +10.0% / 추매 -5.0%
+2026-08-01 00:01:08,272 [INFO] >>> Processing 카메코(CCJ)
+2026-08-01 00:01:08,274 [INFO] [카메코(CCJ)] DOWNTREND 확정 - 신규 진입 차단
+2026-08-01 00:01:08,504 [INFO] >>> Processing ISHARES GLOBAL CLEAN ENERGY(ICLN)
+2026-08-01 00:01:08,507 [INFO] [ISHARES GLOBAL CLEAN ENERGY(ICLN)] DOWNTREND 확정 - 신규 진입 차단
+2026-08-01 00:01:08,744 [INFO] >>> Processing 브로드컴(AVGO)
+2026-08-01 00:01:08,747 [INFO] [브로드컴(AVGO)] DOWNTREND 확정 - 신규 진입 차단
+2026-08-01 00:01:09,022 [INFO] >>> Processing 애플(AAPL)
+2026-08-01 00:01:09,255 [INFO] >>> Step 6: Persist
+2026-08-01 00:01:09,268 [INFO] [Step 6] 레짐 이벤트 이력 초기화: 진행 중 상태 13건 시딩
