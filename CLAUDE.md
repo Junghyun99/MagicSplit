@@ -197,10 +197,13 @@ GitHub Actions ?�크?�로??
 - `docs/js/views/regime-chart-view.js` - 차트 라이브러리 의존성 격리. 재렌더 전 `remove()` 필수
   (LWC는 `destroy()`가 아니라 `remove()`), 탭 이탈 시 인스턴스 해제.
 - 차트 JSON은 종목 클릭 시 개별 fetch (lazy loading) - 초기 로딩에 영향 없음
-- 범례 항목은 각각 클릭 토글이다. 숨긴 키 목록을 localStorage `chartHiddenSeries`에
-  저장해 종목 전환/새로고침 후에도 유지한다. 지표선은 `visible`, 수평 기준선은
-  `lineVisible`로 끈다(기준선에는 `visible` 옵션이 없다). 종가 시리즈는 숨겨져도
-  기준선·마커·배경밴드의 부착 대상이라 인스턴스를 계속 들고 있어야 한다.
+- 범례 항목은 각각 클릭 토글이다. 지표선은 `visible`, 수평 기준선은 `lineVisible`로
+  끈다(`IPriceLine`에는 `visible` 옵션이 없다). 종가 시리즈는 숨겨져도 기준선·마커·
+  배경밴드의 부착 대상이라 인스턴스를 계속 들고 있어야 한다.
+- 숨김 상태는 localStorage `chartHiddenSeries`에 **종목별로** 저장한다
+  (`{"overseas:TSLA": ["resistance", ...]}`). 마켓이 다르면 같은 티커도 다른 종목이라
+  `market:ticker`를 키로 쓴다. 스코프는 `renderChart` 진입 직후 `setScope`로 정해야
+  한다 - 범례 렌더와 시리즈 생성이 모두 `isHidden()`을 보기 때문이다.
 
 ### 주의
 - OHLC 제공자가 High/Low/Close만 받아 Open이 없다. 캔들 대신 **종가 라인**을 쓴다

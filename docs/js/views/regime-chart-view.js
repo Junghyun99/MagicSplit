@@ -17,19 +17,45 @@ window.RegimeChartView = (function () {
 
     const HIDDEN_KEYS_STORAGE = 'chartHiddenSeries';
 
-    /** 숨김 상태는 종목을 바꾸거나 새로고침해도 유지한다. */
-    function loadHiddenKeys() {
+    // 숨김 상태를 기억할 단위. 종목마다 보고 싶은 선이 달라 따로 저장한다.
+    // 마켓이 다르면 같은 티커라도 다른 종목이므로 마켓까지 붙인다.
+    let currentScope = '';
+
+    function setScope(chart) {
+        currentScope = `${(chart && chart.market_type) || 'unknown'}:${(chart && chart.ticker) || ''}`;
+    }
+
+    /**
+     * 종목별 숨김 목록 전체를 읽는다. {"overseas:TSLA": ["resistance", ...], ...}
+     *
+     * 초기 구현은 종목 구분 없는 평면 배열이었다. 그 형식이 남아 있으면
+     * 어느 종목의 설정인지 알 수 없으므로 버리고 빈 상태로 시작한다.
+     */
+    function loadHiddenMap() {
         try {
-            const raw = JSON.parse(localStorage.getItem(HIDDEN_KEYS_STORAGE) || '[]');
-            return new Set(Array.isArray(raw) ? raw : []);
+            const raw = JSON.parse(localStorage.getItem(HIDDEN_KEYS_STORAGE) || '{}');
+            if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return {};
+            return raw;
         } catch (e) {
-            return new Set();
+            return {};
         }
+    }
+
+    /** 현재 종목의 숨김 키 집합. */
+    function loadHiddenKeys() {
+        const scoped = loadHiddenMap()[currentScope];
+        return new Set(Array.isArray(scoped) ? scoped : []);
     }
 
     function saveHiddenKeys(keys) {
         try {
-            localStorage.setItem(HIDDEN_KEYS_STORAGE, JSON.stringify(Array.from(keys)));
+            const map = loadHiddenMap();
+            if (keys.size) {
+                map[currentScope] = Array.from(keys);
+            } else {
+                delete map[currentScope];  // 빈 항목이 쌓이지 않게 정리
+            }
+            localStorage.setItem(HIDDEN_KEYS_STORAGE, JSON.stringify(map));
         } catch (e) {
             /* 저장 실패해도 이번 세션 토글은 동작해야 한다 */
         }
@@ -259,6 +285,8 @@ window.RegimeChartView = (function () {
         }
 
         destroyChart();
+        // 범례 렌더와 시리즈 생성이 모두 isHidden()을 보므로 가장 먼저 정한다.
+        setScope(chart);
 
         const canvas = document.getElementById('regime-chart-canvas');
         if (!canvas) return;
