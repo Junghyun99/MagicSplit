@@ -1,12 +1,12 @@
 {
-    "last_updated": "2026-07-31 17:01:52",
-    "last_run_date": "2026-07-31",
+    "last_updated": "2026-08-01 08:56:13",
+    "last_run_date": "2026-08-01",
     "market_type": "domestic",
-    "reason": "KODEX 반도체레버리지(494310):SKIP(주문 미전송: 추세 이탈 분할 청산(7주/13주, -24.3%)),\n삼성증권(016360):SKIP(DOWNTREND 확정 - 신규 진입 차단),\n테스(095610):SKIP(이탈 청산 후 재진입 대기 - 채널 중심선 미회복 (현재가 KRW 130,000 <= 기준선 KRW 187,482)),\nSOL 반도체전공정(475300):SKIP(이탈 청산 후 재진입 대기 - 상단 저항선 미회복 (현재가 KRW 18,155 <= 기준선 KRW 29,690)),\nACE 테슬라밸류체인액티브(457480):SKIP(DOWNTREND 확정 - 신규 진입 차단),\nKODEX 증권(102970):SKIP(DOWNTREND 확정 - 신규 진입 차단),\nTIGER 지주회사(307520):SKIP(DOWNTREND 확정 - 신규 진입 차단),\nACE 엔비디아밸류체인액티브(483320):SKIP(이탈 청산 후 재진입 대기 - 채널 중심선 미회복 (현재가 KRW 23,645 <= 기준선 KRW 27,730))",
+    "reason": "삼성증권(016360):SKIP(DOWNTREND 확정 - 신규 진입 차단),\nKODEX 반도체레버리지(494310):SKIP(주문 미전송: 추세 이탈 분할 청산(7주/13주, -24.3%)),\nACE 엔비디아밸류체인액티브(483320):SKIP(이탈 청산 후 재진입 대기 - 채널 중심선 미회복 (현재가 KRW 23,645 <= 기준선 KRW 27,316)),\nSOL 반도체전공정(475300):SKIP(DOWNTREND 확정 - 신규 진입 차단),\nACE 테슬라밸류체인액티브(457480):SKIP(DOWNTREND 확정 - 신규 진입 차단),\nKODEX 증권(102970):SKIP(DOWNTREND 확정 - 신규 진입 차단),\n테스(095610):SKIP(이탈 청산 후 재진입 대기 - 채널 중심선 미회복 (현재가 KRW 130,000 <= 기준선 KRW 183,669)),\nTIGER 지주회사(307520):SKIP(DOWNTREND 확정 - 신규 진입 차단)",
     "exchange_rate": null,
     "portfolio": {
-        "total_value": 26534739.0,
-        "cash_balance": 5937479.0,
+        "total_value": 21489280.0,
+        "cash_balance": 892020.0,
         "holdings": [
             {
                 "ticker": "000660",
@@ -361,7 +361,7 @@
             "uptrend_today_state": "",
             "uptrend_days": [],
             "downtrend": "active",
-            "downtrend_exit_prev_date": "2026-07-31",
+            "downtrend_exit_prev_date": "2026-08-01",
             "downtrend_exit_today_state": "",
             "downtrend_exit_days": []
         },
@@ -374,7 +374,7 @@
             "downtrend_exit_streak": 0,
             "downtrend_exit_days": [],
             "downtrend_exit_today_state": "",
-            "downtrend_exit_prev_date": "2026-07-31",
+            "downtrend_exit_prev_date": "2026-08-01",
             "post_liquidation": true,
             "post_liquidation_reentry_gate": "resistance"
         },
@@ -384,7 +384,7 @@
             "downtrend_exit_streak": 0,
             "downtrend_exit_days": [],
             "downtrend_exit_today_state": "",
-            "downtrend_exit_prev_date": "2026-07-31",
+            "downtrend_exit_prev_date": "2026-08-01",
             "post_liquidation": true,
             "post_liquidation_reentry_gate": "resistance"
         },
@@ -392,15 +392,15 @@
             "downtrend_streak": 0,
             "downtrend_days": [],
             "downtrend_today_state": "",
-            "downtrend_prev_date": "2026-07-31",
+            "downtrend_prev_date": "2026-08-01",
             "downtrend_exit_streak": 0,
-            "breakdown_prev_date": "2026-07-31",
+            "breakdown_prev_date": "2026-08-01",
             "breakdown_today_state": "",
             "breakdown_days": [],
-            "uptrend_prev_date": "2026-07-31",
-            "uptrend_today_state": "",
-            "uptrend_days": [],
-            "uptrend_streak": 0
+            "uptrend_prev_date": "2026-08-01",
+            "uptrend_today_state": "uptrend",
+            "uptrend_days": ["2026-08-01"],
+            "uptrend_streak": 1
         },
         "102970": {
             "downtrend": "active",
@@ -408,7 +408,7 @@
             "downtrend_exit_streak": 0,
             "downtrend_exit_days": [],
             "downtrend_exit_today_state": "",
-            "downtrend_exit_prev_date": "2026-07-31",
+            "downtrend_exit_prev_date": "2026-08-01",
             "post_liquidation": true,
             "post_liquidation_reentry_gate": "resistance"
         },
@@ -421,7 +421,7 @@
             "downtrend_exit_streak": 0,
             "downtrend_exit_days": [],
             "downtrend_exit_today_state": "",
-            "downtrend_exit_prev_date": "2026-07-31",
+            "downtrend_exit_prev_date": "2026-08-01",
             "post_liquidation": true,
             "post_liquidation_reentry_gate": "resistance"
         },
@@ -432,12 +432,12 @@
             "post_liquidation": true,
             "breakdown_days": [],
             "breakdown_today_state": "",
-            "breakdown_prev_date": "2026-07-31",
+            "breakdown_prev_date": "2026-08-01",
             "regime": "uptrend",
             "adds": 3,
             "last_add_swing_high": 199300.0,
             "last_add_price": 178900.0,
-            "downtrend_prev_date": "2026-07-31",
+            "downtrend_prev_date": "2026-08-01",
             "downtrend_today_state": "",
             "downtrend_days": []
         },
@@ -445,32 +445,33 @@
             "downtrend_streak": 0,
             "downtrend_days": [],
             "downtrend_today_state": "",
-            "downtrend_prev_date": "2026-07-31",
+            "downtrend_prev_date": "2026-08-01",
             "downtrend_exit_streak": 0,
             "post_liquidation": true,
             "post_liquidation_reentry_gate": "midline"
         },
         "475300": {
-            "downtrend_streak": 1,
-            "downtrend_days": ["2026-07-31"],
-            "downtrend_today_state": "downtrend",
-            "downtrend_prev_date": "2026-07-31",
+            "downtrend_streak": 0,
+            "downtrend_days": [],
+            "downtrend_today_state": "",
+            "downtrend_prev_date": "",
             "downtrend_exit_streak": 0,
-            "post_liquidation": true
+            "post_liquidation": true,
+            "downtrend": "active"
         },
         "005930": {
             "downtrend_streak": 0,
             "downtrend_exit_streak": 0,
             "uptrend_streak": 0,
             "post_liquidation": true,
-            "breakdown_days": ["2026-07-30"],
+            "breakdown_days": [],
             "breakdown_today_state": "",
-            "breakdown_prev_date": "2026-07-31",
+            "breakdown_prev_date": "2026-08-01",
             "regime": "uptrend",
             "adds": 3,
             "last_add_swing_high": 284500.0,
             "last_add_price": 229500.0,
-            "downtrend_prev_date": "2026-07-31",
+            "downtrend_prev_date": "2026-08-01",
             "downtrend_today_state": "",
             "downtrend_days": []
         },
@@ -478,27 +479,41 @@
             "downtrend_streak": 0,
             "downtrend_days": [],
             "downtrend_today_state": "",
-            "downtrend_prev_date": "2026-07-31",
+            "downtrend_prev_date": "2026-08-01",
             "downtrend_exit_streak": 0,
             "post_liquidation": true,
             "post_liquidation_reentry_gate": "midline"
         },
         "002960": {
-            "downtrend_prev_date": "2026-07-31",
+            "downtrend_prev_date": "2026-08-01",
             "downtrend_today_state": "",
             "downtrend_days": [],
             "downtrend_streak": 0,
             "downtrend_exit_streak": 0,
-            "breakdown_prev_date": "2026-07-31",
+            "breakdown_prev_date": "2026-08-01",
             "breakdown_today_state": "",
             "breakdown_days": [],
-            "uptrend_prev_date": "2026-07-31",
+            "uptrend_prev_date": "2026-08-01",
             "uptrend_today_state": "",
             "uptrend_days": [],
             "uptrend_streak": 0
         }
     },
     "enabled_tickers": ["005930", "483320", "102970", "307520", "138040", "457480", "475300", "095610", "005935", "016360", "494310", "002960"],
+    "alias_by_ticker": {
+        "005930": "삼성전자",
+        "483320": "ACE 엔비디아밸류체인액티브",
+        "102970": "KODEX 증권",
+        "307520": "TIGER 지주회사",
+        "138040": "메리츠금융지주",
+        "457480": "ACE 테슬라밸류체인액티브",
+        "475300": "SOL 반도체전공정",
+        "095610": "테스",
+        "005935": "삼성전자우",
+        "016360": "삼성증권",
+        "494310": "KODEX 반도체레버리지",
+        "002960": "한국쉘석유"
+    },
     "risk_summary": {
         "next_level_needs": 2500000.0,
         "max_potential_exposure": 476000000.0,
@@ -507,50 +522,50 @@
                 "ticker": "018260",
                 "alias": "삼성에스디에스",
                 "last_trade_date": "2026-07-09",
-                "days_stale": 22
+                "days_stale": 23
             },
             {
                 "ticker": "000660",
                 "alias": "SK하이닉스",
                 "last_trade_date": "2026-07-28",
-                "days_stale": 3
+                "days_stale": 4
             },
             {
                 "ticker": "138040",
                 "alias": "메리츠금융지주",
                 "last_trade_date": "2026-07-28",
-                "days_stale": 3
+                "days_stale": 4
             },
             {
                 "ticker": "005935",
                 "alias": "삼성전자우",
                 "last_trade_date": "2026-07-29",
-                "days_stale": 2
+                "days_stale": 3
             },
             {
                 "ticker": "002960",
                 "alias": "한국쉘석유",
                 "last_trade_date": "2026-07-29",
-                "days_stale": 2
+                "days_stale": 3
             },
             {
                 "ticker": "005930",
                 "alias": "삼성전자",
                 "last_trade_date": "2026-07-30",
-                "days_stale": 1
+                "days_stale": 2
             },
             {
                 "ticker": "494310",
                 "alias": "KODEX 반도체레버리지",
                 "last_trade_date": "2026-07-31",
-                "days_stale": 0
+                "days_stale": 1
             }
         ],
-        "risk_score": 66,
+        "risk_score": 40,
         "deductions": [
             {
                 "reason": "현금 비중 부족",
-                "points": 3.9
+                "points": 30
             },
             {
                 "reason": "단일 종목 집중도 과다",
@@ -558,8 +573,8 @@
             }
         ],
         "sync_error": false,
-        "alerts": ["⚠️ 단일 종목 집중도 과다 (38.8%)"],
-        "max_ticker_concentration": 38.85,
+        "alerts": ["⚠️ 현금 비중 부족 (4.2%)", "⚠️ 단일 종목 집중도 과다 (48.0%)"],
+        "max_ticker_concentration": 47.97,
         "high_level_ratio": 0.0
     }
 }
