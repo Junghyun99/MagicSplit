@@ -2114,5 +2114,31 @@
                 "alias": "ARK INNOVATION"
             }
         ]
+    },
+    {
+        "id": "tx_20260801_020131",
+        "date": "2026-08-01 02:01:31",
+        "portfolio_value": 17254.690000000002,
+        "cash_balance": 822.84,
+        "net_deposit": -1.67,
+        "total_trade_amount": 309.95,
+        "reason": "ISHARES GLOBAL CLEAN ENERGY(ICLN):SKIP(DOWNTREND 확정 - 신규 진입 차단),\n테슬라(TSLA):SELL(추세 이탈 분할 청산(1주/2주, -29.1%)),\n브로드컴(AVGO):SKIP(DOWNTREND 확정 - 신규 진입 차단),\n카메코(CCJ):SKIP(DOWNTREND 확정 - 신규 진입 차단),\n펩시코(PEP):SKIP(DOWNTREND 확정 - 신규 진입 차단)",
+        "executions": [
+            {
+                "ticker": "TSLA",
+                "action": "SELL",
+                "quantity": 1,
+                "price": 309.95,
+                "fee": 0.0,
+                "date": "2026-08-01 02:01:24",
+                "status": "FILLED",
+                "reason": "ODNO=0031550352",
+                "lot_id": "lot_20260512_143909_TSLA_002",
+                "level": 2,
+                "buy_price": 435.49,
+                "realized_pnl": -125.54,
+                "alias": "테슬라"
+            }
+        ]
     }
 ]

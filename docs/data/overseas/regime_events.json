@@ -83,5 +83,14 @@
         "ticker": "DELL",
         "event": "uptrend_on",
         "price": 407.545
+    },
+    {
+        "date": "2026-08-01 02:01:31",
+        "ticker": "TSLA",
+        "event": "trailing_lock_on",
+        "price": 310.03,
+        "lock_price": 309.95,
+        "stop": 300.6515,
+        "gate": "resistance"
     }
 ]

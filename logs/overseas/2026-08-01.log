@@ -33,3 +33,43 @@
 2026-08-01 00:01:09,022 [INFO] >>> Processing 애플(AAPL)
 2026-08-01 00:01:09,255 [INFO] >>> Step 6: Persist
 2026-08-01 00:01:09,268 [INFO] [Step 6] 레짐 이벤트 이력 초기화: 진행 중 상태 13건 시딩
+2026-08-01 02:01:13,129 [INFO] === Initializing MagicSplit Bot (overseas) ===
+2026-08-01 02:01:13,129 [INFO] Loaded 22 stock rule(s) from config_overseas.json
+2026-08-01 02:01:13,129 [INFO] [overseas] 9 rule(s), mode=LIVE
+2026-08-01 02:01:13,129 [INFO] [KisBroker] 캐시에서 토큰 로드 (API 호출 생략)
+2026-08-01 02:01:13,129 [INFO] [KisOverseasLiveBroker] Mode: LIVE TRADING
+2026-08-01 02:01:13,131 [INFO] [MarketData] 레짐 필터 활성 종목 9개 -> YFinanceMarketDataProvider 주입 (window 260봉)
+2026-08-01 02:01:13,131 [INFO] === Running overseas engine ===
+2026-08-01 02:01:13,131 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-08-01 02:01:16,082 [INFO] Fetching real-time prices from Broker...
+2026-08-01 02:01:19,271 [INFO] Portfolio: Cash=USD 516.29, Value=USD 17,255.12
+2026-08-01 02:01:19,271 [INFO] >>> Step 2: Load Positions
+2026-08-01 02:01:19,271 [INFO] Loaded 21 position lot(s)
+2026-08-01 02:01:19,272 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-08-01 02:01:19,272 [INFO] >>> Processing ISHARES GLOBAL CLEAN ENERGY(ICLN)
+2026-08-01 02:01:20,946 [INFO] [MarketData] 배치 다운로드 완료: 9/9종목
+2026-08-01 02:01:20,948 [INFO] [ISHARES GLOBAL CLEAN ENERGY(ICLN)] DOWNTREND 확정 - 신규 진입 차단
+2026-08-01 02:01:21,520 [INFO] >>> Processing 테슬라(TSLA)
+2026-08-01 02:01:21,523 [INFO] [테슬라(TSLA)] 채널 기울기 하락 전환 확정 (-20.46%/63봉) -> 이탈 청산 진행
+2026-08-01 02:01:21,523 [INFO] [테슬라(TSLA)] 추세 이탈 -> 분할 청산 1주/2주 (50%) 즉시 매도, 잔량 1주 추종 데드라인 (기준가 USD 309.98, 청산선 USD 300.68, 평단 USD 436.97, 채널하단 USD 304.22)
+2026-08-01 02:01:21,523 [INFO] Executing 1 order(s)...
+2026-08-01 02:01:21,523 [INFO] [KisBroker] Processing 1 SELL orders...
+2026-08-01 02:01:22,451 [INFO] [KisBroker] Order Sent: SELL 테슬라(TSLA) 1 @ 309.95 (ODNO=0031550352)
+2026-08-01 02:01:24,916 [INFO] [KisBroker] Order FILLED: 테슬라(TSLA) ODNO=0031550352 price=309.95 qty=1 fee=0.0
+2026-08-01 02:01:25,117 [INFO] [Position] 분할 청산: 테슬라(TSLA) 1주 소진 (잔여 1주), 실현손익 USD -125.54
+2026-08-01 02:01:25,117 [INFO] [테슬라(TSLA)] 추종 데드라인(Trailing Lock) 상태 활성화 (기준가 USD 309.95, 하락 허용치 3.0%)
+2026-08-01 02:01:29,766 [INFO] >>> Processing 브로드컴(AVGO)
+2026-08-01 02:01:29,769 [INFO] [브로드컴(AVGO)] DOWNTREND 확정 - 신규 진입 차단
+2026-08-01 02:01:30,318 [INFO] >>> Processing 카메코(CCJ)
+2026-08-01 02:01:30,321 [INFO] [카메코(CCJ)] DOWNTREND 확정 - 신규 진입 차단
+2026-08-01 02:01:30,837 [INFO] >>> Processing 애플(AAPL)
+2026-08-01 02:01:30,842 [INFO]   [애플(AAPL)] 📈 상승 레짐 유지 | Lv1 매수 USD 291.90 -> 현재 USD 301.08 (+3.15%) | 채널하단(이탈선) USD 299.82 | 20EMA(눌림) USD 321.90 (이격 -6.47%) | adds 0/3
+2026-08-01 02:01:30,842 [INFO] >>> Processing 펩시코(PEP)
+2026-08-01 02:01:30,844 [INFO] [펩시코(PEP)] DOWNTREND 확정 - 신규 진입 차단
+2026-08-01 02:01:31,362 [INFO] >>> Processing ARK INNOVATION(ARKK)
+2026-08-01 02:01:31,364 [INFO]   [ARK INNOVATION(ARKK)] 신호 없음 | Lv2 매수 USD 71.93 -> 현재 USD 70.97 (-1.34%) | 익절 +10.0% / 추매 -5.0%
+2026-08-01 02:01:31,365 [INFO] >>> Processing SCHWAB US DIVIDEND EQUITY(SCHD)
+2026-08-01 02:01:31,366 [INFO]   [SCHWAB US DIVIDEND EQUITY(SCHD)] 신호 없음 | Lv1 매수 USD 33.55 -> 현재 USD 33.41 (-0.43%) | 익절 +10.0% / 추매 -5.0%
+2026-08-01 02:01:31,367 [INFO] >>> Processing 델 테크놀로지스(DELL)
+2026-08-01 02:01:31,370 [INFO]   [델 테크놀로지스(DELL)] 📈 상승 레짐 유지 | Lv6 매수 USD 420.93 -> 현재 USD 406.66 (-3.39%) | 채널하단(이탈선) USD 369.49 | 20EMA(눌림) USD 410.09 (이격 -0.84%) | adds 3/3
+2026-08-01 02:01:31,370 [INFO] >>> Step 6: Persist
