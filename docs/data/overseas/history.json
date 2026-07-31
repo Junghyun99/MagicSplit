@@ -2140,5 +2140,31 @@
                 "alias": "테슬라"
             }
         ]
+    },
+    {
+        "id": "tx_20260801_085722",
+        "date": "2026-08-01 08:57:22",
+        "portfolio_value": 17202.05,
+        "cash_balance": 1129.06,
+        "net_deposit": -3.3,
+        "total_trade_amount": 309.52,
+        "reason": "ISHARES GLOBAL CLEAN ENERGY(ICLN):SKIP(DOWNTREND 확정 - 신규 진입 차단),\n카메코(CCJ):SKIP(DOWNTREND 확정 - 신규 진입 차단),\n펩시코(PEP):SKIP(DOWNTREND 확정 - 신규 진입 차단),\n브로드컴(AVGO):SKIP(DOWNTREND 확정 - 신규 진입 차단),\n테슬라(TSLA):SELL(추세 이탈 전량 청산(수량 부족, 1주 -29.4%))",
+        "executions": [
+            {
+                "ticker": "TSLA",
+                "action": "SELL",
+                "quantity": 1,
+                "price": 309.52,
+                "fee": 0.0,
+                "date": "2026-08-01 08:57:17",
+                "status": "FILLED",
+                "reason": "ODNO=0031592663",
+                "lot_id": "lot_20260512_003633_TSLA_001",
+                "level": 1,
+                "buy_price": 438.44,
+                "realized_pnl": -128.92,
+                "alias": "테슬라"
+            }
+        ]
     }
 ]
