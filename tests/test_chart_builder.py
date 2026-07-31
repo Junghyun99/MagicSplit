@@ -7,6 +7,7 @@ import pytest
 
 from src.core.logic.chart_builder import (
     build_chart_series,
+    build_current_channel,
     build_price_lines,
     build_regime_bands,
     build_state_lines,
@@ -295,3 +296,111 @@ class TestBuildChartSeries:
         # 저가 코인은 소수 6자리까지 유지되어야 0으로 뭉개지지 않는다
         assert chart["rows"][0][1] > 0
         assert chart["current_price"] == pytest.approx(0.002, abs=1e-6)
+
+
+class TestBuildCurrentChannel:
+    def test_none_when_regime_disabled(self):
+        df = _ohlc(np.linspace(100, 200, 80))
+        assert build_current_channel(_rule(), df) is None
+
+    def test_none_for_ma_adx_mode(self):
+        rule = _rule(regime_enabled=True, regime_algo="ma_adx")
+        df = _ohlc(np.linspace(100, 200, 260))
+        assert build_current_channel(rule, df) is None
+
+    def test_none_when_history_shorter_than_lookback(self):
+        rule = _channel_rule(channel_lookback=63)
+        assert build_current_channel(rule, _ohlc(np.linspace(100, 110, 40))) is None
+
+    def test_none_for_missing_window(self):
+        assert build_current_channel(_channel_rule(), None) is None
+
+    def test_emits_one_point_per_lookback_bar(self):
+        rule = _channel_rule(channel_lookback=21)
+        df = _ohlc(np.linspace(100, 200, 80))
+
+        ch = build_current_channel(rule, df)
+
+        assert ch["cols"] == ["date", "mid", "support", "resistance"]
+        assert len(ch["rows"]) == 21  # asof 미지정 -> 외삽 지점 없음
+        assert ch["lookback"] == 21
+        # 창의 마지막 봉 날짜와 일치해야 한다
+        assert ch["rows"][-1][0] == df.index[-1].strftime("%Y-%m-%d")
+
+    def test_appends_today_extrapolation_when_asof_given(self):
+        rule = _channel_rule(channel_lookback=21)
+        df = _ohlc(np.linspace(100, 200, 80))
+
+        ch = build_current_channel(rule, df, asof="2099-01-01")
+
+        assert len(ch["rows"]) == 22
+        assert ch["rows"][-1][0] == "2099-01-01"
+
+    def test_asof_not_after_last_bar_is_not_appended(self):
+        """sim_date가 마지막 봉과 같거나 이전이면 중복 지점을 만들지 않는다."""
+        rule = _channel_rule(channel_lookback=21)
+        df = _ohlc(np.linspace(100, 200, 80))
+        last = df.index[-1].strftime("%Y-%m-%d")
+
+        assert len(build_current_channel(rule, df, asof=last)["rows"]) == 21
+
+    def test_endpoint_matches_live_judgment_values(self):
+        """직선의 끝점 = classify_channel이 오늘 판정에 쓴 값 (단일 진실 원천)."""
+        rule = _channel_rule(channel_lookback=21, channel_stddev_k=2.0)
+        df = _ohlc(np.linspace(100, 180, 60))
+
+        ch = build_current_channel(rule, df, asof="2099-01-01")
+        live = classify_for_rule(rule, df)
+        _, mid, support, resistance = ch["rows"][-1]
+
+        # 파일 크기를 줄이려고 소수 2자리로 반올림해 내보내므로 그 폭까지만 허용
+        assert mid == pytest.approx(live.channel_mid, abs=0.01)
+        assert support == pytest.approx(live.channel_support, abs=0.01)
+        assert resistance == pytest.approx(live.channel_resistance, abs=0.01)
+        assert ch["slope_pct"] == pytest.approx(live.channel_slope_pct, abs=0.01)
+
+    def test_channel_is_symmetric_in_log_space(self):
+        """로그 공간 대칭 -> mid/support 비율과 resistance/mid 비율이 같다."""
+        rule = _channel_rule(channel_lookback=21)
+        df = _ohlc(np.linspace(100, 180, 60))
+
+        for _, mid, support, resistance in build_current_channel(rule, df)["rows"]:
+            assert mid / support == pytest.approx(resistance / mid, rel=1e-3)
+
+    def test_straight_in_log_space(self):
+        """로그를 취하면 정확한 직선이어야 한다 (가격축의 곡률은 exp 때문).
+
+        롤링 채널선이 잘못 실리면 이 잔차가 눈에 띄게 커진다.
+        """
+        rule = _channel_rule(channel_lookback=21)
+        df = _ohlc(np.linspace(100, 180, 60))
+
+        mids = np.log([row[1] for row in build_current_channel(rule, df)["rows"]])
+        x = np.arange(len(mids))
+        slope, intercept = np.polyfit(x, mids, 1)
+        residual = np.abs(mids - (slope * x + intercept)).max()
+
+        # 남는 오차는 출력 반올림(소수 2자리)뿐
+        assert residual < 1e-3
+
+    def test_included_in_chart_payload(self):
+        rule = _channel_rule(channel_lookback=21)
+        df = _ohlc(np.linspace(100, 200, 80))
+
+        chart = build_chart_series(
+            rule, df, lambda d: classify_for_rule(rule, d), [], 195.0,
+            asof="2099-01-01",
+        )
+
+        assert chart["current_channel"] is not None
+        assert len(chart["current_channel"]["rows"]) == 22
+
+    def test_chart_payload_has_null_channel_when_disabled(self):
+        rule = _rule()
+        df = _ohlc(np.linspace(100, 120, 40))
+
+        chart = build_chart_series(
+            rule, df, lambda d: classify_for_rule(rule, d), [], 120.0
+        )
+
+        assert chart["current_channel"] is None

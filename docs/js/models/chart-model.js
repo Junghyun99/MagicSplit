@@ -59,6 +59,54 @@ window.ChartModel = (function () {
         return out;
     }
 
+    /**
+     * 오늘자 회귀 채널(직선 오버레이)을 시리즈로 변환한다.
+     *
+     * rows의 채널선은 봉마다 다시 회귀한 롤링 값이라 곡선이다(과거 판정 검증용).
+     * 이건 오늘 회귀 하나를 lookback 구간에 펼친 것으로 현재 채널 기울기를 본다.
+     * 같은 개념이라 색은 공유하고 점선으로 구분한다.
+     */
+    function toCurrentChannelSeries(chart) {
+        const cc = chart && chart.current_channel;
+        if (!cc || !Array.isArray(cc.rows) || !cc.rows.length) return [];
+
+        const dateIdx = cc.cols.indexOf('date');
+        if (dateIdx < 0) return [];
+
+        const out = [];
+        for (let c = 0; c < cc.cols.length; c++) {
+            if (c === dateIdx) continue;
+            const key = cc.cols[c];
+            const meta = SERIES_META[key] || { label: key, color: '#888888' };
+            const points = [];
+            for (const row of cc.rows) {
+                const value = row[c];
+                if (value === null || value === undefined) continue;
+                points.push({ time: row[dateIdx], value: value });
+            }
+            if (points.length) {
+                out.push({
+                    key: 'current_' + key,
+                    label: `${meta.label} (오늘 회귀)`,
+                    color: meta.color,
+                    width: 1,
+                    dashed: true,
+                    points: points
+                });
+            }
+        }
+        return out;
+    }
+
+    /** 오늘자 회귀 채널의 요약 (범례 옆 설명용). */
+    function describeCurrentChannel(chart) {
+        const cc = chart && chart.current_channel;
+        if (!cc) return null;
+        const slope = Number(cc.slope_pct);
+        const sign = slope > 0 ? '+' : '';
+        return `${cc.lookback}봉 회귀 · 기울기 ${sign}${slope.toFixed(2)}% · 폭 ±${cc.stddev_k}σ`;
+    }
+
     /** 레짐 구간을 배경 밴드 렌더용으로 변환한다 (횡보는 시각적 잡음이라 제외). */
     function toBands(chart) {
         if (!chart || !Array.isArray(chart.regime_bands)) return [];
@@ -160,5 +208,9 @@ window.ChartModel = (function () {
         return badges;
     }
 
-    return { toSeries, toBands, toPriceLines, toMarkers, toStatusBadges, SERIES_META, REGIME_META };
+    return {
+        toSeries, toBands, toPriceLines, toMarkers, toStatusBadges,
+        toCurrentChannelSeries, describeCurrentChannel,
+        SERIES_META, REGIME_META
+    };
 })();

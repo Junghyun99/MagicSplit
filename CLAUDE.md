@@ -180,6 +180,16 @@ GitHub Actions ?�크?�로??
   래치/`lock_price`는 경로 의존적이라 OHLC에서 재현이 불가능해 이것만 적재한다.
   이력이 비어 있는 첫 실행에는 `status.json`의 현재 상태를 시드로 심는다.
 
+### 두 가지 채널선을 함께 그린다
+- **롤링 곡선** (`rows`의 mid/support/resistance): 봉마다 창을 밀며 다시 회귀한 값 =
+  "그 날 봇이 계산했을 값". 과거 이탈/재진입 판정을 검증하려면 이게 필요하다.
+  각 점이 서로 다른 회귀라서 곡선이 된다.
+- **오늘자 직선** (`current_channel`, `build_current_channel`): 오늘 회귀 1개를
+  `channel_lookback` 구간에 펼친 것. 현재 채널 기울기를 보는 용도. 로그 공간 직선이라
+  가격축에서는 완만한 지수곡선이다. 프런트에서 점선으로 겹쳐 그리며 토글로 끌 수 있다
+  (localStorage `chartShowCurrentChannel`).
+- 마지막 점(x=lookback, 오늘 외삽)에서만 두 값이 일치한다. 이 일치는 테스트로 고정돼 있다.
+
 ### 프런트
 - `docs/js/vendor/lightweight-charts.standalone.production.js` - TradingView Lightweight Charts v5
   (Apache-2.0). CDN이 아닌 vendor 커밋. 라이선스 배너와 `LICENSE-lightweight-charts.txt` 유지 필수,

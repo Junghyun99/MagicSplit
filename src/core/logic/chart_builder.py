@@ -14,7 +14,9 @@ Open이 없기도 하지만, 회귀 채널과 EMA가 실제로 종가만 소비�
 import math
 from typing import List, Optional
 
-from src.core.logic.regime import classify_series
+import numpy as np
+
+from src.core.logic.regime import classify_series, linreg_channel
 from src.core.models import PositionLot, StockRule
 
 # 채널 모드에서 내보낼 지표 컬럼 (RegimeReading 필드명 -> 출력 컬럼명)
@@ -153,6 +155,73 @@ def build_regime_bands(readings: List[tuple]) -> List[dict]:
     return bands
 
 
+def build_current_channel(
+    rule: StockRule,
+    ohlc_window,
+    asof: Optional[str] = None,
+) -> Optional[dict]:
+    """오늘자 회귀 채널 1개를 창 전체에 펼친 '직선' 오버레이를 만든다.
+
+    rows에 실린 채널선은 봉마다 창을 밀며 다시 회귀한 롤링 값이라 곡선이 된다
+    (그 날 봇이 계산했을 값 = 과거 판정 검증용). 반면 이건 오늘 시점의 회귀
+    하나를 lookback 구간에 그대로 펼친 것으로, 지금 채널이 어떤 기울기로 서
+    있는지 보는 용도다. 로그 공간 직선이라 가격축에서는 완만한 지수곡선이다.
+
+    마지막 점은 x=lookback(오늘)으로 외삽한 값이라 classify_channel이 오늘
+    판정에 쓴 channel_mid/support/resistance와 정확히 일치한다.
+
+    Returns:
+        {"lookback", "stddev_k", "slope_pct", "cols", "rows"} 또는 None
+        (채널 모드가 아니거나 히스토리 부족)
+    """
+    if not rule.regime_enabled or rule.regime_algo != "channel":
+        return None
+    if ohlc_window is None:
+        return None
+
+    lookback = rule.channel_lookback
+    window = ohlc_window["Close"].tail(lookback)
+    if len(window) < lookback:
+        return None
+
+    values = window.to_numpy(dtype=float)
+    if not np.all(np.isfinite(values)) or np.any(values <= 0):
+        return None
+
+    m, c, sigma = linreg_channel(np.log(values))
+    offset = rule.channel_stddev_k * sigma
+
+    rows: List[list] = []
+    for i in range(lookback):
+        mid = float(np.exp(m * i + c))
+        rows.append([
+            _index_date(window, i),
+            _round(mid),
+            _round(mid * math.exp(-offset)),
+            _round(mid * math.exp(offset)),
+        ])
+
+    # 오늘(x=lookback) 외삽 지점. rows의 마지막 봉은 어제이므로 한 칸 더 붙여야
+    # 선의 끝이 오늘 판정에 실제로 쓰인 값과 맞는다.
+    last_bar_date = rows[-1][0] if rows else None
+    if asof and last_bar_date and asof > last_bar_date:
+        mid = float(np.exp(m * lookback + c))
+        rows.append([
+            asof,
+            _round(mid),
+            _round(mid * math.exp(-offset)),
+            _round(mid * math.exp(offset)),
+        ])
+
+    return {
+        "lookback": lookback,
+        "stddev_k": rule.channel_stddev_k,
+        "slope_pct": round(float((np.exp(m * (lookback - 1)) - 1.0) * 100.0), 2),
+        "cols": ["date", "mid", "support", "resistance"],
+        "rows": rows,
+    }
+
+
 def build_chart_series(
     rule: StockRule,
     ohlc_window,
@@ -225,6 +294,7 @@ def build_chart_series(
         "current_price": _round(current_price),
         "cols": cols,
         "rows": rows,
+        "current_channel": build_current_channel(rule, ohlc_window, asof),
         "regime_bands": build_regime_bands(readings),
         "lines": lines,
         "markers": markers or [],

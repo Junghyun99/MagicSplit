@@ -10,6 +10,19 @@ window.RegimeChartView = (function () {
     let closeSeries = null;
     let bandPrimitive = null;
     let resizeObserver = null;
+    // 오늘자 회귀 채널 오버레이. 토글로 껐다 켜므로 참조를 들고 있는다.
+    let currentChannelSeries = [];
+
+    const CHANNEL_TOGGLE_KEY = 'chartShowCurrentChannel';
+
+    function isCurrentChannelVisible() {
+        return localStorage.getItem(CHANNEL_TOGGLE_KEY) !== '0';
+    }
+
+    function setCurrentChannelVisible(visible) {
+        localStorage.setItem(CHANNEL_TOGGLE_KEY, visible ? '1' : '0');
+        currentChannelSeries.forEach((s) => s.applyOptions({ visible: visible }));
+    }
 
     /**
      * 레짐 구간 배경 밴드를 그리는 series primitive.
@@ -78,6 +91,7 @@ window.RegimeChartView = (function () {
         }
         closeSeries = null;
         bandPrimitive = null;
+        currentChannelSeries = [];
     }
 
     /** 컨테이너 크기에 맞춰 차트를 다시 맞춘다. */
@@ -136,7 +150,7 @@ window.RegimeChartView = (function () {
             `<div class="chart-badges">${badgeHtml}</div>`;
     }
 
-    function renderLegend(series, priceLines) {
+    function renderLegend(series, priceLines, channelInfo) {
         const legend = document.getElementById('regime-chart-legend');
         if (!legend) return;
 
@@ -151,9 +165,26 @@ window.RegimeChartView = (function () {
             `${esc(l.label)}</span>`
         ).join('');
 
+        // 오늘자 회귀 채널은 선 3개가 늘어 화면이 붐빌 수 있으므로 끌 수 있게 한다.
+        let toggleHtml = '';
+        if (channelInfo) {
+            const checked = isCurrentChannelVisible() ? ' checked' : '';
+            toggleHtml =
+                `<div class="chart-legend-row chart-channel-toggle">` +
+                `<label><input type="checkbox" id="toggle-current-channel"${checked}> ` +
+                `오늘 회귀 채널(점선) 표시</label>` +
+                `<span class="chart-channel-note">${esc(channelInfo)}</span></div>`;
+        }
+
         legend.innerHTML =
             `<div class="chart-legend-row">${seriesHtml}</div>` +
-            `<div class="chart-legend-row chart-legend-lines">${lineHtml}</div>`;
+            `<div class="chart-legend-row chart-legend-lines">${lineHtml}</div>` +
+            toggleHtml;
+
+        const toggle = document.getElementById('toggle-current-channel');
+        if (toggle) {
+            toggle.addEventListener('change', () => setCurrentChannelVisible(toggle.checked));
+        }
     }
 
     /**
@@ -182,9 +213,12 @@ window.RegimeChartView = (function () {
         const bands = ChartModel.toBands(chart);
         const priceLines = ChartModel.toPriceLines(chart);
         const markers = ChartModel.toMarkers(chart, formatMoney);
+        const channelSeries = ChartModel.toCurrentChannelSeries(chart);
+        const channelInfo = channelSeries.length
+            ? ChartModel.describeCurrentChannel(chart) : null;
 
         renderHeader(chart, aliasMap, ChartModel.toStatusBadges(chart));
-        renderLegend(series, priceLines);
+        renderLegend(series, priceLines, channelInfo);
 
         const theme = readThemeColors();
         chartInstance = LightweightCharts.createChart(canvas, {
@@ -216,6 +250,23 @@ window.RegimeChartView = (function () {
             lineSeries.setData(s.points);
             if (s.key === 'close') closeSeries = lineSeries;
         }
+
+        // 오늘자 회귀 채널 오버레이 (점선). 롤링 곡선과 같은 색을 써서
+        // "같은 선의 오늘자 스냅샷"으로 읽히게 한다.
+        const channelVisible = isCurrentChannelVisible();
+        currentChannelSeries = channelSeries.map((s) => {
+            const line = chartInstance.addSeries(LightweightCharts.LineSeries, {
+                color: s.color,
+                lineWidth: s.width,
+                lineStyle: LightweightCharts.LineStyle.Dashed,
+                priceLineVisible: false,
+                lastValueVisible: false,
+                title: '',
+                visible: channelVisible
+            });
+            line.setData(s.points);
+            return line;
+        });
 
         // 종가 시리즈가 없으면(이론상 불가) 첫 시리즈에라도 부가 요소를 붙인다.
         if (!closeSeries) return;
