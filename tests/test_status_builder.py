@@ -129,3 +129,50 @@ class TestSyncAlertTolerance:
         assert "0.00001234" in alert
         assert "0.00002468" in alert
         assert "e-" not in alert
+
+
+class TestAliasByTicker:
+    """차트 탭은 활성 종목 전체를 나열하므로 미보유 종목의 이름도 필요하다."""
+
+    def _build(self, enabled, portfolio=None, positions=None):
+        return build_dashboard_status(
+            portfolio=portfolio or _empty_portfolio(),
+            positions=positions or [],
+            reason="-",
+            old_realized_pnl_by_ticker={},
+            recent_executions=[],
+            enabled_tickers=enabled,
+            sim_date="2026-04-10",
+            market_type="domestic",
+        )
+
+    def test_covers_every_enabled_ticker(self):
+        status = self._build(["005930", "016360", "095610"])
+
+        assert set(status["alias_by_ticker"]) == {"005930", "016360", "095610"}
+
+    def test_includes_tickers_without_holdings(self):
+        """보유 lot이 없어도 이름이 실려야 한다 (이 필드를 만든 이유)."""
+        status = self._build(["005930"])
+
+        assert status["positions"] == {}          # 보유 없음
+        assert status["alias_by_ticker"]["005930"] == "삼성전자"
+
+    def test_falls_back_to_ticker_when_alias_unknown(self):
+        """미등록 티커도 키가 비지 않아야 프런트가 빈 라벨을 그리지 않는다."""
+        status = self._build(["NOT_A_REAL_TICKER"])
+
+        assert status["alias_by_ticker"]["NOT_A_REAL_TICKER"] == "NOT_A_REAL_TICKER"
+
+    def test_empty_when_no_enabled_tickers(self):
+        assert self._build([])["alias_by_ticker"] == {}
+
+    def test_matches_holdings_alias_for_held_tickers(self):
+        """보유 종목은 기존 holdings.alias와 같은 이름이어야 한다."""
+        portfolio = Portfolio(
+            total_cash=0.0, holdings={"005930": 1}, current_prices={"005930": 70000.0},
+        )
+        status = self._build(["005930"], portfolio=portfolio)
+
+        holding_alias = status["portfolio"]["holdings"][0]["alias"]
+        assert status["alias_by_ticker"]["005930"] == holding_alias
