@@ -35,6 +35,31 @@ window.DataRepository = (function () {
         }
     }
 
+    async function loadRegimeEvents(mode) {
+        const url = `data/${mode}/regime_events.json?t=${Date.now()}`;
+        try {
+            const res = await fetch(url);
+            if (!res.ok) return [];
+            return await res.json();
+        } catch (e) {
+            return [];
+        }
+    }
+
+    // 종목별 차트는 클릭 시점에 개별 로드한다 (초기 로딩에 영향 없음).
+    // 파일명 정규화 규칙은 백엔드 JsonRepository._chart_filename과 일치해야 한다.
+    async function loadChartSeries(mode, ticker) {
+        const safe = String(ticker).replace(/[^A-Za-z0-9._-]/g, '_');
+        const url = `data/${mode}/charts/${safe}.json?t=${Date.now()}`;
+        try {
+            const res = await fetch(url);
+            if (!res.ok) return null;
+            return await res.json();
+        } catch (e) {
+            return null;
+        }
+    }
+
     async function loadTickers() {
         const url = `data/tickers.json?t=${Date.now()}`;
         try {
@@ -62,6 +87,8 @@ window.DataRepository = (function () {
         loadStatus,
         loadHistory,
         loadDecisions,
+        loadRegimeEvents,
+        loadChartSeries,
         loadTickers,
         loadCryptoMarkets
     };

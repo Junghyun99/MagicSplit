@@ -28,6 +28,12 @@ HTML_COMMENT_RE = re.compile(r"<!--.*?-->", re.DOTALL)
 DEF_EXTS = (".css", ".html")
 REF_EXTS = (".css", ".html", ".js")
 
+# 서드파티 번들은 자기 나름의 CSS 변수를 쓰므로 검사 대상이 아니다.
+# (예: lightweight-charts의 var(--stroke)/var(--fill))
+# 이 검사의 목적은 우리 코드의 오타를 잡는 것이고, 벤더 파일은 고칠 수도 없다.
+# 정의도 함께 건너뛴다. 벤더의 정의가 우리 오타를 가려 주면 안 되기 때문이다.
+SKIP_DIRS = {"vendor", "node_modules"}
+
 
 def _blank_comment(m: "re.Match") -> str:
     """주석을 제거하되 개행 수는 보존해 이후 라인 번호가 밀리지 않게 한다."""
@@ -47,7 +53,8 @@ def _read(path: str) -> str:
 
 
 def _iter_files(root: str, exts: Tuple[str, ...]):
-    for dirpath, _dirs, files in os.walk(root):
+    for dirpath, dirs, files in os.walk(root):
+        dirs[:] = [d for d in dirs if d not in SKIP_DIRS]  # 하위 순회에서 제외
         for name in files:
             if name.endswith(exts):
                 yield os.path.join(dirpath, name)

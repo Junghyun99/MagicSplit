@@ -1,5 +1,6 @@
 # tests/test_infra_repo.py
 import json
+import os
 import pytest
 from src.infra.repo import JsonRepository
 from src.core.models import (
@@ -258,3 +259,78 @@ class TestBulkLiquidationHistory:
         assert all("liquidation_lots" not in e for e in execs)
         # 차수별 손익 합 보존
         assert round(sum(e["realized_pnl"] for e in execs), 2) == 350.0
+
+
+class TestRegimeEvents:
+    def test_empty_by_default(self, repo):
+        assert repo.load_regime_events() == []
+
+    def test_append_accumulates_across_calls(self, repo):
+        repo.save_regime_events([{"date": "d1", "ticker": "AAPL", "event": "downtrend_on"}])
+        repo.save_regime_events([{"date": "d2", "ticker": "TSLA", "event": "uptrend_on"}])
+
+        events = repo.load_regime_events()
+        assert [e["ticker"] for e in events] == ["AAPL", "TSLA"]
+
+    def test_empty_list_is_a_noop(self, repo):
+        repo.save_regime_events([{"date": "d1", "ticker": "AAPL", "event": "uptrend_on"}])
+        repo.save_regime_events([])
+
+        assert len(repo.load_regime_events()) == 1
+
+    def test_rolling_trim_keeps_most_recent(self, repo):
+        repo.save_regime_events([
+            {"date": f"d{i}", "ticker": "AAPL", "event": "uptrend_on"}
+            for i in range(5200)
+        ])
+
+        events = repo.load_regime_events()
+        assert len(events) == 5000
+        assert events[-1]["date"] == "d5199"
+
+
+class TestChartSeries:
+    def test_missing_chart_returns_none(self, repo):
+        assert repo.load_chart_series("AAPL") is None
+
+    def test_save_and_load_roundtrip(self, repo):
+        chart = {"ticker": "AAPL", "cols": ["date", "close"],
+                 "rows": [["2026-07-30", 331.2]]}
+        repo.save_chart_series("AAPL", chart)
+
+        assert repo.load_chart_series("AAPL") == chart
+
+    def test_overwrites_instead_of_appending(self, repo):
+        repo.save_chart_series("AAPL", {"rows": [1, 2, 3]})
+        repo.save_chart_series("AAPL", {"rows": [9]})
+
+        assert repo.load_chart_series("AAPL") == {"rows": [9]}
+
+    def test_ticker_with_separator_is_filename_safe(self, repo):
+        """업비트 티커(KRW-BTC)나 슬래시가 경로로 새어 나가면 안 된다."""
+        repo.save_chart_series("KRW-BTC", {"rows": [1]})
+        repo.save_chart_series("A/B", {"rows": [2]})
+
+        assert repo.load_chart_series("KRW-BTC") == {"rows": [1]}
+        assert repo.load_chart_series("A/B") == {"rows": [2]}
+        names = sorted(os.listdir(repo.charts_dir))
+        assert names == ["A_B.json", "KRW-BTC.json"]
+
+    def test_written_without_indentation(self, repo):
+        """차트는 기계 소비 파일이라 들여쓰기 없이 저장해 용량을 줄인다."""
+        repo.save_chart_series("AAPL", {"cols": ["date", "close"], "rows": [["d", 1.0]]})
+
+        path = os.path.join(repo.charts_dir, "AAPL.json")
+        with open(path, encoding="utf-8") as f:
+            raw = f.read()
+        assert "\n" not in raw
+        assert ": " not in raw
+
+    def test_nan_is_sanitized_to_null(self, repo):
+        repo.save_chart_series("AAPL", {"rows": [[float("nan")]]})
+
+        path = os.path.join(repo.charts_dir, "AAPL.json")
+        with open(path, encoding="utf-8") as f:
+            raw = f.read()
+        assert "NaN" not in raw
+        assert json.loads(raw) == {"rows": [[None]]}

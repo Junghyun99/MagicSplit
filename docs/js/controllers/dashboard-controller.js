@@ -6,6 +6,10 @@ window.DashboardController = (function () {
     let refreshTimer = null;
     let lastRefreshTime = null;
 
+    // Charts 탭은 lazy loading이다. 탭을 열 때만 차트 JSON을 fetch하므로
+    // 초기 로딩과 다른 탭 사용에는 영향을 주지 않는다.
+    let activeChartTicker = null;
+
     async function init() {
         const urlParams = new URLSearchParams(window.location.search);
         const modeParam = urlParams.get('mode') || '';
@@ -75,6 +79,9 @@ window.DashboardController = (function () {
                 window.RiskController.renderRisk();
             } else if (document.querySelector('.view-link[data-view="earnings"]').classList.contains('active')) {
                 renderEarningsView();
+            } else if (document.querySelector('.view-link[data-view="charts"]').classList.contains('active')) {
+                // 자동 새로고침 중이라면 이미 그려진 차트도 최신 데이터로 다시 그린다.
+                renderChartsView(activeChartTicker);
             }
 
         } finally {
@@ -84,6 +91,58 @@ window.DashboardController = (function () {
 
     function renderEarningsView() {
         EarningsView.render(DashboardModel.getCurrencyMode());
+    }
+
+    /** 차트 탭: 종목 목록을 세우고 선택된 종목의 차트를 로드한다. */
+    async function renderChartsView(forceTicker) {
+        const data = DashboardModel.getStatusData();
+        const tickers = (data && data.enabled_tickers) ? data.enabled_tickers.slice() : [];
+        const aliasMap = buildAliasMap(data);
+
+        if (!tickers.length) {
+            RegimeChartView.renderTickerList([], null, aliasMap, () => {});
+            RegimeChartView.renderPlaceholder('활성화된 종목이 없습니다.');
+            return;
+        }
+
+        const ticker = forceTicker
+            || (tickers.includes(activeChartTicker) ? activeChartTicker : tickers[0]);
+        activeChartTicker = ticker;
+
+        RegimeChartView.renderTickerList(tickers, ticker, aliasMap, (picked) => {
+            renderChartsView(picked);
+        });
+
+        const chart = await DataRepository.loadChartSeries(DashboardModel.getMode(), ticker);
+        // 로딩 중 사용자가 다른 종목을 눌렀으면 늦게 도착한 응답은 버린다.
+        if (activeChartTicker !== ticker) return;
+
+        if (!chart) {
+            RegimeChartView.renderPlaceholder(
+                '이 종목의 차트 데이터가 아직 없습니다. 다음 매매 사이클 후 생성됩니다.'
+            );
+            return;
+        }
+
+        const currencyMode = DashboardModel.getCurrencyMode();
+        RegimeChartView.renderChart(
+            chart, aliasMap, (v) => DashboardView.formatCurrency(v, currencyMode)
+        );
+    }
+
+    /** status.json의 positions/holdings에서 티커 -> 한글명 맵을 만든다. */
+    function buildAliasMap(data) {
+        const map = {};
+        if (!data) return map;
+        const positions = data.positions || {};
+        Object.keys(positions).forEach((t) => {
+            if (positions[t] && positions[t].alias) map[t] = positions[t].alias;
+        });
+        const holdings = (data.portfolio && data.portfolio.holdings) || [];
+        holdings.forEach((h) => {
+            if (h && h.ticker && h.alias) map[h.ticker] = h.alias;
+        });
+        return map;
     }
 
     function renderHistoryView() {
@@ -164,6 +223,13 @@ window.DashboardController = (function () {
                     window.RiskController.renderRisk();
                 } else if (view === 'earnings') {
                     renderEarningsView();
+                } else if (view === 'charts') {
+                    renderChartsView();
+                }
+
+                // 차트는 캔버스를 붙들고 있으므로 탭을 벗어나면 인스턴스를 놓아준다.
+                if (view !== 'charts') {
+                    RegimeChartView.destroyChart();
                 }
             });
         });

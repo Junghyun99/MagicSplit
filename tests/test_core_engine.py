@@ -1823,3 +1823,99 @@ class TestBuildReason:
         reason = engine._build_reason([self._signal()], [exe])
         assert "BUY" in reason
         assert "SKIP" not in reason
+
+
+class TestChartDataPersistence:
+    """차트 적재는 try/except로 감싸여 있어 조용히 실패할 수 있다.
+
+    매매 로직에 영향을 주지 않는 게 의도지만, 그만큼 회귀가 눈에 띄지 않으므로
+    실제로 저장이 일어나는지 여기서 검증한다.
+    """
+
+    @pytest.fixture
+    def chart_engine(self, mock_broker, mock_repo, mock_logger):
+        import numpy as np
+        import pandas as pd
+
+        rule = StockRule(
+            "AAPL", buy_threshold_pct=-5.0, sell_threshold_pct=10.0,
+            buy_amount=500, max_lots=10,
+            regime_enabled=True, regime_algo="channel", channel_lookback=21,
+        )
+        closes = np.linspace(80.0, 100.0, 60)
+        idx = pd.bdate_range("2026-01-01", periods=60)
+        window = pd.DataFrame(
+            {"High": closes * 1.01, "Low": closes * 0.99, "Close": closes}, index=idx
+        )
+
+        market_data = MagicMock()
+        market_data.get_ohlc_window.return_value = window
+
+        mock_repo.load_regime_events.return_value = []
+        mock_repo.load_history.return_value = []
+        # enabled_tickers가 없으면 엔진이 "신규 활성화"로 보고 레짐 상태를 리셋한다.
+        mock_repo.load_status.return_value = {"enabled_tickers": ["AAPL"]}
+        mock_repo.load_last_sell_prices.return_value = {}
+        mock_repo.get_realized_pnl_by_ticker.return_value = {}
+        mock_repo.get_last_trade_dates.return_value = {}
+
+        return MagicSplitEngine(
+            broker=mock_broker, repo=mock_repo, logger=mock_logger,
+            stock_rules=[rule], market_data=market_data,
+        )
+
+    def test_cycle_writes_chart_series(self, chart_engine, mock_repo):
+        chart_engine.run_one_cycle(sim_date="2026-07-31")
+
+        assert mock_repo.save_chart_series.called
+        ticker, chart = mock_repo.save_chart_series.call_args[0]
+        assert ticker == "AAPL"
+        assert chart["cols"][:2] == ["date", "close"]
+        assert chart["rows"]
+        assert chart["asof"] == "2026-07-31"
+
+    def test_latched_state_is_seeded_on_first_run(self, chart_engine, mock_repo):
+        """이력이 비어 있으면 이미 걸린 래치를 시드로 심는다."""
+        mock_repo.load_status.return_value = {
+            "enabled_tickers": ["AAPL"],
+            "regime_state_by_ticker": {"AAPL": {"downtrend": "active"}},
+        }
+
+        chart_engine.run_one_cycle(sim_date="2026-07-31")
+
+        saved = [c[0][0] for c in mock_repo.save_regime_events.call_args_list if c[0][0]]
+        assert saved, "시드 이벤트가 기록되지 않았다"
+        assert saved[0][0]["event"] == "downtrend_on"
+        assert saved[0][0]["ticker"] == "AAPL"
+
+    def test_no_events_recorded_when_state_unchanged(self, chart_engine, mock_repo):
+        """이력이 이미 있고 상태 변화가 없으면 아무것도 쌓이지 않는다."""
+        mock_repo.load_regime_events.return_value = [{"event": "downtrend_on"}]
+        mock_repo.load_status.return_value = {
+            "enabled_tickers": ["AAPL"],
+            "regime_state_by_ticker": {"AAPL": {"downtrend": "active"}},
+        }
+
+        chart_engine.run_one_cycle(sim_date="2026-07-31")
+
+        for call in mock_repo.save_regime_events.call_args_list:
+            assert call[0][0] == []
+
+    def test_chart_failure_does_not_break_cycle(self, chart_engine, mock_repo):
+        mock_repo.save_chart_series.side_effect = OSError("disk full")
+
+        result = chart_engine.run_one_cycle(sim_date="2026-07-31")
+
+        assert result is not None
+        assert mock_repo.save_positions.called  # 매매 저장은 정상 수행
+
+    def test_skipped_without_market_data(self, mock_broker, mock_repo, mock_logger):
+        engine = MagicSplitEngine(
+            broker=mock_broker, repo=mock_repo, logger=mock_logger,
+            stock_rules=[StockRule("AAPL", -5.0, 10.0, 500, 10)],
+        )
+        mock_repo.load_regime_events.return_value = [{"event": "x"}]
+
+        engine.run_one_cycle(sim_date="2026-07-31")
+
+        assert not mock_repo.save_chart_series.called
