@@ -7,7 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css?v=20260714-1">
+    <link rel="stylesheet" href="css/style.css?v=20260731-1">
 </head>
 <body>
     <header class="page-header">
@@ -45,6 +45,7 @@
         <button class="view-link" data-view="decisions">Decisions</button>
         <button class="view-link" data-view="history">History</button>
         <button class="view-link" data-view="earnings">Earnings</button>
+        <button class="view-link" data-view="charts">Charts</button>
     </nav>
 
     <div id="reason-banner" class="reason-banner" style="display:none"></div>
@@ -94,6 +95,19 @@
         </section>
     </div>
 
+    <div id="charts-section" style="display:none">
+        <div id="regime-chart-tickers" class="chart-ticker-bar"></div>
+        <section class="heatmap-section chart-card">
+            <div id="regime-chart-header" class="chart-header"></div>
+            <div id="regime-chart-canvas" class="chart-canvas"></div>
+            <div id="regime-chart-legend" class="chart-legend"></div>
+            <div class="chart-attribution">
+                Charts by <a href="https://www.tradingview.com" target="_blank" rel="noopener">TradingView</a>
+                Lightweight Charts&trade;
+            </div>
+        </section>
+    </div>
+
     <div id="risk-section">
         <div class="risk-overview">
             <div id="risk-health-container" class="risk-health-card"></div>
@@ -123,19 +137,22 @@
         </div>
     </div>
 
+    <script src="js/vendor/lightweight-charts.standalone.production.js?v=5.2.0"></script>
     <script src="js/utils/format-utils.js?v=20260716-1"></script>
-    <script src="js/services/data-repository.js?v=20260512-1"></script>
+    <script src="js/services/data-repository.js?v=20260731-1"></script>
     <script src="js/models/dashboard-model.js?v=20260716-1"></script>
     <script src="js/models/history-model.js?v=20260618-2"></script>
     <script src="js/models/decision-model.js?v=20260512-1"></script>
     <script src="js/models/earnings-model.js?v=20260708-2"></script>
-    <script src="js/views/dashboard-view.js?v=20260716-1"></script>
+    <script src="js/models/chart-model.js?v=20260731-1"></script>
+    <script src="js/views/dashboard-view.js?v=20260731-1"></script>
     <script src="js/views/history-view.js?v=20260512-1"></script>
     <script src="js/views/decision-view.js?v=20260512-1"></script>
     <script src="js/views/charts-view.js?v=20260716-1"></script>
     <script src="js/views/risk-view.js?v=20260512-1"></script>
     <script src="js/views/earnings-view.js?v=20260708-4"></script>
-    <script src="js/controllers/dashboard-controller.js?v=20260602-1"></script>
+    <script src="js/views/regime-chart-view.js?v=20260731-1"></script>
+    <script src="js/controllers/dashboard-controller.js?v=20260731-1"></script>
     <script src="js/controllers/risk-controller.js?v=20260512-1"></script>
     <script src="js/main.js?v=20260512-1"></script>
 </body>

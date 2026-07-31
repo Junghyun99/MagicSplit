@@ -1,4 +1,5 @@
 # src/core/engine/base.py
+import copy
 import time
 from dataclasses import replace
 from datetime import datetime
@@ -22,6 +23,8 @@ from src.core.models import (
 from src.core.logic import (
     SplitEvaluator, build_dashboard_status, detect_mismatches, drain_lots_by_qty,
 )
+from src.core.logic.chart_builder import build_chart_series
+from src.core.logic.regime_events import diff_regime_state, seed_events_from_state
 from src.core.engine.registry import register_engine
 from src.utils.ticker_reader import display_ticker
 from src.utils.currency import format_money, format_qty
@@ -110,6 +113,7 @@ class MagicSplitEngine:
         portfolio: Optional[Portfolio] = None
         positions: Optional[List[PositionLot]] = None
         regime_state: dict = {}
+        regime_before: dict = {}
         portfolio_refresh_failed: bool = False
 
         try:
@@ -118,6 +122,8 @@ class MagicSplitEngine:
 
             # 레짐 상태 로드 (status.json에 영속). 종목별 현재 레짐/스윙고점/누적횟수.
             regime_state = self._load_regime_state()
+            # 사이클 전 스냅샷. 종료 후 diff로 레짐 전이 이벤트를 뽑는다.
+            regime_before = copy.deepcopy(regime_state)
 
             # Step 2.1: 상태 전환 감지 및 자동 초기화 (OFF -> ON)
             self._handle_state_transitions(positions, last_sell_prices, regime_state)
@@ -258,6 +264,15 @@ class MagicSplitEngine:
                               last_sell_prices=last_sell_prices,
                               regime_state=regime_state,
                               skip_status=skip_status)
+                # 대시보드 차트 데이터. 매매와 무관한 부가 산출물이므로
+                # 실패해도 사이클 결과에 영향을 주지 않는다.
+                try:
+                    self._persist_chart_data(
+                        persist_portfolio, positions, regime_state, regime_before,
+                        last_sell_prices=last_sell_prices, sim_date=sim_date,
+                    )
+                except Exception as e:
+                    self.logger.warning(f"[Step 6] 차트 데이터 저장 실패 (매매에는 영향 없음): {e}")
             else:
                 missing = []
                 if portfolio is None:
@@ -1173,6 +1188,101 @@ class MagicSplitEngine:
             regime_state_by_ticker=regime_state,
         )
         self.repo.save_status(status_data)
+
+    def _persist_chart_data(
+        self,
+        portfolio: Portfolio,
+        positions: List[PositionLot],
+        regime_state: dict,
+        regime_before: dict,
+        last_sell_prices: Optional[dict] = None,
+        sim_date: Optional[str] = None,
+    ) -> None:
+        """대시보드 판정 차트용 데이터를 저장한다 (레짐 이벤트 + 종목별 시계열).
+
+        지표선은 저장된 값을 읽지 않고 라이브와 동일한 분류기로 재계산하므로
+        차트와 실제 판정이 어긋나지 않는다. 레짐 상태(래치/추종 데드라인)는
+        경로 의존적이라 재현이 불가능하므로 전이 시점만 이벤트로 적재한다.
+        """
+        from src.core.logic.split_evaluator import classify_for_rule
+
+        today = sim_date or datetime.now().strftime("%Y-%m-%d")
+        stamp = sim_date or datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+        self._record_regime_events(regime_before, regime_state, portfolio, stamp)
+
+        if self.market_data is None:
+            return  # 시세 제공자 없음 -> 지표 재계산 불가
+
+        for rule in self.stock_rules:
+            try:
+                window = self.market_data.get_ohlc_window(rule.ticker, today)
+                if window is None:
+                    continue
+                chart = build_chart_series(
+                    rule,
+                    window,
+                    lambda df, r=rule: classify_for_rule(r, df),
+                    [p for p in positions if p.ticker == rule.ticker],
+                    portfolio.current_prices.get(rule.ticker, 0.0),
+                    regime_st=regime_state.get(rule.ticker, {}),
+                    last_sell_price=(last_sell_prices or {}).get(rule.ticker),
+                    markers=self._build_trade_markers(rule.ticker),
+                    asof=today,
+                )
+                if chart is not None:
+                    self.repo.save_chart_series(rule.ticker, chart)
+            except Exception as e:
+                self.logger.warning(
+                    f"[{display_ticker(rule.ticker)}] 차트 데이터 생성 실패: {e}"
+                )
+
+    def _record_regime_events(
+        self, before: dict, after: dict, portfolio: Portfolio, stamp: str,
+    ) -> None:
+        """레짐 상태 전이를 이벤트로 적재한다.
+
+        이력이 비어 있는 첫 실행에서는 diff 대신 현재 상태를 시드로 심는다.
+        그렇게 하지 않으면 이미 걸려 있는 래치/추종 데드라인이 차트에서 사라진다.
+        """
+        existing = self.repo.load_regime_events()
+        events: List[dict] = []
+        if existing:
+            for ticker in set(before) | set(after):
+                events.extend(diff_regime_state(
+                    before.get(ticker, {}), after.get(ticker, {}), ticker, stamp,
+                    portfolio.current_prices.get(ticker),
+                ))
+        else:
+            for ticker, state in after.items():
+                events.extend(seed_events_from_state(
+                    state, ticker, stamp, portfolio.current_prices.get(ticker),
+                ))
+            if events:
+                self.logger.info(
+                    f"[Step 6] 레짐 이벤트 이력 초기화: 진행 중 상태 {len(events)}건 시딩"
+                )
+        self.repo.save_regime_events(events)
+
+    def _build_trade_markers(self, ticker: str, limit: int = 60) -> List[dict]:
+        """차트에 찍을 최근 매매 마커를 history에서 추린다."""
+        markers: List[dict] = []
+        for record in self.repo.load_history():
+            for exe in record.get("executions", []):
+                if exe.get("ticker") != ticker:
+                    continue
+                date = (exe.get("date") or record.get("date") or "")[:10]
+                if not date:
+                    continue
+                markers.append({
+                    "date": date,
+                    "action": exe.get("action"),
+                    "price": exe.get("price"),
+                    "quantity": exe.get("quantity"),
+                    "level": exe.get("level", 0),
+                    "realized_pnl": exe.get("realized_pnl", 0.0),
+                })
+        return markers[-limit:]
 
     def _load_regime_state(self) -> dict:
         """status.json에서 종목별 레짐 상태를 로드한다 (없으면 빈 dict)."""

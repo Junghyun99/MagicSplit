@@ -158,3 +158,42 @@ GitHub Actions ?�크?�로??
 - 코드 ?�집?�때??반드???�일??먼�? ?�어??
 - `docs/js/*.js` ?�는 `docs/css/*.css` �??�정???�는 반드??`docs/index.html`???�당 ?�일 `?v=` ?�라미터???�께 ?�릴 �?(브라?��? 캐시 무효??
   - ?�식: `?�짜-?�번` (?? `20260425-1`, 같�? ???�수????`20260425-2`�?증�?)
+
+
+## 판정 차트 (Charts 탭)
+
+레짐 판정선과 분할매매 그리드를 종목별로 겹쳐 보는 대시보드 탭.
+
+### 데이터 생성
+- `src/core/logic/regime.py::classify_series` - 봉마다 기존 분류기(`classify`/`classify_channel`)를
+  롤링 호출해 지표 시계열 산출. 분류기를 라이브와 공유하므로 차트와 실제 판정이 어긋날 수 없다.
+- `src/core/logic/chart_builder.py` - OHLC + 지표선 + 차수 기준선 + 마커를 차트 JSON으로 조립
+- `src/core/logic/regime_events.py` - 사이클 전후 `regime_state` diff로 레짐 전이 이벤트 도출.
+  평가기(split_evaluator)는 건드리지 않는다 (core -> infra 역방향 의존 회피).
+- `src/core/engine/base.py::_persist_chart_data` - 사이클 말미 적재. 매매와 무관한 부가 산출물이라
+  실패해도 사이클에 영향을 주지 않는다 (try/except).
+
+### 저장 위치
+- `docs/data/{market}/charts/{ticker}.json` - 종목별 시계열. 매 사이클 **전량 재계산 후 덮어쓰기**
+  (지표선은 OHLC에서 언제든 재현 가능하므로 이력을 쌓지 않는다). 들여쓰기 없이 저장(~11KB/종목).
+- `docs/data/{market}/regime_events.json` - 레짐 전이 이벤트만 append (최근 5000건).
+  래치/`lock_price`는 경로 의존적이라 OHLC에서 재현이 불가능해 이것만 적재한다.
+  이력이 비어 있는 첫 실행에는 `status.json`의 현재 상태를 시드로 심는다.
+
+### 프런트
+- `docs/js/vendor/lightweight-charts.standalone.production.js` - TradingView Lightweight Charts v5
+  (Apache-2.0). CDN이 아닌 vendor 커밋. 라이선스 배너와 `LICENSE-lightweight-charts.txt` 유지 필수,
+  차트 하단 TradingView 귀속 표기 제거 금지.
+- `docs/js/models/chart-model.js` - 순수 변환 (DOM/차트 라이브러리 의존 없음)
+- `docs/js/views/regime-chart-view.js` - 차트 라이브러리 의존성 격리. 재렌더 전 `remove()` 필수
+  (LWC는 `destroy()`가 아니라 `remove()`), 탭 이탈 시 인스턴스 해제.
+- 차트 JSON은 종목 클릭 시 개별 fetch (lazy loading) - 초기 로딩에 영향 없음
+
+### 주의
+- OHLC 제공자가 High/Low/Close만 받아 Open이 없다. 캔들 대신 **종가 라인**을 쓴다
+  (회귀 채널/EMA가 실제로 종가만 소비하므로 판정 근거와도 일치).
+- 차트 파일명은 `JsonRepository._chart_filename`(비허용 문자 -> `_`)과
+  `data-repository.js`의 정규화 규칙이 **반드시 일치**해야 한다 (KRW-BTC 등).
+- `docs/data/**`는 .gitignore 대상이라 워크플로에서 `git add --force`로 커밋한다.
+  `docs/data/{market}/*.json` 글롭은 하위 디렉토리를 포함하지 않으므로
+  `charts/*.json`을 별도 라인으로 추가해야 한다.

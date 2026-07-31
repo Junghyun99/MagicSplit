@@ -200,6 +200,50 @@ def classify(
     )
 
 
+def classify_series(
+    df: pd.DataFrame,
+    classifier,
+    *,
+    max_points: int = 200,
+) -> "list[tuple[str, RegimeReading]]":
+    """말단 bar 기준 분류기를 과거 봉마다 롤링 호출해 지표 시계열을 만든다.
+
+    차트용이다. 분류 자체는 classify/classify_channel을 그대로 재사용하므로
+    라이브 판정과 계산식이 어긋날 수 없다(단일 진실 원천).
+
+    Args:
+        df: OHLC DataFrame (DatetimeIndex 오름차순)
+        classifier: df 슬라이스를 받아 RegimeReading을 반환하는 콜러블.
+            보통 functools.partial(classify_for_rule, rule) 형태.
+        max_points: 산출할 최대 지점 수 (말단 기준 최근 N개)
+
+    Returns:
+        [(YYYY-MM-DD, RegimeReading), ...] 오름차순.
+        UNKNOWN 판정(히스토리 부족)은 제외한다.
+    """
+    n = int(len(df))
+    if n == 0:
+        return []
+
+    out: "list[tuple[str, RegimeReading]]" = []
+    start = max(1, n - max_points + 1)
+    for end in range(start, n + 1):
+        reading = classifier(df.iloc[:end])
+        if reading.regime == Regime.UNKNOWN:
+            continue
+        out.append((_index_date(df, end - 1), reading))
+    return out
+
+
+def _index_date(df: pd.DataFrame, pos: int) -> str:
+    """DataFrame 인덱스의 pos번째 값을 YYYY-MM-DD 문자열로 반환한다."""
+    value = df.index[pos]
+    try:
+        return pd.Timestamp(value).strftime("%Y-%m-%d")
+    except (ValueError, TypeError):
+        return str(value)[:10]
+
+
 def classify_channel(
     df: pd.DataFrame,
     *,

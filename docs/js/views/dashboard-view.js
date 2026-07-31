@@ -253,7 +253,8 @@ window.DashboardView = (function () {
             'history': ['history-section'],
             'decisions': ['decisions-section'],
             'risk': ['risk-section'],
-            'earnings': ['earnings-section']
+            'earnings': ['earnings-section'],
+            'charts': ['charts-section']
         };
 
         Object.keys(sections).forEach(key => {

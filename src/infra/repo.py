@@ -48,6 +48,8 @@ class JsonRepository(IRepository):
         self.last_sell_prices_file = os.path.join(self.root, "last_sell_prices.json")
         self.decisions_file = os.path.join(self.root, "decisions.json")
         self.snapshots_file = os.path.join(self.root, "snapshots.json")
+        self.regime_events_file = os.path.join(self.root, "regime_events.json")
+        self.charts_dir = os.path.join(self.root, "charts")
 
         # 초기 파일 생성 (404 방지)
         if not os.path.exists(self.positions_file):
@@ -62,6 +64,8 @@ class JsonRepository(IRepository):
             self._save_json(self.decisions_file, [])
         if not os.path.exists(self.snapshots_file):
             self._save_json(self.snapshots_file, [])
+        if not os.path.exists(self.regime_events_file):
+            self._save_json(self.regime_events_file, [])
 
         # ⚡ Bolt: Memory cache to avoid redundant disk I/O and JSON decoding
         # This dramatically speeds up the backtest loop which constantly reads/writes status.
@@ -353,6 +357,46 @@ class JsonRepository(IRepository):
 
         self._save_json(self.decisions_file, data)
 
+    def load_regime_events(self) -> List[dict]:
+        """레짐 전이 이벤트 이력을 로드한다."""
+        return self._load_json(self.regime_events_file, default=[])
+
+    def save_regime_events(self, events: List[dict]) -> None:
+        """레짐 전이 이벤트를 append 저장한다 (Rolling 방식).
+
+        상태가 바뀔 때만 호출되므로 대부분의 사이클에서는 아무것도 쌓이지 않는다.
+        """
+        if not events:
+            return
+        data = self._load_json(self.regime_events_file, default=[])
+        data.extend(events)
+
+        # 최근 5000건만 유지 (decisions.json과 동일한 rolling 정책)
+        if len(data) > 5000:
+            data = data[-5000:]
+
+        self._save_json(self.regime_events_file, data)
+
+    def save_chart_series(self, ticker: str, chart: dict) -> None:
+        """종목별 차트 시계열을 저장한다 (매 사이클 덮어쓰기).
+
+        누적이 아니라 전량 재계산 후 교체다. 지표선은 OHLC에서 언제든 재현
+        가능하므로 이력을 쌓을 이유가 없다.
+        """
+        os.makedirs(self.charts_dir, exist_ok=True)
+        path = os.path.join(self.charts_dir, f"{self._chart_filename(ticker)}.json")
+        self._save_json_compact(path, chart)
+
+    def load_chart_series(self, ticker: str) -> Optional[dict]:
+        """종목별 차트 시계열을 로드한다 (없으면 None)."""
+        path = os.path.join(self.charts_dir, f"{self._chart_filename(ticker)}.json")
+        return self._load_json(path, default=None)
+
+    @staticmethod
+    def _chart_filename(ticker: str) -> str:
+        """티커를 파일명으로 안전하게 바꾼다 (KRW-BTC 등 구분자 포함 대응)."""
+        return re.sub(r"[^A-Za-z0-9._-]", "_", ticker)
+
     def get_last_trade_dates(self) -> Dict[str, str]:
         """종목별 마지막 체결 날짜를 반환한다 (YYYY-MM-DD)."""
         history = self._load_json(self.history_file, default=[])
@@ -412,6 +456,18 @@ class JsonRepository(IRepository):
 
         with open(path, 'w', encoding='utf-8') as f:
             f.write(content)
-        
+
         # ⚡ Bolt: Update cache ONLY after successful disk write
+        self._cache[path] = sanitized
+
+    def _save_json_compact(self, path: str, data):
+        """들여쓰기 없이 최소 크기로 저장한다 (기계 생성/기계 소비 파일용).
+
+        차트 시계열은 매 사이클 통째로 교체되므로 사람이 diff를 읽을 일이 없다.
+        indent=4로 쓰면 파일 크기와 git 변경량이 수 배로 늘어난다.
+        """
+        sanitized = self._sanitize_for_json(data)
+        content = json.dumps(sanitized, ensure_ascii=False, separators=(',', ':'))
+        with open(path, 'w', encoding='utf-8') as f:
+            f.write(content)
         self._cache[path] = sanitized

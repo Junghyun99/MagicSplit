@@ -675,7 +675,7 @@ h2 { font-size: 1.1rem; margin-bottom: 8px; color: var(--text-muted); }
 .search-item .ticker-id { font-weight: 700; color: var(--primary); }
 .search-item .ticker-alias { font-weight: 500; }
 .search-item .ticker-ex { font-size: 0.75rem; color: var(--text-muted); margin-left: 8px; }
-/ *   R i s k   D a s h b o a r d   S t y l e s   * / 
+
 
 /* Risk Dashboard Styles */
 .risk-dashboard {
@@ -1167,3 +1167,104 @@ h2 { font-size: 1.1rem; margin-bottom: 8px; color: var(--text-muted); }
     background: var(--border);
 }
 .win-dot.filled { background: var(--success); }
+
+/* Regime Chart (Charts tab) */
+/* 200봉을 800px 본문 폭에 넣으면 뭉개져서, 이 탭만 본문보다 넓게 쓴다. */
+#charts-section {
+    margin-top: 16px;
+    width: min(1200px, calc(100vw - 48px));
+    margin-left: 50%;
+    transform: translateX(-50%);
+}
+
+.chart-ticker-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 12px;
+}
+.chart-ticker-btn {
+    font: inherit;
+    font-size: 12px;
+    padding: 4px 10px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: var(--card-bg);
+    color: var(--text-muted);
+    cursor: pointer;
+}
+.chart-ticker-btn:hover { border-color: var(--primary); color: var(--text); }
+.chart-ticker-btn.active {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: #fff;
+}
+
+.chart-card { padding: 16px; }
+
+.chart-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+.chart-title { font-size: 15px; font-weight: 600; }
+.chart-subtitle {
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--text-muted);
+    margin-left: 8px;
+}
+.chart-badges { display: flex; flex-wrap: wrap; gap: 6px; }
+.chart-badge {
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+}
+.chart-badge-positive { color: var(--success); border-color: var(--success); }
+.chart-badge-negative { color: var(--danger); border-color: var(--danger); }
+.chart-badge-warning { color: var(--warning); border-color: var(--warning); }
+
+.chart-canvas { width: 100%; min-height: 420px; }
+
+.chart-placeholder {
+    padding: 48px 16px;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 13px;
+}
+
+.chart-legend { margin-top: 10px; }
+.chart-legend-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    font-size: 11px;
+    color: var(--text-muted);
+}
+.chart-legend-lines { margin-top: 4px; }
+.chart-legend-item { display: inline-flex; align-items: center; gap: 4px; }
+.chart-swatch {
+    display: inline-block;
+    width: 12px;
+    height: 3px;
+    border-radius: 2px;
+}
+.chart-swatch-dashed { height: 2px; opacity: 0.75; }
+
+.chart-attribution {
+    margin-top: 12px;
+    font-size: 10px;
+    color: var(--text-muted);
+    text-align: right;
+}
+.chart-attribution a { color: inherit; }
+
+@media (max-width: 600px) {
+    .chart-canvas { min-height: 320px; }
+    .chart-header { flex-direction: column; align-items: flex-start; }
+}
