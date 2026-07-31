@@ -1247,7 +1247,23 @@ h2 { font-size: 1.1rem; margin-bottom: 8px; color: var(--text-muted); }
     color: var(--text-muted);
 }
 .chart-legend-lines { margin-top: 4px; }
-.chart-legend-item { display: inline-flex; align-items: center; gap: 4px; }
+.chart-legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font: inherit;
+    font-size: 11px;
+    color: var(--text-muted);
+    background: none;
+    border: none;
+    padding: 1px 2px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+.chart-legend-item:hover { background: var(--bg); color: var(--text); }
+/* 숨긴 선: 흐리게 + 취소선으로 꺼진 상태임을 알린다 */
+.chart-legend-item.is-off { opacity: 0.4; text-decoration: line-through; }
+
 .chart-swatch {
     display: inline-block;
     width: 12px;
@@ -1269,19 +1285,10 @@ h2 { font-size: 1.1rem; margin-bottom: 8px; color: var(--text-muted); }
     .chart-header { flex-direction: column; align-items: flex-start; }
 }
 
-.chart-channel-toggle {
+.chart-legend-note {
     margin-top: 8px;
     padding-top: 8px;
     border-top: 1px dashed var(--border);
-    align-items: center;
-    gap: 8px;
+    font-size: 11px;
+    color: var(--text-muted);
 }
-.chart-channel-toggle label {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    cursor: pointer;
-    color: var(--text);
-}
-.chart-channel-toggle input { cursor: pointer; }
-.chart-channel-note { color: var(--text-muted); }

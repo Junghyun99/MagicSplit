@@ -186,8 +186,7 @@ GitHub Actions ?�크?�로??
   각 점이 서로 다른 회귀라서 곡선이 된다.
 - **오늘자 직선** (`current_channel`, `build_current_channel`): 오늘 회귀 1개를
   `channel_lookback` 구간에 펼친 것. 현재 채널 기울기를 보는 용도. 로그 공간 직선이라
-  가격축에서는 완만한 지수곡선이다. 프런트에서 점선으로 겹쳐 그리며 토글로 끌 수 있다
-  (localStorage `chartShowCurrentChannel`).
+  가격축에서는 완만한 지수곡선이다. 프런트에서 점선으로 겹쳐 그린다.
 - 마지막 점(x=lookback, 오늘 외삽)에서만 두 값이 일치한다. 이 일치는 테스트로 고정돼 있다.
 
 ### 프런트
@@ -198,6 +197,10 @@ GitHub Actions ?�크?�로??
 - `docs/js/views/regime-chart-view.js` - 차트 라이브러리 의존성 격리. 재렌더 전 `remove()` 필수
   (LWC는 `destroy()`가 아니라 `remove()`), 탭 이탈 시 인스턴스 해제.
 - 차트 JSON은 종목 클릭 시 개별 fetch (lazy loading) - 초기 로딩에 영향 없음
+- 범례 항목은 각각 클릭 토글이다. 숨긴 키 목록을 localStorage `chartHiddenSeries`에
+  저장해 종목 전환/새로고침 후에도 유지한다. 지표선은 `visible`, 수평 기준선은
+  `lineVisible`로 끈다(기준선에는 `visible` 옵션이 없다). 종가 시리즈는 숨겨져도
+  기준선·마커·배경밴드의 부착 대상이라 인스턴스를 계속 들고 있어야 한다.
 
 ### 주의
 - OHLC 제공자가 High/Low/Close만 받아 Open이 없다. 캔들 대신 **종가 라인**을 쓴다

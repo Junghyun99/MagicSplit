@@ -10,18 +10,69 @@ window.RegimeChartView = (function () {
     let closeSeries = null;
     let bandPrimitive = null;
     let resizeObserver = null;
-    // 오늘자 회귀 채널 오버레이. 토글로 껐다 켜므로 참조를 들고 있는다.
-    let currentChannelSeries = [];
 
-    const CHANNEL_TOGGLE_KEY = 'chartShowCurrentChannel';
+    // 범례 클릭으로 개별 토글하기 위한 등록부. key -> 숨김/표시 적용 함수.
+    // 차트 파괴 시 함께 비운다.
+    let visibilityTargets = new Map();
 
-    function isCurrentChannelVisible() {
-        return localStorage.getItem(CHANNEL_TOGGLE_KEY) !== '0';
+    const HIDDEN_KEYS_STORAGE = 'chartHiddenSeries';
+
+    /** 숨김 상태는 종목을 바꾸거나 새로고침해도 유지한다. */
+    function loadHiddenKeys() {
+        try {
+            const raw = JSON.parse(localStorage.getItem(HIDDEN_KEYS_STORAGE) || '[]');
+            return new Set(Array.isArray(raw) ? raw : []);
+        } catch (e) {
+            return new Set();
+        }
     }
 
-    function setCurrentChannelVisible(visible) {
-        localStorage.setItem(CHANNEL_TOGGLE_KEY, visible ? '1' : '0');
-        currentChannelSeries.forEach((s) => s.applyOptions({ visible: visible }));
+    function saveHiddenKeys(keys) {
+        try {
+            localStorage.setItem(HIDDEN_KEYS_STORAGE, JSON.stringify(Array.from(keys)));
+        } catch (e) {
+            /* 저장 실패해도 이번 세션 토글은 동작해야 한다 */
+        }
+    }
+
+    function isHidden(key) {
+        return loadHiddenKeys().has(key);
+    }
+
+    /**
+     * 범례 항목 하나의 표시 여부를 뒤집는다.
+     * 차트 요소와 범례 항목의 흐림 처리를 함께 갱신한다.
+     */
+    function toggleKey(key) {
+        const keys = loadHiddenKeys();
+        const nowHidden = !keys.has(key);
+        if (nowHidden) {
+            keys.add(key);
+        } else {
+            keys.delete(key);
+        }
+        saveHiddenKeys(keys);
+
+        const apply = visibilityTargets.get(key);
+        if (apply) apply(!nowHidden);
+
+        const item = document.querySelector(`.chart-legend-item[data-key="${CSS.escape(key)}"]`);
+        if (item) {
+            item.classList.toggle('is-off', nowHidden);
+            item.setAttribute('aria-pressed', String(!nowHidden));
+        }
+    }
+
+    function registerSeriesTarget(key, series) {
+        visibilityTargets.set(key, (visible) => series.applyOptions({ visible: visible }));
+    }
+
+    function registerPriceLineTarget(key, priceLine, axisLabelVisible) {
+        visibilityTargets.set(key, (visible) => priceLine.applyOptions({
+            lineVisible: visible,
+            // 축 라벨을 켜 둔 선(현재가)은 숨길 때 라벨도 함께 감춘다.
+            axisLabelVisible: visible && axisLabelVisible,
+        }));
     }
 
     /**
@@ -91,7 +142,7 @@ window.RegimeChartView = (function () {
         }
         closeSeries = null;
         bandPrimitive = null;
-        currentChannelSeries = [];
+        visibilityTargets = new Map();
     }
 
     /** 컨테이너 크기에 맞춰 차트를 다시 맞춘다. */
@@ -150,41 +201,45 @@ window.RegimeChartView = (function () {
             `<div class="chart-badges">${badgeHtml}</div>`;
     }
 
-    function renderLegend(series, priceLines, channelInfo) {
+    /** 수평 기준선의 토글 키. 라벨은 종목이 달라도 같은 의미라 그대로 쓴다. */
+    function priceLineKey(line) {
+        return 'line:' + line.label;
+    }
+
+    /** 범례 항목 하나를 클릭 가능한 버튼으로 만든다. */
+    function legendItemHtml(entry) {
+        const off = isHidden(entry.key) ? ' is-off' : '';
+        const swatch = entry.dashed ? 'chart-swatch chart-swatch-dashed' : 'chart-swatch';
+        return (
+            `<button type="button" class="chart-legend-item${off}" ` +
+            `data-key="${esc(entry.key)}" aria-pressed="${isHidden(entry.key) ? 'false' : 'true'}" ` +
+            `title="클릭하면 이 선만 숨기거나 다시 표시합니다">` +
+            `<i class="${swatch}" style="background:${esc(entry.color)}"></i>` +
+            `${esc(entry.label)}</button>`
+        );
+    }
+
+    function renderLegend(rows, channelInfo) {
         const legend = document.getElementById('regime-chart-legend');
         if (!legend) return;
 
-        const seriesHtml = series.map((s) =>
-            `<span class="chart-legend-item">` +
-            `<i class="chart-swatch" style="background:${esc(s.color)}"></i>${esc(s.label)}</span>`
-        ).join('');
+        const rowsHtml = rows
+            .filter((row) => row.entries.length)
+            .map((row) =>
+                `<div class="chart-legend-row${row.className ? ' ' + row.className : ''}">` +
+                row.entries.map(legendItemHtml).join('') +
+                `</div>`
+            ).join('');
 
-        const lineHtml = priceLines.map((l) =>
-            `<span class="chart-legend-item">` +
-            `<i class="chart-swatch chart-swatch-dashed" style="background:${esc(l.color)}"></i>` +
-            `${esc(l.label)}</span>`
-        ).join('');
+        const noteHtml = channelInfo
+            ? `<div class="chart-legend-note">점선 = 오늘 회귀 채널 · ${esc(channelInfo)}</div>`
+            : '';
 
-        // 오늘자 회귀 채널은 선 3개가 늘어 화면이 붐빌 수 있으므로 끌 수 있게 한다.
-        let toggleHtml = '';
-        if (channelInfo) {
-            const checked = isCurrentChannelVisible() ? ' checked' : '';
-            toggleHtml =
-                `<div class="chart-legend-row chart-channel-toggle">` +
-                `<label><input type="checkbox" id="toggle-current-channel"${checked}> ` +
-                `오늘 회귀 채널(점선) 표시</label>` +
-                `<span class="chart-channel-note">${esc(channelInfo)}</span></div>`;
-        }
+        legend.innerHTML = rowsHtml + noteHtml;
 
-        legend.innerHTML =
-            `<div class="chart-legend-row">${seriesHtml}</div>` +
-            `<div class="chart-legend-row chart-legend-lines">${lineHtml}</div>` +
-            toggleHtml;
-
-        const toggle = document.getElementById('toggle-current-channel');
-        if (toggle) {
-            toggle.addEventListener('change', () => setCurrentChannelVisible(toggle.checked));
-        }
+        legend.querySelectorAll('.chart-legend-item').forEach((btn) => {
+            btn.addEventListener('click', () => toggleKey(btn.dataset.key));
+        });
     }
 
     /**
@@ -218,7 +273,21 @@ window.RegimeChartView = (function () {
             ? ChartModel.describeCurrentChannel(chart) : null;
 
         renderHeader(chart, aliasMap, ChartModel.toStatusBadges(chart));
-        renderLegend(series, priceLines, channelInfo);
+        renderLegend([
+            { entries: series.map((s) => ({ key: s.key, label: s.label, color: s.color })) },
+            {
+                className: 'chart-legend-channel',
+                entries: channelSeries.map((s) => ({
+                    key: s.key, label: s.label, color: s.color, dashed: true,
+                })),
+            },
+            {
+                className: 'chart-legend-lines',
+                entries: priceLines.map((l) => ({
+                    key: priceLineKey(l), label: l.label, color: l.color, dashed: true,
+                })),
+            },
+        ], channelInfo);
 
         const theme = readThemeColors();
         chartInstance = LightweightCharts.createChart(canvas, {
@@ -245,16 +314,18 @@ window.RegimeChartView = (function () {
                 lastValueVisible: s.key === 'close',
                 // 지표선 title은 값이 수렴하는 우측 끝에서 서로 겹친다.
                 // 색 스와치가 있는 범례로 식별되므로 종가에만 남긴다.
-                title: s.key === 'close' ? s.label : ''
+                title: s.key === 'close' ? s.label : '',
+                visible: !isHidden(s.key)
             });
             lineSeries.setData(s.points);
+            registerSeriesTarget(s.key, lineSeries);
+            // 종가 시리즈는 숨겨져도 기준선/마커의 부착 대상으로 계속 필요하다.
             if (s.key === 'close') closeSeries = lineSeries;
         }
 
         // 오늘자 회귀 채널 오버레이 (점선). 롤링 곡선과 같은 색을 써서
         // "같은 선의 오늘자 스냅샷"으로 읽히게 한다.
-        const channelVisible = isCurrentChannelVisible();
-        currentChannelSeries = channelSeries.map((s) => {
+        for (const s of channelSeries) {
             const line = chartInstance.addSeries(LightweightCharts.LineSeries, {
                 color: s.color,
                 lineWidth: s.width,
@@ -262,28 +333,33 @@ window.RegimeChartView = (function () {
                 priceLineVisible: false,
                 lastValueVisible: false,
                 title: '',
-                visible: channelVisible
+                visible: !isHidden(s.key)
             });
             line.setData(s.points);
-            return line;
-        });
+            registerSeriesTarget(s.key, line);
+        }
 
         // 종가 시리즈가 없으면(이론상 불가) 첫 시리즈에라도 부가 요소를 붙인다.
         if (!closeSeries) return;
 
         for (const line of priceLines) {
-            closeSeries.createPriceLine({
+            const key = priceLineKey(line);
+            const hidden = isHidden(key);
+            // 기준선이 10개를 넘을 수 있어 축 라벨을 모두 켜면 서로 겹쳐 읽을 수 없다.
+            // 선 위 title과 범례로 식별되므로 축 가격은 현재가에만 표시한다.
+            const axisLabelVisible = line.kind === 'current';
+            const priceLine = closeSeries.createPriceLine({
                 price: line.value,
                 color: line.color,
                 lineWidth: 1,
                 lineStyle: line.dashed
                     ? LightweightCharts.LineStyle.Dashed
                     : LightweightCharts.LineStyle.Solid,
-                // 기준선이 10개를 넘을 수 있어 축 라벨을 모두 켜면 서로 겹쳐 읽을 수 없다.
-                // 선 위 title과 범례로 식별되므로 축 가격은 현재가에만 표시한다.
-                axisLabelVisible: line.kind === 'current',
+                axisLabelVisible: axisLabelVisible && !hidden,
+                lineVisible: !hidden,
                 title: line.label
             });
+            registerPriceLineTarget(key, priceLine, axisLabelVisible);
         }
 
         if (markers.length) {
