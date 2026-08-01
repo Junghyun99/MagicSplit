@@ -334,3 +334,109 @@ class TestChartSeries:
             raw = f.read()
         assert "NaN" not in raw
         assert json.loads(raw) == {"rows": [[None]]}
+
+
+class TestRejectedExecutionsAreNotTrades:
+    """거절은 체결이 아니다.
+
+    사전 차단(스프레드 비정상 등)은 주문이 나가지 않았는데도 '요청 수량'을
+    그대로 담아 REJECTED로 돌아온다. 수량만으로 걸러지지 않으므로 상태로 걸러야
+    거래대금·순입금이 오염되지 않는다.
+    """
+
+    def _exe(self, action, qty, price, status, ticker="AAPL", date="2024-01-02 10:00:00"):
+        return TradeExecution(
+            ticker=ticker, action=action, quantity=qty, price=price, fee=0.0,
+            date=date, status=status,
+        )
+
+    def test_cash_impact_excludes_rejected_with_quantity(self):
+        from src.infra.repo import trade_cash_impact
+
+        rejected = self._exe(OrderAction.SELL, 27, 45015.0, ExecutionStatus.REJECTED)
+        assert trade_cash_impact([rejected]) == 0.0
+
+    def test_cash_impact_counts_filled_only(self):
+        from src.infra.repo import trade_cash_impact
+
+        execs = [
+            self._exe(OrderAction.SELL, 27, 45015.0, ExecutionStatus.REJECTED),
+            self._exe(OrderAction.SELL, 2, 100.0, ExecutionStatus.FILLED),
+        ]
+        assert trade_cash_impact(execs) == 200.0
+
+    def test_history_skips_rejected_execution(self, repo):
+        pf = Portfolio(total_cash=1000.0, holdings={}, current_prices={"AAPL": 100.0})
+        repo.save_trade_history(
+            [
+                self._exe(OrderAction.SELL, 27, 45015.0, ExecutionStatus.REJECTED),
+                self._exe(OrderAction.BUY, 2, 100.0, ExecutionStatus.FILLED),
+            ],
+            pf, "혼합",
+        )
+
+        execs = repo.load_history()[-1]["executions"]
+        assert len(execs) == 1
+        assert execs[0]["status"] == "FILLED"
+
+    def test_no_record_when_all_rejected(self, repo):
+        """거절뿐이면 매매가 없던 사이클이므로 레코드 자체를 남기지 않는다."""
+        pf = Portfolio(total_cash=1000.0, holdings={}, current_prices={})
+        repo.save_trade_history(
+            [self._exe(OrderAction.SELL, 27, 45015.0, ExecutionStatus.REJECTED)],
+            pf, "전부 거절",
+        )
+
+        assert repo.load_history() == []
+
+    def test_rejected_does_not_inflate_trade_amount(self, repo):
+        pf = Portfolio(total_cash=1000.0, holdings={}, current_prices={})
+        repo.save_trade_history(
+            [
+                self._exe(OrderAction.SELL, 27, 45015.0, ExecutionStatus.REJECTED),
+                self._exe(OrderAction.BUY, 1, 50.0, ExecutionStatus.FILLED),
+            ],
+            pf, "혼합",
+        )
+
+        assert repo.load_history()[-1]["total_trade_amount"] == 50.0
+
+    def test_rejected_does_not_skew_net_deposit(self, repo):
+        """거절 매도가 현금 유입으로 잡히면 순입금이 그만큼 마이너스로 왜곡된다."""
+        pf = Portfolio(total_cash=1000.0, holdings={}, current_prices={})
+        repo.save_trade_history(
+            [self._exe(OrderAction.BUY, 1, 100.0, ExecutionStatus.FILLED)], pf, "첫 거래",
+        )
+        repo.save_trade_history(
+            [
+                self._exe(OrderAction.SELL, 27, 45015.0, ExecutionStatus.REJECTED),
+                self._exe(OrderAction.BUY, 1, 100.0, ExecutionStatus.FILLED),
+            ],
+            Portfolio(total_cash=900.0, holdings={}, current_prices={}), "거절 포함",
+        )
+
+        # 현금 1000 -> 900, 매수 100 -> 외부 입출금 0
+        assert repo.load_history()[-1]["net_deposit"] == 0.0
+
+    def test_last_trade_date_ignores_rejected(self, repo):
+        """거절이 거래일로 잡히면 '장기 정체 종목'이 거짓으로 리셋된다."""
+        pf = Portfolio(total_cash=1000.0, holdings={}, current_prices={})
+        repo.save_trade_history(
+            [self._exe(OrderAction.BUY, 1, 100.0, ExecutionStatus.FILLED,
+                       date="2024-01-01 10:00:00")],
+            pf, "체결",
+        )
+        # 이미 기록돼 있던 과거 거절 데이터를 직접 밀어 넣는다 (마이그레이션 전 상태)
+        data = repo.load_history()
+        data.append({
+            "id": "tx_legacy", "date": "2024-06-01 10:00:00",
+            "portfolio_value": 1000.0, "cash_balance": 1000.0,
+            "net_deposit": 0.0, "total_trade_amount": 0.0, "reason": "-",
+            "executions": [{
+                "ticker": "AAPL", "action": "SELL", "quantity": 0, "price": 100.0,
+                "fee": 0.0, "date": "2024-06-01 10:00:00", "status": "REJECTED",
+            }],
+        })
+        repo._save_json(repo.history_file, data)
+
+        assert repo.get_last_trade_dates()["AAPL"] == "2024-01-01"

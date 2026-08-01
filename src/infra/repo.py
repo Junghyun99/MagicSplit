@@ -8,7 +8,9 @@ from typing import List, Optional, Dict
 from dataclasses import asdict
 from datetime import datetime
 
-from src.core.models import PositionLot, Portfolio, TradeExecution, SplitSignal, OrderAction
+from src.core.models import (
+    PositionLot, Portfolio, TradeExecution, SplitSignal, OrderAction, ExecutionStatus,
+)
 from src.core.interfaces import IRepository
 from src.utils.ticker_reader import get_alias
 
@@ -18,12 +20,16 @@ def trade_cash_impact(executions: List[TradeExecution]) -> float:
 
     BUY는 현금 감소(-), SELL은 현금 증가(+), 각각 수수료만큼 추가 차감.
     입출금(순입금) 역산 시 시세 변동/거래를 제외하기 위해 사용한다.
+
+    거절(REJECTED)은 현금이 오간 적이 없으므로 제외한다. 수량 0인 거절뿐 아니라
+    사전 차단(스프레드 비정상 등)으로 주문 자체가 나가지 않은 경우도 있는데,
+    이때 브로커는 '요청 수량'을 그대로 담아 반환하므로 수량만으로는 걸러지지 않는다.
     """
     return sum(
         (-e.price * e.quantity - e.fee) if e.action == OrderAction.BUY
         else (e.price * e.quantity - e.fee)
         for e in executions
-        if e.quantity > 0
+        if e.quantity > 0 and e.status != ExecutionStatus.REJECTED
     )
 
 
@@ -135,7 +141,18 @@ class JsonRepository(IRepository):
     def save_trade_history(self, executions: List[TradeExecution],
                            portfolio: Portfolio, reason: str,
                            sim_date: Optional[str] = None) -> None:
-        """매매 내역 저장 (Append 방식)"""
+        """매매 내역 저장 (Append 방식)
+
+        거절된 주문은 기록하지 않는다. 체결이 없었으므로 매매 내역이 아니고,
+        수량이 남아 있는 거절(사전 차단)은 거래대금·순입금까지 오염시킨다.
+        거절 사실 자체는 로그와 Slack 알림이 남긴다.
+        """
+        if not executions:
+            return
+
+        executions = [
+            e for e in executions if e.status != ExecutionStatus.REJECTED
+        ]
         if not executions:
             return
 
@@ -404,6 +421,10 @@ class JsonRepository(IRepository):
         for record in history:
             rec_date = record.get("date", "").split(" ")[0]
             for exe in record.get("executions", []):
+                # 거절은 거래가 아니다. 이미 기록된 과거 데이터도 여기서 걸러야
+                # '장기 정체 종목'의 days_stale이 거짓으로 리셋되지 않는다.
+                if exe.get("status") == ExecutionStatus.REJECTED.value:
+                    continue
                 ticker = exe.get("ticker")
                 exe_date = exe.get("date", "").split(" ")[0] or rec_date
                 if ticker and exe_date:

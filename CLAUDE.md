@@ -20,6 +20,7 @@
 - ?��????�합: `python scripts/reconcile_positions.py`
 - 수동매매(MTS) 사후 반영: `python -m scripts.migrate_manual_trade --market crypto --fee-rate 0.05 --dry-run --trades-json '[{"ticker":"KRW-ETH","action":"sell","quantity":0.7722,"price":2742000,"date":"2026-07-24"}]'` (봇을 거치지 않고 체결된 거래로 수량 불일치가 났을 때. `--dry-run`으로 먼저 확인)
 - 기간(월간) 결산: `python -m scripts.monthly_settlement --market domestic --start 2026-04-01 --end 2026-04-28` (해외는 USD/KRW 두 버전 출력, 코인은 --market crypto 로 KRW 결산)
+- 거절 체결 정리(일회성): `python -m scripts.purge_rejected_history --dry-run` (거절 주문이 history/snapshots에 남아 순입금·거래대금을 오염시켰던 과거 데이터 보정)
 
 ## ?�로?�트 구조
 ```
