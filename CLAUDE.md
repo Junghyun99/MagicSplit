@@ -20,6 +20,7 @@
 - ?��????�합: `python scripts/reconcile_positions.py`
 - 수동매매(MTS) 사후 반영: `python -m scripts.migrate_manual_trade --market crypto --fee-rate 0.05 --dry-run --trades-json '[{"ticker":"KRW-ETH","action":"sell","quantity":0.7722,"price":2742000,"date":"2026-07-24"}]'` (봇을 거치지 않고 체결된 거래로 수량 불일치가 났을 때. `--dry-run`으로 먼저 확인)
 - 기간(월간) 결산: `python -m scripts.monthly_settlement --market domestic --start 2026-04-01 --end 2026-04-28` (해외는 USD/KRW 두 버전 출력, 코인은 --market crypto 로 KRW 결산)
+- 거절 체결 정리(일회성): `python -m scripts.purge_rejected_history --dry-run` (거절 주문이 history/snapshots에 남아 순입금·거래대금을 오염시켰던 과거 데이터 보정)
 
 ## ?�로?�트 구조
 ```
@@ -90,6 +91,11 @@ presets.json             # 차수�?배열 공유 ?�리??(?�택)
     - 중심선 기울기(윈도우 전체 %변화)가 `channel_slope_band_pct`(기본 8.0) 이내면 횡보, 초과는 상승, 미만은 하락
     - 이탈 판정 = 하락 레짐 확정(2**일** 연속) OR 상승/횡보 중 현재가 < 하단 채널선*(1 - `channel_breakdown_tolerance_pct`%) 2**일** 연속 (날짜 기반 카운팅 - 동일 날짜 내 다회 사이클은 마지막 사이클 결과가 해당 일의 최종 상태, 장중 회복 시 당일 카운트 취소)
     - 이탈 시 `trendbreak_partial_sell_pct`(50=절반 매도+추종 데드라인, 100=전량)로 청산
+    - **이탈 확정(`breakdown_confirmed`)은 청산이 실제로 반영될 때 비운다.** 신호 시점에
+      비우면 주문이 거절됐을 때 확정을 잃고 2일을 다시 세게 된다(리스크 장치가 API 오류로
+      지연됨). 조건이 유지되는 동안 다음 사이클에 재시도하고, 이탈선 위로 회복하면 확정을
+      취소한다. 커밋 지점은 `_apply_partial_liquidation`, `_reset_regime_after_flat`,
+      그리고 주문 없이 상태만 바꾸는 `trendbreak_partial_sell_pct=0` 분기다
     - 상승/하락 레짐은 각각 서로 다른 2일 연속 판정 때 확정. 상승 확정 시 차수 매도 잠금 + 눌림 누적매수, 하락 확정 중 신규/추가 매수 차단 (기존 레짐 동작 공유)
     - 이탈 청산 후 재진입은 상단 저항선(2sigma) 상향 돌파 시에만 허용 (알고리즘 고정 동작 - 경계 왕복 재진입 churn 차단)
     - 라이브 배선: 레짐 사용 종목이 있으면 main.py가 과거 일봉 제공자를 자동 주입 (domestic/overseas=yfinance, crypto=업비트 공개 캔들). 미사용 시 다운로드 없음

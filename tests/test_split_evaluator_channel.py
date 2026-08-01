@@ -552,3 +552,95 @@ class TestChannelUnknownFallback:
         )
         assert signals == []
         assert "trailing_lock" in st["AAPL"]
+
+
+class TestBreakdownConfirmationSurvivesFailedOrder:
+    """이탈 확정은 청산이 실제로 반영될 때까지 유지돼야 한다.
+
+    확정 시점에 카운터를 비우면 주문이 거절됐을 때 확정을 잃고 2일을 다시
+    센다. 리스크 관리 장치가 일시적 API 오류로 하루씩 밀리면 안 된다.
+    """
+
+    def _setup(self, evaluator, **rule_over):
+        rule_over.setdefault("trendbreak_partial_sell_pct", 50.0)
+        rule = _channel_rule(**rule_over)
+        window = _sideways_window()
+        support = _support(rule, window)
+        price = support * 0.9  # 이탈선 아래
+        lots = [_lot(level=1, qty=10)]
+        st = {}
+        signals = _eval_until_confirmed(
+            evaluator, rule, lots, _pf(price, qty=10), window, st
+        )
+        return rule, window, support, price, lots, st, signals
+
+    def test_confirmation_emits_liquidation_signal(self, evaluator):
+        _, _, _, _, _, st, signals = self._setup(evaluator)
+
+        assert len(signals) == 1
+        assert signals[0].regime_partial_liquidation is True
+        assert st["AAPL"]["breakdown_confirmed"] is True
+
+    def test_counter_is_not_consumed_by_the_signal(self, evaluator):
+        """신호를 냈다고 카운터가 비워지면 안 된다 (주문 결과를 아직 모른다)."""
+        _, _, _, _, _, st, _ = self._setup(evaluator)
+
+        assert len(st["AAPL"]["breakdown_days"]) >= BREAKDOWN_CONFIRM_BARS
+
+    def test_retries_on_next_cycle_when_order_failed(self, evaluator):
+        """주문 거절로 regime_state가 그대로일 때 다음 사이클에 즉시 재시도."""
+        rule, window, _, price, lots, st, _ = self._setup(evaluator)
+
+        # 거절이면 엔진이 포지션/상태를 건드리지 않는다 -> st 그대로 재평가
+        with patch("src.core.logic.split_evaluator.datetime") as mock_dt:
+            mock_dt.date.today.return_value = datetime.date(2024, 6, 3)
+            mock_dt.date.side_effect = lambda *a, **k: datetime.date(*a, **k)
+            again = evaluator.evaluate_stock(
+                rule, lots, _pf(price, qty=10), ohlc_window=window, regime_state=st,
+            )
+
+        assert len(again) == 1
+        assert again[0].regime_partial_liquidation is True
+
+    def test_recovery_cancels_the_confirmation(self, evaluator):
+        """이탈선 위로 회복하면 청산 근거가 사라지므로 확정도 취소한다."""
+        rule, window, support, _, lots, st, _ = self._setup(evaluator)
+
+        with patch("src.core.logic.split_evaluator.datetime") as mock_dt:
+            mock_dt.date.today.return_value = datetime.date(2024, 6, 3)
+            mock_dt.date.side_effect = lambda *a, **k: datetime.date(*a, **k)
+            signals = evaluator.evaluate_stock(
+                rule, lots, _pf(support * 1.05, qty=10),
+                ohlc_window=window, regime_state=st,
+            )
+
+        assert "breakdown_confirmed" not in st["AAPL"]
+        assert all(not s.regime_partial_liquidation for s in signals)
+
+    def test_zero_percent_liquidation_clears_confirmation(self, evaluator):
+        """즉시 매도 0%는 주문 없이 상태만 바꾸므로 그 자리가 커밋 지점이다."""
+        _, _, _, _, _, st, signals = self._setup(
+            evaluator, trendbreak_partial_sell_pct=0.0
+        )
+
+        assert signals == []
+        assert st["AAPL"]["trailing_lock"]["active"] is True
+        assert "breakdown_confirmed" not in st["AAPL"]
+        assert "breakdown_days" not in st["AAPL"]
+
+    def test_downtrend_latch_takeover_clears_confirmation(self, evaluator):
+        """하락 래치는 regime_state에 남아 스스로 재시도하므로 비워도 안전하다."""
+        rule = _channel_rule(trendbreak_partial_sell_pct=50.0)
+        window = _downtrend_window()
+        st = {"AAPL": {"downtrend": "active", "breakdown_days": ["2024-06-01"],
+                       "breakdown_confirmed": True}}
+        lots = [_lot(level=1, qty=10)]
+
+        signals = evaluator.evaluate_stock(
+            rule, lots, _pf(50.0, qty=10), ohlc_window=window, regime_state=st,
+        )
+
+        assert len(signals) == 1
+        assert signals[0].reentry_gate == "resistance"
+        assert "breakdown_confirmed" not in st["AAPL"]
+        assert "breakdown_days" not in st["AAPL"]

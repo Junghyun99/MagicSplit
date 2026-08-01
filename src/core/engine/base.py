@@ -25,6 +25,7 @@ from src.core.logic import (
 )
 from src.core.logic.chart_builder import build_chart_series
 from src.core.logic.regime_events import diff_regime_state, seed_events_from_state
+from src.core.logic.split_evaluator import clear_breakdown_confirmation
 from src.core.engine.registry import register_engine
 from src.utils.ticker_reader import display_ticker
 from src.utils.currency import format_money, format_qty
@@ -1083,6 +1084,9 @@ class MagicSplitEngine:
                     "drop_pct": drop_pct,
                     "reentry_gate": reentry_gate,
                 }
+                # 청산이 실제로 반영된 지금이 확정 카운터를 비울 시점이다.
+                # (신호 시점에 비우면 주문 거절 시 확정을 잃는다)
+                clear_breakdown_confirmation(st)
                 self.logger.info(
                     f"[{disp}] 추종 데드라인(Trailing Lock) 상태 활성화 "
                     f"(기준가 {format_money(exe.price, self.market_type)}, "

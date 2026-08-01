@@ -1919,3 +1919,53 @@ class TestChartDataPersistence:
         engine.run_one_cycle(sim_date="2026-07-31")
 
         assert not mock_repo.save_chart_series.called
+
+
+class TestBreakdownConfirmationClearedOnFill:
+    """이탈 확정은 청산 체결이 반영되는 지점에서만 비워져야 한다."""
+
+    def _sell(self, qty=5, price=100.0):
+        return TradeExecution(
+            "AAPL", OrderAction.SELL, qty, price, 0.0,
+            "2026-07-30 10:00:00", ExecutionStatus.FILLED,
+        )
+
+    def test_partial_liquidation_clears_confirmation(self, engine):
+        regime_state = {"AAPL": {
+            "breakdown_confirmed": True,
+            "breakdown_days": ["2026-07-29", "2026-07-30"],
+            "breakdown_today_state": "bd",
+            "breakdown_prev_date": "2026-07-30",
+        }}
+        lots = [
+            PositionLot("l1", "AAPL", 120.0, 5, "2026-01-01", 1),
+            PositionLot("l2", "AAPL", 110.0, 5, "2026-02-01", 2),
+        ]
+
+        engine._apply_partial_liquidation(
+            lots, self._sell(qty=5), "AAPL", {}, regime_state, reentry_gate="midline",
+        )
+
+        st = regime_state["AAPL"]
+        assert st["trailing_lock"]["active"] is True
+        for key in ("breakdown_confirmed", "breakdown_days",
+                    "breakdown_today_state", "breakdown_prev_date"):
+            assert key not in st
+
+    def test_full_liquidation_drops_confirmation(self, engine):
+        """전량 청산은 하락 래치만 남기므로 확정 키가 따라오면 안 된다."""
+        regime_state = {"AAPL": {
+            "breakdown_confirmed": True,
+            "breakdown_days": ["2026-07-29", "2026-07-30"],
+            "downtrend": "active",
+        }}
+
+        engine._reset_regime_after_flat(
+            regime_state, "AAPL", mark_liquidation=True, reentry_gate="midline",
+        )
+
+        st = regime_state["AAPL"]
+        assert st["downtrend"] == "active"       # 래치는 보존
+        assert st["post_liquidation"] is True
+        assert "breakdown_confirmed" not in st
+        assert "breakdown_days" not in st

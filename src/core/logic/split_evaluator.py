@@ -23,6 +23,19 @@ DOWNTREND_CONFIRM_BARS = 2
 BREAKDOWN_CONFIRM_BARS = 2
 
 
+def clear_breakdown_confirmation(st: dict) -> None:
+    """이탈 확정 카운터/플래그를 비운다.
+
+    청산이 실제로 반영된 뒤에만 호출해야 한다. 신호를 낸 시점에 비우면
+    주문이 거절됐을 때 확정을 잃고 처음부터 다시 세게 된다.
+    """
+    for key in (
+        "breakdown_confirmed", "breakdown_days",
+        "breakdown_today_state", "breakdown_prev_date",
+    ):
+        st.pop(key, None)
+
+
 def classify_for_rule(rule: StockRule, ohlc_window):
     """rule.regime_algo에 따라 레짐 분류기를 선택 호출한다 (엔진/평가기 공용)."""
     if rule.regime_algo == "channel":
@@ -1093,9 +1106,10 @@ class SplitEvaluator:
 
         # 2. 하락 래치 확정 -> 이탈 청산
         if downtrend_blocked:
-            st["breakdown_days"] = []
-            st["breakdown_today_state"] = ""
-            st["breakdown_prev_date"] = ""
+            # 하락 래치가 청산 판단을 넘겨받았다. 래치는 regime_state에 남아
+            # 주문이 실패해도 다음 사이클에 다시 청산을 시도하므로,
+            # 하단 이탈 카운터를 여기서 비워도 확정을 잃지 않는다.
+            clear_breakdown_confirmation(st)
             if self._logger:
                 self._logger.info(
                     f"[{display_ticker(rule.ticker)}] 채널 기울기 하락 전환 확정 "
@@ -1135,22 +1149,42 @@ class SplitEvaluator:
                         f"이탈선 {format_money(breakdown_line, rule.market_type)}) -> 확정 대기"
                     )
                 return None
-            st["breakdown_days"] = []
-            st["breakdown_today_state"] = ""
-            st["breakdown_prev_date"] = ""
+
+            # 확정 상태는 여기서 지우지 않는다. 청산이 실제로 반영될 때
+            # (엔진의 체결 확정 경로) 비운다. 주문이 거절되면 확정을 잃고
+            # 2일을 다시 세게 되는데, 리스크 관리 장치가 일시적 API 오류로
+            # 지연되면 안 된다. 조건이 유지되는 한 다음 사이클에 재시도한다.
+            retrying = bool(st.get("breakdown_confirmed"))
+            st["breakdown_confirmed"] = True
             if self._logger:
-                self._logger.info(
-                    f"[{display_ticker(rule.ticker)}] 하단 채널선 이탈 확정 "
-                    f"({BREAKDOWN_CONFIRM_BARS}일 연속, "
-                    f"현재가 {format_money(current_price, rule.market_type)} < "
-                    f"이탈선 {format_money(breakdown_line, rule.market_type)}, "
-                    f"채널하단 {format_money(support, rule.market_type)}, "
-                    f"허용 -{rule.channel_breakdown_tolerance_pct}%) -> 이탈 청산 진행"
-                )
+                if retrying:
+                    self._logger.info(
+                        f"[{display_ticker(rule.ticker)}] 이탈 청산 재시도 "
+                        f"(직전 사이클 미체결, 현재가 "
+                        f"{format_money(current_price, rule.market_type)} < "
+                        f"이탈선 {format_money(breakdown_line, rule.market_type)})"
+                    )
+                else:
+                    self._logger.info(
+                        f"[{display_ticker(rule.ticker)}] 하단 채널선 이탈 확정 "
+                        f"({BREAKDOWN_CONFIRM_BARS}일 연속, "
+                        f"현재가 {format_money(current_price, rule.market_type)} < "
+                        f"이탈선 {format_money(breakdown_line, rule.market_type)}, "
+                        f"채널하단 {format_money(support, rule.market_type)}, "
+                        f"허용 -{rule.channel_breakdown_tolerance_pct}%) -> 이탈 청산 진행"
+                    )
             return self._handle_trendbreak(
                 rule, ticker_lots, current_price, reading, st, reentry_gate="midline"
             )
 
+        # 이탈선 위로 회복 -> 청산 근거가 사라졌으므로 확정도 취소한다.
+        # (재시도는 조건이 유지되는 동안에만 계속돼야 한다)
+        if st.pop("breakdown_confirmed", None) and self._logger:
+            self._logger.info(
+                f"[{display_ticker(rule.ticker)}] 이탈선 회복 -> 청산 확정 취소 "
+                f"(현재가 {format_money(current_price, rule.market_type)} >= "
+                f"이탈선 {format_money(breakdown_line, rule.market_type)})"
+            )
         st["breakdown_today_state"] = ""
         if today_str in bd_days:
             bd_days.remove(today_str)
@@ -1315,6 +1349,8 @@ class SplitEvaluator:
                 "drop_pct": rule.trendbreak_trailing_drop_pct,
                 "reentry_gate": reentry_gate,
             }
+            # 주문 없이 상태 전환이 끝났으므로 여기가 곧 커밋 지점이다.
+            clear_breakdown_confirmation(st)
             if self._logger:
                 stop_price = current_price * (1 - rule.trendbreak_trailing_drop_pct / 100)
                 self._logger.info(
