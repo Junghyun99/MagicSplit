@@ -1,0 +1,39 @@
+2026-08-04 00:01:07,048 [INFO] === Initializing MagicSplit Bot (overseas) ===
+2026-08-04 00:01:07,048 [INFO] Loaded 22 stock rule(s) from config_overseas.json
+2026-08-04 00:01:07,048 [INFO] [overseas] 9 rule(s), mode=LIVE
+2026-08-04 00:01:07,048 [INFO] [KisBroker] 캐시에서 토큰 로드 (API 호출 생략)
+2026-08-04 00:01:07,048 [INFO] [KisOverseasLiveBroker] Mode: LIVE TRADING
+2026-08-04 00:01:07,050 [INFO] [MarketData] 레짐 필터 활성 종목 9개 -> YFinanceMarketDataProvider 주입 (window 260봉)
+2026-08-04 00:01:07,050 [INFO] === Running overseas engine ===
+2026-08-04 00:01:07,050 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-08-04 00:01:16,834 [INFO] Fetching real-time prices from Broker...
+2026-08-04 00:01:20,397 [INFO] Portfolio: Cash=USD 1,133.64, Value=USD 17,795.78
+2026-08-04 00:01:20,397 [INFO] >>> Step 2: Load Positions
+2026-08-04 00:01:20,398 [INFO] Loaded 19 position lot(s)
+2026-08-04 00:01:20,399 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-08-04 00:01:20,399 [INFO] >>> Processing 카메코(CCJ)
+2026-08-04 00:01:21,516 [INFO] [MarketData] 배치 다운로드 완료: 9/9종목
+2026-08-04 00:01:21,519 [INFO] [카메코(CCJ)] DOWNTREND 확정 - 신규 진입 차단
+2026-08-04 00:01:21,831 [INFO] >>> Processing SCHWAB US DIVIDEND EQUITY(SCHD)
+2026-08-04 00:01:21,834 [INFO]   [SCHWAB US DIVIDEND EQUITY(SCHD)] 신호 없음 | Lv1 매수 USD 33.55 -> 현재 USD 33.49 (-0.16%) | 익절 +10.0% / 추매 -5.0%
+2026-08-04 00:01:21,834 [INFO] >>> Processing 애플(AAPL)
+2026-08-04 00:01:21,837 [INFO] [애플(AAPL)] 상승장 누적 매수 Lv2 3주 @USD 305.39 (20EMA USD 321.00 눌림, add 1/3)
+2026-08-04 00:01:21,837 [INFO] Executing 1 order(s)...
+2026-08-04 00:01:23,955 [INFO] [KisBroker] Available Cash for BUY: 1,134
+2026-08-04 00:01:25,399 [INFO] [KisBroker] Order Sent: BUY 애플(AAPL) 3 @ 305.35 (ODNO=0030230252)
+2026-08-04 00:01:27,994 [INFO] [KisBroker] Order FILLED: 애플(AAPL) ODNO=0030230252 price=305.35 qty=3 fee=0.0
+2026-08-04 00:01:28,195 [INFO] [애플(AAPL)] Lv1 trailing 초기화 (Lv2 신규 매수 -> trailing 게이트 재시작)
+2026-08-04 00:01:28,195 [INFO] [Position] New lot: lot_20260804_000128_AAPL_002 Lv2 애플(AAPL) 3주 @USD 305.35
+2026-08-04 00:01:33,374 [INFO] >>> Processing ISHARES GLOBAL CLEAN ENERGY(ICLN)
+2026-08-04 00:01:33,378 [INFO] [ISHARES GLOBAL CLEAN ENERGY(ICLN)] DOWNTREND 확정 - 신규 진입 차단
+2026-08-04 00:01:33,623 [INFO] >>> Processing 펩시코(PEP)
+2026-08-04 00:01:33,626 [INFO] [펩시코(PEP)] DOWNTREND 확정 - 신규 진입 차단
+2026-08-04 00:01:33,846 [INFO] >>> Processing ARK INNOVATION(ARKK)
+2026-08-04 00:01:33,849 [INFO]   [ARK INNOVATION(ARKK)] 신호 없음 | Lv2 매수 USD 71.93 -> 현재 USD 73.30 (+1.90%) | 익절 +10.0% / 추매 -5.0%
+2026-08-04 00:01:33,849 [INFO] >>> Processing 테슬라(TSLA)
+2026-08-04 00:01:33,852 [INFO] [테슬라(TSLA)] DOWNTREND 확정 - 신규 진입 차단
+2026-08-04 00:01:34,163 [INFO] >>> Processing 델 테크놀로지스(DELL)
+2026-08-04 00:01:34,168 [INFO]   [델 테크놀로지스(DELL)] 📈 상승 레짐 유지 | Lv6 매수 USD 420.93 -> 현재 USD 420.50 (-0.10%) | 채널하단(이탈선) USD 367.47 | 20EMA(눌림) USD 410.95 (이격 +2.32%) | adds 3/3
+2026-08-04 00:01:34,168 [INFO] >>> Processing 브로드컴(AVGO)
+2026-08-04 00:01:34,170 [INFO] [브로드컴(AVGO)] DOWNTREND 확정 - 신규 진입 차단
+2026-08-04 00:01:34,400 [INFO] >>> Step 6: Persist

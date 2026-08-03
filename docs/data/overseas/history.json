@@ -2155,5 +2155,28 @@
                 "alias": "테슬라"
             }
         ]
+    },
+    {
+        "id": "tx_20260804_000134",
+        "date": "2026-08-04 00:01:34",
+        "portfolio_value": 17797.28,
+        "cash_balance": 217.85,
+        "net_deposit": 4.84,
+        "total_trade_amount": 916.0500000000001,
+        "reason": "카메코(CCJ):SKIP(DOWNTREND 확정 - 신규 진입 차단),\n애플(AAPL):BUY(상승장 누적 매수 Lv2 (20EMA 눌림, add 1)),\nISHARES GLOBAL CLEAN ENERGY(ICLN):SKIP(DOWNTREND 확정 - 신규 진입 차단),\n펩시코(PEP):SKIP(DOWNTREND 확정 - 신규 진입 차단),\n테슬라(TSLA):SKIP(DOWNTREND 확정 - 신규 진입 차단),\n브로드컴(AVGO):SKIP(DOWNTREND 확정 - 신규 진입 차단)",
+        "executions": [
+            {
+                "ticker": "AAPL",
+                "action": "BUY",
+                "quantity": 3,
+                "price": 305.35,
+                "fee": 0.0,
+                "date": "2026-08-04 00:01:27",
+                "status": "FILLED",
+                "reason": "ODNO=0030230252",
+                "level": 2,
+                "alias": "애플"
+            }
+        ]
     }
 ]
