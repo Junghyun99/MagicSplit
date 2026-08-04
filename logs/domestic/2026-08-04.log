@@ -38,3 +38,55 @@
 2026-08-04 10:01:09,266 [INFO] >>> Processing ACE 테슬라밸류체인액티브(457480)
 2026-08-04 10:01:09,269 [INFO] [ACE 테슬라밸류체인액티브(457480)] DOWNTREND 확정 - 신규 진입 차단
 2026-08-04 10:01:09,661 [INFO] >>> Step 6: Persist
+2026-08-04 12:00:57,325 [INFO] === Initializing MagicSplit Bot (domestic) ===
+2026-08-04 12:00:57,325 [INFO] Loaded 24 stock rule(s) from config_domestic.json
+2026-08-04 12:00:57,325 [INFO] [domestic] 12 rule(s), mode=LIVE
+2026-08-04 12:00:57,325 [INFO] [KisBroker] 캐시에서 토큰 로드 (API 호출 생략)
+2026-08-04 12:00:57,325 [INFO] [KisDomesticLiveBroker] Mode: LIVE TRADING
+2026-08-04 12:00:57,327 [INFO] [MarketData] 레짐 필터 활성 종목 12개 -> YFinanceMarketDataProvider 주입 (window 260봉)
+2026-08-04 12:00:57,327 [INFO] === Running domestic engine ===
+2026-08-04 12:00:57,328 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-08-04 12:00:58,237 [INFO] Fetching real-time prices from Broker...
+2026-08-04 12:01:01,848 [INFO] Portfolio: Cash=KRW 6,584,165, Value=KRW 24,642,850
+2026-08-04 12:01:01,849 [INFO] >>> Step 2: Load Positions
+2026-08-04 12:01:01,849 [INFO] Loaded 17 position lot(s)
+2026-08-04 12:01:01,850 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-08-04 12:01:01,850 [INFO] >>> Processing 삼성증권(016360)
+2026-08-04 12:01:02,617 [INFO] [MarketData] 배치 다운로드 완료: 12/12종목
+2026-08-04 12:01:02,620 [INFO] [삼성증권(016360)] DOWNTREND 확정 - 신규 진입 차단
+2026-08-04 12:01:03,614 [INFO] >>> Processing KODEX 반도체레버리지(494310)
+2026-08-04 12:01:03,618 [INFO] [KODEX 반도체레버리지(494310)] 채널 기울기 하락 전환 확정 (-49.07%/63봉) -> 이탈 청산 진행
+2026-08-04 12:01:03,618 [INFO] [KODEX 반도체레버리지(494310)] 추세 이탈 -> 분할 청산 2주/3주 (50%) 즉시 매도, 잔량 1주 추종 데드라인 (기준가 KRW 61,695, 청산선 KRW 59,844, 평단 KRW 95,820, 채널하단 KRW 52,415)
+2026-08-04 12:01:03,618 [INFO] Executing 1 order(s)...
+2026-08-04 12:01:03,618 [INFO] [KisBroker] Processing 1 SELL orders...
+2026-08-04 12:01:04,716 [INFO] [KisDomestic] Order Sent: SELL KODEX 반도체레버리지(494310) 2 @ 61730 (ODNO=0014333700)
+2026-08-04 12:01:35,547 [WARNING] [KisDomestic] Order NOT confirmed within 30s: KODEX 반도체레버리지(494310) ODNO=0014333700 — 취소 시도 후 재폴링·체결조회
+2026-08-04 12:01:36,506 [INFO] [KisDomestic] Order Cancelled: KODEX 반도체레버리지(494310) ODNO=0014333700
+2026-08-04 12:01:38,401 [INFO] [KisDomestic] Timeout outcome: KODEX 반도체레버리지(494310) ODNO=0014333700 REJECTED qty=0/2 detail=cancelled_no_fill
+2026-08-04 12:01:38,601 [WARNING] [Position] Skip: KODEX 반도체레버리지(494310) SELL rejected
+2026-08-04 12:01:42,114 [INFO] >>> Processing 삼성전자우(005935)
+2026-08-04 12:01:42,119 [INFO]   [삼성전자우(005935)] 📈 상승 레짐 유지 | Lv3 매수 KRW 182,500 -> 현재 KRW 173,900 (-4.71%) | 채널하단(이탈선) KRW 154,479 | 20EMA(눌림) KRW 180,751 (이격 -3.79%) | adds 3/3
+2026-08-04 12:01:42,120 [INFO] >>> Processing 한국쉘석유(002960)
+2026-08-04 12:01:42,122 [INFO] [한국쉘석유(002960)] buy_amount(KRW 500,000) < 현재가(KRW 504,000) -> 1주도 매수 불가. buy_amount 상향 조정 필요
+2026-08-04 12:01:42,328 [INFO] >>> Processing SOL 반도체전공정(475300)
+2026-08-04 12:01:42,331 [INFO] [SOL 반도체전공정(475300)] DOWNTREND 확정 - 신규 진입 차단
+2026-08-04 12:01:42,546 [INFO] >>> Processing ACE 테슬라밸류체인액티브(457480)
+2026-08-04 12:01:42,549 [INFO] [ACE 테슬라밸류체인액티브(457480)] DOWNTREND 확정 - 신규 진입 차단
+2026-08-04 12:01:42,758 [INFO] >>> Processing 테스(095610)
+2026-08-04 12:01:42,761 [INFO] [테스(095610)] 이탈 청산 후 재진입 대기 - 채널 중심선 미회복 (현재가 KRW 131,300 <= 기준선 KRW 179,574)
+2026-08-04 12:01:42,971 [INFO] >>> Processing TIGER 지주회사(307520)
+2026-08-04 12:01:42,974 [INFO] [TIGER 지주회사(307520)] DOWNTREND 확정 - 신규 진입 차단
+2026-08-04 12:01:43,214 [INFO] >>> Processing ACE 엔비디아밸류체인액티브(483320)
+2026-08-04 12:01:43,218 [INFO] [ACE 엔비디아밸류체인액티브(483320)] 이탈 청산 후 재진입 대기 - 채널 중심선 미회복 (현재가 KRW 23,685 <= 기준선 KRW 26,865)
+2026-08-04 12:01:43,441 [INFO] >>> Processing 삼성전자(005930)
+2026-08-04 12:01:43,447 [INFO]   [삼성전자(005930)] 📈 상승 레짐 유지 | Lv7 매수 KRW 229,500 -> 현재 KRW 233,000 (+1.53%) | 채널하단(이탈선) KRW 209,106 | 20EMA(눌림) KRW 258,310 (이격 -9.80%) | adds 3/3
+2026-08-04 12:01:43,447 [INFO] >>> Processing 메리츠금융지주(138040)
+2026-08-04 12:01:43,450 [INFO] [메리츠금융지주(138040)] 상승장 누적 매수 Lv2 8주 @KRW 118,100 (20EMA KRW 117,322 눌림, add 1/3)
+2026-08-04 12:01:43,450 [INFO] Executing 1 order(s)...
+2026-08-04 12:01:43,855 [INFO] [KisBroker] Available Cash for BUY: 6,584,165
+2026-08-04 12:01:45,246 [INFO] [KisDomestic] Order Sent: BUY 메리츠금융지주(138040) 8 @ 118200 (ODNO=0014349600)
+2026-08-04 12:01:45,640 [INFO] [KisDomestic] Order FILLED: 메리츠금융지주(138040) ODNO=0014349600 price=118200.0 qty=8 fee=141.83999999999997
+2026-08-04 12:01:45,841 [INFO] [Position] New lot: lot_20260804_120145_138040_002 Lv2 메리츠금융지주(138040) 8주 @KRW 118,200
+2026-08-04 12:01:49,250 [INFO] >>> Processing KODEX 증권(102970)
+2026-08-04 12:01:49,253 [INFO] [KODEX 증권(102970)] DOWNTREND 확정 - 신규 진입 차단
+2026-08-04 12:01:49,467 [INFO] >>> Step 6: Persist
