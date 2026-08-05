@@ -1005,6 +1005,7 @@ class SplitEvaluator:
                 st["downtrend_exit_streak"] = len(exit_days)
                 if len(exit_days) >= DOWNTREND_CONFIRM_BARS:
                     st["downtrend"] = None
+                    st.pop("downtrend_partially_liquidated", None)
                     st["downtrend_streak"] = 0
                     st["downtrend_exit_streak"] = 0
                     st["downtrend_exit_days"] = []
@@ -1106,6 +1107,15 @@ class SplitEvaluator:
 
         # 2. 하락 래치 확정 -> 이탈 청산
         if downtrend_blocked:
+            # 동일 하락 래치 회차 내에서 이미 분할 청산이 이뤄졌다면 2차 중복 이탈 청산 방지
+            if st.get("downtrend_partially_liquidated"):
+                if self._logger:
+                    self._logger.info(
+                        f"[{display_ticker(rule.ticker)}] 하락 래치 진행 중 - "
+                        "이미 분할 청산을 거쳤으므로 동일 래치 내 2차 이탈 청산 스킵 (신규 매수만 차단 유지)"
+                    )
+                return None
+
             # 하락 래치가 청산 판단을 넘겨받았다. 래치는 regime_state에 남아
             # 주문이 실패해도 다음 사이클에 다시 청산을 시도하므로,
             # 하단 이탈 카운터를 여기서 비워도 확정을 잃지 않는다.
@@ -1343,6 +1353,7 @@ class SplitEvaluator:
         if sell_qty <= 0:
             # 0%: 즉시 매도 없이 전량 추종 데드라인만 활성화
             # 상태 갱신은 여기서 직접 수행 (매도 체결이 없으므로 엔진 경유 불가)
+            st["downtrend_partially_liquidated"] = True
             st["trailing_lock"] = {
                 "active": True,
                 "lock_price": current_price,

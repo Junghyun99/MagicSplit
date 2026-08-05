@@ -644,3 +644,47 @@ class TestBreakdownConfirmationSurvivesFailedOrder:
         assert signals[0].reentry_gate == "resistance"
         assert "breakdown_confirmed" not in st["AAPL"]
         assert "breakdown_days" not in st["AAPL"]
+
+
+class TestDowntrendDuplicateLiquidationPrevention:
+    """하락 래치 분할 청산 후 trailing_lock 해제 시 동일 래치 내 중복 이탈 청산 방지 검증."""
+
+    def test_duplicate_liquidation_skipped_when_partially_liquidated(self, evaluator):
+        window = _downtrend_window()
+        rule = _channel_rule(trendbreak_partial_sell_pct=50.0)
+        support = _support(rule, window)
+        price = support * 1.02  # 하단 채널선 위
+        lots = [_lot(qty=5)]
+        st = {
+            "AAPL": {
+                "downtrend": "active",
+                "downtrend_partially_liquidated": True,
+            }
+        }
+        # trailing_lock이 해제된 후 실행 시 동일 하락 래치 중복 청산 스킵
+        signals = evaluator.evaluate_stock(
+            rule, lots, _pf(price, qty=5), ohlc_window=window, regime_state=st,
+        )
+        # 매도 청산 신호가 발생하지 않고 스킵되어야 함
+        assert all(not s.regime_liquidation and not s.regime_partial_liquidation for s in signals)
+
+    def test_flag_cleared_on_downtrend_release(self, evaluator):
+        window = _uptrend_window()  # UPTREND 봉으로 하락 래치 탈출 조건 충족
+        rule = _channel_rule()
+        st = {
+            "AAPL": {
+                "downtrend": "active",
+                "downtrend_partially_liquidated": True,
+                "downtrend_exit_days": ["2024-06-01"],
+            }
+        }
+        with patch("src.core.logic.split_evaluator.datetime") as mock_dt:
+            mock_dt.date.today.return_value = datetime.date(2024, 6, 2)
+            mock_dt.date.side_effect = lambda *a, **k: datetime.date(*a, **k)
+            evaluator._resolve_downtrend_block(
+                classify_for_rule(rule, window), st["AAPL"], "AAPL"
+            )
+        # 2일 확정 후 downtrend 해제 및 downtrend_partially_liquidated 삭제 확인
+        assert st["AAPL"].get("downtrend") is None
+        assert "downtrend_partially_liquidated" not in st["AAPL"]
+

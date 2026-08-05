@@ -1078,6 +1078,7 @@ class MagicSplitEngine:
 
                 drop_pct = rule.trendbreak_trailing_drop_pct if rule is not None else 3.0
 
+                st["downtrend_partially_liquidated"] = True
                 st["trailing_lock"] = {
                     "active": True,
                     "lock_price": exe.price,
