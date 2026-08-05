@@ -4071,5 +4071,46 @@
                 "alias": "KODEX 반도체레버리지"
             }
         ]
+    },
+    {
+        "id": "tx_20260805_140118",
+        "date": "2026-08-05 14:01:18",
+        "portfolio_value": 26041738.0,
+        "cash_balance": 9283938.0,
+        "net_deposit": -2469.44,
+        "total_trade_amount": 1243750.0,
+        "reason": "삼성증권(016360):SKIP(DOWNTREND 확정 - 신규 진입 차단),\nKODEX 반도체레버리지(494310):SKIP(DOWNTREND 확정 - 신규 진입 차단),\nSOL 반도체전공정(475300):SKIP(DOWNTREND 확정 - 신규 진입 차단),\n삼성전자(005930):SELL(추세 이탈 분할 청산(5주/9주, -27.3%)),\nTIGER 지주회사(307520):SKIP(DOWNTREND 확정 - 신규 진입 차단),\nACE 엔비디아밸류체인액티브(483320):SKIP(이탈 청산 후 재진입 대기 - 채널 중심선 미회복 (현재가 KRW 25,285 <= 기준선 KRW 26,469)),\nKODEX 증권(102970):SKIP(DOWNTREND 확정 - 신규 진입 차단),\nACE 테슬라밸류체인액티브(457480):SKIP(DOWNTREND 확정 - 신규 진입 차단),\n테스(095610):SKIP(이탈 청산 후 재진입 대기 - 채널 중심선 미회복 (현재가 KRW 137,200 <= 기준선 KRW 175,735))",
+        "executions": [
+            {
+                "ticker": "005930",
+                "action": "SELL",
+                "quantity": 1,
+                "price": 248750.0,
+                "fee": 186.56249999999997,
+                "date": "2026-08-05 14:01:13",
+                "status": "FILLED",
+                "reason": "ODNO=0018050600",
+                "lot_id": "lot_20260727_100130_005930_005",
+                "level": 5,
+                "buy_price": 252500.0,
+                "realized_pnl": -3787.31,
+                "alias": "삼성전자"
+            },
+            {
+                "ticker": "005930",
+                "action": "SELL",
+                "quantity": 4,
+                "price": 248750.0,
+                "fee": 186.56249999999997,
+                "date": "2026-08-05 14:01:13",
+                "status": "FILLED",
+                "reason": "ODNO=0018050600",
+                "lot_id": "lot_20260625_083000_005930_004",
+                "level": 4,
+                "buy_price": 364000.0,
+                "realized_pnl": -461149.25,
+                "alias": "삼성전자"
+            }
+        ]
     }
 ]
