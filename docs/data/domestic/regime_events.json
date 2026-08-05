@@ -168,5 +168,26 @@
         "lock_price": 60440.0,
         "stop": 58626.8,
         "gate": "resistance"
+    },
+    {
+        "date": "2026-08-05 10:01:53",
+        "ticker": "494310",
+        "event": "trailing_lock_off",
+        "price": 69240.0
+    },
+    {
+        "date": "2026-08-05 10:01:53",
+        "ticker": "005930",
+        "event": "downtrend_on",
+        "price": 246250.0
+    },
+    {
+        "date": "2026-08-05 10:01:53",
+        "ticker": "005930",
+        "event": "trailing_lock_on",
+        "price": 246250.0,
+        "lock_price": 246500.0,
+        "stop": 239105.0,
+        "gate": "resistance"
     }
 ]
