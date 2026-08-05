@@ -1397,7 +1397,7 @@ class SplitEvaluator:
     ) -> List[SplitSignal]:
         """추종 데드라인(Trailing Lock) 활성 상태에서 잔량을 평가한다.
 
-        - 이탈 기준선 위로 회복 -> 데드라인 해제, 정상 상승 레짐 복귀
+        - 이탈 기준선 위로 회복 -> 데드라인 해제 (이탈선 회복, 잔량 보유 유지)
         - lock_price 대비 추가 하락 -> 잔량 전량 청산
         - 그 외 -> 대기 (매수/매도 없음)
         """
@@ -1431,7 +1431,7 @@ class SplitEvaluator:
                 self._logger.info(
                     f"[{display_ticker(rule.ticker)}] ✅ 추종 데드라인 해제! "
                     f"가격 {format_money(current_price, rule.market_type)}이 "
-                    f"이탈 기준선 위로 회복 -> 상승 레짐 복귀 "
+                    f"이탈 기준선 위로 회복 "
                     f"(잔량 {format_qty(sum(l.quantity for l in ticker_lots), rule.market_type)} 보유 유지)"
                 )
             return []
