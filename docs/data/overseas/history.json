@@ -2178,5 +2178,43 @@
                 "alias": "애플"
             }
         ]
+    },
+    {
+        "id": "tx_20260806_000139",
+        "date": "2026-08-06 00:01:39",
+        "portfolio_value": 19148.59,
+        "cash_balance": 232.4,
+        "net_deposit": -2.76,
+        "total_trade_amount": 1650.5099999999998,
+        "reason": "카메코(CCJ):SKIP(DOWNTREND 확정 - 신규 진입 차단),\n루멘텀 홀딩스(LITE):SELL(추세 이탈 전량 청산(수량 부족, 1주 -4.6%)),\nISHARES GLOBAL CLEAN ENERGY(ICLN):SKIP(DOWNTREND 확정 - 신규 진입 차단),\n브로드컴(AVGO):SKIP(DOWNTREND 확정 - 신규 진입 차단),\n팔란티어 테크(PLTR):SKIP(현금 부족: 보유 현금 USD 1,047.23 < 매수 예정 금액 USD 2,567.84 (16주)),\n테슬라(TSLA):SKIP(DOWNTREND 확정 - 신규 진입 차단),\n펩시코(PEP):SKIP(DOWNTREND 확정 - 신규 진입 차단),\n에이알엠 홀딩스(ADR)(ARM):BUY(초기 매수 Lv1)",
+        "executions": [
+            {
+                "ticker": "LITE",
+                "action": "SELL",
+                "quantity": 1,
+                "price": 833.91,
+                "fee": 0.0,
+                "date": "2026-08-06 00:01:21",
+                "status": "FILLED",
+                "reason": "ODNO=0030933712",
+                "lot_id": "lot_20260617_000138_LITE_001",
+                "level": 1,
+                "buy_price": 875.53,
+                "realized_pnl": -41.62,
+                "alias": "루멘텀 홀딩스"
+            },
+            {
+                "ticker": "ARM",
+                "action": "BUY",
+                "quantity": 3,
+                "price": 272.2,
+                "fee": 0.0,
+                "date": "2026-08-06 00:01:34",
+                "status": "FILLED",
+                "reason": "ODNO=0030933816",
+                "level": 1,
+                "alias": "에이알엠 홀딩스(ADR)"
+            }
+        ]
     }
 ]
