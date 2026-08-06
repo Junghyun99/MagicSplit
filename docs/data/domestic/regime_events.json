@@ -210,5 +210,14 @@
         "ticker": "005930",
         "event": "trailing_lock_off",
         "price": 234000.0
+    },
+    {
+        "date": "2026-08-06 12:01:15",
+        "ticker": "005930",
+        "event": "trailing_lock_on",
+        "price": 232500.0,
+        "lock_price": 232250.0,
+        "stop": 225282.5,
+        "gate": "resistance"
     }
 ]

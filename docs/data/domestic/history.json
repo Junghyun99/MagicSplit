@@ -4112,5 +4112,46 @@
                 "alias": "삼성전자"
             }
         ]
+    },
+    {
+        "id": "tx_20260806_120115",
+        "date": "2026-08-06 12:01:15",
+        "portfolio_value": 24943950.0,
+        "cash_balance": 9747450.0,
+        "net_deposit": -918.33,
+        "total_trade_amount": 464500.0,
+        "reason": "삼성증권(016360):SKIP(DOWNTREND 확정 - 신규 진입 차단),\nKODEX 반도체레버리지(494310):SKIP(DOWNTREND 확정 - 신규 진입 차단),\n테스(095610):SKIP(이탈 청산 후 재진입 대기 - 채널 중심선 미회복 (현재가 KRW 130,200 <= 기준선 KRW 172,332)),\nTIGER 지주회사(307520):SKIP(DOWNTREND 확정 - 신규 진입 차단),\nACE 테슬라밸류체인액티브(457480):SKIP(DOWNTREND 확정 - 신규 진입 차단),\nACE 엔비디아밸류체인액티브(483320):SKIP(이탈 청산 후 재진입 대기 - 채널 중심선 미회복 (현재가 KRW 24,545 <= 기준선 KRW 26,175)),\n한국쉘석유(002960):SKIP(buy_amount(KRW 500,000) < 현재가(KRW 502,000) -> 1주도 매수 불가. buy_amount 상향 조정 필요),\nKODEX 증권(102970):SKIP(DOWNTREND 확정 - 신규 진입 차단),\n삼성전자(005930):SELL(추세 이탈 분할 청산(2주/4주, -32.2%)),\nSOL 반도체전공정(475300):SKIP(DOWNTREND 확정 - 신규 진입 차단)",
+        "executions": [
+            {
+                "ticker": "005930",
+                "action": "SELL",
+                "quantity": 1,
+                "price": 232250.0,
+                "fee": 69.675,
+                "date": "2026-08-06 12:01:11",
+                "status": "FILLED",
+                "reason": "ODNO=0014161000",
+                "lot_id": "lot_20260624_120111_005930_003",
+                "level": 3,
+                "buy_price": 318000.0,
+                "realized_pnl": -85784.84,
+                "alias": "삼성전자"
+            },
+            {
+                "ticker": "005930",
+                "action": "SELL",
+                "quantity": 1,
+                "price": 232250.0,
+                "fee": 69.675,
+                "date": "2026-08-06 12:01:11",
+                "status": "FILLED",
+                "reason": "ODNO=0014161000",
+                "lot_id": "lot_20260623_120107_005930_002",
+                "level": 2,
+                "buy_price": 336250.0,
+                "realized_pnl": -104034.84,
+                "alias": "삼성전자"
+            }
+        ]
     }
 ]
