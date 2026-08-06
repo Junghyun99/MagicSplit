@@ -169,11 +169,13 @@ class MagicSplitEngine:
                     ]
 
                     for s in blocked_signals:
-                        detail = "\n".join(self.logger.get_captured_logs(s.ticker))
-                        self._notify_alert(f"[{display_ticker(s.ticker)}] {s.reason}", detail=detail)
+                        if self._should_notify_blocked(s):
+                            detail = "\n".join(self.logger.get_captured_logs(s.ticker))
+                            self._notify_alert(f"[{display_ticker(s.ticker)}] {s.reason}", detail=detail)
                     for s in info_signals:
-                        detail = "\n".join(self.logger.get_captured_logs(s.ticker))
-                        self._notify_message(f"[{display_ticker(s.ticker)}] {s.reason}", detail=detail)
+                        if self._should_notify_info(s):
+                            detail = "\n".join(self.logger.get_captured_logs(s.ticker))
+                            self._notify_message(f"[{display_ticker(s.ticker)}] {s.reason}", detail=detail)
 
                     all_signals.extend(active_signals)
                     all_signals.extend(blocked_signals)
@@ -1401,3 +1403,23 @@ class MagicSplitEngine:
     def _notify_alert(self, msg: str, detail: Optional[str] = None) -> None:
         if self.notifier:
             self.notifier.send_alert(msg, detail=detail)
+
+    @staticmethod
+    def _should_notify_blocked(sig: SplitSignal) -> bool:
+        """전략적 관망/대기 사유는 슬랙 알림을 보류하고(로그/대시보드 전용),
+        장애/비상 사유(현재가 조회 실패, 현금 부족, 가격 이격 과다 등)만 슬랙 알림을 보낸다."""
+        strategy_block_keywords = (
+            "이탈 청산 후 재진입 대기",
+            "DOWNTREND 확정",
+            "max_lots",
+            "비중 상한 초과",
+        )
+        return not any(kw in sig.reason for kw in strategy_block_keywords)
+
+    @staticmethod
+    def _should_notify_info(sig: SplitSignal) -> bool:
+        """단순 대기성 정보는 슬랙 메시지를 보류하고, 주요 상태 변화(트레일링 활성화 등)만 보낸다."""
+        info_ignore_keywords = (
+            "재진입 가드:",
+        )
+        return not any(kw in sig.reason for kw in info_ignore_keywords)

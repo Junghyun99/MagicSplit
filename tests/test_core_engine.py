@@ -1969,3 +1969,56 @@ class TestBreakdownConfirmationClearedOnFill:
         assert st["post_liquidation"] is True
         assert "breakdown_confirmed" not in st
         assert "breakdown_days" not in st
+
+
+class TestNotificationFiltering:
+    """슬랙 메시지 3-way 분류 및 필터링 동작 검증."""
+
+    def test_should_notify_blocked_filters_strategy_reasons(self):
+        """전략적 관망/대기 차단 사유는 슬랙 알림 대상에서 제외된다."""
+        blocked_reasons = [
+            "이탈 청산 후 재진입 대기 - 채널 중심선 미회복 (현재가 KRW 24,480 <= 기준선 KRW 26,175)",
+            "DOWNTREND 확정 - 신규 진입 차단",
+            "DOWNTREND 확정 - 추가 매수 차단",
+            "max_lots(10) 도달: 추가 하락 대응 불가",
+            "비중 상한 초과: 현재 25.0% + 매수 예정 10.0% = 35.0% > 상한 30.0%",
+        ]
+        for reason in blocked_reasons:
+            sig = SplitSignal(
+                ticker="483320", lot_id=None, action=OrderAction.BUY, quantity=0,
+                price=24480, reason=reason, pct_change=0.0, is_blocked=True,
+            )
+            assert MagicSplitEngine._should_notify_blocked(sig) is False
+
+    def test_should_notify_blocked_allows_system_alerts(self):
+        """시스템/잔고/시세 오류성 차단 사유는 슬랙 알림 대상에 포함된다."""
+        alert_reasons = [
+            "현재가 조회 실패 (price=0). 종목 코드/API 상태 확인 필요",
+            "가격 이격 과다(+35.0%): 액면분할/병합 확인 필요",
+            "현금 부족: 보유 현금 KRW 1,000 < 최소 주문 금액 KRW 10,000",
+        ]
+        for reason in alert_reasons:
+            sig = SplitSignal(
+                ticker="005930", lot_id=None, action=OrderAction.BUY, quantity=0,
+                price=0, reason=reason, pct_change=0.0, is_blocked=True,
+            )
+            assert MagicSplitEngine._should_notify_blocked(sig) is True
+
+    def test_should_notify_info_filters_reentry_guard(self):
+        """재진입 가드 진입 대기는 단순 대기이므로 슬랙 메시지에서 제외된다."""
+        sig = SplitSignal(
+            ticker="AAPL", lot_id=None, action=OrderAction.BUY, quantity=0,
+            price=100.0, reason="재진입 가드: 직전 매도가 USD 105.00 대비 -0.50% > 임계 -1.00% -> 진입 대기 중",
+            pct_change=0.0, is_info=True,
+        )
+        assert MagicSplitEngine._should_notify_info(sig) is False
+
+    def test_should_notify_info_allows_trailing_activated(self):
+        """트레일링 스톱 활성화 등 주요 상태 변화는 슬랙 메시지에 포함된다."""
+        sig = SplitSignal(
+            ticker="AAPL", lot_id="lot_1", action=OrderAction.SELL, quantity=0,
+            price=110.0, reason="Lv1: 트레일링 스톱 활성화 - 현재가 USD 110.00",
+            pct_change=10.0, is_info=True,
+        )
+        assert MagicSplitEngine._should_notify_info(sig) is True
+
