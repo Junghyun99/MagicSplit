@@ -37,3 +37,41 @@
 2026-08-08 00:01:14,934 [INFO] >>> Processing 팔란티어 테크(PLTR)
 2026-08-08 00:01:14,935 [INFO] [팔란티어 테크(PLTR)] 현금 부족: 보유 현금 USD 238.95 < 매수 예정 금액 USD 2,551.50 (15주) -> 매수 보류
 2026-08-08 00:01:15,565 [INFO] >>> Step 6: Persist
+2026-08-08 02:01:13,131 [INFO] === Initializing MagicSplit Bot (overseas) ===
+2026-08-08 02:01:13,131 [INFO] Loaded 22 stock rule(s) from config_overseas.json
+2026-08-08 02:01:13,131 [INFO] [overseas] 12 rule(s), mode=LIVE
+2026-08-08 02:01:13,131 [INFO] [KisBroker] 캐시에서 토큰 로드 (API 호출 생략)
+2026-08-08 02:01:13,131 [INFO] [KisOverseasLiveBroker] Mode: LIVE TRADING
+2026-08-08 02:01:13,133 [INFO] [MarketData] 레짐 필터 활성 종목 12개 -> YFinanceMarketDataProvider 주입 (window 260봉)
+2026-08-08 02:01:13,133 [INFO] === Running overseas engine ===
+2026-08-08 02:01:13,134 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-08-08 02:01:15,305 [INFO] Fetching real-time prices from Broker...
+2026-08-08 02:01:19,346 [INFO] Portfolio: Cash=USD 238.95, Value=USD 18,955.43
+2026-08-08 02:01:19,346 [INFO] >>> Step 2: Load Positions
+2026-08-08 02:01:19,346 [INFO] Loaded 20 position lot(s)
+2026-08-08 02:01:19,347 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-08-08 02:01:19,348 [INFO] >>> Processing 팔란티어 테크(PLTR)
+2026-08-08 02:01:20,225 [INFO] [MarketData] 배치 다운로드 완료: 12/12종목
+2026-08-08 02:01:20,228 [INFO] [팔란티어 테크(PLTR)] 현금 부족: 보유 현금 USD 238.95 < 매수 예정 금액 USD 2,555.55 (15주) -> 매수 보류
+2026-08-08 02:01:20,739 [INFO] >>> Processing 테슬라(TSLA)
+2026-08-08 02:01:20,743 [INFO] [테슬라(TSLA)] DOWNTREND 확정 - 신규 진입 차단
+2026-08-08 02:01:20,743 [INFO] >>> Processing ISHARES GLOBAL CLEAN ENERGY(ICLN)
+2026-08-08 02:01:20,745 [INFO] [ISHARES GLOBAL CLEAN ENERGY(ICLN)] DOWNTREND 확정 - 신규 진입 차단
+2026-08-08 02:01:20,746 [INFO] >>> Processing 애플(AAPL)
+2026-08-08 02:01:21,206 [INFO] >>> Processing 에이알엠 홀딩스(ADR)(ARM)
+2026-08-08 02:01:21,209 [INFO]   [에이알엠 홀딩스(ADR)(ARM)] 신호 없음 | Lv1 매수 USD 272.20 -> 현재 USD 283.66 (+4.21%) | 익절 +10.0% / 추매 -5.0%
+2026-08-08 02:01:21,209 [INFO] >>> Processing 펩시코(PEP)
+2026-08-08 02:01:21,212 [INFO] [펩시코(PEP)] DOWNTREND 확정 - 신규 진입 차단
+2026-08-08 02:01:21,212 [INFO] >>> Processing 브로드컴(AVGO)
+2026-08-08 02:01:21,214 [INFO] [브로드컴(AVGO)] DOWNTREND 확정 - 신규 진입 차단
+2026-08-08 02:01:21,215 [INFO] >>> Processing 델 테크놀로지스(DELL)
+2026-08-08 02:01:21,219 [INFO]   [델 테크놀로지스(DELL)] 📈 상승 레짐 유지 | Lv6 매수 USD 420.93 -> 현재 USD 447.76 (+6.37%) | 채널하단(이탈선) USD 370.07 | 20EMA(눌림) USD 425.32 (이격 +5.28%) | adds 3/3
+2026-08-08 02:01:21,219 [INFO] >>> Processing 카메코(CCJ)
+2026-08-08 02:01:21,222 [INFO] [카메코(CCJ)] DOWNTREND 확정 - 신규 진입 차단
+2026-08-08 02:01:21,222 [INFO] >>> Processing 루멘텀 홀딩스(LITE)
+2026-08-08 02:01:21,224 [INFO] [루멘텀 홀딩스(LITE)] DOWNTREND 확정 - 신규 진입 차단
+2026-08-08 02:01:21,225 [INFO] >>> Processing SCHWAB US DIVIDEND EQUITY(SCHD)
+2026-08-08 02:01:21,227 [INFO]   [SCHWAB US DIVIDEND EQUITY(SCHD)] 신호 없음 | Lv1 매수 USD 33.55 -> 현재 USD 33.86 (+0.92%) | 익절 +10.0% / 추매 -5.0%
+2026-08-08 02:01:21,227 [INFO] >>> Processing ARK INNOVATION(ARKK)
+2026-08-08 02:01:21,231 [INFO]   [ARK INNOVATION(ARKK)] 신호 없음 | Lv2 매수 USD 71.93 -> 현재 USD 78.52 (+9.15%) | 익절 +10.0% / 추매 -5.0%
+2026-08-08 02:01:21,231 [INFO] >>> Step 6: Persist
