@@ -4153,5 +4153,46 @@
                 "alias": "삼성전자"
             }
         ]
+    },
+    {
+        "id": "tx_20260807_100113",
+        "date": "2026-08-07 10:01:13",
+        "portfolio_value": 24674610.0,
+        "cash_balance": 10795810.0,
+        "net_deposit": -2082.41,
+        "total_trade_amount": 1050600.0,
+        "reason": "KODEX 반도체레버리지(494310):SKIP(DOWNTREND 확정 - 신규 진입 차단),\n삼성증권(016360):SKIP(DOWNTREND 확정 - 신규 진입 차단),\n한국쉘석유(002960):SKIP(buy_amount(KRW 500,000) < 현재가(KRW 508,000) -> 1주도 매수 불가. buy_amount 상향 조정 필요),\nACE 엔비디아밸류체인액티브(483320):SKIP(DOWNTREND 확정 - 신규 진입 차단),\nSOL 반도체전공정(475300):SKIP(DOWNTREND 확정 - 신규 진입 차단),\nACE 테슬라밸류체인액티브(457480):SKIP(DOWNTREND 확정 - 신규 진입 차단),\nTIGER 지주회사(307520):SKIP(DOWNTREND 확정 - 신규 진입 차단),\n테스(095610):SKIP(이탈 청산 후 재진입 대기 - 채널 중심선 미회복 (현재가 KRW 129,000 <= 기준선 KRW 168,594)),\nKODEX 증권(102970):SKIP(DOWNTREND 확정 - 신규 진입 차단),\n삼성전자우(005935):SELL(추세 이탈 분할 청산(6주/11주, -19.8%))",
+        "executions": [
+            {
+                "ticker": "005935",
+                "action": "SELL",
+                "quantity": 3,
+                "price": 175100.0,
+                "fee": 157.58999999999997,
+                "date": "2026-08-07 10:01:09",
+                "status": "FILLED",
+                "reason": "ODNO=0007881100",
+                "lot_id": "lot_20260727_100141_005935_003",
+                "level": 3,
+                "buy_price": 182500.0,
+                "realized_pnl": -22278.79,
+                "alias": "삼성전자우"
+            },
+            {
+                "ticker": "005935",
+                "action": "SELL",
+                "quantity": 3,
+                "price": 175100.0,
+                "fee": 157.58999999999997,
+                "date": "2026-08-07 10:01:09",
+                "status": "FILLED",
+                "reason": "ODNO=0007881100",
+                "lot_id": "lot_20260619_122048_005935_002",
+                "level": 2,
+                "buy_price": 227000.0,
+                "realized_pnl": -155778.8,
+                "alias": "삼성전자우"
+            }
+        ]
     }
 ]
