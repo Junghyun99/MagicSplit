@@ -1,19 +1,19 @@
 {
-    "last_updated": "2026-08-09 19:31:17",
+    "last_updated": "2026-08-09 20:31:05",
     "last_run_date": "2026-08-09",
     "market_type": "crypto",
     "reason": "모니터링 - 신호 없음",
     "exchange_rate": null,
     "portfolio": {
-        "total_value": 10580038.943945589,
+        "total_value": 10580861.17134559,
         "cash_balance": 2179542.60324299,
         "holdings": [
             {
                 "ticker": "KRW-BTC",
                 "alias": "KRW-BTC",
                 "qty": 0.06851895,
-                "price": 91495000.0,
-                "value": 6269141.33025
+                "price": 91507000.0,
+                "value": 6269963.55765
             },
             {
                 "ticker": "KRW-ETH",
@@ -96,7 +96,7 @@
             "total_qty": 0.06851895,
             "lot_count": 1,
             "total_invested": 7858454.55,
-            "current_value": 6269141.33,
+            "current_value": 6269963.56,
             "lots": [
                 {
                     "lot_id": "lot_20260717_000000_KRW-BTC_001_migrate",
@@ -104,17 +104,17 @@
                     "quantity": 0.06851895,
                     "buy_date": "2026-07-17",
                     "level": 1,
-                    "current_price": 91495000.0,
-                    "pct_change": -20.22
+                    "current_price": 91507000.0,
+                    "pct_change": -20.21
                 }
             ],
-            "current_price": 91495000.0,
+            "current_price": 91507000.0,
             "alias": "KRW-BTC",
             "avg_buy_price": 114690236.0,
-            "unrealized_pnl": -1589313.22,
-            "unrealized_pnl_pct": -20.22,
+            "unrealized_pnl": -1588490.99,
+            "unrealized_pnl_pct": -20.21,
             "realized_pnl": -1349223.66,
-            "total_pnl": -2938536.88
+            "total_pnl": -2937714.65
         },
         "KRW-ETH": {
             "total_qty": 0.77220024,
@@ -186,7 +186,7 @@
         ],
         "sync_error": false,
         "alerts": ["⚠️ 단일 종목 집중도 과다 (59.3%)"],
-        "max_ticker_concentration": 59.25,
+        "max_ticker_concentration": 59.26,
         "high_level_ratio": 0.0
     }
 }
