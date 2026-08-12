@@ -4240,5 +4240,28 @@
                 "alias": "현대차"
             }
         ]
+    },
+    {
+        "id": "tx_20260812_120112",
+        "date": "2026-08-12 12:01:12",
+        "portfolio_value": 25004027.0,
+        "cash_balance": 6316027.0,
+        "net_deposit": 14.72,
+        "total_trade_amount": 964800.0,
+        "reason": "삼성증권(016360):SKIP(DOWNTREND 확정 - 신규 진입 차단),\nKODEX 반도체레버리지(494310):SKIP(DOWNTREND 확정 - 신규 진입 차단),\n메리츠금융지주(138040):BUY(상승장 누적 매수 Lv3 (20EMA 눌림, add 2)),\nSOL 반도체전공정(475300):SKIP(DOWNTREND 확정 - 신규 진입 차단),\nKODEX 증권(102970):SKIP(DOWNTREND 확정 - 신규 진입 차단),\nACE 테슬라밸류체인액티브(457480):SKIP(DOWNTREND 확정 - 신규 진입 차단),\nACE 엔비디아밸류체인액티브(483320):SKIP(DOWNTREND 확정 - 신규 진입 차단),\nTIGER 지주회사(307520):SKIP(DOWNTREND 확정 - 신규 진입 차단),\n테스(095610):SKIP(이탈 청산 후 재진입 대기 - 채널 중심선 미회복 (현재가 KRW 147,300 <= 기준선 KRW 159,972))",
+        "executions": [
+            {
+                "ticker": "138040",
+                "action": "BUY",
+                "quantity": 8,
+                "price": 120600.0,
+                "fee": 144.72,
+                "date": "2026-08-12 12:01:08",
+                "status": "FILLED",
+                "reason": "ODNO=0014450400",
+                "level": 3,
+                "alias": "메리츠금융지주"
+            }
+        ]
     }
 ]
