@@ -1,0 +1,38 @@
+2026-08-12 09:44:42,288 [INFO] === Manual Trade CLI (domestic) [2건]: 018260:buy(2000000.0), 005380:buy(2000000.0) ===
+2026-08-12 09:44:42,288 [INFO] [KisBroker] 캐시에서 토큰 로드 (API 호출 생략)
+2026-08-12 09:44:42,288 [INFO] [KisDomesticLiveBroker] Mode: LIVE TRADING
+2026-08-12 09:44:42,289 [INFO] === Manual Trade: 삼성에스디에스(018260) BUY ===
+2026-08-12 09:44:42,289 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-08-12 09:44:43,314 [INFO] Fetching real-time prices from Broker...
+2026-08-12 09:44:46,868 [INFO] Portfolio: Cash=KRW 10,797,437, Value=KRW 24,647,237
+2026-08-12 09:44:46,868 [INFO] >>> Step 2: Load Positions
+2026-08-12 09:44:46,869 [INFO] Loaded 9 position lot(s)
+2026-08-12 09:44:46,869 [INFO] 매수 금액 수동 지정: KRW 2,000,000
+2026-08-12 09:44:46,869 [INFO] 매수 수량 도출: Lv2 buy_amount=KRW 2,000,000 / 현재가=KRW 236,500 = 8
+2026-08-12 09:44:46,869 [INFO] [삼성에스디에스(018260)] 수동 신호 생성: BUY Lv2 8주 @KRW 236,500
+2026-08-12 09:44:46,869 [INFO] Executing 1 order(s)...
+2026-08-12 09:44:47,272 [INFO] [KisBroker] Available Cash for BUY: 10,797,437
+2026-08-12 09:44:48,664 [INFO] [KisDomestic] Order Sent: BUY 삼성에스디에스(018260) 8 @ 236500 (ODNO=0007411000)
+2026-08-12 09:44:49,054 [INFO] [KisDomestic] Order FILLED: 삼성에스디에스(018260) ODNO=0007411000 price=236500.0 qty=8 fee=283.79999999999995
+2026-08-12 09:44:49,255 [INFO] [Position] New lot: lot_20260812_094449_018260_002 Lv2 삼성에스디에스(018260) 8주 @KRW 236,500
+2026-08-12 09:44:52,661 [INFO] >>> Step 6: Persist
+2026-08-12 09:44:52,947 [INFO] === Manual Trade: 현대차(005380) BUY ===
+2026-08-12 09:44:52,948 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-08-12 09:44:53,350 [INFO] Fetching real-time prices from Broker...
+2026-08-12 09:44:56,902 [INFO] Portfolio: Cash=KRW 8,905,177, Value=KRW 24,646,477
+2026-08-12 09:44:56,902 [INFO] >>> Step 2: Load Positions
+2026-08-12 09:44:56,902 [INFO] Loaded 10 position lot(s)
+2026-08-12 09:44:57,195 [INFO] 매수 금액 수동 지정: KRW 2,000,000
+2026-08-12 09:44:57,195 [INFO] 매수 수량 도출: Lv1 buy_amount=KRW 2,000,000 / 현재가=KRW 405,500 = 4
+2026-08-12 09:44:57,195 [INFO] [현대차(005380)] 수동 신호 생성: BUY Lv1 4주 @KRW 405,500
+2026-08-12 09:44:57,195 [INFO] Executing 1 order(s)...
+2026-08-12 09:44:57,600 [INFO] [KisBroker] Available Cash for BUY: 8,905,177
+2026-08-12 09:44:58,990 [INFO] [KisDomestic] Order Sent: BUY 현대차(005380) 4 @ 406000 (ODNO=0007422400)
+2026-08-12 09:44:59,382 [INFO] [KisDomestic] Order FILLED: 현대차(005380) ODNO=0007422400 price=406000.0 qty=4 fee=243.59999999999997
+2026-08-12 09:44:59,583 [INFO] [현대차(005380)] 동적 재매수 기준 초기화 (매도가 KRW 515,000 -> 소비됨)
+2026-08-12 09:44:59,583 [INFO] [Position] New lot: lot_20260812_094459_005380_001 Lv1 현대차(005380) 4주 @KRW 406,000
+2026-08-12 09:45:02,981 [WARNING] [KisBroker] 초당 거래건수 초과(EGW00201/429) 감지 — 0.5s 대기 후 재시도 (1/3)
+2026-08-12 09:45:04,085 [WARNING] [KisBroker] 초당 거래건수 초과(EGW00201/429) 감지 — 1.0s 대기 후 재시도 (2/3)
+2026-08-12 09:45:05,690 [WARNING] [KisBroker] 초당 거래건수 초과(EGW00201/429) 감지 — 2.0s 대기 후 재시도 (3/3)
+2026-08-12 09:45:08,291 [INFO] >>> Step 6: Persist
+2026-08-12 09:45:08,521 [INFO] === Manual Trade 완료: 체결 2건 [018260 BUY, 005380 BUY], 실패 0건 ===

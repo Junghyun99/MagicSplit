@@ -4194,5 +4194,51 @@
                 "alias": "삼성전자우"
             }
         ]
+    },
+    {
+        "id": "tx_20260812_094452",
+        "date": "2026-08-12 09:44:52",
+        "portfolio_value": 24646477.0,
+        "cash_balance": 8905177.0,
+        "net_deposit": 1650.8,
+        "total_trade_amount": 1892000.0,
+        "reason": "삼성에스디에스(018260):BUY(수동 매매(Manual Trade))",
+        "executions": [
+            {
+                "ticker": "018260",
+                "action": "BUY",
+                "quantity": 8,
+                "price": 236500.0,
+                "fee": 283.79999999999995,
+                "date": "2026-08-12 09:44:49",
+                "status": "FILLED",
+                "reason": "ODNO=0007411000",
+                "level": 2,
+                "alias": "삼성에스디에스"
+            }
+        ]
+    },
+    {
+        "id": "tx_20260812_094508",
+        "date": "2026-08-12 09:45:08",
+        "portfolio_value": 24629257.0,
+        "cash_balance": 7280957.0,
+        "net_deposit": 23.6,
+        "total_trade_amount": 1624000.0,
+        "reason": "현대차(005380):BUY(수동 매매(Manual Trade))",
+        "executions": [
+            {
+                "ticker": "005380",
+                "action": "BUY",
+                "quantity": 4,
+                "price": 406000.0,
+                "fee": 243.59999999999997,
+                "date": "2026-08-12 09:44:59",
+                "status": "FILLED",
+                "reason": "ODNO=0007422400",
+                "level": 1,
+                "alias": "현대차"
+            }
+        ]
     }
 ]
