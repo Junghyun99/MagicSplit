@@ -118,5 +118,32 @@
         "event": "reentry_gate_on",
         "price": 834.875,
         "gate": "resistance"
+    },
+    {
+        "date": "2026-08-13 00:01:26",
+        "ticker": "ARM",
+        "event": "downtrend_on",
+        "price": 268.6
+    },
+    {
+        "date": "2026-08-13 00:01:26",
+        "ticker": "ARM",
+        "event": "trailing_lock_on",
+        "price": 268.6,
+        "lock_price": 268.28,
+        "stop": 260.2316,
+        "gate": "resistance"
+    },
+    {
+        "date": "2026-08-13 00:01:26",
+        "ticker": "PEP",
+        "event": "downtrend_off",
+        "price": 137.39
+    },
+    {
+        "date": "2026-08-13 00:01:26",
+        "ticker": "AVGO",
+        "event": "downtrend_off",
+        "price": 421.6
     }
 ]

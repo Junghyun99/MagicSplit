@@ -1,0 +1,49 @@
+2026-08-13 00:01:08,170 [INFO] === Initializing MagicSplit Bot (overseas) ===
+2026-08-13 00:01:08,170 [INFO] Loaded 22 stock rule(s) from config_overseas.json
+2026-08-13 00:01:08,170 [INFO] [overseas] 12 rule(s), mode=LIVE
+2026-08-13 00:01:08,171 [INFO] [KisBroker] 캐시에서 토큰 로드 (API 호출 생략)
+2026-08-13 00:01:08,171 [INFO] [KisOverseasLiveBroker] Mode: LIVE TRADING
+2026-08-13 00:01:08,173 [INFO] [MarketData] 레짐 필터 활성 종목 12개 -> YFinanceMarketDataProvider 주입 (window 260봉)
+2026-08-13 00:01:08,173 [INFO] === Running overseas engine ===
+2026-08-13 00:01:08,173 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-08-13 00:01:11,084 [INFO] Fetching real-time prices from Broker...
+2026-08-13 00:01:15,595 [INFO] Portfolio: Cash=USD 238.95, Value=USD 18,954.11
+2026-08-13 00:01:15,595 [INFO] >>> Step 2: Load Positions
+2026-08-13 00:01:15,595 [INFO] Loaded 20 position lot(s)
+2026-08-13 00:01:15,596 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-08-13 00:01:15,597 [INFO] >>> Processing ISHARES GLOBAL CLEAN ENERGY(ICLN)
+2026-08-13 00:01:16,744 [INFO] [MarketData] 배치 다운로드 완료: 12/12종목
+2026-08-13 00:01:16,747 [INFO] [ISHARES GLOBAL CLEAN ENERGY(ICLN)] DOWNTREND 확정 - 신규 진입 차단
+2026-08-13 00:01:16,747 [INFO] >>> Processing 브로드컴(AVGO)
+2026-08-13 00:01:16,749 [INFO] [브로드컴(AVGO)] 하락 추세 2일 해제 - 매수 차단 해제
+2026-08-13 00:01:16,750 [INFO] [브로드컴(AVGO)] 이탈 청산 후 재진입 대기 - 상단 저항선 미회복 (현재가 USD 421.60 <= 기준선 USD 433.16)
+2026-08-13 00:01:16,750 [INFO] >>> Processing SCHWAB US DIVIDEND EQUITY(SCHD)
+2026-08-13 00:01:16,753 [INFO]   [SCHWAB US DIVIDEND EQUITY(SCHD)] 신호 없음 | Lv1 매수 USD 33.55 -> 현재 USD 34.09 (+1.59%) | 익절 +10.0% / 추매 -5.0%
+2026-08-13 00:01:16,753 [INFO] >>> Processing 카메코(CCJ)
+2026-08-13 00:01:16,755 [INFO] [카메코(CCJ)] DOWNTREND 확정 - 신규 진입 차단
+2026-08-13 00:01:16,756 [INFO] >>> Processing 에이알엠 홀딩스(ADR)(ARM)
+2026-08-13 00:01:16,758 [INFO] [에이알엠 홀딩스(ADR)(ARM)] DOWNTREND 2일 확정 - 매수 차단
+2026-08-13 00:01:16,758 [INFO] [에이알엠 홀딩스(ADR)(ARM)] 채널 기울기 하락 전환 확정 (-15.14%/63봉) -> 이탈 청산 진행
+2026-08-13 00:01:16,758 [INFO] [에이알엠 홀딩스(ADR)(ARM)] 추세 이탈 -> 분할 청산 2주/3주 (50%) 즉시 매도, 잔량 1주 추종 데드라인 (기준가 USD 268.50, 청산선 USD 260.44, 평단 USD 272.20, 채널하단 USD 195.30)
+2026-08-13 00:01:16,758 [INFO] Executing 1 order(s)...
+2026-08-13 00:01:16,758 [INFO] [KisBroker] Processing 1 SELL orders...
+2026-08-13 00:01:17,834 [INFO] [KisBroker] Order Sent: SELL 에이알엠 홀딩스(ADR)(ARM) 2 @ 268.28 (ODNO=0030795157)
+2026-08-13 00:01:20,370 [INFO] [KisBroker] Order FILLED: 에이알엠 홀딩스(ADR)(ARM) ODNO=0030795157 price=268.28 qty=2 fee=0.0
+2026-08-13 00:01:20,571 [INFO] [Position] 분할 청산: 에이알엠 홀딩스(ADR)(ARM) 2주 소진 (잔여 1주), 실현손익 USD -7.84
+2026-08-13 00:01:20,571 [INFO] [에이알엠 홀딩스(ADR)(ARM)] 추종 데드라인(Trailing Lock) 상태 활성화 (기준가 USD 268.28, 하락 허용치 3.0%)
+2026-08-13 00:01:25,650 [INFO] >>> Processing 애플(AAPL)
+2026-08-13 00:01:25,655 [INFO]   [애플(AAPL)] 📈 상승 레짐 유지 | Lv2 매수 USD 305.35 -> 현재 USD 302.49 (-0.94%) | 채널하단(이탈선) USD 294.58 | 20EMA(눌림) USD 314.49 (이격 -3.82%) | adds 1/3
+2026-08-13 00:01:25,655 [INFO] >>> Processing 펩시코(PEP)
+2026-08-13 00:01:25,657 [INFO] [펩시코(PEP)] 하락 추세 2일 해제 - 매수 차단 해제
+2026-08-13 00:01:25,657 [INFO] [펩시코(PEP)] 이탈 청산 후 재진입 대기 - 상단 저항선 미회복 (현재가 USD 137.39 <= 기준선 USD 141.29)
+2026-08-13 00:01:25,658 [INFO] >>> Processing 팔란티어 테크(PLTR)
+2026-08-13 00:01:25,660 [INFO] [팔란티어 테크(PLTR)] 현금 부족: 보유 현금 USD 770.06 < 매수 예정 금액 USD 2,539.65 (15주) -> 매수 보류
+2026-08-13 00:01:26,137 [INFO] >>> Processing 테슬라(TSLA)
+2026-08-13 00:01:26,140 [INFO] [테슬라(TSLA)] DOWNTREND 확정 - 신규 진입 차단
+2026-08-13 00:01:26,141 [INFO] >>> Processing 루멘텀 홀딩스(LITE)
+2026-08-13 00:01:26,143 [INFO] [루멘텀 홀딩스(LITE)] DOWNTREND 확정 - 신규 진입 차단
+2026-08-13 00:01:26,143 [INFO] >>> Processing 델 테크놀로지스(DELL)
+2026-08-13 00:01:26,147 [INFO]   [델 테크놀로지스(DELL)] 📈 상승 레짐 유지 | Lv6 매수 USD 420.93 -> 현재 USD 463.24 (+10.05%) | 채널하단(이탈선) USD 371.26 | 20EMA(눌림) USD 433.23 (이격 +6.93%) | adds 3/3
+2026-08-13 00:01:26,148 [INFO] >>> Processing ARK INNOVATION(ARKK)
+2026-08-13 00:01:26,150 [INFO]   [ARK INNOVATION(ARKK)] 신호 없음 | Lv2 매수 USD 71.93 -> 현재 USD 80.68 (+12.16%) | 익절 +10.0% / 추매 -5.0%
+2026-08-13 00:01:26,150 [INFO] >>> Step 6: Persist
