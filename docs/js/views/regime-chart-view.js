@@ -257,11 +257,15 @@ window.RegimeChartView = (function () {
                 `</div>`
             ).join('');
 
-        const noteHtml = channelInfo
+        const bandGuide =
+            '<div class="chart-legend-note">' +
+            '배경 음영 = 추세 판정 이력 · 녹색: 상승 추세 · 빨강: 하락 추세 · 횡보는 음영 없음 (매수·매도 신호 아님)' +
+            '</div>';
+        const channelNote = channelInfo
             ? `<div class="chart-legend-note">점선 = 오늘 회귀 채널 · ${esc(channelInfo)}</div>`
             : '';
 
-        legend.innerHTML = rowsHtml + noteHtml;
+        legend.innerHTML = rowsHtml + bandGuide + channelNote;
 
         legend.querySelectorAll('.chart-legend-item').forEach((btn) => {
             btn.addEventListener('click', () => toggleKey(btn.dataset.key));
