@@ -224,7 +224,58 @@ window.RegimeChartView = (function () {
         header.innerHTML =
             `<div class="chart-title">${esc(name)}` +
             `<span class="chart-subtitle">${esc(algo)} · 기준일 ${esc(chart.asof || '-')}</span></div>` +
-            `<div class="chart-badges">${badgeHtml}</div>`;
+            `<div class="chart-header-actions">` +
+            `<div class="chart-badges">${badgeHtml}</div>` +
+            `<div class="chart-controls" aria-label="차트 범위와 확대 축소">` +
+            `<button type="button" data-chart-range="22">1M</button>` +
+            `<button type="button" data-chart-range="66">3M</button>` +
+            `<button type="button" data-chart-range="132">6M</button>` +
+            `<button type="button" data-chart-range="all">전체</button>` +
+            `<button type="button" data-chart-action="zoom-out" aria-label="축소">−</button>` +
+            `<button type="button" data-chart-action="zoom-in" aria-label="확대">＋</button>` +
+            `<button type="button" data-chart-action="reset">초기화</button>` +
+            `</div></div>`;
+    }
+
+    function setupChartControls(totalBars) {
+        const controls = document.querySelector('#regime-chart-header .chart-controls');
+        if (!controls || !chartInstance) return;
+
+        const timeScale = chartInstance.timeScale();
+        const setRange = (bars) => {
+            if (bars === 'all') {
+                timeScale.fitContent();
+            } else {
+                const visibleBars = Math.min(Number(bars), totalBars);
+                timeScale.setVisibleLogicalRange({
+                    from: Math.max(0, totalBars - visibleBars),
+                    to: totalBars + 4,
+                });
+            }
+            controls.querySelectorAll('[data-chart-range]').forEach((button) => {
+                button.classList.toggle('active', button.dataset.chartRange === String(bars));
+            });
+        };
+        const zoom = (factor) => {
+            const current = Number(chartInstance.options().timeScale.barSpacing) || 6;
+            chartInstance.applyOptions({
+                timeScale: { barSpacing: Math.max(0.5, Math.min(30, current * factor)) },
+            });
+        };
+        const reset = () => {
+            chartInstance.applyOptions({ timeScale: { barSpacing: 6 } });
+            setRange(66);
+        };
+
+        controls.addEventListener('click', (event) => {
+            const button = event.target.closest('button');
+            if (!button) return;
+            if (button.dataset.chartRange) setRange(button.dataset.chartRange);
+            if (button.dataset.chartAction === 'zoom-in') zoom(1.25);
+            if (button.dataset.chartAction === 'zoom-out') zoom(0.8);
+            if (button.dataset.chartAction === 'reset') reset();
+        });
+        setRange(66);
     }
 
     /** 수평 기준선의 토글 키. 라벨은 종목이 달라도 같은 의미라 그대로 쓴다. */
@@ -265,7 +316,8 @@ window.RegimeChartView = (function () {
             ? `<div class="chart-legend-note">점선 = 오늘 회귀 채널 · ${esc(channelInfo)}</div>`
             : '';
 
-        legend.innerHTML = rowsHtml + bandGuide + channelNote;
+        legend.innerHTML = rowsHtml + bandGuide + channelNote +
+            '<div class="chart-legend-note chart-navigation-note">휠로 확대·축소하고, 차트를 드래그해 기간을 이동할 수 있습니다.</div>';
 
         legend.querySelectorAll('.chart-legend-item').forEach((btn) => {
             btn.addEventListener('click', () => toggleKey(btn.dataset.key));
@@ -403,7 +455,7 @@ window.RegimeChartView = (function () {
             closeSeries.attachPrimitive(bandPrimitive);
         }
 
-        chartInstance.timeScale().fitContent();
+        setupChartControls(chart.rows.length);
 
         // 컨테이너 폭 변화 추적 (탭 전환/창 크기 변경 모두 커버)
         if (window.ResizeObserver) {

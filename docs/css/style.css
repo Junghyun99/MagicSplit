@@ -1238,6 +1238,21 @@ h2 { font-size: 1.1rem; margin-bottom: 8px; color: var(--text-muted); }
 .chart-badge-positive { color: var(--success); border-color: var(--success); }
 .chart-badge-negative { color: var(--danger); border-color: var(--danger); }
 .chart-badge-warning { color: var(--warning); border-color: var(--warning); }
+.chart-header-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; align-items: center; gap: 8px; }
+.chart-controls { display: inline-flex; gap: 3px; }
+.chart-controls button {
+    font: inherit;
+    font-size: 11px;
+    line-height: 1.4;
+    padding: 2px 7px;
+    color: var(--text-muted);
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    cursor: pointer;
+}
+.chart-controls button:hover { color: var(--text); border-color: var(--primary); }
+.chart-controls button.active { color: #fff; background: var(--primary); border-color: var(--primary); }
 
 .chart-canvas { width: 100%; min-height: 420px; }
 
@@ -1302,3 +1317,4 @@ h2 { font-size: 1.1rem; margin-bottom: 8px; color: var(--text-muted); }
     font-size: 11px;
     color: var(--text-muted);
 }
+.chart-navigation-note { margin-top: 4px; }
