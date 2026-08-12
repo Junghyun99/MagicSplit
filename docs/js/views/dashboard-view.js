@@ -158,6 +158,10 @@ window.DashboardView = (function () {
         }
 
         const positions = statusData.positions || {};
+        // enabled_tickers가 있는 현재 상태 데이터에서는 보유 종목이 자동매매 대상인지
+        // 함께 표시한다. 이전 형식의 상태 데이터에는 이 필드가 없으므로 배지를 생략한다.
+        const enabledTickers = Array.isArray(statusData.enabled_tickers)
+            ? new Set(statusData.enabled_tickers) : null;
         if (Object.keys(positions).length === 0) {
             const emptyCard = document.createElement('div');
             emptyCard.className = 'card';
@@ -234,9 +238,12 @@ window.DashboardView = (function () {
             }
 
             const tickerLabel = escapeHtml(formatTickerLabel(ticker, info.alias));
+            const disabledBadge = enabledTickers && !enabledTickers.has(ticker)
+                ? '<span class="ticker-status-badge ticker-status-disabled" title="자동매매 비활성 종목">비활성</span>'
+                : '';
             card.innerHTML = `
                 <div class="card-header">
-                    <span class="ticker">${tickerLabel} ${levelBadge}</span>
+                    <span class="ticker">${tickerLabel} ${disabledBadge} ${levelBadge}</span>
                     <span class="price">${info.total_qty} shares | ${info.lot_count} lots | @${formatCurrency(curPrice, mode)}</span>
                 </div>
                 ${summaryHtml}
