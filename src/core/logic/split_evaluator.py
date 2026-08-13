@@ -176,7 +176,8 @@ class SplitEvaluator:
                 )
                 if uptrend_resolved:
                     return self._evaluate_uptrend(
-                        rule, ticker_lots, current_price, reading, regime_st, portfolio
+                        rule, ticker_lots, current_price, reading, regime_st, portfolio,
+                        evaluation_date=evaluation_date,
                     )
             else:
                 uptrend_resolved = False
@@ -1209,6 +1210,7 @@ class SplitEvaluator:
         reading,
         st: dict,
         portfolio: Optional[Portfolio],
+        evaluation_date: Optional[str] = None,
     ) -> List[SplitSignal]:
         """상승 레짐: 차수별 매도를 잠그고 추세 눌림에 누적 매수하며,
         추세 이탈 시 분할 청산 또는 전량 청산한다."""
@@ -1273,7 +1275,8 @@ class SplitEvaluator:
         # 2. 매도 잠금 -> 추세 눌림 누적 매수만 평가
         last_lot = max(ticker_lots, key=lambda l: l.level)
         add_signal = self._evaluate_uptrend_add(
-            rule, ticker_lots, last_lot, current_price, reading, st, portfolio
+            rule, ticker_lots, last_lot, current_price, reading, st, portfolio,
+            evaluation_date=evaluation_date,
         )
         return [add_signal] if add_signal else []
 
@@ -1504,8 +1507,27 @@ class SplitEvaluator:
         reading,
         st: dict,
         portfolio: Optional[Portfolio],
+        evaluation_date: Optional[str] = None,
     ) -> Optional[SplitSignal]:
         """상승 추세 눌림 매수(불타기) 평가. 새 고점 게이트 + 눌림/반등 확인."""
+        # 한국시간 기준으로 체결일과 그 다음 날에는 같은 종목의 눌림 add를 막는다.
+        # 날짜는 신호 생성이 아닌 체결 확정 시 엔진이 기록하므로, 거절/미체결 주문은 재시도된다.
+        today_str = evaluation_date or datetime.date.today().isoformat()
+        last_add_date = st.get("last_uptrend_add_date")
+        if last_add_date:
+            try:
+                cooldown_end = datetime.date.fromisoformat(last_add_date) + datetime.timedelta(days=1)
+                if datetime.date.fromisoformat(today_str) <= cooldown_end:
+                    if self._logger:
+                        self._logger.debug(
+                            f"  [{display_ticker(rule.ticker)}] 불타기 대기 | "
+                            f"최근 눌림 매수일 {last_add_date}, 쿨다운 종료 {cooldown_end.isoformat()}"
+                        )
+                    return None
+            except (TypeError, ValueError):
+                # 이전 상태 파일의 잘못된 날짜는 기존 동작을 보존한다.
+                pass
+
         adds = st.get("adds", 0)
         if adds >= rule.uptrend_max_adds:
             if self._logger:

@@ -121,6 +121,36 @@ class TestUptrendPullbackAdd:
         assert buys[0].regime_add_swing_high == r.swing_high
         assert state["AAPL"]["adds"] == 0
 
+    @pytest.mark.parametrize("evaluation_date", ["2024-06-01", "2024-06-02"])
+    def test_add_blocked_on_fill_date_and_following_day(self, evaluator, evaluation_date):
+        rule = _regime_rule()
+        window = _uptrend_window()
+        r = _reading(window, rule)
+        state = {"AAPL": {
+            "regime": "uptrend", "adds": 0,
+            "last_uptrend_add_date": "2024-06-01",
+        }}
+        signals = evaluator.evaluate_stock(
+            rule, [_lot(level=1, buy_price=50.0)], _pf(price=r.ema20 * 1.005),
+            ohlc_window=window, regime_state=state, evaluation_date=evaluation_date,
+        )
+        assert signals == []
+
+    def test_add_allowed_after_two_calendar_days(self, evaluator):
+        rule = _regime_rule()
+        window = _uptrend_window()
+        r = _reading(window, rule)
+        state = {"AAPL": {
+            "regime": "uptrend", "adds": 0,
+            "last_uptrend_add_date": "2024-06-01",
+        }}
+        signals = evaluator.evaluate_stock(
+            rule, [_lot(level=1, buy_price=50.0)], _pf(price=r.ema20 * 1.005),
+            ohlc_window=window, regime_state=state, evaluation_date="2024-06-03",
+        )
+        assert len(signals) == 1
+        assert signals[0].action == OrderAction.BUY
+
     @pytest.mark.skip(reason="새 고점 게이트 우회 테스트 중 - split_evaluator.py 게이트 주석 참고")
     def test_new_high_gate_blocks_add(self, evaluator):
         rule = _regime_rule()
