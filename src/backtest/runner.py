@@ -70,7 +70,11 @@ def run_backtest(
     # 만약 레짐 지표(이동평균/ADX/ATR 등)를 사용한다면, 첫 백테스트 거래일에 충분한 과거 데이터(window_size 봉)가 
     # 확보되도록 데이터 다운로드 시작 시점을 과거로 이동합니다.
     regime_active = any(getattr(r, "regime_enabled", False) for r in rules)
-    window_size = max((r.regime_min_bars for r in rules), default=200) + 60
+    window_size = max(
+        max((r.regime_min_bars for r in rules), default=200),
+        max((r.channel_lookback for r in rules), default=63),
+        max((r.long_channel_lookback for r in rules if r.multi_horizon_regime_enabled), default=0),
+    ) + 60
     
     if regime_active:
         start_dt = pd.to_datetime(start_date)
@@ -106,7 +110,11 @@ def run_backtest(
     repo = JsonRepository(root_path=output_dir)
     # 레짐 지표용 시세 제공자 (브로커와 분리). 레짐 종목이 있을 때만 주입.
     regime_active = any(getattr(r, "regime_enabled", False) for r in rules)
-    window_size = max((r.regime_min_bars for r in rules), default=200) + 60
+    window_size = max(
+        max((r.regime_min_bars for r in rules), default=200),
+        max((r.channel_lookback for r in rules), default=63),
+        max((r.long_channel_lookback for r in rules if r.multi_horizon_regime_enabled), default=0),
+    ) + 60
     market_data = (
         BacktestMarketDataProvider(ohlc_df, window_size=window_size)
         if regime_active else None

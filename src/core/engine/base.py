@@ -978,6 +978,9 @@ class MagicSplitEngine:
                 "downtrend_today_state", "downtrend_prev_date",
                 "downtrend_exit_streak", "downtrend_exit_days",
                 "downtrend_exit_today_state", "downtrend_exit_prev_date",
+                "long_trend", "short_trend", "previous_long_regime", "previous_short_regime",
+                "long_downtrend_lock", "aligned_downtrend_reentry_lock",
+                "long_short_downtrend_liquidation_pending",
             )
             if k in st
         }

@@ -324,6 +324,10 @@ def _public_state(regime_st: dict) -> dict:
         "reentry_gate": regime_st.get("post_liquidation_reentry_gate"),
         "adds": regime_st.get("adds", 0),
         "breakdown_count": len(regime_st.get("breakdown_days") or []),
+        "long_trend": regime_st.get("long_trend"),
+        "short_trend": regime_st.get("short_trend"),
+        "long_downtrend_lock": bool(regime_st.get("long_downtrend_lock")),
+        "aligned_downtrend_reentry_lock": bool(regime_st.get("aligned_downtrend_reentry_lock")),
     }
 
 
@@ -338,4 +342,8 @@ def _public_params(rule: StockRule) -> dict:
         "trendbreak_partial_sell_pct": rule.trendbreak_partial_sell_pct,
         "trendbreak_trailing_drop_pct": rule.trendbreak_trailing_drop_pct,
         "max_lots": rule.max_lots,
+        "multi_horizon_regime_enabled": rule.multi_horizon_regime_enabled,
+        "long_channel_lookback": rule.long_channel_lookback,
+        "long_sideways_exposure_multiplier": rule.long_sideways_exposure_multiplier,
+        "long_uptrend_sideways_sell_multiplier": rule.long_uptrend_sideways_sell_multiplier,
     }

@@ -120,6 +120,7 @@ class MagicSplitBot:
         window_size = max(
             max((r.regime_min_bars for r in regime_rules), default=200),
             max((r.channel_lookback for r in regime_rules), default=63),
+            max((r.long_channel_lookback for r in regime_rules if r.multi_horizon_regime_enabled), default=0),
         ) + 60
 
         from src.infra.data import UpbitMarketDataProvider, YFinanceMarketDataProvider
