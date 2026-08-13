@@ -250,6 +250,9 @@ class TestBuildChartSeries:
                 "post_liquidation": True,
                 "post_liquidation_reentry_gate": "midline",
                 "trailing_lock": {"lock_price": 180.0, "drop_pct": 3.0},
+                "long_trend": "uptrend", "short_trend": "sideways",
+                "long_downtrend_lock": True,
+                "aligned_downtrend_reentry_lock": True,
             },
         )
 
@@ -257,6 +260,9 @@ class TestBuildChartSeries:
             "regime": "uptrend", "downtrend": "active", "trailing_lock": True,
             "post_liquidation": True, "reentry_gate": "midline",
             "adds": 2, "breakdown_count": 1,
+            "long_trend": "uptrend", "short_trend": "sideways",
+            "long_downtrend_lock": True,
+            "aligned_downtrend_reentry_lock": True,
         }
 
     def test_output_is_strict_json_without_nan(self):
