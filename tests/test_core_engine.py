@@ -1436,6 +1436,7 @@ class TestRegimeAddCommitOnFill:
         )
         assert regime_state["AAPL"]["adds"] == 1
         assert regime_state["AAPL"]["last_add_swing_high"] == 120.0
+        assert regime_state["AAPL"]["last_uptrend_add_date"] == "2024-01-02"
 
     def test_no_commit_on_rejected_buy(self, engine):
         regime_state = {"AAPL": {"regime": "uptrend", "adds": 0, "last_add_swing_high": 100.0}}
@@ -1449,6 +1450,7 @@ class TestRegimeAddCommitOnFill:
         # 거절되면 add 카운트/고점 기준이 그대로 유지된다
         assert regime_state["AAPL"]["adds"] == 0
         assert regime_state["AAPL"]["last_add_swing_high"] == 100.0
+        assert "last_uptrend_add_date" not in regime_state["AAPL"]
 
     def test_normal_buy_does_not_touch_regime_state(self, engine):
         # regime_add_swing_high 없는 일반 매수는 regime_state를 건드리지 않는다
