@@ -298,7 +298,7 @@ def build_chart_series(
         "regime_bands": build_regime_bands(readings),
         "lines": lines,
         "markers": markers or [],
-        "state": _public_state(regime_st),
+        "state": _public_state(rule, regime_st),
         "params": _public_params(rule),
     }
 
@@ -313,10 +313,10 @@ def _index_date(df, pos: int) -> str:
         return str(df.index[pos])[:10]
 
 
-def _public_state(regime_st: dict) -> dict:
+def _public_state(rule: StockRule, regime_st: dict) -> dict:
     """차트 렌더에 필요한 상태만 추린다 (내부 카운터 제외)."""
     lock = regime_st.get("trailing_lock")
-    return {
+    state = {
         "regime": regime_st.get("regime") or "sideways",
         "downtrend": regime_st.get("downtrend"),
         "trailing_lock": bool(lock),
@@ -324,16 +324,21 @@ def _public_state(regime_st: dict) -> dict:
         "reentry_gate": regime_st.get("post_liquidation_reentry_gate"),
         "adds": regime_st.get("adds", 0),
         "breakdown_count": len(regime_st.get("breakdown_days") or []),
-        "long_trend": regime_st.get("long_trend"),
-        "short_trend": regime_st.get("short_trend"),
-        "long_downtrend_lock": bool(regime_st.get("long_downtrend_lock")),
-        "aligned_downtrend_reentry_lock": bool(regime_st.get("aligned_downtrend_reentry_lock")),
     }
+    # 장·단기 모드가 꺼진 기존 차트 JSON 계약은 그대로 유지한다.
+    if rule.multi_horizon_regime_enabled:
+        state.update({
+            "long_trend": regime_st.get("long_trend"),
+            "short_trend": regime_st.get("short_trend"),
+            "long_downtrend_lock": bool(regime_st.get("long_downtrend_lock")),
+            "aligned_downtrend_reentry_lock": bool(regime_st.get("aligned_downtrend_reentry_lock")),
+        })
+    return state
 
 
 def _public_params(rule: StockRule) -> dict:
     """차트 범례/툴팁에 표시할 규칙 파라미터."""
-    return {
+    params = {
         "channel_lookback": rule.channel_lookback,
         "channel_stddev_k": rule.channel_stddev_k,
         "channel_slope_band_pct": rule.channel_slope_band_pct,
@@ -342,8 +347,12 @@ def _public_params(rule: StockRule) -> dict:
         "trendbreak_partial_sell_pct": rule.trendbreak_partial_sell_pct,
         "trendbreak_trailing_drop_pct": rule.trendbreak_trailing_drop_pct,
         "max_lots": rule.max_lots,
-        "multi_horizon_regime_enabled": rule.multi_horizon_regime_enabled,
-        "long_channel_lookback": rule.long_channel_lookback,
-        "long_sideways_exposure_multiplier": rule.long_sideways_exposure_multiplier,
-        "long_uptrend_sideways_sell_multiplier": rule.long_uptrend_sideways_sell_multiplier,
     }
+    if rule.multi_horizon_regime_enabled:
+        params.update({
+            "multi_horizon_regime_enabled": True,
+            "long_channel_lookback": rule.long_channel_lookback,
+            "long_sideways_exposure_multiplier": rule.long_sideways_exposure_multiplier,
+            "long_uptrend_sideways_sell_multiplier": rule.long_uptrend_sideways_sell_multiplier,
+        })
+    return params

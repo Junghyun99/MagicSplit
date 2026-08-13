@@ -4,6 +4,7 @@ import pandas as pd
 
 from src.core.logic.regime import Regime
 from src.core.logic.split_evaluator import SplitEvaluator, classify_for_rule
+from src.core.logic.chart_builder import build_chart_series
 from src.core.models import OrderAction, Portfolio, PositionLot, StockRule
 
 
@@ -123,3 +124,17 @@ def test_relaxed_sell_multiplier_does_not_change_active_trailing_lot():
     active_lot = _lot()
     active_lot.trailing_highest_price = 120
     assert evaluator._effective_sell_threshold(_rule(), active_lot) == 10
+
+
+def test_disabled_mode_preserves_existing_chart_contract_and_trading_path():
+    window = _window(_trend(63, 100, 0.25))
+    rule = _rule(multi_horizon_regime_enabled=False, long_channel_lookback=21)
+    evaluator = SplitEvaluator()
+    signals = evaluator.evaluate_stock(
+        rule, [_lot(price=130, qty=1)], _portfolio(window.Close.iloc[-1], qty=1),
+        ohlc_window=window, regime_state={},
+    )
+    assert not [s for s in signals if s.is_blocked and "장기" in s.reason]
+    chart = build_chart_series(rule, window, lambda d: classify_for_rule(rule, d), [], window.Close.iloc[-1])
+    assert "multi_horizon_regime_enabled" not in chart["params"]
+    assert "long_trend" not in chart["state"]
