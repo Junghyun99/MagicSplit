@@ -352,9 +352,13 @@ window.RegimeChartView = (function () {
         const bands = ChartModel.toBands(chart);
         const priceLines = ChartModel.toPriceLines(chart);
         const markers = ChartModel.toMarkers(chart, formatMoney);
-        const channelSeries = ChartModel.toCurrentChannelSeries(chart);
-        const channelInfo = channelSeries.length
-            ? ChartModel.describeCurrentChannel(chart) : null;
+        const shortChannelSeries = ChartModel.toCurrentChannelSeries(chart);
+        const longChannelSeries = ChartModel.toLongChannelSeries(chart);
+        const channelSeries = shortChannelSeries.concat(longChannelSeries);
+        const channelInfo = [
+            shortChannelSeries.length ? ChartModel.describeCurrentChannel(chart) : null,
+            longChannelSeries.length ? ChartModel.describeLongChannel(chart) : null,
+        ].filter(Boolean).join(' · ') || null;
 
         renderHeader(chart, aliasMap, ChartModel.toStatusBadges(chart));
         renderLegend([
