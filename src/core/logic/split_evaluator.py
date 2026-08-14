@@ -73,6 +73,8 @@ class SplitEvaluator:
     def __init__(self, logger: Optional[ILogger] = None):
         self._logger = logger
         self.price_anomaly_threshold = 30.0  # % 이격 발생 시 차단
+        self._active_exposure_limit: Optional[float] = None
+        self._active_sell_multiplier: float = 1.0
 
     def evaluate(
         self,
@@ -151,6 +153,7 @@ class SplitEvaluator:
         reading = None
         regime_st: dict = {}
         downtrend_blocked = False
+        multi = None
         if rule.regime_enabled and ohlc_window is not None:
             reading = classify_for_rule(rule, ohlc_window)
             regime_st = regime_state.setdefault(rule.ticker, {}) if regime_state is not None else {}
@@ -158,6 +161,19 @@ class SplitEvaluator:
             downtrend_blocked = self._resolve_downtrend_block(
                 reading, regime_st, rule.ticker, evaluation_date=evaluation_date
             )
+            multi = self._resolve_multi_horizon(rule, ohlc_window, reading, regime_st)
+            self._active_exposure_limit = multi["exposure_limit"] if multi else None
+            self._active_sell_multiplier = multi["sell_multiplier"] if multi else 1.0
+
+            # 장·단기 하락 정렬은 단기 방어 뒤 남은 물량까지 정리하는 최종 청산 이벤트다.
+            if (multi and ticker_lots and (
+                    (multi["long"] == Regime.DOWNTREND and multi["short"] == Regime.DOWNTREND)
+                    or regime_st.get("long_short_downtrend_liquidation_pending"))):
+                regime_st["aligned_downtrend_reentry_lock"] = True
+                regime_st["long_short_downtrend_liquidation_pending"] = True
+                return self._aligned_downtrend_liquidation(
+                    rule, ticker_lots, current_price
+                )
             if ticker_lots:
                 # 채널 모드 이탈 처리: 추종 데드라인 -> 하락 래치 청산 -> 하단 이탈 청산.
                 # None이면 이탈 아님 -> 통상 흐름(상승/횡보) 계속.
@@ -175,6 +191,12 @@ class SplitEvaluator:
                     ) == Regime.UPTREND
                 )
                 if uptrend_resolved:
+                    if multi and multi["long"] == Regime.SIDEWAYS:
+                        # 장기 횡보의 단기 상승은 초기 진입만 허용하고 추세 가산은 금지한다.
+                        uptrend_resolved = False
+                    elif multi and multi["buy_halted"]:
+                        uptrend_resolved = False
+                if uptrend_resolved:
                     return self._evaluate_uptrend(
                         rule, ticker_lots, current_price, reading, regime_st, portfolio,
                         evaluation_date=evaluation_date,
@@ -184,8 +206,25 @@ class SplitEvaluator:
         else:
             uptrend_resolved = False
 
+        # 레짐 미사용/데이터 부족 호출 간 evaluator 인스턴스의 이전 값을 누수하지 않는다.
+        if multi is None:
+            self._active_exposure_limit = None
+            self._active_sell_multiplier = 1.0
+
         # 보유 lot이 없으면 -> 1차수 초기 매수
         if not ticker_lots:
+            if multi and multi["buy_locked"]:
+                return [self._buy_blocked_signal(rule, current_price, multi["lock_reason"])]
+            if multi and multi["buy_halted"]:
+                return [self._buy_blocked_signal(rule, current_price, "단기 하락 - 신규 진입 중단")]
+            if multi and regime_st.get("aligned_downtrend_reentry_lock"):
+                if not self._can_reenter_after_aligned_downtrend(reading, multi, current_price):
+                    return [self._buy_blocked_signal(
+                        rule, current_price,
+                        "장·단기 하락 청산 후 재진입 대기 - 장기 횡보 이상·단기 상승·채널 상단 회복 필요",
+                    )]
+                regime_st.pop("aligned_downtrend_reentry_lock", None)
+                regime_st.pop("long_short_downtrend_liquidation_pending", None)
             if downtrend_blocked:
                 reason = "DOWNTREND 확정 - 신규 진입 차단"
                 if self._logger:
@@ -266,8 +305,10 @@ class SplitEvaluator:
                 self._trailing_info_signal = None
 
         # 하락 레짐 추가 매수 차단
-        if downtrend_blocked:
-            reason = "DOWNTREND 확정 - 추가 매수 차단"
+        if (multi and (multi["buy_locked"] or multi["buy_halted"])) or downtrend_blocked:
+            reason = (multi["lock_reason"] if multi and multi["buy_locked"]
+                      else "단기 하락 - 추가 매수 중단" if multi
+                      else "DOWNTREND 확정 - 추가 매수 차단")
             if self._logger:
                 self._logger.info(f"[{display_ticker(rule.ticker)}] {reason}")
             result.append(SplitSignal(
@@ -280,6 +321,10 @@ class SplitEvaluator:
                 pct_change=0.0,
                 is_blocked=True,
             ))
+            return result
+
+        if multi and multi["long"] == Regime.SIDEWAYS and multi["short"] == Regime.UPTREND:
+            # 장기 횡보·단기 상승은 새 1차수만 허용한다. 보유분의 일반/추세 가산은 모두 막는다.
             return result
 
         # 매수 확인 (동적 재매수 기준 적용)
@@ -315,7 +360,7 @@ class SplitEvaluator:
         # 1단계: last_lot 활성화 확인
         pct = (current_price - last_lot.buy_price) / last_lot.buy_price * 100
         if (last_lot.trailing_highest_price is None
-                and pct < rule.sell_threshold_at(last_lot.level)):
+                and pct < self._effective_sell_threshold(rule, last_lot)):
             return None
 
         # 2단계: 고차수->저차수 순차 탐색
@@ -328,7 +373,7 @@ class SplitEvaluator:
                 break
 
             pct_lot = (current_price - lot.buy_price) / lot.buy_price * 100
-            s_thr = rule.sell_threshold_at(lot.level)
+            s_thr = self._effective_sell_threshold(rule, lot)
             lot_activated = lot.trailing_highest_price is not None or pct_lot >= s_thr
 
             if not lot_activated:
@@ -410,6 +455,100 @@ class SplitEvaluator:
         )
         return info_signals + [bulk_signal]
 
+    def _resolve_multi_horizon(self, rule, ohlc_window, short_reading, st: dict) -> Optional[dict]:
+        """장기 채널 정책 컨텍스트를 만들고 잠금 상태를 갱신한다.
+
+        장기 데이터가 부족하면 None을 반환해 기존 channel 경로로 완전히 폴백한다.
+        """
+        if not rule.multi_horizon_regime_enabled or rule.regime_algo != "channel":
+            return None
+        long_reading = classify_channel(
+            ohlc_window, lookback=rule.long_channel_lookback,
+            stddev_k=rule.channel_stddev_k,
+            slope_band_pct=rule.channel_slope_band_pct,
+            chandelier_k=rule.trendbreak_chandelier_k,
+            chandelier_lookback=rule.trendbreak_chandelier_lookback,
+            swing_lookback=rule.uptrend_swing_lookback,
+        )
+        if long_reading.regime == Regime.UNKNOWN:
+            st["long_trend"] = "unknown"
+            return None
+
+        long_regime = long_reading.regime
+        short_regime = short_reading.regime
+        previous_long = st.get("previous_long_regime")
+        previous_short = st.get("previous_short_regime")
+        st["long_trend"] = str(long_regime)
+        st["short_trend"] = str(short_regime)
+        st["previous_long_regime"] = str(long_regime)
+        st["previous_short_regime"] = str(short_regime)
+
+        if long_regime == Regime.DOWNTREND:
+            st["long_downtrend_lock"] = True
+        elif (st.get("long_downtrend_lock")
+              and long_regime in (Regime.SIDEWAYS, Regime.UPTREND)
+              and short_regime == Regime.UPTREND):
+            st.pop("long_downtrend_lock", None)
+
+        buy_locked = bool(st.get("long_downtrend_lock"))
+        exposure_limit = None
+        if rule.max_exposure_pct is not None:
+            multiplier = rule.long_sideways_exposure_multiplier if long_regime == Regime.SIDEWAYS else 1.0
+            exposure_limit = rule.max_exposure_pct * multiplier
+
+        # 단기 하락은 장기 상승/횡보에서 일시 중단이고, 장기 하락은 영속 잠금이다.
+        buy_halted = long_regime != Regime.DOWNTREND and short_regime == Regime.DOWNTREND
+        sell_multiplier = (
+            rule.long_uptrend_sideways_sell_multiplier
+            if long_regime == Regime.UPTREND and short_regime == Regime.SIDEWAYS else 1.0
+        )
+        if previous_long != str(long_regime) or previous_short != str(short_regime):
+            if self._logger:
+                self._logger.info(
+                    f"[{display_ticker(rule.ticker)}] 장·단기 레짐 전이: "
+                    f"({previous_long or '-'}, {previous_short or '-'}) -> ({long_regime}, {short_regime})"
+                )
+        return {
+            "long": long_regime, "short": short_regime,
+            "buy_locked": buy_locked, "buy_halted": buy_halted,
+            "lock_reason": "장기 하락 확정 - 신규·추가 매수 차단",
+            "exposure_limit": exposure_limit, "sell_multiplier": sell_multiplier,
+        }
+
+    @staticmethod
+    def _can_reenter_after_aligned_downtrend(reading, multi: dict, current_price: float) -> bool:
+        return (
+            multi["long"] in (Regime.SIDEWAYS, Regime.UPTREND)
+            and multi["short"] == Regime.UPTREND
+            and not math.isnan(reading.channel_resistance)
+            and current_price > reading.channel_resistance
+        )
+
+    @staticmethod
+    def _buy_blocked_signal(rule, current_price: float, reason: str) -> SplitSignal:
+        return SplitSignal(
+            ticker=rule.ticker, lot_id=None, action=OrderAction.BUY, quantity=0,
+            price=current_price, reason=reason, pct_change=0.0, is_blocked=True,
+        )
+
+    def _aligned_downtrend_liquidation(self, rule, lots, current_price: float) -> List[SplitSignal]:
+        total_qty = sum(l.quantity for l in lots)
+        total_cost = sum(l.buy_price * l.quantity for l in lots)
+        avg_buy = total_cost / total_qty if total_qty else 0.0
+        pct = (current_price - avg_buy) / avg_buy * 100 if avg_buy else 0.0
+        return [SplitSignal(
+            ticker=rule.ticker, lot_id=None, action=OrderAction.SELL,
+            quantity=total_qty, price=current_price,
+            reason=f"장·단기 하락 정렬 전량 청산 ({pct:+.1f}%)",
+            pct_change=pct, level=max(l.level for l in lots),
+            regime_liquidation=True, reentry_gate="resistance",
+        )]
+
+    def _effective_sell_threshold(self, rule: StockRule, lot: PositionLot) -> float:
+        # 이미 시작된 trailing은 과거의 활성 기준·고점을 보존한다.
+        multiplier = 1.0 if lot.trailing_highest_price is not None else self._active_sell_multiplier
+        return rule.sell_threshold_at(lot.level) * multiplier
+
     def _evaluate_sell(
         self,
         rule: StockRule,
@@ -419,7 +558,7 @@ class SplitEvaluator:
         """마지막 차수 lot의 매도 여부를 평가한다.
         트레일링 스톱이 설정되어 있다면 활성화 후 하락을 추적하며 매도한다."""
         pct_change = (current_price - last_lot.buy_price) / last_lot.buy_price * 100
-        sell_threshold = rule.sell_threshold_at(last_lot.level)
+        sell_threshold = self._effective_sell_threshold(rule, last_lot)
         trailing_drop = rule.trailing_drop_at(last_lot.level)
 
         if trailing_drop is not None:
@@ -704,7 +843,10 @@ class SplitEvaluator:
             (True, ""): 매수 허용 (가드 통과 또는 미설정).
             (False, reason): 매수 차단 및 사유.
         """
-        if rule.max_exposure_pct is None:
+        exposure_limit = self._active_exposure_limit
+        if exposure_limit is None:
+            exposure_limit = rule.max_exposure_pct
+        if exposure_limit is None:
             return True, ""
         if portfolio is None:
             return True, ""
@@ -722,11 +864,11 @@ class SplitEvaluator:
         after_exposure = current_holding_value + buy_value
         after_pct = after_exposure / total_value * 100
 
-        if after_pct > rule.max_exposure_pct:
+        if after_pct > exposure_limit:
             current_pct = current_holding_value / total_value * 100
             reason = (
                 f"비중 상한 초과: 현재 {current_pct:.1f}% + 매수 예정 {after_pct - current_pct:.1f}% "
-                f"= {after_pct:.1f}% > 상한 {rule.max_exposure_pct:.1f}%"
+                f"= {after_pct:.1f}% > 상한 {exposure_limit:.1f}%"
             )
             if self._logger:
                 self._logger.info(f"[{display_ticker(rule.ticker)}] {reason} -> 매수 보류")

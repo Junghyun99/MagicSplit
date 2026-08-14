@@ -556,6 +556,30 @@ class TestStrategyConfigRegime:
         assert rules[1].regime_algo == "ma_adx"
         assert rules[1].channel_slope_band_pct == 4.0  # 글로벌 값 (미사용)
 
+    def test_multi_horizon_global_inheritance_and_override(self, tmp_path):
+        config = {
+            "stocks": [
+                {"ticker": "AAPL"},
+                {"ticker": "MSFT", "long_sideways_exposure_multiplier": 0.6},
+            ],
+            "global": {
+                "regime_enabled": True,
+                "regime_algo": "channel",
+                "multi_horizon_regime_enabled": True,
+                "long_channel_lookback": 300,
+                "long_sideways_exposure_multiplier": 0.7,
+                "long_uptrend_sideways_sell_multiplier": 1.5,
+            },
+        }
+        config_file = tmp_path / "config_overseas.json"
+        config_file.write_text(json.dumps(config))
+
+        rules = StrategyConfig(str(config_file)).rules
+        assert rules[0].multi_horizon_regime_enabled is True
+        assert rules[0].long_channel_lookback == 300
+        assert rules[0].long_sideways_exposure_multiplier == 0.7
+        assert rules[1].long_sideways_exposure_multiplier == 0.6
+
     def test_invalid_channel_algo_raises(self, tmp_path):
         config = {
             "stocks": [{

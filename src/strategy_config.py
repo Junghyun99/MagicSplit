@@ -107,12 +107,12 @@ class StrategyConfig:
         return merged
 
     # 레짐 필터 파라미터: 타입별 키 집합 (개별 > 글로벌 > dataclass 기본값)
-    _REGIME_KEYS_BOOL = ("regime_enabled", "trendbreak_use_sma50")
+    _REGIME_KEYS_BOOL = ("regime_enabled", "trendbreak_use_sma50", "multi_horizon_regime_enabled")
     _REGIME_KEYS_STR = ("regime_algo",)
     _REGIME_KEYS_INT = (
         "regime_min_bars", "uptrend_max_adds",
         "uptrend_swing_lookback", "trendbreak_chandelier_lookback",
-        "channel_lookback",
+        "channel_lookback", "long_channel_lookback",
     )
     _REGIME_KEYS_FLOAT = (
         "regime_adx_trend", "regime_adx_range",
@@ -121,6 +121,7 @@ class StrategyConfig:
         "trendbreak_partial_sell_pct", "trendbreak_trailing_drop_pct",
         "channel_stddev_k", "channel_slope_band_pct",
         "channel_breakdown_tolerance_pct",
+        "long_sideways_exposure_multiplier", "long_uptrend_sideways_sell_multiplier",
     )
     _REGIME_KEYS_LIST = ("uptrend_add_amounts",)
 

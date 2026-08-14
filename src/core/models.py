@@ -98,6 +98,11 @@ class StockRule:
     # 추세 이탈 분할 매도 + 추종 데드라인(Trailing Lock)
     trendbreak_partial_sell_pct: float = 50.0  # 이탈 시 즉시 매도 비율(%). 100=전량, 50=절반
     trendbreak_trailing_drop_pct: float = 3.0   # 잔량 추종 데드라인 하락 허용치(%)
+    # 장·단기(252/63봉) 레짐 레이어. 기본 OFF로 기존 channel 동작을 보존한다.
+    multi_horizon_regime_enabled: bool = False
+    long_channel_lookback: int = 252
+    long_sideways_exposure_multiplier: float = 0.7
+    long_uptrend_sideways_sell_multiplier: float = 1.5
 
     def __post_init__(self):
         if self.buy_threshold_pct is None and not self.buy_threshold_pcts:
@@ -181,6 +186,23 @@ class StockRule:
                 raise ValueError(
                     f"StockRule({self.ticker}): trendbreak_trailing_drop_pct는 음수일 수 없습니다."
                 )
+            if self.multi_horizon_regime_enabled:
+                if self.regime_algo != "channel":
+                    raise ValueError(
+                        f"StockRule({self.ticker}): multi_horizon_regime_enabled는 channel 레짐에서만 사용할 수 있습니다."
+                    )
+                if self.long_channel_lookback < 21:
+                    raise ValueError(
+                        f"StockRule({self.ticker}): long_channel_lookback은 21 이상이어야 합니다."
+                    )
+                if not (0 < self.long_sideways_exposure_multiplier <= 1):
+                    raise ValueError(
+                        f"StockRule({self.ticker}): long_sideways_exposure_multiplier는 0 초과 1 이하여야 합니다."
+                    )
+                if self.long_uptrend_sideways_sell_multiplier < 1:
+                    raise ValueError(
+                        f"StockRule({self.ticker}): long_uptrend_sideways_sell_multiplier는 1 이상이어야 합니다."
+                    )
 
     @staticmethod
     def _at(arr: Optional[List[float]], scalar: Optional[float], level: int) -> float:
