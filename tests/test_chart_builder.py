@@ -404,3 +404,38 @@ class TestBuildCurrentChannel:
         )
 
         assert chart["current_channel"] is None
+
+    def test_multi_horizon_chart_includes_long_channel_only_when_enabled(self):
+        df = _ohlc(np.linspace(100, 220, 300))
+        rule = _channel_rule(
+            channel_lookback=21,
+            multi_horizon_regime_enabled=True,
+            long_channel_lookback=252,
+        )
+
+        chart = build_chart_series(
+            rule, df, lambda d: classify_for_rule(rule, d), [], 215.0,
+        )
+
+        assert chart["long_current_channel"]["lookback"] == 252
+        assert len(chart["long_current_channel"]["rows"]) == 252
+
+    def test_multi_horizon_chart_omits_long_channel_when_disabled_or_short(self):
+        df = _ohlc(np.linspace(100, 220, 300))
+        disabled = _channel_rule(channel_lookback=21, long_channel_lookback=252)
+        enabled_short_history = _channel_rule(
+            channel_lookback=21,
+            multi_horizon_regime_enabled=True,
+            long_channel_lookback=400,
+        )
+
+        disabled_chart = build_chart_series(
+            disabled, df, lambda d: classify_for_rule(disabled, d), [], 215.0,
+        )
+        short_chart = build_chart_series(
+            enabled_short_history, df,
+            lambda d: classify_for_rule(enabled_short_history, d), [], 215.0,
+        )
+
+        assert "long_current_channel" not in disabled_chart
+        assert "long_current_channel" not in short_chart

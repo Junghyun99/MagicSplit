@@ -159,6 +159,7 @@ def build_current_channel(
     rule: StockRule,
     ohlc_window,
     asof: Optional[str] = None,
+    lookback: Optional[int] = None,
 ) -> Optional[dict]:
     """오늘자 회귀 채널 1개를 창 전체에 펼친 '직선' 오버레이를 만든다.
 
@@ -179,7 +180,7 @@ def build_current_channel(
     if ohlc_window is None:
         return None
 
-    lookback = rule.channel_lookback
+    lookback = lookback or rule.channel_lookback
     window = ohlc_window["Close"].tail(lookback)
     if len(window) < lookback:
         return None
@@ -295,6 +296,7 @@ def build_chart_series(
         "cols": cols,
         "rows": rows,
         "current_channel": build_current_channel(rule, ohlc_window, asof),
+        **_multi_horizon_chart_payload(rule, ohlc_window, asof),
         "regime_bands": build_regime_bands(readings),
         "lines": lines,
         "markers": markers or [],
@@ -311,6 +313,23 @@ def _index_date(df, pos: int) -> str:
         return pd.Timestamp(df.index[pos]).strftime("%Y-%m-%d")
     except (ValueError, TypeError):
         return str(df.index[pos])[:10]
+
+
+def _multi_horizon_chart_payload(
+    rule: StockRule, ohlc_window, asof: Optional[str],
+) -> dict:
+    """멀티 레짐이 켜진 경우에만 장기 채널 오버레이를 공개한다.
+
+    기능 비활성 차트의 JSON 계약을 보존하기 위해 빈 값이나 ``None`` 대신
+    필드를 통째로 생략한다. 장기 데이터가 부족한 경우도 같은 방식으로
+    프론트가 기존 단기 채널만 렌더링하도록 한다.
+    """
+    if not rule.multi_horizon_regime_enabled:
+        return {}
+    channel = build_current_channel(
+        rule, ohlc_window, asof, lookback=rule.long_channel_lookback,
+    )
+    return {"long_current_channel": channel} if channel is not None else {}
 
 
 def _public_state(rule: StockRule, regime_st: dict) -> dict:

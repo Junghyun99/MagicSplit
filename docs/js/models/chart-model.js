@@ -66,8 +66,8 @@ window.ChartModel = (function () {
      * 이건 오늘 회귀 하나를 lookback 구간에 펼친 것으로 현재 채널 기울기를 본다.
      * 같은 개념이라 색은 공유하고 점선으로 구분한다.
      */
-    function toCurrentChannelSeries(chart) {
-        const cc = chart && chart.current_channel;
+    function toChannelSeries(channel, horizon) {
+        const cc = channel;
         if (!cc || !Array.isArray(cc.rows) || !cc.rows.length) return [];
 
         const dateIdx = cc.cols.indexOf('date');
@@ -86,16 +86,26 @@ window.ChartModel = (function () {
             }
             if (points.length) {
                 out.push({
-                    key: 'current_' + key,
-                    label: `${meta.label} (오늘 회귀)`,
-                    color: meta.color,
+                    key: horizon + '_channel_' + key,
+                    color: horizon === 'long'
+                        ? ({ mid: '#674ea7', support: '#a61c00', resistance: '#38761d' }[key] || meta.color)
+                        : meta.color,
                     width: 1,
                     dashed: true,
-                    points: points
+                    points: points,
+                    label: `${horizon === 'long' ? '장기' : '단기'} ${meta.label} (${cc.lookback}봉)`
                 });
             }
         }
         return out;
+    }
+
+    function toCurrentChannelSeries(chart) {
+        return toChannelSeries(chart && chart.current_channel, 'short');
+    }
+
+    function toLongChannelSeries(chart) {
+        return toChannelSeries(chart && chart.long_current_channel, 'long');
     }
 
     /** 오늘자 회귀 채널의 요약 (범례 옆 설명용). */
@@ -108,6 +118,14 @@ window.ChartModel = (function () {
     }
 
     /** 레짐 구간을 배경 밴드 렌더용으로 변환한다 (횡보는 시각적 잡음이라 제외). */
+    function describeLongChannel(chart) {
+        const cc = chart && chart.long_current_channel;
+        if (!cc) return null;
+        const slope = Number(cc.slope_pct);
+        const sign = slope > 0 ? '+' : '';
+        return `장기 ${cc.lookback}봉 회귀 채널 · 기울기 ${sign}${slope.toFixed(2)}% · 폭 ${cc.stddev_k}σ`;
+    }
+
     function toBands(chart) {
         if (!chart || !Array.isArray(chart.regime_bands)) return [];
         return chart.regime_bands
@@ -187,7 +205,16 @@ window.ChartModel = (function () {
         const s = chart.state;
         const badges = [];
 
-        if (s.downtrend) {
+        const hasMultiHorizon = s.long_trend || s.short_trend || s.long_downtrend_lock || s.aligned_downtrend_reentry_lock;
+        if (hasMultiHorizon) {
+            const label = { uptrend: '상승', sideways: '횡보', downtrend: '하락', unknown: '미확정' };
+            badges.push({ text: `장기 ${label[s.long_trend] || '미확정'} · 단기 ${label[s.short_trend] || '미확정'}`, tone: s.long_trend === 'downtrend' ? 'negative' : 'neutral' });
+            if (s.long_downtrend_lock) badges.push({ text: '장기 하락 — 신규·추가매수 차단', tone: 'negative' });
+            if (s.aligned_downtrend_reentry_lock) badges.push({ text: '하락 정렬 청산 — 재진입 대기', tone: 'negative' });
+            if (s.long_trend === 'sideways') badges.push({ text: '노출 한도 70%', tone: 'warning' });
+            if (s.long_trend === 'uptrend' && s.short_trend === 'sideways') badges.push({ text: '일반 익절 기준 1.5×', tone: 'warning' });
+            if (s.short_trend === 'downtrend' && !s.long_downtrend_lock) badges.push({ text: '단기 하락 — 신규·추가매수 중단', tone: 'warning' });
+        } else if (s.downtrend) {
             badges.push({ text: '하락 래치 - 매수 차단', tone: 'negative' });
         } else if (s.regime === 'uptrend') {
             badges.push({ text: '상승 레짐 - 차수 매도 잠금', tone: 'positive' });
@@ -210,7 +237,8 @@ window.ChartModel = (function () {
 
     return {
         toSeries, toBands, toPriceLines, toMarkers, toStatusBadges,
-        toCurrentChannelSeries, describeCurrentChannel,
+        toCurrentChannelSeries, toLongChannelSeries,
+        describeCurrentChannel, describeLongChannel,
         SERIES_META, REGIME_META
     };
 })();

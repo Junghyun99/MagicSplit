@@ -144,6 +144,13 @@ window.ConfigController = (function () {
         document.getElementById('global-channel-stddev-k').addEventListener('input', saveGlobalConfigToModel);
         document.getElementById('global-channel-slope-band-pct').addEventListener('input', saveGlobalConfigToModel);
         document.getElementById('global-channel-breakdown-tolerance-pct').addEventListener('input', saveGlobalConfigToModel);
+        document.getElementById('global-multi-horizon-regime-enabled').addEventListener('change', () => {
+            ConfigView.syncMultiHorizonSettings();
+            saveGlobalConfigToModel();
+        });
+        document.getElementById('global-long-channel-lookback').addEventListener('input', saveGlobalConfigToModel);
+        document.getElementById('global-long-sideways-exposure-multiplier').addEventListener('input', saveGlobalConfigToModel);
+        document.getElementById('global-long-uptrend-sideways-sell-multiplier').addEventListener('input', saveGlobalConfigToModel);
 
         document.getElementById('add-stock-btn').addEventListener('click', () => {
             if (!ConfigModel.getConfig()) return;
@@ -316,8 +323,32 @@ window.ConfigController = (function () {
             if (vals.channel_stddev_k !== '') config.global.channel_stddev_k = parseFloat(vals.channel_stddev_k); else delete config.global.channel_stddev_k;
             if (vals.channel_slope_band_pct !== '') config.global.channel_slope_band_pct = parseFloat(vals.channel_slope_band_pct); else delete config.global.channel_slope_band_pct;
             if (vals.channel_breakdown_tolerance_pct !== '') config.global.channel_breakdown_tolerance_pct = parseFloat(vals.channel_breakdown_tolerance_pct); else delete config.global.channel_breakdown_tolerance_pct;
+            config.global.multi_horizon_regime_enabled = vals.multi_horizon_regime_enabled;
+            if (vals.long_channel_lookback !== '') config.global.long_channel_lookback = parseInt(vals.long_channel_lookback, 10); else delete config.global.long_channel_lookback;
+            if (vals.long_sideways_exposure_multiplier !== '') config.global.long_sideways_exposure_multiplier = parseFloat(vals.long_sideways_exposure_multiplier); else delete config.global.long_sideways_exposure_multiplier;
+            if (vals.long_uptrend_sideways_sell_multiplier !== '') config.global.long_uptrend_sideways_sell_multiplier = parseFloat(vals.long_uptrend_sideways_sell_multiplier); else delete config.global.long_uptrend_sideways_sell_multiplier;
             ConfigView.updateDiffPreview(ConfigModel.getDiff());
         }
+    }
+
+    function validateMultiHorizonConfig() {
+        const global = ConfigModel.getConfig()?.global || {};
+        if (!global.multi_horizon_regime_enabled) return null;
+        if (global.regime_enabled !== true || global.regime_algo !== 'channel') {
+            return '장·단기 레짐은 Regime Enabled와 channel 알고리즘이 필요합니다.';
+        }
+        if (global.long_channel_lookback !== undefined && global.long_channel_lookback < 21) {
+            return '장기 채널 기간은 21봉 이상이어야 합니다.';
+        }
+        const exposure = global.long_sideways_exposure_multiplier;
+        if (exposure !== undefined && !(exposure > 0 && exposure <= 1)) {
+            return '장기 횡보 노출 배율은 0보다 크고 1 이하여야 합니다.';
+        }
+        if (global.long_uptrend_sideways_sell_multiplier !== undefined
+            && global.long_uptrend_sideways_sell_multiplier < 1) {
+            return '장기 상승·단기 횡보 익절 배율은 1 이상이어야 합니다.';
+        }
+        return null;
     }
 
     function saveCurrentTickerToModel() {
@@ -383,6 +414,11 @@ window.ConfigController = (function () {
         if (!githubApi || !ConfigModel.getSha() || !ConfigModel.getConfig()) return;
 
         saveCurrentTickerToModel();
+        const validationError = validateMultiHorizonConfig();
+        if (validationError) {
+            ConfigView.showBanner(validationError, 'danger');
+            return;
+        }
         ConfigView.setSaveButtonState(true);
 
         try {
