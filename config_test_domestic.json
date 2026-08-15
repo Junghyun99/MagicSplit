@@ -46,13 +46,13 @@
     "channel_lookback": 63,
     "channel_stddev_k": 2.0,
     "channel_slope_band_pct": 8.0,
-    "channel_breakdown_tolerance_pct": 1,
+    "channel_breakdown_tolerance_pct": 0,
     "trendbreak_use_sma50": false,
     "trendbreak_partial_sell_pct": 50,
     "trendbreak_trailing_drop_pct": 3.0,
     "multi_horizon_regime_enabled": true,
     "long_channel_lookback": 252,
     "long_sideways_exposure_multiplier": 0.7,
-    "long_uptrend_sideways_sell_multiplier": 1.5
+    "long_uptrend_sideways_sell_multiplier": 1
   }
 }
