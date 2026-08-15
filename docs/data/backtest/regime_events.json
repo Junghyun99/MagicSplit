@@ -1,11 +1,5 @@
 [
     {
-        "date": "2016-01-05",
-        "ticker": "005490",
-        "event": "downtrend_on",
-        "price": 169000.0
-    },
-    {
         "date": "2016-01-18",
         "ticker": "005930",
         "event": "downtrend_on",
@@ -17,12 +11,6 @@
         "event": "breakdown_pending",
         "price": 97000.0,
         "count": 1
-    },
-    {
-        "date": "2016-02-02",
-        "ticker": "005490",
-        "event": "downtrend_off",
-        "price": 176500.0
     },
     {
         "date": "2016-02-17",
@@ -108,51 +96,11 @@
         "count": 1
     },
     {
-        "date": "2016-05-16",
-        "ticker": "005490",
-        "event": "breakdown_pending",
-        "price": 207500.0,
-        "count": 1
-    },
-    {
-        "date": "2016-05-17",
-        "ticker": "005490",
-        "event": "trailing_lock_on",
-        "price": 202500.0,
-        "lock_price": 202297.5,
-        "stop": 196228.575,
-        "gate": "midline"
-    },
-    {
         "date": "2016-05-19",
         "ticker": "095610",
         "event": "breakdown_pending",
         "price": 12550.0,
         "count": 1
-    },
-    {
-        "date": "2016-05-20",
-        "ticker": "005490",
-        "event": "trailing_lock_off",
-        "price": 203000.0
-    },
-    {
-        "date": "2016-05-23",
-        "ticker": "005490",
-        "event": "uptrend_on",
-        "price": 207500.0
-    },
-    {
-        "date": "2016-06-13",
-        "ticker": "035720",
-        "event": "downtrend_on",
-        "price": 18760.0
-    },
-    {
-        "date": "2016-06-13",
-        "ticker": "005490",
-        "event": "uptrend_off",
-        "price": 211000.0
     },
     {
         "date": "2016-06-13",
@@ -162,6 +110,12 @@
         "count": 1
     },
     {
+        "date": "2016-06-13",
+        "ticker": "035720",
+        "event": "downtrend_on",
+        "price": 18760.0
+    },
+    {
         "date": "2016-06-17",
         "ticker": "033780",
         "event": "breakdown_pending",
@@ -169,31 +123,10 @@
         "count": 1
     },
     {
-        "date": "2016-06-21",
-        "ticker": "005490",
-        "event": "downtrend_on",
-        "price": 206500.0
-    },
-    {
-        "date": "2016-06-21",
-        "ticker": "005490",
-        "event": "trailing_lock_on",
-        "price": 206500.0,
-        "lock_price": 206293.5,
-        "stop": 200104.695,
-        "gate": "resistance"
-    },
-    {
         "date": "2016-06-22",
         "ticker": "035720",
         "event": "downtrend_off",
         "price": 18840.0
-    },
-    {
-        "date": "2016-06-22",
-        "ticker": "005490",
-        "event": "trailing_lock_off",
-        "price": 205000.0
     },
     {
         "date": "2016-07-01",
@@ -207,18 +140,6 @@
         "event": "breakdown_pending",
         "price": 139000.0,
         "count": 1
-    },
-    {
-        "date": "2016-07-25",
-        "ticker": "005490",
-        "event": "downtrend_off",
-        "price": 222500.0
-    },
-    {
-        "date": "2016-08-05",
-        "ticker": "005490",
-        "event": "uptrend_on",
-        "price": 221500.0
     },
     {
         "date": "2016-09-01",
@@ -250,13 +171,6 @@
     },
     {
         "date": "2016-09-09",
-        "ticker": "005930",
-        "event": "breakdown_pending",
-        "price": 31500.0,
-        "count": 1
-    },
-    {
-        "date": "2016-09-09",
         "ticker": "095610",
         "event": "trailing_lock_on",
         "price": 19400.0,
@@ -265,13 +179,11 @@
         "gate": "midline"
     },
     {
-        "date": "2016-09-12",
+        "date": "2016-09-09",
         "ticker": "005930",
-        "event": "trailing_lock_on",
-        "price": 29300.0,
-        "lock_price": 29270.7,
-        "stop": 28392.579,
-        "gate": "midline"
+        "event": "breakdown_pending",
+        "price": 31500.0,
+        "count": 1
     },
     {
         "date": "2016-09-12",
@@ -290,6 +202,15 @@
         "ticker": "095610",
         "event": "reentry_gate_on",
         "price": 18450.0,
+        "gate": "midline"
+    },
+    {
+        "date": "2016-09-12",
+        "ticker": "005930",
+        "event": "trailing_lock_on",
+        "price": 29300.0,
+        "lock_price": 29270.7,
+        "stop": 28392.579,
         "gate": "midline"
     },
     {
@@ -421,13 +342,6 @@
         "price": 152800.0
     },
     {
-        "date": "2017-01-05",
-        "ticker": "005490",
-        "event": "breakdown_pending",
-        "price": 247500.0,
-        "count": 1
-    },
-    {
         "date": "2017-01-12",
         "ticker": "035420",
         "event": "downtrend_off",
@@ -448,16 +362,16 @@
     },
     {
         "date": "2017-02-07",
-        "ticker": "033780",
-        "event": "downtrend_off",
-        "price": 103000.0
-    },
-    {
-        "date": "2017-02-07",
         "ticker": "095610",
         "event": "breakdown_pending",
         "price": 22350.0,
         "count": 1
+    },
+    {
+        "date": "2017-02-07",
+        "ticker": "033780",
+        "event": "downtrend_off",
+        "price": 103000.0
     },
     {
         "date": "2017-02-14",
@@ -488,13 +402,6 @@
         "price": 23850.0
     },
     {
-        "date": "2017-03-27",
-        "ticker": "005490",
-        "event": "breakdown_pending",
-        "price": 270000.0,
-        "count": 1
-    },
-    {
         "date": "2017-03-29",
         "ticker": "035420",
         "event": "uptrend_on",
@@ -521,13 +428,6 @@
         "lock_price": 153446.4,
         "stop": 148843.008,
         "gate": "midline"
-    },
-    {
-        "date": "2017-04-13",
-        "ticker": "005490",
-        "event": "breakdown_pending",
-        "price": 265000.0,
-        "count": 1
     },
     {
         "date": "2017-04-13",
@@ -570,6 +470,13 @@
     },
     {
         "date": "2017-06-21",
+        "ticker": "095610",
+        "event": "breakdown_pending",
+        "price": 27300.0,
+        "count": 1
+    },
+    {
+        "date": "2017-06-21",
         "ticker": "035720",
         "event": "uptrend_on",
         "price": 19760.0
@@ -579,13 +486,6 @@
         "ticker": "035720",
         "event": "breakdown_pending",
         "price": 19760.0,
-        "count": 1
-    },
-    {
-        "date": "2017-06-21",
-        "ticker": "095610",
-        "event": "breakdown_pending",
-        "price": 27300.0,
         "count": 1
     },
     {
@@ -612,16 +512,16 @@
     },
     {
         "date": "2017-07-03",
-        "ticker": "035720",
+        "ticker": "095610",
         "event": "breakdown_pending",
-        "price": 19880.0,
+        "price": 27150.0,
         "count": 1
     },
     {
         "date": "2017-07-03",
-        "ticker": "095610",
+        "ticker": "035720",
         "event": "breakdown_pending",
-        "price": 27150.0,
+        "price": 19880.0,
         "count": 1
     },
     {
@@ -682,54 +582,16 @@
         "price": 157400.0
     },
     {
-        "date": "2017-09-14",
-        "ticker": "005490",
-        "event": "breakdown_pending",
-        "price": 323500.0,
-        "count": 1
-    },
-    {
-        "date": "2017-09-15",
-        "ticker": "005490",
-        "event": "trailing_lock_on",
-        "price": 312000.0,
-        "lock_price": 311688.0,
-        "stop": 302337.36,
-        "gate": "midline"
-    },
-    {
-        "date": "2017-09-19",
-        "ticker": "005490",
-        "event": "trailing_lock_off",
-        "price": 324000.0
-    },
-    {
-        "date": "2017-09-21",
-        "ticker": "005490",
-        "event": "breakdown_pending",
-        "price": 316500.0,
-        "count": 1
-    },
-    {
-        "date": "2017-09-25",
-        "ticker": "005490",
-        "event": "trailing_lock_on",
-        "price": 307500.0,
-        "lock_price": 307192.5,
-        "stop": 297976.725,
-        "gate": "midline"
-    },
-    {
         "date": "2017-09-25",
         "ticker": "033780",
         "event": "downtrend_on",
         "price": 103000.0
     },
     {
-        "date": "2017-09-28",
-        "ticker": "005490",
-        "event": "trailing_lock_off",
-        "price": 315500.0
+        "date": "2017-10-26",
+        "ticker": "035420",
+        "event": "downtrend_off",
+        "price": 168000.0
     },
     {
         "date": "2017-10-26",
@@ -737,12 +599,6 @@
         "event": "breakdown_pending",
         "price": 28000.0,
         "count": 1
-    },
-    {
-        "date": "2017-10-26",
-        "ticker": "035420",
-        "event": "downtrend_off",
-        "price": 168000.0
     },
     {
         "date": "2017-11-10",
@@ -784,25 +640,6 @@
     },
     {
         "date": "2017-11-30",
-        "ticker": "035720",
-        "event": "uptrend_off",
-        "price": 27300.0
-    },
-    {
-        "date": "2017-11-30",
-        "ticker": "035720",
-        "event": "trailing_lock_off",
-        "price": 27300.0
-    },
-    {
-        "date": "2017-11-30",
-        "ticker": "035720",
-        "event": "reentry_gate_on",
-        "price": 27300.0,
-        "gate": "midline"
-    },
-    {
-        "date": "2017-11-30",
         "ticker": "005930",
         "event": "uptrend_off",
         "price": 50800.0
@@ -818,6 +655,25 @@
         "ticker": "005930",
         "event": "reentry_gate_on",
         "price": 50800.0,
+        "gate": "midline"
+    },
+    {
+        "date": "2017-11-30",
+        "ticker": "035720",
+        "event": "uptrend_off",
+        "price": 27300.0
+    },
+    {
+        "date": "2017-11-30",
+        "ticker": "035720",
+        "event": "trailing_lock_off",
+        "price": 27300.0
+    },
+    {
+        "date": "2017-11-30",
+        "ticker": "035720",
+        "event": "reentry_gate_on",
+        "price": 27300.0,
         "gate": "midline"
     },
     {
@@ -910,15 +766,15 @@
     },
     {
         "date": "2018-02-05",
-        "ticker": "033780",
-        "event": "downtrend_on",
-        "price": 104000.0
-    },
-    {
-        "date": "2018-02-05",
         "ticker": "095610",
         "event": "trailing_lock_off",
         "price": 34100.0
+    },
+    {
+        "date": "2018-02-05",
+        "ticker": "033780",
+        "event": "downtrend_on",
+        "price": 104000.0
     },
     {
         "date": "2018-02-06",
@@ -929,27 +785,11 @@
     },
     {
         "date": "2018-02-07",
-        "ticker": "005490",
-        "event": "breakdown_pending",
-        "price": 365000.0,
-        "count": 1
-    },
-    {
-        "date": "2018-02-07",
         "ticker": "035420",
         "event": "trailing_lock_on",
         "price": 168600.0,
         "lock_price": 168431.4,
         "stop": 163378.458,
-        "gate": "midline"
-    },
-    {
-        "date": "2018-02-08",
-        "ticker": "005490",
-        "event": "trailing_lock_on",
-        "price": 360500.0,
-        "lock_price": 360139.5,
-        "stop": 349335.315,
         "gate": "midline"
     },
     {
@@ -978,19 +818,6 @@
         "gate": "midline"
     },
     {
-        "date": "2018-02-20",
-        "ticker": "005490",
-        "event": "trailing_lock_off",
-        "price": 364500.0
-    },
-    {
-        "date": "2018-03-02",
-        "ticker": "005490",
-        "event": "breakdown_pending",
-        "price": 348500.0,
-        "count": 1
-    },
-    {
         "date": "2018-03-15",
         "ticker": "005930",
         "event": "downtrend_off",
@@ -1003,16 +830,16 @@
         "price": 160200.0
     },
     {
-        "date": "2018-04-02",
-        "ticker": "005490",
-        "event": "downtrend_on",
-        "price": 327500.0
-    },
-    {
         "date": "2018-04-13",
         "ticker": "035720",
         "event": "downtrend_off",
         "price": 24100.0
+    },
+    {
+        "date": "2018-04-23",
+        "ticker": "033780",
+        "event": "downtrend_off",
+        "price": 98500.0
     },
     {
         "date": "2018-04-23",
@@ -1030,12 +857,6 @@
         "gate": "resistance"
     },
     {
-        "date": "2018-04-23",
-        "ticker": "033780",
-        "event": "downtrend_off",
-        "price": 98500.0
-    },
-    {
         "date": "2018-04-24",
         "ticker": "035720",
         "event": "trailing_lock_off",
@@ -1048,10 +869,10 @@
         "price": 53000.0
     },
     {
-        "date": "2018-05-09",
-        "ticker": "005490",
+        "date": "2018-06-18",
+        "ticker": "095610",
         "event": "downtrend_off",
-        "price": 350500.0
+        "price": 25900.0
     },
     {
         "date": "2018-06-18",
@@ -1061,10 +882,11 @@
         "count": 1
     },
     {
-        "date": "2018-06-18",
+        "date": "2018-06-19",
         "ticker": "095610",
-        "event": "downtrend_off",
-        "price": 25900.0
+        "event": "breakdown_pending",
+        "price": 25200.0,
+        "count": 1
     },
     {
         "date": "2018-06-19",
@@ -1074,13 +896,6 @@
         "lock_price": 46953.0,
         "stop": 45544.41,
         "gate": "midline"
-    },
-    {
-        "date": "2018-06-19",
-        "ticker": "095610",
-        "event": "breakdown_pending",
-        "price": 25200.0,
-        "count": 1
     },
     {
         "date": "2018-06-21",
@@ -1104,22 +919,6 @@
         "price": 24350.0
     },
     {
-        "date": "2018-06-27",
-        "ticker": "005490",
-        "event": "breakdown_pending",
-        "price": 331000.0,
-        "count": 1
-    },
-    {
-        "date": "2018-06-28",
-        "ticker": "005490",
-        "event": "trailing_lock_on",
-        "price": 322000.0,
-        "lock_price": 321678.0,
-        "stop": 312027.66,
-        "gate": "midline"
-    },
-    {
         "date": "2018-06-28",
         "ticker": "095610",
         "event": "trailing_lock_off",
@@ -1133,35 +932,10 @@
         "gate": "midline"
     },
     {
-        "date": "2018-07-04",
-        "ticker": "005490",
-        "event": "uptrend_off",
-        "price": 305000.0
-    },
-    {
-        "date": "2018-07-04",
-        "ticker": "005490",
-        "event": "trailing_lock_off",
-        "price": 305000.0
-    },
-    {
-        "date": "2018-07-04",
-        "ticker": "005490",
-        "event": "reentry_gate_on",
-        "price": 305000.0,
-        "gate": "midline"
-    },
-    {
         "date": "2018-07-06",
         "ticker": "035420",
         "event": "downtrend_off",
         "price": 149800.0
-    },
-    {
-        "date": "2018-07-10",
-        "ticker": "035720",
-        "event": "downtrend_off",
-        "price": 23400.0
     },
     {
         "date": "2018-07-10",
@@ -1170,10 +944,10 @@
         "price": 46300.0
     },
     {
-        "date": "2018-07-17",
-        "ticker": "005490",
-        "event": "downtrend_on",
-        "price": 319000.0
+        "date": "2018-07-10",
+        "ticker": "035720",
+        "event": "downtrend_off",
+        "price": 23400.0
     },
     {
         "date": "2018-08-16",
@@ -1199,12 +973,6 @@
         "ticker": "005930",
         "event": "downtrend_off",
         "price": 47450.0
-    },
-    {
-        "date": "2018-09-07",
-        "ticker": "005490",
-        "event": "downtrend_off",
-        "price": 308000.0
     },
     {
         "date": "2018-09-11",
@@ -1249,12 +1017,6 @@
         "gate": "midline"
     },
     {
-        "date": "2018-10-11",
-        "ticker": "005490",
-        "event": "downtrend_on",
-        "price": 257000.0
-    },
-    {
         "date": "2018-10-15",
         "ticker": "033780",
         "event": "downtrend_on",
@@ -1295,12 +1057,6 @@
         "ticker": "035420",
         "event": "downtrend_off",
         "price": 131500.0
-    },
-    {
-        "date": "2019-01-18",
-        "ticker": "005490",
-        "event": "downtrend_off",
-        "price": 262500.0
     },
     {
         "date": "2019-01-30",
@@ -1345,12 +1101,6 @@
         "price": 25300.0
     },
     {
-        "date": "2019-05-24",
-        "ticker": "005490",
-        "event": "downtrend_on",
-        "price": 229000.0
-    },
-    {
         "date": "2019-06-05",
         "ticker": "095610",
         "event": "downtrend_on",
@@ -1363,22 +1113,10 @@
         "price": 115500.0
     },
     {
-        "date": "2019-07-17",
-        "ticker": "005490",
-        "event": "downtrend_off",
-        "price": 236000.0
-    },
-    {
         "date": "2019-07-24",
         "ticker": "095610",
         "event": "downtrend_off",
         "price": 17450.0
-    },
-    {
-        "date": "2019-08-16",
-        "ticker": "005490",
-        "event": "downtrend_on",
-        "price": 205000.0
     },
     {
         "date": "2019-09-02",
@@ -1409,12 +1147,6 @@
         "ticker": "095610",
         "event": "reentry_gate_off",
         "price": 19100.0
-    },
-    {
-        "date": "2019-10-04",
-        "ticker": "005490",
-        "event": "downtrend_off",
-        "price": 218000.0
     },
     {
         "date": "2019-10-04",
@@ -1527,16 +1259,16 @@
     },
     {
         "date": "2020-02-24",
-        "ticker": "005930",
+        "ticker": "095610",
         "event": "breakdown_pending",
-        "price": 56800.0,
+        "price": 24000.0,
         "count": 1
     },
     {
         "date": "2020-02-24",
-        "ticker": "095610",
+        "ticker": "005930",
         "event": "breakdown_pending",
-        "price": 24000.0,
+        "price": 56800.0,
         "count": 1
     },
     {
@@ -1547,9 +1279,10 @@
     },
     {
         "date": "2020-02-27",
-        "ticker": "005490",
-        "event": "downtrend_on",
-        "price": 199000.0
+        "ticker": "095610",
+        "event": "breakdown_pending",
+        "price": 22700.0,
+        "count": 1
     },
     {
         "date": "2020-02-27",
@@ -1559,13 +1292,6 @@
         "lock_price": 55844.1,
         "stop": 54168.777,
         "gate": "midline"
-    },
-    {
-        "date": "2020-02-27",
-        "ticker": "095610",
-        "event": "breakdown_pending",
-        "price": 22700.0,
-        "count": 1
     },
     {
         "date": "2020-02-28",
@@ -1619,13 +1345,6 @@
     },
     {
         "date": "2020-03-11",
-        "ticker": "035720",
-        "event": "breakdown_pending",
-        "price": 33800.0,
-        "count": 1
-    },
-    {
-        "date": "2020-03-11",
         "ticker": "005930",
         "event": "breakdown_pending",
         "price": 52100.0,
@@ -1641,13 +1360,11 @@
         "gate": "midline"
     },
     {
-        "date": "2020-03-12",
+        "date": "2020-03-11",
         "ticker": "035720",
-        "event": "trailing_lock_on",
-        "price": 32200.0,
-        "lock_price": 32167.8,
-        "stop": 31202.766,
-        "gate": "midline"
+        "event": "breakdown_pending",
+        "price": 33800.0,
+        "count": 1
     },
     {
         "date": "2020-03-12",
@@ -1657,6 +1374,22 @@
         "lock_price": 52047.9,
         "stop": 50486.463,
         "gate": "midline"
+    },
+    {
+        "date": "2020-03-12",
+        "ticker": "035720",
+        "event": "trailing_lock_on",
+        "price": 32200.0,
+        "lock_price": 32167.8,
+        "stop": 31202.766,
+        "gate": "midline"
+    },
+    {
+        "date": "2020-03-13",
+        "ticker": "095610",
+        "event": "breakdown_pending",
+        "price": 19350.0,
+        "count": 1
     },
     {
         "date": "2020-03-13",
@@ -1675,32 +1408,6 @@
         "ticker": "005930",
         "event": "reentry_gate_on",
         "price": 49950.0,
-        "gate": "midline"
-    },
-    {
-        "date": "2020-03-13",
-        "ticker": "095610",
-        "event": "breakdown_pending",
-        "price": 19350.0,
-        "count": 1
-    },
-    {
-        "date": "2020-03-16",
-        "ticker": "035720",
-        "event": "uptrend_off",
-        "price": 29500.0
-    },
-    {
-        "date": "2020-03-16",
-        "ticker": "035720",
-        "event": "trailing_lock_off",
-        "price": 29500.0
-    },
-    {
-        "date": "2020-03-16",
-        "ticker": "035720",
-        "event": "reentry_gate_on",
-        "price": 29500.0,
         "gate": "midline"
     },
     {
@@ -1729,6 +1436,25 @@
         "ticker": "035420",
         "event": "reentry_gate_on",
         "price": 155000.0,
+        "gate": "midline"
+    },
+    {
+        "date": "2020-03-16",
+        "ticker": "035720",
+        "event": "uptrend_off",
+        "price": 29500.0
+    },
+    {
+        "date": "2020-03-16",
+        "ticker": "035720",
+        "event": "trailing_lock_off",
+        "price": 29500.0
+    },
+    {
+        "date": "2020-03-16",
+        "ticker": "035720",
+        "event": "reentry_gate_on",
+        "price": 29500.0,
         "gate": "midline"
     },
     {
@@ -1830,12 +1556,6 @@
         "ticker": "033780",
         "event": "downtrend_off",
         "price": 82200.0
-    },
-    {
-        "date": "2020-05-27",
-        "ticker": "005490",
-        "event": "downtrend_off",
-        "price": 182500.0
     },
     {
         "date": "2020-05-27",
@@ -1992,16 +1712,16 @@
     },
     {
         "date": "2020-09-17",
-        "ticker": "035720",
+        "ticker": "035420",
         "event": "breakdown_pending",
-        "price": 74200.0,
+        "price": 300500.0,
         "count": 1
     },
     {
         "date": "2020-09-17",
-        "ticker": "035420",
+        "ticker": "035720",
         "event": "breakdown_pending",
-        "price": 300500.0,
+        "price": 74200.0,
         "count": 1
     },
     {
@@ -2011,15 +1731,6 @@
         "price": 298000.0,
         "lock_price": 297702.0,
         "stop": 288770.94,
-        "gate": "midline"
-    },
-    {
-        "date": "2020-09-22",
-        "ticker": "035720",
-        "event": "trailing_lock_on",
-        "price": 70600.0,
-        "lock_price": 70529.4,
-        "stop": 68413.518,
         "gate": "midline"
     },
     {
@@ -2042,6 +1753,15 @@
         "gate": "midline"
     },
     {
+        "date": "2020-09-22",
+        "ticker": "035720",
+        "event": "trailing_lock_on",
+        "price": 70600.0,
+        "lock_price": 70529.4,
+        "stop": 68413.518,
+        "gate": "midline"
+    },
+    {
         "date": "2020-09-23",
         "ticker": "035720",
         "event": "trailing_lock_off",
@@ -2049,16 +1769,16 @@
     },
     {
         "date": "2020-09-24",
+        "ticker": "005930",
+        "event": "uptrend_off",
+        "price": 57800.0
+    },
+    {
+        "date": "2020-09-24",
         "ticker": "035720",
         "event": "breakdown_pending",
         "price": 70400.0,
         "count": 1
-    },
-    {
-        "date": "2020-09-24",
-        "ticker": "005930",
-        "event": "uptrend_off",
-        "price": 57800.0
     },
     {
         "date": "2020-09-25",
@@ -2122,18 +1842,6 @@
         "price": 74100.0
     },
     {
-        "date": "2020-11-24",
-        "ticker": "005490",
-        "event": "reentry_gate_off",
-        "price": 244500.0
-    },
-    {
-        "date": "2020-11-26",
-        "ticker": "005490",
-        "event": "uptrend_on",
-        "price": 242500.0
-    },
-    {
         "date": "2020-12-03",
         "ticker": "035720",
         "event": "downtrend_off",
@@ -2144,41 +1852,6 @@
         "ticker": "035420",
         "event": "downtrend_off",
         "price": 290000.0
-    },
-    {
-        "date": "2021-01-15",
-        "ticker": "005490",
-        "event": "breakdown_pending",
-        "price": 275000.0,
-        "count": 1
-    },
-    {
-        "date": "2021-01-18",
-        "ticker": "005490",
-        "event": "trailing_lock_on",
-        "price": 266000.0,
-        "lock_price": 265734.0,
-        "stop": 257761.98,
-        "gate": "midline"
-    },
-    {
-        "date": "2021-01-26",
-        "ticker": "005490",
-        "event": "uptrend_off",
-        "price": 257500.0
-    },
-    {
-        "date": "2021-01-26",
-        "ticker": "005490",
-        "event": "trailing_lock_off",
-        "price": 257500.0
-    },
-    {
-        "date": "2021-01-26",
-        "ticker": "005490",
-        "event": "reentry_gate_on",
-        "price": 257500.0,
-        "gate": "midline"
     },
     {
         "date": "2021-01-27",
@@ -2215,16 +1888,17 @@
         "price": 79500.0
     },
     {
-        "date": "2021-02-23",
-        "ticker": "005490",
-        "event": "reentry_gate_off",
-        "price": 279500.0
-    },
-    {
         "date": "2021-03-08",
         "ticker": "035720",
         "event": "breakdown_pending",
         "price": 90800.0,
+        "count": 1
+    },
+    {
+        "date": "2021-03-09",
+        "ticker": "035420",
+        "event": "breakdown_pending",
+        "price": 361500.0,
         "count": 1
     },
     {
@@ -2237,23 +1911,10 @@
         "gate": "midline"
     },
     {
-        "date": "2021-03-09",
-        "ticker": "035420",
-        "event": "breakdown_pending",
-        "price": 361500.0,
-        "count": 1
-    },
-    {
         "date": "2021-03-11",
         "ticker": "035720",
         "event": "trailing_lock_off",
         "price": 95800.0
-    },
-    {
-        "date": "2021-03-18",
-        "ticker": "005490",
-        "event": "uptrend_on",
-        "price": 295500.0
     },
     {
         "date": "2021-03-23",
@@ -2344,25 +2005,9 @@
     },
     {
         "date": "2021-05-17",
-        "ticker": "005490",
-        "event": "breakdown_pending",
-        "price": 367000.0,
-        "count": 1
-    },
-    {
-        "date": "2021-05-17",
         "ticker": "035420",
         "event": "trailing_lock_off",
         "price": 344000.0
-    },
-    {
-        "date": "2021-05-21",
-        "ticker": "005490",
-        "event": "trailing_lock_on",
-        "price": 360000.0,
-        "lock_price": 359640.0,
-        "stop": 348850.8,
-        "gate": "midline"
     },
     {
         "date": "2021-05-24",
@@ -2378,25 +2023,6 @@
         "price": 355500.0
     },
     {
-        "date": "2021-06-03",
-        "ticker": "005490",
-        "event": "uptrend_off",
-        "price": 346500.0
-    },
-    {
-        "date": "2021-06-03",
-        "ticker": "005490",
-        "event": "trailing_lock_off",
-        "price": 346500.0
-    },
-    {
-        "date": "2021-06-03",
-        "ticker": "005490",
-        "event": "reentry_gate_on",
-        "price": 346500.0,
-        "gate": "midline"
-    },
-    {
         "date": "2021-06-14",
         "ticker": "095610",
         "event": "downtrend_on",
@@ -2407,33 +2033,6 @@
         "ticker": "035420",
         "event": "downtrend_off",
         "price": 398000.0
-    },
-    {
-        "date": "2021-07-12",
-        "ticker": "005490",
-        "event": "reentry_gate_off",
-        "price": 344500.0
-    },
-    {
-        "date": "2021-07-15",
-        "ticker": "005490",
-        "event": "downtrend_on",
-        "price": 346000.0
-    },
-    {
-        "date": "2021-07-15",
-        "ticker": "005490",
-        "event": "trailing_lock_on",
-        "price": 346000.0,
-        "lock_price": 345654.0,
-        "stop": 335284.38,
-        "gate": "resistance"
-    },
-    {
-        "date": "2021-07-16",
-        "ticker": "005490",
-        "event": "trailing_lock_off",
-        "price": 341000.0
     },
     {
         "date": "2021-07-21",
@@ -2468,12 +2067,6 @@
         "ticker": "095610",
         "event": "downtrend_off",
         "price": 30700.0
-    },
-    {
-        "date": "2021-08-09",
-        "ticker": "005490",
-        "event": "downtrend_off",
-        "price": 337500.0
     },
     {
         "date": "2021-08-12",
@@ -2525,13 +2118,6 @@
     },
     {
         "date": "2021-08-19",
-        "ticker": "005490",
-        "event": "breakdown_pending",
-        "price": 313500.0,
-        "count": 1
-    },
-    {
-        "date": "2021-08-19",
         "ticker": "095610",
         "event": "trailing_lock_off",
         "price": 26550.0
@@ -2542,21 +2128,6 @@
         "event": "reentry_gate_on",
         "price": 26550.0,
         "gate": "midline"
-    },
-    {
-        "date": "2021-08-20",
-        "ticker": "005490",
-        "event": "trailing_lock_on",
-        "price": 308000.0,
-        "lock_price": 307692.0,
-        "stop": 298461.24,
-        "gate": "midline"
-    },
-    {
-        "date": "2021-08-24",
-        "ticker": "005490",
-        "event": "trailing_lock_off",
-        "price": 320000.0
     },
     {
         "date": "2021-08-24",
@@ -2604,19 +2175,19 @@
     },
     {
         "date": "2021-09-09",
-        "ticker": "035720",
-        "event": "breakdown_pending",
-        "price": 128500.0,
-        "count": 1
-    },
-    {
-        "date": "2021-09-09",
         "ticker": "035420",
         "event": "trailing_lock_on",
         "price": 399000.0,
         "lock_price": 398601.0,
         "stop": 386642.97,
         "gate": "midline"
+    },
+    {
+        "date": "2021-09-09",
+        "ticker": "035720",
+        "event": "breakdown_pending",
+        "price": 128500.0,
+        "count": 1
     },
     {
         "date": "2021-09-10",
@@ -2626,6 +2197,21 @@
         "lock_price": 129870.0,
         "stop": 125973.9,
         "gate": "midline"
+    },
+    {
+        "date": "2021-09-13",
+        "ticker": "005930",
+        "event": "downtrend_on",
+        "price": 76300.0
+    },
+    {
+        "date": "2021-09-13",
+        "ticker": "005930",
+        "event": "trailing_lock_on",
+        "price": 76300.0,
+        "lock_price": 76223.7,
+        "stop": 73936.989,
+        "gate": "resistance"
     },
     {
         "date": "2021-09-13",
@@ -2647,31 +2233,16 @@
         "gate": "midline"
     },
     {
-        "date": "2021-09-13",
+        "date": "2021-09-14",
         "ticker": "005930",
-        "event": "downtrend_on",
-        "price": 76300.0
-    },
-    {
-        "date": "2021-09-13",
-        "ticker": "005930",
-        "event": "trailing_lock_on",
-        "price": 76300.0,
-        "lock_price": 76223.7,
-        "stop": 73936.989,
-        "gate": "resistance"
+        "event": "trailing_lock_off",
+        "price": 76600.0
     },
     {
         "date": "2021-09-14",
         "ticker": "035720",
         "event": "downtrend_on",
         "price": 124000.0
-    },
-    {
-        "date": "2021-09-14",
-        "ticker": "005930",
-        "event": "trailing_lock_off",
-        "price": 76600.0
     },
     {
         "date": "2021-09-17",
@@ -2715,12 +2286,6 @@
         "ticker": "035420",
         "event": "uptrend_off",
         "price": 372000.0
-    },
-    {
-        "date": "2021-10-28",
-        "ticker": "005490",
-        "event": "downtrend_on",
-        "price": 301000.0
     },
     {
         "date": "2021-11-17",
@@ -2781,19 +2346,6 @@
         "price": 345500.0
     },
     {
-        "date": "2022-01-13",
-        "ticker": "005490",
-        "event": "downtrend_off",
-        "price": 306500.0
-    },
-    {
-        "date": "2022-01-27",
-        "ticker": "005490",
-        "event": "breakdown_pending",
-        "price": 257500.0,
-        "count": 1
-    },
-    {
         "date": "2022-02-03",
         "ticker": "033780",
         "event": "downtrend_on",
@@ -2849,28 +2401,6 @@
         "price": 276000.0
     },
     {
-        "date": "2022-05-11",
-        "ticker": "005490",
-        "event": "breakdown_pending",
-        "price": 274500.0,
-        "count": 1
-    },
-    {
-        "date": "2022-05-12",
-        "ticker": "005490",
-        "event": "trailing_lock_on",
-        "price": 273000.0,
-        "lock_price": 272727.0,
-        "stop": 264545.19,
-        "gate": "midline"
-    },
-    {
-        "date": "2022-05-13",
-        "ticker": "005490",
-        "event": "trailing_lock_off",
-        "price": 280500.0
-    },
-    {
         "date": "2022-05-19",
         "ticker": "035720",
         "event": "downtrend_on",
@@ -2883,46 +2413,10 @@
         "price": 66700.0
     },
     {
-        "date": "2022-06-13",
-        "ticker": "005490",
-        "event": "breakdown_pending",
-        "price": 268000.0,
-        "count": 1
-    },
-    {
-        "date": "2022-06-14",
-        "ticker": "005490",
-        "event": "trailing_lock_on",
-        "price": 263500.0,
-        "lock_price": 263236.5,
-        "stop": 255339.405,
-        "gate": "midline"
-    },
-    {
-        "date": "2022-06-16",
-        "ticker": "005490",
-        "event": "trailing_lock_off",
-        "price": 267500.0
-    },
-    {
-        "date": "2022-06-17",
-        "ticker": "005490",
-        "event": "breakdown_pending",
-        "price": 262500.0,
-        "count": 1
-    },
-    {
         "date": "2022-06-17",
         "ticker": "005930",
         "event": "downtrend_on",
         "price": 59800.0
-    },
-    {
-        "date": "2022-06-20",
-        "ticker": "005490",
-        "event": "reentry_gate_on",
-        "price": 252500.0,
-        "gate": "midline"
     },
     {
         "date": "2022-06-20",
@@ -2931,10 +2425,10 @@
         "price": 21150.0
     },
     {
-        "date": "2022-06-24",
-        "ticker": "005490",
-        "event": "downtrend_on",
-        "price": 238000.0
+        "date": "2022-08-17",
+        "ticker": "035420",
+        "event": "downtrend_off",
+        "price": 258000.0
     },
     {
         "date": "2022-08-17",
@@ -2943,22 +2437,10 @@
         "price": 80100.0
     },
     {
-        "date": "2022-08-17",
-        "ticker": "035420",
-        "event": "downtrend_off",
-        "price": 258000.0
-    },
-    {
         "date": "2022-08-23",
         "ticker": "005930",
         "event": "downtrend_off",
         "price": 59100.0
-    },
-    {
-        "date": "2022-09-02",
-        "ticker": "005490",
-        "event": "downtrend_off",
-        "price": 246000.0
     },
     {
         "date": "2022-09-13",
@@ -3062,18 +2544,6 @@
         "gate": "midline"
     },
     {
-        "date": "2023-01-16",
-        "ticker": "005490",
-        "event": "reentry_gate_off",
-        "price": 311000.0
-    },
-    {
-        "date": "2023-01-18",
-        "ticker": "005490",
-        "event": "uptrend_on",
-        "price": 300000.0
-    },
-    {
         "date": "2023-01-19",
         "ticker": "033780",
         "event": "reentry_gate_off",
@@ -3099,18 +2569,6 @@
         "ticker": "033780",
         "event": "trailing_lock_off",
         "price": 88800.0
-    },
-    {
-        "date": "2023-02-24",
-        "ticker": "005490",
-        "event": "uptrend_off",
-        "price": 322000.0
-    },
-    {
-        "date": "2023-03-02",
-        "ticker": "005490",
-        "event": "uptrend_on",
-        "price": 337000.0
     },
     {
         "date": "2023-03-24",
@@ -3177,15 +2635,15 @@
     },
     {
         "date": "2023-06-15",
-        "ticker": "035720",
-        "event": "downtrend_on",
-        "price": 53900.0
-    },
-    {
-        "date": "2023-06-15",
         "ticker": "095610",
         "event": "reentry_gate_off",
         "price": 22300.0
+    },
+    {
+        "date": "2023-06-15",
+        "ticker": "035720",
+        "event": "downtrend_on",
+        "price": 53900.0
     },
     {
         "date": "2023-07-07",
@@ -3196,19 +2654,19 @@
     },
     {
         "date": "2023-07-10",
-        "ticker": "005930",
-        "event": "breakdown_pending",
-        "price": 69500.0,
-        "count": 1
-    },
-    {
-        "date": "2023-07-10",
         "ticker": "095610",
         "event": "trailing_lock_on",
         "price": 19200.0,
         "lock_price": 19180.8,
         "stop": 18605.376,
         "gate": "midline"
+    },
+    {
+        "date": "2023-07-10",
+        "ticker": "005930",
+        "event": "breakdown_pending",
+        "price": 69500.0,
+        "count": 1
     },
     {
         "date": "2023-07-11",
@@ -3270,43 +2728,9 @@
     },
     {
         "date": "2023-10-20",
-        "ticker": "005490",
-        "event": "breakdown_pending",
-        "price": 453000.0,
-        "count": 1
-    },
-    {
-        "date": "2023-10-20",
         "ticker": "035420",
         "event": "downtrend_on",
         "price": 180200.0
-    },
-    {
-        "date": "2023-10-23",
-        "ticker": "005490",
-        "event": "downtrend_on",
-        "price": 453000.0
-    },
-    {
-        "date": "2023-10-23",
-        "ticker": "005490",
-        "event": "trailing_lock_on",
-        "price": 453000.0,
-        "lock_price": 452547.0,
-        "stop": 438970.59,
-        "gate": "resistance"
-    },
-    {
-        "date": "2023-10-24",
-        "ticker": "005490",
-        "event": "trailing_lock_off",
-        "price": 474000.0
-    },
-    {
-        "date": "2023-10-26",
-        "ticker": "005490",
-        "event": "uptrend_off",
-        "price": 421500.0
     },
     {
         "date": "2023-11-29",
@@ -3338,12 +2762,6 @@
     },
     {
         "date": "2024-01-02",
-        "ticker": "005490",
-        "event": "downtrend_off",
-        "price": 488000.0
-    },
-    {
-        "date": "2024-01-02",
         "ticker": "033780",
         "event": "trailing_lock_off",
         "price": 89300.0
@@ -3357,33 +2775,17 @@
     },
     {
         "date": "2024-01-16",
-        "ticker": "033780",
-        "event": "breakdown_pending",
-        "price": 85600.0,
-        "count": 1
-    },
-    {
-        "date": "2024-01-16",
         "ticker": "005930",
         "event": "breakdown_pending",
         "price": 72600.0,
         "count": 1
     },
     {
-        "date": "2024-01-17",
-        "ticker": "005490",
-        "event": "breakdown_pending",
-        "price": 419000.0,
-        "count": 1
-    },
-    {
-        "date": "2024-01-17",
+        "date": "2024-01-16",
         "ticker": "033780",
-        "event": "trailing_lock_on",
-        "price": 84500.0,
-        "lock_price": 84415.5,
-        "stop": 81883.035,
-        "gate": "midline"
+        "event": "breakdown_pending",
+        "price": 85600.0,
+        "count": 1
     },
     {
         "date": "2024-01-17",
@@ -3395,12 +2797,12 @@
         "gate": "midline"
     },
     {
-        "date": "2024-01-18",
-        "ticker": "005490",
+        "date": "2024-01-17",
+        "ticker": "033780",
         "event": "trailing_lock_on",
-        "price": 422000.0,
-        "lock_price": 421578.0,
-        "stop": 408930.66,
+        "price": 84500.0,
+        "lock_price": 84415.5,
+        "stop": 81883.035,
         "gate": "midline"
     },
     {
@@ -3411,28 +2813,9 @@
     },
     {
         "date": "2024-01-22",
-        "ticker": "005490",
-        "event": "trailing_lock_off",
-        "price": 398500.0
-    },
-    {
-        "date": "2024-01-22",
-        "ticker": "005490",
-        "event": "reentry_gate_on",
-        "price": 398500.0,
-        "gate": "midline"
-    },
-    {
-        "date": "2024-01-22",
         "ticker": "033780",
         "event": "trailing_lock_off",
         "price": 85700.0
-    },
-    {
-        "date": "2024-02-02",
-        "ticker": "005490",
-        "event": "downtrend_on",
-        "price": 449000.0
     },
     {
         "date": "2024-02-05",
@@ -3468,18 +2851,6 @@
         "price": 189800.0
     },
     {
-        "date": "2024-03-27",
-        "ticker": "005490",
-        "event": "downtrend_off",
-        "price": 428000.0
-    },
-    {
-        "date": "2024-03-27",
-        "ticker": "005490",
-        "event": "reentry_gate_off",
-        "price": 428000.0
-    },
-    {
         "date": "2024-04-03",
         "ticker": "035720",
         "event": "downtrend_on",
@@ -3493,38 +2864,10 @@
         "count": 1
     },
     {
-        "date": "2024-04-16",
-        "ticker": "005490",
-        "event": "breakdown_pending",
-        "price": 380500.0,
-        "count": 1
-    },
-    {
-        "date": "2024-04-17",
-        "ticker": "005490",
-        "event": "trailing_lock_on",
-        "price": 371000.0,
-        "lock_price": 370629.0,
-        "stop": 359510.13,
-        "gate": "midline"
-    },
-    {
         "date": "2024-04-17",
         "ticker": "095610",
         "event": "uptrend_on",
         "price": 29300.0
-    },
-    {
-        "date": "2024-04-18",
-        "ticker": "005490",
-        "event": "trailing_lock_off",
-        "price": 390000.0
-    },
-    {
-        "date": "2024-04-25",
-        "ticker": "005490",
-        "event": "downtrend_on",
-        "price": 392500.0
     },
     {
         "date": "2024-05-13",
@@ -3538,13 +2881,6 @@
         "ticker": "035420",
         "event": "downtrend_off",
         "price": 183200.0
-    },
-    {
-        "date": "2024-05-22",
-        "ticker": "005490",
-        "event": "reentry_gate_on",
-        "price": 390500.0,
-        "gate": "resistance"
     },
     {
         "date": "2024-05-31",
@@ -3572,18 +2908,6 @@
         "price": 86300.0
     },
     {
-        "date": "2024-07-16",
-        "ticker": "005490",
-        "event": "downtrend_off",
-        "price": 373000.0
-    },
-    {
-        "date": "2024-07-23",
-        "ticker": "005490",
-        "event": "downtrend_on",
-        "price": 355000.0
-    },
-    {
         "date": "2024-07-25",
         "ticker": "095610",
         "event": "breakdown_pending",
@@ -3607,17 +2931,23 @@
     },
     {
         "date": "2024-08-05",
+        "ticker": "095610",
+        "event": "breakdown_pending",
+        "price": 16700.0,
+        "count": 1
+    },
+    {
+        "date": "2024-08-05",
         "ticker": "005930",
         "event": "breakdown_pending",
         "price": 71400.0,
         "count": 1
     },
     {
-        "date": "2024-08-05",
+        "date": "2024-08-06",
         "ticker": "095610",
-        "event": "breakdown_pending",
-        "price": 16700.0,
-        "count": 1
+        "event": "downtrend_on",
+        "price": 17470.0
     },
     {
         "date": "2024-08-06",
@@ -3627,12 +2957,6 @@
         "lock_price": 72427.5,
         "stop": 70254.675,
         "gate": "midline"
-    },
-    {
-        "date": "2024-08-06",
-        "ticker": "095610",
-        "event": "downtrend_on",
-        "price": 17470.0
     },
     {
         "date": "2024-08-09",
@@ -3651,12 +2975,6 @@
         "ticker": "005930",
         "event": "downtrend_on",
         "price": 68900.0
-    },
-    {
-        "date": "2024-09-26",
-        "ticker": "005490",
-        "event": "downtrend_off",
-        "price": 383000.0
     },
     {
         "date": "2024-10-02",
@@ -3704,12 +3022,6 @@
     },
     {
         "date": "2024-10-25",
-        "ticker": "035720",
-        "event": "downtrend_off",
-        "price": 36500.0
-    },
-    {
-        "date": "2024-10-25",
         "ticker": "095610",
         "event": "uptrend_off",
         "price": 15870.0
@@ -3720,6 +3032,12 @@
         "event": "reentry_gate_on",
         "price": 15870.0,
         "gate": "resistance"
+    },
+    {
+        "date": "2024-10-25",
+        "ticker": "035720",
+        "event": "downtrend_off",
+        "price": 36500.0
     },
     {
         "date": "2024-11-07",
@@ -3733,12 +3051,6 @@
         "event": "reentry_gate_on",
         "price": 57300.0,
         "gate": "resistance"
-    },
-    {
-        "date": "2024-11-21",
-        "ticker": "005490",
-        "event": "downtrend_on",
-        "price": 304000.0
     },
     {
         "date": "2024-12-17",
@@ -3787,12 +3099,6 @@
         "price": 106900.0
     },
     {
-        "date": "2025-03-06",
-        "ticker": "005490",
-        "event": "downtrend_off",
-        "price": 295500.0
-    },
-    {
         "date": "2025-04-14",
         "ticker": "035420",
         "event": "downtrend_on",
@@ -3821,12 +3127,6 @@
         "ticker": "033780",
         "event": "uptrend_on",
         "price": 115700.0
-    },
-    {
-        "date": "2025-05-19",
-        "ticker": "005490",
-        "event": "downtrend_on",
-        "price": 245500.0
     },
     {
         "date": "2025-05-20",
@@ -3868,12 +3168,6 @@
         "date": "2025-06-26",
         "ticker": "035420",
         "event": "uptrend_on",
-        "price": 261000.0
-    },
-    {
-        "date": "2025-06-30",
-        "ticker": "005490",
-        "event": "downtrend_off",
         "price": 261000.0
     },
     {
@@ -3929,22 +3223,10 @@
         "price": 85400.0
     },
     {
-        "date": "2025-09-26",
-        "ticker": "005490",
-        "event": "downtrend_on",
-        "price": 275000.0
-    },
-    {
         "date": "2025-10-01",
         "ticker": "035420",
         "event": "downtrend_off",
         "price": 254500.0
-    },
-    {
-        "date": "2025-10-31",
-        "ticker": "005490",
-        "event": "downtrend_off",
-        "price": 310500.0
     },
     {
         "date": "2025-10-31",
@@ -4106,18 +3388,6 @@
         "price": 47300.0
     },
     {
-        "date": "2026-01-28",
-        "ticker": "005490",
-        "event": "reentry_gate_off",
-        "price": 378000.0
-    },
-    {
-        "date": "2026-01-30",
-        "ticker": "005490",
-        "event": "uptrend_on",
-        "price": 347500.0
-    },
-    {
         "date": "2026-03-03",
         "ticker": "035420",
         "event": "breakdown_pending",
@@ -4126,16 +3396,9 @@
     },
     {
         "date": "2026-03-04",
-        "ticker": "035720",
+        "ticker": "095610",
         "event": "breakdown_pending",
-        "price": 47050.0,
-        "count": 1
-    },
-    {
-        "date": "2026-03-04",
-        "ticker": "005490",
-        "event": "breakdown_pending",
-        "price": 321500.0,
+        "price": 60500.0,
         "count": 1
     },
     {
@@ -4143,13 +3406,6 @@
         "ticker": "005930",
         "event": "breakdown_pending",
         "price": 172200.0,
-        "count": 1
-    },
-    {
-        "date": "2026-03-04",
-        "ticker": "095610",
-        "event": "breakdown_pending",
-        "price": 60500.0,
         "count": 1
     },
     {
@@ -4162,6 +3418,13 @@
         "gate": "midline"
     },
     {
+        "date": "2026-03-04",
+        "ticker": "035720",
+        "event": "breakdown_pending",
+        "price": 47050.0,
+        "count": 1
+    },
+    {
         "date": "2026-03-05",
         "ticker": "035720",
         "event": "trailing_lock_on",
@@ -4171,39 +3434,10 @@
         "gate": "midline"
     },
     {
-        "date": "2026-03-05",
-        "ticker": "005490",
-        "event": "trailing_lock_on",
-        "price": 346500.0,
-        "lock_price": 346153.5,
-        "stop": 335768.895,
-        "gate": "midline"
-    },
-    {
         "date": "2026-03-06",
         "ticker": "035720",
         "event": "trailing_lock_off",
         "price": 53600.0
-    },
-    {
-        "date": "2026-03-06",
-        "ticker": "005490",
-        "event": "trailing_lock_off",
-        "price": 353500.0
-    },
-    {
-        "date": "2026-03-09",
-        "ticker": "035720",
-        "event": "breakdown_pending",
-        "price": 50400.0,
-        "count": 1
-    },
-    {
-        "date": "2026-03-09",
-        "ticker": "005490",
-        "event": "breakdown_pending",
-        "price": 336000.0,
-        "count": 1
     },
     {
         "date": "2026-03-09",
@@ -4213,13 +3447,11 @@
         "count": 1
     },
     {
-        "date": "2026-03-10",
-        "ticker": "005490",
-        "event": "trailing_lock_on",
-        "price": 343500.0,
-        "lock_price": 343156.5,
-        "stop": 332861.805,
-        "gate": "midline"
+        "date": "2026-03-09",
+        "ticker": "035720",
+        "event": "breakdown_pending",
+        "price": 50400.0,
+        "count": 1
     },
     {
         "date": "2026-03-11",
@@ -4229,29 +3461,16 @@
     },
     {
         "date": "2026-03-12",
-        "ticker": "035720",
-        "event": "downtrend_on",
-        "price": 50400.0
-    },
-    {
-        "date": "2026-03-12",
-        "ticker": "005490",
-        "event": "trailing_lock_off",
-        "price": 347500.0
-    },
-    {
-        "date": "2026-03-12",
         "ticker": "095610",
         "event": "breakdown_pending",
         "price": 64600.0,
         "count": 1
     },
     {
-        "date": "2026-03-13",
-        "ticker": "005490",
-        "event": "breakdown_pending",
-        "price": 337000.0,
-        "count": 1
+        "date": "2026-03-12",
+        "ticker": "035720",
+        "event": "downtrend_on",
+        "price": 50400.0
     },
     {
         "date": "2026-03-13",
@@ -4261,30 +3480,17 @@
         "count": 1
     },
     {
-        "date": "2026-03-16",
-        "ticker": "005490",
-        "event": "uptrend_off",
-        "price": 333500.0
-    },
-    {
-        "date": "2026-03-16",
-        "ticker": "005490",
-        "event": "reentry_gate_on",
-        "price": 333500.0,
-        "gate": "midline"
+        "date": "2026-03-23",
+        "ticker": "095610",
+        "event": "breakdown_pending",
+        "price": 60100.0,
+        "count": 1
     },
     {
         "date": "2026-03-23",
         "ticker": "005930",
         "event": "breakdown_pending",
         "price": 186300.0,
-        "count": 1
-    },
-    {
-        "date": "2026-03-23",
-        "ticker": "095610",
-        "event": "breakdown_pending",
-        "price": 60100.0,
         "count": 1
     },
     {
@@ -4318,6 +3524,15 @@
     },
     {
         "date": "2026-03-31",
+        "ticker": "095610",
+        "event": "trailing_lock_on",
+        "price": 55400.0,
+        "lock_price": 55344.6,
+        "stop": 53684.262,
+        "gate": "midline"
+    },
+    {
+        "date": "2026-03-31",
         "ticker": "005930",
         "event": "uptrend_off",
         "price": 167200.0
@@ -4336,25 +3551,10 @@
         "gate": "midline"
     },
     {
-        "date": "2026-03-31",
-        "ticker": "095610",
-        "event": "trailing_lock_on",
-        "price": 55400.0,
-        "lock_price": 55344.6,
-        "stop": 53684.262,
-        "gate": "midline"
-    },
-    {
         "date": "2026-04-01",
         "ticker": "095610",
         "event": "trailing_lock_off",
         "price": 62000.0
-    },
-    {
-        "date": "2026-04-08",
-        "ticker": "005490",
-        "event": "reentry_gate_off",
-        "price": 362500.0
     },
     {
         "date": "2026-04-08",
@@ -4367,12 +3567,6 @@
         "ticker": "005930",
         "event": "uptrend_on",
         "price": 206000.0
-    },
-    {
-        "date": "2026-05-06",
-        "ticker": "005490",
-        "event": "uptrend_on",
-        "price": 506000.0
     },
     {
         "date": "2026-05-27",
@@ -4389,38 +3583,16 @@
     },
     {
         "date": "2026-06-04",
-        "ticker": "033780",
-        "event": "breakdown_pending",
-        "price": 175800.0,
-        "count": 1
-    },
-    {
-        "date": "2026-06-04",
         "ticker": "035420",
         "event": "downtrend_off",
         "price": 267500.0
     },
     {
-        "date": "2026-06-05",
-        "ticker": "005490",
+        "date": "2026-06-04",
+        "ticker": "033780",
         "event": "breakdown_pending",
-        "price": 390000.0,
+        "price": 175800.0,
         "count": 1
-    },
-    {
-        "date": "2026-06-08",
-        "ticker": "005490",
-        "event": "trailing_lock_on",
-        "price": 359000.0,
-        "lock_price": 358641.0,
-        "stop": 347881.77,
-        "gate": "midline"
-    },
-    {
-        "date": "2026-06-12",
-        "ticker": "005490",
-        "event": "trailing_lock_off",
-        "price": 377000.0
     },
     {
         "date": "2026-06-18",
@@ -4431,9 +3603,9 @@
     },
     {
         "date": "2026-06-23",
-        "ticker": "005490",
+        "ticker": "005930",
         "event": "breakdown_pending",
-        "price": 322000.0,
+        "price": 310000.0,
         "count": 1
     },
     {
@@ -4446,24 +3618,10 @@
         "gate": "midline"
     },
     {
-        "date": "2026-06-23",
-        "ticker": "005930",
-        "event": "breakdown_pending",
-        "price": 310000.0,
-        "count": 1
-    },
-    {
         "date": "2026-06-24",
         "ticker": "035420",
         "event": "breakdown_pending",
         "price": 199400.0,
-        "count": 1
-    },
-    {
-        "date": "2026-06-26",
-        "ticker": "005490",
-        "event": "breakdown_pending",
-        "price": 305000.0,
         "count": 1
     },
     {
@@ -4502,23 +3660,11 @@
         "gate": "midline"
     },
     {
-        "date": "2026-07-03",
-        "ticker": "005490",
-        "event": "downtrend_on",
-        "price": 320000.0
-    },
-    {
         "date": "2026-07-06",
         "ticker": "095610",
         "event": "breakdown_pending",
         "price": 160400.0,
         "count": 1
-    },
-    {
-        "date": "2026-07-07",
-        "ticker": "033780",
-        "event": "reentry_gate_off",
-        "price": 183400.0
     },
     {
         "date": "2026-07-07",
@@ -4528,6 +3674,12 @@
         "lock_price": 144855.0,
         "stop": 140509.35,
         "gate": "midline"
+    },
+    {
+        "date": "2026-07-07",
+        "ticker": "033780",
+        "event": "reentry_gate_off",
+        "price": 183400.0
     },
     {
         "date": "2026-07-08",
