@@ -2,11 +2,11 @@
     "last_updated": "2026-08-12",
     "last_run_date": "2026-08-12",
     "market_type": "domestic",
-    "reason": "POSCO홀딩스(005490):SKIP(단기 하락 - 신규 진입 중단),\n삼성전자(005930):SKIP(단기 하락 - 신규 진입 중단),\n테스(095610):SKIP(이탈 청산 후 재진입 대기 - 채널 중심선 미회복 (현재가 KRW 145,900 <= 기준선 KRW 159,972)),\n카카오(035720):SKIP(장기 하락 확정 - 신규·추가 매수 차단),\nNAVER(035420):SKIP(장기 하락 확정 - 신규·추가 매수 차단)",
+    "reason": "카카오(035720):SKIP(장기 하락 확정 - 신규·추가 매수 차단),\n테스(095610):SKIP(이탈 청산 후 재진입 대기 - 채널 중심선 미회복 (현재가 KRW 145,900 <= 기준선 KRW 159,972)),\nNAVER(035420):SKIP(장기 하락 확정 - 신규·추가 매수 차단),\n삼성전자(005930):SKIP(단기 하락 - 신규 진입 중단),\nPOSCO홀딩스(005490):SKIP(단기 하락 - 추가 매수 중단)",
     "exchange_rate": null,
     "portfolio": {
-        "total_value": 120571054.46410003,
-        "cash_balance": 119329254.46410003,
+        "total_value": 121882580.39299996,
+        "cash_balance": 117390780.39299996,
         "holdings": [
             {
                 "ticker": "033780",
@@ -14,10 +14,77 @@
                 "qty": 7,
                 "price": 177400.0,
                 "value": 1241800.0
+            },
+            {
+                "ticker": "005490",
+                "alias": "POSCO홀딩스",
+                "qty": 10,
+                "price": 325000.0,
+                "value": 3250000.0
             }
         ]
     },
     "positions": {
+        "005490": {
+            "total_qty": 10,
+            "lot_count": 5,
+            "total_invested": 3882879.0,
+            "current_value": 3250000.0,
+            "lots": [
+                {
+                    "lot_id": "lot_20260815_162148_005490_001",
+                    "buy_price": 362862.5,
+                    "quantity": 2,
+                    "buy_date": "2026-04-08",
+                    "level": 1,
+                    "current_price": 325000.0,
+                    "pct_change": -10.43
+                },
+                {
+                    "lot_id": "lot_20260815_162251_005490_002",
+                    "buy_price": 463463.0,
+                    "quantity": 2,
+                    "buy_date": "2026-05-18",
+                    "level": 2,
+                    "current_price": 325000.0,
+                    "pct_change": -29.88
+                },
+                {
+                    "lot_id": "lot_20260815_162258_005490_003",
+                    "buy_price": 443943.5,
+                    "quantity": 1,
+                    "buy_date": "2026-05-21",
+                    "level": 3,
+                    "current_price": 325000.0,
+                    "pct_change": -26.79
+                },
+                {
+                    "lot_id": "lot_20260815_162335_005490_004",
+                    "buy_price": 395395.0,
+                    "quantity": 2,
+                    "buy_date": "2026-06-15",
+                    "level": 4,
+                    "current_price": 325000.0,
+                    "pct_change": -17.8
+                },
+                {
+                    "lot_id": "lot_20260815_162352_005490_005",
+                    "buy_price": 331831.5,
+                    "quantity": 3,
+                    "buy_date": "2026-06-24",
+                    "level": 5,
+                    "current_price": 325000.0,
+                    "pct_change": -2.06
+                }
+            ],
+            "current_price": 325000.0,
+            "alias": "POSCO홀딩스",
+            "avg_buy_price": 388287.9,
+            "unrealized_pnl": -632879.0,
+            "unrealized_pnl_pct": -16.3,
+            "realized_pnl": 3613517.55,
+            "total_pnl": 2980638.55
+        },
         "033780": {
             "total_qty": 7,
             "lot_count": 2,
@@ -25,7 +92,7 @@
             "current_value": 1241800.0,
             "lots": [
                 {
-                    "lot_id": "lot_20260815_141822_033780_001",
+                    "lot_id": "lot_20260815_162414_033780_001",
                     "buy_price": 183583.4,
                     "quantity": 5,
                     "buy_date": "2026-07-07",
@@ -34,7 +101,7 @@
                     "pct_change": -3.37
                 },
                 {
-                    "lot_id": "lot_20260815_141826_033780_002",
+                    "lot_id": "lot_20260815_162421_033780_002",
                     "buy_price": 173673.5,
                     "quantity": 2,
                     "buy_date": "2026-07-10",
@@ -48,19 +115,64 @@
             "avg_buy_price": 180752.0,
             "unrealized_pnl": -23464.0,
             "unrealized_pnl_pct": -1.85,
-            "realized_pnl": 444566.21,
-            "total_pnl": 421102.21
+            "realized_pnl": 1581566.01,
+            "total_pnl": 1558102.01
         }
     },
     "realized_pnl_by_ticker": {
-        "033780": 444566.2100000002,
-        "005930": 6398525.84,
-        "005490": 1528143.22,
-        "035420": 1007575.2300000001,
-        "095610": 9551125.319999998,
-        "035720": 2311725.789999999
+        "005930": 6427503.59,
+        "005490": 3613517.5500000007,
+        "033780": 1581566.0100000002,
+        "095610": 6860255.640000001,
+        "035420": 2045432.51,
+        "035720": 2602514.8
     },
     "regime_state_by_ticker": {
+        "005930": {
+            "downtrend": "active",
+            "downtrend_streak": 0,
+            "downtrend_days": [],
+            "downtrend_today_state": "",
+            "downtrend_prev_date": "",
+            "downtrend_exit_streak": 0,
+            "downtrend_exit_days": [],
+            "downtrend_exit_today_state": "",
+            "downtrend_exit_prev_date": "2026-08-12",
+            "long_trend": "uptrend",
+            "short_trend": "downtrend",
+            "previous_long_regime": "uptrend",
+            "previous_short_regime": "downtrend",
+            "post_liquidation": true,
+            "post_liquidation_reentry_gate": "midline"
+        },
+        "005490": {
+            "downtrend": "active",
+            "downtrend_streak": 0,
+            "downtrend_days": [],
+            "downtrend_today_state": "",
+            "downtrend_prev_date": "",
+            "downtrend_exit_streak": 0,
+            "downtrend_exit_days": [],
+            "downtrend_exit_today_state": "",
+            "downtrend_exit_prev_date": "2026-08-12",
+            "long_trend": "uptrend",
+            "short_trend": "downtrend",
+            "previous_long_regime": "uptrend",
+            "previous_short_regime": "downtrend",
+            "uptrend_prev_date": "",
+            "uptrend_today_state": "",
+            "uptrend_days": [],
+            "uptrend_streak": 0,
+            "regime": "uptrend",
+            "adds": 6,
+            "last_add_swing_high": 398000.0,
+            "last_add_price": 331831.5,
+            "last_uptrend_add_date": "2026-06-24",
+            "downtrend_partially_liquidated": true,
+            "breakdown_prev_date": "2026-07-02",
+            "breakdown_today_state": "",
+            "breakdown_days": []
+        },
         "095610": {
             "downtrend": null,
             "downtrend_streak": 0,
@@ -120,23 +232,6 @@
             "post_liquidation": true,
             "post_liquidation_reentry_gate": "resistance"
         },
-        "005490": {
-            "downtrend": "active",
-            "downtrend_streak": 0,
-            "downtrend_days": [],
-            "downtrend_today_state": "",
-            "downtrend_prev_date": "",
-            "downtrend_exit_streak": 0,
-            "downtrend_exit_days": [],
-            "downtrend_exit_today_state": "",
-            "downtrend_exit_prev_date": "2026-08-12",
-            "long_trend": "uptrend",
-            "short_trend": "downtrend",
-            "previous_long_regime": "uptrend",
-            "previous_short_regime": "downtrend",
-            "post_liquidation": true,
-            "post_liquidation_reentry_gate": "midline"
-        },
         "035420": {
             "downtrend": "active",
             "downtrend_streak": 0,
@@ -156,23 +251,6 @@
             "long_short_downtrend_liquidation_pending": true,
             "post_liquidation": true,
             "post_liquidation_reentry_gate": "resistance"
-        },
-        "005930": {
-            "downtrend": "active",
-            "downtrend_streak": 0,
-            "downtrend_days": [],
-            "downtrend_today_state": "",
-            "downtrend_prev_date": "",
-            "downtrend_exit_streak": 0,
-            "downtrend_exit_days": [],
-            "downtrend_exit_today_state": "",
-            "downtrend_exit_prev_date": "2026-08-12",
-            "long_trend": "uptrend",
-            "short_trend": "downtrend",
-            "previous_long_regime": "uptrend",
-            "previous_short_regime": "downtrend",
-            "post_liquidation": true,
-            "post_liquidation_reentry_gate": "midline"
         }
     },
     "enabled_tickers": ["005930", "035420", "035720", "095610", "005490", "033780"],
@@ -185,9 +263,15 @@
         "033780": "KT&G"
     },
     "risk_summary": {
-        "next_level_needs": 500000.0,
+        "next_level_needs": 1000000.0,
         "max_potential_exposure": 303000000.0,
         "stale_info": [
+            {
+                "ticker": "005490",
+                "alias": "POSCO홀딩스",
+                "last_trade_date": "2026-06-24",
+                "days_stale": 49
+            },
             {
                 "ticker": "033780",
                 "alias": "KT&G",
@@ -195,16 +279,16 @@
                 "days_stale": 33
             }
         ],
-        "risk_score": 96,
+        "risk_score": 92,
         "deductions": [
             {
                 "reason": "장기 정체 종목",
-                "points": 4
+                "points": 8
             }
         ],
         "sync_error": false,
         "alerts": [],
-        "max_ticker_concentration": 1.03,
+        "max_ticker_concentration": 2.67,
         "high_level_ratio": 0.0
     }
 }
