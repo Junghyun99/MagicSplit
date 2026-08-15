@@ -2,11 +2,11 @@
     "last_updated": "2026-08-12",
     "last_run_date": "2026-08-12",
     "market_type": "domestic",
-    "reason": "카카오(035720):SKIP(장기 하락 확정 - 신규·추가 매수 차단),\n테스(095610):SKIP(이탈 청산 후 재진입 대기 - 채널 중심선 미회복 (현재가 KRW 145,900 <= 기준선 KRW 159,972)),\nNAVER(035420):SKIP(장기 하락 확정 - 신규·추가 매수 차단),\nPOSCO홀딩스(005490):SKIP(단기 하락 - 신규 진입 중단),\n삼성전자(005930):SKIP(단기 하락 - 신규 진입 중단)",
+    "reason": "카카오(035720):SKIP(장기 하락 확정 - 신규·추가 매수 차단),\n삼성전자(005930):SKIP(단기 하락 - 신규 진입 중단),\nPOSCO홀딩스(005490):SKIP(단기 하락 - 신규 진입 중단),\nNAVER(035420):SKIP(장기 하락 확정 - 신규·추가 매수 차단),\n테스(095610):SKIP(이탈 청산 후 재진입 대기 - 채널 중심선 미회복 (현재가 KRW 145,900 <= 기준선 KRW 159,972))",
     "exchange_rate": null,
     "portfolio": {
-        "total_value": 110481842.99120001,
-        "cash_balance": 109240042.99120001,
+        "total_value": 109042257.342475,
+        "cash_balance": 107800457.342475,
         "holdings": [
             {
                 "ticker": "033780",
@@ -25,7 +25,7 @@
             "current_value": 1241800.0,
             "lots": [
                 {
-                    "lot_id": "lot_20260814_093543_033780_001",
+                    "lot_id": "lot_20260815_003140_033780_001",
                     "buy_price": 183583.4,
                     "quantity": 5,
                     "buy_date": "2026-07-07",
@@ -34,7 +34,7 @@
                     "pct_change": -3.37
                 },
                 {
-                    "lot_id": "lot_20260814_093550_033780_002",
+                    "lot_id": "lot_20260815_003147_033780_002",
                     "buy_price": 173673.5,
                     "quantity": 2,
                     "buy_date": "2026-07-10",
@@ -48,39 +48,19 @@
             "avg_buy_price": 180752.0,
             "unrealized_pnl": -23464.0,
             "unrealized_pnl_pct": -1.85,
-            "realized_pnl": -26168.78,
-            "total_pnl": -49632.78
+            "realized_pnl": 336120.99,
+            "total_pnl": 312656.99
         }
     },
     "realized_pnl_by_ticker": {
-        "033780": -26168.779999999824,
-        "005930": 4030848.95,
-        "005490": 1006123.5200000004,
-        "035420": 456930.61000000016,
-        "095610": 4221247.76,
-        "035720": 1262351.7399999998
+        "033780": 336120.9900000001,
+        "005930": 3336972.3800000004,
+        "005490": 557499.95,
+        "035420": 210507.1499999999,
+        "095610": 4578496.61,
+        "035720": 664272.4700000001
     },
     "regime_state_by_ticker": {
-        "035720": {
-            "downtrend": "active",
-            "downtrend_streak": 0,
-            "downtrend_days": [],
-            "downtrend_today_state": "",
-            "downtrend_prev_date": "",
-            "downtrend_exit_streak": 0,
-            "downtrend_exit_days": [],
-            "downtrend_exit_today_state": "",
-            "downtrend_exit_prev_date": "2026-08-12",
-            "long_trend": "downtrend",
-            "short_trend": "downtrend",
-            "previous_long_regime": "downtrend",
-            "previous_short_regime": "downtrend",
-            "long_downtrend_lock": true,
-            "aligned_downtrend_reentry_lock": true,
-            "long_short_downtrend_liquidation_pending": true,
-            "post_liquidation": true,
-            "post_liquidation_reentry_gate": "resistance"
-        },
         "033780": {
             "downtrend": null,
             "downtrend_streak": 0,
@@ -123,23 +103,6 @@
             "post_liquidation": true,
             "post_liquidation_reentry_gate": "resistance"
         },
-        "005490": {
-            "downtrend": "active",
-            "downtrend_streak": 0,
-            "downtrend_days": [],
-            "downtrend_today_state": "",
-            "downtrend_prev_date": "",
-            "downtrend_exit_streak": 0,
-            "downtrend_exit_days": [],
-            "downtrend_exit_today_state": "",
-            "downtrend_exit_prev_date": "2026-08-12",
-            "long_trend": "uptrend",
-            "short_trend": "downtrend",
-            "previous_long_regime": "uptrend",
-            "previous_short_regime": "downtrend",
-            "post_liquidation": true,
-            "post_liquidation_reentry_gate": "midline"
-        },
         "095610": {
             "downtrend": null,
             "downtrend_streak": 0,
@@ -154,6 +117,23 @@
             "short_trend": "uptrend",
             "previous_long_regime": "uptrend",
             "previous_short_regime": "uptrend",
+            "post_liquidation": true,
+            "post_liquidation_reentry_gate": "midline"
+        },
+        "005490": {
+            "downtrend": "active",
+            "downtrend_streak": 0,
+            "downtrend_days": [],
+            "downtrend_today_state": "",
+            "downtrend_prev_date": "",
+            "downtrend_exit_streak": 0,
+            "downtrend_exit_days": [],
+            "downtrend_exit_today_state": "",
+            "downtrend_exit_prev_date": "2026-08-12",
+            "long_trend": "uptrend",
+            "short_trend": "downtrend",
+            "previous_long_regime": "uptrend",
+            "previous_short_regime": "downtrend",
             "post_liquidation": true,
             "post_liquidation_reentry_gate": "midline"
         },
@@ -173,6 +153,26 @@
             "previous_short_regime": "downtrend",
             "post_liquidation": true,
             "post_liquidation_reentry_gate": "midline"
+        },
+        "035720": {
+            "downtrend": "active",
+            "downtrend_streak": 0,
+            "downtrend_days": [],
+            "downtrend_today_state": "",
+            "downtrend_prev_date": "",
+            "downtrend_exit_streak": 0,
+            "downtrend_exit_days": [],
+            "downtrend_exit_today_state": "",
+            "downtrend_exit_prev_date": "2026-08-12",
+            "long_trend": "downtrend",
+            "short_trend": "downtrend",
+            "previous_long_regime": "downtrend",
+            "previous_short_regime": "downtrend",
+            "long_downtrend_lock": true,
+            "aligned_downtrend_reentry_lock": true,
+            "long_short_downtrend_liquidation_pending": true,
+            "post_liquidation": true,
+            "post_liquidation_reentry_gate": "resistance"
         }
     },
     "enabled_tickers": ["005930", "035420", "035720", "095610", "005490", "033780"],
@@ -204,7 +204,7 @@
         ],
         "sync_error": false,
         "alerts": [],
-        "max_ticker_concentration": 1.12,
+        "max_ticker_concentration": 1.14,
         "high_level_ratio": 0.0
     }
 }
