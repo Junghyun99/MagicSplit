@@ -713,9 +713,23 @@ class MagicSplitEngine:
             ema20 = reading.ema20
             adds = ticker_state.get("adds", 0)
 
-            # 이탈선: 채널 모드는 하단 채널선, ma_adx는 50MA
+            # 이탈선: 채널 모드는 설정된 tolerance 또는 ATR 기준, ma_adx는 50MA
             if rule.regime_algo == "channel":
-                exit_line_txt = f"채널하단(이탈선) {format_money(reading.channel_support, rule.market_type)}"
+                from src.core.logic.regime import channel_breakdown_line
+                exit_line, exit_mode, _ = channel_breakdown_line(
+                    reading.channel_support, reading.atr,
+                    rule.channel_breakdown_atr_multiplier,
+                    rule.channel_breakdown_tolerance_pct,
+                )
+                rule_text = (
+                    f"ATR {rule.channel_breakdown_atr_multiplier}xATR"
+                    if exit_mode == "atr"
+                    else f"허용 -{rule.channel_breakdown_tolerance_pct}%"
+                )
+                exit_line_txt = (
+                    f"채널하단 {format_money(reading.channel_support, rule.market_type)} / "
+                    f"이탈선 {format_money(exit_line, rule.market_type)} ({rule_text})"
+                )
             else:
                 exit_line_txt = f"50MA(이탈선) {format_money(reading.sma50, rule.market_type)}"
 

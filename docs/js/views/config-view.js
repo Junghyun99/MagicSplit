@@ -24,6 +24,7 @@ window.ConfigView = (function () {
         document.getElementById('global-channel-stddev-k').value = globalConfig?.channel_stddev_k !== undefined ? globalConfig.channel_stddev_k : '';
         document.getElementById('global-channel-slope-band-pct').value = globalConfig?.channel_slope_band_pct !== undefined ? globalConfig.channel_slope_band_pct : '';
         document.getElementById('global-channel-breakdown-tolerance-pct').value = globalConfig?.channel_breakdown_tolerance_pct !== undefined ? globalConfig.channel_breakdown_tolerance_pct : '';
+        document.getElementById('global-channel-breakdown-atr-multiplier').value = globalConfig?.channel_breakdown_atr_multiplier !== undefined ? globalConfig.channel_breakdown_atr_multiplier : '';
         document.getElementById('global-multi-horizon-regime-enabled').checked = globalConfig?.multi_horizon_regime_enabled === true;
         document.getElementById('global-long-channel-lookback').value = globalConfig?.long_channel_lookback !== undefined ? globalConfig.long_channel_lookback : '';
         document.getElementById('global-long-sideways-exposure-multiplier').value = globalConfig?.long_sideways_exposure_multiplier !== undefined ? globalConfig.long_sideways_exposure_multiplier : '';
@@ -257,6 +258,7 @@ window.ConfigView = (function () {
             channel_stddev_k: document.getElementById('global-channel-stddev-k').value,
             channel_slope_band_pct: document.getElementById('global-channel-slope-band-pct').value,
             channel_breakdown_tolerance_pct: document.getElementById('global-channel-breakdown-tolerance-pct').value,
+            channel_breakdown_atr_multiplier: document.getElementById('global-channel-breakdown-atr-multiplier').value,
             multi_horizon_regime_enabled: document.getElementById('global-multi-horizon-regime-enabled').checked,
             long_channel_lookback: document.getElementById('global-long-channel-lookback').value,
             long_sideways_exposure_multiplier: document.getElementById('global-long-sideways-exposure-multiplier').value,

@@ -77,6 +77,10 @@ def _support(rule, window):
     return classify_for_rule(rule, window).channel_support
 
 
+def _reading(rule, window):
+    return classify_for_rule(rule, window)
+
+
 def _eval_until_confirmed(evaluator, rule, lots, pf, window, st):
     """이탈 확정 일수만큼 날짜를 변경하며 반복 평가해 마지막 신호를 반환한다."""
     base = datetime.date(2024, 6, 1)
@@ -274,6 +278,37 @@ class TestChannelSidewaysBreakdown:
         signals = _eval_until_confirmed(
             evaluator, rule, lots, _pf(support * 0.94), window, {},
         )
+        assert len(signals) == 1
+        assert signals[0].regime_partial_liquidation is True
+
+    def test_atr_breakdown_multiplier_takes_precedence_over_tolerance(self, evaluator):
+        window = _sideways_window()
+        rule = _channel_rule(
+            channel_breakdown_tolerance_pct=10.0,
+            channel_breakdown_atr_multiplier=0.25,
+        )
+        reading = _reading(rule, window)
+        expected_line = reading.channel_support - reading.atr * 0.25
+
+        signals = _eval_until_confirmed(
+            evaluator, rule, [_lot()], _pf(expected_line - 0.01), window, {},
+        )
+
+        assert len(signals) == 1
+        assert signals[0].regime_partial_liquidation is True
+
+    def test_zero_atr_multiplier_uses_channel_support_as_breakdown_line(self, evaluator):
+        window = _sideways_window()
+        rule = _channel_rule(
+            channel_breakdown_tolerance_pct=10.0,
+            channel_breakdown_atr_multiplier=0.0,
+        )
+        support = _support(rule, window)
+
+        signals = _eval_until_confirmed(
+            evaluator, rule, [_lot()], _pf(support - 0.01), window, {},
+        )
+
         assert len(signals) == 1
         assert signals[0].regime_partial_liquidation is True
 
@@ -490,6 +525,24 @@ class TestChannelTrailingLock:
         )
         assert signals == []
         assert "trailing_lock" not in st["AAPL"]  # 회복: 락 해제
+
+    def test_atr_breakdown_does_not_change_lock_recovery_line(self, evaluator):
+        window = _sideways_window()
+        rule = _channel_rule(
+            trendbreak_trailing_drop_pct=3.0,
+            channel_breakdown_atr_multiplier=3.0,
+        )
+        support = _support(rule, window)
+        st = {"AAPL": {"trailing_lock": {
+            "active": True, "lock_price": support * 0.95, "drop_pct": 3.0,
+        }}}
+
+        signals = evaluator.evaluate_stock(
+            rule, [_lot(qty=5)], _pf(support * 1.01), ohlc_window=window, regime_state=st,
+        )
+
+        assert signals == []
+        assert "trailing_lock" not in st["AAPL"]
 
     def test_lock_liquidates_remainder_on_further_drop(self, evaluator):
         window = _sideways_window()

@@ -105,6 +105,21 @@ class RegimeReading:
     channel_resistance: float = float("nan")  # 상단 채널선 외삽 가격 (mid * exp(k*sigma))
 
 
+def channel_breakdown_line(
+    support: float,
+    atr_value: float,
+    atr_multiplier: Optional[float],
+    tolerance_pct: float,
+) -> "tuple[float, str, bool]":
+    """Return the effective channel breakdown line and its selected mode."""
+    tolerance_line = support * (1 - tolerance_pct / 100)
+    if atr_multiplier is not None:
+        if np.isfinite(atr_value):
+            return support - (atr_value * atr_multiplier), "atr", False
+        return tolerance_line, "tolerance", True
+    return tolerance_line, "tolerance", False
+
+
 def _is_nan(*values: float) -> bool:
     return any(v is None or (isinstance(v, float) and np.isnan(v)) for v in values)
 

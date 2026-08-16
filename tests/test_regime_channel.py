@@ -10,9 +10,26 @@ import pytest
 
 from src.core.logic.regime import (
     Regime,
+    channel_breakdown_line,
     classify_channel,
     linreg_channel,
 )
+
+
+class TestChannelBreakdownLine:
+    def test_atr_multiplier_takes_precedence(self):
+        line, mode, fallback = channel_breakdown_line(100.0, 4.0, 0.25, 10.0)
+
+        assert line == pytest.approx(99.0)
+        assert mode == "atr"
+        assert fallback is False
+
+    def test_invalid_atr_falls_back_to_tolerance(self):
+        line, mode, fallback = channel_breakdown_line(100.0, float("nan"), 0.25, 5.0)
+
+        assert line == pytest.approx(95.0)
+        assert mode == "tolerance"
+        assert fallback is True
 
 
 def _ohlc(closes, spread=0.5):

@@ -144,6 +144,7 @@ window.ConfigController = (function () {
         document.getElementById('global-channel-stddev-k').addEventListener('input', saveGlobalConfigToModel);
         document.getElementById('global-channel-slope-band-pct').addEventListener('input', saveGlobalConfigToModel);
         document.getElementById('global-channel-breakdown-tolerance-pct').addEventListener('input', saveGlobalConfigToModel);
+        document.getElementById('global-channel-breakdown-atr-multiplier').addEventListener('input', saveGlobalConfigToModel);
         document.getElementById('global-multi-horizon-regime-enabled').addEventListener('change', () => {
             ConfigView.syncMultiHorizonSettings();
             saveGlobalConfigToModel();
@@ -323,6 +324,7 @@ window.ConfigController = (function () {
             if (vals.channel_stddev_k !== '') config.global.channel_stddev_k = parseFloat(vals.channel_stddev_k); else delete config.global.channel_stddev_k;
             if (vals.channel_slope_band_pct !== '') config.global.channel_slope_band_pct = parseFloat(vals.channel_slope_band_pct); else delete config.global.channel_slope_band_pct;
             if (vals.channel_breakdown_tolerance_pct !== '') config.global.channel_breakdown_tolerance_pct = parseFloat(vals.channel_breakdown_tolerance_pct); else delete config.global.channel_breakdown_tolerance_pct;
+            if (vals.channel_breakdown_atr_multiplier !== '') config.global.channel_breakdown_atr_multiplier = parseFloat(vals.channel_breakdown_atr_multiplier); else delete config.global.channel_breakdown_atr_multiplier;
             config.global.multi_horizon_regime_enabled = vals.multi_horizon_regime_enabled;
             if (vals.long_channel_lookback !== '') config.global.long_channel_lookback = parseInt(vals.long_channel_lookback, 10); else delete config.global.long_channel_lookback;
             if (vals.long_sideways_exposure_multiplier !== '') config.global.long_sideways_exposure_multiplier = parseFloat(vals.long_sideways_exposure_multiplier); else delete config.global.long_sideways_exposure_multiplier;
