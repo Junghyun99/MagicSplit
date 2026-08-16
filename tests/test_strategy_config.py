@@ -514,6 +514,7 @@ class TestStrategyConfigRegime:
                 "channel_stddev_k": 1.5,
                 "channel_slope_band_pct": 3.0,
                 "channel_breakdown_tolerance_pct": 1.0,
+                "channel_breakdown_atr_multiplier": 0.25,
             }]
         }
         config_file = tmp_path / "config_overseas.json"
@@ -525,6 +526,7 @@ class TestStrategyConfigRegime:
         assert rule.channel_stddev_k == 1.5
         assert rule.channel_slope_band_pct == 3.0
         assert rule.channel_breakdown_tolerance_pct == 1.0
+        assert rule.channel_breakdown_atr_multiplier == 0.25
 
     def test_channel_absent_defaults_ma_adx(self, tmp_path):
         config = {"stocks": [{"ticker": "AAPL", "regime_enabled": True}]}
@@ -545,6 +547,7 @@ class TestStrategyConfigRegime:
                 "regime_enabled": True,
                 "regime_algo": "channel",
                 "channel_slope_band_pct": 4.0,
+                "channel_breakdown_atr_multiplier": 0.25,
             },
         }
         config_file = tmp_path / "config_overseas.json"
@@ -553,6 +556,7 @@ class TestStrategyConfigRegime:
         rules = StrategyConfig(str(config_file)).rules
         assert rules[0].regime_algo == "channel"
         assert rules[0].channel_slope_band_pct == 4.0
+        assert rules[0].channel_breakdown_atr_multiplier == 0.25
         assert rules[1].regime_algo == "ma_adx"
         assert rules[1].channel_slope_band_pct == 4.0  # 글로벌 값 (미사용)
 

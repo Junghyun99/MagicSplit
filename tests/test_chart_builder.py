@@ -191,6 +191,26 @@ class TestBuildChartSeries:
         assert chart["regime_bands"]
         assert chart["current_price"] == 195.0
 
+    def test_channel_chart_exposes_effective_atr_breakdown_line(self):
+        rule = _channel_rule(
+            channel_lookback=21,
+            channel_breakdown_tolerance_pct=5.0,
+            channel_breakdown_atr_multiplier=0.25,
+        )
+        df = _ohlc(np.linspace(100, 200, 80))
+
+        chart = build_chart_series(
+            rule, df, lambda d: classify_for_rule(rule, d), [], 195.0,
+        )
+
+        reading = classify_for_rule(rule, df)
+        line = next(item for item in chart["lines"] if item["kind"] == "breakdown")
+        assert line["value"] == pytest.approx(round(
+            reading.channel_support - reading.atr * 0.25, 1,
+        ))
+        assert chart["breakdown"]["mode"] == "atr"
+        assert chart["params"]["channel_breakdown_mode"] == "atr"
+
     def test_ma_adx_mode_emits_moving_average_columns(self):
         rule = _rule(regime_enabled=True, regime_algo="ma_adx", regime_min_bars=60)
         df = _ohlc(np.linspace(100, 300, 260))

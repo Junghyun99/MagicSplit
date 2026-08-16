@@ -341,6 +341,7 @@ class TestStockRuleChannelRegime:
         assert rule.channel_stddev_k == 2.0
         assert rule.channel_slope_band_pct == 8.0
         assert rule.channel_breakdown_tolerance_pct == 0.0
+        assert rule.channel_breakdown_atr_multiplier is None
 
     def test_channel_algo_accepted(self):
         rule = StockRule(
@@ -385,6 +386,23 @@ class TestStockRuleChannelRegime:
                 regime_enabled=True, regime_algo="channel",
                 channel_breakdown_tolerance_pct=100.0,
             )
+
+    @pytest.mark.parametrize("value", [-0.1, float("nan"), float("inf")])
+    def test_breakdown_atr_multiplier_must_be_finite_and_nonnegative(self, value):
+        with pytest.raises(ValueError, match="channel_breakdown_atr_multiplier"):
+            StockRule(
+                "AAPL", -5.0, 10.0, 500, 10,
+                regime_enabled=True, regime_algo="channel",
+                channel_breakdown_atr_multiplier=value,
+            )
+
+    def test_breakdown_atr_multiplier_zero_is_valid(self):
+        rule = StockRule(
+            "AAPL", -5.0, 10.0, 500, 10,
+            regime_enabled=True, regime_algo="channel",
+            channel_breakdown_atr_multiplier=0.0,
+        )
+        assert rule.channel_breakdown_atr_multiplier == 0.0
 
     def test_channel_guards_inactive_when_algo_ma_adx(self):
         # ma_adx 모드에서는 채널 파라미터가 비정상이어도 통과 (미사용)

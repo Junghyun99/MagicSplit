@@ -28,6 +28,7 @@ window.ChartModel = (function () {
         add:     { color: '#3d85c6', dashed: true },
         stop:    { color: '#cc0000', dashed: true },
         lock:    { color: '#e69138', dashed: false },
+        breakdown: { color: '#cc0000', dashed: true },
         current: { color: '#666666', dashed: false }
     };
 

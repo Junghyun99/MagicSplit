@@ -16,7 +16,7 @@ from typing import List, Optional
 
 import numpy as np
 
-from src.core.logic.regime import classify_series, linreg_channel
+from src.core.logic.regime import channel_breakdown_line, classify_series, linreg_channel
 from src.core.models import PositionLot, StockRule
 
 # 채널 모드에서 내보낼 지표 컬럼 (RegimeReading 필드명 -> 출력 컬럼명)
@@ -282,6 +282,29 @@ def build_chart_series(
 
     lines = build_price_lines(rule, lots, last_sell_price)
     lines.extend(build_state_lines(rule, regime_st))
+    breakdown = None
+    if use_channel and readings:
+        reading = readings[-1][1]
+        if _round(reading.channel_support) is not None:
+            line, mode, fallback = channel_breakdown_line(
+                reading.channel_support,
+                reading.atr,
+                rule.channel_breakdown_atr_multiplier,
+                rule.channel_breakdown_tolerance_pct,
+            )
+            label = (
+                f"채널 이탈선 (ATR {rule.channel_breakdown_atr_multiplier}xATR14)"
+                if mode == "atr"
+                else f"채널 이탈선 (허용 -{rule.channel_breakdown_tolerance_pct}%)"
+            )
+            item = _price_line(label, line, "breakdown")
+            if item:
+                lines.append(item)
+            breakdown = {
+                "line": _round(line), "mode": mode, "atr": _round(reading.atr),
+                "atr_multiplier": rule.channel_breakdown_atr_multiplier,
+                "fallback": fallback,
+            }
     current = _price_line("현재가", current_price, "current")
     if current:
         lines.append(current)
@@ -296,6 +319,7 @@ def build_chart_series(
         "cols": cols,
         "rows": rows,
         "current_channel": build_current_channel(rule, ohlc_window, asof),
+        "breakdown": breakdown,
         **_multi_horizon_chart_payload(rule, ohlc_window, asof),
         "regime_bands": build_regime_bands(readings),
         "lines": lines,
@@ -362,6 +386,10 @@ def _public_params(rule: StockRule) -> dict:
         "channel_stddev_k": rule.channel_stddev_k,
         "channel_slope_band_pct": rule.channel_slope_band_pct,
         "channel_breakdown_tolerance_pct": rule.channel_breakdown_tolerance_pct,
+        "channel_breakdown_atr_multiplier": rule.channel_breakdown_atr_multiplier,
+        "channel_breakdown_mode": (
+            "atr" if rule.channel_breakdown_atr_multiplier is not None else "tolerance"
+        ),
         "uptrend_pullback_band_pct": rule.uptrend_pullback_band_pct,
         "trendbreak_partial_sell_pct": rule.trendbreak_partial_sell_pct,
         "trendbreak_trailing_drop_pct": rule.trendbreak_trailing_drop_pct,

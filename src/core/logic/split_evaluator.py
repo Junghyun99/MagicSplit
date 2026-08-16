@@ -4,7 +4,9 @@ import math
 from typing import Dict, List, Optional
 
 from src.core.interfaces import ILogger
-from src.core.logic.regime import Regime, classify, classify_channel
+from src.core.logic.regime import (
+    Regime, channel_breakdown_line, classify, classify_channel,
+)
 from src.core.models import (
     StockRule,
     PositionLot,
@@ -1274,7 +1276,20 @@ class SplitEvaluator:
 
         # 3. 상승/횡보 중 하단 채널선 하향 돌파 -> 연속 일(日) 확정 후 이탈 청산
         #    동일 날짜에 여러 사이클이 돌면 마지막 사이클 결과가 해당 날짜의 최종 상태.
-        breakdown_line = support * (1 - rule.channel_breakdown_tolerance_pct / 100)
+        breakdown_line, breakdown_mode, used_atr_fallback = channel_breakdown_line(
+            support, reading.atr, rule.channel_breakdown_atr_multiplier,
+            rule.channel_breakdown_tolerance_pct,
+        )
+        if used_atr_fallback and self._logger:
+            self._logger.warning(
+                f"[{display_ticker(rule.ticker)}] ATR breakdown value invalid; "
+                f"falling back to tolerance (-{rule.channel_breakdown_tolerance_pct}%)."
+            )
+        breakdown_rule_text = (
+            f"ATR {rule.channel_breakdown_atr_multiplier}xATR"
+            if breakdown_mode == "atr"
+            else f"tolerance -{rule.channel_breakdown_tolerance_pct}%"
+        )
         today_str = evaluation_date or datetime.date.today().isoformat()
         bd_days: list = st.get("breakdown_days", [])
         bd_prev_date: str = st.get("breakdown_prev_date", "")
@@ -1299,7 +1314,8 @@ class SplitEvaluator:
                         f"[{display_ticker(rule.ticker)}] 하단 채널선 이탈 감지 "
                         f"({len(bd_days)}/{BREAKDOWN_CONFIRM_BARS}일, "
                         f"현재가 {format_money(current_price, rule.market_type)} < "
-                        f"이탈선 {format_money(breakdown_line, rule.market_type)}) -> 확정 대기"
+                        f"이탈선 {format_money(breakdown_line, rule.market_type)}, "
+                        f"{breakdown_rule_text}) -> 확정 대기"
                     )
                 return None
 
@@ -1315,7 +1331,8 @@ class SplitEvaluator:
                         f"[{display_ticker(rule.ticker)}] 이탈 청산 재시도 "
                         f"(직전 사이클 미체결, 현재가 "
                         f"{format_money(current_price, rule.market_type)} < "
-                        f"이탈선 {format_money(breakdown_line, rule.market_type)})"
+                        f"이탈선 {format_money(breakdown_line, rule.market_type)}, "
+                        f"{breakdown_rule_text})"
                     )
                 else:
                     self._logger.info(
@@ -1324,7 +1341,7 @@ class SplitEvaluator:
                         f"현재가 {format_money(current_price, rule.market_type)} < "
                         f"이탈선 {format_money(breakdown_line, rule.market_type)}, "
                         f"채널하단 {format_money(support, rule.market_type)}, "
-                        f"허용 -{rule.channel_breakdown_tolerance_pct}%) -> 이탈 청산 진행"
+                        f"{breakdown_rule_text}) -> 이탈 청산 진행"
                     )
             return self._handle_trendbreak(
                 rule, ticker_lots, current_price, reading, st, reentry_gate="midline"
@@ -1336,7 +1353,8 @@ class SplitEvaluator:
             self._logger.info(
                 f"[{display_ticker(rule.ticker)}] 이탈선 회복 -> 청산 확정 취소 "
                 f"(현재가 {format_money(current_price, rule.market_type)} >= "
-                f"이탈선 {format_money(breakdown_line, rule.market_type)})"
+                f"이탈선 {format_money(breakdown_line, rule.market_type)}, "
+                f"{breakdown_rule_text})"
             )
         st["breakdown_today_state"] = ""
         if today_str in bd_days:

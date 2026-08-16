@@ -82,6 +82,8 @@ class StockRule:
     channel_stddev_k: float = 2.0                 # 채널 폭 = 중심선 +- k*잔차표준편차
     channel_slope_band_pct: float = 8.0           # |윈도우 전체 기울기%| 이내면 횡보 (백테스트 근거 5.0 -> 8.0)
     channel_breakdown_tolerance_pct: float = 0.0  # 하단선*(1-tol%) 미만이면 이탈
+    # None keeps the legacy tolerance rule; a configured value selects ATR first.
+    channel_breakdown_atr_multiplier: Optional[float] = None
     # 참고: 이탈/하락 청산 후 재진입은 상단 저항선(2sigma) 상향 돌파 시에만 허용된다
     # (채널 모드 알고리즘 고정 동작. 경계 왕복 재진입 churn 차단 - 백테스트로 확정)
     # 상승 레짐: 차수 매도를 잠그고 추세 눌림에 누적 매수
@@ -160,6 +162,12 @@ class StockRule:
                     raise ValueError(
                         f"StockRule({self.ticker}): channel_breakdown_tolerance_pct는 "
                         f"0 이상 100 미만이어야 합니다."
+                    )
+                if (self.channel_breakdown_atr_multiplier is not None
+                        and (not math.isfinite(self.channel_breakdown_atr_multiplier)
+                             or self.channel_breakdown_atr_multiplier < 0)):
+                    raise ValueError(
+                        f"StockRule({self.ticker}): channel_breakdown_atr_multiplier must be finite and >= 0"
                     )
             if self.regime_adx_range > self.regime_adx_trend:
                 raise ValueError(
