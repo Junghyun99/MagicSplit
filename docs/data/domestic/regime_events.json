@@ -252,5 +252,35 @@
         "ticker": "005935",
         "event": "trailing_lock_off",
         "price": 172000.0
+    },
+    {
+        "date": "2026-08-18 10:01:20",
+        "ticker": "487230",
+        "event": "downtrend_on",
+        "price": 22195.0
+    },
+    {
+        "date": "2026-08-18 10:01:20",
+        "ticker": "487230",
+        "event": "trailing_lock_on",
+        "price": 22195.0,
+        "lock_price": 22180.0,
+        "stop": 21514.6,
+        "gate": "resistance"
+    },
+    {
+        "date": "2026-08-18 10:01:20",
+        "ticker": "0173Y0",
+        "event": "downtrend_on",
+        "price": 12980.0
+    },
+    {
+        "date": "2026-08-18 10:01:20",
+        "ticker": "0173Y0",
+        "event": "trailing_lock_on",
+        "price": 12980.0,
+        "lock_price": 12970.0,
+        "stop": 12580.9,
+        "gate": "resistance"
     }
 ]
