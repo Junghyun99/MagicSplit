@@ -2,115 +2,119 @@
     "last_updated": "2026-08-12",
     "last_run_date": "2026-08-12",
     "market_type": "domestic",
-    "reason": "테스(095610):SKIP(이탈 청산 후 재진입 대기 - 채널 중심선 미회복 (현재가 KRW 145,900 <= 기준선 KRW 159,972)),\nPOSCO홀딩스(005490):SKIP(단기 하락 - 추가 매수 중단),\n삼성전자(005930):SKIP(단기 하락 - 신규 진입 중단),\n카카오(035720):SKIP(장기 하락 확정 - 신규·추가 매수 차단),\nNAVER(035420):SKIP(장기 하락 확정 - 신규·추가 매수 차단)",
+    "reason": "삼성전자(005930):SKIP(단기 하락 - 신규 진입 중단),\n삼성전기(009150):SKIP(단기 하락 - 신규 진입 중단),\n서울반도체(046890):SKIP(단기 하락 - 추가 매수 중단),\nDB하이텍(000990):SKIP(단기 하락 - 신규 진입 중단),\nLX세미콘(108320):SKIP(장기 하락 확정 - 신규·추가 매수 차단),\n이수페타시스(007660):SKIP(단기 하락 - 신규 진입 중단),\nLG이노텍(011070):SKIP(단기 하락 - 신규 진입 중단),\n하나마이크론(067310):SKIP(단기 하락 - 신규 진입 중단),\nSK하이닉스(000660):SKIP(단기 하락 - 신규 진입 중단)",
     "exchange_rate": null,
     "portfolio": {
-        "total_value": 119824477.66579995,
-        "cash_balance": 116632677.66579995,
+        "total_value": 174972792.31691098,
+        "cash_balance": 170739592.31691098,
         "holdings": [
             {
-                "ticker": "033780",
-                "alias": "KT&G",
-                "qty": 7,
-                "price": 177400.0,
-                "value": 1241800.0
+                "ticker": "046890",
+                "alias": "서울반도체",
+                "qty": 308,
+                "price": 10150.0,
+                "value": 3126200.0
             },
             {
-                "ticker": "005490",
-                "alias": "POSCO홀딩스",
-                "qty": 6,
-                "price": 325000.0,
-                "value": 1950000.0
+                "ticker": "036540",
+                "alias": "SFA반도체",
+                "qty": 180,
+                "price": 6150.0,
+                "value": 1107000.0
             }
         ]
     },
     "positions": {
-        "005490": {
-            "total_qty": 6,
-            "lot_count": 3,
-            "total_invested": 2140138.0,
-            "current_value": 1950000.0,
+        "036540": {
+            "total_qty": 180,
+            "lot_count": 1,
+            "total_invested": 999999.0,
+            "current_value": 1107000.0,
             "lots": [
                 {
-                    "lot_id": "lot_20260816_141317_005490_001",
-                    "buy_price": 378378.0,
-                    "quantity": 2,
-                    "buy_date": "2026-01-28",
+                    "lot_id": "lot_20260819_005751_036540_001",
+                    "buy_price": 5555.55,
+                    "quantity": 180,
+                    "buy_date": "2026-01-12",
                     "level": 1,
-                    "current_price": 325000.0,
-                    "pct_change": -14.11
-                },
-                {
-                    "lot_id": "lot_20260816_141413_005490_002",
-                    "buy_price": 343843.5,
-                    "quantity": 2,
-                    "buy_date": "2026-03-10",
-                    "level": 2,
-                    "current_price": 325000.0,
-                    "pct_change": -5.48
-                },
-                {
-                    "lot_id": "lot_20260816_141418_005490_003",
-                    "buy_price": 347847.5,
-                    "quantity": 2,
-                    "buy_date": "2026-03-12",
-                    "level": 3,
-                    "current_price": 325000.0,
-                    "pct_change": -6.57
+                    "current_price": 6150.0,
+                    "pct_change": 10.7
                 }
             ],
-            "current_price": 325000.0,
-            "alias": "POSCO홀딩스",
-            "avg_buy_price": 356689.6667,
-            "unrealized_pnl": -190138.0,
-            "unrealized_pnl_pct": -8.88,
-            "realized_pnl": 2490515.96,
-            "total_pnl": 2300377.96
+            "current_price": 6150.0,
+            "alias": "SFA반도체",
+            "avg_buy_price": 5555.55,
+            "unrealized_pnl": 107001.0,
+            "unrealized_pnl_pct": 10.7,
+            "realized_pnl": -643819.19,
+            "total_pnl": -536818.19
         },
-        "033780": {
-            "total_qty": 7,
-            "lot_count": 2,
-            "total_invested": 1265264.0,
-            "current_value": 1241800.0,
+        "046890": {
+            "total_qty": 308,
+            "lot_count": 4,
+            "total_invested": 3031098.07,
+            "current_value": 3126200.0,
             "lots": [
                 {
-                    "lot_id": "lot_20260816_141717_033780_001",
-                    "buy_price": 183583.4,
-                    "quantity": 5,
-                    "buy_date": "2026-07-07",
+                    "lot_id": "lot_20260819_005756_046890_001",
+                    "buy_price": 10010.0,
+                    "quantity": 100,
+                    "buy_date": "2026-03-03",
                     "level": 1,
-                    "current_price": 177400.0,
-                    "pct_change": -3.37
+                    "current_price": 10150.0,
+                    "pct_change": 1.4
                 },
                 {
-                    "lot_id": "lot_20260816_141724_033780_002",
-                    "buy_price": 173673.5,
-                    "quantity": 2,
-                    "buy_date": "2026-07-10",
+                    "lot_id": "lot_20260819_005759_046890_002",
+                    "buy_price": 10040.03,
+                    "quantity": 99,
+                    "buy_date": "2026-03-23",
                     "level": 2,
-                    "current_price": 177400.0,
-                    "pct_change": 2.15
+                    "current_price": 10150.0,
+                    "pct_change": 1.1
+                },
+                {
+                    "lot_id": "lot_20260819_005800_046890_003",
+                    "buy_price": 9509.5,
+                    "quantity": 105,
+                    "buy_date": "2026-03-27",
+                    "level": 3,
+                    "current_price": 10150.0,
+                    "pct_change": 6.74
+                },
+                {
+                    "lot_id": "lot_20260819_005800_046890_004",
+                    "buy_price": 9409.4,
+                    "quantity": 4,
+                    "buy_date": "2026-04-01",
+                    "level": 4,
+                    "current_price": 10150.0,
+                    "pct_change": 7.87
                 }
             ],
-            "current_price": 177400.0,
-            "alias": "KT&G",
-            "avg_buy_price": 180752.0,
-            "unrealized_pnl": -23464.0,
-            "unrealized_pnl_pct": -1.85,
-            "realized_pnl": 668371.11,
-            "total_pnl": 644907.11
+            "current_price": 10150.0,
+            "alias": "서울반도체",
+            "avg_buy_price": 9841.2275,
+            "unrealized_pnl": 95101.93,
+            "unrealized_pnl_pct": 3.14,
+            "realized_pnl": 827892.76,
+            "total_pnl": 922994.69
         }
     },
     "realized_pnl_by_ticker": {
+        "009150": 37702528.04,
+        "108320": 1819103.48,
+        "000990": 6897214.539999999,
         "005930": 6367456.44,
-        "005490": 2490515.9600000004,
-        "035420": 1663684.2400000005,
-        "033780": 668371.1100000002,
-        "095610": 6836649.7700000005,
-        "035720": 2602514.8
+        "046890": 827892.7600000001,
+        "067310": 9598545.18,
+        "000660": 8328800.460000001,
+        "036540": -643819.1900000004,
+        "011070": 2581177.74,
+        "007660": 2581459.8599999994
     },
     "regime_state_by_ticker": {
-        "035420": {
+        "005930": {
             "downtrend": "active",
             "downtrend_streak": 0,
             "downtrend_days": [],
@@ -120,34 +124,31 @@
             "downtrend_exit_days": [],
             "downtrend_exit_today_state": "",
             "downtrend_exit_prev_date": "2026-08-12",
-            "long_trend": "downtrend",
-            "short_trend": "downtrend",
-            "previous_long_regime": "downtrend",
-            "previous_short_regime": "downtrend",
-            "long_downtrend_lock": true,
-            "aligned_downtrend_reentry_lock": true,
-            "long_short_downtrend_liquidation_pending": true,
-            "post_liquidation": true,
-            "post_liquidation_reentry_gate": "resistance"
-        },
-        "095610": {
-            "downtrend": null,
-            "downtrend_streak": 0,
-            "downtrend_days": [],
-            "downtrend_today_state": "",
-            "downtrend_prev_date": "2026-08-12",
-            "downtrend_exit_streak": 0,
-            "downtrend_exit_days": [],
-            "downtrend_exit_today_state": "",
-            "downtrend_exit_prev_date": "",
             "long_trend": "uptrend",
-            "short_trend": "uptrend",
+            "short_trend": "downtrend",
             "previous_long_regime": "uptrend",
-            "previous_short_regime": "uptrend",
+            "previous_short_regime": "downtrend",
             "post_liquidation": true,
             "post_liquidation_reentry_gate": "midline"
         },
-        "005490": {
+        "067310": {
+            "downtrend": "active",
+            "downtrend_streak": 0,
+            "downtrend_days": [],
+            "downtrend_today_state": "",
+            "downtrend_prev_date": "",
+            "downtrend_exit_streak": 0,
+            "downtrend_exit_days": [],
+            "downtrend_exit_today_state": "",
+            "downtrend_exit_prev_date": "2026-08-12",
+            "long_trend": "uptrend",
+            "short_trend": "downtrend",
+            "previous_long_regime": "uptrend",
+            "previous_short_regime": "downtrend",
+            "post_liquidation": true,
+            "post_liquidation_reentry_gate": "midline"
+        },
+        "036540": {
             "downtrend": "active",
             "downtrend_streak": 0,
             "downtrend_days": [],
@@ -167,15 +168,15 @@
             "uptrend_streak": 0,
             "regime": "uptrend",
             "adds": 6,
-            "last_add_swing_high": 355000.0,
-            "last_add_price": 339839.5,
-            "last_uptrend_add_date": "2026-03-24",
+            "last_add_swing_high": 7590.0,
+            "last_add_price": 7077.07,
+            "last_uptrend_add_date": "2026-03-19",
             "downtrend_partially_liquidated": true,
-            "breakdown_prev_date": "2026-07-02",
+            "breakdown_prev_date": "2026-07-03",
             "breakdown_today_state": "",
-            "breakdown_days": []
+            "breakdown_days": ["2026-07-02"]
         },
-        "005930": {
+        "000660": {
             "downtrend": "active",
             "downtrend_streak": 0,
             "downtrend_days": [],
@@ -192,29 +193,41 @@
             "post_liquidation": true,
             "post_liquidation_reentry_gate": "midline"
         },
-        "033780": {
-            "downtrend": null,
+        "000990": {
+            "downtrend": "active",
             "downtrend_streak": 0,
             "downtrend_days": [],
             "downtrend_today_state": "",
-            "downtrend_prev_date": "2026-08-12",
+            "downtrend_prev_date": "",
             "downtrend_exit_streak": 0,
             "downtrend_exit_days": [],
             "downtrend_exit_today_state": "",
-            "downtrend_exit_prev_date": "",
+            "downtrend_exit_prev_date": "2026-08-12",
             "long_trend": "uptrend",
-            "short_trend": "sideways",
+            "short_trend": "downtrend",
             "previous_long_regime": "uptrend",
-            "previous_short_regime": "sideways",
-            "breakdown_prev_date": "2026-08-12",
-            "breakdown_today_state": "",
-            "breakdown_days": [],
-            "uptrend_prev_date": "2026-08-12",
-            "uptrend_today_state": "",
-            "uptrend_days": [],
-            "uptrend_streak": 0
+            "previous_short_regime": "downtrend",
+            "post_liquidation": true,
+            "post_liquidation_reentry_gate": "midline"
         },
-        "035720": {
+        "007660": {
+            "downtrend": "active",
+            "downtrend_streak": 0,
+            "downtrend_days": [],
+            "downtrend_today_state": "",
+            "downtrend_prev_date": "",
+            "downtrend_exit_streak": 0,
+            "downtrend_exit_days": [],
+            "downtrend_exit_today_state": "",
+            "downtrend_exit_prev_date": "2026-08-12",
+            "long_trend": "uptrend",
+            "short_trend": "downtrend",
+            "previous_long_regime": "uptrend",
+            "previous_short_regime": "downtrend",
+            "post_liquidation": true,
+            "post_liquidation_reentry_gate": "resistance"
+        },
+        "108320": {
             "downtrend": "active",
             "downtrend_streak": 0,
             "downtrend_days": [],
@@ -228,49 +241,112 @@
             "short_trend": "downtrend",
             "previous_long_regime": "downtrend",
             "previous_short_regime": "downtrend",
-            "long_downtrend_lock": true,
             "aligned_downtrend_reentry_lock": true,
             "long_short_downtrend_liquidation_pending": true,
             "post_liquidation": true,
-            "post_liquidation_reentry_gate": "resistance"
+            "post_liquidation_reentry_gate": "resistance",
+            "long_downtrend_lock": true
+        },
+        "011070": {
+            "downtrend": "active",
+            "downtrend_streak": 0,
+            "downtrend_days": [],
+            "downtrend_today_state": "",
+            "downtrend_prev_date": "",
+            "downtrend_exit_streak": 0,
+            "downtrend_exit_days": [],
+            "downtrend_exit_today_state": "",
+            "downtrend_exit_prev_date": "2026-08-12",
+            "long_trend": "uptrend",
+            "short_trend": "downtrend",
+            "previous_long_regime": "uptrend",
+            "previous_short_regime": "downtrend",
+            "post_liquidation": true,
+            "post_liquidation_reentry_gate": "midline"
+        },
+        "009150": {
+            "downtrend": null,
+            "downtrend_streak": 1,
+            "downtrend_days": ["2026-08-12"],
+            "downtrend_today_state": "downtrend",
+            "downtrend_prev_date": "2026-08-12",
+            "downtrend_exit_streak": 0,
+            "downtrend_exit_days": [],
+            "downtrend_exit_today_state": "",
+            "downtrend_exit_prev_date": "",
+            "long_trend": "uptrend",
+            "short_trend": "downtrend",
+            "previous_long_regime": "uptrend",
+            "previous_short_regime": "downtrend",
+            "post_liquidation": true,
+            "post_liquidation_reentry_gate": "midline"
+        },
+        "046890": {
+            "downtrend": "active",
+            "downtrend_streak": 0,
+            "downtrend_days": [],
+            "downtrend_today_state": "",
+            "downtrend_prev_date": "",
+            "downtrend_exit_streak": 0,
+            "downtrend_exit_days": [],
+            "downtrend_exit_today_state": "",
+            "downtrend_exit_prev_date": "2026-08-12",
+            "long_trend": "uptrend",
+            "short_trend": "downtrend",
+            "previous_long_regime": "uptrend",
+            "previous_short_regime": "downtrend",
+            "uptrend_prev_date": "",
+            "uptrend_today_state": "",
+            "uptrend_days": [],
+            "uptrend_streak": 0,
+            "regime": "uptrend",
+            "adds": 6,
+            "last_add_swing_high": 17780.0,
+            "last_add_price": 13813.8,
+            "last_uptrend_add_date": "2026-06-01",
+            "downtrend_partially_liquidated": true
         }
     },
-    "enabled_tickers": ["005930", "035420", "035720", "095610", "005490", "033780"],
+    "enabled_tickers": ["005930", "000660", "000990", "108320", "009150", "011070", "046890", "036540", "007660", "067310"],
     "alias_by_ticker": {
         "005930": "삼성전자",
-        "035420": "NAVER",
-        "035720": "카카오",
-        "095610": "테스",
-        "005490": "POSCO홀딩스",
-        "033780": "KT&G"
+        "000660": "SK하이닉스",
+        "000990": "DB하이텍",
+        "108320": "LX세미콘",
+        "009150": "삼성전기",
+        "011070": "LG이노텍",
+        "046890": "서울반도체",
+        "036540": "SFA반도체",
+        "007660": "이수페타시스",
+        "067310": "하나마이크론"
     },
     "risk_summary": {
         "next_level_needs": 1000000.0,
-        "max_potential_exposure": 303000000.0,
+        "max_potential_exposure": 505000000.0,
         "stale_info": [
             {
-                "ticker": "005490",
-                "alias": "POSCO홀딩스",
-                "last_trade_date": "2026-06-08",
-                "days_stale": 65
-            },
-            {
-                "ticker": "033780",
-                "alias": "KT&G",
+                "ticker": "046890",
+                "alias": "서울반도체",
                 "last_trade_date": "2026-07-10",
                 "days_stale": 33
+            },
+            {
+                "ticker": "036540",
+                "alias": "SFA반도체",
+                "last_trade_date": "2026-07-16",
+                "days_stale": 27
             }
         ],
-        "risk_score": 92,
+        "risk_score": 96,
         "deductions": [
             {
                 "reason": "장기 정체 종목",
-                "points": 8
+                "points": 4
             }
         ],
         "sync_error": false,
         "alerts": [],
-        "max_ticker_concentration": 1.63,
+        "max_ticker_concentration": 1.79,
         "high_level_ratio": 0.0
     }
 }
