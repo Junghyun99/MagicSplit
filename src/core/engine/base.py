@@ -969,6 +969,15 @@ class MagicSplitEngine:
                         f"[Position] Remove lot: {target_lot.lot_id} "
                         f"Lv{target_lot.level} ({format_qty(target_lot.quantity, self.market_type)} 전량 매도)"
                     )
+                    # 일반 단건 익절로 마지막 lot까지 소진된 경우도 3층 모드에서는
+                    # 다음 Lv1 전에 공통 회복 확인을 요구한다.
+                    if (regime_state is not None
+                            and not any(l.ticker == exe.ticker for l in updated)
+                            and self._uses_full_liquidation_reentry_gate(exe.ticker)):
+                        self._reset_regime_after_flat(
+                            regime_state, exe.ticker,
+                            mark_liquidation=True, reentry_gate="midline",
+                        )
 
         return updated
 
@@ -997,10 +1006,9 @@ class MagicSplitEngine:
         청산-재매수 churn이 생긴다. 래치 해제는 비하락 판정 연속 확정
         (DOWNTREND_CONFIRM_BARS) 규칙에만 맡긴다.
 
-        mark_liquidation=True(이탈/하락 청산 경로)면 post_liquidation 마커와
-        청산 원인별 재진입 게이트를 남긴다. 채널 모드는 상승/횡보 이탈 뒤에는
-        중심선 회복, 하락 채널 청산 뒤에는 상단 저항선 돌파까지 재진입을 차단한다.
-        (트레일링 벌크 등 통상 익절성 전량 매도에는 마커 없음)
+        mark_liquidation=True면 post_liquidation 마커와 재진입 기준을 남긴다.
+        3층 모드에서는 청산 원인과 무관하게 장기 횡보 이상·단기 상승·중심선 회복을
+        공통으로 검사한다. 구 모드에서는 기존 청산 원인별 중심선/상단선 게이트를 유지한다.
         """
         st = regime_state.get(ticker)
         if not isinstance(st, dict):
@@ -1025,6 +1033,15 @@ class MagicSplitEngine:
             regime_state[ticker] = kept
         else:
             regime_state.pop(ticker, None)
+
+    def _uses_full_liquidation_reentry_gate(self, ticker: str) -> bool:
+        """3층 채널 모드에서만 모든 전량청산 뒤 공통 재진입 게이트를 사용한다."""
+        rule = next((r for r in self.stock_rules if r.ticker == ticker), None)
+        if rule is None:
+            rule = next((r for r in self.all_stock_rules if r.ticker == ticker), None)
+        return bool(
+            rule and rule.multi_horizon_regime_enabled and rule.regime_algo == "channel"
+        )
 
     def _apply_bulk_liquidation(
         self,
@@ -1168,7 +1185,13 @@ class MagicSplitEngine:
                 f"scripts/reconcile_positions.py 로 정합성 확인 권장."
             )
         if regime_state is not None and not remaining:
-            self._reset_regime_after_flat(regime_state, exe.ticker)
+            # 3층 모드에서는 일반 익절 trailing 전량매도도 새 Lv1 전에
+            # 공통 회복 확인을 거친다. 구 모드의 기존 동작은 유지한다.
+            self._reset_regime_after_flat(
+                regime_state, exe.ticker,
+                mark_liquidation=self._uses_full_liquidation_reentry_gate(exe.ticker),
+                reentry_gate="midline",
+            )
         return updated
 
     def _enrich_executions(self, executions: List[TradeExecution], signals: List[SplitSignal]) -> None:

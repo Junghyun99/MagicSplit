@@ -84,8 +84,8 @@ class StockRule:
     channel_breakdown_tolerance_pct: float = 0.0  # 하단선*(1-tol%) 미만이면 이탈
     # None keeps the legacy tolerance rule; a configured value selects ATR first.
     channel_breakdown_atr_multiplier: Optional[float] = None
-    # 참고: 이탈/하락 청산 후 재진입은 상단 저항선(2sigma) 상향 돌파 시에만 허용된다
-    # (채널 모드 알고리즘 고정 동작. 경계 왕복 재진입 churn 차단 - 백테스트로 확정)
+    # 참고: 구 channel 모드의 이탈/하락 청산 후 재진입은 상단 저항선(2sigma) 돌파를
+    # 요구한다. 3층 모드는 장기·단기 레짐과 중심선 회복의 공통 게이트를 사용한다.
     # 상승 레짐: 차수 매도를 잠그고 추세 눌림에 누적 매수
     uptrend_pullback_band_pct: float = 1.5   # 눌림 매수 상한: 20EMA + band% 이하면 허용 (하단 제한 없음)
     uptrend_max_adds: int = 3                # 상승장 1사이클 최대 추가매수 횟수
