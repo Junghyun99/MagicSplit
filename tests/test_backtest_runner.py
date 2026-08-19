@@ -151,6 +151,25 @@ class TestRunBacktest:
         assert first_exec["action"] == "BUY"
         assert first_exec["ticker"] == "AAPL"
 
+    def test_regime_chart_is_generated_once_after_backtest(self, backtest_config, tmp_path):
+        """백테스트는 일별 차트 갱신 대신 종료 시 한 번만 생성한다."""
+        config = json.loads(Path(backtest_config).read_text(encoding="utf-8"))
+        config["stocks"][0]["regime_enabled"] = True
+        Path(backtest_config).write_text(json.dumps(config), encoding="utf-8")
+        ohlc_df = _make_ohlc_df(["AAPL"], days=5)
+
+        with patch("src.backtest.runner.download_ohlc_data", return_value=ohlc_df), \
+             patch("src.infra.repo.JsonRepository.save_chart_series", autospec=True) as save_chart:
+            result = run_backtest(
+                config_path=backtest_config,
+                start_date="2024-01-02",
+                end_date="2024-01-08",
+                output_dir=str(tmp_path / "output"),
+            )
+
+        assert result is not None
+        assert save_chart.call_count == 1
+
     def test_no_rules_returns_none(self, tmp_path):
         """활성화된 종목이 없으면 None 반환"""
         config = {

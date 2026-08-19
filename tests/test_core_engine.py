@@ -1876,6 +1876,24 @@ class TestChartDataPersistence:
         assert chart["rows"]
         assert chart["asof"] == "2026-07-31"
 
+    def test_on_demand_mode_defers_chart_until_explicitly_generated(
+        self, chart_engine, mock_repo,
+    ):
+        chart_engine.chart_update_mode = "on_demand"
+
+        chart_engine.run_one_cycle(sim_date="2026-07-31")
+
+        assert not mock_repo.save_chart_series.called
+        # 레짐 이벤트는 차트 정책과 별개로 매일 기록된다.
+        assert mock_repo.save_regime_events.called
+
+        chart_engine.generate_chart_artifacts(sim_date="2026-07-31")
+
+        assert mock_repo.save_chart_series.called
+        ticker, chart = mock_repo.save_chart_series.call_args[0]
+        assert ticker == "AAPL"
+        assert chart["asof"] == "2026-07-31"
+
     def test_latched_state_is_seeded_on_first_run(self, chart_engine, mock_repo):
         """이력이 비어 있으면 이미 걸린 래치를 시드로 심는다."""
         mock_repo.load_status.return_value = {

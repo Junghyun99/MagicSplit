@@ -127,6 +127,7 @@ def run_backtest(
         notifier=None,
         is_live_trading=False,
         market_data=market_data,
+        chart_update_mode="on_demand",
     )
 
     # 5. 시뮬레이션 루프
@@ -161,6 +162,11 @@ def run_backtest(
             last_result = engine.run_one_cycle(sim_date=sim_date)
         except Exception as e:
             logger.error(f"[{sim_date}] 사이클 실행 실패: {e}")
+
+    # 차트는 최종 상태만 결과물로 남으므로 일별 루프에서는 생략하고,
+    # 전체 시뮬레이션 완료 후 종목별로 한 번만 생성한다.
+    if last_result is not None:
+        engine.generate_chart_artifacts(sim_date=last_result.date)
 
     logger.info("--- 백테스트 완료 ---")
     if last_result:

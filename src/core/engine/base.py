@@ -51,12 +51,20 @@ class MagicSplitEngine:
         notifier: Optional[INotifier] = None,
         is_live_trading: bool = False,
         market_data: Optional[IMarketDataProvider] = None,
+        chart_update_mode: str = "per_cycle",
     ):
         self.broker = broker
         self.repo = repo
         self.logger = logger
         # 레짐 지표용 시세 제공자 (실행 브로커와 분리). None이면 레짐 비활성(현 라이브).
         self.market_data = market_data
+        if chart_update_mode not in {"per_cycle", "on_demand"}:
+            raise ValueError(
+                "chart_update_mode must be 'per_cycle' or 'on_demand'"
+            )
+        # 차트는 매매 판단과 무관한 부가 산출물이다. 라이브/일반 페이퍼는
+        # 매 사이클 갱신하고, 백테스트는 종료 후 한 번만 생성한다.
+        self.chart_update_mode = chart_update_mode
         self.evaluator = SplitEvaluator(logger=logger)
         self.stock_rules = [r for r in stock_rules if r.enabled]
         self.all_tickers = [r.ticker for r in self.stock_rules]
@@ -267,15 +275,27 @@ class MagicSplitEngine:
                               last_sell_prices=last_sell_prices,
                               regime_state=regime_state,
                               skip_status=skip_status)
-                # 대시보드 차트 데이터. 매매와 무관한 부가 산출물이므로
-                # 실패해도 사이클 결과에 영향을 주지 않는다.
+                # 레짐 전이 이벤트는 날짜별 이력이므로 차트 저장 정책과 무관하게
+                # 매 사이클 기록한다.
                 try:
-                    self._persist_chart_data(
-                        persist_portfolio, positions, regime_state, regime_before,
-                        last_sell_prices=last_sell_prices, sim_date=sim_date,
+                    stamp = sim_date or datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                    self._record_regime_events(
+                        regime_before, regime_state, persist_portfolio, stamp,
                     )
                 except Exception as e:
-                    self.logger.warning(f"[Step 6] 차트 데이터 저장 실패 (매매에는 영향 없음): {e}")
+                    self.logger.warning(f"[Step 6] 레짐 이벤트 저장 실패 (매매에는 영향 없음): {e}")
+
+                # 대시보드 차트 데이터는 매매와 무관한 부가 산출물이다.
+                # on_demand(백테스트)에서는 runner가 전체 시뮬레이션 종료 후
+                # generate_chart_artifacts()를 한 번 호출한다.
+                if self.chart_update_mode == "per_cycle":
+                    try:
+                        self._save_chart_series(
+                            persist_portfolio, positions, regime_state,
+                            last_sell_prices=last_sell_prices, sim_date=sim_date,
+                        )
+                    except Exception as e:
+                        self.logger.warning(f"[Step 6] 차트 데이터 저장 실패 (매매에는 영향 없음): {e}")
             else:
                 missing = []
                 if portfolio is None:
@@ -1214,27 +1234,41 @@ class MagicSplitEngine:
         )
         self.repo.save_status(status_data)
 
-    def _persist_chart_data(
+    def generate_chart_artifacts(self, sim_date: Optional[str] = None) -> None:
+        """현재 저장된 상태를 기준으로 대시보드 차트를 한 번 생성한다.
+
+        백테스트처럼 차트 저장 정책이 ``on_demand``인 호출자가 전체
+        시뮬레이션을 마친 뒤 사용한다. 매매 상태를 변경하지 않으며, 차트
+        생성 실패는 경고만 남긴다.
+        """
+        try:
+            portfolio = self.broker.get_portfolio()
+            positions = self.repo.load_positions()
+            regime_state = self._load_regime_state()
+            last_sell_prices = self.repo.load_last_sell_prices()
+            self._save_chart_series(
+                portfolio, positions, regime_state,
+                last_sell_prices=last_sell_prices, sim_date=sim_date,
+            )
+        except Exception as e:
+            self.logger.warning(f"차트 데이터 저장 실패 (매매에는 영향 없음): {e}")
+
+    def _save_chart_series(
         self,
         portfolio: Portfolio,
         positions: List[PositionLot],
         regime_state: dict,
-        regime_before: dict,
         last_sell_prices: Optional[dict] = None,
         sim_date: Optional[str] = None,
     ) -> None:
-        """대시보드 판정 차트용 데이터를 저장한다 (레짐 이벤트 + 종목별 시계열).
+        """대시보드 판정 차트용 종목별 시계열을 저장한다.
 
         지표선은 저장된 값을 읽지 않고 라이브와 동일한 분류기로 재계산하므로
-        차트와 실제 판정이 어긋나지 않는다. 레짐 상태(래치/추종 데드라인)는
-        경로 의존적이라 재현이 불가능하므로 전이 시점만 이벤트로 적재한다.
+        차트와 실제 판정이 어긋나지 않는다.
         """
         from src.core.logic.split_evaluator import classify_for_rule
 
         today = sim_date or datetime.now().strftime("%Y-%m-%d")
-        stamp = sim_date or datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-
-        self._record_regime_events(regime_before, regime_state, portfolio, stamp)
 
         if self.market_data is None:
             return  # 시세 제공자 없음 -> 지표 재계산 불가
