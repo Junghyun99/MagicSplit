@@ -312,3 +312,23 @@
 2026-08-19 21:31:02,353 [INFO] >>> Processing KRW-USDT
 2026-08-19 21:31:02,354 [INFO]   [KRW-USDT] 신호 없음 | Lv6 매수 KRW 1,387 -> 현재 KRW 1,374 (-0.94%) | 익절 +2.0% / 추매 -1.0%
 2026-08-19 21:31:02,354 [INFO] >>> Step 6: Persist
+2026-08-19 22:31:04,073 [INFO] === Initializing MagicSplit Bot (crypto) ===
+2026-08-19 22:31:04,073 [INFO] Loaded 3 stock rule(s) from config_crypto.json
+2026-08-19 22:31:04,073 [INFO] [crypto] 1 rule(s), mode=LIVE
+2026-08-19 22:31:04,074 [INFO] === Running crypto engine ===
+2026-08-19 22:31:04,074 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-08-19 22:31:04,394 [WARNING] [Upbit] 상폐/KRW미상장 보유 제외 (3건): ['KRW-APENFT', 'KRW-ETHF', 'KRW-ETHW']
+2026-08-19 22:31:04,499 [INFO] Fetching real-time prices from Broker...
+2026-08-19 22:31:04,609 [INFO] Portfolio: Cash=KRW 2,169,543, Value=KRW 11,181,042
+2026-08-19 22:31:04,609 [INFO] >>> Step 2: Load Positions
+2026-08-19 22:31:04,611 [INFO] Loaded 8 position lot(s)
+2026-08-19 22:31:04,615 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-08-19 22:31:04,616 [INFO] >>> Processing KRW-USDT
+2026-08-19 22:31:04,617 [INFO] [KRW-USDT] Lv6 매수가 KRW 1,387 대비 -1.4% -> 추가 매수 Lv7 7.31528895개 @KRW 1,367
+2026-08-19 22:31:04,617 [INFO] Executing 1 order(s)...
+2026-08-19 22:31:04,617 [INFO] [Upbit] Processing 1 BUY orders...
+2026-08-19 22:31:04,780 [INFO] [Upbit] Order sent: BUY KRW-USDT qty=7.31528895 (uuid=48979ee9-7e15-4ebb-ad38-73cb509dc191)
+2026-08-19 22:31:05,361 [INFO] [Upbit] Order FILLED: KRW-USDT uuid=48979ee9-7e15-4ebb-ad38-73cb509dc191 qty=7.30994152 @ 1368.0 fee=0.0
+2026-08-19 22:31:05,468 [INFO] [Position] New lot: lot_20260819_223105_KRW-USDT_007 Lv7 KRW-USDT 7.30994152개 @KRW 1,368
+2026-08-19 22:31:08,600 [WARNING] [Upbit] 상폐/KRW미상장 보유 제외 (3건): ['KRW-APENFT', 'KRW-ETHF', 'KRW-ETHW']
+2026-08-19 22:31:08,708 [INFO] >>> Step 6: Persist
