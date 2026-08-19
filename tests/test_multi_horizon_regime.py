@@ -106,16 +106,35 @@ def test_long_downtrend_lock_releases_only_after_long_non_downtrend_and_short_up
     assert "long_downtrend_lock" not in st["AAPL"]
 
 
-def test_aligned_downtrend_reentry_lock_requires_short_resistance_recovery():
+def test_full_liquidation_reentry_requires_short_midline_recovery():
     prefix = _trend(189, 120, -0.05)
     window = _window(prefix + _trend(63, prefix[-1], 0.25))
-    rule = _rule()
+    rule = _rule(buy_amount=500, max_exposure_pct=100)
     short = classify_for_rule(rule, window)
-    st = {"AAPL": {"aligned_downtrend_reentry_lock": True}}
-    SplitEvaluator().evaluate_stock(
-        rule, [], _portfolio(short.channel_resistance + 1), ohlc_window=window, regime_state=st,
+    st = {"AAPL": {"post_liquidation": True, "aligned_downtrend_reentry_lock": True}}
+    blocked = SplitEvaluator().evaluate_stock(
+        rule, [], _portfolio(short.channel_mid), ohlc_window=window, regime_state=st,
     )
+    assert blocked[0].is_blocked
+    assert "채널 중심선 회복" in blocked[0].reason
+
+    allowed = SplitEvaluator().evaluate_stock(
+        rule, [], _portfolio(short.channel_mid + 1), ohlc_window=window, regime_state=st,
+    )
+    assert not allowed[0].is_blocked
+    assert "post_liquidation" not in st["AAPL"]
     assert "aligned_downtrend_reentry_lock" not in st["AAPL"]
+
+
+def test_full_liquidation_reentry_waits_when_long_history_is_insufficient():
+    window = _window(_trend(63, 100, 0.25))
+    rule = _rule()
+    st = {"AAPL": {"post_liquidation": True}}
+    signals = SplitEvaluator().evaluate_stock(
+        rule, [], _portfolio(window.Close.iloc[-1]), ohlc_window=window, regime_state=st,
+    )
+    assert signals[0].is_blocked
+    assert "장기 추세 데이터 부족" in signals[0].reason
 
 
 def test_relaxed_sell_multiplier_does_not_change_active_trailing_lot():

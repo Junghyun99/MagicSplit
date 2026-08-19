@@ -219,14 +219,6 @@ class SplitEvaluator:
                 return [self._buy_blocked_signal(rule, current_price, multi["lock_reason"])]
             if multi and multi["buy_halted"]:
                 return [self._buy_blocked_signal(rule, current_price, "단기 하락 - 신규 진입 중단")]
-            if multi and regime_st.get("aligned_downtrend_reentry_lock"):
-                if not self._can_reenter_after_aligned_downtrend(reading, multi, current_price):
-                    return [self._buy_blocked_signal(
-                        rule, current_price,
-                        "장·단기 하락 청산 후 재진입 대기 - 장기 횡보 이상·단기 상승·채널 상단 회복 필요",
-                    )]
-                regime_st.pop("aligned_downtrend_reentry_lock", None)
-                regime_st.pop("long_short_downtrend_liquidation_pending", None)
             if downtrend_blocked:
                 reason = "DOWNTREND 확정 - 신규 진입 차단"
                 if self._logger:
@@ -242,9 +234,35 @@ class SplitEvaluator:
                     is_blocked=True,
                 )]
 
-            # 채널 모드 재진입 게이트: 이탈/하락 청산(post_liquidation) 후에는
-            # 청산 원인별 기준선 회복 전까지 신규 진입을 차단한다.
-            if rule.regime_algo == "channel" and regime_st.get("post_liquidation"):
+            # 3층 모드에서는 청산 원인과 무관하게 모든 전량 청산 뒤의 새 Lv1을
+            # 같은 회복 조건으로 제한한다. 일반 익절 trailing도 포함한다.
+            needs_full_liquidation_reentry = (
+                regime_st.get("post_liquidation")
+                or regime_st.get("aligned_downtrend_reentry_lock")
+            )
+            if rule.multi_horizon_regime_enabled and needs_full_liquidation_reentry:
+                if multi is None:
+                    return [self._buy_blocked_signal(
+                        rule, current_price,
+                        "전량 청산 후 재진입 대기 - 장기 추세 데이터 부족",
+                    )]
+                if not self._can_reenter_after_full_liquidation(reading, multi, current_price):
+                    return [self._buy_blocked_signal(
+                        rule, current_price,
+                        "전량 청산 후 재진입 대기 - 장기 횡보 이상·단기 상승·채널 중심선 회복 필요",
+                    )]
+                regime_st.pop("post_liquidation", None)
+                regime_st.pop("post_liquidation_reentry_gate", None)
+                regime_st.pop("aligned_downtrend_reentry_lock", None)
+                regime_st.pop("long_short_downtrend_liquidation_pending", None)
+                if self._logger:
+                    self._logger.info(
+                        f"[{display_ticker(rule.ticker)}] 전량 청산 후 회복 확인 "
+                        "(장기 횡보 이상·단기 상승·채널 중심선 상회) -> 재진입 허용"
+                    )
+
+            # 구 모드의 기존 청산 원인별 재진입 게이트는 그대로 보존한다.
+            elif rule.regime_algo == "channel" and regime_st.get("post_liquidation"):
                 gate = regime_st.get("post_liquidation_reentry_gate", "resistance")
                 gate_line = (
                     reading.channel_mid if gate == "midline"
@@ -518,12 +536,12 @@ class SplitEvaluator:
         }
 
     @staticmethod
-    def _can_reenter_after_aligned_downtrend(reading, multi: dict, current_price: float) -> bool:
+    def _can_reenter_after_full_liquidation(reading, multi: dict, current_price: float) -> bool:
         return (
             multi["long"] in (Regime.SIDEWAYS, Regime.UPTREND)
             and multi["short"] == Regime.UPTREND
-            and not math.isnan(reading.channel_resistance)
-            and current_price > reading.channel_resistance
+            and not math.isnan(reading.channel_mid)
+            and current_price > reading.channel_mid
         )
 
     @staticmethod

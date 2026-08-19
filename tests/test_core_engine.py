@@ -1757,6 +1757,34 @@ class TestTrailingBulk:
         )
         assert "AAPL" not in regime_state
 
+    def test_full_fire_marks_reentry_gate_in_multi_horizon_mode(self, engine):
+        rule = engine.stock_rules[0]
+        rule.regime_enabled = True
+        rule.regime_algo = "channel"
+        rule.multi_horizon_regime_enabled = True
+        regime_state = {"AAPL": {"regime": "sideways", "adds": 2}}
+        engine._update_positions(
+            self._positions(), [self._bulk_sig(20)], [self._exe(20)],
+            "2024-01-02", last_sell_prices={}, regime_state=regime_state,
+        )
+        assert regime_state["AAPL"]["post_liquidation"] is True
+        assert regime_state["AAPL"]["post_liquidation_reentry_gate"] == "midline"
+
+    def test_last_regular_profit_sell_marks_reentry_gate_in_multi_horizon_mode(self, engine):
+        rule = engine.stock_rules[0]
+        rule.regime_enabled = True
+        rule.regime_algo = "channel"
+        rule.multi_horizon_regime_enabled = True
+        lot = PositionLot("lot1", "AAPL", 50.0, 5, "2024-01-01", level=1)
+        sig = SplitSignal("AAPL", lot.lot_id, OrderAction.SELL, 5, 60.0, "익절", 20.0, 1)
+        exe = TradeExecution("AAPL", OrderAction.SELL, 5, 60.0, 0.0, "2024-01-02", ExecutionStatus.FILLED)
+        regime_state = {"AAPL": {"regime": "sideways", "adds": 2}}
+        result = engine._update_positions(
+            [lot], [sig], [exe], "2024-01-02", last_sell_prices={}, regime_state=regime_state,
+        )
+        assert result == []
+        assert regime_state["AAPL"]["post_liquidation"] is True
+
 
 class TestBuildReason:
     """_build_reason()이 executions와 교차 검증하여 미전송 주문을 SKIP으로 표시하는지 검증."""
