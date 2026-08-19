@@ -1,0 +1,41 @@
+2026-08-20 00:01:03,930 [INFO] === Initializing MagicSplit Bot (overseas) ===
+2026-08-20 00:01:03,930 [INFO] Loaded 22 stock rule(s) from config_overseas.json
+2026-08-20 00:01:03,930 [INFO] [overseas] 12 rule(s), mode=LIVE
+2026-08-20 00:01:03,930 [INFO] [KisBroker] 새 토큰 발급 중...
+2026-08-20 00:01:07,649 [INFO] [KisOverseasLiveBroker] Mode: LIVE TRADING
+2026-08-20 00:01:07,651 [INFO] [MarketData] 레짐 필터 활성 종목 12개 -> YFinanceMarketDataProvider 주입 (window 260봉)
+2026-08-20 00:01:07,652 [INFO] === Running overseas engine ===
+2026-08-20 00:01:07,652 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-08-20 00:01:09,935 [INFO] Fetching real-time prices from Broker...
+2026-08-20 00:01:14,363 [INFO] Portfolio: Cash=USD 773.09, Value=USD 18,270.36
+2026-08-20 00:01:14,363 [INFO] >>> Step 2: Load Positions
+2026-08-20 00:01:14,364 [INFO] Loaded 20 position lot(s)
+2026-08-20 00:01:14,365 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-08-20 00:01:14,365 [INFO] >>> Processing 테슬라(TSLA)
+2026-08-20 00:01:15,821 [INFO] [MarketData] 배치 다운로드 완료: 12/12종목
+2026-08-20 00:01:15,824 [INFO] [테슬라(TSLA)] DOWNTREND 확정 - 신규 진입 차단
+2026-08-20 00:01:15,824 [INFO] >>> Processing SCHWAB US DIVIDEND EQUITY(SCHD)
+2026-08-20 00:01:15,827 [INFO]   [SCHWAB US DIVIDEND EQUITY(SCHD)] 신호 없음 | Lv1 매수 USD 33.55 -> 현재 USD 35.23 (+5.01%) | 익절 +10.0% / 추매 -5.0%
+2026-08-20 00:01:15,827 [INFO] >>> Processing 루멘텀 홀딩스(LITE)
+2026-08-20 00:01:15,829 [INFO] [루멘텀 홀딩스(LITE)] DOWNTREND 확정 - 신규 진입 차단
+2026-08-20 00:01:15,829 [INFO] >>> Processing 에이알엠 홀딩스(ADR)(ARM)
+2026-08-20 00:01:15,832 [INFO] [에이알엠 홀딩스(ADR)(ARM)] 하락 래치 진행 중 - 이미 분할 청산을 거쳤으므로 동일 래치 내 2차 이탈 청산 스킵 (신규 매수만 차단 유지)
+2026-08-20 00:01:15,832 [INFO] [에이알엠 홀딩스(ADR)(ARM)] DOWNTREND 확정 - 추가 매수 차단
+2026-08-20 00:01:15,833 [INFO] >>> Processing 애플(AAPL)
+2026-08-20 00:01:15,837 [INFO]   [애플(AAPL)] 📈 상승 레짐 유지 | Lv2 매수 USD 305.35 -> 현재 USD 318.22 (+4.21%) | 채널하단 USD 292.52 / 이탈선 USD 292.52 (허용 -0.0%) | 20EMA(눌림) USD 312.56 (이격 +1.81%) | adds 1/3
+2026-08-20 00:01:15,837 [INFO] >>> Processing 카메코(CCJ)
+2026-08-20 00:01:15,840 [INFO] [카메코(CCJ)] DOWNTREND 확정 - 신규 진입 차단
+2026-08-20 00:01:15,840 [INFO] >>> Processing 펩시코(PEP)
+2026-08-20 00:01:15,843 [INFO] [펩시코(PEP)] 이탈 청산 후 재진입 대기 - 상단 저항선 미회복 (현재가 USD 141.44 <= 기준선 USD 142.47)
+2026-08-20 00:01:15,843 [INFO] >>> Processing 브로드컴(AVGO)
+2026-08-20 00:01:15,845 [INFO] [브로드컴(AVGO)] 이탈 청산 후 재진입 대기 - 상단 저항선 미회복 (현재가 USD 361.30 <= 기준선 USD 433.82)
+2026-08-20 00:01:15,846 [INFO] >>> Processing ISHARES GLOBAL CLEAN ENERGY(ICLN)
+2026-08-20 00:01:15,848 [INFO] [ISHARES GLOBAL CLEAN ENERGY(ICLN)] DOWNTREND 확정 - 신규 진입 차단
+2026-08-20 00:01:15,849 [INFO] >>> Processing ARK INNOVATION(ARKK)
+2026-08-20 00:01:15,851 [INFO] [ARK INNOVATION(ARKK)] Lv2: trailing 고점 갱신 -> USD 82.78 (스톱가 USD 78.64)
+2026-08-20 00:01:15,851 [INFO]   [ARK INNOVATION(ARKK)] 신호 없음 | Lv2 매수 USD 71.93 -> 현재 USD 82.78 (+15.08%) | 익절 +10.0% / 추매 -5.0%
+2026-08-20 00:01:15,852 [INFO] >>> Processing 팔란티어 테크(PLTR)
+2026-08-20 00:01:15,854 [INFO] [팔란티어 테크(PLTR)] 현금 부족: 보유 현금 USD 773.09 < 매수 예정 금액 USD 2,601.38 (15주) -> 매수 보류
+2026-08-20 00:01:16,338 [INFO] >>> Processing 델 테크놀로지스(DELL)
+2026-08-20 00:01:16,343 [INFO]   [델 테크놀로지스(DELL)] 📈 상승 레짐 유지 | Lv6 매수 USD 420.93 -> 현재 USD 437.50 (+3.94%) | 채널하단 USD 386.03 / 이탈선 USD 386.03 (허용 -0.0%) | 20EMA(눌림) USD 449.53 (이격 -2.68%) | adds 3/3
+2026-08-20 00:01:16,343 [INFO] >>> Step 6: Persist
