@@ -16,6 +16,15 @@
         "buy_amount": 500000,
         "buy_amounts": [1000000, 500000]
     },
+    "consumer_staples_ks": {
+        "max_lots": 100,
+        "buy_threshold_pct": -5,
+        "sell_threshold_pct": 10,
+        "trailing_drop_pct": 5,
+        "buy_amount": 500000,
+        "buy_amounts": [1000000, 500000],
+        "trendbreak_partial_sell_pct": 70
+    },
     "small_cap_us": {
         "max_lots": 100,
         "buy_threshold_pct": -10,
