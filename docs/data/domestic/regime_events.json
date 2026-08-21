@@ -315,5 +315,20 @@
         "ticker": "487240",
         "event": "trailing_lock_off",
         "price": 36045.0
+    },
+    {
+        "date": "2026-08-21 10:01:08",
+        "ticker": "095340",
+        "event": "downtrend_on",
+        "price": 162700.0
+    },
+    {
+        "date": "2026-08-21 10:01:08",
+        "ticker": "095340",
+        "event": "trailing_lock_on",
+        "price": 162700.0,
+        "lock_price": 162700.0,
+        "stop": 157819.0,
+        "gate": "resistance"
     }
 ]
