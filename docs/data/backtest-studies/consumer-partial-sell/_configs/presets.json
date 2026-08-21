@@ -1,0 +1,64 @@
+{
+    "large_cap_us": {
+        "buy_amount": 500,
+        "max_lots": 100,
+        "max_exposure_pct": 40,
+        "buy_threshold_pct": -5,
+        "sell_threshold_pct": 10,
+        "trailing_drop_pct": 5,
+        "buy_amounts": [1000, 500]
+    },
+    "large_cap_ks": {
+        "max_lots": 100,
+        "buy_threshold_pct": -5,
+        "sell_threshold_pct": 10,
+        "trailing_drop_pct": 5,
+        "buy_amount": 500000,
+        "buy_amounts": [1000000, 500000]
+    },
+    "consumer_staples_ks": {
+        "max_lots": 100,
+        "buy_threshold_pct": -5,
+        "sell_threshold_pct": 10,
+        "trailing_drop_pct": 5,
+        "buy_amount": 500000,
+        "buy_amounts": [1000000, 500000],
+        "trendbreak_partial_sell_pct": 70
+    },
+    "small_cap_us": {
+        "max_lots": 100,
+        "buy_threshold_pct": -10,
+        "sell_threshold_pct": 20,
+        "buy_amount": 500,
+        "max_exposure_pct": 40,
+        "trailing_drop_pct": 10,
+        "buy_amounts": [1000, 500]
+    },
+    "small_cap_ks": {
+        "max_lots": 100,
+        "buy_threshold_pct": -10,
+        "sell_threshold_pct": 20,
+        "buy_amount": 500000,
+        "max_exposure_pct": 40,
+        "trailing_drop_pct": 10,
+        "buy_amounts": [1000000, 500000]
+    },
+    "major_coin": {
+        "max_lots": 100,
+        "buy_threshold_pct": -5,
+        "sell_threshold_pct": 10,
+        "trailing_drop_pct": 5,
+        "buy_amount": 10000,
+        "buy_amounts": [20000, 10000],
+        "max_exposure_pct": 30
+    },
+    "alt_coin": {
+        "max_lots": 100,
+        "buy_threshold_pct": -10,
+        "sell_threshold_pct": 20,
+        "trailing_drop_pct": 10,
+        "buy_amount": 10000,
+        "buy_amounts": [20000, 10000],
+        "max_exposure_pct": 20
+    }
+}

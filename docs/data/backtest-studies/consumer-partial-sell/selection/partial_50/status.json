@@ -1,0 +1,552 @@
+{
+    "last_updated": "2022-12-29",
+    "last_run_date": "2022-12-29",
+    "market_type": "domestic",
+    "reason": "오뚜기(007310):SKIP(전량 청산 후 재진입 대기 - 장기 횡보 이상·단기 상승·채널 중심선 회복 필요),\nCJ제일제당(097950):SKIP(단기 하락 - 추가 매수 중단),\n빙그레(005180):SKIP(장기 하락 확정 - 신규·추가 매수 차단),\n대상(001680):SKIP(장기 하락 확정 - 신규·추가 매수 차단),\nKT&G(033780):SKIP(전량 청산 후 재진입 대기 - 장기 횡보 이상·단기 상승·채널 중심선 회복 필요),\n삼립(005610):SKIP(장기 하락 확정 - 신규·추가 매수 차단),\n풀무원(017810):SKIP(장기 하락 확정 - 신규·추가 매수 차단)",
+    "exchange_rate": null,
+    "portfolio": {
+        "total_value": 995014026.2680788,
+        "cash_balance": 979759526.2680788,
+        "holdings": [
+            {
+                "ticker": "097950",
+                "alias": "CJ제일제당",
+                "qty": 7,
+                "price": 380500.0,
+                "value": 2663500.0
+            },
+            {
+                "ticker": "005300",
+                "alias": "롯데칠성",
+                "qty": 19,
+                "price": 176000.0,
+                "value": 3344000.0
+            },
+            {
+                "ticker": "003230",
+                "alias": "삼양식품",
+                "qty": 70,
+                "price": 127000.0,
+                "value": 8890000.0
+            },
+            {
+                "ticker": "004370",
+                "alias": "농심",
+                "qty": 1,
+                "price": 357000.0,
+                "value": 357000.0
+            }
+        ]
+    },
+    "positions": {
+        "005300": {
+            "total_qty": 19,
+            "lot_count": 5,
+            "total_invested": 3447444.0,
+            "current_value": 3344000.0,
+            "lots": [
+                {
+                    "lot_id": "lot_20260821_134137_005300_001",
+                    "buy_price": 167167.0,
+                    "quantity": 2,
+                    "buy_date": "2022-02-10",
+                    "level": 1,
+                    "current_price": 176000.0,
+                    "pct_change": 5.28
+                },
+                {
+                    "lot_id": "lot_20260821_134145_005300_002",
+                    "buy_price": 184684.5,
+                    "quantity": 5,
+                    "buy_date": "2022-04-27",
+                    "level": 2,
+                    "current_price": 176000.0,
+                    "pct_change": -4.7
+                },
+                {
+                    "lot_id": "lot_20260821_134147_005300_003",
+                    "buy_price": 187687.5,
+                    "quantity": 5,
+                    "buy_date": "2022-05-12",
+                    "level": 3,
+                    "current_price": 176000.0,
+                    "pct_change": -6.23
+                },
+                {
+                    "lot_id": "lot_20260821_134147_005300_004",
+                    "buy_price": 189689.5,
+                    "quantity": 4,
+                    "buy_date": "2022-05-17",
+                    "level": 4,
+                    "current_price": 176000.0,
+                    "pct_change": -7.22
+                },
+                {
+                    "lot_id": "lot_20260821_134210_005300_005",
+                    "buy_price": 164164.0,
+                    "quantity": 3,
+                    "buy_date": "2022-12-13",
+                    "level": 5,
+                    "current_price": 176000.0,
+                    "pct_change": 7.21
+                }
+            ],
+            "current_price": 176000.0,
+            "alias": "롯데칠성",
+            "avg_buy_price": 181444.4211,
+            "unrealized_pnl": -103444.0,
+            "unrealized_pnl_pct": -3.0,
+            "realized_pnl": -878456.49,
+            "total_pnl": -981900.49
+        },
+        "003230": {
+            "total_qty": 70,
+            "lot_count": 7,
+            "total_invested": 6640834.2,
+            "current_value": 8890000.0,
+            "lots": [
+                {
+                    "lot_id": "lot_20260821_134145_003230_001",
+                    "buy_price": 103603.5,
+                    "quantity": 9,
+                    "buy_date": "2022-04-26",
+                    "level": 1,
+                    "current_price": 127000.0,
+                    "pct_change": 22.58
+                },
+                {
+                    "lot_id": "lot_20260821_134146_003230_002",
+                    "buy_price": 94594.5,
+                    "quantity": 10,
+                    "buy_date": "2022-05-11",
+                    "level": 2,
+                    "current_price": 127000.0,
+                    "pct_change": 34.26
+                },
+                {
+                    "lot_id": "lot_20260821_134147_003230_003",
+                    "buy_price": 94594.5,
+                    "quantity": 10,
+                    "buy_date": "2022-05-13",
+                    "level": 3,
+                    "current_price": 127000.0,
+                    "pct_change": 34.26
+                },
+                {
+                    "lot_id": "lot_20260821_134147_003230_004",
+                    "buy_price": 96496.4,
+                    "quantity": 10,
+                    "buy_date": "2022-05-16",
+                    "level": 4,
+                    "current_price": 127000.0,
+                    "pct_change": 31.61
+                },
+                {
+                    "lot_id": "lot_20260821_134148_003230_005",
+                    "buy_price": 90790.7,
+                    "quantity": 11,
+                    "buy_date": "2022-05-20",
+                    "level": 5,
+                    "current_price": 127000.0,
+                    "pct_change": 39.88
+                },
+                {
+                    "lot_id": "lot_20260821_134148_003230_006",
+                    "buy_price": 93293.2,
+                    "quantity": 10,
+                    "buy_date": "2022-05-23",
+                    "level": 6,
+                    "current_price": 127000.0,
+                    "pct_change": 36.13
+                },
+                {
+                    "lot_id": "lot_20260821_134148_003230_007",
+                    "buy_price": 91991.9,
+                    "quantity": 10,
+                    "buy_date": "2022-05-26",
+                    "level": 7,
+                    "current_price": 127000.0,
+                    "pct_change": 38.06
+                }
+            ],
+            "current_price": 127000.0,
+            "alias": "삼양식품",
+            "avg_buy_price": 94869.06,
+            "unrealized_pnl": 2249165.8,
+            "unrealized_pnl_pct": 33.87,
+            "realized_pnl": 2964769.16,
+            "total_pnl": 5213934.96
+        },
+        "004370": {
+            "total_qty": 1,
+            "lot_count": 1,
+            "total_invested": 293793.5,
+            "current_value": 357000.0,
+            "lots": [
+                {
+                    "lot_id": "lot_20260821_134158_004370_001",
+                    "buy_price": 293793.5,
+                    "quantity": 1,
+                    "buy_date": "2022-08-23",
+                    "level": 1,
+                    "current_price": 357000.0,
+                    "pct_change": 21.51
+                }
+            ],
+            "current_price": 357000.0,
+            "alias": "농심",
+            "avg_buy_price": 293793.5,
+            "unrealized_pnl": 63206.5,
+            "unrealized_pnl_pct": 21.51,
+            "realized_pnl": -1642677.05,
+            "total_pnl": -1579470.55
+        },
+        "097950": {
+            "total_qty": 7,
+            "lot_count": 5,
+            "total_invested": 2827825.0,
+            "current_value": 2663500.0,
+            "lots": [
+                {
+                    "lot_id": "lot_20260821_134158_097950_001",
+                    "buy_price": 414414.0,
+                    "quantity": 1,
+                    "buy_date": "2022-08-24",
+                    "level": 1,
+                    "current_price": 380500.0,
+                    "pct_change": -8.18
+                },
+                {
+                    "lot_id": "lot_20260821_134200_097950_002",
+                    "buy_price": 385885.5,
+                    "quantity": 1,
+                    "buy_date": "2022-09-16",
+                    "level": 2,
+                    "current_price": 380500.0,
+                    "pct_change": -1.4
+                },
+                {
+                    "lot_id": "lot_20260821_134204_097950_003",
+                    "buy_price": 403903.5,
+                    "quantity": 2,
+                    "buy_date": "2022-10-20",
+                    "level": 3,
+                    "current_price": 380500.0,
+                    "pct_change": -5.79
+                },
+                {
+                    "lot_id": "lot_20260821_134205_097950_004",
+                    "buy_price": 400900.5,
+                    "quantity": 2,
+                    "buy_date": "2022-10-25",
+                    "level": 4,
+                    "current_price": 380500.0,
+                    "pct_change": -5.09
+                },
+                {
+                    "lot_id": "lot_20260821_134206_097950_005",
+                    "buy_price": 417917.5,
+                    "quantity": 1,
+                    "buy_date": "2022-11-07",
+                    "level": 5,
+                    "current_price": 380500.0,
+                    "pct_change": -8.95
+                }
+            ],
+            "current_price": 380500.0,
+            "alias": "CJ제일제당",
+            "avg_buy_price": 403975.0,
+            "unrealized_pnl": -164325.0,
+            "unrealized_pnl_pct": -5.81,
+            "realized_pnl": -1146380.64,
+            "total_pnl": -1310705.64
+        }
+    },
+    "realized_pnl_by_ticker": {
+        "005300": -878456.49,
+        "097950": -1146380.6400000001,
+        "003230": 2964769.1599999997,
+        "017810": 138639.84999999998,
+        "004370": -1642677.0499999998,
+        "005610": -1426231.6400000001,
+        "007310": -1175643.9200000002,
+        "033780": -1069793.8299999998,
+        "005180": -1387640.25,
+        "001680": -803919.4099999999
+    },
+    "regime_state_by_ticker": {
+        "097950": {
+            "downtrend": "active",
+            "downtrend_streak": 0,
+            "downtrend_days": [],
+            "downtrend_today_state": "",
+            "downtrend_prev_date": "",
+            "downtrend_exit_streak": 0,
+            "downtrend_exit_days": [],
+            "downtrend_exit_today_state": "",
+            "downtrend_exit_prev_date": "2022-12-29",
+            "long_trend": "uptrend",
+            "short_trend": "downtrend",
+            "previous_long_regime": "uptrend",
+            "previous_short_regime": "downtrend",
+            "uptrend_prev_date": "",
+            "uptrend_today_state": "",
+            "uptrend_days": [],
+            "uptrend_streak": 0,
+            "regime": "uptrend",
+            "adds": 6,
+            "last_add_swing_high": 429000.0,
+            "last_add_price": 417417.0,
+            "downtrend_partially_liquidated": true,
+            "last_uptrend_add_date": "2022-11-14",
+            "breakdown_prev_date": "2022-12-20",
+            "breakdown_today_state": "",
+            "breakdown_days": []
+        },
+        "001680": {
+            "downtrend": null,
+            "downtrend_streak": 0,
+            "downtrend_days": [],
+            "downtrend_today_state": "",
+            "downtrend_prev_date": "2022-12-29",
+            "downtrend_exit_streak": 0,
+            "downtrend_exit_days": [],
+            "downtrend_exit_today_state": "",
+            "downtrend_exit_prev_date": "",
+            "long_trend": "sideways",
+            "short_trend": "sideways",
+            "previous_long_regime": "sideways",
+            "previous_short_regime": "sideways",
+            "aligned_downtrend_reentry_lock": true,
+            "long_short_downtrend_liquidation_pending": true,
+            "post_liquidation": true,
+            "post_liquidation_reentry_gate": "resistance",
+            "long_downtrend_lock": true
+        },
+        "005610": {
+            "downtrend": "active",
+            "downtrend_streak": 0,
+            "downtrend_days": [],
+            "downtrend_today_state": "",
+            "downtrend_prev_date": "",
+            "downtrend_exit_streak": 0,
+            "downtrend_exit_days": [],
+            "downtrend_exit_today_state": "",
+            "downtrend_exit_prev_date": "2022-12-29",
+            "long_trend": "downtrend",
+            "short_trend": "downtrend",
+            "previous_long_regime": "downtrend",
+            "previous_short_regime": "downtrend",
+            "post_liquidation": true,
+            "post_liquidation_reentry_gate": "midline",
+            "long_downtrend_lock": true
+        },
+        "007310": {
+            "downtrend": null,
+            "downtrend_streak": 0,
+            "downtrend_days": [],
+            "downtrend_today_state": "",
+            "downtrend_prev_date": "2022-12-29",
+            "downtrend_exit_streak": 0,
+            "downtrend_exit_days": [],
+            "downtrend_exit_today_state": "",
+            "downtrend_exit_prev_date": "",
+            "long_trend": "sideways",
+            "short_trend": "sideways",
+            "previous_long_regime": "sideways",
+            "previous_short_regime": "sideways",
+            "aligned_downtrend_reentry_lock": true,
+            "long_short_downtrend_liquidation_pending": true,
+            "post_liquidation": true,
+            "post_liquidation_reentry_gate": "resistance"
+        },
+        "005300": {
+            "downtrend": null,
+            "downtrend_streak": 0,
+            "downtrend_days": [],
+            "downtrend_today_state": "",
+            "downtrend_prev_date": "2022-12-29",
+            "downtrend_exit_streak": 0,
+            "downtrend_exit_days": [],
+            "downtrend_exit_today_state": "",
+            "downtrend_exit_prev_date": "",
+            "long_trend": "sideways",
+            "short_trend": "uptrend",
+            "previous_long_regime": "sideways",
+            "previous_short_regime": "uptrend",
+            "uptrend_prev_date": "",
+            "uptrend_today_state": "",
+            "uptrend_days": [],
+            "uptrend_streak": 0,
+            "regime": "uptrend",
+            "adds": 6,
+            "last_add_swing_high": 200000.0,
+            "last_add_price": 190690.5,
+            "last_uptrend_add_date": "2022-06-03",
+            "breakdown_prev_date": "2022-12-29",
+            "breakdown_today_state": "",
+            "breakdown_days": []
+        },
+        "033780": {
+            "downtrend": null,
+            "downtrend_streak": 0,
+            "downtrend_days": [],
+            "downtrend_today_state": "",
+            "downtrend_prev_date": "2022-12-29",
+            "downtrend_exit_streak": 0,
+            "downtrend_exit_days": [],
+            "downtrend_exit_today_state": "",
+            "downtrend_exit_prev_date": "",
+            "long_trend": "uptrend",
+            "short_trend": "uptrend",
+            "previous_long_regime": "uptrend",
+            "previous_short_regime": "uptrend",
+            "post_liquidation": true,
+            "post_liquidation_reentry_gate": "midline"
+        },
+        "005180": {
+            "downtrend": null,
+            "downtrend_streak": 0,
+            "downtrend_days": [],
+            "downtrend_today_state": "",
+            "downtrend_prev_date": "2022-12-29",
+            "downtrend_exit_streak": 0,
+            "downtrend_exit_days": [],
+            "downtrend_exit_today_state": "",
+            "downtrend_exit_prev_date": "",
+            "long_trend": "downtrend",
+            "short_trend": "sideways",
+            "previous_long_regime": "downtrend",
+            "previous_short_regime": "sideways",
+            "post_liquidation": true,
+            "post_liquidation_reentry_gate": "midline",
+            "long_downtrend_lock": true
+        },
+        "017810": {
+            "downtrend": null,
+            "downtrend_streak": 0,
+            "downtrend_days": [],
+            "downtrend_today_state": "",
+            "downtrend_prev_date": "2022-12-29",
+            "downtrend_exit_streak": 0,
+            "downtrend_exit_days": [],
+            "downtrend_exit_today_state": "",
+            "downtrend_exit_prev_date": "",
+            "long_trend": "downtrend",
+            "short_trend": "sideways",
+            "previous_long_regime": "downtrend",
+            "previous_short_regime": "sideways",
+            "long_downtrend_lock": true,
+            "post_liquidation": true,
+            "post_liquidation_reentry_gate": "midline"
+        },
+        "003230": {
+            "downtrend": null,
+            "downtrend_streak": 0,
+            "downtrend_days": [],
+            "downtrend_today_state": "",
+            "downtrend_prev_date": "2022-12-29",
+            "downtrend_exit_streak": 0,
+            "downtrend_exit_days": [],
+            "downtrend_exit_today_state": "",
+            "downtrend_exit_prev_date": "",
+            "long_trend": "uptrend",
+            "short_trend": "uptrend",
+            "previous_long_regime": "uptrend",
+            "previous_short_regime": "uptrend",
+            "breakdown_prev_date": "2022-12-29",
+            "breakdown_today_state": "",
+            "breakdown_days": [],
+            "uptrend_prev_date": "",
+            "uptrend_today_state": "",
+            "uptrend_days": [],
+            "uptrend_streak": 0,
+            "regime": "uptrend",
+            "adds": 6,
+            "last_add_swing_high": 97800.0,
+            "last_add_price": 91991.9,
+            "last_uptrend_add_date": "2022-05-26"
+        },
+        "004370": {
+            "downtrend": null,
+            "downtrend_streak": 0,
+            "downtrend_days": [],
+            "downtrend_today_state": "",
+            "downtrend_prev_date": "2022-12-29",
+            "downtrend_exit_streak": 0,
+            "downtrend_exit_days": [],
+            "downtrend_exit_today_state": "",
+            "downtrend_exit_prev_date": "",
+            "long_trend": "sideways",
+            "short_trend": "uptrend",
+            "previous_long_regime": "sideways",
+            "previous_short_regime": "uptrend",
+            "uptrend_prev_date": "",
+            "uptrend_today_state": "",
+            "uptrend_days": [],
+            "uptrend_streak": 0,
+            "regime": "uptrend",
+            "adds": 0,
+            "last_add_swing_high": 319000.0,
+            "last_add_price": 307000.0,
+            "downtrend_partially_liquidated": true,
+            "breakdown_prev_date": "2022-12-29",
+            "breakdown_today_state": "",
+            "breakdown_days": []
+        }
+    },
+    "enabled_tickers": ["033780", "004370", "007310", "097950", "005300", "005610", "005180", "003230", "001680", "017810"],
+    "alias_by_ticker": {
+        "033780": "KT&G",
+        "004370": "농심",
+        "007310": "오뚜기",
+        "097950": "CJ제일제당",
+        "005300": "롯데칠성",
+        "005610": "삼립",
+        "005180": "빙그레",
+        "003230": "삼양식품",
+        "001680": "대상",
+        "017810": "풀무원"
+    },
+    "risk_summary": {
+        "next_level_needs": 2000000.0,
+        "max_potential_exposure": 505000000.0,
+        "stale_info": [
+            {
+                "ticker": "003230",
+                "alias": "삼양식품",
+                "last_trade_date": "2022-05-26",
+                "days_stale": 217
+            },
+            {
+                "ticker": "004370",
+                "alias": "농심",
+                "last_trade_date": "2022-10-13",
+                "days_stale": 77
+            },
+            {
+                "ticker": "097950",
+                "alias": "CJ제일제당",
+                "last_trade_date": "2022-12-05",
+                "days_stale": 24
+            },
+            {
+                "ticker": "005300",
+                "alias": "롯데칠성",
+                "last_trade_date": "2022-12-13",
+                "days_stale": 16
+            }
+        ],
+        "risk_score": 92,
+        "deductions": [
+            {
+                "reason": "장기 정체 종목",
+                "points": 8
+            }
+        ],
+        "sync_error": false,
+        "alerts": [],
+        "max_ticker_concentration": 0.89,
+        "high_level_ratio": 0.0
+    }
+}

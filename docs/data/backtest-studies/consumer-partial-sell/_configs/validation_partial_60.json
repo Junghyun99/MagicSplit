@@ -1,0 +1,107 @@
+{
+  "universe_groups": {
+    "consumer_staples": [
+      "033780",
+      "004370",
+      "007310",
+      "097950",
+      "005300",
+      "005610",
+      "005180",
+      "003230",
+      "001680",
+      "017810"
+    ]
+  },
+  "stocks": [
+    {
+      "ticker": "033780",
+      "enabled": true,
+      "market_type": "domestic",
+      "preset": "consumer_staples_ks",
+      "trendbreak_partial_sell_pct": 60.0
+    },
+    {
+      "ticker": "004370",
+      "enabled": true,
+      "market_type": "domestic",
+      "preset": "consumer_staples_ks",
+      "trendbreak_partial_sell_pct": 60.0
+    },
+    {
+      "ticker": "007310",
+      "enabled": true,
+      "market_type": "domestic",
+      "preset": "consumer_staples_ks",
+      "trendbreak_partial_sell_pct": 60.0
+    },
+    {
+      "ticker": "097950",
+      "enabled": true,
+      "market_type": "domestic",
+      "preset": "consumer_staples_ks",
+      "trendbreak_partial_sell_pct": 60.0
+    },
+    {
+      "ticker": "005300",
+      "enabled": true,
+      "market_type": "domestic",
+      "preset": "consumer_staples_ks",
+      "trendbreak_partial_sell_pct": 60.0
+    },
+    {
+      "ticker": "005610",
+      "enabled": true,
+      "market_type": "domestic",
+      "preset": "consumer_staples_ks",
+      "trendbreak_partial_sell_pct": 60.0
+    },
+    {
+      "ticker": "005180",
+      "enabled": true,
+      "market_type": "domestic",
+      "preset": "consumer_staples_ks",
+      "trendbreak_partial_sell_pct": 60.0
+    },
+    {
+      "ticker": "003230",
+      "enabled": true,
+      "market_type": "domestic",
+      "preset": "consumer_staples_ks",
+      "trendbreak_partial_sell_pct": 60.0
+    },
+    {
+      "ticker": "001680",
+      "enabled": true,
+      "market_type": "domestic",
+      "preset": "consumer_staples_ks",
+      "trendbreak_partial_sell_pct": 60.0
+    },
+    {
+      "ticker": "017810",
+      "enabled": true,
+      "market_type": "domestic",
+      "preset": "consumer_staples_ks",
+      "trendbreak_partial_sell_pct": 60.0
+    }
+  ],
+  "global": {
+    "max_exposure_pct": 30,
+    "notification_enabled": false,
+    "regime_enabled": true,
+    "regime_algo": "channel",
+    "uptrend_max_adds": 6,
+    "channel_lookback": 63,
+    "channel_stddev_k": 2.0,
+    "channel_slope_band_pct": 8.0,
+    "channel_breakdown_tolerance_pct": 0,
+    "channel_breakdown_atr_multiplier": 0.25,
+    "trendbreak_use_sma50": false,
+    "trendbreak_partial_sell_pct": 50,
+    "trendbreak_trailing_drop_pct": 3.0,
+    "multi_horizon_regime_enabled": true,
+    "long_channel_lookback": 252,
+    "long_sideways_exposure_multiplier": 0.7,
+    "long_uptrend_sideways_sell_multiplier": 1
+  }
+}
