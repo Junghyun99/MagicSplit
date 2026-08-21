@@ -1,0 +1,69 @@
+name: Run Consumer Partial-Sell Study
+
+on:
+  workflow_dispatch:
+    inputs:
+      initial_cash:
+        description: '각 후보의 초기 자본 (KRW)'
+        required: false
+        default: '1000000000'
+        type: string
+      candidates:
+        description: '사전 등록 후보 (50,60,70 중 쉼표 구분)'
+        required: false
+        default: '50,60,70'
+        type: string
+      selection_end:
+        description: '선택 구간 종료일'
+        required: false
+        default: '2022-12-30'
+        type: string
+      validation_end:
+        description: '검증 구간 종료일'
+        required: false
+        default: '2026-08-13'
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  study:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Run selection and holdout study
+      env:
+        INITIAL_CASH: ${{ inputs.initial_cash }}
+        CANDIDATES: ${{ inputs.candidates }}
+        SELECTION_END: ${{ inputs.selection_end }}
+        VALIDATION_END: ${{ inputs.validation_end }}
+      run: |
+        python scripts/run_consumer_partial_sell_study.py \
+          --initial-cash "$INITIAL_CASH" \
+          --candidates "$CANDIDATES" \
+          --period "selection:2016-01-01:$SELECTION_END" \
+          --period "validation:2023-01-02:$VALIDATION_END"
+
+    - name: Commit, rebase, and push study result
+      run: |
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+        git add --force docs/data/backtest-studies/ || true
+        if ! git diff --cached --quiet; then
+          git commit -m "consumer partial-sell study update [skip ci]"
+          git pull --rebase origin main
+          git push origin HEAD:main
+        else
+          echo "No study result changes to commit"
+        fi
