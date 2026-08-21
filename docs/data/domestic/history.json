@@ -4487,5 +4487,51 @@
                 "alias": "ISC"
             }
         ]
+    },
+    {
+        "id": "tx_20260821_100711",
+        "date": "2026-08-21 10:07:11",
+        "portfolio_value": 25863599.0,
+        "cash_balance": 2348559.0,
+        "net_deposit": 16.43,
+        "total_trade_amount": 976200.0,
+        "reason": "ISC(095340):BUY(수동 매매(Manual Trade))",
+        "executions": [
+            {
+                "ticker": "095340",
+                "action": "BUY",
+                "quantity": 6,
+                "price": 162700.0,
+                "fee": 146.42999999999998,
+                "date": "2026-08-21 10:07:06",
+                "status": "FILLED",
+                "reason": "ODNO=0008723000",
+                "level": 2,
+                "alias": "ISC"
+            }
+        ]
+    },
+    {
+        "id": "tx_20260821_100721",
+        "date": "2026-08-21 10:07:21",
+        "portfolio_value": 25896109.0,
+        "cash_balance": 1460439.0,
+        "net_deposit": 13.2,
+        "total_trade_amount": 888000.0,
+        "reason": "삼성에스디에스(018260):BUY(수동 매매(Manual Trade))",
+        "executions": [
+            {
+                "ticker": "018260",
+                "action": "BUY",
+                "quantity": 4,
+                "price": 222000.0,
+                "fee": 133.2,
+                "date": "2026-08-21 10:07:17",
+                "status": "FILLED",
+                "reason": "ODNO=0008735400",
+                "level": 3,
+                "alias": "삼성에스디에스"
+            }
+        ]
     }
 ]
