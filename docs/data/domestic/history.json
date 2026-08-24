@@ -4533,5 +4533,28 @@
                 "alias": "삼성에스디에스"
             }
         ]
+    },
+    {
+        "id": "tx_20260824_120109",
+        "date": "2026-08-24 12:01:09",
+        "portfolio_value": 25595498.0,
+        "cash_balance": 679098.0,
+        "net_deposit": 276.22,
+        "total_trade_amount": 781500.0,
+        "reason": "삼성증권(016360):SKIP(DOWNTREND 확정 - 신규 진입 차단),\nKODEX 반도체레버리지(494310):SKIP(DOWNTREND 확정 - 신규 진입 차단),\nTIGER 지주회사(307520):SKIP(DOWNTREND 확정 - 신규 진입 차단),\nKODEX AI전력핵심설비(487240):SKIP(DOWNTREND 확정 - 추가 매수 차단),\n테스(095610):SKIP(이탈 청산 후 재진입 대기 - 채널 중심선 미회복 (현재가 KRW 136,000 <= 기준선 KRW 148,675)),\n삼성전자(005930):BUY(상승장 누적 매수 Lv2 (20EMA 눌림, add 1)),\nKODEX 증권(102970):SKIP(DOWNTREND 확정 - 신규 진입 차단),\nKODEX 미국AI전력핵심인프라(487230):SKIP(DOWNTREND 확정 - 추가 매수 차단),\nACE 테슬라밸류체인액티브(457480):SKIP(DOWNTREND 확정 - 신규 진입 차단),\nKODEX 미국AI광통신네트워크(0173Y0):SKIP(DOWNTREND 확정 - 추가 매수 차단),\nSOL 반도체전공정(475300):SKIP(DOWNTREND 확정 - 신규 진입 차단),\nACE 엔비디아밸류체인액티브(483320):SKIP(DOWNTREND 확정 - 신규 진입 차단)",
+        "executions": [
+            {
+                "ticker": "005930",
+                "action": "BUY",
+                "quantity": 3,
+                "price": 260500.0,
+                "fee": 117.225,
+                "date": "2026-08-24 12:01:05",
+                "status": "FILLED",
+                "reason": "ODNO=0012173800",
+                "level": 2,
+                "alias": "삼성전자"
+            }
+        ]
     }
 ]
