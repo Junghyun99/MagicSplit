@@ -507,6 +507,26 @@ class TestUpdatePositions:
         assert updated[0].quantity == 5
         assert updated[0].level == 1
 
+    def test_buy_records_entry_regimes_on_lot_and_execution(self, engine):
+        signals = [
+            SplitSignal("AAPL", None, OrderAction.BUY, 5, 100.0,
+                        "초기 매수 Lv1", 0.0, level=1),
+        ]
+        executions = [
+            TradeExecution("AAPL", OrderAction.BUY, 5, 100.0, 1.0,
+                           "2026-04-10", ExecutionStatus.FILLED),
+        ]
+        state = {"AAPL": {"long_trend": "uptrend", "short_trend": "uptrend"}}
+
+        updated = engine._update_positions(
+            [], signals, executions, "2026-04-10", regime_state=state,
+        )
+
+        assert updated[0].entry_long_regime == "uptrend"
+        assert updated[0].entry_short_regime == "uptrend"
+        assert executions[0].entry_long_regime == "uptrend"
+        assert executions[0].entry_short_regime == "uptrend"
+
     def test_sell_removes_specific_lot(self, engine):
         """매도 체결 -> signal의 lot_id로 특정 lot 제거"""
         positions = [
@@ -523,6 +543,27 @@ class TestUpdatePositions:
 
         updated = engine._update_positions(positions, signals, executions, "2026-04-10")
         assert len(updated) == 0
+
+    def test_sell_copies_entry_regimes_from_target_lot(self, engine):
+        positions = [
+            PositionLot(
+                "lot_001", "AAPL", 90.0, 5, "2026-04-01", level=1,
+                entry_long_regime="sideways", entry_short_regime="uptrend",
+            ),
+        ]
+        signals = [
+            SplitSignal("AAPL", "lot_001", OrderAction.SELL, 5, 100.0,
+                        "Lv1 +11.1% -> 익절", 11.1, level=1),
+        ]
+        executions = [
+            TradeExecution("AAPL", OrderAction.SELL, 5, 100.0, 1.0,
+                           "2026-04-10", ExecutionStatus.FILLED),
+        ]
+
+        engine._update_positions(positions, signals, executions, "2026-04-10")
+
+        assert executions[0].entry_long_regime == "sideways"
+        assert executions[0].entry_short_regime == "uptrend"
 
     def test_sell_removes_by_level_not_fifo(self, engine):
         """매도는 FIFO가 아닌 마지막 차수(가장 높은 level) lot을 제거"""

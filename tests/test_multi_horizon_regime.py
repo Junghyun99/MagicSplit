@@ -157,3 +157,102 @@ def test_disabled_mode_preserves_existing_chart_contract_and_trading_path():
     chart = build_chart_series(rule, window, lambda d: classify_for_rule(rule, d), [], window.Close.iloc[-1])
     assert "multi_horizon_regime_enabled" not in chart["params"]
     assert "long_trend" not in chart["state"]
+
+
+def test_trend_only_initial_entry_requires_two_aligned_uptrend_days():
+    window = _window(_trend(252, 100, 0.25))
+    price = window.Close.iloc[-1]
+    rule = _rule(
+        trend_only_enabled=True, buy_amount=1000, max_exposure_pct=100,
+    )
+    evaluator = SplitEvaluator()
+    state = {}
+
+    first = evaluator.evaluate_stock(
+        rule, [], _portfolio(price, cash=10000), ohlc_window=window,
+        regime_state=state, evaluation_date="2025-01-02",
+    )
+    second = evaluator.evaluate_stock(
+        rule, [], _portfolio(price, cash=10000), ohlc_window=window,
+        regime_state=state, evaluation_date="2025-01-03",
+    )
+
+    assert first[0].is_blocked
+    assert "장·단기 상승 정렬" in first[0].reason
+    assert second[0].action == OrderAction.BUY
+    assert not second[0].is_blocked
+
+
+def test_trend_only_blocks_long_sideways_short_uptrend_initial_entry():
+    prefix = _trend(189, 120, -0.05)
+    window = _window(prefix + _trend(63, prefix[-1], 0.25))
+    rule = _rule(trend_only_enabled=True, buy_amount=1000, max_exposure_pct=100)
+    state = {}
+    evaluator = SplitEvaluator()
+
+    for day in ("2025-01-02", "2025-01-03"):
+        signals = evaluator.evaluate_stock(
+            rule, [], _portfolio(window.Close.iloc[-1], cash=10000),
+            ohlc_window=window, regime_state=state, evaluation_date=day,
+        )
+
+    assert signals[0].is_blocked
+    assert "장·단기 상승 정렬" in signals[0].reason
+
+
+def test_trend_only_blocks_long_uptrend_short_sideways_initial_entry():
+    closes = _trend(189, 100, 0.35)
+    closes += [closes[-1] * (1 + (i % 2) * 0.002) for i in range(63)]
+    window = _window(closes)
+    rule = _rule(trend_only_enabled=True, buy_amount=1000, max_exposure_pct=100)
+    signals = SplitEvaluator().evaluate_stock(
+        rule, [], _portfolio(window.Close.iloc[-1], cash=10000),
+        ohlc_window=window, regime_state={}, evaluation_date="2025-01-02",
+    )
+    assert signals[0].is_blocked
+    assert "장·단기 상승 정렬" in signals[0].reason
+
+
+def test_trend_only_blocks_initial_entry_when_long_history_is_missing():
+    window = _window(_trend(63, 100, 0.25))
+    rule = _rule(trend_only_enabled=True, buy_amount=1000, max_exposure_pct=100)
+    signals = SplitEvaluator().evaluate_stock(
+        rule, [], _portfolio(window.Close.iloc[-1], cash=10000),
+        ohlc_window=window, regime_state={}, evaluation_date="2025-01-02",
+    )
+    assert signals[0].is_blocked
+    assert signals[0].reason == "추세 데이터 부족"
+
+
+def test_trend_only_holds_existing_position_during_sideways_regime():
+    closes = [100 + (i % 2) * 0.2 for i in range(252)]
+    window = _window(closes)
+    current = window.Close.iloc[-1]
+    rule = _rule(
+        trend_only_enabled=True, buy_amount=1000, max_exposure_pct=100,
+        trailing_drop_pct=5,
+    )
+    signals = SplitEvaluator().evaluate_stock(
+        rule, [_lot(price=50, qty=1)], _portfolio(current, qty=1, cash=10000),
+        ohlc_window=window, regime_state={}, evaluation_date="2025-01-02",
+    )
+    assert signals == []
+
+
+def test_trend_only_holds_existing_position_when_regime_data_is_missing():
+    rule = _rule(trend_only_enabled=True)
+    signals = SplitEvaluator().evaluate_stock(
+        rule, [_lot(price=50, qty=1)], _portfolio(100, qty=1, cash=10000),
+        ohlc_window=None, regime_state={}, evaluation_date="2025-01-02",
+    )
+    assert signals == []
+
+
+def test_trend_only_chart_exposes_enabled_parameter():
+    window = _window(_trend(252, 100, 0.25))
+    rule = _rule(trend_only_enabled=True)
+    chart = build_chart_series(
+        rule, window, lambda d: classify_for_rule(rule, d), [],
+        window.Close.iloc[-1],
+    )
+    assert chart["params"]["trend_only_enabled"] is True

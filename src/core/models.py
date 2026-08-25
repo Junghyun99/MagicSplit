@@ -102,6 +102,8 @@ class StockRule:
     trendbreak_trailing_drop_pct: float = 3.0   # 잔량 추종 데드라인 하락 허용치(%)
     # 장·단기(252/63봉) 레짐 레이어. 기본 OFF로 기존 channel 동작을 보존한다.
     multi_horizon_regime_enabled: bool = False
+    # 장·단기 모두 상승일 때만 진입·추가매수하고, 횟보 중에는 보유만 한다.
+    trend_only_enabled: bool = False
     long_channel_lookback: int = 252
     long_sideways_exposure_multiplier: float = 0.7
     long_uptrend_sideways_sell_multiplier: float = 1.5
@@ -133,6 +135,16 @@ class StockRule:
             raise ValueError(
                 f"StockRule({self.ticker}): spread_threshold_pct는 0 이상이어야 합니다. "
                 f"got {self.spread_threshold_pct}"
+            )
+
+        if self.trend_only_enabled and not (
+                self.regime_enabled
+                and self.regime_algo == "channel"
+                and self.multi_horizon_regime_enabled):
+            raise ValueError(
+                f"StockRule({self.ticker}): trend_only_enabled는 "
+                "regime_enabled=true, regime_algo='channel', "
+                "multi_horizon_regime_enabled=true 조합이 필요합니다."
             )
 
         if self.regime_enabled:
@@ -301,6 +313,8 @@ class PositionLot:
     buy_date: str        # 매수 일자
     level: int = 0       # 차수 (1차, 2차, ..., 100차). 0 = 레거시 데이터
     trailing_highest_price: Optional[float] = None  # 트레일링 스톱 활성화 이후 최고가
+    entry_long_regime: Optional[str] = None   # 매수 당시 장기 레짐 (손익 귀속용)
+    entry_short_regime: Optional[str] = None  # 매수 당시 단기 레짐 (손익 귀속용)
 
 
 @dataclass
@@ -349,6 +363,8 @@ class TradeExecution:
     # 각 항목: {lot_id, level, buy_price, quantity, realized_pnl}.
     # 저장 시 이 내역을 차수별 N개 레코드로 펼친다.
     liquidation_lots: Optional[List[dict]] = None
+    entry_long_regime: Optional[str] = None
+    entry_short_regime: Optional[str] = None
 
 
 @dataclass

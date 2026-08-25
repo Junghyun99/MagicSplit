@@ -34,6 +34,8 @@ def run_backtest(
     market_type: str = "overseas",
     output_dir: str = "docs/data/backtest",
     run_number: Optional[str] = None,
+    quiet: bool = False,
+    buffered_output: bool = False,
 ) -> Optional[DayResult]:
     """MagicSplit 전략 백테스트를 실행한다.
 
@@ -45,6 +47,8 @@ def run_backtest(
         market_type: 'overseas' 또는 'domestic'
         output_dir: 결과 저장 디렉토리
         run_number: 실행 번호 (로그 구분용)
+        quiet: INFO 로그 파일·콘솔 출력 및 캡처 생략 여부
+        buffered_output: JSON 결과를 종료 시 일괄 저장할지 여부
 
     Returns:
         마지막 거래일의 DayResult, 또는 데이터가 없으면 None
@@ -52,7 +56,9 @@ def run_backtest(
     if run_number is None:
         run_number = f"{datetime.now().strftime('%H%M%S')}_{market_type}"
 
-    logger = TradeLogger(log_dir="logs/backtest", run_number=run_number)
+    logger = TradeLogger(
+        log_dir="logs/backtest", run_number=run_number, quiet=quiet,
+    )
 
     # 1. 설정 로드
     strategy = StrategyConfig(config_path=config_path)
@@ -107,7 +113,7 @@ def run_backtest(
         shutil.rmtree(out_path)
 
     broker = BacktestBroker(initial_cash=initial_cash, logger=logger)
-    repo = JsonRepository(root_path=output_dir)
+    repo = JsonRepository(root_path=output_dir, defer_writes=buffered_output)
     # 레짐 지표용 시세 제공자 (브로커와 분리). 레짐 종목이 있을 때만 주입.
     regime_active = any(getattr(r, "regime_enabled", False) for r in rules)
     window_size = max(
@@ -165,8 +171,12 @@ def run_backtest(
 
     # 차트는 최종 상태만 결과물로 남으므로 일별 루프에서는 생략하고,
     # 전체 시뮬레이션 완료 후 종목별로 한 번만 생성한다.
-    if last_result is not None:
-        engine.generate_chart_artifacts(sim_date=last_result.date)
+    try:
+        if last_result is not None:
+            engine.generate_chart_artifacts(sim_date=last_result.date)
+    finally:
+        if buffered_output:
+            repo.flush()
 
     logger.info("--- 백테스트 완료 ---")
     if last_result:

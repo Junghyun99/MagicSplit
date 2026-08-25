@@ -13,6 +13,20 @@ def repo(tmp_path):
     return JsonRepository(str(tmp_path))
 
 
+def test_deferred_writes_remain_readable_and_flush_to_disk(tmp_path):
+    deferred = JsonRepository(str(tmp_path), defer_writes=True)
+    lot = PositionLot("lot_001", "AAPL", 150.0, 5, "2026-04-01", level=1)
+
+    deferred.save_positions([lot])
+
+    assert deferred.load_positions() == [lot]
+    assert not (tmp_path / "positions.json").exists()
+
+    deferred.flush()
+
+    assert json.loads((tmp_path / "positions.json").read_text(encoding="utf-8"))[0]["lot_id"] == "lot_001"
+
+
 class TestPositions:
     def test_save_and_load_positions(self, repo):
         """포지션 저장/로드 라운드트립"""
@@ -31,6 +45,17 @@ class TestPositions:
         assert loaded[0].level == 1
         assert loaded[1].lot_id == "lot_002"
         assert loaded[1].level == 1
+
+    def test_position_entry_regimes_round_trip(self, repo):
+        lot = PositionLot(
+            "lot_001", "AAPL", 150.0, 5, "2026-04-01", level=1,
+            entry_long_regime="uptrend", entry_short_regime="uptrend",
+        )
+        repo.save_positions([lot])
+
+        loaded = repo.load_positions()[0]
+        assert loaded.entry_long_regime == "uptrend"
+        assert loaded.entry_short_regime == "uptrend"
 
     def test_load_empty_positions(self, repo):
         """파일이 없으면 빈 리스트"""

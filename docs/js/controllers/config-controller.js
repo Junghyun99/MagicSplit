@@ -149,6 +149,7 @@ window.ConfigController = (function () {
             ConfigView.syncMultiHorizonSettings();
             saveGlobalConfigToModel();
         });
+        document.getElementById('global-trend-only-enabled').addEventListener('change', saveGlobalConfigToModel);
         document.getElementById('global-long-channel-lookback').addEventListener('input', saveGlobalConfigToModel);
         document.getElementById('global-long-sideways-exposure-multiplier').addEventListener('input', saveGlobalConfigToModel);
         document.getElementById('global-long-uptrend-sideways-sell-multiplier').addEventListener('input', saveGlobalConfigToModel);
@@ -326,6 +327,7 @@ window.ConfigController = (function () {
             if (vals.channel_breakdown_tolerance_pct !== '') config.global.channel_breakdown_tolerance_pct = parseFloat(vals.channel_breakdown_tolerance_pct); else delete config.global.channel_breakdown_tolerance_pct;
             if (vals.channel_breakdown_atr_multiplier !== '') config.global.channel_breakdown_atr_multiplier = parseFloat(vals.channel_breakdown_atr_multiplier); else delete config.global.channel_breakdown_atr_multiplier;
             config.global.multi_horizon_regime_enabled = vals.multi_horizon_regime_enabled;
+            config.global.trend_only_enabled = vals.trend_only_enabled;
             if (vals.long_channel_lookback !== '') config.global.long_channel_lookback = parseInt(vals.long_channel_lookback, 10); else delete config.global.long_channel_lookback;
             if (vals.long_sideways_exposure_multiplier !== '') config.global.long_sideways_exposure_multiplier = parseFloat(vals.long_sideways_exposure_multiplier); else delete config.global.long_sideways_exposure_multiplier;
             if (vals.long_uptrend_sideways_sell_multiplier !== '') config.global.long_uptrend_sideways_sell_multiplier = parseFloat(vals.long_uptrend_sideways_sell_multiplier); else delete config.global.long_uptrend_sideways_sell_multiplier;
@@ -335,6 +337,9 @@ window.ConfigController = (function () {
 
     function validateMultiHorizonConfig() {
         const global = ConfigModel.getConfig()?.global || {};
+        if (global.trend_only_enabled && !global.multi_horizon_regime_enabled) {
+            return 'Trend Only 모드는 장·단기 레짐이 필요합니다.';
+        }
         if (!global.multi_horizon_regime_enabled) return null;
         if (global.regime_enabled !== true || global.regime_algo !== 'channel') {
             return '장·단기 레짐은 Regime Enabled와 channel 알고리즘이 필요합니다.';

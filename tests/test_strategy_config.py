@@ -584,6 +584,26 @@ class TestStrategyConfigRegime:
         assert rules[0].long_sideways_exposure_multiplier == 0.7
         assert rules[1].long_sideways_exposure_multiplier == 0.6
 
+    def test_trend_only_global_inheritance_and_stock_override(self, tmp_path):
+        config = {
+            "stocks": [
+                {"ticker": "AAPL"},
+                {"ticker": "MSFT", "trend_only_enabled": False},
+            ],
+            "global": {
+                "regime_enabled": True,
+                "regime_algo": "channel",
+                "multi_horizon_regime_enabled": True,
+                "trend_only_enabled": True,
+            },
+        }
+        config_file = tmp_path / "config_overseas.json"
+        config_file.write_text(json.dumps(config))
+
+        rules = StrategyConfig(str(config_file)).rules
+        assert rules[0].trend_only_enabled is True
+        assert rules[1].trend_only_enabled is False
+
     def test_invalid_channel_algo_raises(self, tmp_path):
         config = {
             "stocks": [{
@@ -609,6 +629,14 @@ class TestRepoConfigRegimeSeparation:
     def test_backtest_domestic_regime_on(self):
         sc = StrategyConfig(os.path.join(REPO_ROOT, "config_test_domestic.json"))
         assert sc.rules and all(r.regime_enabled is True for r in sc.rules)
+        trend_tickers = {r.ticker for r in sc.rules if r.trend_only_enabled}
+        assert trend_tickers == {
+            "000660", "036540", "007660", "067310", "095610", "079370",
+            "036930", "042700", "084370", "039030", "071280", "098460",
+            "068790", "083450", "035420", "035720", "067160", "036570",
+            "069080", "078340", "014680", "086520", "003230",
+        }
+        assert len(sc.rules) - len(trend_tickers) == 27
 
 
 class TestRepoCryptoConfig:

@@ -855,6 +855,12 @@ class MagicSplitEngine:
             if exe.action == OrderAction.BUY:
                 sig = signal_map.get((exe.ticker, OrderAction.BUY))
                 level = sig.level if sig else 1
+                entry_state = (
+                    regime_state.get(exe.ticker, {})
+                    if regime_state is not None else {}
+                )
+                exe.entry_long_regime = entry_state.get("long_trend")
+                exe.entry_short_regime = entry_state.get("short_trend")
                 ts = datetime.now().strftime("%Y%m%d_%H%M%S")
                 lot_id = f"lot_{ts}_{exe.ticker}_{level:03d}"
                 new_lot = PositionLot(
@@ -864,6 +870,8 @@ class MagicSplitEngine:
                     quantity=exe.quantity,
                     buy_date=today,
                     level=level,
+                    entry_long_regime=exe.entry_long_regime,
+                    entry_short_regime=exe.entry_short_regime,
                 )
                 updated.append(new_lot)
                 # 신규 lot이 last_lot이 되므로 동일 종목 기존 lot들의 trailing 상태 초기화.
@@ -940,6 +948,9 @@ class MagicSplitEngine:
 
                 if target_lot is None:
                     continue
+
+                exe.entry_long_regime = target_lot.entry_long_regime
+                exe.entry_short_regime = target_lot.entry_short_regime
 
                 if (exe.status == ExecutionStatus.PARTIAL
                         and exe.quantity < target_lot.quantity):

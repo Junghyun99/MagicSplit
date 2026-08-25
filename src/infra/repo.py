@@ -42,8 +42,11 @@ class JsonRepository(IRepository):
     """
 
     def __init__(self, root_path: str = "docs/data",
-                 max_history_records: int = 100000):
+                 max_history_records: int = 100000,
+                 defer_writes: bool = False):
         self._cache = {}  # ⚡ Bolt: Initialize cache first
+        self._defer_writes = defer_writes
+        self._dirty_paths = set()
         self.root = root_path
         self.max_history_records = max_history_records
         os.makedirs(self.root, exist_ok=True)
@@ -91,6 +94,8 @@ class JsonRepository(IRepository):
                 buy_date=item["buy_date"],
                 level=item.get("level", 0),
                 trailing_highest_price=item.get("trailing_highest_price"),
+                entry_long_regime=item.get("entry_long_regime"),
+                entry_short_regime=item.get("entry_short_regime"),
             ))
 
         # 레거시 마이그레이션: level=0인 lot에 순차 level 부여
@@ -120,6 +125,8 @@ class JsonRepository(IRepository):
                         buy_date=lot.buy_date,
                         level=i,
                         trailing_highest_price=lot.trailing_highest_price,
+                        entry_long_regime=lot.entry_long_regime,
+                        entry_short_regime=lot.entry_short_regime,
                     ))
             else:
                 result.extend(ticker_lots)
@@ -172,6 +179,10 @@ class JsonRepository(IRepository):
             base = asdict(e)
             base["alias"] = alias_by_ticker[e.ticker]
             breakdown = base.pop("liquidation_lots", None)
+            if base.get("entry_long_regime") is None:
+                base.pop("entry_long_regime", None)
+            if base.get("entry_short_regime") is None:
+                base.pop("entry_short_regime", None)
 
             # 통합 청산(Bulk): 소진 lot별 N개 레코드로 분리 기록(차수별 손익 보존)
             if breakdown:
@@ -183,7 +194,13 @@ class JsonRepository(IRepository):
                         "level": lot["level"],
                         "buy_price": lot["buy_price"],
                         "realized_pnl": lot["realized_pnl"],
+                        "entry_long_regime": lot.get("entry_long_regime"),
+                        "entry_short_regime": lot.get("entry_short_regime"),
                     })
+                    if rec.get("entry_long_regime") is None:
+                        rec.pop("entry_long_regime", None)
+                    if rec.get("entry_short_regime") is None:
+                        rec.pop("entry_short_regime", None)
                     enriched_execs.append(rec)
                 continue
 
@@ -434,7 +451,15 @@ class JsonRepository(IRepository):
 
     def clear_cache(self):
         """메모리 캐시를 비운다 (테스트 또는 외부 프로세스에 의한 파일 변경 대응용)."""
+        if self._dirty_paths:
+            self.flush()
         self._cache = {}
+
+    def flush(self) -> None:
+        """지연된 JSON 쓰기를 디스크에 반영한다."""
+        for path in sorted(self._dirty_paths):
+            self._write_json(path, self._cache[path])
+        self._dirty_paths.clear()
 
     def _load_json(self, path: str, default=None):
         if path in self._cache:
@@ -462,6 +487,14 @@ class JsonRepository(IRepository):
         return obj
     def _save_json(self, path: str, data):
         sanitized = self._sanitize_for_json(data)
+        if self._defer_writes:
+            self._cache[path] = sanitized
+            self._dirty_paths.add(path)
+            return
+
+        self._write_json(path, sanitized)
+
+    def _write_json(self, path: str, sanitized):
         # 기본적으로 4칸 들여쓰기로 변환
         content = json.dumps(sanitized, indent=4, ensure_ascii=False)
         

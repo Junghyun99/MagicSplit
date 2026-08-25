@@ -398,6 +398,7 @@ def _public_params(rule: StockRule) -> dict:
     if rule.multi_horizon_regime_enabled:
         params.update({
             "multi_horizon_regime_enabled": True,
+            "trend_only_enabled": rule.trend_only_enabled,
             "long_channel_lookback": rule.long_channel_lookback,
             "long_sideways_exposure_multiplier": rule.long_sideways_exposure_multiplier,
             "long_uptrend_sideways_sell_multiplier": rule.long_uptrend_sideways_sell_multiplier,

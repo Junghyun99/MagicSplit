@@ -156,6 +156,7 @@ class SplitEvaluator:
         regime_st: dict = {}
         downtrend_blocked = False
         multi = None
+        trend_only_uptrend_confirmed = False
         if rule.regime_enabled and ohlc_window is not None:
             reading = classify_for_rule(rule, ohlc_window)
             regime_st = regime_state.setdefault(rule.ticker, {}) if regime_state is not None else {}
@@ -166,6 +167,21 @@ class SplitEvaluator:
             multi = self._resolve_multi_horizon(rule, ohlc_window, reading, regime_st)
             self._active_exposure_limit = multi["exposure_limit"] if multi else None
             self._active_sell_multiplier = multi["sell_multiplier"] if multi else 1.0
+
+            # 추세 전용은 포지션이 없을 때도 기존 2거래일 상승 확인을
+            # 누적한다. 진입·추가매수는 장기와 단기가 모두 상승일 때만 허용한다.
+            if rule.trend_only_enabled and multi is not None:
+                short_uptrend_confirmed = (
+                    self._resolve_regime(
+                        reading, regime_st, rule.ticker, current_price,
+                        evaluation_date=evaluation_date,
+                    ) == Regime.UPTREND
+                )
+                trend_only_uptrend_confirmed = (
+                    short_uptrend_confirmed
+                    and multi["long"] == Regime.UPTREND
+                    and multi["short"] == Regime.UPTREND
+                )
 
             # 장·단기 하락 정렬은 단기 방어 뒤 남은 물량까지 정리하는 최종 청산 이벤트다.
             if (multi and ticker_lots and (
@@ -187,7 +203,9 @@ class SplitEvaluator:
                     if exit_signals is not None:
                         return exit_signals
                 uptrend_resolved = (
-                    self._resolve_regime(
+                    trend_only_uptrend_confirmed
+                    if rule.trend_only_enabled
+                    else self._resolve_regime(
                         reading, regime_st, rule.ticker, current_price,
                         evaluation_date=evaluation_date,
                     ) == Regime.UPTREND
@@ -203,6 +221,10 @@ class SplitEvaluator:
                         rule, ticker_lots, current_price, reading, regime_st, portfolio,
                         evaluation_date=evaluation_date,
                     )
+                if rule.trend_only_enabled:
+                    # 이탈 조건이 아닌 횡보/불명 국면에서는 기존 매직스플릿
+                    # 익절·추가매수로 내려가지 않고 보유한다.
+                    return []
             else:
                 uptrend_resolved = False
         else:
@@ -212,6 +234,11 @@ class SplitEvaluator:
         if multi is None:
             self._active_exposure_limit = None
             self._active_sell_multiplier = 1.0
+
+        # 추세 전용 보유 중 데이터가 부족하면 평균회귀 매매로 폴백하지 않는다.
+        # 데이터가 복구될 때까지 보유하며, 계산 가능한 위험 청산은 위에서 우선 처리된다.
+        if ticker_lots and rule.trend_only_enabled:
+            return []
 
         # 보유 lot이 없으면 -> 1차수 초기 매수
         if not ticker_lots:
@@ -295,6 +322,17 @@ class SplitEvaluator:
                         f"(현재가 {format_money(current_price, rule.market_type)} > "
                         f"기준선 {format_money(gate_line, rule.market_type)}) -> 재진입 허용"
                     )
+
+            if rule.trend_only_enabled:
+                if multi is None:
+                    return [self._buy_blocked_signal(
+                        rule, current_price, "추세 데이터 부족",
+                    )]
+                if not trend_only_uptrend_confirmed:
+                    return [self._buy_blocked_signal(
+                        rule, current_price,
+                        "추세 전용 대기 - 장·단기 상승 정렬 필요",
+                    )]
             last_sell_price = (
                 last_sell_prices.get(rule.ticker) if last_sell_prices else None
             )

@@ -342,6 +342,27 @@ class TestStockRuleChannelRegime:
         assert rule.channel_slope_band_pct == 8.0
         assert rule.channel_breakdown_tolerance_pct == 0.0
         assert rule.channel_breakdown_atr_multiplier is None
+        assert rule.trend_only_enabled is False
+
+    @pytest.mark.parametrize("overrides", [
+        {"regime_enabled": False, "regime_algo": "channel", "multi_horizon_regime_enabled": True},
+        {"regime_enabled": True, "regime_algo": "ma_adx", "multi_horizon_regime_enabled": True},
+        {"regime_enabled": True, "regime_algo": "channel", "multi_horizon_regime_enabled": False},
+    ])
+    def test_trend_only_requires_channel_multi_horizon_regime(self, overrides):
+        with pytest.raises(ValueError, match="trend_only_enabled"):
+            StockRule(
+                "AAPL", -5.0, 10.0, 500, 10,
+                trend_only_enabled=True, **overrides,
+            )
+
+    def test_trend_only_accepts_required_regime_combination(self):
+        rule = StockRule(
+            "AAPL", -5.0, 10.0, 500, 10,
+            regime_enabled=True, regime_algo="channel",
+            multi_horizon_regime_enabled=True, trend_only_enabled=True,
+        )
+        assert rule.trend_only_enabled is True
 
     def test_channel_algo_accepted(self):
         rule = StockRule(

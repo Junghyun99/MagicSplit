@@ -105,6 +105,11 @@
                     <label>장·단기 레짐 사용</label>
                     <input type="checkbox" id="global-multi-horizon-regime-enabled" style="width:20px; height:20px;">
                 </div>
+                <div class="form-group multi-horizon-setting"
+                    style="display:flex; flex-direction:column; justify-content:center; align-items:center;">
+                    <label>추세 전용</label>
+                    <input type="checkbox" id="global-trend-only-enabled" style="width:20px; height:20px;">
+                </div>
                 <div class="form-group multi-horizon-setting">
                     <label>장기 채널 기간 (봉)</label>
                     <input type="number" min="21" id="global-long-channel-lookback" class="form-control" placeholder="252">
@@ -143,6 +148,7 @@
             </div>
             <small id="multi-horizon-policy-note" class="form-text" style="display:none;">
                 장기 상승: 노출 100% · 장기 횡보: 노출 70% · 장기 하락: 신규·추가매수 차단 · 장기 상승·단기 횡보: 일반 익절 기준 1.5배
+                <br>추세 전용: 장·단기 상승에서만 진입하고 횡보 시 보유합니다.
             </small>
         </div>
 

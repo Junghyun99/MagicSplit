@@ -96,6 +96,8 @@ def drain_lots_by_qty(
         breakdown.append({
             "lot_id": lot.lot_id, "level": lot.level,
             "buy_price": lot.buy_price, "quantity": take, "_gross": gross,
+            "entry_long_regime": lot.entry_long_regime,
+            "entry_short_regime": lot.entry_short_regime,
         })
         if take >= lot.quantity:
             positions.remove(lot)
