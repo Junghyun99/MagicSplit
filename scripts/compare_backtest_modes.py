@@ -34,7 +34,8 @@ def _reason_line(record: dict, ticker: str) -> str:
 
 def _is_liquidation(reason: str) -> bool:
     return any(token in reason for token in (
-        "추세 이탈", "추종 데드라인", "장·단기 하락 정렬",
+        "추세 이탈", "단기 채널 하단 이탈", "단기 채널 하락 전환",
+        "추종 데드라인", "장·단기 하락 정렬",
     ))
 
 

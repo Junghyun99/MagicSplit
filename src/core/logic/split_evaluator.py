@@ -1327,7 +1327,9 @@ class SplitEvaluator:
                     f"({reading.channel_slope_pct:+.2f}%/{rule.channel_lookback}봉) -> 이탈 청산 진행"
                 )
             return self._handle_trendbreak(
-                rule, ticker_lots, current_price, reading, st, reentry_gate="resistance"
+                rule, ticker_lots, current_price, reading, st,
+                reentry_gate="resistance",
+                exit_reason="단기 채널 하락 전환",
             )
 
         # 3. 상승/횡보 중 하단 채널선 하향 돌파 -> 연속 일(日) 확정 후 이탈 청산
@@ -1400,7 +1402,9 @@ class SplitEvaluator:
                         f"{breakdown_rule_text}) -> 이탈 청산 진행"
                     )
             return self._handle_trendbreak(
-                rule, ticker_lots, current_price, reading, st, reentry_gate="midline"
+                rule, ticker_lots, current_price, reading, st,
+                reentry_gate="midline",
+                exit_reason="단기 채널 하단 이탈",
             )
 
         # 이탈선 위로 회복 -> 청산 근거가 사라졌으므로 확정도 취소한다.
@@ -1504,8 +1508,9 @@ class SplitEvaluator:
         reading,
         st: dict,
         reentry_gate: str = "resistance",
+        exit_reason: str = "추세 이탈",
     ) -> List[SplitSignal]:
-        """추세 이탈 감지 시 전량 청산 또는 분할 매도+추종 데드라인 활성화를 결정한다."""
+        """이탈 원인별 전량 청산 또는 분할 매도+추종 데드라인 활성화를 결정한다."""
         total_qty = sum(l.quantity for l in ticker_lots)
         total_cost = sum(l.buy_price * l.quantity for l in ticker_lots)
         avg_buy = total_cost / total_qty if total_qty else 0.0
@@ -1527,7 +1532,7 @@ class SplitEvaluator:
         if partial_pct >= 100.0:
             if self._logger:
                 self._logger.info(
-                    f"[{display_ticker(rule.ticker)}] 추세 이탈 -> 통합 전량 청산(Bulk) "
+                    f"[{display_ticker(rule.ticker)}] {exit_reason} -> 통합 전량 청산(Bulk) "
                     f"{format_qty(total_qty, rule.market_type)} (평단 {format_money(avg_buy, rule.market_type)}, "
                     f"현재가 {format_money(current_price, rule.market_type)}, "
                     f"{indicator_txt})"
@@ -1538,7 +1543,7 @@ class SplitEvaluator:
                 action=OrderAction.SELL,
                 quantity=total_qty,
                 price=current_price,
-                reason=f"추세 이탈 통합 전량 청산(Bulk Sell, {format_qty(total_qty, rule.market_type)} {pct:+.1f}%)",
+                reason=f"{exit_reason} 통합 전량 청산(Bulk Sell, {format_qty(total_qty, rule.market_type)} {pct:+.1f}%)",
                 pct_change=pct,
                 level=max_level,
                 regime_liquidation=True,
@@ -1552,7 +1557,7 @@ class SplitEvaluator:
         if sell_qty >= total_qty:
             if self._logger:
                 self._logger.info(
-                    f"[{display_ticker(rule.ticker)}] 추세 이탈 -> 수량 부족으로 전량 청산(Bulk) "
+                    f"[{display_ticker(rule.ticker)}] {exit_reason} -> 수량 부족으로 전량 청산(Bulk) "
                     f"{format_qty(total_qty, rule.market_type)} (평단 {format_money(avg_buy, rule.market_type)}, "
                     f"현재가 {format_money(current_price, rule.market_type)})"
                 )
@@ -1562,7 +1567,7 @@ class SplitEvaluator:
                 action=OrderAction.SELL,
                 quantity=total_qty,
                 price=current_price,
-                reason=f"추세 이탈 전량 청산(수량 부족, {format_qty(total_qty, rule.market_type)} {pct:+.1f}%)",
+                reason=f"{exit_reason} 전량 청산(수량 부족, {format_qty(total_qty, rule.market_type)} {pct:+.1f}%)",
                 pct_change=pct,
                 level=max_level,
                 regime_liquidation=True,
@@ -1584,7 +1589,7 @@ class SplitEvaluator:
             if self._logger:
                 stop_price = current_price * (1 - rule.trendbreak_trailing_drop_pct / 100)
                 self._logger.info(
-                    f"[{display_ticker(rule.ticker)}] 추세 이탈 -> 추종 데드라인 활성화 "
+                    f"[{display_ticker(rule.ticker)}] {exit_reason} -> 추종 데드라인 활성화 "
                     f"(즉시 매도 0%, 전량 {format_qty(total_qty, rule.market_type)} 추적, "
                     f"기준가 {format_money(current_price, rule.market_type)}, "
                     f"청산선 {format_money(stop_price, rule.market_type)})"
@@ -1595,7 +1600,7 @@ class SplitEvaluator:
             remain_qty = total_qty - sell_qty
             stop_price = current_price * (1 - rule.trendbreak_trailing_drop_pct / 100)
             self._logger.info(
-                f"[{display_ticker(rule.ticker)}] 추세 이탈 -> 분할 청산 "
+                f"[{display_ticker(rule.ticker)}] {exit_reason} -> 분할 청산 "
                 f"{format_qty(sell_qty, rule.market_type)}/{format_qty(total_qty, rule.market_type)} ({partial_pct:.0f}%) 즉시 매도, "
                 f"잔량 {format_qty(remain_qty, rule.market_type)} 추종 데드라인 "
                 f"(기준가 {format_money(current_price, rule.market_type)}, "
@@ -1609,7 +1614,7 @@ class SplitEvaluator:
             action=OrderAction.SELL,
             quantity=sell_qty,
             price=current_price,
-            reason=f"추세 이탈 분할 청산({format_qty(sell_qty, rule.market_type)}/{format_qty(total_qty, rule.market_type)}, {pct:+.1f}%)",
+            reason=f"{exit_reason} 분할 청산({format_qty(sell_qty, rule.market_type)}/{format_qty(total_qty, rule.market_type)}, {pct:+.1f}%)",
             pct_change=pct,
             level=max_level,
             regime_partial_liquidation=True,

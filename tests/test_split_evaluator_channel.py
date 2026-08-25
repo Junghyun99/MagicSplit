@@ -260,6 +260,8 @@ class TestChannelSidewaysBreakdown:
         assert signals[0].quantity == 10
         assert signals[0].regime_liquidation is True
         assert signals[0].reentry_gate == "midline"
+        assert "단기 채널 하단 이탈" in signals[0].reason
+        assert "단기 채널 하락 전환" not in signals[0].reason
 
     def test_breakdown_tolerance_delays_trigger(self, evaluator):
         # 허용 오차 5%: 지지선 바로 아래로는 이탈 아님, 5% 넘게 뚫어야 이탈
@@ -421,6 +423,8 @@ class TestChannelDowntrendLiquidation:
         assert signals[0].action == OrderAction.SELL
         assert signals[0].regime_liquidation is True
         assert signals[0].reentry_gate == "resistance"
+        assert "단기 채널 하락 전환" in signals[0].reason
+        assert "단기 채널 하단 이탈" not in signals[0].reason
 
     def test_downtrend_latch_blocks_initial_buy(self, evaluator):
         window = _downtrend_window()
