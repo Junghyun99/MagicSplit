@@ -36,6 +36,7 @@ def _is_liquidation(reason: str) -> bool:
     return any(token in reason for token in (
         "추세 이탈", "채널 하단 이탈", "단기 채널 하락 전환",
         "추종 데드라인", "장·단기 하락 정렬",
+        "상승·단기 횡보 전환",
     ))
 
 
@@ -137,6 +138,7 @@ def _exit_context_label(context: tuple) -> str:
         "channel_lower_break": "채널 하단 이탈",
         "channel_downtrend_transition": "단기 채널 하락 전환",
         "trend_break": "추세 이탈",
+        "uptrend_sideways_transition": "상승→횡보 선제청산",
         "legacy_unknown": "과거 호환/불명",
     }.get(trigger, trigger)
     regime_label = {

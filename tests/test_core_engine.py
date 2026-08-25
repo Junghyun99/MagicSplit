@@ -2094,6 +2094,52 @@ class TestBreakdownConfirmationClearedOnFill:
         assert "breakdown_days" not in st
 
 
+class TestTransitionPartialLiquidation:
+    def test_drains_high_levels_without_trailing_lock_and_rearms_only_on_buy(self, engine):
+        lots = [
+            PositionLot("l1", "AAPL", 100.0, 50, "2026-01-01", 1),
+            PositionLot("l2", "AAPL", 110.0, 50, "2026-02-01", 2),
+        ]
+        state = {"AAPL": {
+            "uptrend_sideways_transition_target_qty": 50,
+            "uptrend_sideways_transition_sold_qty": 0,
+        }}
+        exe = TradeExecution(
+            "AAPL", OrderAction.SELL, 50, 105.0, 0.0,
+            "2026-07-30 10:00:00", ExecutionStatus.FILLED,
+        )
+
+        updated = engine._apply_transition_partial_liquidation(
+            lots, exe, "AAPL", {}, state,
+        )
+
+        assert [lot.lot_id for lot in updated] == ["l1"]
+        assert state["AAPL"]["transition_de_risked"] is True
+        assert "trailing_lock" not in state["AAPL"]
+
+        lower_break_exe = TradeExecution(
+            "AAPL", OrderAction.SELL, 25, 95.0, 0.0,
+            "2026-08-03 10:00:00", ExecutionStatus.FILLED,
+        )
+        updated = engine._apply_partial_liquidation(
+            updated, lower_break_exe, "AAPL", {}, state, reentry_gate="midline",
+        )
+        assert sum(lot.quantity for lot in updated) == 25
+        assert state["AAPL"]["trailing_lock"]["active"] is True
+
+        buy_signal = SplitSignal(
+            "AAPL", None, OrderAction.BUY, 1, 106.0, "신규 매수", 0.0, level=2,
+        )
+        buy_exe = TradeExecution(
+            "AAPL", OrderAction.BUY, 1, 106.0, 0.0,
+            "2026-07-31 10:00:00", ExecutionStatus.FILLED,
+        )
+        engine._update_positions(
+            updated, [buy_signal], [buy_exe], "2026-07-31", regime_state=state,
+        )
+        assert "transition_de_risked" not in state["AAPL"]
+
+
 class TestNotificationFiltering:
     """슬랙 메시지 3-way 분류 및 필터링 동작 검증."""
 

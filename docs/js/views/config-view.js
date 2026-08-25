@@ -30,6 +30,8 @@ window.ConfigView = (function () {
         document.getElementById('global-long-channel-lookback').value = globalConfig?.long_channel_lookback !== undefined ? globalConfig.long_channel_lookback : '';
         document.getElementById('global-long-sideways-exposure-multiplier').value = globalConfig?.long_sideways_exposure_multiplier !== undefined ? globalConfig.long_sideways_exposure_multiplier : '';
         document.getElementById('global-long-uptrend-sideways-sell-multiplier').value = globalConfig?.long_uptrend_sideways_sell_multiplier !== undefined ? globalConfig.long_uptrend_sideways_sell_multiplier : '';
+        document.getElementById('global-uptrend-sideways-transition-partial-sell-pct').value = globalConfig?.uptrend_sideways_transition_partial_sell_pct !== undefined ? globalConfig.uptrend_sideways_transition_partial_sell_pct : '';
+        document.getElementById('global-uptrend-sideways-transition-confirm-bars').value = globalConfig?.uptrend_sideways_transition_confirm_bars !== undefined ? globalConfig.uptrend_sideways_transition_confirm_bars : '';
         syncMultiHorizonSettings();
     }
 
@@ -81,6 +83,8 @@ window.ConfigView = (function () {
         document.getElementById('edit-uptrend-add-reset-pct').value = stock.uptrend_add_reset_pct !== undefined ? stock.uptrend_add_reset_pct : '';
         document.getElementById('edit-trendbreak-partial-sell-pct').value = stock.trendbreak_partial_sell_pct !== undefined ? stock.trendbreak_partial_sell_pct : '';
         document.getElementById('edit-trendbreak-trailing-drop-pct').value = stock.trendbreak_trailing_drop_pct !== undefined ? stock.trendbreak_trailing_drop_pct : '';
+        document.getElementById('edit-uptrend-sideways-transition-partial-sell-pct').value = stock.uptrend_sideways_transition_partial_sell_pct !== undefined ? stock.uptrend_sideways_transition_partial_sell_pct : '';
+        document.getElementById('edit-uptrend-sideways-transition-confirm-bars').value = stock.uptrend_sideways_transition_confirm_bars !== undefined ? stock.uptrend_sideways_transition_confirm_bars : '';
 
         renderLevelsTable(stock);
         renderUptrendAmountsTable(stock);
@@ -235,6 +239,8 @@ window.ConfigView = (function () {
             uptrend_add_reset_pct: document.getElementById('edit-uptrend-add-reset-pct').value,
             trendbreak_partial_sell_pct: document.getElementById('edit-trendbreak-partial-sell-pct').value,
             trendbreak_trailing_drop_pct: document.getElementById('edit-trendbreak-trailing-drop-pct').value,
+            uptrend_sideways_transition_partial_sell_pct: document.getElementById('edit-uptrend-sideways-transition-partial-sell-pct').value,
+            uptrend_sideways_transition_confirm_bars: document.getElementById('edit-uptrend-sideways-transition-confirm-bars').value,
             buyPcts,
             buyAmts,
             sellPcts,
@@ -265,6 +271,8 @@ window.ConfigView = (function () {
             long_channel_lookback: document.getElementById('global-long-channel-lookback').value,
             long_sideways_exposure_multiplier: document.getElementById('global-long-sideways-exposure-multiplier').value,
             long_uptrend_sideways_sell_multiplier: document.getElementById('global-long-uptrend-sideways-sell-multiplier').value,
+            uptrend_sideways_transition_partial_sell_pct: document.getElementById('global-uptrend-sideways-transition-partial-sell-pct').value,
+            uptrend_sideways_transition_confirm_bars: document.getElementById('global-uptrend-sideways-transition-confirm-bars').value,
         };
     }
 

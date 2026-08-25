@@ -604,6 +604,33 @@ class TestStrategyConfigRegime:
         assert rules[0].trend_only_enabled is True
         assert rules[1].trend_only_enabled is False
 
+    def test_transition_policy_global_inheritance_and_stock_override(self, tmp_path):
+        config = {
+            "stocks": [
+                {"ticker": "AAPL"},
+                {
+                    "ticker": "MSFT",
+                    "uptrend_sideways_transition_partial_sell_pct": 25,
+                    "uptrend_sideways_transition_confirm_bars": 3,
+                },
+            ],
+            "global": {
+                "regime_enabled": True,
+                "regime_algo": "channel",
+                "multi_horizon_regime_enabled": True,
+                "uptrend_sideways_transition_partial_sell_pct": 50,
+                "uptrend_sideways_transition_confirm_bars": 2,
+            },
+        }
+        config_file = tmp_path / "config_overseas.json"
+        config_file.write_text(json.dumps(config))
+
+        rules = StrategyConfig(str(config_file)).rules
+        assert rules[0].uptrend_sideways_transition_partial_sell_pct == 50
+        assert rules[0].uptrend_sideways_transition_confirm_bars == 2
+        assert rules[1].uptrend_sideways_transition_partial_sell_pct == 25
+        assert rules[1].uptrend_sideways_transition_confirm_bars == 3
+
     def test_invalid_channel_algo_raises(self, tmp_path):
         config = {
             "stocks": [{
@@ -637,6 +664,11 @@ class TestRepoConfigRegimeSeparation:
             "069080", "078340", "014680", "086520", "003230",
         }
         assert len(sc.rules) - len(trend_tickers) == 27
+        assert all(
+            r.uptrend_sideways_transition_partial_sell_pct == 50
+            and r.uptrend_sideways_transition_confirm_bars == 2
+            for r in sc.rules
+        )
 
 
 class TestRepoCryptoConfig:

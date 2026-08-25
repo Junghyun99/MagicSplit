@@ -256,3 +256,74 @@ def test_trend_only_chart_exposes_enabled_parameter():
         window.Close.iloc[-1],
     )
     assert chart["params"]["trend_only_enabled"] is True
+
+
+def test_uptrend_sideways_transition_sells_half_only_on_second_distinct_day():
+    closes = _trend(189, 100, 0.35)
+    closes += [closes[-1] * (1 + (i % 2) * 0.002) for i in range(63)]
+    window = _window(closes)
+    price = window.Close.iloc[-1]
+    rule = _rule(
+        uptrend_sideways_transition_partial_sell_pct=50,
+        uptrend_sideways_transition_confirm_bars=2,
+    )
+    state = {"AAPL": {
+        "previous_long_regime": str(Regime.UPTREND),
+        "previous_short_regime": str(Regime.UPTREND),
+    }}
+    evaluator = SplitEvaluator()
+    lots = [_lot(price=price, qty=5)]
+
+    first = evaluator.evaluate_stock(
+        rule, lots, _portfolio(price, qty=5), ohlc_window=window,
+        regime_state=state, evaluation_date="2025-01-02",
+    )
+    duplicate = evaluator.evaluate_stock(
+        rule, lots, _portfolio(price, qty=5), ohlc_window=window,
+        regime_state=state, evaluation_date="2025-01-02",
+    )
+    second = evaluator.evaluate_stock(
+        rule, lots, _portfolio(price, qty=5), ohlc_window=window,
+        regime_state=state, evaluation_date="2025-01-03",
+    )
+
+    assert first == []
+    assert duplicate == []
+    assert len(second) == 1
+    assert second[0].quantity == 3
+    assert second[0].transition_partial_liquidation is True
+    assert second[0].exit_trigger == "uptrend_sideways_transition"
+    assert second[0].exit_long_regime == "uptrend"
+    assert second[0].exit_short_regime == "sideways"
+
+
+def test_uptrend_sideways_transition_does_not_start_without_observed_up_up_pair():
+    closes = _trend(189, 100, 0.35)
+    closes += [closes[-1] * (1 + (i % 2) * 0.002) for i in range(63)]
+    window = _window(closes)
+    price = window.Close.iloc[-1]
+    rule = _rule(uptrend_sideways_transition_partial_sell_pct=50)
+    state = {}
+    evaluator = SplitEvaluator()
+
+    for day in ("2025-01-02", "2025-01-03", "2025-01-06"):
+        signals = evaluator.evaluate_stock(
+            rule, [_lot(price=price, qty=5)], _portfolio(price, qty=5),
+            ohlc_window=window, regime_state=state, evaluation_date=day,
+        )
+
+    assert not [s for s in signals if s.transition_partial_liquidation]
+
+
+def test_transition_chart_exposes_policy_parameters():
+    window = _window(_trend(252, 100, 0.25))
+    rule = _rule(
+        uptrend_sideways_transition_partial_sell_pct=50,
+        uptrend_sideways_transition_confirm_bars=2,
+    )
+    chart = build_chart_series(
+        rule, window, lambda d: classify_for_rule(rule, d), [],
+        window.Close.iloc[-1],
+    )
+    assert chart["params"]["uptrend_sideways_transition_partial_sell_pct"] == 50
+    assert chart["params"]["uptrend_sideways_transition_confirm_bars"] == 2

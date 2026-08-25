@@ -331,6 +331,8 @@ window.ConfigController = (function () {
             if (vals.long_channel_lookback !== '') config.global.long_channel_lookback = parseInt(vals.long_channel_lookback, 10); else delete config.global.long_channel_lookback;
             if (vals.long_sideways_exposure_multiplier !== '') config.global.long_sideways_exposure_multiplier = parseFloat(vals.long_sideways_exposure_multiplier); else delete config.global.long_sideways_exposure_multiplier;
             if (vals.long_uptrend_sideways_sell_multiplier !== '') config.global.long_uptrend_sideways_sell_multiplier = parseFloat(vals.long_uptrend_sideways_sell_multiplier); else delete config.global.long_uptrend_sideways_sell_multiplier;
+            if (vals.uptrend_sideways_transition_partial_sell_pct !== '') config.global.uptrend_sideways_transition_partial_sell_pct = parseFloat(vals.uptrend_sideways_transition_partial_sell_pct); else delete config.global.uptrend_sideways_transition_partial_sell_pct;
+            if (vals.uptrend_sideways_transition_confirm_bars !== '') config.global.uptrend_sideways_transition_confirm_bars = parseInt(vals.uptrend_sideways_transition_confirm_bars, 10); else delete config.global.uptrend_sideways_transition_confirm_bars;
             ConfigView.updateDiffPreview(ConfigModel.getDiff());
         }
     }
@@ -354,6 +356,32 @@ window.ConfigController = (function () {
         if (global.long_uptrend_sideways_sell_multiplier !== undefined
             && global.long_uptrend_sideways_sell_multiplier < 1) {
             return '장기 상승·단기 횡보 익절 배율은 1 이상이어야 합니다.';
+        }
+        const transitionPct = global.uptrend_sideways_transition_partial_sell_pct;
+        if (transitionPct !== undefined && !(transitionPct >= 0 && transitionPct < 100)) {
+            return '상승→횡보 선제청산 비율은 0 이상 100 미만이어야 합니다.';
+        }
+        if (transitionPct > 0 && !global.multi_horizon_regime_enabled) {
+            return '상승→횡보 선제청산은 장·단기 레짐이 필요합니다.';
+        }
+        const transitionBars = global.uptrend_sideways_transition_confirm_bars;
+        if (transitionBars !== undefined && (!Number.isInteger(transitionBars) || transitionBars < 1)) {
+            return '상승→횡보 확인 기간은 1 이상의 정수여야 합니다.';
+        }
+        const stocks = ConfigModel.getConfig()?.stocks || [];
+        for (const stock of stocks) {
+            const stockPct = stock.uptrend_sideways_transition_partial_sell_pct;
+            if (stockPct !== undefined && !(stockPct >= 0 && stockPct < 100)) {
+                return `${stock.ticker || '종목'}: 상승→횡보 선제청산 비율은 0 이상 100 미만이어야 합니다.`;
+            }
+            const effectivePct = stockPct !== undefined ? stockPct : (transitionPct || 0);
+            if (effectivePct > 0 && !global.multi_horizon_regime_enabled) {
+                return `${stock.ticker || '종목'}: 상승→횡보 선제청산은 장·단기 레짐이 필요합니다.`;
+            }
+            const stockBars = stock.uptrend_sideways_transition_confirm_bars;
+            if (stockBars !== undefined && (!Number.isInteger(stockBars) || stockBars < 1)) {
+                return `${stock.ticker || '종목'}: 상승→횡보 확인 기간은 1 이상의 정수여야 합니다.`;
+            }
         }
         return null;
     }
@@ -402,6 +430,8 @@ window.ConfigController = (function () {
         if (vals.uptrend_add_reset_pct !== '') stock.uptrend_add_reset_pct = parseFloat(vals.uptrend_add_reset_pct); else delete stock.uptrend_add_reset_pct;
         if (vals.trendbreak_partial_sell_pct !== '') stock.trendbreak_partial_sell_pct = parseFloat(vals.trendbreak_partial_sell_pct); else delete stock.trendbreak_partial_sell_pct;
         if (vals.trendbreak_trailing_drop_pct !== '') stock.trendbreak_trailing_drop_pct = parseFloat(vals.trendbreak_trailing_drop_pct); else delete stock.trendbreak_trailing_drop_pct;
+        if (vals.uptrend_sideways_transition_partial_sell_pct !== '') stock.uptrend_sideways_transition_partial_sell_pct = parseFloat(vals.uptrend_sideways_transition_partial_sell_pct); else delete stock.uptrend_sideways_transition_partial_sell_pct;
+        if (vals.uptrend_sideways_transition_confirm_bars !== '') stock.uptrend_sideways_transition_confirm_bars = parseInt(vals.uptrend_sideways_transition_confirm_bars, 10); else delete stock.uptrend_sideways_transition_confirm_bars;
 
         const cleanUptrendAmounts = filterNaNs(vals.uptrendAmounts);
         if (cleanUptrendAmounts !== undefined) stock.uptrend_add_amounts = cleanUptrendAmounts; else delete stock.uptrend_add_amounts;

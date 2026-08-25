@@ -402,5 +402,11 @@ def _public_params(rule: StockRule) -> dict:
             "long_channel_lookback": rule.long_channel_lookback,
             "long_sideways_exposure_multiplier": rule.long_sideways_exposure_multiplier,
             "long_uptrend_sideways_sell_multiplier": rule.long_uptrend_sideways_sell_multiplier,
+            "uptrend_sideways_transition_partial_sell_pct": (
+                rule.uptrend_sideways_transition_partial_sell_pct
+            ),
+            "uptrend_sideways_transition_confirm_bars": (
+                rule.uptrend_sideways_transition_confirm_bars
+            ),
         })
     return params

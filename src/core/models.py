@@ -104,6 +104,10 @@ class StockRule:
     multi_horizon_regime_enabled: bool = False
     # 장·단기 모두 상승일 때만 진입·추가매수하고, 횟보 중에는 보유만 한다.
     trend_only_enabled: bool = False
+    # (장기 상승, 단기 상승) -> (장기 상승, 단기 횡보) 확정 시 선제 감축.
+    # 0이면 비활성화되어 기존 동작을 완전히 보존한다.
+    uptrend_sideways_transition_partial_sell_pct: float = 0.0
+    uptrend_sideways_transition_confirm_bars: int = 2
     long_channel_lookback: int = 252
     long_sideways_exposure_multiplier: float = 0.7
     long_uptrend_sideways_sell_multiplier: float = 1.5
@@ -143,6 +147,28 @@ class StockRule:
                 and self.multi_horizon_regime_enabled):
             raise ValueError(
                 f"StockRule({self.ticker}): trend_only_enabled는 "
+                "regime_enabled=true, regime_algo='channel', "
+                "multi_horizon_regime_enabled=true 조합이 필요합니다."
+            )
+
+        if not (0 <= self.uptrend_sideways_transition_partial_sell_pct < 100):
+            raise ValueError(
+                f"StockRule({self.ticker}): uptrend_sideways_transition_partial_sell_pct는 "
+                "0 이상 100 미만이어야 합니다."
+            )
+        if (not isinstance(self.uptrend_sideways_transition_confirm_bars, int)
+                or isinstance(self.uptrend_sideways_transition_confirm_bars, bool)
+                or self.uptrend_sideways_transition_confirm_bars < 1):
+            raise ValueError(
+                f"StockRule({self.ticker}): uptrend_sideways_transition_confirm_bars는 "
+                "1 이상의 정수여야 합니다."
+            )
+        if self.uptrend_sideways_transition_partial_sell_pct > 0 and not (
+                self.regime_enabled
+                and self.regime_algo == "channel"
+                and self.multi_horizon_regime_enabled):
+            raise ValueError(
+                f"StockRule({self.ticker}): 상승→횡보 선제청산은 "
                 "regime_enabled=true, regime_algo='channel', "
                 "multi_horizon_regime_enabled=true 조합이 필요합니다."
             )
@@ -399,6 +425,8 @@ class SplitSignal:
     # 추세이탈 분할청산(Trailing Lock 1단계) 매도 표식.
     # 체결 시 잔량은 유지하고 trailing_lock 상태를 활성화한다.
     regime_partial_liquidation: bool = False
+    # 상승→횡보 선제 감축. 고차수 lot부터 차감하되 trailing lock은 만들지 않는다.
+    transition_partial_liquidation: bool = False
     # 횡보장 trailing 벌크 매도 표식. 엔진이 _apply_trailing_bulk()로 라우팅.
     # regime_state 변경 없이 fired lot만 고차수부터 차감한다.
     trailing_bulk: bool = False

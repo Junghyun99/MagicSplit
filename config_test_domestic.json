@@ -380,6 +380,8 @@
     "trendbreak_trailing_drop_pct": 3.0,
     "multi_horizon_regime_enabled": true,
     "trend_only_enabled": true,
+    "uptrend_sideways_transition_partial_sell_pct": 50.0,
+    "uptrend_sideways_transition_confirm_bars": 2,
     "long_channel_lookback": 252,
     "long_sideways_exposure_multiplier": 0.7,
     "long_uptrend_sideways_sell_multiplier": 1

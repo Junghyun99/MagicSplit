@@ -122,6 +122,14 @@
                     <label>장기 상승·단기 횡보 익절 배율</label>
                     <input type="number" min="1" step="0.1" id="global-long-uptrend-sideways-sell-multiplier" class="form-control" placeholder="1.5">
                 </div>
+                <div class="form-group multi-horizon-setting">
+                    <label>상승→횡보 선제청산 (%)</label>
+                    <input type="number" min="0" max="99.9" step="0.1" id="global-uptrend-sideways-transition-partial-sell-pct" class="form-control" placeholder="0.0">
+                </div>
+                <div class="form-group multi-horizon-setting">
+                    <label>상승→횡보 확인 (거래일)</label>
+                    <input type="number" min="1" step="1" id="global-uptrend-sideways-transition-confirm-bars" class="form-control" placeholder="2">
+                </div>
                 <div class="form-group">
                     <label>횡보 기울기 밴드 (%)</label>
                     <input type="number" step="0.1" id="global-channel-slope-band-pct" class="form-control" placeholder="8.0">
@@ -149,6 +157,7 @@
             <small id="multi-horizon-policy-note" class="form-text" style="display:none;">
                 장기 상승: 노출 100% · 장기 횡보: 노출 70% · 장기 하락: 신규·추가매수 차단 · 장기 상승·단기 횡보: 일반 익절 기준 1.5배
                 <br>추세 전용: 장·단기 상승에서만 진입하고 횡보 시 보유합니다.
+                <br>상승→횡보 선제청산: 지정 거래일 연속 확인 후 보유량 일부를 감축하고, 하단 이탈 시 기존 잔량 관리로 연결합니다.
             </small>
         </div>
 
@@ -274,6 +283,14 @@
                     <div class="form-group">
                         <label>잔량 추종 하락 (%)</label>
                         <input type="number" step="0.1" id="edit-trendbreak-trailing-drop-pct" class="form-control" placeholder="3.0">
+                    </div>
+                    <div class="form-group">
+                        <label>상승→횡보 선제청산 (%)</label>
+                        <input type="number" min="0" max="99.9" step="0.1" id="edit-uptrend-sideways-transition-partial-sell-pct" class="form-control" placeholder="글로벌 상속">
+                    </div>
+                    <div class="form-group">
+                        <label>상승→횡보 확인 (거래일)</label>
+                        <input type="number" min="1" step="1" id="edit-uptrend-sideways-transition-confirm-bars" class="form-control" placeholder="글로벌 상속">
                     </div>
                 </div>
                 <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px;">

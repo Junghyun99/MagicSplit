@@ -895,6 +895,17 @@ class MagicSplitEngine:
                     st["last_add_swing_high"] = sig.regime_add_swing_high
                     st["last_add_price"] = exe.price
                     st["last_uptrend_add_date"] = today
+                # 상승→횡보 선제 감축은 실제 신규·추가매수 체결 후에만 재무장한다.
+                if regime_state is not None:
+                    st = regime_state.setdefault(exe.ticker, {})
+                    st.pop("transition_de_risked", None)
+                    for key in (
+                        "uptrend_sideways_transition_days",
+                        "uptrend_sideways_transition_last_date",
+                        "uptrend_sideways_transition_target_qty",
+                        "uptrend_sideways_transition_sold_qty",
+                    ):
+                        st.pop(key, None)
                 # 동적 재매수 소비: 매수 체결 시 직전 매도가 초기화
                 if last_sell_prices is not None and exe.ticker in last_sell_prices:
                     self.logger.info(
@@ -930,6 +941,14 @@ class MagicSplitEngine:
                     updated = self._apply_partial_liquidation(
                         updated, exe, disp, last_sell_prices, regime_state,
                         reentry_gate=sig.reentry_gate or "resistance",
+                    )
+                    continue
+
+                # 상승→횡보 선제 감축: lot 차감만 수행하고 추종 데드라인은 만들지 않는다.
+                if (sig is not None and sig.transition_partial_liquidation
+                        and sig.lot_id is None):
+                    updated = self._apply_transition_partial_liquidation(
+                        updated, exe, disp, last_sell_prices, regime_state,
                     )
                     continue
 
@@ -1173,6 +1192,57 @@ class MagicSplitEngine:
                     f"하락 허용치 {drop_pct}%)"
                 )
 
+        return updated
+
+    def _apply_transition_partial_liquidation(
+        self,
+        updated: List[PositionLot],
+        exe: TradeExecution,
+        disp: str,
+        last_sell_prices: Optional[dict],
+        regime_state: Optional[dict],
+    ) -> List[PositionLot]:
+        """상승→횡보 선제 감축 체결을 고차수 lot부터 반영한다.
+
+        기존 추세이탈 부분청산과 달리 trailing_lock은 활성화하지 않는다.
+        부분체결은 목표 누적 체결량에 더해 같은 횡보 국면에서 재시도한다.
+        """
+        updated, consumed = self._drain_lots_by_qty(
+            updated, exe.ticker, exe.quantity, exe,
+        )
+        if consumed > 0 and last_sell_prices is not None:
+            last_sell_prices[exe.ticker] = exe.price
+
+        remaining = [l for l in updated if l.ticker == exe.ticker]
+        self.logger.info(
+            f"[Position] 상승→횡보 선제 감축: {disp} "
+            f"{format_qty(consumed, self.market_type)} 소진 "
+            f"(잔여 {format_qty(sum(l.quantity for l in remaining), self.market_type)}), "
+            f"실현손익 {format_money(exe.realized_pnl, self.market_type)}"
+        )
+
+        if regime_state is not None and consumed > 0:
+            st = regime_state.setdefault(exe.ticker, {})
+            sold_key = "uptrend_sideways_transition_sold_qty"
+            target_key = "uptrend_sideways_transition_target_qty"
+            sold_qty = float(st.get(sold_key, 0) or 0) + consumed
+            st[sold_key] = sold_qty
+            target_qty = float(st.get(target_key, sold_qty) or sold_qty)
+            if sold_qty + 1e-12 >= target_qty:
+                st["transition_de_risked"] = True
+                for key in (
+                    "uptrend_sideways_transition_days",
+                    "uptrend_sideways_transition_last_date",
+                    target_key,
+                    sold_key,
+                ):
+                    st.pop(key, None)
+
+        if regime_state is not None and not remaining:
+            self._reset_regime_after_flat(
+                regime_state, exe.ticker, mark_liquidation=True,
+                reentry_gate="midline",
+            )
         return updated
 
     def _apply_trailing_bulk(

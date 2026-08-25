@@ -116,6 +116,7 @@ class StrategyConfig:
         "regime_min_bars", "uptrend_max_adds",
         "uptrend_swing_lookback", "trendbreak_chandelier_lookback",
         "channel_lookback", "long_channel_lookback",
+        "uptrend_sideways_transition_confirm_bars",
     )
     _REGIME_KEYS_FLOAT = (
         "regime_adx_trend", "regime_adx_range",
@@ -125,6 +126,7 @@ class StrategyConfig:
         "channel_stddev_k", "channel_slope_band_pct",
         "channel_breakdown_tolerance_pct", "channel_breakdown_atr_multiplier",
         "long_sideways_exposure_multiplier", "long_uptrend_sideways_sell_multiplier",
+        "uptrend_sideways_transition_partial_sell_pct",
     )
     _REGIME_KEYS_LIST = ("uptrend_add_amounts",)
 

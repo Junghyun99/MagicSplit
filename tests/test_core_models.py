@@ -364,6 +364,27 @@ class TestStockRuleChannelRegime:
         )
         assert rule.trend_only_enabled is True
 
+    def test_transition_partial_sell_defaults_disabled_and_validates_dependencies(self):
+        rule = StockRule("AAPL", -5, 10, 100, 10)
+        assert rule.uptrend_sideways_transition_partial_sell_pct == 0.0
+        assert rule.uptrend_sideways_transition_confirm_bars == 2
+
+        with pytest.raises(ValueError, match="상승→횡보 선제청산"):
+            StockRule(
+                "AAPL", -5, 10, 100, 10,
+                uptrend_sideways_transition_partial_sell_pct=50,
+            )
+        with pytest.raises(ValueError, match="100 미만"):
+            StockRule(
+                "AAPL", -5, 10, 100, 10,
+                uptrend_sideways_transition_partial_sell_pct=100,
+            )
+        with pytest.raises(ValueError, match="1 이상의 정수"):
+            StockRule(
+                "AAPL", -5, 10, 100, 10,
+                uptrend_sideways_transition_confirm_bars=0,
+            )
+
     def test_channel_algo_accepted(self):
         rule = StockRule(
             "AAPL", -5.0, 10.0, 500, 10,

@@ -203,6 +203,12 @@ class SplitEvaluator:
                     )
                     if exit_signals is not None:
                         return exit_signals
+                transition_signals = self._evaluate_uptrend_sideways_transition(
+                    rule, ticker_lots, current_price, regime_st, multi,
+                    evaluation_date=evaluation_date,
+                )
+                if transition_signals is not None:
+                    return transition_signals
                 uptrend_resolved = (
                     trend_only_uptrend_confirmed
                     if rule.trend_only_enabled
@@ -569,10 +575,95 @@ class SplitEvaluator:
                 )
         return {
             "long": long_regime, "short": short_regime,
+            "previous_long": previous_long, "previous_short": previous_short,
             "buy_locked": buy_locked, "buy_halted": buy_halted,
             "lock_reason": "장기 하락 확정 - 신규·추가 매수 차단",
             "exposure_limit": exposure_limit, "sell_multiplier": sell_multiplier,
         }
+
+    def _evaluate_uptrend_sideways_transition(
+        self, rule: StockRule, lots: List[PositionLot], current_price: float,
+        st: dict, multi: Optional[dict], evaluation_date: Optional[str] = None,
+    ) -> Optional[List[SplitSignal]]:
+        """상승 정렬에서 단기 횡보로 전환될 때 잔고를 한 번 선제 감축한다.
+
+        하단 이탈 경로보다 뒤에서 호출되므로 기존 위험청산이 항상 우선한다.
+        목표와 누적 체결량은 상태에 남겨 부분체결을 재시도하지만, 완료 후에는
+        실제 신규 매수 체결 전까지 다시 무장하지 않는다.
+        """
+        pct = rule.uptrend_sideways_transition_partial_sell_pct
+        if pct <= 0 or multi is None or not lots:
+            return None
+
+        prefix = "uptrend_sideways_transition_"
+        current_pair = (multi["long"], multi["short"])
+        target_pair = (Regime.UPTREND, Regime.SIDEWAYS)
+
+        if current_pair != target_pair:
+            sold_qty = float(st.get(prefix + "sold_qty", 0) or 0)
+            if sold_qty > 0 and not st.get("transition_de_risked"):
+                st["transition_de_risked"] = True
+            for key in (
+                prefix + "days", prefix + "last_date", prefix + "target_qty",
+                prefix + "sold_qty",
+            ):
+                st.pop(key, None)
+            return None
+
+        if st.get("transition_de_risked"):
+            return None
+
+        days = int(st.get(prefix + "days", 0) or 0)
+        if days == 0:
+            if not (
+                multi.get("previous_long") == str(Regime.UPTREND)
+                and multi.get("previous_short") == str(Regime.UPTREND)
+            ):
+                return None
+
+        date_key = evaluation_date or "__undated__"
+        if st.get(prefix + "last_date") != date_key:
+            days += 1
+            st[prefix + "days"] = days
+            st[prefix + "last_date"] = date_key
+
+        if days < rule.uptrend_sideways_transition_confirm_bars:
+            return []
+
+        total_qty = sum(l.quantity for l in lots)
+        min_qty = rule.min_order_qty()
+        target_qty = st.get(prefix + "target_qty")
+        if target_qty is None:
+            target_qty = rule.quantize_qty(total_qty * pct / 100, round_up=True)
+            max_sellable = rule.quantize_qty(max(0, total_qty - min_qty))
+            target_qty = min(target_qty, max_sellable)
+            st[prefix + "target_qty"] = target_qty
+
+        sold_qty = float(st.get(prefix + "sold_qty", 0) or 0)
+        remaining_target = max(0, float(target_qty) - sold_qty)
+        max_sellable = rule.quantize_qty(max(0, total_qty - min_qty))
+        sell_qty = min(rule.quantize_qty(remaining_target, round_up=True), max_sellable)
+        if sell_qty < min_qty:
+            return [SplitSignal(
+                ticker=rule.ticker, lot_id=None, action=OrderAction.SELL,
+                quantity=0, price=current_price,
+                reason="상승→횡보 선제청산 대기 - 최소 1단위 잔량 보존",
+                pct_change=0.0, is_blocked=True,
+            )]
+
+        avg_buy = sum(l.buy_price * l.quantity for l in lots) / total_qty
+        change = (current_price - avg_buy) / avg_buy * 100 if avg_buy else 0.0
+        bars = rule.uptrend_sideways_transition_confirm_bars
+        return [SplitSignal(
+            ticker=rule.ticker, lot_id=None, action=OrderAction.SELL,
+            quantity=sell_qty, price=current_price,
+            reason=f"장기 상승·단기 횡보 전환 {bars}일 확정 선제 {pct:g}% 청산",
+            pct_change=change, level=max(l.level for l in lots),
+            transition_partial_liquidation=True,
+            exit_trigger="uptrend_sideways_transition",
+            exit_long_regime=str(Regime.UPTREND),
+            exit_short_regime=str(Regime.SIDEWAYS),
+        )]
 
     @staticmethod
     def _can_reenter_after_full_liquidation(reading, multi: dict, current_price: float) -> bool:
