@@ -198,7 +198,8 @@ class SplitEvaluator:
                 if rule.regime_algo == "channel":
                     exit_signals = self._evaluate_channel_exit(
                         rule, ticker_lots, current_price, reading, regime_st,
-                        downtrend_blocked, portfolio, evaluation_date=evaluation_date,
+                        downtrend_blocked, portfolio, multi=multi,
+                        evaluation_date=evaluation_date,
                     )
                     if exit_signals is not None:
                         return exit_signals
@@ -1270,6 +1271,7 @@ class SplitEvaluator:
         st: dict,
         downtrend_blocked: bool,
         portfolio: Optional[Portfolio],
+        multi: Optional[dict] = None,
         evaluation_date: Optional[str] = None,
     ) -> Optional[List[SplitSignal]]:
         """채널 모드(regime_algo="channel")의 이탈 판정을 통상 흐름 앞에서 수행한다.
@@ -1330,6 +1332,9 @@ class SplitEvaluator:
                 rule, ticker_lots, current_price, reading, st,
                 reentry_gate="resistance",
                 exit_reason="단기 채널 하락 전환",
+                exit_trigger="channel_downtrend_transition",
+                exit_short_regime=str(reading.regime),
+                exit_long_regime=str(multi["long"]) if multi else None,
             )
 
         # 3. 상승/횡보 중 하단 채널선 하향 돌파 -> 연속 일(日) 확정 후 이탈 청산
@@ -1401,10 +1406,17 @@ class SplitEvaluator:
                         f"채널하단 {format_money(support, rule.market_type)}, "
                         f"{breakdown_rule_text}) -> 이탈 청산 진행"
                     )
+            short_label = {
+                Regime.UPTREND: "상승",
+                Regime.SIDEWAYS: "횡보",
+            }.get(reading.regime, "단기")
             return self._handle_trendbreak(
                 rule, ticker_lots, current_price, reading, st,
                 reentry_gate="midline",
-                exit_reason="단기 채널 하단 이탈",
+                exit_reason=f"{short_label} 채널 하단 이탈",
+                exit_trigger="channel_lower_break",
+                exit_short_regime=str(reading.regime),
+                exit_long_regime=str(multi["long"]) if multi else None,
             )
 
         # 이탈선 위로 회복 -> 청산 근거가 사라졌으므로 확정도 취소한다.
@@ -1509,6 +1521,9 @@ class SplitEvaluator:
         st: dict,
         reentry_gate: str = "resistance",
         exit_reason: str = "추세 이탈",
+        exit_trigger: str = "trend_break",
+        exit_long_regime: Optional[str] = None,
+        exit_short_regime: Optional[str] = None,
     ) -> List[SplitSignal]:
         """이탈 원인별 전량 청산 또는 분할 매도+추종 데드라인 활성화를 결정한다."""
         total_qty = sum(l.quantity for l in ticker_lots)
@@ -1548,6 +1563,9 @@ class SplitEvaluator:
                 level=max_level,
                 regime_liquidation=True,
                 reentry_gate=reentry_gate,
+                exit_trigger=exit_trigger,
+                exit_long_regime=exit_long_regime,
+                exit_short_regime=exit_short_regime,
             )]
 
         # 분할 매도: partial_pct% 만큼 즉시 매도, 나머지는 추종 데드라인
@@ -1572,18 +1590,28 @@ class SplitEvaluator:
                 level=max_level,
                 regime_liquidation=True,
                 reentry_gate=reentry_gate,
+                exit_trigger=exit_trigger,
+                exit_long_regime=exit_long_regime,
+                exit_short_regime=exit_short_regime,
             )]
 
         if sell_qty <= 0:
             # 0%: 즉시 매도 없이 전량 추종 데드라인만 활성화
             # 상태 갱신은 여기서 직접 수행 (매도 체결이 없으므로 엔진 경유 불가)
             st["downtrend_partially_liquidated"] = True
-            st["trailing_lock"] = {
+            trailing_lock = {
                 "active": True,
                 "lock_price": current_price,
                 "drop_pct": rule.trendbreak_trailing_drop_pct,
                 "reentry_gate": reentry_gate,
             }
+            if exit_trigger is not None:
+                trailing_lock["exit_trigger"] = exit_trigger
+            if exit_long_regime is not None:
+                trailing_lock["exit_long_regime"] = exit_long_regime
+            if exit_short_regime is not None:
+                trailing_lock["exit_short_regime"] = exit_short_regime
+            st["trailing_lock"] = trailing_lock
             # 주문 없이 상태 전환이 끝났으므로 여기가 곧 커밋 지점이다.
             clear_breakdown_confirmation(st)
             if self._logger:
@@ -1619,6 +1647,9 @@ class SplitEvaluator:
             level=max_level,
             regime_partial_liquidation=True,
             reentry_gate=reentry_gate,
+            exit_trigger=exit_trigger,
+            exit_long_regime=exit_long_regime,
+            exit_short_regime=exit_short_regime,
         )]
 
     def _evaluate_trailing_lock(
@@ -1705,6 +1736,9 @@ class SplitEvaluator:
                 level=max_level,
                 regime_liquidation=True,  # 전량 청산 -> 레짐 리셋
                 reentry_gate=lock.get("reentry_gate", "resistance"),
+                exit_trigger=lock.get("exit_trigger"),
+                exit_long_regime=lock.get("exit_long_regime"),
+                exit_short_regime=lock.get("exit_short_regime"),
             )]
 
         # 3. 대기 (매수/매도 없음)

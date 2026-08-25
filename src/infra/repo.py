@@ -183,6 +183,9 @@ class JsonRepository(IRepository):
                 base.pop("entry_long_regime", None)
             if base.get("entry_short_regime") is None:
                 base.pop("entry_short_regime", None)
+            for field in ("exit_trigger", "exit_long_regime", "exit_short_regime"):
+                if base.get(field) is None:
+                    base.pop(field, None)
 
             # 통합 청산(Bulk): 소진 lot별 N개 레코드로 분리 기록(차수별 손익 보존)
             if breakdown:

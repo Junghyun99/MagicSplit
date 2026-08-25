@@ -260,8 +260,42 @@ class TestChannelSidewaysBreakdown:
         assert signals[0].quantity == 10
         assert signals[0].regime_liquidation is True
         assert signals[0].reentry_gate == "midline"
-        assert "단기 채널 하단 이탈" in signals[0].reason
+        assert "횡보 채널 하단 이탈" in signals[0].reason
         assert "단기 채널 하락 전환" not in signals[0].reason
+        assert signals[0].exit_trigger == "channel_lower_break"
+        assert signals[0].exit_short_regime == "sideways"
+        assert signals[0].exit_long_regime is None
+
+    def test_uptrend_breakdown_is_labeled_separately(self, evaluator):
+        window = _uptrend_window()
+        rule = _channel_rule(trendbreak_partial_sell_pct=100.0)
+        support = _support(rule, window)
+
+        signals = _eval_until_confirmed(
+            evaluator, rule, [_lot()], _pf(support * 0.95), window, {},
+        )
+
+        assert len(signals) == 1
+        assert "상승 채널 하단 이탈" in signals[0].reason
+        assert signals[0].exit_trigger == "channel_lower_break"
+        assert signals[0].exit_short_regime == "uptrend"
+
+    def test_breakdown_records_long_and_short_exit_regimes(self, evaluator):
+        window = _sideways_window(n=252)
+        rule = _channel_rule(
+            trendbreak_partial_sell_pct=100.0,
+            multi_horizon_regime_enabled=True,
+            long_channel_lookback=126,
+        )
+        support = _support(rule, window)
+
+        signals = _eval_until_confirmed(
+            evaluator, rule, [_lot()], _pf(support * 0.95), window, {},
+        )
+
+        assert len(signals) == 1
+        assert signals[0].exit_long_regime == "sideways"
+        assert signals[0].exit_short_regime == "sideways"
 
     def test_breakdown_tolerance_delays_trigger(self, evaluator):
         # 허용 오차 5%: 지지선 바로 아래로는 이탈 아님, 5% 넘게 뚫어야 이탈
@@ -424,7 +458,9 @@ class TestChannelDowntrendLiquidation:
         assert signals[0].regime_liquidation is True
         assert signals[0].reentry_gate == "resistance"
         assert "단기 채널 하락 전환" in signals[0].reason
-        assert "단기 채널 하단 이탈" not in signals[0].reason
+        assert "채널 하단 이탈" not in signals[0].reason
+        assert signals[0].exit_trigger == "channel_downtrend_transition"
+        assert signals[0].exit_short_regime == "downtrend"
 
     def test_downtrend_latch_blocks_initial_buy(self, evaluator):
         window = _downtrend_window()
@@ -509,6 +545,9 @@ class TestChannelTrailingLock:
         lots = [_lot(qty=5)]
         st = {"AAPL": {"trailing_lock": {
             "active": True, "lock_price": lock_price, "drop_pct": 3.0,
+            "exit_trigger": "channel_lower_break",
+            "exit_long_regime": "uptrend",
+            "exit_short_regime": "sideways",
         }}}
         signals = evaluator.evaluate_stock(
             rule, lots, _pf(lock_price * 0.99), ohlc_window=window, regime_state=st,
@@ -556,6 +595,9 @@ class TestChannelTrailingLock:
         lots = [_lot(qty=5)]
         st = {"AAPL": {"trailing_lock": {
             "active": True, "lock_price": lock_price, "drop_pct": 3.0,
+            "exit_trigger": "channel_lower_break",
+            "exit_long_regime": "uptrend",
+            "exit_short_regime": "sideways",
         }}}
         signals = evaluator.evaluate_stock(
             rule, lots, _pf(lock_price * 0.96), ohlc_window=window, regime_state=st,
@@ -564,6 +606,9 @@ class TestChannelTrailingLock:
         assert signals[0].action == OrderAction.SELL
         assert signals[0].quantity == 5
         assert signals[0].regime_liquidation is True
+        assert signals[0].exit_trigger == "channel_lower_break"
+        assert signals[0].exit_long_regime == "uptrend"
+        assert signals[0].exit_short_regime == "sideways"
 
     def test_lock_takes_precedence_over_downtrend_latch(self, evaluator):
         # 락 + 하락 래치 동시 활성: 락 평가가 우선 (반복 분할매도 방지)

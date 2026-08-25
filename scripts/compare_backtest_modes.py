@@ -34,7 +34,7 @@ def _reason_line(record: dict, ticker: str) -> str:
 
 def _is_liquidation(reason: str) -> bool:
     return any(token in reason for token in (
-        "추세 이탈", "단기 채널 하단 이탈", "단기 채널 하락 전환",
+        "추세 이탈", "채널 하단 이탈", "단기 채널 하락 전환",
         "추종 데드라인", "장·단기 하락 정렬",
     ))
 
@@ -51,6 +51,7 @@ def _adjusted_realized(execution: dict) -> float:
 
 def _event_stats(history: Iterable[dict]) -> dict:
     event_pnl: Dict[tuple, float] = defaultdict(float)
+    exit_context_event_pnl: Dict[tuple, float] = defaultdict(float)
     ticker_pnl: Dict[str, float] = defaultdict(float)
     entry_pnl: Dict[str, float] = defaultdict(float)
     entry_buys: Dict[str, int] = defaultdict(int)
@@ -71,6 +72,11 @@ def _event_stats(history: Iterable[dict]) -> dict:
             kind = "liquidation" if _is_liquidation(reason) else "sideways"
             pnl = _adjusted_realized(execution)
             event_pnl[(record.get("date", ""), ticker, reason, kind)] += pnl
+            if kind == "liquidation":
+                context = _exit_context(execution)
+                exit_context_event_pnl[
+                    (record.get("date", ""), ticker, reason, context)
+                ] += pnl
             ticker_pnl[ticker] += pnl
 
             entry_pnl[_entry_kind(execution)] += pnl
@@ -81,6 +87,17 @@ def _event_stats(history: Iterable[dict]) -> dict:
     sideways_values = [
         pnl for (*_, kind), pnl in event_pnl.items() if kind == "sideways"
     ]
+    exit_contexts = {}
+    for (*_, context), pnl in exit_context_event_pnl.items():
+        stats = exit_contexts.setdefault(context, {
+            "events": 0, "loss_events": 0, "pnl": 0.0,
+            "gain": 0.0, "loss": 0.0,
+        })
+        stats["events"] += 1
+        stats["loss_events"] += int(pnl < 0)
+        stats["pnl"] += pnl
+        stats["gain"] += max(pnl, 0.0)
+        stats["loss"] += min(pnl, 0.0)
     return {
         "buy_executions": buys,
         "sell_executions": sells,
@@ -91,6 +108,7 @@ def _event_stats(history: Iterable[dict]) -> dict:
         "loss_liquidation_events": sum(v < 0 for v in liquidation_values),
         "entry_pnl": dict(entry_pnl),
         "entry_buys": dict(entry_buys),
+        "exit_contexts": exit_contexts,
         "worst_tickers": sorted(ticker_pnl.items(), key=lambda item: item[1])[:10],
     }
 
@@ -103,6 +121,34 @@ def _entry_kind(execution: dict) -> str:
     if long_regime is None or short_regime is None:
         return "unknown"
     return "non_aligned"
+
+
+def _exit_context(execution: dict) -> tuple:
+    return (
+        execution.get("exit_trigger") or "legacy_unknown",
+        execution.get("exit_long_regime") or "unknown",
+        execution.get("exit_short_regime") or "unknown",
+    )
+
+
+def _exit_context_label(context: tuple) -> str:
+    trigger, long_regime, short_regime = context
+    trigger_label = {
+        "channel_lower_break": "채널 하단 이탈",
+        "channel_downtrend_transition": "단기 채널 하락 전환",
+        "trend_break": "추세 이탈",
+        "legacy_unknown": "과거 호환/불명",
+    }.get(trigger, trigger)
+    regime_label = {
+        "uptrend": "상승",
+        "sideways": "횡보",
+        "downtrend": "하락",
+        "unknown": "불명",
+    }
+    return (
+        f"{trigger_label} · 장기 {regime_label.get(long_regime, long_regime)}"
+        f"/단기 {regime_label.get(short_regime, short_regime)}"
+    )
 
 
 def analyze_output(output_dir: Path, initial_cash: float) -> dict:
@@ -230,6 +276,28 @@ def render_report(baseline: dict, trend: dict, args: argparse.Namespace) -> str:
         lines.append(
             f"| {labels[key]} | {_fmt_money(baseline['entry_pnl'].get(key, 0.0))} "
             f"| {_fmt_money(trend['entry_pnl'].get(key, 0.0))} |"
+        )
+
+    lines.extend([
+        "",
+        "## 청산 당시 장·단기 레짐별 손익",
+        "",
+        "| 청산 원인·레짐 | 혼합 손익(손실 이벤트/전체) | 추세 전용 손익(손실 이벤트/전체) |",
+        "|---|---:|---:|",
+    ])
+    contexts = sorted(
+        set(baseline["exit_contexts"]) | set(trend["exit_contexts"]),
+        key=lambda context: _exit_context_label(context),
+    )
+    for context in contexts:
+        base = baseline["exit_contexts"].get(context, {})
+        only = trend["exit_contexts"].get(context, {})
+        lines.append(
+            f"| {_exit_context_label(context)} "
+            f"| {_fmt_money(base.get('pnl', 0.0))} "
+            f"({base.get('loss_events', 0):,}/{base.get('events', 0):,}) "
+            f"| {_fmt_money(only.get('pnl', 0.0))} "
+            f"({only.get('loss_events', 0):,}/{only.get('events', 0):,}) |"
         )
 
     lines.extend([

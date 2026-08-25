@@ -365,6 +365,9 @@ class TradeExecution:
     liquidation_lots: Optional[List[dict]] = None
     entry_long_regime: Optional[str] = None
     entry_short_regime: Optional[str] = None
+    exit_trigger: Optional[str] = None
+    exit_long_regime: Optional[str] = None
+    exit_short_regime: Optional[str] = None
 
 
 @dataclass
@@ -389,6 +392,10 @@ class SplitSignal:
     # 채널 이탈 청산 뒤 적용할 신규 진입 게이트. 체결 확정 시 regime_state에 저장한다.
     # "midline"은 상승/횡보 채널 이탈, "resistance"는 하락 채널 청산에 사용한다.
     reentry_gate: Optional[str] = None
+    # 청산 당시 원인과 장·단기 레짐. 실행 내역에 복사해 사후 손익 분석에 사용한다.
+    exit_trigger: Optional[str] = None
+    exit_long_regime: Optional[str] = None
+    exit_short_regime: Optional[str] = None
     # 추세이탈 분할청산(Trailing Lock 1단계) 매도 표식.
     # 체결 시 잔량은 유지하고 trailing_lock 상태를 활성화한다.
     regime_partial_liquidation: bool = False

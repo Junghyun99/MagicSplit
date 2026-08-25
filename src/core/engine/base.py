@@ -910,6 +910,10 @@ class MagicSplitEngine:
 
             elif exe.action == OrderAction.SELL:
                 sig = signal_map.get((exe.ticker, OrderAction.SELL))
+                if sig is not None:
+                    exe.exit_trigger = sig.exit_trigger
+                    exe.exit_long_regime = sig.exit_long_regime
+                    exe.exit_short_regime = sig.exit_short_regime
 
                 # 통합 전량청산(Bulk Sell): lot_id 없는 청산 매도는 체결 수량을
                 # 고차수(High Level)부터 순차 차감하며 lot을 지운다. 손익은 차감한
@@ -1147,12 +1151,19 @@ class MagicSplitEngine:
                 drop_pct = rule.trendbreak_trailing_drop_pct if rule is not None else 3.0
 
                 st["downtrend_partially_liquidated"] = True
-                st["trailing_lock"] = {
+                trailing_lock = {
                     "active": True,
                     "lock_price": exe.price,
                     "drop_pct": drop_pct,
                     "reentry_gate": reentry_gate,
                 }
+                if exe.exit_trigger is not None:
+                    trailing_lock["exit_trigger"] = exe.exit_trigger
+                if exe.exit_long_regime is not None:
+                    trailing_lock["exit_long_regime"] = exe.exit_long_regime
+                if exe.exit_short_regime is not None:
+                    trailing_lock["exit_short_regime"] = exe.exit_short_regime
+                st["trailing_lock"] = trailing_lock
                 # 청산이 실제로 반영된 지금이 확정 카운터를 비울 시점이다.
                 # (신호 시점에 비우면 주문 거절 시 확정을 잃는다)
                 clear_breakdown_confirmation(st)

@@ -1560,6 +1560,22 @@ class TestBulkLiquidation:
         # (90-70)+(90-60)+(90-50) per 5주 = (20+30+40)*5 = 450
         assert exe.realized_pnl == 450.0
 
+    def test_exit_context_is_copied_from_signal_to_execution(self, engine):
+        sig = self._bulk_signal(15)
+        sig.exit_trigger = "channel_lower_break"
+        sig.exit_long_regime = "uptrend"
+        sig.exit_short_regime = "sideways"
+        exe = self._exe(15)
+
+        engine._update_positions(
+            self._positions(), [sig], [exe],
+            "2024-01-02", last_sell_prices={}, regime_state={},
+        )
+
+        assert exe.exit_trigger == "channel_lower_break"
+        assert exe.exit_long_regime == "uptrend"
+        assert exe.exit_short_regime == "sideways"
+
     def test_breakdown_records_per_lot(self, engine):
         exe = self._exe(15)
         engine._update_positions(
@@ -1678,6 +1694,24 @@ class TestPartialLiquidation:
         # 기본 3.0% 설정 확인
         assert lock["drop_pct"] == 3.0
         assert lock["reentry_gate"] == "resistance"
+
+    def test_partial_liquidation_carries_exit_context_into_trailing_lock(self, engine):
+        sig = self._partial_signal(7)
+        sig.exit_trigger = "channel_lower_break"
+        sig.exit_long_regime = "uptrend"
+        sig.exit_short_regime = "sideways"
+        exe = self._exe(7)
+        regime_state = {"AAPL": {}}
+
+        engine._update_positions(
+            self._positions(), [sig], [exe],
+            "2024-01-02", last_sell_prices={}, regime_state=regime_state,
+        )
+
+        lock = regime_state["AAPL"]["trailing_lock"]
+        assert lock["exit_trigger"] == "channel_lower_break"
+        assert lock["exit_long_regime"] == "uptrend"
+        assert lock["exit_short_regime"] == "sideways"
 
 
 class TestNormalSingleSell:
