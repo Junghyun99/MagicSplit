@@ -73,6 +73,9 @@ def test_aligned_downtrend_liquidates_all_remaining_lots_after_confirmation():
     assert signals[0].action == OrderAction.SELL
     assert signals[0].regime_liquidation
     assert signals[0].quantity == 5
+    assert signals[0].exit_trigger == "aligned_downtrend_liquidation"
+    assert signals[0].exit_long_regime == str(Regime.DOWNTREND)
+    assert signals[0].exit_short_regime == str(Regime.DOWNTREND)
     assert st["AAPL"]["aligned_downtrend_reentry_lock"] is True
 
 

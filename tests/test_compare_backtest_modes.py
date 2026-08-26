@@ -1,4 +1,6 @@
-from scripts.compare_backtest_modes import _event_stats, _is_liquidation
+from scripts.compare_backtest_modes import (
+    _event_stats, _exit_context_label, _is_liquidation,
+)
 
 
 def test_liquidation_reason_recognizes_legacy_and_split_channel_reasons():
@@ -29,3 +31,11 @@ def test_event_stats_groups_liquidation_by_exit_regimes():
     assert context["events"] == 1
     assert context["loss_events"] == 1
     assert context["pnl"] < -20.0  # 매수 수수료 보정 포함
+
+
+def test_aligned_downtrend_liquidation_has_distinct_report_label():
+    context = (
+        "aligned_downtrend_liquidation", "downtrend", "downtrend",
+    )
+
+    assert _exit_context_label(context) == "장·단기 하락 정렬 · 장기 하락/단기 하락"

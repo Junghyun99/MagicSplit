@@ -143,6 +143,7 @@ def _exit_context_label(context: tuple) -> str:
     trigger_label = {
         "channel_lower_break": "채널 하단 이탈",
         "channel_downtrend_transition": "단기 채널 하락 전환",
+        "aligned_downtrend_liquidation": "장·단기 하락 정렬",
         "trend_break": "추세 이탈",
         "uptrend_sideways_transition": "상승→횡보 선제청산",
         "legacy_unknown": "과거 호환/불명",

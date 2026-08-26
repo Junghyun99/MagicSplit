@@ -886,6 +886,9 @@ class SplitEvaluator:
             reason=f"장·단기 하락 정렬 전량 청산 ({pct:+.1f}%)",
             pct_change=pct, level=max(l.level for l in lots),
             regime_liquidation=True, reentry_gate="resistance",
+            exit_trigger="aligned_downtrend_liquidation",
+            exit_long_regime=str(Regime.DOWNTREND),
+            exit_short_regime=str(Regime.DOWNTREND),
         )]
 
     def _effective_sell_threshold(self, rule: StockRule, lot: PositionLot) -> float:
