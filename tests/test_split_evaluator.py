@@ -1,4 +1,5 @@
 # tests/test_split_evaluator.py
+import pandas as pd
 import pytest
 from src.core.logic.split_evaluator import SplitEvaluator
 from src.core.models import (
@@ -37,6 +38,78 @@ class TestEvaluateInitialBuy:
         assert len(signals) == 1
         assert signals[0].is_blocked is True
         assert "매수 불가" in signals[0].reason
+
+
+class TestAdjacentPriceAnomalyGuard:
+    """액면분할/병합 의심 가격 단절은 전일 종가 기준으로 검사한다."""
+
+    @staticmethod
+    def _ohlc(previous_close):
+        return pd.DataFrame({
+            "High": [previous_close],
+            "Low": [previous_close],
+            "Close": [previous_close],
+        })
+
+    def test_blocks_ticker_before_trading_when_current_price_gaps_30_percent(
+        self, evaluator, create_rule, create_portfolio,
+    ):
+        rule = create_rule(ticker="AAPL", sell_pct=10.0)
+        portfolio = create_portfolio(
+            prices={"AAPL": 130.0}, holdings={"AAPL": 5},
+        )
+
+        signal = evaluator.price_anomaly_signal(
+            rule, portfolio.current_prices["AAPL"], self._ohlc(100.0),
+        )
+
+        assert signal is not None
+        assert signal.is_blocked
+        assert signal.quantity == 0
+        assert signal.pct_change == pytest.approx(30.0)
+        assert "전일 종가" in signal.reason
+        assert "직전매도" not in signal.reason
+
+    def test_allows_long_term_appreciation_when_adjacent_price_is_normal(
+        self, evaluator, create_rule, create_portfolio,
+    ):
+        rule = create_rule(ticker="AAPL", buy_amount=500)
+        portfolio = create_portfolio(
+            cash=10_000.0, prices={"AAPL": 200.0},
+        )
+
+        anomaly = evaluator.price_anomaly_signal(
+            rule, portfolio.current_prices["AAPL"], self._ohlc(198.0),
+        )
+        signals = evaluator.evaluate_stock(
+            rule,
+            [],
+            portfolio,
+            last_sell_prices={"AAPL": 100.0},
+        )
+
+        assert anomaly is None
+        assert len(signals) == 1
+        assert signals[0].action == OrderAction.BUY
+        assert not signals[0].is_blocked
+
+    def test_reentry_guard_no_longer_treats_sell_price_gap_as_split(
+        self, evaluator,
+    ):
+        rule = StockRule(
+            ticker="AAPL",
+            buy_threshold_pct=-5.0,
+            sell_threshold_pct=10.0,
+            buy_amount=500,
+            reentry_guard_pct=50.0,
+        )
+
+        passed, reason = evaluator._passes_reentry_guard(
+            rule, current_price=140.0, last_sell_price=100.0,
+        )
+
+        assert passed
+        assert reason == ""
 
 
 class TestEvaluateCryptoFractional:

@@ -161,11 +161,22 @@ class MagicSplitEngine:
                         self.market_data.get_ohlc_window(rule.ticker, today)
                         if self.market_data is not None else None
                     )
-                    signals = self.evaluator.evaluate_stock(
-                        rule, positions, portfolio, last_sell_prices,
-                        ohlc_window=ohlc_window,
-                        regime_state=regime_state,
-                        evaluation_date=today,
+                    # 현재가를 확보한 직후 완성된 전일 종가와 비교한다.
+                    # 가격 단절이 의심되면 전략 평가와 모든 주문을 건너뛴다.
+                    anomaly_signal = self.evaluator.price_anomaly_signal(
+                        rule,
+                        portfolio.current_prices.get(rule.ticker, 0),
+                        ohlc_window,
+                    )
+                    signals = (
+                        [anomaly_signal]
+                        if anomaly_signal is not None
+                        else self.evaluator.evaluate_stock(
+                            rule, positions, portfolio, last_sell_prices,
+                            ohlc_window=ohlc_window,
+                            regime_state=regime_state,
+                            evaluation_date=today,
+                        )
                     )
 
                     # 신호 3-way 분류: blocked(경고) / info(상태보고) / active(주문)

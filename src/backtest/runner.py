@@ -114,17 +114,17 @@ def run_backtest(
 
     broker = BacktestBroker(initial_cash=initial_cash, logger=logger)
     repo = JsonRepository(root_path=output_dir, defer_writes=buffered_output)
-    # 레짐 지표용 시세 제공자 (브로커와 분리). 레짐 종목이 있을 때만 주입.
+    # 전일 가격 단절 검사와 레짐 지표용 시세 제공자 (브로커와 분리).
     regime_active = any(getattr(r, "regime_enabled", False) for r in rules)
-    window_size = max(
-        max((r.regime_min_bars for r in rules), default=200),
-        max((r.channel_lookback for r in rules), default=63),
-        max((r.long_channel_lookback for r in rules if r.multi_horizon_regime_enabled), default=0),
-    ) + 60
-    market_data = (
-        BacktestMarketDataProvider(ohlc_df, window_size=window_size)
-        if regime_active else None
+    window_size = (
+        max(
+            max((r.regime_min_bars for r in rules), default=200),
+            max((r.channel_lookback for r in rules), default=63),
+            max((r.long_channel_lookback for r in rules if r.multi_horizon_regime_enabled), default=0),
+        ) + 60
+        if regime_active else 2
     )
+    market_data = BacktestMarketDataProvider(ohlc_df, window_size=window_size)
     engine = MagicSplitEngine(
         broker=broker,
         repo=repo,

@@ -1032,7 +1032,7 @@ class SplitEvaluator:
     ) -> Optional[SplitSignal]:
         """보유 lot이 없을 때 1차수 초기 매수를 평가한다."""
         passed, reason = (
-            self._passes_price_anomaly_guard(rule, current_price, last_sell_price)
+            (True, "")
             if bypass_reentry_guard
             else self._passes_reentry_guard(rule, current_price, last_sell_price)
         )
@@ -1149,11 +1149,6 @@ class SplitEvaluator:
         if last_sell_price is None or last_sell_price <= 0:
             return True, ""
 
-        passed, reason = self._passes_price_anomaly_guard(
-            rule, current_price, last_sell_price,
-        )
-        if not passed:
-            return passed, reason
         pct_from_sell = (current_price - last_sell_price) / last_sell_price * 100
 
         if pct_from_sell <= rule.reentry_guard_pct:
@@ -1167,24 +1162,46 @@ class SplitEvaluator:
             self._logger.info(f"[{display_ticker(rule.ticker)}] {reason}")
         return False, reason
 
-    def _passes_price_anomaly_guard(
-        self, rule: StockRule, current_price: float,
-        last_sell_price: Optional[float],
-    ) -> tuple[bool, str]:
-        """평균회귀 재진입 조건과 무관하게 액면분할 의심 이격을 차단한다."""
-        if last_sell_price is None or last_sell_price <= 0:
-            return True, ""
-        pct_from_sell = (current_price - last_sell_price) / last_sell_price * 100
-        if abs(pct_from_sell) < self.price_anomaly_threshold:
-            return True, ""
+    def price_anomaly_signal(
+        self, rule: StockRule, current_price: float, ohlc_window,
+    ) -> Optional[SplitSignal]:
+        """현재가와 전일 종가의 단절을 감지해 종목 거래 차단 신호를 만든다."""
+        if not math.isfinite(current_price) or current_price <= 0:
+            return None
+        if ohlc_window is None:
+            return None
+        try:
+            closes = ohlc_window["Close"].dropna()
+            if closes.empty:
+                return None
+            previous_close = float(closes.iloc[-1])
+        except (KeyError, TypeError, ValueError, IndexError):
+            return None
+        if not math.isfinite(previous_close) or previous_close <= 0:
+            return None
+
+        pct_from_previous_close = (
+            (current_price - previous_close) / previous_close * 100
+        )
+        if abs(pct_from_previous_close) < self.price_anomaly_threshold:
+            return None
         reason = (
-            f"가격 이격 과다({pct_from_sell:+.1f}%): 액면분할/병합 확인 필요 "
-            f"(직전매도 {format_money(last_sell_price, rule.market_type)} "
+            f"가격 이격 과다({pct_from_previous_close:+.1f}%): 액면분할/병합 확인 필요 "
+            f"(전일 종가 {format_money(previous_close, rule.market_type)} "
             f"vs 현재 {format_money(current_price, rule.market_type)})"
         )
         if self._logger:
             self._logger.warning(f"[{rule.ticker}] {reason}")
-        return False, reason
+        return SplitSignal(
+            ticker=rule.ticker,
+            lot_id=None,
+            action=OrderAction.BUY,
+            quantity=0,
+            price=current_price,
+            reason=reason,
+            pct_change=pct_from_previous_close,
+            is_blocked=True,
+        )
 
     def _passes_exposure_guard(
         self,

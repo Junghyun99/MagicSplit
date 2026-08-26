@@ -2034,6 +2034,25 @@ class TestChartDataPersistence:
         assert chart["rows"]
         assert chart["asof"] == "2026-07-31"
 
+    def test_adjacent_price_anomaly_blocks_before_strategy_evaluation(
+        self, chart_engine, mock_broker,
+    ):
+        mock_broker.get_portfolio.return_value = Portfolio(
+            total_cash=10_000.0,
+            holdings={},
+            current_prices={"AAPL": 140.0},
+        )
+        mock_broker.fetch_current_prices.return_value = {"AAPL": 140.0}
+        chart_engine.evaluator.evaluate_stock = MagicMock()
+
+        result = chart_engine.run_one_cycle(sim_date="2026-07-31")
+
+        chart_engine.evaluator.evaluate_stock.assert_not_called()
+        mock_broker.execute_orders.assert_not_called()
+        assert len(result.signals) == 1
+        assert result.signals[0].is_blocked
+        assert "전일 종가" in result.signals[0].reason
+
     def test_on_demand_mode_defers_chart_until_explicitly_generated(
         self, chart_engine, mock_repo,
     ):

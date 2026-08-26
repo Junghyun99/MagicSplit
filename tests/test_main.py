@@ -136,7 +136,7 @@ class TestMagicSplitBot:
 
 
 class TestCreateMarketData:
-    """레짐 필터 사용 여부에 따른 과거 일봉 제공자 주입 판단."""
+    """가격 단절 검사와 레짐 필터용 과거 일봉 제공자 주입 판단."""
 
     def _bot_stub(self, market_type):
         bot = MagicSplitBot.__new__(MagicSplitBot)  # __init__ 우회
@@ -151,9 +151,13 @@ class TestCreateMarketData:
         base.update(over)
         return StockRule(**base)
 
-    def test_none_when_regime_disabled(self):
+    def test_minimal_yfinance_provider_when_regime_disabled(self):
+        from src.infra.data import YFinanceMarketDataProvider
         bot = self._bot_stub("overseas")
-        assert bot._create_market_data([self._rule()]) is None
+        provider = bot._create_market_data([self._rule()])
+        assert isinstance(provider, YFinanceMarketDataProvider)
+        assert provider.window_size == 5
+        assert provider._tickers == ["AAPL"]
 
     def test_yfinance_provider_for_overseas(self):
         from src.infra.data import YFinanceMarketDataProvider
