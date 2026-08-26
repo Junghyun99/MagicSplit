@@ -546,6 +546,42 @@ class TestUpdatePositions:
         assert execution.entry_trigger == "rebound_initial_entry"
         assert "rebound_entry_armed" not in state["AAPL"]
 
+    def test_staged_rebound_probe_and_completion_update_state_on_fill(self, engine):
+        positions = []
+        state = {"AAPL": {}}
+        probe_signal = SplitSignal(
+            "AAPL", None, OrderAction.BUY, 5, 100.0,
+            "탐색 진입", 0.0, level=1,
+            entry_trigger="staged_rebound_probe_uptrend_short_recovery",
+        )
+        probe_execution = TradeExecution(
+            "AAPL", OrderAction.BUY, 5, 100.0, 1.0,
+            "2026-04-10", ExecutionStatus.FILLED,
+        )
+        positions = engine._update_positions(
+            positions, [probe_signal], [probe_execution], "2026-04-10",
+            regime_state=state,
+        )
+        assert state["AAPL"]["staged_rebound_probe_open"] is True
+        assert state["AAPL"]["staged_rebound_probe_origin"] == "uptrend_short_recovery"
+
+        complete_signal = SplitSignal(
+            "AAPL", None, OrderAction.BUY, 5, 105.0,
+            "완성 매수", 0.0, level=2,
+            entry_trigger="staged_rebound_confirm_add",
+        )
+        complete_execution = TradeExecution(
+            "AAPL", OrderAction.BUY, 5, 105.0, 1.0,
+            "2026-04-11", ExecutionStatus.FILLED,
+        )
+        engine._update_positions(
+            positions, [complete_signal], [complete_execution], "2026-04-11",
+            regime_state=state,
+        )
+        assert "staged_rebound_probe_open" not in state["AAPL"]
+        assert "staged_rebound_probe_origin" not in state["AAPL"]
+        assert state["AAPL"].get("adds", 0) == 0
+
     def test_sell_removes_specific_lot(self, engine):
         """매도 체결 -> signal의 lot_id로 특정 lot 제거"""
         positions = [

@@ -2,12 +2,16 @@
   "extends": "config_test_domestic.json",
   "stock_overrides": {
     "trend_only_enabled": true,
-    "trend_entry_mode": "rebound",
+    "trend_entry_mode": "staged_rebound",
     "uptrend_sideways_transition_partial_sell_pct": 50.0
   },
   "global": {
     "rebound_entry_confirm_bars": 2,
     "rebound_entry_require_midline": true,
+    "staged_rebound_probe_pct": 50.0,
+    "staged_rebound_allow_long_sideways": true,
+    "staged_rebound_require_long_midline": true,
+    "staged_rebound_require_nonnegative_long_slope": true,
     "pullback_rebound_confirm_bars": 1,
     "pullback_rebound_max_wait_bars": 10
   }

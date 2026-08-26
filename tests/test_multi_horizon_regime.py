@@ -419,6 +419,98 @@ def test_rebound_pullback_add_waits_for_next_day_ema_recovery():
     assert second.entry_trigger == "pullback_rebound_add"
 
 
+def test_staged_rebound_probe_accepts_two_recovery_cases():
+    rule = _rule(trend_only_enabled=True, trend_entry_mode="staged_rebound")
+    evaluator = SplitEvaluator()
+    reading = SimpleNamespace(channel_mid=100.0, ema20=99.0, close=99.0)
+    long_reading = SimpleNamespace(channel_mid=98.0, channel_slope_pct=1.0)
+    base = {
+        "buy_locked": False, "buy_halted": False,
+        "long_reading": long_reading,
+    }
+    short_recovery = {
+        **base, "long": Regime.UPTREND, "short": Regime.SIDEWAYS,
+        "previous_long": "uptrend", "previous_short": "downtrend",
+    }
+    assert evaluator._resolve_staged_rebound_probe(
+        rule, reading, short_recovery, 101.0,
+    ) == "uptrend_short_recovery"
+
+    sideways_breakout = {
+        **base, "long": Regime.SIDEWAYS, "short": Regime.UPTREND,
+        "previous_long": "sideways", "previous_short": "sideways",
+    }
+    assert evaluator._resolve_staged_rebound_probe(
+        rule, reading, sideways_breakout, 101.0,
+    ) == "sideways_long_breakout"
+    sideways_breakout["long_reading"] = SimpleNamespace(
+        channel_mid=98.0, channel_slope_pct=-1.0,
+    )
+    assert evaluator._resolve_staged_rebound_probe(
+        rule, reading, sideways_breakout, 101.0,
+    ) is None
+
+
+def test_staged_rebound_direct_entry_accepts_sideways_to_aligned_transition():
+    rule = _rule(trend_only_enabled=True, trend_entry_mode="staged_rebound")
+    evaluator = SplitEvaluator()
+    reading = SimpleNamespace(channel_mid=100.0)
+    state = {}
+    transition = {
+        "long": Regime.UPTREND, "short": Regime.UPTREND,
+        "previous_long": "sideways", "previous_short": "sideways",
+    }
+    assert not evaluator._resolve_rebound_entry(
+        rule, reading, state, transition, 101.0, "2025-01-02",
+    )
+    assert evaluator._resolve_rebound_entry(
+        rule, reading, state, transition, 101.0, "2025-01-03",
+    )
+
+
+def test_staged_rebound_probe_integrates_with_stock_evaluation_at_half_amount():
+    closes = _trend(189, 100, 0.35)
+    closes += [closes[-1] * (1 + (i % 2) * 0.002) for i in range(63)]
+    window = _window(closes)
+    rule = _rule(
+        trend_only_enabled=True, trend_entry_mode="staged_rebound",
+        buy_amount=1000, buy_amounts=None, max_exposure_pct=100,
+    )
+    reading = classify_for_rule(rule, window)
+    price = max(reading.channel_mid, reading.ema20, reading.close) + 1
+    state = {"AAPL": {
+        "previous_long_regime": "uptrend",
+        "previous_short_regime": "downtrend",
+    }}
+    signals = SplitEvaluator().evaluate_stock(
+        rule, [], _portfolio(price, cash=10000), ohlc_window=window,
+        regime_state=state, evaluation_date="2025-01-02",
+    )
+    assert len(signals) == 1
+    assert signals[0].action == OrderAction.BUY
+    assert signals[0].entry_trigger == "staged_rebound_probe_uptrend_short_recovery"
+    assert signals[0].quantity == rule.quantize_qty(500 / price)
+
+
+def test_staged_rebound_completion_buys_remaining_half_once_aligned():
+    rule = _rule(
+        trend_only_enabled=True, trend_entry_mode="staged_rebound",
+        buy_amount=1000, buy_amounts=None, max_exposure_pct=100,
+    )
+    evaluator = SplitEvaluator()
+    lot = _lot(price=100, qty=5)
+    signal = evaluator._evaluate_staged_rebound_completion(
+        rule, [lot], 101.0, SimpleNamespace(channel_mid=100.0),
+        {"staged_rebound_probe_open": True},
+        _portfolio(101.0, qty=5, cash=10000),
+    )
+    assert signal is not None
+    assert signal.quantity == 4
+    assert signal.level == lot.level + 1
+    assert signal.entry_trigger == "staged_rebound_confirm_add"
+    assert signal.regime_add_swing_high is None
+
+
 def test_rebound_chart_exposes_entry_policy():
     window = _window(_trend(252, 100, 0.25))
     rule = _rule(trend_only_enabled=True, trend_entry_mode="rebound")
@@ -427,3 +519,14 @@ def test_rebound_chart_exposes_entry_policy():
     )
     assert chart["params"]["trend_entry_mode"] == "rebound"
     assert chart["params"]["rebound_entry_confirm_bars"] == 2
+
+
+def test_staged_rebound_chart_exposes_probe_policy():
+    window = _window(_trend(252, 100, 0.25))
+    rule = _rule(trend_only_enabled=True, trend_entry_mode="staged_rebound")
+    chart = build_chart_series(
+        rule, window, lambda d: classify_for_rule(rule, d), [], window.Close.iloc[-1],
+        regime_st={"staged_rebound_probe_open": True},
+    )
+    assert chart["params"]["staged_rebound_probe_pct"] == 50
+    assert chart["state"]["staged_rebound_probe_open"] is True

@@ -104,10 +104,15 @@ class StockRule:
     multi_horizon_regime_enabled: bool = False
     # 장·단기 모두 상승일 때만 진입·추가매수하고, 횟보 중에는 보유만 한다.
     trend_only_enabled: bool = False
-    # 추세 전용 최초 진입 방식: aligned=상승 정렬 확인, rebound=비상승→상승 반등 확인.
+    # 추세 전용 최초 진입 방식: aligned=상승 정렬, rebound=반등 확인,
+    # staged_rebound=회복 구간 탐색 진입 후 상승 정렬에서 완성.
     trend_entry_mode: str = "aligned"
     rebound_entry_confirm_bars: int = 2
     rebound_entry_require_midline: bool = True
+    staged_rebound_probe_pct: float = 50.0
+    staged_rebound_allow_long_sideways: bool = True
+    staged_rebound_require_long_midline: bool = True
+    staged_rebound_require_nonnegative_long_slope: bool = True
     pullback_rebound_confirm_bars: int = 1
     pullback_rebound_max_wait_bars: int = 10
     # (장기 상승, 단기 상승) -> (장기 상승, 단기 횡보) 확정 시 선제 감축.
@@ -156,19 +161,24 @@ class StockRule:
                 "regime_enabled=true, regime_algo='channel', "
                 "multi_horizon_regime_enabled=true 조합이 필요합니다."
             )
-        if self.trend_entry_mode not in ("aligned", "rebound"):
+        if self.trend_entry_mode not in ("aligned", "rebound", "staged_rebound"):
             raise ValueError(
-                f"StockRule({self.ticker}): trend_entry_mode는 'aligned' 또는 'rebound'여야 합니다."
+                f"StockRule({self.ticker}): trend_entry_mode는 'aligned', 'rebound', "
+                "'staged_rebound' 중 하나여야 합니다."
             )
-        if self.trend_entry_mode == "rebound" and not (
+        if self.trend_entry_mode in ("rebound", "staged_rebound") and not (
                 self.trend_only_enabled
                 and self.regime_enabled
                 and self.regime_algo == "channel"
                 and self.multi_horizon_regime_enabled):
             raise ValueError(
-                f"StockRule({self.ticker}): rebound 진입은 trend_only_enabled=true, "
+                f"StockRule({self.ticker}): rebound 진입 계열은 trend_only_enabled=true, "
                 "regime_enabled=true, regime_algo='channel', "
                 "multi_horizon_regime_enabled=true 조합이 필요합니다."
+            )
+        if not (0 < self.staged_rebound_probe_pct < 100):
+            raise ValueError(
+                f"StockRule({self.ticker}): staged_rebound_probe_pct는 0 초과 100 미만이어야 합니다."
             )
         for name, value in (
             ("rebound_entry_confirm_bars", self.rebound_entry_confirm_bars),

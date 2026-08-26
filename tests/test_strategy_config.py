@@ -695,7 +695,9 @@ class TestRepoConfigRegimeSeparation:
         sc = StrategyConfig(os.path.join(REPO_ROOT, "config_test_domestic_rebound.json"))
         assert len(sc.rules) == 50
         assert all(r.trend_only_enabled for r in sc.rules)
-        assert all(r.trend_entry_mode == "rebound" for r in sc.rules)
+        assert all(r.trend_entry_mode == "staged_rebound" for r in sc.rules)
+        assert all(r.staged_rebound_probe_pct == 50 for r in sc.rules)
+        assert all(r.staged_rebound_allow_long_sideways for r in sc.rules)
         assert all(r.uptrend_sideways_transition_partial_sell_pct == 50 for r in sc.rules)
 
 

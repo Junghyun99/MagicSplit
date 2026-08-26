@@ -111,6 +111,9 @@ class StrategyConfig:
         "regime_enabled", "trendbreak_use_sma50",
         "multi_horizon_regime_enabled", "trend_only_enabled",
         "rebound_entry_require_midline",
+        "staged_rebound_allow_long_sideways",
+        "staged_rebound_require_long_midline",
+        "staged_rebound_require_nonnegative_long_slope",
     )
     _REGIME_KEYS_STR = ("regime_algo", "trend_entry_mode")
     _REGIME_KEYS_INT = (
@@ -128,6 +131,7 @@ class StrategyConfig:
         "trendbreak_partial_sell_pct", "trendbreak_trailing_drop_pct",
         "channel_stddev_k", "channel_slope_band_pct",
         "channel_breakdown_tolerance_pct", "channel_breakdown_atr_multiplier",
+        "staged_rebound_probe_pct",
         "long_sideways_exposure_multiplier", "long_uptrend_sideways_sell_multiplier",
         "uptrend_sideways_transition_partial_sell_pct",
     )

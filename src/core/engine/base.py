@@ -916,6 +916,17 @@ class MagicSplitEngine:
                         "pullback_rebound_wait_days", "pullback_rebound_confirm_days",
                     ):
                         st.pop(key, None)
+                    if (exe.entry_trigger
+                            and exe.entry_trigger.startswith("staged_rebound_probe_")):
+                        st["staged_rebound_probe_open"] = True
+                        st["staged_rebound_probe_date"] = today
+                        st["staged_rebound_probe_origin"] = exe.entry_trigger.removeprefix(
+                            "staged_rebound_probe_"
+                        )
+                    elif exe.entry_trigger == "staged_rebound_confirm_add":
+                        st.pop("staged_rebound_probe_open", None)
+                        st.pop("staged_rebound_probe_date", None)
+                        st.pop("staged_rebound_probe_origin", None)
                 # 동적 재매수 소비: 매수 체결 시 직전 매도가 초기화
                 if last_sell_prices is not None and exe.ticker in last_sell_prices:
                     self.logger.info(

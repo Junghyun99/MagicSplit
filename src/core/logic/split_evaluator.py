@@ -158,6 +158,7 @@ class SplitEvaluator:
         multi = None
         trend_only_uptrend_confirmed = False
         rebound_entry_confirmed = False
+        staged_probe_trigger = None
         if rule.regime_enabled and ohlc_window is not None:
             reading = classify_for_rule(rule, ohlc_window)
             regime_st = regime_state.setdefault(rule.ticker, {}) if regime_state is not None else {}
@@ -183,11 +184,15 @@ class SplitEvaluator:
                     and multi["long"] == Regime.UPTREND
                     and multi["short"] == Regime.UPTREND
                 )
-                if rule.trend_entry_mode == "rebound" and not ticker_lots:
+                if rule.trend_entry_mode in ("rebound", "staged_rebound") and not ticker_lots:
                     rebound_entry_confirmed = self._resolve_rebound_entry(
                         rule, reading, regime_st, multi, current_price,
                         evaluation_date=evaluation_date,
                     )
+                    if rule.trend_entry_mode == "staged_rebound":
+                        staged_probe_trigger = self._resolve_staged_rebound_probe(
+                            rule, reading, multi, current_price,
+                        )
 
             # 장·단기 하락 정렬은 단기 방어 뒤 남은 물량까지 정리하는 최종 청산 이벤트다.
             if (multi and ticker_lots and (
@@ -230,6 +235,14 @@ class SplitEvaluator:
                     elif multi and multi["buy_halted"]:
                         uptrend_resolved = False
                 if uptrend_resolved:
+                    if (rule.trend_entry_mode == "staged_rebound"
+                            and regime_st.get("staged_rebound_probe_open")):
+                        completion = self._evaluate_staged_rebound_completion(
+                            rule, ticker_lots, current_price, reading, regime_st,
+                            portfolio,
+                        )
+                        if completion is not None:
+                            return [completion]
                     return self._evaluate_uptrend(
                         rule, ticker_lots, current_price, reading, regime_st, portfolio,
                         evaluation_date=evaluation_date,
@@ -237,7 +250,7 @@ class SplitEvaluator:
                 if rule.trend_only_enabled:
                     # 이탈 조건이 아닌 횡보/불명 국면에서는 기존 매직스플릿
                     # 익절·추가매수로 내려가지 않고 보유한다.
-                    if rule.trend_entry_mode == "rebound":
+                    if rule.trend_entry_mode in ("rebound", "staged_rebound"):
                         for key in (
                             "pullback_rebound_armed", "pullback_rebound_start_date",
                             "pullback_rebound_low", "pullback_rebound_wait_days",
@@ -349,14 +362,18 @@ class SplitEvaluator:
                         rule, current_price, "추세 데이터 부족",
                     )]
                 entry_confirmed = (
-                    rebound_entry_confirmed
+                    rebound_entry_confirmed or staged_probe_trigger is not None
+                    if rule.trend_entry_mode == "staged_rebound"
+                    else rebound_entry_confirmed
                     if rule.trend_entry_mode == "rebound"
                     else trend_only_uptrend_confirmed
                 )
                 if not entry_confirmed:
                     return [self._buy_blocked_signal(
                         rule, current_price,
-                        ("반등형 추세 대기 - 장기 상승·단기 재상승·중심선 회복 필요"
+                        ("단계형 반등 대기 - 회복 탐색 또는 장·단기 상승 정렬 필요"
+                         if rule.trend_entry_mode == "staged_rebound"
+                         else "반등형 추세 대기 - 장기 상승·단기 재상승·중심선 회복 필요"
                          if rule.trend_entry_mode == "rebound"
                          else "추세 전용 대기 - 장·단기 상승 정렬 필요"),
                     )]
@@ -366,9 +383,13 @@ class SplitEvaluator:
             signal = self._evaluate_initial_buy(
                 rule, current_price, last_sell_price=last_sell_price,
                 portfolio=portfolio,
-                bypass_reentry_guard=(rule.trend_entry_mode == "rebound"),
-                entry_trigger=("rebound_initial_entry"
-                               if rule.trend_entry_mode == "rebound"
+                bypass_reentry_guard=(rule.trend_entry_mode in ("rebound", "staged_rebound")),
+                amount_multiplier=(rule.staged_rebound_probe_pct / 100
+                                   if staged_probe_trigger is not None else 1.0),
+                entry_trigger=(f"staged_rebound_probe_{staged_probe_trigger}"
+                               if staged_probe_trigger is not None
+                               else "rebound_initial_entry"
+                               if rule.trend_entry_mode in ("rebound", "staged_rebound")
                                else "aligned_uptrend_entry"
                                if rule.trend_only_enabled else "legacy_magic_split"),
             )
@@ -600,6 +621,7 @@ class SplitEvaluator:
                 )
         return {
             "long": long_regime, "short": short_regime,
+            "long_reading": long_reading,
             "previous_long": previous_long, "previous_short": previous_short,
             "buy_locked": buy_locked, "buy_halted": buy_halted,
             "lock_reason": "장기 하락 확정 - 신규·추가 매수 차단",
@@ -624,8 +646,15 @@ class SplitEvaluator:
         if not st.get(prefix + "armed"):
             previous_long = multi.get("previous_long")
             previous_short = multi.get("previous_short")
-            if not (
+            previous_long_ok = (
                 previous_long == str(Regime.UPTREND)
+                or (
+                    rule.trend_entry_mode == "staged_rebound"
+                    and previous_long == str(Regime.SIDEWAYS)
+                )
+            )
+            if not (
+                previous_long_ok
                 and previous_short in (str(Regime.SIDEWAYS), str(Regime.DOWNTREND))
             ):
                 return False
@@ -650,6 +679,101 @@ class SplitEvaluator:
         confirmed = len(days) >= rule.rebound_entry_confirm_bars
         st[prefix + "confirmed"] = confirmed
         return confirmed
+
+    def _resolve_staged_rebound_probe(
+        self, rule: StockRule, reading, multi: dict, current_price: float,
+    ) -> Optional[str]:
+        """단계형 반등의 50% 탐색 진입 케이스를 판정한다."""
+        if multi.get("buy_locked") or multi.get("buy_halted"):
+            return None
+
+        short_recovered = (
+            multi["long"] == Regime.UPTREND
+            and multi["short"] == Regime.SIDEWAYS
+            and multi.get("previous_long") == str(Regime.UPTREND)
+            and multi.get("previous_short") == str(Regime.DOWNTREND)
+            and not math.isnan(reading.channel_mid)
+            and not math.isnan(reading.ema20)
+            and current_price > reading.channel_mid
+            and current_price > reading.ema20
+            and current_price > reading.close
+        )
+        if short_recovered:
+            return "uptrend_short_recovery"
+
+        if not rule.staged_rebound_allow_long_sideways:
+            return None
+        long_reading = multi.get("long_reading")
+        if long_reading is None:
+            return None
+        short_midline_ok = (
+            not rule.rebound_entry_require_midline
+            or (not math.isnan(reading.channel_mid) and current_price > reading.channel_mid)
+        )
+        long_midline_ok = (
+            not rule.staged_rebound_require_long_midline
+            or (not math.isnan(long_reading.channel_mid)
+                and current_price > long_reading.channel_mid)
+        )
+        long_slope_ok = (
+            not rule.staged_rebound_require_nonnegative_long_slope
+            or (not math.isnan(long_reading.channel_slope_pct)
+                and long_reading.channel_slope_pct >= 0)
+        )
+        if (
+            multi["long"] == Regime.SIDEWAYS
+            and multi["short"] == Regime.UPTREND
+            and short_midline_ok
+            and long_midline_ok
+            and long_slope_ok
+        ):
+            return "sideways_long_breakout"
+        return None
+
+    def _evaluate_staged_rebound_completion(
+        self, rule: StockRule, lots: List[PositionLot], current_price: float,
+        reading, st: dict, portfolio: Optional[Portfolio],
+    ) -> Optional[SplitSignal]:
+        """탐색 진입 뒤 상승 정렬에서 최초 기준금액의 잔여분을 한 번 매수한다."""
+        if not st.get("staged_rebound_probe_open"):
+            return None
+        if (
+            rule.rebound_entry_require_midline
+            and (math.isnan(reading.channel_mid) or current_price <= reading.channel_mid)
+        ):
+            return None
+        next_level = max(l.level for l in lots) + 1
+        if next_level > rule.max_lots:
+            return None
+        amount = rule.buy_amount_at(1) * (1 - rule.staged_rebound_probe_pct / 100)
+        buy_qty = rule.quantize_qty(amount / current_price)
+        if buy_qty <= 0:
+            return None
+        passed, reason = self._passes_cash_guard(rule, current_price, buy_qty, portfolio)
+        if not passed:
+            return SplitSignal(
+                ticker=rule.ticker, lot_id=None, action=OrderAction.BUY,
+                quantity=buy_qty, price=current_price, reason=reason,
+                pct_change=0.0, level=next_level, is_blocked=True,
+                entry_trigger="staged_rebound_confirm_add",
+            )
+        passed, reason = self._passes_exposure_guard(
+            rule, lots, current_price, buy_qty, portfolio,
+        )
+        if not passed:
+            return SplitSignal(
+                ticker=rule.ticker, lot_id=None, action=OrderAction.BUY,
+                quantity=buy_qty, price=current_price, reason=reason,
+                pct_change=0.0, level=next_level, is_blocked=True,
+                entry_trigger="staged_rebound_confirm_add",
+            )
+        return SplitSignal(
+            ticker=rule.ticker, lot_id=None, action=OrderAction.BUY,
+            quantity=buy_qty, price=current_price,
+            reason=f"단계형 반등 상승 정렬 완성 매수 Lv{next_level}",
+            pct_change=0.0, level=next_level,
+            entry_trigger="staged_rebound_confirm_add",
+        )
 
     def _evaluate_uptrend_sideways_transition(
         self, rule: StockRule, lots: List[PositionLot], current_price: float,
@@ -903,6 +1027,7 @@ class SplitEvaluator:
         last_sell_price: Optional[float] = None,
         portfolio: Optional[Portfolio] = None,
         bypass_reentry_guard: bool = False,
+        amount_multiplier: float = 1.0,
         entry_trigger: Optional[str] = None,
     ) -> Optional[SplitSignal]:
         """보유 lot이 없을 때 1차수 초기 매수를 평가한다."""
@@ -924,7 +1049,7 @@ class SplitEvaluator:
                 is_info=True,
             )
 
-        buy_amount = rule.buy_amount_at(1)
+        buy_amount = rule.buy_amount_at(1) * amount_multiplier
         buy_qty = rule.quantize_qty(buy_amount / current_price)
         if buy_qty <= 0:
             reason = (
@@ -991,7 +1116,9 @@ class SplitEvaluator:
             action=OrderAction.BUY,
             quantity=buy_qty,
             price=current_price,
-            reason="초기 매수 Lv1",
+            reason=("단계형 반등 탐색 매수 Lv1"
+                    if entry_trigger and entry_trigger.startswith("staged_rebound_probe_")
+                    else "초기 매수 Lv1"),
             pct_change=0.0,
             level=1,
             entry_trigger=entry_trigger,
@@ -2002,7 +2129,7 @@ class SplitEvaluator:
         upper = ema20 * (1 + band_pct / 100)
         in_band = current_price <= upper
         bounced = current_price > reading.close or current_price > ema20
-        if rule.trend_entry_mode == "rebound":
+        if rule.trend_entry_mode in ("rebound", "staged_rebound"):
             prefix = "pullback_rebound_"
             armed = bool(st.get(prefix + "armed"))
             if not armed:
@@ -2098,6 +2225,6 @@ class SplitEvaluator:
             level=next_level,
             regime_add_swing_high=reading.swing_high,
             entry_trigger=("pullback_rebound_add"
-                           if rule.trend_entry_mode == "rebound" else None),
+                           if rule.trend_entry_mode in ("rebound", "staged_rebound") else None),
         )
 

@@ -379,6 +379,9 @@ def _public_state(rule: StockRule, regime_st: dict) -> dict:
             "rebound_entry_days": len(regime_st.get("rebound_entry_days") or []),
             "pullback_rebound_armed": bool(regime_st.get("pullback_rebound_armed")),
             "pullback_rebound_low": regime_st.get("pullback_rebound_low"),
+            "staged_rebound_probe_open": bool(regime_st.get("staged_rebound_probe_open")),
+            "staged_rebound_probe_date": regime_st.get("staged_rebound_probe_date"),
+            "staged_rebound_probe_origin": regime_st.get("staged_rebound_probe_origin"),
         })
     return state
 
@@ -406,6 +409,10 @@ def _public_params(rule: StockRule) -> dict:
             "trend_entry_mode": rule.trend_entry_mode,
             "rebound_entry_confirm_bars": rule.rebound_entry_confirm_bars,
             "rebound_entry_require_midline": rule.rebound_entry_require_midline,
+            "staged_rebound_probe_pct": rule.staged_rebound_probe_pct,
+            "staged_rebound_allow_long_sideways": rule.staged_rebound_allow_long_sideways,
+            "staged_rebound_require_long_midline": rule.staged_rebound_require_long_midline,
+            "staged_rebound_require_nonnegative_long_slope": rule.staged_rebound_require_nonnegative_long_slope,
             "pullback_rebound_confirm_bars": rule.pullback_rebound_confirm_bars,
             "pullback_rebound_max_wait_bars": rule.pullback_rebound_max_wait_bars,
             "long_channel_lookback": rule.long_channel_lookback,

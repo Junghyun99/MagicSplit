@@ -30,6 +30,10 @@ window.ConfigView = (function () {
         document.getElementById('global-trend-entry-mode').value = globalConfig?.trend_entry_mode || 'aligned';
         document.getElementById('global-rebound-entry-confirm-bars').value = globalConfig?.rebound_entry_confirm_bars ?? '';
         document.getElementById('global-rebound-entry-require-midline').checked = globalConfig?.rebound_entry_require_midline !== false;
+        document.getElementById('global-staged-rebound-probe-pct').value = globalConfig?.staged_rebound_probe_pct ?? '';
+        document.getElementById('global-staged-rebound-allow-long-sideways').checked = globalConfig?.staged_rebound_allow_long_sideways !== false;
+        document.getElementById('global-staged-rebound-require-long-midline').checked = globalConfig?.staged_rebound_require_long_midline !== false;
+        document.getElementById('global-staged-rebound-require-nonnegative-long-slope').checked = globalConfig?.staged_rebound_require_nonnegative_long_slope !== false;
         document.getElementById('global-pullback-rebound-confirm-bars').value = globalConfig?.pullback_rebound_confirm_bars ?? '';
         document.getElementById('global-pullback-rebound-max-wait-bars').value = globalConfig?.pullback_rebound_max_wait_bars ?? '';
         document.getElementById('global-long-channel-lookback').value = globalConfig?.long_channel_lookback !== undefined ? globalConfig.long_channel_lookback : '';
@@ -46,11 +50,16 @@ window.ConfigView = (function () {
             input.disabled = !enabled;
         });
         document.getElementById('multi-horizon-policy-note').style.display = enabled ? '' : 'none';
+        const mode = document.getElementById('global-trend-entry-mode').value;
         const rebound = enabled
             && document.getElementById('global-trend-only-enabled').checked
-            && document.getElementById('global-trend-entry-mode').value === 'rebound';
+            && (mode === 'rebound' || mode === 'staged_rebound');
         document.querySelectorAll('.rebound-trend-setting input').forEach((input) => {
             input.disabled = !rebound;
+        });
+        const staged = rebound && mode === 'staged_rebound';
+        document.querySelectorAll('.staged-rebound-setting input').forEach((input) => {
+            input.disabled = !staged;
         });
     }
 
@@ -282,6 +291,10 @@ window.ConfigView = (function () {
             trend_entry_mode: document.getElementById('global-trend-entry-mode').value,
             rebound_entry_confirm_bars: document.getElementById('global-rebound-entry-confirm-bars').value,
             rebound_entry_require_midline: document.getElementById('global-rebound-entry-require-midline').checked,
+            staged_rebound_probe_pct: document.getElementById('global-staged-rebound-probe-pct').value,
+            staged_rebound_allow_long_sideways: document.getElementById('global-staged-rebound-allow-long-sideways').checked,
+            staged_rebound_require_long_midline: document.getElementById('global-staged-rebound-require-long-midline').checked,
+            staged_rebound_require_nonnegative_long_slope: document.getElementById('global-staged-rebound-require-nonnegative-long-slope').checked,
             pullback_rebound_confirm_bars: document.getElementById('global-pullback-rebound-confirm-bars').value,
             pullback_rebound_max_wait_bars: document.getElementById('global-pullback-rebound-max-wait-bars').value,
             long_channel_lookback: document.getElementById('global-long-channel-lookback').value,

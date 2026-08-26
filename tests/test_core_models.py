@@ -398,6 +398,20 @@ class TestStockRuleChannelRegime:
         )
         assert rebound.rebound_entry_confirm_bars == 2
         assert rebound.pullback_rebound_max_wait_bars == 10
+        staged = StockRule(
+            "AAPL", -5, 10, 100, 10,
+            regime_enabled=True, regime_algo="channel",
+            multi_horizon_regime_enabled=True, trend_only_enabled=True,
+            trend_entry_mode="staged_rebound",
+        )
+        assert staged.staged_rebound_probe_pct == 50
+        with pytest.raises(ValueError, match="staged_rebound_probe_pct"):
+            StockRule(
+                "AAPL", -5, 10, 100, 10,
+                regime_enabled=True, regime_algo="channel",
+                multi_horizon_regime_enabled=True, trend_only_enabled=True,
+                trend_entry_mode="staged_rebound", staged_rebound_probe_pct=100,
+            )
 
     def test_channel_algo_accepted(self):
         rule = StockRule(
