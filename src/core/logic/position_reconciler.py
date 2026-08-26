@@ -98,6 +98,7 @@ def drain_lots_by_qty(
             "buy_price": lot.buy_price, "quantity": take, "_gross": gross,
             "entry_long_regime": lot.entry_long_regime,
             "entry_short_regime": lot.entry_short_regime,
+            "entry_trigger": lot.entry_trigger,
         })
         if take >= lot.quantity:
             positions.remove(lot)

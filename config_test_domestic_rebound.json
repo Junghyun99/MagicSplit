@@ -1,0 +1,14 @@
+{
+  "extends": "config_test_domestic.json",
+  "stock_overrides": {
+    "trend_only_enabled": true,
+    "trend_entry_mode": "rebound",
+    "uptrend_sideways_transition_partial_sell_pct": 0.0
+  },
+  "global": {
+    "rebound_entry_confirm_bars": 2,
+    "rebound_entry_require_midline": true,
+    "pullback_rebound_confirm_bars": 1,
+    "pullback_rebound_max_wait_bars": 10
+  }
+}

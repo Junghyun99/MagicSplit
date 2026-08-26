@@ -854,6 +854,7 @@ class MagicSplitEngine:
 
             if exe.action == OrderAction.BUY:
                 sig = signal_map.get((exe.ticker, OrderAction.BUY))
+                exe.entry_trigger = sig.entry_trigger if sig is not None else None
                 level = sig.level if sig else 1
                 entry_state = (
                     regime_state.get(exe.ticker, {})
@@ -872,6 +873,7 @@ class MagicSplitEngine:
                     level=level,
                     entry_long_regime=exe.entry_long_regime,
                     entry_short_regime=exe.entry_short_regime,
+                    entry_trigger=exe.entry_trigger,
                 )
                 updated.append(new_lot)
                 # 신규 lot이 last_lot이 되므로 동일 종목 기존 lot들의 trailing 상태 초기화.
@@ -904,6 +906,14 @@ class MagicSplitEngine:
                         "uptrend_sideways_transition_last_date",
                         "uptrend_sideways_transition_target_qty",
                         "uptrend_sideways_transition_sold_qty",
+                    ):
+                        st.pop(key, None)
+                    for key in (
+                        "rebound_entry_armed", "rebound_entry_origin_regime",
+                        "rebound_entry_days", "rebound_entry_last_date",
+                        "rebound_entry_confirmed", "pullback_rebound_armed",
+                        "pullback_rebound_start_date", "pullback_rebound_low",
+                        "pullback_rebound_wait_days", "pullback_rebound_confirm_days",
                     ):
                         st.pop(key, None)
                 # 동적 재매수 소비: 매수 체결 시 직전 매도가 초기화
@@ -974,6 +984,7 @@ class MagicSplitEngine:
 
                 exe.entry_long_regime = target_lot.entry_long_regime
                 exe.entry_short_regime = target_lot.entry_short_regime
+                exe.entry_trigger = target_lot.entry_trigger
 
                 if (exe.status == ExecutionStatus.PARTIAL
                         and exe.quantity < target_lot.quantity):

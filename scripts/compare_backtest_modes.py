@@ -56,6 +56,8 @@ def _event_stats(history: Iterable[dict]) -> dict:
     ticker_pnl: Dict[str, float] = defaultdict(float)
     entry_pnl: Dict[str, float] = defaultdict(float)
     entry_buys: Dict[str, int] = defaultdict(int)
+    entry_trigger_pnl: Dict[str, float] = defaultdict(float)
+    entry_trigger_buys: Dict[str, int] = defaultdict(int)
     buys = sells = 0
 
     for record in history:
@@ -64,6 +66,7 @@ def _event_stats(history: Iterable[dict]) -> dict:
             if action == "BUY":
                 buys += 1
                 entry_buys[_entry_kind(execution)] += 1
+                entry_trigger_buys[execution.get("entry_trigger") or "legacy_unknown"] += 1
                 continue
             if action != "SELL":
                 continue
@@ -81,6 +84,7 @@ def _event_stats(history: Iterable[dict]) -> dict:
             ticker_pnl[ticker] += pnl
 
             entry_pnl[_entry_kind(execution)] += pnl
+            entry_trigger_pnl[execution.get("entry_trigger") or "legacy_unknown"] += pnl
 
     liquidation_values = [
         pnl for (*_, kind), pnl in event_pnl.items() if kind == "liquidation"
@@ -109,6 +113,8 @@ def _event_stats(history: Iterable[dict]) -> dict:
         "loss_liquidation_events": sum(v < 0 for v in liquidation_values),
         "entry_pnl": dict(entry_pnl),
         "entry_buys": dict(entry_buys),
+        "entry_trigger_pnl": dict(entry_trigger_pnl),
+        "entry_trigger_buys": dict(entry_trigger_buys),
         "exit_contexts": exit_contexts,
         "worst_tickers": sorted(ticker_pnl.items(), key=lambda item: item[1])[:10],
     }

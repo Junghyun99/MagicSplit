@@ -27,6 +27,11 @@ window.ConfigView = (function () {
         document.getElementById('global-channel-breakdown-atr-multiplier').value = globalConfig?.channel_breakdown_atr_multiplier !== undefined ? globalConfig.channel_breakdown_atr_multiplier : '';
         document.getElementById('global-multi-horizon-regime-enabled').checked = globalConfig?.multi_horizon_regime_enabled === true;
         document.getElementById('global-trend-only-enabled').checked = globalConfig?.trend_only_enabled === true;
+        document.getElementById('global-trend-entry-mode').value = globalConfig?.trend_entry_mode || 'aligned';
+        document.getElementById('global-rebound-entry-confirm-bars').value = globalConfig?.rebound_entry_confirm_bars ?? '';
+        document.getElementById('global-rebound-entry-require-midline').checked = globalConfig?.rebound_entry_require_midline !== false;
+        document.getElementById('global-pullback-rebound-confirm-bars').value = globalConfig?.pullback_rebound_confirm_bars ?? '';
+        document.getElementById('global-pullback-rebound-max-wait-bars').value = globalConfig?.pullback_rebound_max_wait_bars ?? '';
         document.getElementById('global-long-channel-lookback').value = globalConfig?.long_channel_lookback !== undefined ? globalConfig.long_channel_lookback : '';
         document.getElementById('global-long-sideways-exposure-multiplier').value = globalConfig?.long_sideways_exposure_multiplier !== undefined ? globalConfig.long_sideways_exposure_multiplier : '';
         document.getElementById('global-long-uptrend-sideways-sell-multiplier').value = globalConfig?.long_uptrend_sideways_sell_multiplier !== undefined ? globalConfig.long_uptrend_sideways_sell_multiplier : '';
@@ -37,10 +42,16 @@ window.ConfigView = (function () {
 
     function syncMultiHorizonSettings() {
         const enabled = document.getElementById('global-multi-horizon-regime-enabled').checked;
-        document.querySelectorAll('.multi-horizon-setting input').forEach((input) => {
+        document.querySelectorAll('.multi-horizon-setting input, .multi-horizon-setting select').forEach((input) => {
             input.disabled = !enabled;
         });
         document.getElementById('multi-horizon-policy-note').style.display = enabled ? '' : 'none';
+        const rebound = enabled
+            && document.getElementById('global-trend-only-enabled').checked
+            && document.getElementById('global-trend-entry-mode').value === 'rebound';
+        document.querySelectorAll('.rebound-trend-setting input').forEach((input) => {
+            input.disabled = !rebound;
+        });
     }
 
     function renderTickerList(stocks, activeIndex, onSelect, getDisplayName) {
@@ -268,6 +279,11 @@ window.ConfigView = (function () {
             channel_breakdown_atr_multiplier: document.getElementById('global-channel-breakdown-atr-multiplier').value,
             multi_horizon_regime_enabled: document.getElementById('global-multi-horizon-regime-enabled').checked,
             trend_only_enabled: document.getElementById('global-trend-only-enabled').checked,
+            trend_entry_mode: document.getElementById('global-trend-entry-mode').value,
+            rebound_entry_confirm_bars: document.getElementById('global-rebound-entry-confirm-bars').value,
+            rebound_entry_require_midline: document.getElementById('global-rebound-entry-require-midline').checked,
+            pullback_rebound_confirm_bars: document.getElementById('global-pullback-rebound-confirm-bars').value,
+            pullback_rebound_max_wait_bars: document.getElementById('global-pullback-rebound-max-wait-bars').value,
             long_channel_lookback: document.getElementById('global-long-channel-lookback').value,
             long_sideways_exposure_multiplier: document.getElementById('global-long-sideways-exposure-multiplier').value,
             long_uptrend_sideways_sell_multiplier: document.getElementById('global-long-uptrend-sideways-sell-multiplier').value,

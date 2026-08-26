@@ -1,6 +1,7 @@
 """장·단기 3층 레짐 정책의 핵심 회귀 테스트."""
 import numpy as np
 import pandas as pd
+from types import SimpleNamespace
 
 from src.core.logic.regime import Regime
 from src.core.logic.split_evaluator import SplitEvaluator, classify_for_rule
@@ -327,3 +328,94 @@ def test_transition_chart_exposes_policy_parameters():
     )
     assert chart["params"]["uptrend_sideways_transition_partial_sell_pct"] == 50
     assert chart["params"]["uptrend_sideways_transition_confirm_bars"] == 2
+
+
+def test_rebound_entry_requires_observed_transition_and_two_distinct_days():
+    rule = _rule(trend_only_enabled=True, trend_entry_mode="rebound")
+    evaluator = SplitEvaluator()
+    reading = SimpleNamespace(channel_mid=100.0)
+    state = {}
+    transition = {
+        "long": Regime.UPTREND, "short": Regime.UPTREND,
+        "previous_long": "uptrend", "previous_short": "sideways",
+    }
+    assert not evaluator._resolve_rebound_entry(
+        rule, reading, state, transition, 101.0, "2025-01-02",
+    )
+    assert evaluator._resolve_rebound_entry(
+        rule, reading, state, transition, 101.0, "2025-01-03",
+    )
+
+    startup = {}
+    already_up = {**transition, "previous_short": "uptrend"}
+    assert not evaluator._resolve_rebound_entry(
+        rule, reading, startup, already_up, 101.0, "2025-01-02",
+    )
+
+
+def test_rebound_entry_integrates_with_full_stock_evaluation():
+    sideways_closes = _trend(189, 100, 0.35)
+    sideways_closes += [sideways_closes[-1] * (1 + (i % 2) * 0.002) for i in range(63)]
+    sideways = _window(sideways_closes)
+    uptrend = _window(_trend(252, 100, 0.25))
+    rule = _rule(
+        trend_only_enabled=True, trend_entry_mode="rebound",
+        buy_amount=1000, max_exposure_pct=100,
+    )
+    state = {}
+    evaluator = SplitEvaluator()
+    uptrend_price = classify_for_rule(rule, uptrend).channel_mid + 1
+
+    waiting = evaluator.evaluate_stock(
+        rule, [], _portfolio(sideways.Close.iloc[-1], cash=10000),
+        ohlc_window=sideways, regime_state=state, evaluation_date="2025-01-02",
+    )
+    first = evaluator.evaluate_stock(
+        rule, [], _portfolio(uptrend_price, cash=10000),
+        ohlc_window=uptrend, regime_state=state, evaluation_date="2025-01-03",
+    )
+    second = evaluator.evaluate_stock(
+        rule, [], _portfolio(uptrend_price, cash=10000),
+        ohlc_window=uptrend, regime_state=state, evaluation_date="2025-01-06",
+    )
+
+    assert waiting[0].is_blocked
+    assert first[0].is_blocked
+    assert second[0].action == OrderAction.BUY
+    assert not second[0].is_blocked, second[0].reason
+    assert second[0].entry_trigger == "rebound_initial_entry"
+
+
+def test_rebound_pullback_add_waits_for_next_day_ema_recovery():
+    rule = _rule(
+        trend_only_enabled=True, trend_entry_mode="rebound",
+        uptrend_add_amount=1000, max_exposure_pct=100,
+    )
+    evaluator = SplitEvaluator()
+    state = {"adds": 0}
+    lot = _lot(price=100, qty=5)
+    first_reading = SimpleNamespace(ema20=100.0, close=100.0, swing_high=110.0)
+    first = evaluator._evaluate_uptrend_add(
+        rule, [lot], lot, 99.0, first_reading, state,
+        _portfolio(99.0, qty=5, cash=10000), evaluation_date="2025-01-02",
+    )
+    assert first is None
+    assert state["pullback_rebound_armed"] is True
+
+    second_reading = SimpleNamespace(ema20=100.0, close=100.0, swing_high=110.0)
+    second = evaluator._evaluate_uptrend_add(
+        rule, [lot], lot, 101.0, second_reading, state,
+        _portfolio(101.0, qty=5, cash=10000), evaluation_date="2025-01-03",
+    )
+    assert second is not None
+    assert second.entry_trigger == "pullback_rebound_add"
+
+
+def test_rebound_chart_exposes_entry_policy():
+    window = _window(_trend(252, 100, 0.25))
+    rule = _rule(trend_only_enabled=True, trend_entry_mode="rebound")
+    chart = build_chart_series(
+        rule, window, lambda d: classify_for_rule(rule, d), [], window.Close.iloc[-1],
+    )
+    assert chart["params"]["trend_entry_mode"] == "rebound"
+    assert chart["params"]["rebound_entry_confirm_bars"] == 2

@@ -375,6 +375,10 @@ def _public_state(rule: StockRule, regime_st: dict) -> dict:
             "short_trend": regime_st.get("short_trend"),
             "long_downtrend_lock": bool(regime_st.get("long_downtrend_lock")),
             "aligned_downtrend_reentry_lock": bool(regime_st.get("aligned_downtrend_reentry_lock")),
+            "rebound_entry_armed": bool(regime_st.get("rebound_entry_armed")),
+            "rebound_entry_days": len(regime_st.get("rebound_entry_days") or []),
+            "pullback_rebound_armed": bool(regime_st.get("pullback_rebound_armed")),
+            "pullback_rebound_low": regime_st.get("pullback_rebound_low"),
         })
     return state
 
@@ -399,6 +403,11 @@ def _public_params(rule: StockRule) -> dict:
         params.update({
             "multi_horizon_regime_enabled": True,
             "trend_only_enabled": rule.trend_only_enabled,
+            "trend_entry_mode": rule.trend_entry_mode,
+            "rebound_entry_confirm_bars": rule.rebound_entry_confirm_bars,
+            "rebound_entry_require_midline": rule.rebound_entry_require_midline,
+            "pullback_rebound_confirm_bars": rule.pullback_rebound_confirm_bars,
+            "pullback_rebound_max_wait_bars": rule.pullback_rebound_max_wait_bars,
             "long_channel_lookback": rule.long_channel_lookback,
             "long_sideways_exposure_multiplier": rule.long_sideways_exposure_multiplier,
             "long_uptrend_sideways_sell_multiplier": rule.long_uptrend_sideways_sell_multiplier,

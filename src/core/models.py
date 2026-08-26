@@ -104,6 +104,12 @@ class StockRule:
     multi_horizon_regime_enabled: bool = False
     # 장·단기 모두 상승일 때만 진입·추가매수하고, 횟보 중에는 보유만 한다.
     trend_only_enabled: bool = False
+    # 추세 전용 최초 진입 방식: aligned=상승 정렬 확인, rebound=비상승→상승 반등 확인.
+    trend_entry_mode: str = "aligned"
+    rebound_entry_confirm_bars: int = 2
+    rebound_entry_require_midline: bool = True
+    pullback_rebound_confirm_bars: int = 1
+    pullback_rebound_max_wait_bars: int = 10
     # (장기 상승, 단기 상승) -> (장기 상승, 단기 횡보) 확정 시 선제 감축.
     # 0이면 비활성화되어 기존 동작을 완전히 보존한다.
     uptrend_sideways_transition_partial_sell_pct: float = 0.0
@@ -149,6 +155,32 @@ class StockRule:
                 f"StockRule({self.ticker}): trend_only_enabled는 "
                 "regime_enabled=true, regime_algo='channel', "
                 "multi_horizon_regime_enabled=true 조합이 필요합니다."
+            )
+        if self.trend_entry_mode not in ("aligned", "rebound"):
+            raise ValueError(
+                f"StockRule({self.ticker}): trend_entry_mode는 'aligned' 또는 'rebound'여야 합니다."
+            )
+        if self.trend_entry_mode == "rebound" and not (
+                self.trend_only_enabled
+                and self.regime_enabled
+                and self.regime_algo == "channel"
+                and self.multi_horizon_regime_enabled):
+            raise ValueError(
+                f"StockRule({self.ticker}): rebound 진입은 trend_only_enabled=true, "
+                "regime_enabled=true, regime_algo='channel', "
+                "multi_horizon_regime_enabled=true 조합이 필요합니다."
+            )
+        for name, value in (
+            ("rebound_entry_confirm_bars", self.rebound_entry_confirm_bars),
+            ("pullback_rebound_confirm_bars", self.pullback_rebound_confirm_bars),
+            ("pullback_rebound_max_wait_bars", self.pullback_rebound_max_wait_bars),
+        ):
+            if (not isinstance(value, int) or isinstance(value, bool) or value < 1):
+                raise ValueError(f"StockRule({self.ticker}): {name}는 1 이상의 정수여야 합니다.")
+        if self.pullback_rebound_max_wait_bars < self.pullback_rebound_confirm_bars:
+            raise ValueError(
+                f"StockRule({self.ticker}): pullback_rebound_max_wait_bars는 "
+                "pullback_rebound_confirm_bars 이상이어야 합니다."
             )
 
         if not (0 <= self.uptrend_sideways_transition_partial_sell_pct < 100):
@@ -341,6 +373,7 @@ class PositionLot:
     trailing_highest_price: Optional[float] = None  # 트레일링 스톱 활성화 이후 최고가
     entry_long_regime: Optional[str] = None   # 매수 당시 장기 레짐 (손익 귀속용)
     entry_short_regime: Optional[str] = None  # 매수 당시 단기 레짐 (손익 귀속용)
+    entry_trigger: Optional[str] = None       # 반등 최초진입/눌림 재상승 등 진입 원인
 
 
 @dataclass
@@ -391,6 +424,7 @@ class TradeExecution:
     liquidation_lots: Optional[List[dict]] = None
     entry_long_regime: Optional[str] = None
     entry_short_regime: Optional[str] = None
+    entry_trigger: Optional[str] = None
     exit_trigger: Optional[str] = None
     exit_long_regime: Optional[str] = None
     exit_short_regime: Optional[str] = None
@@ -413,6 +447,8 @@ class SplitSignal:
     # 상승장 누적매수(add) 신호 표식 + 체결 확정 시 기록할 스윙고점.
     # None이 아니면 "상승 add"이며, 매수 체결이 확정될 때 regime_state를 갱신한다.
     regime_add_swing_high: Optional[float] = None
+    # 체결 내역에서 최초 반등 진입과 눌림 재상승 추가매수를 구분한다.
+    entry_trigger: Optional[str] = None
     # 추세이탈 전량청산 매도 표식. 매도 체결이 확정될 때 regime_state를 리셋(flat 재시작)한다.
     regime_liquidation: bool = False
     # 채널 이탈 청산 뒤 적용할 신규 진입 게이트. 체결 확정 시 regime_state에 저장한다.

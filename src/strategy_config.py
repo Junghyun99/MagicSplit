@@ -110,13 +110,16 @@ class StrategyConfig:
     _REGIME_KEYS_BOOL = (
         "regime_enabled", "trendbreak_use_sma50",
         "multi_horizon_regime_enabled", "trend_only_enabled",
+        "rebound_entry_require_midline",
     )
-    _REGIME_KEYS_STR = ("regime_algo",)
+    _REGIME_KEYS_STR = ("regime_algo", "trend_entry_mode")
     _REGIME_KEYS_INT = (
         "regime_min_bars", "uptrend_max_adds",
         "uptrend_swing_lookback", "trendbreak_chandelier_lookback",
         "channel_lookback", "long_channel_lookback",
         "uptrend_sideways_transition_confirm_bars",
+        "rebound_entry_confirm_bars", "pullback_rebound_confirm_bars",
+        "pullback_rebound_max_wait_bars",
     )
     _REGIME_KEYS_FLOAT = (
         "regime_adx_trend", "regime_adx_range",
@@ -174,8 +177,23 @@ class StrategyConfig:
         with open(self.config_path, 'r', encoding='utf-8') as f:
             data = json.load(f)
 
+        # 백테스트 실험 설정은 전체 종목 목록을 복제하지 않고 기준 설정을 상속할 수 있다.
+        # stock_overrides는 프리셋·종목 값보다 나중에 적용되는 명시적 일괄 재정의다.
+        extends = data.get("extends")
+        if extends:
+            base_path = os.path.join(os.path.dirname(self.config_path), extends)
+            with open(base_path, 'r', encoding='utf-8') as f:
+                base_data = json.load(f)
+            data = {
+                **base_data,
+                **data,
+                "global": {**base_data.get("global", {}), **data.get("global", {})},
+                "stocks": data.get("stocks", base_data.get("stocks", [])),
+            }
+
         self.global_config = data.get("global", {})
         raw_stocks = data.get("stocks", [])
+        stock_overrides = data.get("stock_overrides", {})
 
         if not raw_stocks:
             raise ValueError(f"{self.config_path}에 'stocks' 항목이 비어 있습니다.")
@@ -197,6 +215,8 @@ class StrategyConfig:
 
         for idx, raw in enumerate(raw_stocks):
             merged = self._merge_preset(raw, self.presets)
+            if stock_overrides:
+                merged = {**merged, **stock_overrides}
 
             ticker = merged.get("ticker")
             if not ticker:

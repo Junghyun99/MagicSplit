@@ -96,6 +96,7 @@ class JsonRepository(IRepository):
                 trailing_highest_price=item.get("trailing_highest_price"),
                 entry_long_regime=item.get("entry_long_regime"),
                 entry_short_regime=item.get("entry_short_regime"),
+                entry_trigger=item.get("entry_trigger"),
             ))
 
         # 레거시 마이그레이션: level=0인 lot에 순차 level 부여
@@ -127,6 +128,7 @@ class JsonRepository(IRepository):
                         trailing_highest_price=lot.trailing_highest_price,
                         entry_long_regime=lot.entry_long_regime,
                         entry_short_regime=lot.entry_short_regime,
+                        entry_trigger=lot.entry_trigger,
                     ))
             else:
                 result.extend(ticker_lots)
@@ -183,6 +185,8 @@ class JsonRepository(IRepository):
                 base.pop("entry_long_regime", None)
             if base.get("entry_short_regime") is None:
                 base.pop("entry_short_regime", None)
+            if base.get("entry_trigger") is None:
+                base.pop("entry_trigger", None)
             for field in ("exit_trigger", "exit_long_regime", "exit_short_regime"):
                 if base.get(field) is None:
                     base.pop(field, None)
@@ -199,11 +203,14 @@ class JsonRepository(IRepository):
                         "realized_pnl": lot["realized_pnl"],
                         "entry_long_regime": lot.get("entry_long_regime"),
                         "entry_short_regime": lot.get("entry_short_regime"),
+                        "entry_trigger": lot.get("entry_trigger"),
                     })
                     if rec.get("entry_long_regime") is None:
                         rec.pop("entry_long_regime", None)
                     if rec.get("entry_short_regime") is None:
                         rec.pop("entry_short_regime", None)
+                    if rec.get("entry_trigger") is None:
+                        rec.pop("entry_trigger", None)
                     enriched_execs.append(rec)
                 continue
 

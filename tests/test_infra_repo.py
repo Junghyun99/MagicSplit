@@ -108,6 +108,19 @@ class TestTradeHistory:
         assert saved["exit_long_regime"] == "uptrend"
         assert saved["exit_short_regime"] == "sideways"
 
+    def test_trade_history_saves_entry_trigger(self, repo):
+        execution = TradeExecution(
+            "AAPL", OrderAction.BUY, 5, 140.0, 1.75,
+            "2026-04-10", ExecutionStatus.FILLED,
+            entry_trigger="rebound_initial_entry",
+        )
+        repo.save_trade_history(
+            [execution], Portfolio(8000.0, {"AAPL": 5}, {"AAPL": 140.0}),
+            "반등 진입",
+        )
+        saved = json.loads(open(repo.history_file, encoding="utf-8").read())[0]["executions"][0]
+        assert saved["entry_trigger"] == "rebound_initial_entry"
+
     def test_empty_executions_not_saved(self, repo):
         """체결 내역이 없으면 저장하지 않음 (초기화된 빈 상태 유지)"""
         portfolio = Portfolio(10000.0, {}, {})

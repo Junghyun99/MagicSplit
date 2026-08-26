@@ -631,6 +631,27 @@ class TestStrategyConfigRegime:
         assert rules[1].uptrend_sideways_transition_partial_sell_pct == 25
         assert rules[1].uptrend_sideways_transition_confirm_bars == 3
 
+    def test_rebound_policy_global_inheritance(self, tmp_path):
+        config = {
+            "stocks": [{"ticker": "AAPL"}],
+            "global": {
+                "regime_enabled": True, "regime_algo": "channel",
+                "multi_horizon_regime_enabled": True,
+                "trend_only_enabled": True, "trend_entry_mode": "rebound",
+                "rebound_entry_confirm_bars": 3,
+                "rebound_entry_require_midline": False,
+                "pullback_rebound_confirm_bars": 2,
+                "pullback_rebound_max_wait_bars": 8,
+            },
+        }
+        config_file = tmp_path / "config_overseas.json"
+        config_file.write_text(json.dumps(config))
+        rule = StrategyConfig(str(config_file)).rules[0]
+        assert rule.trend_entry_mode == "rebound"
+        assert rule.rebound_entry_confirm_bars == 3
+        assert rule.rebound_entry_require_midline is False
+        assert rule.pullback_rebound_confirm_bars == 2
+
     def test_invalid_channel_algo_raises(self, tmp_path):
         config = {
             "stocks": [{
@@ -669,6 +690,13 @@ class TestRepoConfigRegimeSeparation:
             and r.uptrend_sideways_transition_confirm_bars == 2
             for r in sc.rules
         )
+
+    def test_rebound_backtest_overlay_enables_all_stocks(self):
+        sc = StrategyConfig(os.path.join(REPO_ROOT, "config_test_domestic_rebound.json"))
+        assert len(sc.rules) == 50
+        assert all(r.trend_only_enabled for r in sc.rules)
+        assert all(r.trend_entry_mode == "rebound" for r in sc.rules)
+        assert all(r.uptrend_sideways_transition_partial_sell_pct == 0 for r in sc.rules)
 
 
 class TestRepoCryptoConfig:

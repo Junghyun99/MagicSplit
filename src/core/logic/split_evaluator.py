@@ -157,6 +157,7 @@ class SplitEvaluator:
         downtrend_blocked = False
         multi = None
         trend_only_uptrend_confirmed = False
+        rebound_entry_confirmed = False
         if rule.regime_enabled and ohlc_window is not None:
             reading = classify_for_rule(rule, ohlc_window)
             regime_st = regime_state.setdefault(rule.ticker, {}) if regime_state is not None else {}
@@ -182,6 +183,11 @@ class SplitEvaluator:
                     and multi["long"] == Regime.UPTREND
                     and multi["short"] == Regime.UPTREND
                 )
+                if rule.trend_entry_mode == "rebound" and not ticker_lots:
+                    rebound_entry_confirmed = self._resolve_rebound_entry(
+                        rule, reading, regime_st, multi, current_price,
+                        evaluation_date=evaluation_date,
+                    )
 
             # 장·단기 하락 정렬은 단기 방어 뒤 남은 물량까지 정리하는 최종 청산 이벤트다.
             if (multi and ticker_lots and (
@@ -203,12 +209,13 @@ class SplitEvaluator:
                     )
                     if exit_signals is not None:
                         return exit_signals
-                transition_signals = self._evaluate_uptrend_sideways_transition(
-                    rule, ticker_lots, current_price, regime_st, multi,
-                    evaluation_date=evaluation_date,
-                )
-                if transition_signals is not None:
-                    return transition_signals
+                if rule.trend_entry_mode != "rebound":
+                    transition_signals = self._evaluate_uptrend_sideways_transition(
+                        rule, ticker_lots, current_price, regime_st, multi,
+                        evaluation_date=evaluation_date,
+                    )
+                    if transition_signals is not None:
+                        return transition_signals
                 uptrend_resolved = (
                     trend_only_uptrend_confirmed
                     if rule.trend_only_enabled
@@ -231,6 +238,13 @@ class SplitEvaluator:
                 if rule.trend_only_enabled:
                     # 이탈 조건이 아닌 횡보/불명 국면에서는 기존 매직스플릿
                     # 익절·추가매수로 내려가지 않고 보유한다.
+                    if rule.trend_entry_mode == "rebound":
+                        for key in (
+                            "pullback_rebound_armed", "pullback_rebound_start_date",
+                            "pullback_rebound_low", "pullback_rebound_wait_days",
+                            "pullback_rebound_confirm_days",
+                        ):
+                            regime_st.pop(key, None)
                     return []
             else:
                 uptrend_resolved = False
@@ -335,10 +349,17 @@ class SplitEvaluator:
                     return [self._buy_blocked_signal(
                         rule, current_price, "추세 데이터 부족",
                     )]
-                if not trend_only_uptrend_confirmed:
+                entry_confirmed = (
+                    rebound_entry_confirmed
+                    if rule.trend_entry_mode == "rebound"
+                    else trend_only_uptrend_confirmed
+                )
+                if not entry_confirmed:
                     return [self._buy_blocked_signal(
                         rule, current_price,
-                        "추세 전용 대기 - 장·단기 상승 정렬 필요",
+                        ("반등형 추세 대기 - 장기 상승·단기 재상승·중심선 회복 필요"
+                         if rule.trend_entry_mode == "rebound"
+                         else "추세 전용 대기 - 장·단기 상승 정렬 필요"),
                     )]
             last_sell_price = (
                 last_sell_prices.get(rule.ticker) if last_sell_prices else None
@@ -346,6 +367,11 @@ class SplitEvaluator:
             signal = self._evaluate_initial_buy(
                 rule, current_price, last_sell_price=last_sell_price,
                 portfolio=portfolio,
+                bypass_reentry_guard=(rule.trend_entry_mode == "rebound"),
+                entry_trigger=("rebound_initial_entry"
+                               if rule.trend_entry_mode == "rebound"
+                               else "aligned_uptrend_entry"
+                               if rule.trend_only_enabled else "legacy_magic_split"),
             )
             return [signal] if signal else []
 
@@ -580,6 +606,51 @@ class SplitEvaluator:
             "lock_reason": "장기 하락 확정 - 신규·추가 매수 차단",
             "exposure_limit": exposure_limit, "sell_multiplier": sell_multiplier,
         }
+
+    def _resolve_rebound_entry(
+        self, rule: StockRule, reading, st: dict, multi: dict,
+        current_price: float, evaluation_date: Optional[str] = None,
+    ) -> bool:
+        """장기 상승 중 단기 비상승→상승 전환을 날짜 기준으로 확인한다."""
+        prefix = "rebound_entry_"
+        current_pair_ok = (
+            multi["long"] == Regime.UPTREND
+            and multi["short"] == Regime.UPTREND
+        )
+        if not current_pair_ok:
+            for key in ("armed", "origin_regime", "days", "last_date", "confirmed"):
+                st.pop(prefix + key, None)
+            return False
+
+        if not st.get(prefix + "armed"):
+            previous_long = multi.get("previous_long")
+            previous_short = multi.get("previous_short")
+            if not (
+                previous_long == str(Regime.UPTREND)
+                and previous_short in (str(Regime.SIDEWAYS), str(Regime.DOWNTREND))
+            ):
+                return False
+            st[prefix + "armed"] = True
+            st[prefix + "origin_regime"] = previous_short
+
+        midline_ok = (
+            not rule.rebound_entry_require_midline
+            or (not math.isnan(reading.channel_mid) and current_price > reading.channel_mid)
+        )
+        if not midline_ok:
+            st[prefix + "days"] = []
+            st.pop(prefix + "confirmed", None)
+            return False
+
+        today = evaluation_date or datetime.date.today().isoformat()
+        days = st.get(prefix + "days", [])
+        if today not in days:
+            days.append(today)
+        st[prefix + "days"] = days
+        st[prefix + "last_date"] = today
+        confirmed = len(days) >= rule.rebound_entry_confirm_bars
+        st[prefix + "confirmed"] = confirmed
+        return confirmed
 
     def _evaluate_uptrend_sideways_transition(
         self, rule: StockRule, lots: List[PositionLot], current_price: float,
@@ -832,9 +903,15 @@ class SplitEvaluator:
         current_price: float,
         last_sell_price: Optional[float] = None,
         portfolio: Optional[Portfolio] = None,
+        bypass_reentry_guard: bool = False,
+        entry_trigger: Optional[str] = None,
     ) -> Optional[SplitSignal]:
         """보유 lot이 없을 때 1차수 초기 매수를 평가한다."""
-        passed, reason = self._passes_reentry_guard(rule, current_price, last_sell_price)
+        passed, reason = (
+            self._passes_price_anomaly_guard(rule, current_price, last_sell_price)
+            if bypass_reentry_guard
+            else self._passes_reentry_guard(rule, current_price, last_sell_price)
+        )
         if not passed:
             return SplitSignal(
                 ticker=rule.ticker,
@@ -918,6 +995,7 @@ class SplitEvaluator:
             reason="초기 매수 Lv1",
             pct_change=0.0,
             level=1,
+            entry_trigger=entry_trigger,
         )
 
     def _passes_reentry_guard(
@@ -945,18 +1023,12 @@ class SplitEvaluator:
         if last_sell_price is None or last_sell_price <= 0:
             return True, ""
 
+        passed, reason = self._passes_price_anomaly_guard(
+            rule, current_price, last_sell_price,
+        )
+        if not passed:
+            return passed, reason
         pct_from_sell = (current_price - last_sell_price) / last_sell_price * 100
-
-        # [방어선 2] 가격 이격 과다 체크 (액면분할/병합 의심)
-        if abs(pct_from_sell) >= self.price_anomaly_threshold:
-            reason = (
-                f"가격 이격 과다({pct_from_sell:+.1f}%): 액면분할/병합 확인 필요 "
-                f"(직전매도 {format_money(last_sell_price, rule.market_type)} "
-                f"vs 현재 {format_money(current_price, rule.market_type)})"
-            )
-            if self._logger:
-                self._logger.warning(f"[{rule.ticker}] {reason}")
-            return False, reason
 
         if pct_from_sell <= rule.reentry_guard_pct:
             return True, ""
@@ -967,6 +1039,25 @@ class SplitEvaluator:
         )
         if self._logger:
             self._logger.info(f"[{display_ticker(rule.ticker)}] {reason}")
+        return False, reason
+
+    def _passes_price_anomaly_guard(
+        self, rule: StockRule, current_price: float,
+        last_sell_price: Optional[float],
+    ) -> tuple[bool, str]:
+        """평균회귀 재진입 조건과 무관하게 액면분할 의심 이격을 차단한다."""
+        if last_sell_price is None or last_sell_price <= 0:
+            return True, ""
+        pct_from_sell = (current_price - last_sell_price) / last_sell_price * 100
+        if abs(pct_from_sell) < self.price_anomaly_threshold:
+            return True, ""
+        reason = (
+            f"가격 이격 과다({pct_from_sell:+.1f}%): 액면분할/병합 확인 필요 "
+            f"(직전매도 {format_money(last_sell_price, rule.market_type)} "
+            f"vs 현재 {format_money(current_price, rule.market_type)})"
+        )
+        if self._logger:
+            self._logger.warning(f"[{rule.ticker}] {reason}")
         return False, reason
 
     def _passes_exposure_guard(
@@ -1912,6 +2003,43 @@ class SplitEvaluator:
         upper = ema20 * (1 + band_pct / 100)
         in_band = current_price <= upper
         bounced = current_price > reading.close or current_price > ema20
+        if rule.trend_entry_mode == "rebound":
+            prefix = "pullback_rebound_"
+            armed = bool(st.get(prefix + "armed"))
+            if not armed:
+                if in_band:
+                    st[prefix + "armed"] = True
+                    st[prefix + "start_date"] = today_str
+                    st[prefix + "low"] = current_price
+                    st[prefix + "wait_days"] = [today_str]
+                return None
+
+            wait_days = st.get(prefix + "wait_days", [])
+            if today_str not in wait_days:
+                wait_days.append(today_str)
+            st[prefix + "wait_days"] = wait_days
+            st[prefix + "low"] = min(float(st.get(prefix + "low", current_price)), current_price)
+            if len(wait_days) > rule.pullback_rebound_max_wait_bars:
+                for key in ("armed", "start_date", "low", "wait_days", "confirm_days"):
+                    st.pop(prefix + key, None)
+                return None
+            # 눌림을 관측한 다음 거래일부터 EMA20 재돌파와 전일 대비 상승을 확인한다.
+            rebound_ok = (
+                today_str != st.get(prefix + "start_date")
+                and in_band
+                and current_price > ema20
+                and current_price > reading.close
+            )
+            confirm_days = st.get(prefix + "confirm_days", [])
+            if rebound_ok:
+                if today_str not in confirm_days:
+                    confirm_days.append(today_str)
+            else:
+                confirm_days = []
+            st[prefix + "confirm_days"] = confirm_days
+            if len(confirm_days) < rule.pullback_rebound_confirm_bars:
+                return None
+            bounced = True
         if not (in_band and bounced):
             if self._logger:
                 self._logger.debug(
@@ -1970,5 +2098,7 @@ class SplitEvaluator:
             pct_change=0.0,
             level=next_level,
             regime_add_swing_high=reading.swing_high,
+            entry_trigger=("pullback_rebound_add"
+                           if rule.trend_entry_mode == "rebound" else None),
         )
 

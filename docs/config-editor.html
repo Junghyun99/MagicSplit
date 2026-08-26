@@ -111,6 +111,29 @@
                     <input type="checkbox" id="global-trend-only-enabled" style="width:20px; height:20px;">
                 </div>
                 <div class="form-group multi-horizon-setting">
+                    <label>추세 진입 방식</label>
+                    <select id="global-trend-entry-mode" class="form-control">
+                        <option value="aligned">상승 정렬</option>
+                        <option value="rebound">반등 확인</option>
+                    </select>
+                </div>
+                <div class="form-group multi-horizon-setting rebound-trend-setting">
+                    <label>반등 확인 (거래일)</label>
+                    <input type="number" min="1" step="1" id="global-rebound-entry-confirm-bars" class="form-control" placeholder="2">
+                </div>
+                <div class="form-group multi-horizon-setting rebound-trend-setting" style="display:flex; flex-direction:column; justify-content:center; align-items:center;">
+                    <label>중심선 회복 요구</label>
+                    <input type="checkbox" id="global-rebound-entry-require-midline" style="width:20px; height:20px;">
+                </div>
+                <div class="form-group multi-horizon-setting rebound-trend-setting">
+                    <label>눌림 재상승 확인 (거래일)</label>
+                    <input type="number" min="1" step="1" id="global-pullback-rebound-confirm-bars" class="form-control" placeholder="1">
+                </div>
+                <div class="form-group multi-horizon-setting rebound-trend-setting">
+                    <label>눌림 최대 대기 (거래일)</label>
+                    <input type="number" min="1" step="1" id="global-pullback-rebound-max-wait-bars" class="form-control" placeholder="10">
+                </div>
+                <div class="form-group multi-horizon-setting">
                     <label>장기 채널 기간 (봉)</label>
                     <input type="number" min="21" id="global-long-channel-lookback" class="form-control" placeholder="252">
                 </div>
@@ -158,6 +181,7 @@
                 장기 상승: 노출 100% · 장기 횡보: 노출 70% · 장기 하락: 신규·추가매수 차단 · 장기 상승·단기 횡보: 일반 익절 기준 1.5배
                 <br>추세 전용: 장·단기 상승에서만 진입하고 횡보 시 보유합니다.
                 <br>상승→횡보 선제청산: 지정 거래일 연속 확인 후 보유량 일부를 감축하고, 하단 이탈 시 기존 잔량 관리로 연결합니다.
+                <br>반등 확인: 장기 상승 중 단기 비상승→상승 전환과 중심선 회복 후 진입하며, 눌림 후 EMA20 재돌파에서만 추가매수합니다.
             </small>
         </div>
 

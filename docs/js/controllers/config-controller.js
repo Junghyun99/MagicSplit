@@ -149,7 +149,18 @@ window.ConfigController = (function () {
             ConfigView.syncMultiHorizonSettings();
             saveGlobalConfigToModel();
         });
-        document.getElementById('global-trend-only-enabled').addEventListener('change', saveGlobalConfigToModel);
+        document.getElementById('global-trend-only-enabled').addEventListener('change', () => {
+            ConfigView.syncMultiHorizonSettings();
+            saveGlobalConfigToModel();
+        });
+        document.getElementById('global-trend-entry-mode').addEventListener('change', () => {
+            ConfigView.syncMultiHorizonSettings();
+            saveGlobalConfigToModel();
+        });
+        document.getElementById('global-rebound-entry-confirm-bars').addEventListener('input', saveGlobalConfigToModel);
+        document.getElementById('global-rebound-entry-require-midline').addEventListener('change', saveGlobalConfigToModel);
+        document.getElementById('global-pullback-rebound-confirm-bars').addEventListener('input', saveGlobalConfigToModel);
+        document.getElementById('global-pullback-rebound-max-wait-bars').addEventListener('input', saveGlobalConfigToModel);
         document.getElementById('global-long-channel-lookback').addEventListener('input', saveGlobalConfigToModel);
         document.getElementById('global-long-sideways-exposure-multiplier').addEventListener('input', saveGlobalConfigToModel);
         document.getElementById('global-long-uptrend-sideways-sell-multiplier').addEventListener('input', saveGlobalConfigToModel);
@@ -328,6 +339,11 @@ window.ConfigController = (function () {
             if (vals.channel_breakdown_atr_multiplier !== '') config.global.channel_breakdown_atr_multiplier = parseFloat(vals.channel_breakdown_atr_multiplier); else delete config.global.channel_breakdown_atr_multiplier;
             config.global.multi_horizon_regime_enabled = vals.multi_horizon_regime_enabled;
             config.global.trend_only_enabled = vals.trend_only_enabled;
+            config.global.trend_entry_mode = vals.trend_entry_mode;
+            if (vals.rebound_entry_confirm_bars !== '') config.global.rebound_entry_confirm_bars = parseInt(vals.rebound_entry_confirm_bars, 10); else delete config.global.rebound_entry_confirm_bars;
+            config.global.rebound_entry_require_midline = vals.rebound_entry_require_midline;
+            if (vals.pullback_rebound_confirm_bars !== '') config.global.pullback_rebound_confirm_bars = parseInt(vals.pullback_rebound_confirm_bars, 10); else delete config.global.pullback_rebound_confirm_bars;
+            if (vals.pullback_rebound_max_wait_bars !== '') config.global.pullback_rebound_max_wait_bars = parseInt(vals.pullback_rebound_max_wait_bars, 10); else delete config.global.pullback_rebound_max_wait_bars;
             if (vals.long_channel_lookback !== '') config.global.long_channel_lookback = parseInt(vals.long_channel_lookback, 10); else delete config.global.long_channel_lookback;
             if (vals.long_sideways_exposure_multiplier !== '') config.global.long_sideways_exposure_multiplier = parseFloat(vals.long_sideways_exposure_multiplier); else delete config.global.long_sideways_exposure_multiplier;
             if (vals.long_uptrend_sideways_sell_multiplier !== '') config.global.long_uptrend_sideways_sell_multiplier = parseFloat(vals.long_uptrend_sideways_sell_multiplier); else delete config.global.long_uptrend_sideways_sell_multiplier;
@@ -356,6 +372,15 @@ window.ConfigController = (function () {
         if (global.long_uptrend_sideways_sell_multiplier !== undefined
             && global.long_uptrend_sideways_sell_multiplier < 1) {
             return '장기 상승·단기 횡보 익절 배율은 1 이상이어야 합니다.';
+        }
+        if (global.trend_entry_mode === 'rebound') {
+            if (!global.trend_only_enabled) return '반등 확인 진입은 추세 전용 모드가 필요합니다.';
+            const confirm = global.rebound_entry_confirm_bars ?? 2;
+            const pullbackConfirm = global.pullback_rebound_confirm_bars ?? 1;
+            const maxWait = global.pullback_rebound_max_wait_bars ?? 10;
+            if (!Number.isInteger(confirm) || confirm < 1) return '반등 확인 기간은 1 이상의 정수여야 합니다.';
+            if (!Number.isInteger(pullbackConfirm) || pullbackConfirm < 1) return '눌림 재상승 확인 기간은 1 이상의 정수여야 합니다.';
+            if (!Number.isInteger(maxWait) || maxWait < pullbackConfirm) return '눌림 최대 대기는 재상승 확인 기간 이상이어야 합니다.';
         }
         const transitionPct = global.uptrend_sideways_transition_partial_sell_pct;
         if (transitionPct !== undefined && !(transitionPct >= 0 && transitionPct < 100)) {

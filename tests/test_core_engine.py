@@ -527,6 +527,25 @@ class TestUpdatePositions:
         assert executions[0].entry_long_regime == "uptrend"
         assert executions[0].entry_short_regime == "uptrend"
 
+    def test_buy_records_entry_trigger_and_clears_rebound_state(self, engine):
+        signal = SplitSignal(
+            "AAPL", None, OrderAction.BUY, 5, 100.0,
+            "반등 진입", 0.0, level=1, entry_trigger="rebound_initial_entry",
+        )
+        execution = TradeExecution(
+            "AAPL", OrderAction.BUY, 5, 100.0, 1.0,
+            "2026-04-10", ExecutionStatus.FILLED,
+        )
+        state = {"AAPL": {
+            "rebound_entry_armed": True,
+            "rebound_entry_confirmed": True,
+        }}
+        engine._update_positions(
+            [], [signal], [execution], "2026-04-10", regime_state=state,
+        )
+        assert execution.entry_trigger == "rebound_initial_entry"
+        assert "rebound_entry_armed" not in state["AAPL"]
+
     def test_sell_removes_specific_lot(self, engine):
         """매도 체결 -> signal의 lot_id로 특정 lot 제거"""
         positions = [

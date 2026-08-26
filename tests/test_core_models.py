@@ -385,6 +385,20 @@ class TestStockRuleChannelRegime:
                 uptrend_sideways_transition_confirm_bars=0,
             )
 
+    def test_rebound_entry_mode_defaults_and_dependencies(self):
+        rule = StockRule("AAPL", -5, 10, 100, 10)
+        assert rule.trend_entry_mode == "aligned"
+        with pytest.raises(ValueError, match="rebound 진입"):
+            StockRule("AAPL", -5, 10, 100, 10, trend_entry_mode="rebound")
+        rebound = StockRule(
+            "AAPL", -5, 10, 100, 10,
+            regime_enabled=True, regime_algo="channel",
+            multi_horizon_regime_enabled=True, trend_only_enabled=True,
+            trend_entry_mode="rebound",
+        )
+        assert rebound.rebound_entry_confirm_bars == 2
+        assert rebound.pullback_rebound_max_wait_bars == 10
+
     def test_channel_algo_accepted(self):
         rule = StockRule(
             "AAPL", -5.0, 10.0, 500, 10,
