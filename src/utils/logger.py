@@ -29,17 +29,29 @@ class TradeLogger(ILogger):
         self.captured_logs: List[Dict[str, Any]] = []
         self.current_ticker: Optional[str] = None
 
-        # 중복 핸들러 방지
-        if not self.logger.handlers and not quiet:
+        # pytest 등 외부 도구가 로거에 캡처 핸들러를 먼저 붙일 수 있으므로,
+        # 단순히 handlers 유무만으로 파일 핸들러 생성을 건너뛰지 않는다.
+        target_log_file = os.path.abspath(self.log_file)
+        has_target_file_handler = any(
+            isinstance(handler, logging.FileHandler)
+            and os.path.abspath(handler.baseFilename) == target_log_file
+            for handler in self.logger.handlers
+        )
+        if not quiet and not has_target_file_handler:
             # 1. 파일 핸들러
             fh = logging.FileHandler(self.log_file, encoding='utf-8')
             fh.setFormatter(logging.Formatter('%(asctime)s [%(levelname)s] %(message)s'))
             self.logger.addHandler(fh)
 
             # 2. 콘솔 핸들러 (GitHub Actions 로그용)
-            ch = logging.StreamHandler()
-            ch.setFormatter(logging.Formatter('[%(levelname)s] %(message)s'))
-            self.logger.addHandler(ch)
+            if not any(
+                isinstance(handler, logging.StreamHandler)
+                and not isinstance(handler, logging.FileHandler)
+                for handler in self.logger.handlers
+            ):
+                ch = logging.StreamHandler()
+                ch.setFormatter(logging.Formatter('[%(levelname)s] %(message)s'))
+                self.logger.addHandler(ch)
 
     def set_ticker_context(self, ticker: Optional[str]) -> None:
         self.current_ticker = ticker

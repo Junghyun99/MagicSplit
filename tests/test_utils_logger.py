@@ -1,6 +1,7 @@
 # tests/test_utils_logger.py
 import logging
 import os
+from io import StringIO
 import pytest
 from src.utils.logger import TradeLogger
 
@@ -28,6 +29,13 @@ class TestTradeLogger:
     def test_creates_log_file(self, tmp_path):
         log_dir = str(tmp_path / "test_logs")
         logger = TradeLogger(log_dir=log_dir)
+        logger.info("test message")
+        assert os.path.exists(logger.log_file)
+
+    def test_creates_file_handler_when_external_handler_already_exists(self, tmp_path):
+        external_handler = logging.StreamHandler(StringIO())
+        logging.getLogger("MagicSplit").addHandler(external_handler)
+        logger = TradeLogger(log_dir=str(tmp_path))
         logger.info("test message")
         assert os.path.exists(logger.log_file)
 
