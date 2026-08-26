@@ -1,6 +1,7 @@
 """장·단기 3층 레짐 정책의 핵심 회귀 테스트."""
 import numpy as np
 import pandas as pd
+import pytest
 from types import SimpleNamespace
 
 from src.core.logic.regime import Regime
@@ -259,7 +260,13 @@ def test_trend_only_chart_exposes_enabled_parameter():
     assert chart["params"]["trend_only_enabled"] is True
 
 
-def test_uptrend_sideways_transition_sells_half_only_on_second_distinct_day():
+@pytest.mark.parametrize(
+    "policy_overrides",
+    ({}, {"trend_only_enabled": True, "trend_entry_mode": "rebound"}),
+    ids=("aligned", "rebound"),
+)
+def test_uptrend_sideways_transition_sells_half_only_on_second_distinct_day(
+        policy_overrides):
     closes = _trend(189, 100, 0.35)
     closes += [closes[-1] * (1 + (i % 2) * 0.002) for i in range(63)]
     window = _window(closes)
@@ -267,6 +274,7 @@ def test_uptrend_sideways_transition_sells_half_only_on_second_distinct_day():
     rule = _rule(
         uptrend_sideways_transition_partial_sell_pct=50,
         uptrend_sideways_transition_confirm_bars=2,
+        **policy_overrides,
     )
     state = {"AAPL": {
         "previous_long_regime": str(Regime.UPTREND),

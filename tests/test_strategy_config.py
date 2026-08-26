@@ -696,7 +696,7 @@ class TestRepoConfigRegimeSeparation:
         assert len(sc.rules) == 50
         assert all(r.trend_only_enabled for r in sc.rules)
         assert all(r.trend_entry_mode == "rebound" for r in sc.rules)
-        assert all(r.uptrend_sideways_transition_partial_sell_pct == 0 for r in sc.rules)
+        assert all(r.uptrend_sideways_transition_partial_sell_pct == 50 for r in sc.rules)
 
 
 class TestRepoCryptoConfig:

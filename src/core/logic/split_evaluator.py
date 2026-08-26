@@ -209,13 +209,12 @@ class SplitEvaluator:
                     )
                     if exit_signals is not None:
                         return exit_signals
-                if rule.trend_entry_mode != "rebound":
-                    transition_signals = self._evaluate_uptrend_sideways_transition(
-                        rule, ticker_lots, current_price, regime_st, multi,
-                        evaluation_date=evaluation_date,
-                    )
-                    if transition_signals is not None:
-                        return transition_signals
+                transition_signals = self._evaluate_uptrend_sideways_transition(
+                    rule, ticker_lots, current_price, regime_st, multi,
+                    evaluation_date=evaluation_date,
+                )
+                if transition_signals is not None:
+                    return transition_signals
                 uptrend_resolved = (
                     trend_only_uptrend_confirmed
                     if rule.trend_only_enabled
