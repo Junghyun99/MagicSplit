@@ -138,3 +138,17 @@
 2026-08-27 09:31:11,962 [INFO] >>> Processing KRW-USDT
 2026-08-27 09:31:11,963 [INFO]   [KRW-USDT] 신호 없음 | Lv7 매수 KRW 1,368 -> 현재 KRW 1,382 (+1.02%) | 익절 +2.0% / 추매 -1.0%
 2026-08-27 09:31:11,963 [INFO] >>> Step 6: Persist
+2026-08-27 10:31:09,090 [INFO] === Initializing MagicSplit Bot (crypto) ===
+2026-08-27 10:31:09,090 [INFO] Loaded 3 stock rule(s) from config_crypto.json
+2026-08-27 10:31:09,091 [INFO] [crypto] 1 rule(s), mode=LIVE
+2026-08-27 10:31:09,092 [INFO] === Running crypto engine ===
+2026-08-27 10:31:09,092 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-08-27 10:31:09,377 [WARNING] [Upbit] 상폐/KRW미상장 보유 제외 (3건): ['KRW-APENFT', 'KRW-ETHF', 'KRW-ETHW']
+2026-08-27 10:31:09,493 [INFO] Fetching real-time prices from Broker...
+2026-08-27 10:31:09,598 [INFO] Portfolio: Cash=KRW 2,159,543, Value=KRW 12,555,328
+2026-08-27 10:31:09,598 [INFO] >>> Step 2: Load Positions
+2026-08-27 10:31:09,601 [INFO] Loaded 9 position lot(s)
+2026-08-27 10:31:09,604 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-08-27 10:31:09,605 [INFO] >>> Processing KRW-USDT
+2026-08-27 10:31:09,606 [INFO]   [KRW-USDT] 신호 없음 | Lv7 매수 KRW 1,368 -> 현재 KRW 1,382 (+1.02%) | 익절 +2.0% / 추매 -1.0%
+2026-08-27 10:31:09,606 [INFO] >>> Step 6: Persist
