@@ -1,26 +1,26 @@
 {
-    "last_updated": "2026-08-31 23:31:11",
-    "last_run_date": "2026-08-31",
+    "last_updated": "2026-09-01 00:31:08",
+    "last_run_date": "2026-09-01",
     "market_type": "crypto",
     "reason": "모니터링 - 신호 없음",
     "exchange_rate": null,
     "portfolio": {
-        "total_value": 12292003.96245477,
+        "total_value": 12268846.704514772,
         "cash_balance": 2159542.60325092,
         "holdings": [
             {
                 "ticker": "KRW-BTC",
                 "alias": "KRW-BTC",
                 "qty": 0.06851895,
-                "price": 108490000.0,
-                "value": 7433620.8855
+                "price": 108276000.0,
+                "value": 7418957.8302
             },
             {
                 "ticker": "KRW-ETH",
                 "alias": "KRW-ETH",
                 "qty": 0.77220024,
-                "price": 3407000.0,
-                "value": 2630886.21768
+                "price": 3396000.0,
+                "value": 2622392.01504
             },
             {
                 "ticker": "KRW-USDT",
@@ -114,7 +114,7 @@
             "total_qty": 0.06851895,
             "lot_count": 1,
             "total_invested": 7858454.55,
-            "current_value": 7433620.89,
+            "current_value": 7418957.83,
             "lots": [
                 {
                     "lot_id": "lot_20260717_000000_KRW-BTC_001_migrate",
@@ -122,23 +122,23 @@
                     "quantity": 0.06851895,
                     "buy_date": "2026-07-17",
                     "level": 1,
-                    "current_price": 108490000.0,
-                    "pct_change": -5.41
+                    "current_price": 108276000.0,
+                    "pct_change": -5.59
                 }
             ],
-            "current_price": 108490000.0,
+            "current_price": 108276000.0,
             "alias": "KRW-BTC",
             "avg_buy_price": 114690236.0,
-            "unrealized_pnl": -424833.66,
-            "unrealized_pnl_pct": -5.41,
+            "unrealized_pnl": -439496.72,
+            "unrealized_pnl_pct": -5.59,
             "realized_pnl": -1349223.66,
-            "total_pnl": -1774057.32
+            "total_pnl": -1788720.38
         },
         "KRW-ETH": {
             "total_qty": 0.77220024,
             "lot_count": 1,
             "total_invested": 2970896.02,
-            "current_value": 2630886.22,
+            "current_value": 2622392.02,
             "lots": [
                 {
                     "lot_id": "lot_20260717_000000_KRW-ETH_001_migrate",
@@ -146,17 +146,17 @@
                     "quantity": 0.77220024,
                     "buy_date": "2026-07-17",
                     "level": 1,
-                    "current_price": 3407000.0,
-                    "pct_change": -11.44
+                    "current_price": 3396000.0,
+                    "pct_change": -11.73
                 }
             ],
-            "current_price": 3407000.0,
+            "current_price": 3396000.0,
             "alias": "KRW-ETH",
             "avg_buy_price": 3847313.0,
-            "unrealized_pnl": -340009.8,
-            "unrealized_pnl_pct": -11.44,
+            "unrealized_pnl": -348504.01,
+            "unrealized_pnl_pct": -11.73,
             "realized_pnl": -854581.65,
-            "total_pnl": -1194591.45
+            "total_pnl": -1203085.66
         }
     },
     "realized_pnl_by_ticker": {
@@ -176,19 +176,19 @@
                 "ticker": "KRW-BTC",
                 "alias": "KRW-BTC",
                 "last_trade_date": "2026-07-24",
-                "days_stale": 38
+                "days_stale": 39
             },
             {
                 "ticker": "KRW-ETH",
                 "alias": "KRW-ETH",
                 "last_trade_date": "2026-07-24",
-                "days_stale": 38
+                "days_stale": 39
             },
             {
                 "ticker": "KRW-USDT",
                 "alias": "KRW-USDT",
                 "last_trade_date": "2026-08-19",
-                "days_stale": 12
+                "days_stale": 13
             }
         ],
         "risk_score": 51,
@@ -208,7 +208,7 @@
         ],
         "sync_error": false,
         "alerts": ["⚠️ 단일 종목 집중도 과다 (60.5%)"],
-        "max_ticker_concentration": 60.48,
+        "max_ticker_concentration": 60.47,
         "high_level_ratio": 0.0
     }
 }
