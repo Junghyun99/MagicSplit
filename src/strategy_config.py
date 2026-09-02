@@ -114,6 +114,16 @@ class StrategyConfig:
         "staged_rebound_allow_long_sideways",
         "staged_rebound_require_long_midline",
         "staged_rebound_require_nonnegative_long_slope",
+        "staged_rebound_wait_probe_enabled",
+        "post_liquidation_recovery_probe_enabled",
+        "post_liquidation_early_probe_enabled",
+        "uptrend_profit_trailing_enabled",
+        "uptrend_profit_recovery_add_enabled",
+        "shadow_mode_enabled",
+        "shadow_mode_v2_enabled",
+        "shadow_mode_v3_enabled",
+        "shadow_mode_v3_1_enabled",
+        "shadow_mode_v3_2_enabled",
     )
     _REGIME_KEYS_STR = ("regime_algo", "trend_entry_mode")
     _REGIME_KEYS_INT = (
@@ -123,6 +133,8 @@ class StrategyConfig:
         "uptrend_sideways_transition_confirm_bars",
         "rebound_entry_confirm_bars", "pullback_rebound_confirm_bars",
         "pullback_rebound_max_wait_bars",
+        "uptrend_profit_recovery_confirm_bars",
+        "post_liquidation_early_probe_confirm_bars",
     )
     _REGIME_KEYS_FLOAT = (
         "regime_adx_trend", "regime_adx_range",
@@ -132,8 +144,24 @@ class StrategyConfig:
         "channel_stddev_k", "channel_slope_band_pct",
         "channel_breakdown_tolerance_pct", "channel_breakdown_atr_multiplier",
         "staged_rebound_probe_pct",
+        "staged_rebound_wait_probe_pct",
+        "post_liquidation_early_probe_pct",
+        "post_liquidation_early_probe_max_ema_atr",
+        "post_liquidation_early_probe_stop_atr_multiplier",
         "long_sideways_exposure_multiplier", "long_uptrend_sideways_sell_multiplier",
         "uptrend_sideways_transition_partial_sell_pct",
+        "uptrend_profit_trailing_atr_multiplier",
+        "uptrend_profit_trailing_max_distance_pct",
+        "uptrend_profit_recovery_restore_pct",
+        "uptrend_profit_recovery_max_ema_atr",
+        "uptrend_profit_recovery_max_ema_distance_pct",
+        "uptrend_profit_recovery_min_stop_headroom_atr",
+        "transition_residual_atr_multiplier",
+        "transition_residual_min_distance_pct",
+        "transition_residual_max_distance_pct",
+        "shadow_mode_trend_threshold", "shadow_mode_range_threshold",
+        "shadow_mode_risk_threshold", "shadow_mode_risk_ceiling",
+        "shadow_mode_score_margin",
     )
     _REGIME_KEYS_LIST = ("uptrend_add_amounts",)
 
@@ -182,7 +210,8 @@ class StrategyConfig:
             data = json.load(f)
 
         # 백테스트 실험 설정은 전체 종목 목록을 복제하지 않고 기준 설정을 상속할 수 있다.
-        # stock_overrides는 프리셋·종목 값보다 나중에 적용되는 명시적 일괄 재정의다.
+        # ticker_overrides는 특정 종목, stock_overrides는 전체 종목에 적용한다.
+        # 우선순위는 프리셋 < 종목 < ticker_overrides < stock_overrides 순이다.
         extends = data.get("extends")
         if extends:
             base_path = os.path.join(os.path.dirname(self.config_path), extends)
@@ -193,14 +222,37 @@ class StrategyConfig:
                 **data,
                 "global": {**base_data.get("global", {}), **data.get("global", {})},
                 "stocks": data.get("stocks", base_data.get("stocks", [])),
+                "ticker_overrides": {
+                    **base_data.get("ticker_overrides", {}),
+                    **data.get("ticker_overrides", {}),
+                },
             }
 
         self.global_config = data.get("global", {})
         raw_stocks = data.get("stocks", [])
         stock_overrides = data.get("stock_overrides", {})
+        ticker_overrides = data.get("ticker_overrides", {})
 
         if not raw_stocks:
             raise ValueError(f"{self.config_path}에 'stocks' 항목이 비어 있습니다.")
+        if not isinstance(ticker_overrides, dict):
+            raise ValueError(f"{self.config_path}: ticker_overrides는 객체여야 합니다.")
+        configured_tickers = {stock.get("ticker") for stock in raw_stocks}
+        unknown_overrides = sorted(set(ticker_overrides) - configured_tickers)
+        if unknown_overrides:
+            raise ValueError(
+                f"{self.config_path}: ticker_overrides에 미등록 종목이 있습니다: "
+                f"{', '.join(unknown_overrides)}"
+            )
+        invalid_overrides = [
+            ticker for ticker, override in ticker_overrides.items()
+            if not isinstance(override, dict)
+        ]
+        if invalid_overrides:
+            raise ValueError(
+                f"{self.config_path}: ticker_overrides 값은 객체여야 합니다: "
+                f"{', '.join(sorted(invalid_overrides))}"
+            )
 
         # 글로벌 설정들 (종목별 설정이 없으면 이 값을 상속)
         global_max_exposure = self.global_config.get("max_exposure_pct")
@@ -219,6 +271,9 @@ class StrategyConfig:
 
         for idx, raw in enumerate(raw_stocks):
             merged = self._merge_preset(raw, self.presets)
+            ticker = merged.get("ticker")
+            if ticker in ticker_overrides:
+                merged = {**merged, **ticker_overrides[ticker]}
             if stock_overrides:
                 merged = {**merged, **stock_overrides}
 

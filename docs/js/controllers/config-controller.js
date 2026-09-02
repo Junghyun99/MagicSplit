@@ -163,11 +163,54 @@ window.ConfigController = (function () {
         document.getElementById('global-staged-rebound-allow-long-sideways').addEventListener('change', saveGlobalConfigToModel);
         document.getElementById('global-staged-rebound-require-long-midline').addEventListener('change', saveGlobalConfigToModel);
         document.getElementById('global-staged-rebound-require-nonnegative-long-slope').addEventListener('change', saveGlobalConfigToModel);
+        document.getElementById('global-staged-rebound-wait-probe-enabled').addEventListener('change', () => {
+            ConfigView.syncMultiHorizonSettings();
+            saveGlobalConfigToModel();
+        });
+        document.getElementById('global-staged-rebound-wait-probe-pct').addEventListener('input', saveGlobalConfigToModel);
+        document.getElementById('global-post-liquidation-recovery-probe-enabled').addEventListener('change', () => {
+            ConfigView.syncMultiHorizonSettings();
+            saveGlobalConfigToModel();
+        });
+        document.getElementById('global-post-liquidation-early-probe-enabled').addEventListener('change', () => {
+            ConfigView.syncMultiHorizonSettings();
+            saveGlobalConfigToModel();
+        });
+        for (const id of [
+            'global-post-liquidation-early-probe-pct',
+            'global-post-liquidation-early-probe-confirm-bars',
+            'global-post-liquidation-early-probe-max-ema-atr',
+            'global-post-liquidation-early-probe-stop-atr-multiplier'
+        ]) document.getElementById(id).addEventListener('input', saveGlobalConfigToModel);
         document.getElementById('global-pullback-rebound-confirm-bars').addEventListener('input', saveGlobalConfigToModel);
         document.getElementById('global-pullback-rebound-max-wait-bars').addEventListener('input', saveGlobalConfigToModel);
         document.getElementById('global-long-channel-lookback').addEventListener('input', saveGlobalConfigToModel);
         document.getElementById('global-long-sideways-exposure-multiplier').addEventListener('input', saveGlobalConfigToModel);
         document.getElementById('global-long-uptrend-sideways-sell-multiplier').addEventListener('input', saveGlobalConfigToModel);
+        document.getElementById('global-uptrend-profit-trailing-enabled').addEventListener('change', () => {
+            ConfigView.syncMultiHorizonSettings();
+            saveGlobalConfigToModel();
+        });
+        document.getElementById('global-uptrend-profit-recovery-add-enabled').addEventListener('change', () => {
+            ConfigView.syncMultiHorizonSettings();
+            saveGlobalConfigToModel();
+        });
+        for (const id of [
+            'global-uptrend-sideways-transition-partial-sell-pct',
+            'global-uptrend-sideways-transition-confirm-bars',
+            'global-uptrend-profit-trailing-atr-multiplier',
+            'global-uptrend-profit-trailing-max-distance-pct',
+            'global-uptrend-profit-recovery-confirm-bars',
+            'global-uptrend-profit-recovery-restore-pct',
+            'global-uptrend-profit-recovery-max-ema-atr',
+            'global-uptrend-profit-recovery-max-ema-distance-pct',
+            'global-uptrend-profit-recovery-min-stop-headroom-atr',
+            'global-transition-residual-atr-multiplier',
+            'global-transition-residual-min-distance-pct',
+            'global-transition-residual-max-distance-pct'
+        ]) {
+            document.getElementById(id).addEventListener('input', saveGlobalConfigToModel);
+        }
 
         document.getElementById('add-stock-btn').addEventListener('click', () => {
             if (!ConfigModel.getConfig()) return;
@@ -350,6 +393,14 @@ window.ConfigController = (function () {
             config.global.staged_rebound_allow_long_sideways = vals.staged_rebound_allow_long_sideways;
             config.global.staged_rebound_require_long_midline = vals.staged_rebound_require_long_midline;
             config.global.staged_rebound_require_nonnegative_long_slope = vals.staged_rebound_require_nonnegative_long_slope;
+            config.global.staged_rebound_wait_probe_enabled = vals.staged_rebound_wait_probe_enabled;
+            if (vals.staged_rebound_wait_probe_pct !== '') config.global.staged_rebound_wait_probe_pct = parseFloat(vals.staged_rebound_wait_probe_pct); else delete config.global.staged_rebound_wait_probe_pct;
+            config.global.post_liquidation_recovery_probe_enabled = vals.post_liquidation_recovery_probe_enabled;
+            config.global.post_liquidation_early_probe_enabled = vals.post_liquidation_early_probe_enabled;
+            if (vals.post_liquidation_early_probe_pct !== '') config.global.post_liquidation_early_probe_pct = parseFloat(vals.post_liquidation_early_probe_pct); else delete config.global.post_liquidation_early_probe_pct;
+            if (vals.post_liquidation_early_probe_confirm_bars !== '') config.global.post_liquidation_early_probe_confirm_bars = parseInt(vals.post_liquidation_early_probe_confirm_bars, 10); else delete config.global.post_liquidation_early_probe_confirm_bars;
+            if (vals.post_liquidation_early_probe_max_ema_atr !== '') config.global.post_liquidation_early_probe_max_ema_atr = parseFloat(vals.post_liquidation_early_probe_max_ema_atr); else delete config.global.post_liquidation_early_probe_max_ema_atr;
+            if (vals.post_liquidation_early_probe_stop_atr_multiplier !== '') config.global.post_liquidation_early_probe_stop_atr_multiplier = parseFloat(vals.post_liquidation_early_probe_stop_atr_multiplier); else delete config.global.post_liquidation_early_probe_stop_atr_multiplier;
             if (vals.pullback_rebound_confirm_bars !== '') config.global.pullback_rebound_confirm_bars = parseInt(vals.pullback_rebound_confirm_bars, 10); else delete config.global.pullback_rebound_confirm_bars;
             if (vals.pullback_rebound_max_wait_bars !== '') config.global.pullback_rebound_max_wait_bars = parseInt(vals.pullback_rebound_max_wait_bars, 10); else delete config.global.pullback_rebound_max_wait_bars;
             if (vals.long_channel_lookback !== '') config.global.long_channel_lookback = parseInt(vals.long_channel_lookback, 10); else delete config.global.long_channel_lookback;
@@ -357,6 +408,12 @@ window.ConfigController = (function () {
             if (vals.long_uptrend_sideways_sell_multiplier !== '') config.global.long_uptrend_sideways_sell_multiplier = parseFloat(vals.long_uptrend_sideways_sell_multiplier); else delete config.global.long_uptrend_sideways_sell_multiplier;
             if (vals.uptrend_sideways_transition_partial_sell_pct !== '') config.global.uptrend_sideways_transition_partial_sell_pct = parseFloat(vals.uptrend_sideways_transition_partial_sell_pct); else delete config.global.uptrend_sideways_transition_partial_sell_pct;
             if (vals.uptrend_sideways_transition_confirm_bars !== '') config.global.uptrend_sideways_transition_confirm_bars = parseInt(vals.uptrend_sideways_transition_confirm_bars, 10); else delete config.global.uptrend_sideways_transition_confirm_bars;
+            config.global.uptrend_profit_trailing_enabled = vals.uptrend_profit_trailing_enabled;
+            config.global.uptrend_profit_recovery_add_enabled = vals.uptrend_profit_recovery_add_enabled;
+            if (vals.uptrend_profit_recovery_confirm_bars !== '') config.global.uptrend_profit_recovery_confirm_bars = parseInt(vals.uptrend_profit_recovery_confirm_bars, 10); else delete config.global.uptrend_profit_recovery_confirm_bars;
+            for (const key of ['uptrend_profit_trailing_atr_multiplier', 'uptrend_profit_trailing_max_distance_pct', 'uptrend_profit_recovery_restore_pct', 'uptrend_profit_recovery_max_ema_atr', 'uptrend_profit_recovery_max_ema_distance_pct', 'uptrend_profit_recovery_min_stop_headroom_atr', 'transition_residual_atr_multiplier', 'transition_residual_min_distance_pct', 'transition_residual_max_distance_pct']) {
+                if (vals[key] !== '') config.global[key] = parseFloat(vals[key]); else delete config.global[key];
+            }
             ConfigView.updateDiffPreview(ConfigModel.getDiff());
         }
     }
@@ -393,6 +450,21 @@ window.ConfigController = (function () {
         if (global.trend_entry_mode === 'staged_rebound') {
             const probePct = global.staged_rebound_probe_pct ?? 50;
             if (!(probePct > 0 && probePct < 100)) return '단계형 탐색 진입 비율은 0 초과 100 미만이어야 합니다.';
+            const waitProbePct = global.staged_rebound_wait_probe_pct ?? 25;
+            if (!(waitProbePct > 0 && waitProbePct < 100)) return '완화 탐색 비율은 0 초과 100 미만이어야 합니다.';
+            if (global.post_liquidation_early_probe_enabled) {
+                const earlyPct = global.post_liquidation_early_probe_pct ?? 20;
+                const earlyBars = global.post_liquidation_early_probe_confirm_bars ?? 2;
+                const earlyEmaAtr = global.post_liquidation_early_probe_max_ema_atr ?? 1;
+                const earlyStopAtr = global.post_liquidation_early_probe_stop_atr_multiplier ?? 2;
+                if (!(earlyPct > 0 && earlyPct < 100)) return '조기 탐색 비율은 0 초과 100 미만이어야 합니다.';
+                if (!Number.isInteger(earlyBars) || earlyBars < 1) return '조기 반등 확인 기간은 1 이상의 정수여야 합니다.';
+                if (!(earlyEmaAtr > 0) || !(earlyStopAtr > 0)) return '조기 탐색 ATR 설정은 양수여야 합니다.';
+            }
+        } else if (global.staged_rebound_wait_probe_enabled
+                || global.post_liquidation_recovery_probe_enabled
+                || global.post_liquidation_early_probe_enabled) {
+            return '상태지속·게이트 해제 탐색은 단계형 반등 진입 방식이 필요합니다.';
         }
         const transitionPct = global.uptrend_sideways_transition_partial_sell_pct;
         if (transitionPct !== undefined && !(transitionPct >= 0 && transitionPct < 100)) {
@@ -404,6 +476,26 @@ window.ConfigController = (function () {
         const transitionBars = global.uptrend_sideways_transition_confirm_bars;
         if (transitionBars !== undefined && (!Number.isInteger(transitionBars) || transitionBars < 1)) {
             return '상승→횡보 확인 기간은 1 이상의 정수여야 합니다.';
+        }
+        if (global.uptrend_profit_trailing_enabled) {
+            if (!(transitionPct > 0)) return '상승 ATR 수익보호는 0보다 큰 선제청산 비율이 필요합니다.';
+            const positiveKeys = ['uptrend_profit_trailing_atr_multiplier', 'uptrend_profit_trailing_max_distance_pct', 'transition_residual_atr_multiplier', 'transition_residual_min_distance_pct', 'transition_residual_max_distance_pct'];
+            for (const key of positiveKeys) {
+                if (global[key] !== undefined && !(global[key] > 0)) return `${key}는 양수여야 합니다.`;
+            }
+            const minDistance = global.transition_residual_min_distance_pct ?? 5;
+            const maxDistance = global.transition_residual_max_distance_pct ?? 10;
+            if (minDistance > maxDistance) return '잔량 보호 최소 거리는 최대 거리 이하여야 합니다.';
+        }
+        if (global.uptrend_profit_recovery_add_enabled) {
+            if (!global.uptrend_profit_trailing_enabled) return '상승 복귀 확인매수는 상승 ATR 수익보호가 필요합니다.';
+            const bars = global.uptrend_profit_recovery_confirm_bars ?? 2;
+            if (!Number.isInteger(bars) || bars < 1) return '복귀 확인 기간은 1 이상의 정수여야 합니다.';
+            const restorePct = global.uptrend_profit_recovery_restore_pct ?? 50;
+            if (!(restorePct > 0 && restorePct <= 100)) return '감축대금 복원 비율은 0 초과 100 이하여야 합니다.';
+            for (const key of ['uptrend_profit_recovery_max_ema_atr', 'uptrend_profit_recovery_max_ema_distance_pct', 'uptrend_profit_recovery_min_stop_headroom_atr']) {
+                if (global[key] !== undefined && !(global[key] > 0)) return `${key}는 양수여야 합니다.`;
+            }
         }
         const stocks = ConfigModel.getConfig()?.stocks || [];
         for (const stock of stocks) {
@@ -418,6 +510,31 @@ window.ConfigController = (function () {
             const stockBars = stock.uptrend_sideways_transition_confirm_bars;
             if (stockBars !== undefined && (!Number.isInteger(stockBars) || stockBars < 1)) {
                 return `${stock.ticker || '종목'}: 상승→횡보 확인 기간은 1 이상의 정수여야 합니다.`;
+            }
+            const effectiveEnabled = stock.uptrend_profit_trailing_enabled !== undefined
+                ? stock.uptrend_profit_trailing_enabled : global.uptrend_profit_trailing_enabled;
+            if (effectiveEnabled) {
+                if (!(effectivePct > 0)) return `${stock.ticker || '종목'}: 상승 ATR 수익보호는 0보다 큰 선제청산 비율이 필요합니다.`;
+                const minDistance = stock.transition_residual_min_distance_pct
+                    ?? global.transition_residual_min_distance_pct ?? 5;
+                const maxDistance = stock.transition_residual_max_distance_pct
+                    ?? global.transition_residual_max_distance_pct ?? 10;
+                if (minDistance > maxDistance) return `${stock.ticker || '종목'}: 잔량 보호 최소 거리는 최대 거리 이하여야 합니다.`;
+            }
+            const effectiveRecovery = stock.uptrend_profit_recovery_add_enabled !== undefined
+                ? stock.uptrend_profit_recovery_add_enabled : global.uptrend_profit_recovery_add_enabled;
+            if (effectiveRecovery) {
+                if (!effectiveEnabled) return `${stock.ticker || '종목'}: 상승 복귀 확인매수는 상승 ATR 수익보호가 필요합니다.`;
+                const bars = stock.uptrend_profit_recovery_confirm_bars
+                    ?? global.uptrend_profit_recovery_confirm_bars ?? 2;
+                if (!Number.isInteger(bars) || bars < 1) return `${stock.ticker || '종목'}: 복귀 확인 기간은 1 이상의 정수여야 합니다.`;
+                const restorePct = stock.uptrend_profit_recovery_restore_pct
+                    ?? global.uptrend_profit_recovery_restore_pct ?? 50;
+                if (!(restorePct > 0 && restorePct <= 100)) return `${stock.ticker || '종목'}: 감축대금 복원 비율은 0 초과 100 이하여야 합니다.`;
+                for (const key of ['uptrend_profit_recovery_max_ema_atr', 'uptrend_profit_recovery_max_ema_distance_pct', 'uptrend_profit_recovery_min_stop_headroom_atr']) {
+                    const value = stock[key] ?? global[key];
+                    if (value !== undefined && !(value > 0)) return `${stock.ticker || '종목'}: ${key}는 양수여야 합니다.`;
+                }
             }
         }
         return null;
@@ -469,6 +586,14 @@ window.ConfigController = (function () {
         if (vals.trendbreak_trailing_drop_pct !== '') stock.trendbreak_trailing_drop_pct = parseFloat(vals.trendbreak_trailing_drop_pct); else delete stock.trendbreak_trailing_drop_pct;
         if (vals.uptrend_sideways_transition_partial_sell_pct !== '') stock.uptrend_sideways_transition_partial_sell_pct = parseFloat(vals.uptrend_sideways_transition_partial_sell_pct); else delete stock.uptrend_sideways_transition_partial_sell_pct;
         if (vals.uptrend_sideways_transition_confirm_bars !== '') stock.uptrend_sideways_transition_confirm_bars = parseInt(vals.uptrend_sideways_transition_confirm_bars, 10); else delete stock.uptrend_sideways_transition_confirm_bars;
+        if (vals.uptrend_profit_trailing_enabled === '') delete stock.uptrend_profit_trailing_enabled;
+        else stock.uptrend_profit_trailing_enabled = vals.uptrend_profit_trailing_enabled === 'true';
+        if (vals.uptrend_profit_recovery_add_enabled === '') delete stock.uptrend_profit_recovery_add_enabled;
+        else stock.uptrend_profit_recovery_add_enabled = vals.uptrend_profit_recovery_add_enabled === 'true';
+        if (vals.uptrend_profit_recovery_confirm_bars !== '') stock.uptrend_profit_recovery_confirm_bars = parseInt(vals.uptrend_profit_recovery_confirm_bars, 10); else delete stock.uptrend_profit_recovery_confirm_bars;
+        for (const key of ['uptrend_profit_trailing_atr_multiplier', 'uptrend_profit_trailing_max_distance_pct', 'uptrend_profit_recovery_restore_pct', 'uptrend_profit_recovery_max_ema_atr', 'uptrend_profit_recovery_max_ema_distance_pct', 'uptrend_profit_recovery_min_stop_headroom_atr', 'transition_residual_atr_multiplier', 'transition_residual_min_distance_pct', 'transition_residual_max_distance_pct']) {
+            if (vals[key] !== '') stock[key] = parseFloat(vals[key]); else delete stock[key];
+        }
 
         const cleanUptrendAmounts = filterNaNs(vals.uptrendAmounts);
         if (cleanUptrendAmounts !== undefined) stock.uptrend_add_amounts = cleanUptrendAmounts; else delete stock.uptrend_add_amounts;

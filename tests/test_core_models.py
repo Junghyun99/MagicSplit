@@ -7,6 +7,20 @@ from src.core.models import (
 
 
 class TestStockRule:
+    def test_post_liquidation_early_probe_defaults_and_validation(self):
+        rule = StockRule("AAPL", -5.0, 10.0, 500, 10)
+        assert rule.post_liquidation_early_probe_enabled is False
+        assert rule.post_liquidation_early_probe_pct == 20
+        assert rule.post_liquidation_early_probe_confirm_bars == 2
+        assert rule.post_liquidation_early_probe_max_ema_atr == 1
+        assert rule.post_liquidation_early_probe_stop_atr_multiplier == 2
+
+        with pytest.raises(ValueError, match="단계형 반등"):
+            StockRule(
+                "AAPL", -5.0, 10.0, 500, 10,
+                post_liquidation_early_probe_enabled=True,
+            )
+
     def test_creation(self):
         rule = StockRule(
             ticker="AAPL",
@@ -343,6 +357,45 @@ class TestStockRuleChannelRegime:
         assert rule.channel_breakdown_tolerance_pct == 0.0
         assert rule.channel_breakdown_atr_multiplier is None
         assert rule.trend_only_enabled is False
+        assert rule.shadow_mode_v2_enabled is False
+        assert rule.shadow_mode_v3_enabled is False
+        assert rule.shadow_mode_v3_1_enabled is False
+        assert rule.shadow_mode_v3_2_enabled is False
+
+    @pytest.mark.parametrize("regime_enabled,regime_algo", [
+        (False, "channel"), (True, "ma_adx"),
+    ])
+    def test_shadow_v2_requires_channel_regime(self, regime_enabled, regime_algo):
+        with pytest.raises(ValueError, match="shadow_mode_v2_enabled"):
+            StockRule(
+                "AAPL", -5.0, 10.0, 500, 10,
+                regime_enabled=regime_enabled, regime_algo=regime_algo,
+                shadow_mode_v2_enabled=True,
+            )
+
+    def test_shadow_v3_requires_channel_regime(self):
+        with pytest.raises(ValueError, match="shadow_mode_v3_enabled"):
+            StockRule(
+                "AAPL", -5.0, 10.0, 500, 10,
+                regime_enabled=True, regime_algo="ma_adx",
+                shadow_mode_v3_enabled=True,
+            )
+
+    def test_shadow_v3_1_requires_channel_regime(self):
+        with pytest.raises(ValueError, match="shadow_mode_v3_1_enabled"):
+            StockRule(
+                "AAPL", -5.0, 10.0, 500, 10,
+                regime_enabled=False, regime_algo="channel",
+                shadow_mode_v3_1_enabled=True,
+            )
+
+    def test_shadow_v3_2_requires_channel_regime(self):
+        with pytest.raises(ValueError, match="shadow_mode_v3_2_enabled"):
+            StockRule(
+                "AAPL", -5.0, 10.0, 500, 10,
+                regime_enabled=False, regime_algo="channel",
+                shadow_mode_v3_2_enabled=True,
+            )
 
     @pytest.mark.parametrize("overrides", [
         {"regime_enabled": False, "regime_algo": "channel", "multi_horizon_regime_enabled": True},
@@ -405,12 +458,27 @@ class TestStockRuleChannelRegime:
             trend_entry_mode="staged_rebound",
         )
         assert staged.staged_rebound_probe_pct == 50
+        assert staged.staged_rebound_wait_probe_enabled is False
+        assert staged.staged_rebound_wait_probe_pct == 25
+        assert staged.post_liquidation_recovery_probe_enabled is False
         with pytest.raises(ValueError, match="staged_rebound_probe_pct"):
             StockRule(
                 "AAPL", -5, 10, 100, 10,
                 regime_enabled=True, regime_algo="channel",
                 multi_horizon_regime_enabled=True, trend_only_enabled=True,
                 trend_entry_mode="staged_rebound", staged_rebound_probe_pct=100,
+            )
+        with pytest.raises(ValueError, match="단계형 반등 대기·게이트 탐색"):
+            StockRule(
+                "AAPL", -5, 10, 100, 10,
+                staged_rebound_wait_probe_enabled=True,
+            )
+        with pytest.raises(ValueError, match="staged_rebound_wait_probe_pct"):
+            StockRule(
+                "AAPL", -5, 10, 100, 10,
+                regime_enabled=True, regime_algo="channel",
+                multi_horizon_regime_enabled=True, trend_only_enabled=True,
+                trend_entry_mode="staged_rebound", staged_rebound_wait_probe_pct=100,
             )
 
     def test_channel_algo_accepted(self):

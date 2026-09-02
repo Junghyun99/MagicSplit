@@ -142,6 +142,38 @@
                     <label>장기 기울기 0 이상 요구</label>
                     <input type="checkbox" id="global-staged-rebound-require-nonnegative-long-slope" style="width:20px; height:20px;">
                 </div>
+                <div class="form-group multi-horizon-setting staged-rebound-setting" style="display:flex; flex-direction:column; justify-content:center; align-items:center;">
+                    <label>상태지속 탐색</label>
+                    <input type="checkbox" id="global-staged-rebound-wait-probe-enabled" style="width:20px; height:20px;">
+                </div>
+                <div class="form-group multi-horizon-setting staged-rebound-setting">
+                    <label>완화 탐색 비율 (%)</label>
+                    <input type="number" min="0.1" max="99.9" step="0.1" id="global-staged-rebound-wait-probe-pct" class="form-control" placeholder="25">
+                </div>
+                <div class="form-group multi-horizon-setting staged-rebound-setting" style="display:flex; flex-direction:column; justify-content:center; align-items:center;">
+                    <label>게이트 해제 탐색</label>
+                    <input type="checkbox" id="global-post-liquidation-recovery-probe-enabled" style="width:20px; height:20px;">
+                </div>
+                <div class="form-group multi-horizon-setting staged-rebound-setting" style="display:flex; flex-direction:column; justify-content:center; align-items:center;">
+                    <label>청산 후 조기 탐색</label>
+                    <input type="checkbox" id="global-post-liquidation-early-probe-enabled" style="width:20px; height:20px;">
+                </div>
+                <div class="form-group multi-horizon-setting early-reentry-setting">
+                    <label>조기 탐색 비율 (%)</label>
+                    <input type="number" min="0.1" max="99.9" step="0.1" id="global-post-liquidation-early-probe-pct" class="form-control" placeholder="20">
+                </div>
+                <div class="form-group multi-horizon-setting early-reentry-setting">
+                    <label>조기 반등 확인 (거래일)</label>
+                    <input type="number" min="1" step="1" id="global-post-liquidation-early-probe-confirm-bars" class="form-control" placeholder="2">
+                </div>
+                <div class="form-group multi-horizon-setting early-reentry-setting">
+                    <label>20EMA 최대 이격 (ATR)</label>
+                    <input type="number" min="0.1" step="0.1" id="global-post-liquidation-early-probe-max-ema-atr" class="form-control" placeholder="1.0">
+                </div>
+                <div class="form-group multi-horizon-setting early-reentry-setting">
+                    <label>조기 탐색 손절 (ATR)</label>
+                    <input type="number" min="0.1" step="0.1" id="global-post-liquidation-early-probe-stop-atr-multiplier" class="form-control" placeholder="2.0">
+                </div>
                 <div class="form-group multi-horizon-setting rebound-trend-setting">
                     <label>눌림 재상승 확인 (거래일)</label>
                     <input type="number" min="1" step="1" id="global-pullback-rebound-confirm-bars" class="form-control" placeholder="1">
@@ -170,6 +202,24 @@
                     <label>상승→횡보 확인 (거래일)</label>
                     <input type="number" min="1" step="1" id="global-uptrend-sideways-transition-confirm-bars" class="form-control" placeholder="2">
                 </div>
+                <div class="form-group multi-horizon-setting">
+                    <label><input type="checkbox" id="global-uptrend-profit-trailing-enabled"> 상승 ATR 수익보호</label>
+                    <small>3ATR 도달 후 추적, 1회 50% 감축과 잔량 보호</small>
+                </div>
+                <div class="form-group multi-horizon-setting"><label>상승 추적 ATR 배수</label><input type="number" min="0.1" step="0.1" id="global-uptrend-profit-trailing-atr-multiplier" class="form-control" placeholder="3.0"></div>
+                <div class="form-group multi-horizon-setting"><label>상승 추적 최대 거리 (%)</label><input type="number" min="0.1" step="0.1" id="global-uptrend-profit-trailing-max-distance-pct" class="form-control" placeholder="12.0"></div>
+                <div class="form-group multi-horizon-setting">
+                    <label><input type="checkbox" id="global-uptrend-profit-recovery-add-enabled"> 상승 복귀 확인매수</label>
+                    <small>50% 감축 후 상승 정렬 2일·EMA20/ATR 가드를 확인해 감축대금 일부 복원</small>
+                </div>
+                <div class="form-group multi-horizon-setting"><label>복귀 확인 기간 (거래일)</label><input type="number" min="1" step="1" id="global-uptrend-profit-recovery-confirm-bars" class="form-control" placeholder="2"></div>
+                <div class="form-group multi-horizon-setting"><label>감축대금 복원 비율 (%)</label><input type="number" min="0.1" max="100" step="0.1" id="global-uptrend-profit-recovery-restore-pct" class="form-control" placeholder="50.0"></div>
+                <div class="form-group multi-horizon-setting"><label>EMA20 상단 허용 ATR</label><input type="number" min="0.1" step="0.1" id="global-uptrend-profit-recovery-max-ema-atr" class="form-control" placeholder="1.0"></div>
+                <div class="form-group multi-horizon-setting"><label>EMA20 최대 이격 (%)</label><input type="number" min="0.1" step="0.1" id="global-uptrend-profit-recovery-max-ema-distance-pct" class="form-control" placeholder="4.0"></div>
+                <div class="form-group multi-horizon-setting"><label>보호선 최소 여유 ATR</label><input type="number" min="0.1" step="0.1" id="global-uptrend-profit-recovery-min-stop-headroom-atr" class="form-control" placeholder="1.0"></div>
+                <div class="form-group multi-horizon-setting"><label>잔량 보호 ATR 배수</label><input type="number" min="0.1" step="0.1" id="global-transition-residual-atr-multiplier" class="form-control" placeholder="1.5"></div>
+                <div class="form-group multi-horizon-setting"><label>잔량 보호 최소 거리 (%)</label><input type="number" min="0.1" step="0.1" id="global-transition-residual-min-distance-pct" class="form-control" placeholder="5.0"></div>
+                <div class="form-group multi-horizon-setting"><label>잔량 보호 최대 거리 (%)</label><input type="number" min="0.1" step="0.1" id="global-transition-residual-max-distance-pct" class="form-control" placeholder="10.0"></div>
                 <div class="form-group">
                     <label>횡보 기울기 밴드 (%)</label>
                     <input type="number" step="0.1" id="global-channel-slope-band-pct" class="form-control" placeholder="8.0">
@@ -334,6 +384,18 @@
                         <label>상승→횡보 확인 (거래일)</label>
                         <input type="number" min="1" step="1" id="edit-uptrend-sideways-transition-confirm-bars" class="form-control" placeholder="글로벌 상속">
                     </div>
+                    <div class="form-group"><label>상승 ATR 수익보호</label><select id="edit-uptrend-profit-trailing-enabled" class="form-control"><option value="">글로벌 상속</option><option value="true">사용</option><option value="false">미사용</option></select></div>
+                    <div class="form-group"><label>상승 추적 ATR 배수</label><input type="number" min="0.1" step="0.1" id="edit-uptrend-profit-trailing-atr-multiplier" class="form-control" placeholder="글로벌 상속"></div>
+                    <div class="form-group"><label>상승 추적 최대 거리 (%)</label><input type="number" min="0.1" step="0.1" id="edit-uptrend-profit-trailing-max-distance-pct" class="form-control" placeholder="글로벌 상속"></div>
+                    <div class="form-group"><label>상승 복귀 확인매수</label><select id="edit-uptrend-profit-recovery-add-enabled" class="form-control"><option value="">글로벌 상속</option><option value="true">사용</option><option value="false">미사용</option></select></div>
+                    <div class="form-group"><label>복귀 확인 기간 (거래일)</label><input type="number" min="1" step="1" id="edit-uptrend-profit-recovery-confirm-bars" class="form-control" placeholder="글로벌 상속"></div>
+                    <div class="form-group"><label>감축대금 복원 비율 (%)</label><input type="number" min="0.1" max="100" step="0.1" id="edit-uptrend-profit-recovery-restore-pct" class="form-control" placeholder="글로벌 상속"></div>
+                    <div class="form-group"><label>EMA20 상단 허용 ATR</label><input type="number" min="0.1" step="0.1" id="edit-uptrend-profit-recovery-max-ema-atr" class="form-control" placeholder="글로벌 상속"></div>
+                    <div class="form-group"><label>EMA20 최대 이격 (%)</label><input type="number" min="0.1" step="0.1" id="edit-uptrend-profit-recovery-max-ema-distance-pct" class="form-control" placeholder="글로벌 상속"></div>
+                    <div class="form-group"><label>보호선 최소 여유 ATR</label><input type="number" min="0.1" step="0.1" id="edit-uptrend-profit-recovery-min-stop-headroom-atr" class="form-control" placeholder="글로벌 상속"></div>
+                    <div class="form-group"><label>잔량 보호 ATR 배수</label><input type="number" min="0.1" step="0.1" id="edit-transition-residual-atr-multiplier" class="form-control" placeholder="글로벌 상속"></div>
+                    <div class="form-group"><label>잔량 보호 최소 거리 (%)</label><input type="number" min="0.1" step="0.1" id="edit-transition-residual-min-distance-pct" class="form-control" placeholder="글로벌 상속"></div>
+                    <div class="form-group"><label>잔량 보호 최대 거리 (%)</label><input type="number" min="0.1" step="0.1" id="edit-transition-residual-max-distance-pct" class="form-control" placeholder="글로벌 상속"></div>
                 </div>
                 <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px;">
                     <small style="color: var(--text-muted);">회차별 추가매수 금액 (미입력 시 기본 매수 금액 사용)</small>
