@@ -13,6 +13,14 @@
     "staged_rebound_require_long_midline": true,
     "staged_rebound_require_nonnegative_long_slope": true,
     "pullback_rebound_confirm_bars": 1,
-    "pullback_rebound_max_wait_bars": 10
+    "pullback_rebound_max_wait_bars": 10,
+    "staged_rebound_wait_probe_enabled": true,
+    "staged_rebound_wait_probe_pct": 25.0,
+    "post_liquidation_recovery_probe_enabled": true,
+    "post_liquidation_early_probe_enabled": true,
+    "post_liquidation_early_probe_pct": 20.0,
+    "post_liquidation_early_probe_confirm_bars": 2,
+    "post_liquidation_early_probe_max_ema_atr": 1.0,
+    "post_liquidation_early_probe_stop_atr_multiplier": 2.0
   }
 }
