@@ -1,0 +1,46 @@
+2026-09-03 00:00:58,308 [INFO] === Initializing MagicSplit Bot (overseas) ===
+2026-09-03 00:00:58,308 [INFO] Loaded 22 stock rule(s) from config_overseas.json
+2026-09-03 00:00:58,308 [INFO] [overseas] 12 rule(s), mode=LIVE
+2026-09-03 00:00:58,308 [INFO] [KisBroker] 캐시에서 토큰 로드 (API 호출 생략)
+2026-09-03 00:00:58,308 [INFO] [KisOverseasLiveBroker] Mode: LIVE TRADING
+2026-09-03 00:00:58,311 [INFO] [MarketData] 레짐 필터 활성 종목 12개 -> YFinanceMarketDataProvider 주입 (window 260봉)
+2026-09-03 00:00:58,311 [INFO] === Running overseas engine ===
+2026-09-03 00:00:58,311 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-09-03 00:01:01,082 [INFO] Fetching real-time prices from Broker...
+2026-09-03 00:01:05,734 [INFO] Portfolio: Cash=USD 1,269.05, Value=USD 17,892.17
+2026-09-03 00:01:05,734 [INFO] >>> Step 2: Load Positions
+2026-09-03 00:01:05,734 [INFO] Loaded 19 position lot(s)
+2026-09-03 00:01:05,735 [INFO] >>> Step 2.5: Reconcile OK (수량 일치)
+2026-09-03 00:01:05,736 [INFO] >>> Processing 펩시코(PEP)
+2026-09-03 00:01:06,572 [INFO] [MarketData] 배치 다운로드 완료: 11/12종목
+2026-09-03 00:01:06,575 [INFO] [펩시코(PEP)] 보유 lot 없음 -> 초기 매수 Lv1 7주 @USD 140.78
+2026-09-03 00:01:06,575 [INFO] Executing 1 order(s)...
+2026-09-03 00:01:08,659 [INFO] [KisBroker] Available Cash for BUY: 1,269
+2026-09-03 00:01:10,064 [INFO] [KisBroker] Order Sent: BUY 펩시코(PEP) 7 @ 140.75 (ODNO=0030711405)
+2026-09-03 00:01:12,640 [INFO] [KisBroker] Order FILLED: 펩시코(PEP) ODNO=0030711405 price=140.75 qty=7 fee=0.0
+2026-09-03 00:01:12,840 [INFO] [펩시코(PEP)] 동적 재매수 기준 초기화 (매도가 USD 141.83 -> 소비됨)
+2026-09-03 00:01:12,840 [INFO] [Position] New lot: lot_20260903_000112_PEP_001 Lv1 펩시코(PEP) 7주 @USD 140.75
+2026-09-03 00:01:17,937 [INFO] >>> Processing 루멘텀 홀딩스(LITE)
+2026-09-03 00:01:17,941 [INFO] [루멘텀 홀딩스(LITE)] 이탈 청산 후 재진입 대기 - 상단 저항선 미회복 (현재가 USD 854.05 <= 기준선 USD 1,009.35)
+2026-09-03 00:01:17,941 [INFO] >>> Processing 팔란티어 테크(PLTR)
+2026-09-03 00:01:17,943 [INFO] [팔란티어 테크(PLTR)] 현금 부족: 보유 현금 USD 283.80 < 매수 예정 금액 USD 2,589.30 (15주) -> 매수 보류
+2026-09-03 00:01:18,328 [INFO] >>> Processing SCHWAB US DIVIDEND EQUITY(SCHD)
+2026-09-03 00:01:18,582 [INFO] >>> Processing 애플(AAPL)
+2026-09-03 00:01:18,827 [INFO]   [애플(AAPL)] 📈 상승 레짐 유지 | Lv2 매수 USD 305.35 -> 현재 USD 324.84 (+6.38%) | 채널하단 USD 296.95 / 이탈선 USD 296.95 (허용 -0.0%) | 20EMA(눌림) USD 315.35 (이격 +3.01%) | adds 1/3
+2026-09-03 00:01:18,827 [INFO] >>> Processing 테슬라(TSLA)
+2026-09-03 00:01:18,830 [INFO] [테슬라(TSLA)] DOWNTREND 확정 - 신규 진입 차단
+2026-09-03 00:01:18,830 [INFO] >>> Processing 브로드컴(AVGO)
+2026-09-03 00:01:18,832 [INFO] [브로드컴(AVGO)] 이탈 청산 후 재진입 대기 - 상단 저항선 미회복 (현재가 USD 368.06 <= 기준선 USD 417.89)
+2026-09-03 00:01:18,833 [INFO] >>> Processing ISHARES GLOBAL CLEAN ENERGY(ICLN)
+2026-09-03 00:01:18,835 [INFO] [ISHARES GLOBAL CLEAN ENERGY(ICLN)] DOWNTREND 확정 - 신규 진입 차단
+2026-09-03 00:01:18,835 [INFO] >>> Processing ARK INNOVATION(ARKK)
+2026-09-03 00:01:18,838 [INFO]   [ARK INNOVATION(ARKK)] 신호 없음 | Lv1 매수 USD 79.92 -> 현재 USD 83.12 (+4.00%) | 익절 +10.0% / 추매 -5.0%
+2026-09-03 00:01:18,838 [INFO] >>> Processing 에이알엠 홀딩스(ADR)(ARM)
+2026-09-03 00:01:18,840 [INFO] [에이알엠 홀딩스(ADR)(ARM)] 하락 래치 진행 중 - 이미 분할 청산을 거쳤으므로 동일 래치 내 2차 이탈 청산 스킵 (신규 매수만 차단 유지)
+2026-09-03 00:01:18,841 [INFO] [에이알엠 홀딩스(ADR)(ARM)] DOWNTREND 확정 - 추가 매수 차단
+2026-09-03 00:01:18,841 [INFO] >>> Processing 카메코(CCJ)
+2026-09-03 00:01:18,844 [INFO] [카메코(CCJ)] 하락 추세 2일 해제 - 매수 차단 해제
+2026-09-03 00:01:18,844 [INFO] [카메코(CCJ)] 현금 부족: 보유 현금 USD 283.80 < 매수 예정 금액 USD 967.60 (10주) -> 매수 보류
+2026-09-03 00:01:19,200 [INFO] >>> Processing 델 테크놀로지스(DELL)
+2026-09-03 00:01:19,206 [INFO]   [델 테크놀로지스(DELL)] 📈 상승 레짐 유지 | Lv6 매수 USD 420.93 -> 현재 USD 441.77 (+4.95%) | 채널하단 USD 414.95 / 이탈선 USD 414.95 (허용 -0.0%) | 20EMA(눌림) USD 448.54 (이격 -1.51%) | adds 3/3
+2026-09-03 00:01:19,206 [INFO] >>> Step 6: Persist

@@ -2268,5 +2268,28 @@
                 "alias": "ARK INNOVATION"
             }
         ]
+    },
+    {
+        "id": "tx_20260903_000119",
+        "date": "2026-09-03 00:01:19",
+        "portfolio_value": 17871.62,
+        "cash_balance": 283.8,
+        "net_deposit": 1.98,
+        "total_trade_amount": 985.25,
+        "reason": "펩시코(PEP):BUY(초기 매수 Lv1),\n루멘텀 홀딩스(LITE):SKIP(이탈 청산 후 재진입 대기 - 상단 저항선 미회복 (현재가 USD 854.05 <= 기준선 USD 1,009.35)),\n팔란티어 테크(PLTR):SKIP(현금 부족: 보유 현금 USD 283.80 < 매수 예정 금액 USD 2,589.30 (15주)),\nSCHWAB US DIVIDEND EQUITY(SCHD):SKIP(현금 부족: 보유 현금 USD 283.80 < 매수 예정 금액 USD 980.28 (28주)),\n테슬라(TSLA):SKIP(DOWNTREND 확정 - 신규 진입 차단),\n브로드컴(AVGO):SKIP(이탈 청산 후 재진입 대기 - 상단 저항선 미회복 (현재가 USD 368.06 <= 기준선 USD 417.89)),\nISHARES GLOBAL CLEAN ENERGY(ICLN):SKIP(DOWNTREND 확정 - 신규 진입 차단),\n에이알엠 홀딩스(ADR)(ARM):SKIP(DOWNTREND 확정 - 추가 매수 차단),\n카메코(CCJ):SKIP(현금 부족: 보유 현금 USD 283.80 < 매수 예정 금액 USD 967.60 (10주))",
+        "executions": [
+            {
+                "ticker": "PEP",
+                "action": "BUY",
+                "quantity": 7,
+                "price": 140.75,
+                "fee": 0.0,
+                "date": "2026-09-03 00:01:12",
+                "status": "FILLED",
+                "reason": "ODNO=0030711405",
+                "level": 1,
+                "alias": "펩시코"
+            }
+        ]
     }
 ]

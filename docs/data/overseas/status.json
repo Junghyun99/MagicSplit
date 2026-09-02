@@ -1,61 +1,68 @@
 {
-    "last_updated": "2026-09-02 04:01:28",
-    "last_run_date": "2026-09-02",
+    "last_updated": "2026-09-03 00:01:19",
+    "last_run_date": "2026-09-03",
     "market_type": "overseas",
-    "reason": "카메코(CCJ):SKIP(DOWNTREND 확정 - 신규 진입 차단),\n에이알엠 홀딩스(ADR)(ARM):SKIP(DOWNTREND 확정 - 추가 매수 차단),\n테슬라(TSLA):SKIP(DOWNTREND 확정 - 신규 진입 차단),\n펩시코(PEP):SKIP(현금 부족: 보유 현금 USD 773.09 < 매수 예정 금액 USD 976.43 (7주)),\nSCHWAB US DIVIDEND EQUITY(SCHD):SKIP(현금 부족: 보유 현금 USD 773.09 < 매수 예정 금액 USD 973.98 (28주)),\n브로드컴(AVGO):SKIP(이탈 청산 후 재진입 대기 - 상단 저항선 미회복 (현재가 USD 369.06 <= 기준선 USD 421.58)),\n팔란티어 테크(PLTR):SKIP(현금 부족: 보유 현금 USD 773.09 < 매수 예정 금액 USD 2,534.77 (14주)),\n루멘텀 홀딩스(LITE):SKIP(이탈 청산 후 재진입 대기 - 상단 저항선 미회복 (현재가 USD 867.40 <= 기준선 USD 1,007.13)),\nARK INNOVATION(ARKK):SELL(trailing 벌크 매도 Lv2~Lv2 (6주 +15.8%)),\nISHARES GLOBAL CLEAN ENERGY(ICLN):SKIP(DOWNTREND 확정 - 신규 진입 차단)",
-    "exchange_rate": 1373.6,
+    "reason": "펩시코(PEP):BUY(초기 매수 Lv1),\n루멘텀 홀딩스(LITE):SKIP(이탈 청산 후 재진입 대기 - 상단 저항선 미회복 (현재가 USD 854.05 <= 기준선 USD 1,009.35)),\n팔란티어 테크(PLTR):SKIP(현금 부족: 보유 현금 USD 283.80 < 매수 예정 금액 USD 2,589.30 (15주)),\nSCHWAB US DIVIDEND EQUITY(SCHD):SKIP(현금 부족: 보유 현금 USD 283.80 < 매수 예정 금액 USD 980.28 (28주)),\n테슬라(TSLA):SKIP(DOWNTREND 확정 - 신규 진입 차단),\n브로드컴(AVGO):SKIP(이탈 청산 후 재진입 대기 - 상단 저항선 미회복 (현재가 USD 368.06 <= 기준선 USD 417.89)),\nISHARES GLOBAL CLEAN ENERGY(ICLN):SKIP(DOWNTREND 확정 - 신규 진입 차단),\n에이알엠 홀딩스(ADR)(ARM):SKIP(DOWNTREND 확정 - 추가 매수 차단),\n카메코(CCJ):SKIP(현금 부족: 보유 현금 USD 283.80 < 매수 예정 금액 USD 967.60 (10주))",
+    "exchange_rate": 1370.3,
     "portfolio": {
-        "total_value": 17748.1307,
-        "cash_balance": 1267.07,
+        "total_value": 17871.62,
+        "cash_balance": 283.8,
         "holdings": [
             {
                 "ticker": "AAPL",
                 "alias": "애플",
                 "qty": 4,
-                "price": 325.54,
-                "value": 1302.16
+                "price": 324.84,
+                "value": 1299.36
             },
             {
                 "ticker": "ARKK",
                 "alias": "ARK INNOVATION",
                 "qty": 6,
-                "price": 83.25,
-                "value": 499.5
+                "price": 83.12,
+                "value": 498.72
             },
             {
                 "ticker": "ARM",
                 "alias": "에이알엠 홀딩스(ADR)",
                 "qty": 1,
-                "price": 234.275,
-                "value": 234.275
+                "price": 229.54,
+                "value": 229.54
             },
             {
                 "ticker": "DELL",
                 "alias": "델 테크놀로지스",
                 "qty": 10,
-                "price": 429.95,
-                "value": 4299.5
+                "price": 441.77,
+                "value": 4417.7
             },
             {
                 "ticker": "GLW",
                 "alias": "코닝",
                 "qty": 38,
-                "price": 143.7249,
-                "value": 5461.5462
+                "price": 143.205,
+                "value": 5441.790000000001
             },
             {
                 "ticker": "GOOGL",
                 "alias": "알파벳 A",
                 "qty": 11,
-                "price": 334.1195,
-                "value": 3675.3145000000004
+                "price": 336.36,
+                "value": 3699.96
+            },
+            {
+                "ticker": "PEP",
+                "alias": "펩시코",
+                "qty": 7,
+                "price": 140.78,
+                "value": 985.46
             },
             {
                 "ticker": "SCHD",
                 "alias": "SCHWAB US DIVIDEND EQUITY",
                 "qty": 29,
-                "price": 34.785,
-                "value": 1008.7649999999999
+                "price": 35.01,
+                "value": 1015.29
             }
         ]
     },
@@ -64,7 +71,7 @@
             "total_qty": 4,
             "lot_count": 2,
             "total_invested": 1207.95,
-            "current_value": 1302.16,
+            "current_value": 1299.36,
             "lots": [
                 {
                     "lot_id": "lot_20260508_170952_AAPL_001",
@@ -72,8 +79,8 @@
                     "quantity": 1,
                     "buy_date": "2026-05-08",
                     "level": 1,
-                    "current_price": 325.54,
-                    "pct_change": 11.52
+                    "current_price": 324.84,
+                    "pct_change": 11.28
                 },
                 {
                     "lot_id": "lot_20260804_000128_AAPL_002",
@@ -81,23 +88,23 @@
                     "quantity": 3,
                     "buy_date": "2026-08-04",
                     "level": 2,
-                    "current_price": 325.54,
-                    "pct_change": 6.61
+                    "current_price": 324.84,
+                    "pct_change": 6.38
                 }
             ],
-            "current_price": 325.54,
+            "current_price": 324.84,
             "alias": "애플",
             "avg_buy_price": 301.9875,
-            "unrealized_pnl": 94.21,
-            "unrealized_pnl_pct": 7.8,
+            "unrealized_pnl": 91.41,
+            "unrealized_pnl_pct": 7.57,
             "realized_pnl": 0.0,
-            "total_pnl": 94.21
+            "total_pnl": 91.41
         },
         "ARKK": {
             "total_qty": 6,
             "lot_count": 1,
             "total_invested": 479.52,
-            "current_value": 499.5,
+            "current_value": 498.72,
             "lots": [
                 {
                     "lot_id": "lot_20260512_003536_ARKK_001",
@@ -105,23 +112,23 @@
                     "quantity": 6,
                     "buy_date": "2026-05-12",
                     "level": 1,
-                    "current_price": 83.25,
-                    "pct_change": 4.17
+                    "current_price": 83.12,
+                    "pct_change": 4.0
                 }
             ],
-            "current_price": 83.25,
+            "current_price": 83.12,
             "alias": "ARK INNOVATION",
             "avg_buy_price": 79.92,
-            "unrealized_pnl": 19.98,
-            "unrealized_pnl_pct": 4.17,
+            "unrealized_pnl": 19.2,
+            "unrealized_pnl_pct": 4.0,
             "realized_pnl": 69.66,
-            "total_pnl": 89.64
+            "total_pnl": 88.86
         },
         "GOOGL": {
             "total_qty": 11,
             "lot_count": 3,
             "total_invested": 3660.88,
-            "current_value": 3675.31,
+            "current_value": 3699.96,
             "lots": [
                 {
                     "lot_id": "lot_20260512_003610_GOOGL_001",
@@ -129,8 +136,8 @@
                     "quantity": 1,
                     "buy_date": "2026-05-12",
                     "level": 1,
-                    "current_price": 334.1195,
-                    "pct_change": -15.17
+                    "current_price": 336.36,
+                    "pct_change": -14.6
                 },
                 {
                     "lot_id": "lot_20260606_020600_GOOGL_002",
@@ -138,8 +145,8 @@
                     "quantity": 1,
                     "buy_date": "2026-06-06",
                     "level": 2,
-                    "current_price": 334.1195,
-                    "pct_change": -9.61
+                    "current_price": 336.36,
+                    "pct_change": -9.01
                 },
                 {
                     "lot_id": "lot_20260725_003217_GOOGL_003",
@@ -147,23 +154,23 @@
                     "quantity": 9,
                     "buy_date": "2026-07-25",
                     "level": 3,
-                    "current_price": 334.1195,
-                    "pct_change": 3.79
+                    "current_price": 336.36,
+                    "pct_change": 4.48
                 }
             ],
-            "current_price": 334.1195,
+            "current_price": 336.36,
             "alias": "알파벳 A",
             "avg_buy_price": 332.8073,
-            "unrealized_pnl": 14.43,
-            "unrealized_pnl_pct": 0.39,
+            "unrealized_pnl": 39.08,
+            "unrealized_pnl_pct": 1.07,
             "realized_pnl": -23.16,
-            "total_pnl": -8.73
+            "total_pnl": 15.92
         },
         "DELL": {
             "total_qty": 10,
             "lot_count": 6,
             "total_invested": 4178.92,
-            "current_value": 4299.5,
+            "current_value": 4417.7,
             "lots": [
                 {
                     "lot_id": "lot_20260619_020113_DELL_001",
@@ -171,8 +178,8 @@
                     "quantity": 2,
                     "buy_date": "2026-06-19",
                     "level": 1,
-                    "current_price": 429.95,
-                    "pct_change": 0.64
+                    "current_price": 441.77,
+                    "pct_change": 3.41
                 },
                 {
                     "lot_id": "lot_20260716_000144_DELL_002",
@@ -180,8 +187,8 @@
                     "quantity": 1,
                     "buy_date": "2026-07-16",
                     "level": 2,
-                    "current_price": 429.95,
-                    "pct_change": 5.62
+                    "current_price": 441.77,
+                    "pct_change": 8.52
                 },
                 {
                     "lot_id": "lot_20260721_040120_DELL_003",
@@ -189,8 +196,8 @@
                     "quantity": 1,
                     "buy_date": "2026-07-21",
                     "level": 3,
-                    "current_price": 429.95,
-                    "pct_change": 11.38
+                    "current_price": 441.77,
+                    "pct_change": 14.44
                 },
                 {
                     "lot_id": "lot_20260728_000137_DELL_004",
@@ -198,8 +205,8 @@
                     "quantity": 2,
                     "buy_date": "2026-07-28",
                     "level": 4,
-                    "current_price": 429.95,
-                    "pct_change": 2.04
+                    "current_price": 441.77,
+                    "pct_change": 4.85
                 },
                 {
                     "lot_id": "lot_20260728_020123_DELL_005",
@@ -207,8 +214,8 @@
                     "quantity": 2,
                     "buy_date": "2026-07-28",
                     "level": 5,
-                    "current_price": 429.95,
-                    "pct_change": 1.54
+                    "current_price": 441.77,
+                    "pct_change": 4.33
                 },
                 {
                     "lot_id": "lot_20260728_040118_DELL_006",
@@ -216,23 +223,23 @@
                     "quantity": 2,
                     "buy_date": "2026-07-28",
                     "level": 6,
-                    "current_price": 429.95,
-                    "pct_change": 2.14
+                    "current_price": 441.77,
+                    "pct_change": 4.95
                 }
             ],
-            "current_price": 429.95,
+            "current_price": 441.77,
             "alias": "델 테크놀로지스",
             "avg_buy_price": 417.892,
-            "unrealized_pnl": 120.58,
-            "unrealized_pnl_pct": 2.89,
+            "unrealized_pnl": 238.78,
+            "unrealized_pnl_pct": 5.71,
             "realized_pnl": 19.03,
-            "total_pnl": 139.61
+            "total_pnl": 257.81
         },
         "GLW": {
             "total_qty": 38,
             "lot_count": 5,
             "total_invested": 6661.65,
-            "current_value": 5461.55,
+            "current_value": 5441.79,
             "lots": [
                 {
                     "lot_id": "lot_20260707_000139_GLW_001",
@@ -240,8 +247,8 @@
                     "quantity": 5,
                     "buy_date": "2026-07-07",
                     "level": 1,
-                    "current_price": 143.7249,
-                    "pct_change": -28.2
+                    "current_price": 143.205,
+                    "pct_change": -28.46
                 },
                 {
                     "lot_id": "lot_20260708_000201_GLW_002",
@@ -249,8 +256,8 @@
                     "quantity": 2,
                     "buy_date": "2026-07-08",
                     "level": 2,
-                    "current_price": 143.7249,
-                    "pct_change": -21.59
+                    "current_price": 143.205,
+                    "pct_change": -21.88
                 },
                 {
                     "lot_id": "lot_20260709_232341_GLW_003",
@@ -258,8 +265,8 @@
                     "quantity": 10,
                     "buy_date": "2026-07-09",
                     "level": 3,
-                    "current_price": 143.7249,
-                    "pct_change": -26.89
+                    "current_price": 143.205,
+                    "pct_change": -27.16
                 },
                 {
                     "lot_id": "lot_20260714_235731_GLW_004",
@@ -267,8 +274,8 @@
                     "quantity": 10,
                     "buy_date": "2026-07-14",
                     "level": 4,
-                    "current_price": 143.7249,
-                    "pct_change": -24.18
+                    "current_price": 143.205,
+                    "pct_change": -24.45
                 },
                 {
                     "lot_id": "lot_20260729_230525_GLW_005",
@@ -276,23 +283,23 @@
                     "quantity": 11,
                     "buy_date": "2026-07-29",
                     "level": 5,
-                    "current_price": 143.7249,
-                    "pct_change": 10.36
+                    "current_price": 143.205,
+                    "pct_change": 9.96
                 }
             ],
-            "current_price": 143.7249,
+            "current_price": 143.205,
             "alias": "코닝",
             "avg_buy_price": 175.3066,
-            "unrealized_pnl": -1200.1,
-            "unrealized_pnl_pct": -18.02,
+            "unrealized_pnl": -1219.86,
+            "unrealized_pnl_pct": -18.31,
             "realized_pnl": 75.12,
-            "total_pnl": -1124.98
+            "total_pnl": -1144.74
         },
         "SCHD": {
             "total_qty": 29,
             "lot_count": 1,
             "total_invested": 972.95,
-            "current_value": 1008.76,
+            "current_value": 1015.29,
             "lots": [
                 {
                     "lot_id": "lot_20260728_000119_SCHD_001",
@@ -300,23 +307,23 @@
                     "quantity": 29,
                     "buy_date": "2026-07-28",
                     "level": 1,
-                    "current_price": 34.785,
-                    "pct_change": 3.68
+                    "current_price": 35.01,
+                    "pct_change": 4.35
                 }
             ],
-            "current_price": 34.785,
+            "current_price": 35.01,
             "alias": "SCHWAB US DIVIDEND EQUITY",
             "avg_buy_price": 33.55,
-            "unrealized_pnl": 35.81,
-            "unrealized_pnl_pct": 3.68,
+            "unrealized_pnl": 42.34,
+            "unrealized_pnl_pct": 4.35,
             "realized_pnl": 21.6,
-            "total_pnl": 57.41
+            "total_pnl": 63.94
         },
         "ARM": {
             "total_qty": 1,
             "lot_count": 1,
             "total_invested": 272.2,
-            "current_value": 234.28,
+            "current_value": 229.54,
             "lots": [
                 {
                     "lot_id": "lot_20260806_000134_ARM_001",
@@ -324,17 +331,41 @@
                     "quantity": 1,
                     "buy_date": "2026-08-06",
                     "level": 1,
-                    "current_price": 234.275,
-                    "pct_change": -13.93
+                    "current_price": 229.54,
+                    "pct_change": -15.67
                 }
             ],
-            "current_price": 234.275,
+            "current_price": 229.54,
             "alias": "에이알엠 홀딩스(ADR)",
             "avg_buy_price": 272.2,
-            "unrealized_pnl": -37.92,
-            "unrealized_pnl_pct": -13.93,
+            "unrealized_pnl": -42.66,
+            "unrealized_pnl_pct": -15.67,
             "realized_pnl": -7.84,
-            "total_pnl": -45.76
+            "total_pnl": -50.5
+        },
+        "PEP": {
+            "total_qty": 7,
+            "lot_count": 1,
+            "total_invested": 985.25,
+            "current_value": 985.46,
+            "lots": [
+                {
+                    "lot_id": "lot_20260903_000112_PEP_001",
+                    "buy_price": 140.75,
+                    "quantity": 7,
+                    "buy_date": "2026-09-03",
+                    "level": 1,
+                    "current_price": 140.78,
+                    "pct_change": 0.02
+                }
+            ],
+            "current_price": 140.78,
+            "alias": "펩시코",
+            "avg_buy_price": 140.75,
+            "unrealized_pnl": 0.21,
+            "unrealized_pnl_pct": 0.02,
+            "realized_pnl": -38.93,
+            "total_pnl": -38.72
         }
     },
     "realized_pnl_by_ticker": {
@@ -363,11 +394,11 @@
             "breakdown_today_state": "",
             "breakdown_days": [],
             "uptrend_streak": 0,
-            "downtrend": "active",
-            "downtrend_exit_streak": 1,
-            "downtrend_exit_prev_date": "2026-09-02",
-            "downtrend_exit_today_state": "non_downtrend",
-            "downtrend_exit_days": ["2026-09-02"]
+            "downtrend": null,
+            "downtrend_exit_streak": 0,
+            "downtrend_exit_prev_date": "",
+            "downtrend_exit_today_state": "",
+            "downtrend_exit_days": []
         },
         "TSLA": {
             "downtrend": "active",
@@ -378,14 +409,14 @@
             "downtrend_exit_streak": 0,
             "downtrend_exit_days": [],
             "downtrend_exit_today_state": "",
-            "downtrend_exit_prev_date": "2026-09-02",
+            "downtrend_exit_prev_date": "2026-09-03",
             "post_liquidation": true,
             "post_liquidation_reentry_gate": "resistance"
         },
         "AAPL": {
             "downtrend_streak": 0,
             "downtrend_exit_streak": 0,
-            "breakdown_prev_date": "2026-09-02",
+            "breakdown_prev_date": "2026-09-03",
             "breakdown_today_state": "",
             "breakdown_days": [],
             "uptrend_streak": 0,
@@ -393,21 +424,21 @@
             "adds": 1,
             "last_add_swing_high": 344.57000732421875,
             "last_add_price": 305.35,
-            "downtrend_prev_date": "2026-09-02",
+            "downtrend_prev_date": "2026-09-03",
             "downtrend_today_state": "",
             "downtrend_days": []
         },
         "ARKK": {
             "downtrend_streak": 0,
             "downtrend_exit_streak": 0,
-            "breakdown_prev_date": "2026-09-02",
+            "breakdown_prev_date": "2026-09-03",
             "breakdown_today_state": "",
             "breakdown_days": [],
             "uptrend_streak": 0,
-            "downtrend_prev_date": "2026-09-02",
+            "downtrend_prev_date": "2026-09-03",
             "downtrend_today_state": "",
             "downtrend_days": [],
-            "uptrend_prev_date": "2026-09-02",
+            "uptrend_prev_date": "2026-09-03",
             "uptrend_today_state": "",
             "uptrend_days": []
         },
@@ -417,7 +448,7 @@
             "downtrend_exit_streak": 0,
             "downtrend_exit_days": [],
             "downtrend_exit_today_state": "",
-            "downtrend_exit_prev_date": "2026-09-02",
+            "downtrend_exit_prev_date": "2026-09-03",
             "post_liquidation": true,
             "post_liquidation_reentry_gate": "resistance"
         },
@@ -430,7 +461,7 @@
             "downtrend_exit_prev_date": "",
             "post_liquidation": true,
             "post_liquidation_reentry_gate": "resistance",
-            "downtrend_prev_date": "2026-09-02",
+            "downtrend_prev_date": "2026-09-03",
             "downtrend_today_state": "",
             "downtrend_days": []
         },
@@ -438,9 +469,9 @@
             "downtrend_streak": 0,
             "downtrend_days": [],
             "downtrend_today_state": "",
-            "downtrend_prev_date": "2026-09-02",
+            "downtrend_prev_date": "2026-09-03",
             "downtrend_exit_streak": 0,
-            "breakdown_prev_date": "2026-09-02",
+            "breakdown_prev_date": "2026-09-03",
             "breakdown_today_state": "",
             "breakdown_days": [],
             "uptrend_prev_date": "",
@@ -474,19 +505,19 @@
             "downtrend_streak": 0,
             "downtrend_days": [],
             "downtrend_today_state": "",
-            "downtrend_prev_date": "2026-09-02",
+            "downtrend_prev_date": "2026-09-03",
             "downtrend_exit_streak": 0,
             "downtrend_exit_days": [],
             "downtrend_exit_today_state": "",
             "downtrend_exit_prev_date": ""
         },
         "DELL": {
-            "downtrend_prev_date": "2026-09-02",
+            "downtrend_prev_date": "2026-09-03",
             "downtrend_today_state": "",
             "downtrend_days": [],
             "downtrend_streak": 0,
             "downtrend_exit_streak": 0,
-            "breakdown_prev_date": "2026-09-02",
+            "breakdown_prev_date": "2026-09-03",
             "breakdown_today_state": "",
             "breakdown_days": [],
             "uptrend_prev_date": "",
@@ -499,7 +530,7 @@
             "last_add_price": 420.93
         },
         "PLTR": {
-            "downtrend_prev_date": "2026-09-02",
+            "downtrend_prev_date": "2026-09-03",
             "downtrend_today_state": "",
             "downtrend_days": [],
             "downtrend_streak": 0,
@@ -510,7 +541,7 @@
             "downtrend_streak": 0,
             "downtrend_days": [],
             "downtrend_today_state": "",
-            "downtrend_prev_date": "2026-09-02",
+            "downtrend_prev_date": "2026-09-03",
             "post_liquidation": true,
             "post_liquidation_reentry_gate": "resistance",
             "downtrend_exit_prev_date": "",
@@ -524,13 +555,13 @@
             "downtrend_days": [],
             "downtrend_streak": 0,
             "downtrend_exit_streak": 0,
-            "uptrend_prev_date": "2026-09-02",
+            "uptrend_prev_date": "2026-09-03",
             "uptrend_today_state": "",
             "uptrend_days": [],
             "uptrend_streak": 0,
             "downtrend": "active",
             "downtrend_partially_liquidated": true,
-            "downtrend_exit_prev_date": "2026-09-02",
+            "downtrend_exit_prev_date": "2026-09-03",
             "downtrend_exit_today_state": "",
             "downtrend_exit_days": []
         }
@@ -551,57 +582,63 @@
         "CCJ": "카메코"
     },
     "risk_summary": {
-        "next_level_needs": 2500.0,
+        "next_level_needs": 3000.0,
         "max_potential_exposure": 562700.0,
         "stale_info": [
             {
                 "ticker": "GOOGL",
                 "alias": "알파벳 A",
                 "last_trade_date": "2026-07-25",
-                "days_stale": 39
+                "days_stale": 40
             },
             {
                 "ticker": "DELL",
                 "alias": "델 테크놀로지스",
                 "last_trade_date": "2026-07-28",
-                "days_stale": 36
+                "days_stale": 37
             },
             {
                 "ticker": "SCHD",
                 "alias": "SCHWAB US DIVIDEND EQUITY",
                 "last_trade_date": "2026-07-28",
-                "days_stale": 36
+                "days_stale": 37
             },
             {
                 "ticker": "GLW",
                 "alias": "코닝",
                 "last_trade_date": "2026-07-29",
-                "days_stale": 35
+                "days_stale": 36
             },
             {
                 "ticker": "AAPL",
                 "alias": "애플",
                 "last_trade_date": "2026-08-04",
-                "days_stale": 29
+                "days_stale": 30
             },
             {
                 "ticker": "ARM",
                 "alias": "에이알엠 홀딩스(ADR)",
                 "last_trade_date": "2026-08-13",
-                "days_stale": 20
+                "days_stale": 21
             },
             {
                 "ticker": "ARKK",
                 "alias": "ARK INNOVATION",
                 "last_trade_date": "2026-09-02",
+                "days_stale": 1
+            },
+            {
+                "ticker": "PEP",
+                "alias": "펩시코",
+                "last_trade_date": "2026-09-03",
                 "days_stale": 0
             }
         ],
-        "risk_score": 27,
+        "risk_score": 20,
         "deductions": [
             {
                 "reason": "현금 비중 부족",
-                "points": 26.8
+                "points": 30
             },
             {
                 "reason": "단일 종목 집중도 과다",
@@ -609,12 +646,12 @@
             },
             {
                 "reason": "장기 정체 종목",
-                "points": 16
+                "points": 20
             }
         ],
         "sync_error": false,
-        "alerts": ["⚠️ 현금 비중 부족 (7.1%)", "⚠️ 단일 종목 집중도 과다 (30.8%)", "⚠️ 장기 정체 종목 존재 (4개)"],
-        "max_ticker_concentration": 30.77,
+        "alerts": ["⚠️ 현금 비중 부족 (1.6%)", "⚠️ 단일 종목 집중도 과다 (30.4%)", "⚠️ 장기 정체 종목 존재 (5개)"],
+        "max_ticker_concentration": 30.45,
         "high_level_ratio": 0.0
     }
 }
