@@ -440,6 +440,33 @@ class TestBuildCurrentChannel:
         assert chart["long_current_channel"]["lookback"] == 252
         assert len(chart["long_current_channel"]["rows"]) == 252
 
+    def test_profit_trailing_params_and_state_are_exposed(self):
+        df = _ohlc(np.linspace(100, 220, 300))
+        rule = _channel_rule(
+            channel_lookback=21, multi_horizon_regime_enabled=True,
+            uptrend_sideways_transition_partial_sell_pct=50.0,
+            uptrend_profit_trailing_enabled=True,
+            uptrend_profit_recovery_add_enabled=True,
+        )
+        tracker = {
+            "active": True, "phase": "tracking", "highest_price": 220.0,
+            "atr_snapshot": 4.0, "stop_price": 208.0,
+            "recovery_add_pending": True, "recovery_add_budget": 500.0,
+            "recovery_add_confirm_days": ["2026-01-01"],
+        }
+        chart = build_chart_series(
+            rule, df, lambda d: classify_for_rule(rule, d), [], 215.0,
+            regime_st={"uptrend_profit_trailing": tracker,
+                       "uptrend_profit_partial_de_risked": True},
+        )
+        assert chart["params"]["uptrend_profit_trailing_enabled"] is True
+        assert chart["state"]["uptrend_profit_trailing_phase"] == "tracking"
+        assert chart["state"]["uptrend_profit_trailing_stop"] == 208.0
+        assert chart["state"]["uptrend_profit_partial_de_risked"] is True
+        assert chart["params"]["uptrend_profit_recovery_add_enabled"] is True
+        assert chart["state"]["uptrend_profit_recovery_add_pending"] is True
+        assert chart["state"]["uptrend_profit_recovery_confirm_days"] == 1
+
     def test_multi_horizon_chart_omits_long_channel_when_disabled_or_short(self):
         df = _ohlc(np.linspace(100, 220, 300))
         disabled = _channel_rule(channel_lookback=21, long_channel_lookback=252)

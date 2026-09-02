@@ -130,6 +130,13 @@ def build_state_lines(rule: StockRule, regime_st: dict) -> List[dict]:
             item = _price_line("추종 데드라인 청산선", stop, "stop")
             if item:
                 lines.append(item)
+    tracker = (regime_st or {}).get("uptrend_profit_trailing") or {}
+    stop = (tracker.get("residual_stop_price")
+            if tracker.get("phase") == "residual_guard"
+            else tracker.get("stop_price"))
+    item = _price_line("ATR 수익보호선", stop, "stop")
+    if item:
+        lines.append(item)
     return lines
 
 
@@ -370,6 +377,7 @@ def _public_state(rule: StockRule, regime_st: dict) -> dict:
     }
     # 장·단기 모드가 꺼진 기존 차트 JSON 계약은 그대로 유지한다.
     if rule.multi_horizon_regime_enabled:
+        profit_tracker = regime_st.get("uptrend_profit_trailing") or {}
         state.update({
             "long_trend": regime_st.get("long_trend"),
             "short_trend": regime_st.get("short_trend"),
@@ -382,6 +390,55 @@ def _public_state(rule: StockRule, regime_st: dict) -> dict:
             "staged_rebound_probe_open": bool(regime_st.get("staged_rebound_probe_open")),
             "staged_rebound_probe_date": regime_st.get("staged_rebound_probe_date"),
             "staged_rebound_probe_origin": regime_st.get("staged_rebound_probe_origin"),
+            "staged_rebound_probe_pct": regime_st.get("staged_rebound_probe_pct"),
+            "staged_rebound_wait_probe_origin": regime_st.get(
+                "staged_rebound_wait_probe_origin"
+            ),
+            "staged_rebound_wait_probe_days": len(
+                regime_st.get("staged_rebound_wait_probe_days") or []
+            ),
+            "post_liquidation_recovery_probe_date": regime_st.get(
+                "post_liquidation_recovery_probe_date"
+            ),
+            "post_liquidation_exit_trigger": regime_st.get(
+                "post_liquidation_exit_trigger"
+            ),
+            "post_liquidation_exit_long_regime": regime_st.get(
+                "post_liquidation_exit_long_regime"
+            ),
+            "post_liquidation_exit_short_regime": regime_st.get(
+                "post_liquidation_exit_short_regime"
+            ),
+            "post_liquidation_early_probe_date": regime_st.get(
+                "post_liquidation_early_probe_date"
+            ),
+            "post_liquidation_early_probe_stop_price": regime_st.get(
+                "post_liquidation_early_probe_stop_price"
+            ),
+            "uptrend_profit_trailing_active": bool(profit_tracker.get("active")),
+            "uptrend_profit_trailing_phase": profit_tracker.get("phase"),
+            "uptrend_profit_trailing_high": profit_tracker.get("highest_price"),
+            "uptrend_profit_trailing_atr_snapshot": profit_tracker.get("atr_snapshot"),
+            "uptrend_profit_trailing_stop": (
+                profit_tracker.get("residual_stop_price")
+                if profit_tracker.get("phase") == "residual_guard"
+                else profit_tracker.get("stop_price")
+            ),
+            "uptrend_profit_partial_de_risked": bool(
+                regime_st.get("uptrend_profit_partial_de_risked")
+            ),
+            "uptrend_profit_recovery_add_pending": bool(
+                profit_tracker.get("recovery_add_pending")
+            ),
+            "uptrend_profit_recovery_add_budget": profit_tracker.get(
+                "recovery_add_budget"
+            ),
+            "uptrend_profit_recovery_confirm_days": len(
+                profit_tracker.get("recovery_add_confirm_days", [])
+            ),
+            "last_uptrend_profit_recovery_add_date": regime_st.get(
+                "last_uptrend_profit_recovery_add_date"
+            ),
         })
     return state
 
@@ -413,6 +470,14 @@ def _public_params(rule: StockRule) -> dict:
             "staged_rebound_allow_long_sideways": rule.staged_rebound_allow_long_sideways,
             "staged_rebound_require_long_midline": rule.staged_rebound_require_long_midline,
             "staged_rebound_require_nonnegative_long_slope": rule.staged_rebound_require_nonnegative_long_slope,
+            "staged_rebound_wait_probe_enabled": rule.staged_rebound_wait_probe_enabled,
+            "staged_rebound_wait_probe_pct": rule.staged_rebound_wait_probe_pct,
+            "post_liquidation_recovery_probe_enabled": rule.post_liquidation_recovery_probe_enabled,
+            "post_liquidation_early_probe_enabled": rule.post_liquidation_early_probe_enabled,
+            "post_liquidation_early_probe_pct": rule.post_liquidation_early_probe_pct,
+            "post_liquidation_early_probe_confirm_bars": rule.post_liquidation_early_probe_confirm_bars,
+            "post_liquidation_early_probe_max_ema_atr": rule.post_liquidation_early_probe_max_ema_atr,
+            "post_liquidation_early_probe_stop_atr_multiplier": rule.post_liquidation_early_probe_stop_atr_multiplier,
             "pullback_rebound_confirm_bars": rule.pullback_rebound_confirm_bars,
             "pullback_rebound_max_wait_bars": rule.pullback_rebound_max_wait_bars,
             "long_channel_lookback": rule.long_channel_lookback,
@@ -424,13 +489,17 @@ def _public_params(rule: StockRule) -> dict:
             "uptrend_sideways_transition_confirm_bars": (
                 rule.uptrend_sideways_transition_confirm_bars
             ),
+            "uptrend_profit_trailing_enabled": rule.uptrend_profit_trailing_enabled,
+            "uptrend_profit_trailing_atr_multiplier": rule.uptrend_profit_trailing_atr_multiplier,
+            "uptrend_profit_trailing_max_distance_pct": rule.uptrend_profit_trailing_max_distance_pct,
+            "uptrend_profit_recovery_add_enabled": rule.uptrend_profit_recovery_add_enabled,
+            "uptrend_profit_recovery_confirm_bars": rule.uptrend_profit_recovery_confirm_bars,
+            "uptrend_profit_recovery_restore_pct": rule.uptrend_profit_recovery_restore_pct,
+            "uptrend_profit_recovery_max_ema_atr": rule.uptrend_profit_recovery_max_ema_atr,
+            "uptrend_profit_recovery_max_ema_distance_pct": rule.uptrend_profit_recovery_max_ema_distance_pct,
+            "uptrend_profit_recovery_min_stop_headroom_atr": rule.uptrend_profit_recovery_min_stop_headroom_atr,
+            "transition_residual_atr_multiplier": rule.transition_residual_atr_multiplier,
+            "transition_residual_min_distance_pct": rule.transition_residual_min_distance_pct,
+            "transition_residual_max_distance_pct": rule.transition_residual_max_distance_pct,
         })
     return params
-            "staged_rebound_wait_probe_enabled": rule.staged_rebound_wait_probe_enabled,
-            "staged_rebound_wait_probe_pct": rule.staged_rebound_wait_probe_pct,
-            "post_liquidation_recovery_probe_enabled": rule.post_liquidation_recovery_probe_enabled,
-            "post_liquidation_early_probe_enabled": rule.post_liquidation_early_probe_enabled,
-            "post_liquidation_early_probe_pct": rule.post_liquidation_early_probe_pct,
-            "post_liquidation_early_probe_confirm_bars": rule.post_liquidation_early_probe_confirm_bars,
-            "post_liquidation_early_probe_max_ema_atr": rule.post_liquidation_early_probe_max_ema_atr,
-            "post_liquidation_early_probe_stop_atr_multiplier": rule.post_liquidation_early_probe_stop_atr_multiplier,
