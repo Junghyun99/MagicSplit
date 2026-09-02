@@ -159,6 +159,7 @@ class SplitEvaluator:
         trend_only_uptrend_confirmed = False
         rebound_entry_confirmed = False
         staged_probe_trigger = None
+        staged_probe_pct = rule.staged_rebound_probe_pct
         if rule.regime_enabled and ohlc_window is not None:
             reading = classify_for_rule(rule, ohlc_window)
             regime_st = regime_state.setdefault(rule.ticker, {}) if regime_state is not None else {}
@@ -193,6 +194,17 @@ class SplitEvaluator:
                         staged_probe_trigger = self._resolve_staged_rebound_probe(
                             rule, reading, multi, current_price,
                         )
+                        if (staged_probe_trigger is None
+                                and not rebound_entry_confirmed
+                                and rule.staged_rebound_wait_probe_enabled
+                                and not regime_st.get("post_liquidation")
+                                and not regime_st.get("aligned_downtrend_reentry_lock")):
+                            staged_probe_trigger = self._resolve_staged_rebound_wait_probe(
+                                rule, reading, regime_st, multi, current_price,
+                                evaluation_date=evaluation_date,
+                            )
+                            if staged_probe_trigger is not None:
+                                staged_probe_pct = rule.staged_rebound_wait_probe_pct
 
             # 장·단기 하락 정렬은 단기 방어 뒤 남은 물량까지 정리하는 최종 청산 이벤트다.
             if (multi and ticker_lots and (
@@ -204,6 +216,11 @@ class SplitEvaluator:
                     rule, ticker_lots, current_price
                 )
             if ticker_lots:
+                early_probe_stop = self._evaluate_post_liquidation_early_probe_stop(
+                    rule, ticker_lots, current_price, regime_st, multi,
+                )
+                if early_probe_stop is not None:
+                    return early_probe_stop
                 # 채널 모드 이탈 처리: 추종 데드라인 -> 하락 래치 청산 -> 하단 이탈 청산.
                 # None이면 이탈 아님 -> 통상 흐름(상승/횡보) 계속.
                 if rule.regime_algo == "channel":
@@ -306,10 +323,20 @@ class SplitEvaluator:
                         rule, current_price,
                         "전량 청산 후 재진입 대기 - 장기 추세 데이터 부족",
                     )]
-                if not self._can_reenter_after_full_liquidation(reading, multi, current_price):
+                strict_reentry_ready = self._can_reenter_after_full_liquidation(
+                    reading, multi, current_price,
+                )
+                if not strict_reentry_ready:
+                    if rule.post_liquidation_early_probe_enabled:
+                        early_probe = self._evaluate_post_liquidation_early_probe(
+                            rule, current_price, reading, multi, regime_st,
+                            ohlc_window, portfolio,
+                        )
+                        if early_probe is not None:
+                            return [early_probe]
                     return [self._buy_blocked_signal(
                         rule, current_price,
-                        "전량 청산 후 재진입 대기 - 장기 횡보 이상·단기 상승·채널 중심선 회복 필요",
+                        "전량 청산 후 재진입 대기 - 조기 반등 또는 장기 횡보 이상·단기 상승·채널 중심선 회복 필요",
                     )]
                 regime_st.pop("post_liquidation", None)
                 regime_st.pop("post_liquidation_reentry_gate", None)
@@ -322,10 +349,30 @@ class SplitEvaluator:
                     )
 
             # 구 모드의 기존 청산 원인별 재진입 게이트는 그대로 보존한다.
+                if (rule.trend_entry_mode == "staged_rebound"
+                        and rule.post_liquidation_recovery_probe_enabled):
+                    signal = self._evaluate_initial_buy(
+                        rule, current_price, portfolio=portfolio,
+                        bypass_reentry_guard=True,
+                        amount_multiplier=rule.staged_rebound_wait_probe_pct / 100,
+                        entry_trigger="staged_rebound_probe_post_liquidation_recovery",
+                    )
+                    if signal is not None and not signal.is_blocked:
+                        signal.reason = "전량 청산 후 회복 확인 탐색 매수 Lv1"
+                    # 게이트는 실제 체결 후 엔진에서만 해제한다.
+                    return [signal] if signal is not None else []
             elif rule.regime_algo == "channel" and regime_st.get("post_liquidation"):
                 gate = regime_st.get("post_liquidation_reentry_gate", "resistance")
                 gate_line = (
                     reading.channel_mid if gate == "midline"
+                for key in (
+                    "post_liquidation_exit_trigger",
+                    "post_liquidation_exit_long_regime",
+                    "post_liquidation_exit_short_regime",
+                    "post_liquidation_exit_price",
+                    "post_liquidation_exit_date",
+                ):
+                    regime_st.pop(key, None)
                     else reading.channel_resistance
                 ) if reading is not None else float("nan")
                 gate_name = "채널 중심선" if gate == "midline" else "상단 저항선"
@@ -384,7 +431,7 @@ class SplitEvaluator:
                 rule, current_price, last_sell_price=last_sell_price,
                 portfolio=portfolio,
                 bypass_reentry_guard=(rule.trend_entry_mode in ("rebound", "staged_rebound")),
-                amount_multiplier=(rule.staged_rebound_probe_pct / 100
+                amount_multiplier=(staged_probe_pct / 100
                                    if staged_probe_trigger is not None else 1.0),
                 entry_trigger=(f"staged_rebound_probe_{staged_probe_trigger}"
                                if staged_probe_trigger is not None
@@ -741,11 +788,60 @@ class SplitEvaluator:
             rule.rebound_entry_require_midline
             and (math.isnan(reading.channel_mid) or current_price <= reading.channel_mid)
         ):
+    def _resolve_staged_rebound_wait_probe(
+        self, rule: StockRule, reading, st: dict, multi: dict,
+        current_price: float, evaluation_date: Optional[str] = None,
+    ) -> Optional[str]:
+        """전환 순간을 놓친 무포지션 상태에서 지속 회복을 확인한다."""
+        prefix = "staged_rebound_wait_probe_"
+
+        def reset() -> None:
+            for key in ("origin", "days", "last_date"):
+                st.pop(prefix + key, None)
+
+        if multi.get("buy_locked") or multi.get("buy_halted"):
+            reset()
+            return None
+
+        short_midline_ok = (
+            not math.isnan(reading.channel_mid)
+            and current_price > reading.channel_mid
+        )
+        origin = None
+        if (multi["long"] == Regime.UPTREND
+                and multi["short"] == Regime.UPTREND
+                and short_midline_ok):
+            origin = "aligned_persistent"
+        elif (multi["long"] == Regime.UPTREND
+              and multi["short"] == Regime.SIDEWAYS
+              and short_midline_ok
+              and not math.isnan(reading.ema20)
+              and current_price > reading.ema20):
+            origin = "uptrend_short_sideways_persistent"
+
+        if origin is None:
+            reset()
+            return None
+        if st.get(prefix + "origin") != origin:
+            reset()
+            st[prefix + "origin"] = origin
+
+        today = evaluation_date or datetime.date.today().isoformat()
+        days = st.get(prefix + "days", [])
+        if today not in days:
+            days.append(today)
+        st[prefix + "days"] = days
+        st[prefix + "last_date"] = today
+        return origin if len(days) >= rule.rebound_entry_confirm_bars else None
+
             return None
         next_level = max(l.level for l in lots) + 1
         if next_level > rule.max_lots:
             return None
-        amount = rule.buy_amount_at(1) * (1 - rule.staged_rebound_probe_pct / 100)
+        probe_pct = float(
+            st.get("staged_rebound_probe_pct", rule.staged_rebound_probe_pct)
+        )
+        amount = rule.buy_amount_at(1) * (1 - probe_pct / 100)
         buy_qty = rule.quantize_qty(amount / current_price)
         if buy_qty <= 0:
             return None
@@ -1325,6 +1421,98 @@ class SplitEvaluator:
                 self._logger.info(f"[{display_ticker(rule.ticker)}] {reason}")
             return SplitSignal(
                 ticker=rule.ticker,
+    @staticmethod
+    def _is_early_reentry_exit_eligible(st: dict) -> bool:
+        """방어 필터를 약화시키지 않는 비하락 청산만 조기 재진입 대상으로 삼는다."""
+        trigger = st.get("post_liquidation_exit_trigger")
+        if trigger in (
+            "uptrend_profit_trailing_remainder",
+            "uptrend_sideways_residual_guard",
+        ):
+            return True
+        if trigger != "channel_lower_break":
+            return False
+        allowed = {str(Regime.UPTREND), str(Regime.SIDEWAYS)}
+        return (
+            st.get("post_liquidation_exit_long_regime") in allowed
+            and st.get("post_liquidation_exit_short_regime") in allowed
+        )
+
+    def _evaluate_post_liquidation_early_probe(
+        self, rule: StockRule, current_price: float, reading, multi: dict,
+        st: dict, ohlc_window, portfolio: Optional[Portfolio],
+    ) -> Optional[SplitSignal]:
+        """엄격한 중심선 게이트 전에 제한된 20EMA 반등 탐색 진입을 평가한다."""
+        if not self._is_early_reentry_exit_eligible(st):
+            return None
+        if (st.get("aligned_downtrend_reentry_lock")
+                or multi.get("buy_locked") or multi.get("buy_halted")):
+            return None
+        if multi["long"] not in (Regime.UPTREND, Regime.SIDEWAYS):
+            return None
+        if multi["short"] not in (Regime.UPTREND, Regime.SIDEWAYS):
+            return None
+
+        atr = float(reading.atr)
+        ema20 = float(reading.ema20)
+        if (not math.isfinite(atr) or atr <= 0
+                or not math.isfinite(ema20) or ema20 <= 0):
+            return None
+        upper = ema20 + rule.post_liquidation_early_probe_max_ema_atr * atr
+        if not (ema20 < current_price <= upper):
+            return None
+
+        closes = [float(v) for v in ohlc_window["Close"].tolist()]
+        needed = rule.post_liquidation_early_probe_confirm_bars
+        if len(closes) < needed or any(not math.isfinite(v) for v in closes[-needed:]):
+            return None
+        rebound_path = closes[-needed:] + [current_price]
+        if not all(b > a for a, b in zip(rebound_path, rebound_path[1:])):
+            return None
+
+        signal = self._evaluate_initial_buy(
+            rule, current_price, portfolio=portfolio,
+            bypass_reentry_guard=True,
+            amount_multiplier=rule.post_liquidation_early_probe_pct / 100,
+            entry_trigger="staged_rebound_probe_post_liquidation_early_recovery",
+        )
+        if signal is None or signal.is_blocked:
+            return signal
+        recent_low = float(
+            ohlc_window["Low"].tail(rule.uptrend_swing_lookback).min()
+        )
+        atr_stop = current_price - (
+            rule.post_liquidation_early_probe_stop_atr_multiplier * atr
+        )
+        signal.early_probe_stop_price = max(recent_low, atr_stop)
+        signal.early_probe_atr = atr
+        signal.reason = "전량 청산 후 조기 반등 탐색 매수 Lv1"
+        return signal
+
+    @staticmethod
+    def _evaluate_post_liquidation_early_probe_stop(
+        rule: StockRule, lots: List[PositionLot], current_price: float,
+        st: dict, multi: Optional[dict],
+    ) -> Optional[List[SplitSignal]]:
+        stop = st.get("post_liquidation_early_probe_stop_price")
+        if stop is None or current_price > float(stop):
+            return None
+        total_qty = sum(l.quantity for l in lots)
+        total_cost = sum(l.buy_price * l.quantity for l in lots)
+        avg_buy = total_cost / total_qty if total_qty else 0.0
+        change = (current_price - avg_buy) / avg_buy * 100 if avg_buy else 0.0
+        return [SplitSignal(
+            ticker=rule.ticker, lot_id=None, action=OrderAction.SELL,
+            quantity=total_qty, price=current_price,
+            reason=(f"조기 재진입 탐색 보호선 이탈 전량 청산 "
+                    f"({current_price:.2f} <= {float(stop):.2f}, {change:+.1f}%)"),
+            pct_change=change, level=max(l.level for l in lots),
+            regime_liquidation=True, reentry_gate="midline",
+            exit_trigger="post_liquidation_early_probe_stop",
+            exit_long_regime=str(multi["long"]) if multi else None,
+            exit_short_regime=str(multi["short"]) if multi else None,
+        )]
+
                 lot_id=None,
                 action=OrderAction.BUY,
                 quantity=0,
@@ -1341,6 +1529,7 @@ class SplitEvaluator:
         if buy_qty <= 0:
             reason = (
                 f"buy_amount({format_money(buy_amount, rule.market_type)}) < "
+
                 f"현재가({format_money(current_price, rule.market_type)}) -> 1주도 매수 불가. "
                 f"buy_amount 상향 조정 필요"
             )

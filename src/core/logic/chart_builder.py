@@ -426,3 +426,11 @@ def _public_params(rule: StockRule) -> dict:
             ),
         })
     return params
+            "staged_rebound_wait_probe_enabled": rule.staged_rebound_wait_probe_enabled,
+            "staged_rebound_wait_probe_pct": rule.staged_rebound_wait_probe_pct,
+            "post_liquidation_recovery_probe_enabled": rule.post_liquidation_recovery_probe_enabled,
+            "post_liquidation_early_probe_enabled": rule.post_liquidation_early_probe_enabled,
+            "post_liquidation_early_probe_pct": rule.post_liquidation_early_probe_pct,
+            "post_liquidation_early_probe_confirm_bars": rule.post_liquidation_early_probe_confirm_bars,
+            "post_liquidation_early_probe_max_ema_atr": rule.post_liquidation_early_probe_max_ema_atr,
+            "post_liquidation_early_probe_stop_atr_multiplier": rule.post_liquidation_early_probe_stop_atr_multiplier,

@@ -931,8 +931,18 @@ class MagicSplitEngine:
                             and exe.entry_trigger.startswith("staged_rebound_probe_")):
                         st["staged_rebound_probe_open"] = True
                         st["staged_rebound_probe_date"] = today
-                        st["staged_rebound_probe_origin"] = exe.entry_trigger.removeprefix(
-                            "staged_rebound_probe_"
+                        st["staged_rebound_probe_origin"] = probe_origin
+                        st["staged_rebound_probe_pct"] = (
+                            rule.post_liquidation_early_probe_pct
+                            if rule and probe_origin == "post_liquidation_early_recovery"
+                            else
+                            rule.staged_rebound_wait_probe_pct
+                            if rule and probe_origin in (
+                                "aligned_persistent",
+                                "uptrend_short_sideways_persistent",
+                                "post_liquidation_recovery",
+                            )
+                            else rule.staged_rebound_probe_pct if rule else 50.0
                         )
                     elif exe.entry_trigger == "staged_rebound_confirm_add":
                         st.pop("staged_rebound_probe_open", None)
@@ -956,15 +966,46 @@ class MagicSplitEngine:
                 if sig is not None:
                     exe.exit_trigger = sig.exit_trigger
                     exe.exit_long_regime = sig.exit_long_regime
+                        "staged_rebound_wait_probe_origin",
+                        "staged_rebound_wait_probe_days",
+                        "staged_rebound_wait_probe_last_date",
                     exe.exit_short_regime = sig.exit_short_regime
 
                 # 통합 전량청산(Bulk Sell): lot_id 없는 청산 매도는 체결 수량을
                 # 고차수(High Level)부터 순차 차감하며 lot을 지운다. 손익은 차감한
+                        probe_origin = exe.entry_trigger.removeprefix(
+                            "staged_rebound_probe_"
+                        )
                 # 각 lot의 매수가 대비로 합산해 단일 체결 내역에 기록한다.
                 if sig is not None and sig.regime_liquidation and sig.lot_id is None:
                     updated = self._apply_bulk_liquidation(
                         updated, exe, disp, last_sell_prices, regime_state,
                         reentry_gate=sig.reentry_gate or "resistance",
+                        if probe_origin in (
+                                "post_liquidation_recovery",
+                                "post_liquidation_early_recovery",
+                        ):
+                            # 주문 생성이 아닌 실제 체결 시점에만 게이트를 해제한다.
+                            for key in (
+                                "post_liquidation", "post_liquidation_reentry_gate",
+                                "aligned_downtrend_reentry_lock",
+                                "long_short_downtrend_liquidation_pending",
+                                "post_liquidation_exit_trigger",
+                                "post_liquidation_exit_long_regime",
+                                "post_liquidation_exit_short_regime",
+                                "post_liquidation_exit_price",
+                                "post_liquidation_exit_date",
+                            ):
+                                st.pop(key, None)
+                            st["post_liquidation_recovery_probe_date"] = today
+                            if probe_origin == "post_liquidation_early_recovery":
+                                st["post_liquidation_early_probe_stop_price"] = (
+                                    sig.early_probe_stop_price
+                                )
+                                st["post_liquidation_early_probe_atr"] = (
+                                    sig.early_probe_atr
+                                )
+                                st["post_liquidation_early_probe_date"] = today
                     )
                     continue
 
@@ -1097,6 +1138,10 @@ class MagicSplitEngine:
             kept["post_liquidation"] = True
             kept["post_liquidation_reentry_gate"] = reentry_gate
         if kept:
+                            exit_trigger=exe.exit_trigger,
+                            exit_long_regime=exe.exit_long_regime,
+                            exit_short_regime=exe.exit_short_regime,
+                            exit_price=exe.price, exit_date=exe.date,
             regime_state[ticker] = kept
         else:
             regime_state.pop(ticker, None)
@@ -1119,6 +1164,11 @@ class MagicSplitEngine:
         regime_state: Optional[dict],
         reentry_gate: str = "resistance",
     ) -> List[PositionLot]:
+        exit_trigger: Optional[str] = None,
+        exit_long_regime: Optional[str] = None,
+        exit_short_regime: Optional[str] = None,
+        exit_price: Optional[float] = None,
+        exit_date: Optional[str] = None,
         """통합 전량청산 체결을 고차수부터 순차 차감하여 반영한다.
 
         - 체결 수량만큼 고레벨 lot부터 소진(전량 소진 lot은 제거, 마지막은 부분 잔량).
@@ -1149,6 +1199,16 @@ class MagicSplitEngine:
                 regime_state, exe.ticker, mark_liquidation=True,
                 reentry_gate=reentry_gate,
             )
+            if exit_trigger is not None:
+                kept["post_liquidation_exit_trigger"] = exit_trigger
+                if exit_long_regime is not None:
+                    kept["post_liquidation_exit_long_regime"] = exit_long_regime
+                if exit_short_regime is not None:
+                    kept["post_liquidation_exit_short_regime"] = exit_short_regime
+                if exit_price is not None:
+                    kept["post_liquidation_exit_price"] = exit_price
+                if exit_date is not None:
+                    kept["post_liquidation_exit_date"] = exit_date
         return updated
 
     def _apply_partial_liquidation(
@@ -1201,6 +1261,10 @@ class MagicSplitEngine:
                     rule = next((r for r in self.all_stock_rules if r.ticker == exe.ticker), None)
 
                 drop_pct = rule.trendbreak_trailing_drop_pct if rule is not None else 3.0
+                exit_trigger=exe.exit_trigger,
+                exit_long_regime=exe.exit_long_regime,
+                exit_short_regime=exe.exit_short_regime,
+                exit_price=exe.price, exit_date=exe.date,
 
                 st["downtrend_partially_liquidated"] = True
                 trailing_lock = {
@@ -1244,6 +1308,10 @@ class MagicSplitEngine:
             updated, exe.ticker, exe.quantity, exe,
         )
         if consumed > 0 and last_sell_prices is not None:
+                    exit_trigger=exe.exit_trigger,
+                    exit_long_regime=exe.exit_long_regime,
+                    exit_short_regime=exe.exit_short_regime,
+                    exit_price=exe.price, exit_date=exe.date,
             last_sell_prices[exe.ticker] = exe.price
 
         remaining = [l for l in updated if l.ticker == exe.ticker]

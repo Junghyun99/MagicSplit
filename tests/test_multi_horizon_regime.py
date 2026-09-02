@@ -514,6 +514,113 @@ def test_staged_rebound_completion_buys_remaining_half_once_aligned():
     assert signal.regime_add_swing_high is None
 
 
+def test_staged_rebound_wait_probe_enters_quarter_after_two_aligned_days():
+    window = _window(_trend(252, 100, 0.25))
+    rule = _rule(
+        trend_only_enabled=True, trend_entry_mode="staged_rebound",
+        staged_rebound_wait_probe_enabled=True,
+        staged_rebound_wait_probe_pct=25,
+        buy_amount=1000, buy_amounts=None, max_exposure_pct=100,
+    )
+    reading = classify_for_rule(rule, window)
+    price = reading.channel_mid + 1
+    state = {"AAPL": {
+        "previous_long_regime": "uptrend",
+        "previous_short_regime": "uptrend",
+    }}
+    evaluator = SplitEvaluator()
+
+    first = evaluator.evaluate_stock(
+        rule, [], _portfolio(price, cash=10000), ohlc_window=window,
+        regime_state=state, evaluation_date="2025-01-02",
+    )
+    second = evaluator.evaluate_stock(
+        rule, [], _portfolio(price, cash=10000), ohlc_window=window,
+        regime_state=state, evaluation_date="2025-01-03",
+    )
+
+    assert first[0].is_blocked
+    assert second[0].entry_trigger == "staged_rebound_probe_aligned_persistent"
+    assert second[0].quantity == rule.quantize_qty(250 / price)
+
+
+def test_staged_rebound_wait_probe_accepts_persistent_short_sideways_recovery():
+    closes = _trend(189, 100, 0.35)
+    closes += [closes[-1] * (1 + (i % 2) * 0.002) for i in range(63)]
+    window = _window(closes)
+    rule = _rule(
+        trend_only_enabled=True, trend_entry_mode="staged_rebound",
+        staged_rebound_wait_probe_enabled=True,
+        staged_rebound_wait_probe_pct=25,
+        buy_amount=1000, buy_amounts=None, max_exposure_pct=100,
+    )
+    reading = classify_for_rule(rule, window)
+    price = max(reading.channel_mid, reading.ema20) + 1
+    state = {"AAPL": {
+        "previous_long_regime": "uptrend",
+        "previous_short_regime": "sideways",
+    }}
+    evaluator = SplitEvaluator()
+
+    first = evaluator.evaluate_stock(
+        rule, [], _portfolio(price, cash=10000), ohlc_window=window,
+        regime_state=state, evaluation_date="2025-01-02",
+    )
+    second = evaluator.evaluate_stock(
+        rule, [], _portfolio(price, cash=10000), ohlc_window=window,
+        regime_state=state, evaluation_date="2025-01-03",
+    )
+
+    assert first[0].is_blocked
+    assert second[0].entry_trigger == (
+        "staged_rebound_probe_uptrend_short_sideways_persistent"
+    )
+    assert second[0].quantity == rule.quantize_qty(250 / price)
+
+
+def test_post_liquidation_gate_emits_quarter_probe_without_clearing_before_fill():
+    window = _window(_trend(252, 100, 0.25))
+    rule = _rule(
+        trend_only_enabled=True, trend_entry_mode="staged_rebound",
+        post_liquidation_recovery_probe_enabled=True,
+        staged_rebound_wait_probe_pct=25,
+        buy_amount=1000, buy_amounts=None, max_exposure_pct=100,
+    )
+    reading = classify_for_rule(rule, window)
+    price = reading.channel_mid + 1
+    state = {"AAPL": {
+        "post_liquidation": True,
+        "post_liquidation_reentry_gate": "midline",
+        "previous_long_regime": "uptrend",
+        "previous_short_regime": "uptrend",
+    }}
+
+    signals = SplitEvaluator().evaluate_stock(
+        rule, [], _portfolio(price, cash=10000), ohlc_window=window,
+        regime_state=state, evaluation_date="2025-01-02",
+    )
+
+    assert signals[0].entry_trigger == "staged_rebound_probe_post_liquidation_recovery"
+    assert signals[0].quantity == rule.quantize_qty(250 / price)
+    assert state["AAPL"]["post_liquidation"] is True
+
+
+def test_staged_rebound_completion_uses_recorded_quarter_probe_pct():
+    rule = _rule(
+        trend_only_enabled=True, trend_entry_mode="staged_rebound",
+        buy_amount=1000, buy_amounts=None, max_exposure_pct=100,
+    )
+    lot = _lot(price=100, qty=2)
+    signal = SplitEvaluator()._evaluate_staged_rebound_completion(
+        rule, [lot], 100.0, SimpleNamespace(channel_mid=99.0),
+        {"staged_rebound_probe_open": True, "staged_rebound_probe_pct": 25.0},
+        _portfolio(100.0, qty=2, cash=10000),
+    )
+
+    assert signal is not None
+    assert signal.quantity == 7
+
+
 def test_rebound_chart_exposes_entry_policy():
     window = _window(_trend(252, 100, 0.25))
     rule = _rule(trend_only_enabled=True, trend_entry_mode="rebound")
@@ -533,3 +640,95 @@ def test_staged_rebound_chart_exposes_probe_policy():
     )
     assert chart["params"]["staged_rebound_probe_pct"] == 50
     assert chart["state"]["staged_rebound_probe_open"] is True
+
+
+def test_staged_rebound_chart_exposes_wait_and_gate_probe_policy():
+    window = _window(_trend(252, 100, 0.25))
+    rule = _rule(
+        trend_only_enabled=True, trend_entry_mode="staged_rebound",
+        staged_rebound_wait_probe_enabled=True,
+        staged_rebound_wait_probe_pct=25,
+        post_liquidation_recovery_probe_enabled=True,
+        post_liquidation_early_probe_enabled=True,
+        post_liquidation_early_probe_pct=20,
+    )
+    chart = build_chart_series(
+        rule, window, lambda d: classify_for_rule(rule, d), [], window.Close.iloc[-1],
+        regime_st={
+            "staged_rebound_probe_open": True,
+            "staged_rebound_probe_pct": 25.0,
+            "staged_rebound_wait_probe_origin": "aligned_persistent",
+            "staged_rebound_wait_probe_days": ["2025-01-02"],
+            "post_liquidation_recovery_probe_date": "2025-01-03",
+            "post_liquidation_exit_trigger": "channel_lower_break",
+            "post_liquidation_early_probe_date": "2025-01-04",
+            "post_liquidation_early_probe_stop_price": 98.0,
+        },
+    )
+    assert chart["params"]["staged_rebound_wait_probe_enabled"] is True
+    assert chart["params"]["staged_rebound_wait_probe_pct"] == 25
+    assert chart["params"]["post_liquidation_recovery_probe_enabled"] is True
+    assert chart["state"]["staged_rebound_wait_probe_days"] == 1
+    assert chart["state"]["staged_rebound_probe_pct"] == 25
+    assert chart["params"]["post_liquidation_early_probe_enabled"] is True
+    assert chart["params"]["post_liquidation_early_probe_pct"] == 20
+    assert chart["state"]["post_liquidation_exit_trigger"] == "channel_lower_break"
+    assert chart["state"]["post_liquidation_early_probe_stop_price"] == 98.0
+
+
+def test_post_liquidation_early_probe_requires_eligible_exit_and_two_rising_closes():
+    rule = _rule(
+        trend_only_enabled=True, trend_entry_mode="staged_rebound",
+        post_liquidation_early_probe_enabled=True,
+        post_liquidation_early_probe_pct=20,
+        buy_amount=1000, buy_amounts=None, max_exposure_pct=100,
+    )
+    window = _window([99.0, 100.0])
+    reading = SimpleNamespace(ema20=100.0, atr=2.0)
+    multi = {
+        "long": Regime.UPTREND, "short": Regime.SIDEWAYS,
+        "buy_locked": False, "buy_halted": False,
+    }
+    state = {
+        "post_liquidation_exit_trigger": "channel_lower_break",
+        "post_liquidation_exit_long_regime": "uptrend",
+        "post_liquidation_exit_short_regime": "sideways",
+    }
+
+    signal = SplitEvaluator()._evaluate_post_liquidation_early_probe(
+        rule, 101.0, reading, multi, state, window,
+        _portfolio(101.0, cash=10000),
+    )
+
+    assert signal is not None
+    assert signal.entry_trigger == (
+        "staged_rebound_probe_post_liquidation_early_recovery"
+    )
+    assert signal.quantity == rule.quantize_qty(200 / 101)
+    assert signal.early_probe_stop_price == 98.0
+    assert signal.early_probe_atr == 2.0
+
+    state["post_liquidation_exit_trigger"] = "aligned_downtrend_liquidation"
+    assert SplitEvaluator()._evaluate_post_liquidation_early_probe(
+        rule, 101.0, reading, multi, state, window,
+        _portfolio(101.0, cash=10000),
+    ) is None
+
+
+def test_post_liquidation_early_probe_stop_liquidates_and_is_not_eligible_again():
+    rule = _rule(
+        trend_only_enabled=True, trend_entry_mode="staged_rebound",
+        post_liquidation_early_probe_enabled=True,
+    )
+    state = {"post_liquidation_early_probe_stop_price": 98.0}
+    multi = {"long": Regime.UPTREND, "short": Regime.SIDEWAYS}
+
+    signals = SplitEvaluator()._evaluate_post_liquidation_early_probe_stop(
+        rule, [_lot(price=101.0, qty=2)], 97.5, state, multi,
+    )
+
+    assert signals and signals[0].regime_liquidation
+    assert signals[0].exit_trigger == "post_liquidation_early_probe_stop"
+    assert not SplitEvaluator()._is_early_reentry_exit_eligible({
+        "post_liquidation_exit_trigger": "post_liquidation_early_probe_stop",
+    })

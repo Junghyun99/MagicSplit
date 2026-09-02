@@ -617,6 +617,78 @@ class TestUpdatePositions:
 
         engine._update_positions(positions, signals, executions, "2026-04-10")
 
+    def test_post_liquidation_probe_releases_gate_only_after_fill(self, engine):
+        signal = SplitSignal(
+            "AAPL", None, OrderAction.BUY, 2, 100.0,
+            "게이트 회복 탐색", 0.0, level=1,
+            entry_trigger="staged_rebound_probe_post_liquidation_recovery",
+        )
+        state = {"AAPL": {
+            "post_liquidation": True,
+            "post_liquidation_reentry_gate": "midline",
+            "aligned_downtrend_reentry_lock": True,
+        }}
+        rejected = TradeExecution(
+            "AAPL", OrderAction.BUY, 0, 0.0, 0.0,
+            "2026-04-10", ExecutionStatus.REJECTED,
+        )
+        engine._update_positions(
+            [], [signal], [rejected], "2026-04-10", regime_state=state,
+        )
+        assert state["AAPL"]["post_liquidation"] is True
+
+        filled = TradeExecution(
+            "AAPL", OrderAction.BUY, 2, 100.0, 1.0,
+            "2026-04-11", ExecutionStatus.FILLED,
+        )
+        engine._update_positions(
+            [], [signal], [filled], "2026-04-11", regime_state=state,
+        )
+        assert "post_liquidation" not in state["AAPL"]
+        assert "post_liquidation_reentry_gate" not in state["AAPL"]
+        assert "aligned_downtrend_reentry_lock" not in state["AAPL"]
+        assert state["AAPL"]["staged_rebound_probe_open"] is True
+        assert state["AAPL"]["staged_rebound_probe_pct"] == 25.0
+        assert state["AAPL"]["post_liquidation_recovery_probe_date"] == "2026-04-11"
+
+    def test_early_post_liquidation_probe_commits_stop_only_after_fill(self, engine):
+        signal = SplitSignal(
+            "AAPL", None, OrderAction.BUY, 1, 101.0,
+            "조기 반등 탐색", 0.0, level=1,
+            entry_trigger="staged_rebound_probe_post_liquidation_early_recovery",
+            early_probe_stop_price=98.0, early_probe_atr=2.0,
+        )
+        state = {"AAPL": {
+            "post_liquidation": True,
+            "post_liquidation_reentry_gate": "midline",
+            "post_liquidation_exit_trigger": "channel_lower_break",
+            "post_liquidation_exit_long_regime": "uptrend",
+            "post_liquidation_exit_short_regime": "sideways",
+        }}
+        rejected = TradeExecution(
+            "AAPL", OrderAction.BUY, 0, 0.0, 0.0,
+            "2026-04-10", ExecutionStatus.REJECTED,
+        )
+        engine._update_positions(
+            [], [signal], [rejected], "2026-04-10", regime_state=state,
+        )
+        assert state["AAPL"]["post_liquidation"] is True
+        assert "post_liquidation_early_probe_stop_price" not in state["AAPL"]
+
+        filled = TradeExecution(
+            "AAPL", OrderAction.BUY, 1, 101.0, 1.0,
+            "2026-04-11", ExecutionStatus.FILLED,
+        )
+        engine._update_positions(
+            [], [signal], [filled], "2026-04-11", regime_state=state,
+        )
+        assert "post_liquidation" not in state["AAPL"]
+        assert "post_liquidation_exit_trigger" not in state["AAPL"]
+        assert state["AAPL"]["staged_rebound_probe_open"] is True
+        assert state["AAPL"]["staged_rebound_probe_pct"] == 20.0
+        assert state["AAPL"]["post_liquidation_early_probe_stop_price"] == 98.0
+        assert state["AAPL"]["post_liquidation_early_probe_atr"] == 2.0
+
         assert executions[0].entry_long_regime == "sideways"
         assert executions[0].entry_short_regime == "uptrend"
 
@@ -1666,6 +1738,24 @@ class TestBulkLiquidation:
             self._positions(), [self._bulk_signal(15)],
             [self._exe(0, status=ExecutionStatus.REJECTED)],
             "2024-01-02", last_sell_prices={}, regime_state=regime_state,
+    def test_full_liquidation_preserves_exit_context_for_early_reentry(self, engine):
+        sig = self._bulk_signal(15, reentry_gate="midline")
+        sig.exit_trigger = "channel_lower_break"
+        sig.exit_long_regime = "uptrend"
+        sig.exit_short_regime = "sideways"
+        state = {}
+
+        engine._update_positions(
+            self._positions(), [sig], [self._exe(15)], "2024-01-02",
+            last_sell_prices={}, regime_state=state,
+        )
+
+        assert state["AAPL"]["post_liquidation_exit_trigger"] == "channel_lower_break"
+        assert state["AAPL"]["post_liquidation_exit_long_regime"] == "uptrend"
+        assert state["AAPL"]["post_liquidation_exit_short_regime"] == "sideways"
+        assert state["AAPL"]["post_liquidation_exit_price"] == 90.0
+        assert state["AAPL"]["post_liquidation_exit_date"] == "2024-01-01"
+
         )
         assert len(result) == 3                    # 아무것도 안 지워짐
         assert regime_state["AAPL"]["regime"] == "uptrend"
