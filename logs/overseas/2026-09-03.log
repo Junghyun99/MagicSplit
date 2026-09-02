@@ -44,3 +44,18 @@
 2026-09-03 00:01:19,200 [INFO] >>> Processing 델 테크놀로지스(DELL)
 2026-09-03 00:01:19,206 [INFO]   [델 테크놀로지스(DELL)] 📈 상승 레짐 유지 | Lv6 매수 USD 420.93 -> 현재 USD 441.77 (+4.95%) | 채널하단 USD 414.95 / 이탈선 USD 414.95 (허용 -0.0%) | 20EMA(눌림) USD 448.54 (이격 -1.51%) | adds 3/3
 2026-09-03 00:01:19,206 [INFO] >>> Step 6: Persist
+2026-09-03 02:00:57,212 [INFO] === Initializing MagicSplit Bot (overseas) ===
+2026-09-03 02:00:57,213 [INFO] Loaded 22 stock rule(s) from config_overseas.json
+2026-09-03 02:00:57,213 [INFO] [overseas] 12 rule(s), mode=LIVE
+2026-09-03 02:00:57,213 [INFO] [KisBroker] 캐시에서 토큰 로드 (API 호출 생략)
+2026-09-03 02:00:57,213 [INFO] [KisOverseasLiveBroker] Mode: LIVE TRADING
+2026-09-03 02:00:57,215 [INFO] [MarketData] 레짐 필터 활성 종목 12개 -> YFinanceMarketDataProvider 주입 (window 260봉)
+2026-09-03 02:00:57,215 [INFO] === Running overseas engine ===
+2026-09-03 02:00:57,215 [INFO] >>> Step 1: Portfolio & Price Fetch
+2026-09-03 02:01:17,407 [ERROR] [KisBroker] Margin Check Error: HTTPSConnectionPool(host='openapi.koreainvestment.com', port=9443): Max retries exceeded with url: /uapi/overseas-stock/v1/trading/foreign-margin?CANO=73297247&ACNT_PRDT_CD=01 (Caused by ConnectTimeoutError(<HTTPSConnection(host='openapi.koreainvestment.com', port=9443) at 0x7f14ee7c7010>, 'Connection to openapi.koreainvestment.com timed out. (connect timeout=20.0)'))
+2026-09-03 02:01:37,436 [ERROR] [KisBroker] Exchange Rate Fetch Error: HTTPSConnectionPool(host='openapi.koreainvestment.com', port=9443): Max retries exceeded with url: /uapi/overseas-stock/v1/trading/inquire-present-balance?CANO=73297247&ACNT_PRDT_CD=01&WCRC_FRCR_DVSN_CD=02&NATN_CD=840&TR_MKET_CD=00&INQR_DVSN_CD=00 (Caused by ConnectTimeoutError(<HTTPSConnection(host='openapi.koreainvestment.com', port=9443) at 0x7f14ee7c6ad0>, 'Connection to openapi.koreainvestment.com timed out. (connect timeout=20.0)'))
+2026-09-03 02:01:57,663 [ERROR] [KisBroker] Error getting portfolio (NASD): HTTPSConnectionPool(host='openapi.koreainvestment.com', port=9443): Max retries exceeded with url: /uapi/overseas-stock/v1/trading/inquire-balance?CANO=73297247&ACNT_PRDT_CD=01&OVRS_EXCG_CD=NASD&TR_CRCY_CD=USD&CTX_AREA_FK200=&CTX_AREA_NK200= (Caused by ConnectTimeoutError(<HTTPSConnection(host='openapi.koreainvestment.com', port=9443) at 0x7f14ee6762c0>, 'Connection to openapi.koreainvestment.com timed out. (connect timeout=20.0)'))
+2026-09-03 02:02:17,899 [ERROR] [KisBroker] Error getting portfolio (NYSE): HTTPSConnectionPool(host='openapi.koreainvestment.com', port=9443): Max retries exceeded with url: /uapi/overseas-stock/v1/trading/inquire-balance?CANO=73297247&ACNT_PRDT_CD=01&OVRS_EXCG_CD=NYSE&TR_CRCY_CD=USD&CTX_AREA_FK200=&CTX_AREA_NK200= (Caused by ConnectTimeoutError(<HTTPSConnection(host='openapi.koreainvestment.com', port=9443) at 0x7f14ee676500>, 'Connection to openapi.koreainvestment.com timed out. (connect timeout=20.0)'))
+2026-09-03 02:02:38,170 [ERROR] [KisBroker] Error getting portfolio (AMEX): HTTPSConnectionPool(host='openapi.koreainvestment.com', port=9443): Max retries exceeded with url: /uapi/overseas-stock/v1/trading/inquire-balance?CANO=73297247&ACNT_PRDT_CD=01&OVRS_EXCG_CD=AMEX&TR_CRCY_CD=USD&CTX_AREA_FK200=&CTX_AREA_NK200= (Caused by ConnectTimeoutError(<HTTPSConnection(host='openapi.koreainvestment.com', port=9443) at 0x7f14ee676830>, 'Connection to openapi.koreainvestment.com timed out. (connect timeout=20.0)'))
+2026-09-03 02:02:38,170 [ERROR] 사이클 초기화 실패: 모든 거래소(NASD/NYSE/AMEX) 잔고 조회 실패(현금 조회 오류) — 사이클을 중단합니다.
+2026-09-03 02:02:38,305 [ERROR] >>> Step 6: 포트폴리오, 포지션 조회 실패로 저장 생략. 수동 데이터 복구 필요
