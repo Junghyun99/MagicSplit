@@ -113,7 +113,16 @@ def run_backtest(
         shutil.rmtree(out_path)
 
     broker = BacktestBroker(initial_cash=initial_cash, logger=logger)
-    repo = JsonRepository(root_path=output_dir, defer_writes=buffered_output)
+    # 백테스트의 선택·차단 반사실 분석을 위해 판단 로그를 전 기간 보존한다.
+    # 실거래 JsonRepository의 기본 rolling 제한(1,000건)은 그대로 유지된다.
+    repo = JsonRepository(
+        root_path=output_dir,
+        defer_writes=buffered_output,
+        max_decision_records=None,
+        max_filter_event_records=None,
+        max_shadow_score_records=None,
+        max_shadow_event_records=None,
+    )
     # 전일 가격 단절 검사와 레짐 지표용 시세 제공자 (브로커와 분리).
     regime_active = any(getattr(r, "regime_enabled", False) for r in rules)
     window_size = (

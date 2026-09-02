@@ -127,6 +127,30 @@ class IRepository(ABC):
         ...
 
     @abstractmethod
+    def load_filter_episode_state(self) -> Dict[str, dict]:
+        """현재 진행 중인 전략 차단 에피소드 상태를 반환한다."""
+        ...
+
+    @abstractmethod
+    def save_filter_episode_update(
+        self, events: List[dict], active_state: Dict[str, dict],
+    ) -> None:
+        """차단 에피소드 이벤트와 현재 활성 상태를 함께 저장한다."""
+        ...
+
+    @abstractmethod
+    def load_shadow_mode_state(self) -> Dict[str, dict]:
+        """현재 그림자 전략모드 상태를 반환한다."""
+        ...
+
+    @abstractmethod
+    def save_shadow_mode_update(
+        self, scores: List[dict], events: List[dict], active_state: Dict[str, dict],
+    ) -> None:
+        """그림자 점수·전환 이벤트·현재 상태를 함께 저장한다."""
+        ...
+
+    @abstractmethod
     def get_last_trade_dates(self) -> Dict[str, str]:
         """종목별 마지막 체결 날짜를 반환한다."""
         ...
