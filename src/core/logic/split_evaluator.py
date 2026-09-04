@@ -156,6 +156,10 @@ class SplitEvaluator:
         regime_st: dict = {}
         downtrend_blocked = False
         multi = None
+        trend_only_uptrend_confirmed = False
+        rebound_entry_confirmed = False
+        staged_probe_trigger = None
+        staged_probe_pct = rule.staged_rebound_probe_pct
         if rule.regime_enabled and ohlc_window is not None:
             reading = classify_for_rule(rule, ohlc_window)
             regime_st = regime_state.setdefault(rule.ticker, {}) if regime_state is not None else {}
@@ -167,6 +171,41 @@ class SplitEvaluator:
             self._active_exposure_limit = multi["exposure_limit"] if multi else None
             self._active_sell_multiplier = multi["sell_multiplier"] if multi else 1.0
 
+            # 추세 전용은 포지션이 없을 때도 기존 2거래일 상승 확인을
+            # 누적한다. 진입·추가매수는 장기와 단기가 모두 상승일 때만 허용한다.
+            if rule.trend_only_enabled and multi is not None:
+                short_uptrend_confirmed = (
+                    self._resolve_regime(
+                        reading, regime_st, rule.ticker, current_price,
+                        evaluation_date=evaluation_date,
+                    ) == Regime.UPTREND
+                )
+                trend_only_uptrend_confirmed = (
+                    short_uptrend_confirmed
+                    and multi["long"] == Regime.UPTREND
+                    and multi["short"] == Regime.UPTREND
+                )
+                if rule.trend_entry_mode in ("rebound", "staged_rebound") and not ticker_lots:
+                    rebound_entry_confirmed = self._resolve_rebound_entry(
+                        rule, reading, regime_st, multi, current_price,
+                        evaluation_date=evaluation_date,
+                    )
+                    if rule.trend_entry_mode == "staged_rebound":
+                        staged_probe_trigger = self._resolve_staged_rebound_probe(
+                            rule, reading, multi, current_price,
+                        )
+                        if (staged_probe_trigger is None
+                                and not rebound_entry_confirmed
+                                and rule.staged_rebound_wait_probe_enabled
+                                and not regime_st.get("post_liquidation")
+                                and not regime_st.get("aligned_downtrend_reentry_lock")):
+                            staged_probe_trigger = self._resolve_staged_rebound_wait_probe(
+                                rule, reading, regime_st, multi, current_price,
+                                evaluation_date=evaluation_date,
+                            )
+                            if staged_probe_trigger is not None:
+                                staged_probe_pct = rule.staged_rebound_wait_probe_pct
+
             # 장·단기 하락 정렬은 단기 방어 뒤 남은 물량까지 정리하는 최종 청산 이벤트다.
             if (multi and ticker_lots and (
                     (multi["long"] == Regime.DOWNTREND and multi["short"] == Regime.DOWNTREND)
@@ -177,17 +216,42 @@ class SplitEvaluator:
                     rule, ticker_lots, current_price
                 )
             if ticker_lots:
+                early_probe_stop = self._evaluate_post_liquidation_early_probe_stop(
+                    rule, ticker_lots, current_price, regime_st, multi,
+                )
+                if early_probe_stop is not None:
+                    return early_probe_stop
                 # 채널 모드 이탈 처리: 추종 데드라인 -> 하락 래치 청산 -> 하단 이탈 청산.
                 # None이면 이탈 아님 -> 통상 흐름(상승/횡보) 계속.
                 if rule.regime_algo == "channel":
                     exit_signals = self._evaluate_channel_exit(
                         rule, ticker_lots, current_price, reading, regime_st,
-                        downtrend_blocked, portfolio, evaluation_date=evaluation_date,
+                        downtrend_blocked, portfolio, multi=multi,
+                        evaluation_date=evaluation_date,
                     )
                     if exit_signals is not None:
                         return exit_signals
+                profit_signals = self._evaluate_uptrend_profit_protection(
+                    rule, ticker_lots, current_price, reading, regime_st, multi,
+                    allow_activation=bool(
+                        multi and multi["long"] == Regime.UPTREND
+                        and multi["short"] == Regime.UPTREND
+                    ),
+                    portfolio=portfolio,
+                    evaluation_date=evaluation_date,
+                )
+                if profit_signals is not None:
+                    return profit_signals
+                transition_signals = self._evaluate_uptrend_sideways_transition(
+                    rule, ticker_lots, current_price, reading, regime_st, multi,
+                    evaluation_date=evaluation_date,
+                )
+                if transition_signals is not None:
+                    return transition_signals
                 uptrend_resolved = (
-                    self._resolve_regime(
+                    trend_only_uptrend_confirmed
+                    if rule.trend_only_enabled
+                    else self._resolve_regime(
                         reading, regime_st, rule.ticker, current_price,
                         evaluation_date=evaluation_date,
                     ) == Regime.UPTREND
@@ -199,10 +263,29 @@ class SplitEvaluator:
                     elif multi and multi["buy_halted"]:
                         uptrend_resolved = False
                 if uptrend_resolved:
+                    if (rule.trend_entry_mode == "staged_rebound"
+                            and regime_st.get("staged_rebound_probe_open")):
+                        completion = self._evaluate_staged_rebound_completion(
+                            rule, ticker_lots, current_price, reading, regime_st,
+                            portfolio,
+                        )
+                        if completion is not None:
+                            return [completion]
                     return self._evaluate_uptrend(
                         rule, ticker_lots, current_price, reading, regime_st, portfolio,
                         evaluation_date=evaluation_date,
                     )
+                if rule.trend_only_enabled:
+                    # 이탈 조건이 아닌 횡보/불명 국면에서는 기존 매직스플릿
+                    # 익절·추가매수로 내려가지 않고 보유한다.
+                    if rule.trend_entry_mode in ("rebound", "staged_rebound"):
+                        for key in (
+                            "pullback_rebound_armed", "pullback_rebound_start_date",
+                            "pullback_rebound_low", "pullback_rebound_wait_days",
+                            "pullback_rebound_confirm_days",
+                        ):
+                            regime_st.pop(key, None)
+                    return []
             else:
                 uptrend_resolved = False
         else:
@@ -212,6 +295,11 @@ class SplitEvaluator:
         if multi is None:
             self._active_exposure_limit = None
             self._active_sell_multiplier = 1.0
+
+        # 추세 전용 보유 중 데이터가 부족하면 평균회귀 매매로 폴백하지 않는다.
+        # 데이터가 복구될 때까지 보유하며, 계산 가능한 위험 청산은 위에서 우선 처리된다.
+        if ticker_lots and rule.trend_only_enabled:
+            return []
 
         # 보유 lot이 없으면 -> 1차수 초기 매수
         if not ticker_lots:
@@ -246,15 +334,45 @@ class SplitEvaluator:
                         rule, current_price,
                         "전량 청산 후 재진입 대기 - 장기 추세 데이터 부족",
                     )]
-                if not self._can_reenter_after_full_liquidation(reading, multi, current_price):
+                strict_reentry_ready = self._can_reenter_after_full_liquidation(
+                    reading, multi, current_price,
+                )
+                if not strict_reentry_ready:
+                    if rule.post_liquidation_early_probe_enabled:
+                        early_probe = self._evaluate_post_liquidation_early_probe(
+                            rule, current_price, reading, multi, regime_st,
+                            ohlc_window, portfolio,
+                        )
+                        if early_probe is not None:
+                            return [early_probe]
                     return [self._buy_blocked_signal(
                         rule, current_price,
-                        "전량 청산 후 재진입 대기 - 장기 횡보 이상·단기 상승·채널 중심선 회복 필요",
+                        "전량 청산 후 재진입 대기 - 조기 반등 또는 장기 횡보 이상·단기 상승·채널 중심선 회복 필요",
                     )]
+                if (rule.trend_entry_mode == "staged_rebound"
+                        and rule.post_liquidation_recovery_probe_enabled):
+                    signal = self._evaluate_initial_buy(
+                        rule, current_price, portfolio=portfolio,
+                        bypass_reentry_guard=True,
+                        amount_multiplier=rule.staged_rebound_wait_probe_pct / 100,
+                        entry_trigger="staged_rebound_probe_post_liquidation_recovery",
+                    )
+                    if signal is not None and not signal.is_blocked:
+                        signal.reason = "전량 청산 후 회복 확인 탐색 매수 Lv1"
+                    # 게이트는 실제 체결 후 엔진에서만 해제한다.
+                    return [signal] if signal is not None else []
                 regime_st.pop("post_liquidation", None)
                 regime_st.pop("post_liquidation_reentry_gate", None)
                 regime_st.pop("aligned_downtrend_reentry_lock", None)
                 regime_st.pop("long_short_downtrend_liquidation_pending", None)
+                for key in (
+                    "post_liquidation_exit_trigger",
+                    "post_liquidation_exit_long_regime",
+                    "post_liquidation_exit_short_regime",
+                    "post_liquidation_exit_price",
+                    "post_liquidation_exit_date",
+                ):
+                    regime_st.pop(key, None)
                 if self._logger:
                     self._logger.info(
                         f"[{display_ticker(rule.ticker)}] 전량 청산 후 회복 확인 "
@@ -295,12 +413,43 @@ class SplitEvaluator:
                         f"(현재가 {format_money(current_price, rule.market_type)} > "
                         f"기준선 {format_money(gate_line, rule.market_type)}) -> 재진입 허용"
                     )
+
+            if rule.trend_only_enabled:
+                if multi is None:
+                    return [self._buy_blocked_signal(
+                        rule, current_price, "추세 데이터 부족",
+                    )]
+                entry_confirmed = (
+                    rebound_entry_confirmed or staged_probe_trigger is not None
+                    if rule.trend_entry_mode == "staged_rebound"
+                    else rebound_entry_confirmed
+                    if rule.trend_entry_mode == "rebound"
+                    else trend_only_uptrend_confirmed
+                )
+                if not entry_confirmed:
+                    return [self._buy_blocked_signal(
+                        rule, current_price,
+                        ("단계형 반등 대기 - 회복 탐색 또는 장·단기 상승 정렬 필요"
+                         if rule.trend_entry_mode == "staged_rebound"
+                         else "반등형 추세 대기 - 장기 상승·단기 재상승·중심선 회복 필요"
+                         if rule.trend_entry_mode == "rebound"
+                         else "추세 전용 대기 - 장·단기 상승 정렬 필요"),
+                    )]
             last_sell_price = (
                 last_sell_prices.get(rule.ticker) if last_sell_prices else None
             )
             signal = self._evaluate_initial_buy(
                 rule, current_price, last_sell_price=last_sell_price,
                 portfolio=portfolio,
+                bypass_reentry_guard=(rule.trend_entry_mode in ("rebound", "staged_rebound")),
+                amount_multiplier=(staged_probe_pct / 100
+                                   if staged_probe_trigger is not None else 1.0),
+                entry_trigger=(f"staged_rebound_probe_{staged_probe_trigger}"
+                               if staged_probe_trigger is not None
+                               else "rebound_initial_entry"
+                               if rule.trend_entry_mode in ("rebound", "staged_rebound")
+                               else "aligned_uptrend_entry"
+                               if rule.trend_only_enabled else "legacy_magic_split"),
             )
             return [signal] if signal else []
 
@@ -530,10 +679,583 @@ class SplitEvaluator:
                 )
         return {
             "long": long_regime, "short": short_regime,
+            "long_reading": long_reading,
+            "previous_long": previous_long, "previous_short": previous_short,
             "buy_locked": buy_locked, "buy_halted": buy_halted,
             "lock_reason": "장기 하락 확정 - 신규·추가 매수 차단",
             "exposure_limit": exposure_limit, "sell_multiplier": sell_multiplier,
         }
+
+    def _resolve_rebound_entry(
+        self, rule: StockRule, reading, st: dict, multi: dict,
+        current_price: float, evaluation_date: Optional[str] = None,
+    ) -> bool:
+        """장기 상승 중 단기 비상승→상승 전환을 날짜 기준으로 확인한다."""
+        prefix = "rebound_entry_"
+        current_pair_ok = (
+            multi["long"] == Regime.UPTREND
+            and multi["short"] == Regime.UPTREND
+        )
+        if not current_pair_ok:
+            for key in ("armed", "origin_regime", "days", "last_date", "confirmed"):
+                st.pop(prefix + key, None)
+            return False
+
+        if not st.get(prefix + "armed"):
+            previous_long = multi.get("previous_long")
+            previous_short = multi.get("previous_short")
+            previous_long_ok = (
+                previous_long == str(Regime.UPTREND)
+                or (
+                    rule.trend_entry_mode == "staged_rebound"
+                    and previous_long == str(Regime.SIDEWAYS)
+                )
+            )
+            if not (
+                previous_long_ok
+                and previous_short in (str(Regime.SIDEWAYS), str(Regime.DOWNTREND))
+            ):
+                return False
+            st[prefix + "armed"] = True
+            st[prefix + "origin_regime"] = previous_short
+
+        midline_ok = (
+            not rule.rebound_entry_require_midline
+            or (not math.isnan(reading.channel_mid) and current_price > reading.channel_mid)
+        )
+        if not midline_ok:
+            st[prefix + "days"] = []
+            st.pop(prefix + "confirmed", None)
+            return False
+
+        today = evaluation_date or datetime.date.today().isoformat()
+        days = st.get(prefix + "days", [])
+        if today not in days:
+            days.append(today)
+        st[prefix + "days"] = days
+        st[prefix + "last_date"] = today
+        confirmed = len(days) >= rule.rebound_entry_confirm_bars
+        st[prefix + "confirmed"] = confirmed
+        return confirmed
+
+    def _resolve_staged_rebound_probe(
+        self, rule: StockRule, reading, multi: dict, current_price: float,
+    ) -> Optional[str]:
+        """단계형 반등의 50% 탐색 진입 케이스를 판정한다."""
+        if multi.get("buy_locked") or multi.get("buy_halted"):
+            return None
+
+        short_recovered = (
+            multi["long"] == Regime.UPTREND
+            and multi["short"] == Regime.SIDEWAYS
+            and multi.get("previous_long") == str(Regime.UPTREND)
+            and multi.get("previous_short") == str(Regime.DOWNTREND)
+            and not math.isnan(reading.channel_mid)
+            and not math.isnan(reading.ema20)
+            and current_price > reading.channel_mid
+            and current_price > reading.ema20
+            and current_price > reading.close
+        )
+        if short_recovered:
+            return "uptrend_short_recovery"
+
+        if not rule.staged_rebound_allow_long_sideways:
+            return None
+        long_reading = multi.get("long_reading")
+        if long_reading is None:
+            return None
+        short_midline_ok = (
+            not rule.rebound_entry_require_midline
+            or (not math.isnan(reading.channel_mid) and current_price > reading.channel_mid)
+        )
+        long_midline_ok = (
+            not rule.staged_rebound_require_long_midline
+            or (not math.isnan(long_reading.channel_mid)
+                and current_price > long_reading.channel_mid)
+        )
+        long_slope_ok = (
+            not rule.staged_rebound_require_nonnegative_long_slope
+            or (not math.isnan(long_reading.channel_slope_pct)
+                and long_reading.channel_slope_pct >= 0)
+        )
+        if (
+            multi["long"] == Regime.SIDEWAYS
+            and multi["short"] == Regime.UPTREND
+            and short_midline_ok
+            and long_midline_ok
+            and long_slope_ok
+        ):
+            return "sideways_long_breakout"
+        return None
+
+    def _resolve_staged_rebound_wait_probe(
+        self, rule: StockRule, reading, st: dict, multi: dict,
+        current_price: float, evaluation_date: Optional[str] = None,
+    ) -> Optional[str]:
+        """전환 순간을 놓친 무포지션 상태에서 지속 회복을 확인한다."""
+        prefix = "staged_rebound_wait_probe_"
+
+        def reset() -> None:
+            for key in ("origin", "days", "last_date"):
+                st.pop(prefix + key, None)
+
+        if multi.get("buy_locked") or multi.get("buy_halted"):
+            reset()
+            return None
+
+        short_midline_ok = (
+            not math.isnan(reading.channel_mid)
+            and current_price > reading.channel_mid
+        )
+        origin = None
+        if (multi["long"] == Regime.UPTREND
+                and multi["short"] == Regime.UPTREND
+                and short_midline_ok):
+            origin = "aligned_persistent"
+        elif (multi["long"] == Regime.UPTREND
+              and multi["short"] == Regime.SIDEWAYS
+              and short_midline_ok
+              and not math.isnan(reading.ema20)
+              and current_price > reading.ema20):
+            origin = "uptrend_short_sideways_persistent"
+
+        if origin is None:
+            reset()
+            return None
+        if st.get(prefix + "origin") != origin:
+            reset()
+            st[prefix + "origin"] = origin
+
+        today = evaluation_date or datetime.date.today().isoformat()
+        days = st.get(prefix + "days", [])
+        if today not in days:
+            days.append(today)
+        st[prefix + "days"] = days
+        st[prefix + "last_date"] = today
+        return origin if len(days) >= rule.rebound_entry_confirm_bars else None
+
+    def _evaluate_staged_rebound_completion(
+        self, rule: StockRule, lots: List[PositionLot], current_price: float,
+        reading, st: dict, portfolio: Optional[Portfolio],
+    ) -> Optional[SplitSignal]:
+        """탐색 진입 뒤 상승 정렬에서 최초 기준금액의 잔여분을 한 번 매수한다."""
+        if not st.get("staged_rebound_probe_open"):
+            return None
+        if (
+            rule.rebound_entry_require_midline
+            and (math.isnan(reading.channel_mid) or current_price <= reading.channel_mid)
+        ):
+            return None
+        next_level = max(l.level for l in lots) + 1
+        if next_level > rule.max_lots:
+            return None
+        probe_pct = float(
+            st.get("staged_rebound_probe_pct", rule.staged_rebound_probe_pct)
+        )
+        amount = rule.buy_amount_at(1) * (1 - probe_pct / 100)
+        buy_qty = rule.quantize_qty(amount / current_price)
+        if buy_qty <= 0:
+            return None
+        passed, reason = self._passes_cash_guard(rule, current_price, buy_qty, portfolio)
+        if not passed:
+            return SplitSignal(
+                ticker=rule.ticker, lot_id=None, action=OrderAction.BUY,
+                quantity=buy_qty, price=current_price, reason=reason,
+                pct_change=0.0, level=next_level, is_blocked=True,
+                entry_trigger="staged_rebound_confirm_add",
+            )
+        passed, reason = self._passes_exposure_guard(
+            rule, lots, current_price, buy_qty, portfolio,
+        )
+        if not passed:
+            return SplitSignal(
+                ticker=rule.ticker, lot_id=None, action=OrderAction.BUY,
+                quantity=buy_qty, price=current_price, reason=reason,
+                pct_change=0.0, level=next_level, is_blocked=True,
+                entry_trigger="staged_rebound_confirm_add",
+            )
+        return SplitSignal(
+            ticker=rule.ticker, lot_id=None, action=OrderAction.BUY,
+            quantity=buy_qty, price=current_price,
+            reason=f"단계형 반등 상승 정렬 완성 매수 Lv{next_level}",
+            pct_change=0.0, level=next_level,
+            entry_trigger="staged_rebound_confirm_add",
+        )
+
+    def _evaluate_uptrend_sideways_transition(
+        self, rule: StockRule, lots: List[PositionLot], current_price: float,
+        reading, st: dict, multi: Optional[dict], evaluation_date: Optional[str] = None,
+    ) -> Optional[List[SplitSignal]]:
+        """상승 정렬에서 단기 횡보로 전환될 때 잔고를 한 번 선제 감축한다.
+
+        하단 이탈 경로보다 뒤에서 호출되므로 기존 위험청산이 항상 우선한다.
+        목표와 누적 체결량은 상태에 남겨 부분체결을 재시도하지만, 완료 후에는
+        실제 신규 매수 체결 전까지 다시 무장하지 않는다.
+        """
+        pct = rule.uptrend_sideways_transition_partial_sell_pct
+        if pct <= 0 or multi is None or not lots:
+            return None
+
+        prefix = "uptrend_sideways_transition_"
+        current_pair = (multi["long"], multi["short"])
+        target_pair = (Regime.UPTREND, Regime.SIDEWAYS)
+
+        if current_pair != target_pair:
+            sold_qty = float(st.get(prefix + "sold_qty", 0) or 0)
+            if sold_qty > 0 and not st.get("transition_de_risked"):
+                st["transition_de_risked"] = True
+            for key in (
+                prefix + "days", prefix + "last_date", prefix + "target_qty",
+                prefix + "sold_qty",
+            ):
+                st.pop(key, None)
+            return None
+
+        if st.get("uptrend_profit_partial_de_risked") or st.get("transition_de_risked"):
+            return None
+
+        days = int(st.get(prefix + "days", 0) or 0)
+        if days == 0:
+            if not (
+                multi.get("previous_long") == str(Regime.UPTREND)
+                and multi.get("previous_short") == str(Regime.UPTREND)
+            ):
+                return None
+
+        date_key = evaluation_date or "__undated__"
+        if st.get(prefix + "last_date") != date_key:
+            days += 1
+            st[prefix + "days"] = days
+            st[prefix + "last_date"] = date_key
+
+        if days < rule.uptrend_sideways_transition_confirm_bars:
+            return []
+
+        total_qty = sum(l.quantity for l in lots)
+        min_qty = rule.min_order_qty()
+        target_qty = st.get(prefix + "target_qty")
+        if target_qty is None:
+            target_qty = rule.quantize_qty(total_qty * pct / 100, round_up=True)
+            max_sellable = rule.quantize_qty(max(0, total_qty - min_qty))
+            target_qty = min(target_qty, max_sellable)
+            st[prefix + "target_qty"] = target_qty
+
+        tracker = None
+        if rule.uptrend_profit_trailing_enabled:
+            tracker = st.setdefault("uptrend_profit_trailing", {})
+            tracker.update({
+                "phase": "partial_pending", "active": True,
+                "origin": "sideways_transition",
+                "target_qty": float(target_qty),
+                "sold_qty": float(st.get(prefix + "sold_qty", 0) or 0),
+                "sold_notional": 0.0,
+                "atr_snapshot": float(reading.atr),
+                "pre_partial_high": float(tracker.get("highest_price", current_price)),
+            })
+
+        sold_qty = float(st.get(prefix + "sold_qty", 0) or 0)
+        remaining_target = max(0, float(target_qty) - sold_qty)
+        max_sellable = rule.quantize_qty(max(0, total_qty - min_qty))
+        sell_qty = min(rule.quantize_qty(remaining_target, round_up=True), max_sellable)
+        if sell_qty < min_qty:
+            return [SplitSignal(
+                ticker=rule.ticker, lot_id=None, action=OrderAction.SELL,
+                quantity=0, price=current_price,
+                reason="상승→횡보 선제청산 대기 - 최소 1단위 잔량 보존",
+                pct_change=0.0, is_blocked=True,
+            )]
+
+        avg_buy = sum(l.buy_price * l.quantity for l in lots) / total_qty
+        change = (current_price - avg_buy) / avg_buy * 100 if avg_buy else 0.0
+        bars = rule.uptrend_sideways_transition_confirm_bars
+        return [SplitSignal(
+            ticker=rule.ticker, lot_id=None, action=OrderAction.SELL,
+            quantity=sell_qty, price=current_price,
+            reason=f"장기 상승·단기 횡보 전환 {bars}일 확정 선제 {pct:g}% 청산",
+            pct_change=change, level=max(l.level for l in lots),
+            transition_partial_liquidation=True,
+            profit_trailing_origin=("sideways_transition" if tracker else None),
+            profit_trailing_atr=(float(reading.atr) if tracker else None),
+            profit_trailing_pre_partial_high=(
+                float(tracker["pre_partial_high"]) if tracker else None
+            ),
+            exit_trigger="uptrend_sideways_transition",
+            exit_long_regime=str(Regime.UPTREND),
+            exit_short_regime=str(Regime.SIDEWAYS),
+        )]
+
+    def _evaluate_uptrend_profit_protection(
+        self, rule: StockRule, lots: List[PositionLot], current_price: float,
+        reading, st: dict, multi: Optional[dict], allow_activation: bool,
+        portfolio: Optional[Portfolio] = None,
+        evaluation_date: Optional[str] = None,
+    ) -> Optional[List[SplitSignal]]:
+        """상승 수익을 넓은 ATR로 추적하고, 공유 1회 감축 뒤 잔량을 보호한다."""
+        if not rule.uptrend_profit_trailing_enabled or not lots or multi is None:
+            return None
+        tracker = st.get("uptrend_profit_trailing")
+        long_regime, short_regime = multi["long"], multi["short"]
+        total_qty = sum(l.quantity for l in lots)
+        avg_buy = sum(l.buy_price * l.quantity for l in lots) / total_qty
+        change = (current_price - avg_buy) / avg_buy * 100 if avg_buy else 0.0
+
+        if tracker and tracker.get("phase") == "residual_guard":
+            origin = tracker.get("origin")
+            # 감축 원인과 무관하게 장·단기 상승 정렬이 복구되면 잔량 가드를
+            # 해제한다. 이전 고점 재돌파를 요구하면 정상 눌림 구간 전체에서
+            # 추가매수가 봉쇄되므로, 공유 감축 quota만 유지하고 눌림반등 평가를
+            # 다시 허용한다.
+            recovered = bool(
+                origin in ("sideways_transition", "uptrend_trailing")
+                and allow_activation
+            )
+            if recovered:
+                # 기존 채널 하단 이탈의 trailing_lock과 마찬가지로 상승 정렬
+                # 복귀는 하나의 위험 회차가 끝난 것으로 본다. 잔량 가드를
+                # 해제하면서 1회 감축 quota도 재무장하여, 다음 ATR 이탈은
+                # 전량청산이 아니라 현재 잔량의 부분감축부터 다시 시작한다.
+                st.pop("uptrend_profit_partial_de_risked", None)
+                current_atr = float(reading.atr)
+                if math.isnan(current_atr) or current_atr <= 0:
+                    current_atr = float(
+                        tracker.get("wide_atr_snapshot", tracker.get("atr_snapshot", 0))
+                    )
+                distance = min(
+                    rule.uptrend_profit_trailing_atr_multiplier
+                    * current_atr,
+                    current_price * rule.uptrend_profit_trailing_max_distance_pct / 100,
+                )
+                recovered_tracker = {
+                    "phase": "tracking", "active": True,
+                    "highest_price": current_price,
+                    "atr_snapshot": current_atr,
+                    "distance": distance, "stop_price": current_price - distance,
+                }
+                recovery_budget = float(tracker.get("sold_notional", 0) or 0)
+                if (rule.uptrend_profit_recovery_add_enabled
+                        and recovery_budget > 0):
+                    recovered_tracker.update({
+                        "recovery_add_pending": True,
+                        "recovery_add_budget": recovery_budget,
+                        "recovery_add_confirm_days": [],
+                        "recovery_add_origin": origin,
+                    })
+                st["uptrend_profit_trailing"] = recovered_tracker
+                tracker = st["uptrend_profit_trailing"]
+            elif current_price <= float(tracker["residual_stop_price"]):
+                return self._profit_remainder_liquidation(
+                    rule, lots, current_price, change, long_regime, short_regime,
+                    "uptrend_sideways_residual_guard",
+                    "ATR 잔량 수익보호선 이탈",
+                )
+            else:
+                return []
+
+        if tracker and tracker.get("phase") == "partial_pending":
+            remaining = max(
+                0.0,
+                float(tracker.get("target_qty", 0)) - float(tracker.get("sold_qty", 0)),
+            )
+            sell_qty = min(rule.quantize_qty(remaining, round_up=True), total_qty)
+            if sell_qty < rule.min_order_qty():
+                return []
+            return [self._profit_partial_signal(
+                rule, lots, current_price, sell_qty, change, tracker,
+                long_regime, short_regime,
+            )]
+
+        if not tracker:
+            if not allow_activation:
+                return None
+            atr = float(reading.atr)
+            if math.isnan(atr) or atr <= 0:
+                return None
+            activation_price = avg_buy + rule.uptrend_profit_trailing_atr_multiplier * atr
+            if current_price < activation_price:
+                return None
+            distance = min(
+                rule.uptrend_profit_trailing_atr_multiplier * atr,
+                current_price * rule.uptrend_profit_trailing_max_distance_pct / 100,
+            )
+            tracker = {
+                "phase": "tracking", "active": True,
+                "highest_price": current_price, "atr_snapshot": atr,
+                "distance": distance, "stop_price": current_price - distance,
+            }
+            st["uptrend_profit_trailing"] = tracker
+            return None
+
+        if tracker.get("phase") != "tracking":
+            return None
+        highest = max(float(tracker["highest_price"]), current_price)
+        tracker["highest_price"] = highest
+        # ATR은 매 평가 시점 값으로 추적 거리를 다시 계산한다. 변동성 확대가
+        # 기존 수익보호선을 아래로 밀지는 못하도록 stop_price는 ratchet(max)으로
+        # 유지한다. ATR이 축소되거나 신고점이 형성될 때만 보호선이 올라간다.
+        current_atr = float(reading.atr)
+        if not math.isnan(current_atr) and current_atr > 0:
+            distance = min(
+                rule.uptrend_profit_trailing_atr_multiplier * current_atr,
+                highest * rule.uptrend_profit_trailing_max_distance_pct / 100,
+            )
+            tracker["atr_snapshot"] = current_atr
+            tracker["distance"] = distance
+        else:
+            distance = float(tracker["distance"])
+        tracker["stop_price"] = max(
+            float(tracker["stop_price"]), highest - distance,
+        )
+        if current_price > float(tracker["stop_price"]):
+            recovery_signal = self._evaluate_uptrend_profit_recovery_add(
+                rule, lots, current_price, reading, st, tracker,
+                allow_activation, portfolio, evaluation_date,
+            )
+            return [recovery_signal] if recovery_signal is not None else None
+        if st.get("uptrend_profit_partial_de_risked"):
+            return self._profit_remainder_liquidation(
+                rule, lots, current_price, change, long_regime, short_regime,
+                "uptrend_profit_trailing_remainder", "상승 ATR 추적선 재이탈",
+            )
+
+        pct = rule.uptrend_sideways_transition_partial_sell_pct
+        target = rule.quantize_qty(total_qty * pct / 100, round_up=True)
+        target = min(target, rule.quantize_qty(max(0, total_qty - rule.min_order_qty())))
+        if target < rule.min_order_qty():
+            return self._profit_remainder_liquidation(
+                rule, lots, current_price, change, long_regime, short_regime,
+                "uptrend_profit_trailing_remainder",
+                "상승 ATR 추적선 이탈 - 분할 불가 수량 전량 청산",
+            )
+        tracker.update({
+            "phase": "partial_pending", "active": True, "origin": "uptrend_trailing",
+            "target_qty": float(target), "sold_qty": 0.0, "sold_notional": 0.0,
+            "pre_partial_high": highest, "wide_atr_snapshot": tracker["atr_snapshot"],
+        })
+        for key in (
+            "recovery_add_pending", "recovery_add_budget",
+            "recovery_add_confirm_days", "recovery_add_origin",
+        ):
+            tracker.pop(key, None)
+        return [self._profit_partial_signal(
+            rule, lots, current_price, target, change, tracker,
+            long_regime, short_regime,
+        )]
+
+    def _evaluate_uptrend_profit_recovery_add(
+        self, rule: StockRule, lots: List[PositionLot], current_price: float,
+        reading, st: dict, tracker: dict, allow_activation: bool,
+        portfolio: Optional[Portfolio], evaluation_date: Optional[str],
+    ) -> Optional[SplitSignal]:
+        """감축 후 상승 복귀를 2단계로 확인하고 감축대금 일부를 한 번 복원한다."""
+        if (not rule.uptrend_profit_recovery_add_enabled
+                or not tracker.get("recovery_add_pending")):
+            return None
+
+        confirm_days = list(tracker.get("recovery_add_confirm_days", []))
+        if not allow_activation:
+            tracker["recovery_add_confirm_days"] = []
+            return None
+
+        today_str = evaluation_date or datetime.date.today().isoformat()
+        if today_str not in confirm_days:
+            confirm_days.append(today_str)
+        tracker["recovery_add_confirm_days"] = confirm_days
+        if len(confirm_days) < rule.uptrend_profit_recovery_confirm_bars:
+            return None
+
+        atr = float(reading.atr)
+        ema20 = float(reading.ema20)
+        stop_price = float(tracker["stop_price"])
+        if (math.isnan(atr) or atr <= 0 or math.isnan(ema20) or ema20 <= 0):
+            return None
+
+        upper = min(
+            ema20 + rule.uptrend_profit_recovery_max_ema_atr * atr,
+            ema20 * (1 + rule.uptrend_profit_recovery_max_ema_distance_pct / 100),
+        )
+        headroom = current_price - stop_price
+        required_headroom = (
+            rule.uptrend_profit_recovery_min_stop_headroom_atr * atr
+        )
+        if not (ema20 < current_price <= upper and headroom >= required_headroom):
+            return None
+
+        last_lot = max(lots, key=lambda lot: lot.level)
+        next_level = last_lot.level + 1
+        if next_level > rule.max_lots:
+            return None
+
+        recovery_budget = float(tracker.get("recovery_add_budget", 0) or 0)
+        restore_amount = recovery_budget * rule.uptrend_profit_recovery_restore_pct / 100
+        normal_amount = rule.uptrend_add_amount_at(int(st.get("adds", 0) or 0) + 1)
+        amount = min(restore_amount, normal_amount)
+        buy_qty = rule.quantize_qty(amount / current_price)
+        if buy_qty < rule.min_order_qty():
+            return None
+
+        passed, reason = self._passes_cash_guard(
+            rule, current_price, buy_qty, portfolio,
+        )
+        if not passed:
+            return SplitSignal(
+                ticker=rule.ticker, lot_id=None, action=OrderAction.BUY,
+                quantity=buy_qty, price=current_price, reason=reason,
+                pct_change=0.0, level=next_level, is_blocked=True,
+                entry_trigger="uptrend_profit_recovery_add",
+            )
+        passed, reason = self._passes_exposure_guard(
+            rule, lots, current_price, buy_qty, portfolio,
+        )
+        if not passed:
+            return SplitSignal(
+                ticker=rule.ticker, lot_id=None, action=OrderAction.BUY,
+                quantity=buy_qty, price=current_price, reason=reason,
+                pct_change=0.0, level=next_level, is_blocked=True,
+                entry_trigger="uptrend_profit_recovery_add",
+            )
+
+        return SplitSignal(
+            ticker=rule.ticker, lot_id=None, action=OrderAction.BUY,
+            quantity=buy_qty, price=current_price,
+            reason=(
+                f"상승 복귀 확인매수 Lv{next_level} "
+                f"(감축대금 {rule.uptrend_profit_recovery_restore_pct:g}% 복원)"
+            ),
+            pct_change=0.0, level=next_level,
+            entry_trigger="uptrend_profit_recovery_add",
+        )
+
+    @staticmethod
+    def _profit_partial_signal(rule, lots, current_price, quantity, change, tracker,
+                               long_regime, short_regime) -> SplitSignal:
+        origin = tracker["origin"]
+        trigger = ("uptrend_profit_trailing_partial" if origin == "uptrend_trailing"
+                   else "uptrend_sideways_transition")
+        return SplitSignal(
+            ticker=rule.ticker, lot_id=None, action=OrderAction.SELL,
+            quantity=quantity, price=current_price,
+            reason=("상승 ATR 수익보호 1회 감축" if origin == "uptrend_trailing"
+                    else "상승→횡보 선제 감축 재시도"),
+            pct_change=change, level=max(l.level for l in lots),
+            profit_trailing_partial_liquidation=(origin == "uptrend_trailing"),
+            transition_partial_liquidation=(origin == "sideways_transition"),
+            profit_trailing_origin=origin,
+            profit_trailing_atr=float(tracker["atr_snapshot"]),
+            profit_trailing_pre_partial_high=float(tracker["pre_partial_high"]),
+            exit_trigger=trigger,
+            exit_long_regime=str(long_regime), exit_short_regime=str(short_regime),
+        )
+
+    @staticmethod
+    def _profit_remainder_liquidation(rule, lots, current_price, change,
+                                      long_regime, short_regime, trigger, reason):
+        return [SplitSignal(
+            ticker=rule.ticker, lot_id=None, action=OrderAction.SELL,
+            quantity=sum(l.quantity for l in lots), price=current_price,
+            reason=reason, pct_change=change, level=max(l.level for l in lots),
+            regime_liquidation=True, reentry_gate="midline", exit_trigger=trigger,
+            exit_long_regime=str(long_regime), exit_short_regime=str(short_regime),
+        )]
 
     @staticmethod
     def _can_reenter_after_full_liquidation(reading, multi: dict, current_price: float) -> bool:
@@ -562,6 +1284,9 @@ class SplitEvaluator:
             reason=f"장·단기 하락 정렬 전량 청산 ({pct:+.1f}%)",
             pct_change=pct, level=max(l.level for l in lots),
             regime_liquidation=True, reentry_gate="resistance",
+            exit_trigger="aligned_downtrend_liquidation",
+            exit_long_regime=str(Regime.DOWNTREND),
+            exit_short_regime=str(Regime.DOWNTREND),
         )]
 
     def _effective_sell_threshold(self, rule: StockRule, lot: PositionLot) -> float:
@@ -696,15 +1421,115 @@ class SplitEvaluator:
                 )
             return None
 
+    @staticmethod
+    def _is_early_reentry_exit_eligible(st: dict) -> bool:
+        """방어 필터를 약화시키지 않는 비하락 청산만 조기 재진입 대상으로 삼는다."""
+        trigger = st.get("post_liquidation_exit_trigger")
+        if trigger in (
+            "uptrend_profit_trailing_remainder",
+            "uptrend_sideways_residual_guard",
+        ):
+            return True
+        if trigger != "channel_lower_break":
+            return False
+        allowed = {str(Regime.UPTREND), str(Regime.SIDEWAYS)}
+        return (
+            st.get("post_liquidation_exit_long_regime") in allowed
+            and st.get("post_liquidation_exit_short_regime") in allowed
+        )
+
+    def _evaluate_post_liquidation_early_probe(
+        self, rule: StockRule, current_price: float, reading, multi: dict,
+        st: dict, ohlc_window, portfolio: Optional[Portfolio],
+    ) -> Optional[SplitSignal]:
+        """엄격한 중심선 게이트 전에 제한된 20EMA 반등 탐색 진입을 평가한다."""
+        if not self._is_early_reentry_exit_eligible(st):
+            return None
+        if (st.get("aligned_downtrend_reentry_lock")
+                or multi.get("buy_locked") or multi.get("buy_halted")):
+            return None
+        if multi["long"] not in (Regime.UPTREND, Regime.SIDEWAYS):
+            return None
+        if multi["short"] not in (Regime.UPTREND, Regime.SIDEWAYS):
+            return None
+
+        atr = float(reading.atr)
+        ema20 = float(reading.ema20)
+        if (not math.isfinite(atr) or atr <= 0
+                or not math.isfinite(ema20) or ema20 <= 0):
+            return None
+        upper = ema20 + rule.post_liquidation_early_probe_max_ema_atr * atr
+        if not (ema20 < current_price <= upper):
+            return None
+
+        closes = [float(v) for v in ohlc_window["Close"].tolist()]
+        needed = rule.post_liquidation_early_probe_confirm_bars
+        if len(closes) < needed or any(not math.isfinite(v) for v in closes[-needed:]):
+            return None
+        rebound_path = closes[-needed:] + [current_price]
+        if not all(b > a for a, b in zip(rebound_path, rebound_path[1:])):
+            return None
+
+        signal = self._evaluate_initial_buy(
+            rule, current_price, portfolio=portfolio,
+            bypass_reentry_guard=True,
+            amount_multiplier=rule.post_liquidation_early_probe_pct / 100,
+            entry_trigger="staged_rebound_probe_post_liquidation_early_recovery",
+        )
+        if signal is None or signal.is_blocked:
+            return signal
+        recent_low = float(
+            ohlc_window["Low"].tail(rule.uptrend_swing_lookback).min()
+        )
+        atr_stop = current_price - (
+            rule.post_liquidation_early_probe_stop_atr_multiplier * atr
+        )
+        signal.early_probe_stop_price = max(recent_low, atr_stop)
+        signal.early_probe_atr = atr
+        signal.reason = "전량 청산 후 조기 반등 탐색 매수 Lv1"
+        return signal
+
+    @staticmethod
+    def _evaluate_post_liquidation_early_probe_stop(
+        rule: StockRule, lots: List[PositionLot], current_price: float,
+        st: dict, multi: Optional[dict],
+    ) -> Optional[List[SplitSignal]]:
+        stop = st.get("post_liquidation_early_probe_stop_price")
+        if stop is None or current_price > float(stop):
+            return None
+        total_qty = sum(l.quantity for l in lots)
+        total_cost = sum(l.buy_price * l.quantity for l in lots)
+        avg_buy = total_cost / total_qty if total_qty else 0.0
+        change = (current_price - avg_buy) / avg_buy * 100 if avg_buy else 0.0
+        return [SplitSignal(
+            ticker=rule.ticker, lot_id=None, action=OrderAction.SELL,
+            quantity=total_qty, price=current_price,
+            reason=(f"조기 재진입 탐색 보호선 이탈 전량 청산 "
+                    f"({current_price:.2f} <= {float(stop):.2f}, {change:+.1f}%)"),
+            pct_change=change, level=max(l.level for l in lots),
+            regime_liquidation=True, reentry_gate="midline",
+            exit_trigger="post_liquidation_early_probe_stop",
+            exit_long_regime=str(multi["long"]) if multi else None,
+            exit_short_regime=str(multi["short"]) if multi else None,
+        )]
+
     def _evaluate_initial_buy(
         self,
         rule: StockRule,
         current_price: float,
         last_sell_price: Optional[float] = None,
         portfolio: Optional[Portfolio] = None,
+        bypass_reentry_guard: bool = False,
+        amount_multiplier: float = 1.0,
+        entry_trigger: Optional[str] = None,
     ) -> Optional[SplitSignal]:
         """보유 lot이 없을 때 1차수 초기 매수를 평가한다."""
-        passed, reason = self._passes_reentry_guard(rule, current_price, last_sell_price)
+        passed, reason = (
+            (True, "")
+            if bypass_reentry_guard
+            else self._passes_reentry_guard(rule, current_price, last_sell_price)
+        )
+
         if not passed:
             return SplitSignal(
                 ticker=rule.ticker,
@@ -718,7 +1543,7 @@ class SplitEvaluator:
                 is_info=True,
             )
 
-        buy_amount = rule.buy_amount_at(1)
+        buy_amount = rule.buy_amount_at(1) * amount_multiplier
         buy_qty = rule.quantize_qty(buy_amount / current_price)
         if buy_qty <= 0:
             reason = (
@@ -785,9 +1610,12 @@ class SplitEvaluator:
             action=OrderAction.BUY,
             quantity=buy_qty,
             price=current_price,
-            reason="초기 매수 Lv1",
+            reason=("단계형 반등 탐색 매수 Lv1"
+                    if entry_trigger and entry_trigger.startswith("staged_rebound_probe_")
+                    else "초기 매수 Lv1"),
             pct_change=0.0,
             level=1,
+            entry_trigger=entry_trigger,
         )
 
     def _passes_reentry_guard(
@@ -817,17 +1645,6 @@ class SplitEvaluator:
 
         pct_from_sell = (current_price - last_sell_price) / last_sell_price * 100
 
-        # [방어선 2] 가격 이격 과다 체크 (액면분할/병합 의심)
-        if abs(pct_from_sell) >= self.price_anomaly_threshold:
-            reason = (
-                f"가격 이격 과다({pct_from_sell:+.1f}%): 액면분할/병합 확인 필요 "
-                f"(직전매도 {format_money(last_sell_price, rule.market_type)} "
-                f"vs 현재 {format_money(current_price, rule.market_type)})"
-            )
-            if self._logger:
-                self._logger.warning(f"[{rule.ticker}] {reason}")
-            return False, reason
-
         if pct_from_sell <= rule.reentry_guard_pct:
             return True, ""
 
@@ -838,6 +1655,49 @@ class SplitEvaluator:
         if self._logger:
             self._logger.info(f"[{display_ticker(rule.ticker)}] {reason}")
         return False, reason
+
+    def price_anomaly_signal(
+        self, rule: StockRule, current_price: float, ohlc_window,
+    ) -> Optional[SplitSignal]:
+        """국내 종목의 현재가와 전일 종가 단절을 감지해 거래를 차단한다."""
+        if rule.market_type != "domestic":
+            return None
+        if not math.isfinite(current_price) or current_price <= 0:
+            return None
+        if ohlc_window is None:
+            return None
+        try:
+            closes = ohlc_window["Close"].dropna()
+            if closes.empty:
+                return None
+            previous_close = float(closes.iloc[-1])
+        except (KeyError, TypeError, ValueError, IndexError):
+            return None
+        if not math.isfinite(previous_close) or previous_close <= 0:
+            return None
+
+        pct_from_previous_close = (
+            (current_price - previous_close) / previous_close * 100
+        )
+        if abs(pct_from_previous_close) < self.price_anomaly_threshold:
+            return None
+        reason = (
+            f"가격 이격 과다({pct_from_previous_close:+.1f}%): 액면분할/병합 확인 필요 "
+            f"(전일 종가 {format_money(previous_close, rule.market_type)} "
+            f"vs 현재 {format_money(current_price, rule.market_type)})"
+        )
+        if self._logger:
+            self._logger.warning(f"[{rule.ticker}] {reason}")
+        return SplitSignal(
+            ticker=rule.ticker,
+            lot_id=None,
+            action=OrderAction.BUY,
+            quantity=0,
+            price=current_price,
+            reason=reason,
+            pct_change=pct_from_previous_close,
+            is_blocked=True,
+        )
 
     def _passes_exposure_guard(
         self,
@@ -1232,6 +2092,7 @@ class SplitEvaluator:
         st: dict,
         downtrend_blocked: bool,
         portfolio: Optional[Portfolio],
+        multi: Optional[dict] = None,
         evaluation_date: Optional[str] = None,
     ) -> Optional[List[SplitSignal]]:
         """채널 모드(regime_algo="channel")의 이탈 판정을 통상 흐름 앞에서 수행한다.
@@ -1265,11 +2126,23 @@ class SplitEvaluator:
         #    횡보장 분할 청산 후에도 잔량 추적이 유지되도록 레짐과 무관하게 최우선 처리.
         if lock_active:
             return self._evaluate_trailing_lock(
-                rule, ticker_lots, current_price, reading, st, portfolio
+                rule, ticker_lots, current_price, reading, st, portfolio,
             )
 
         # 2. 하락 래치 확정 -> 이탈 청산
         if downtrend_blocked:
+            profit_tracker = st.get("uptrend_profit_trailing") or {}
+            if profit_tracker.get("phase") == "residual_guard":
+                total_qty = sum(l.quantity for l in ticker_lots)
+                avg_buy = sum(l.buy_price * l.quantity for l in ticker_lots) / total_qty
+                change = (current_price - avg_buy) / avg_buy * 100 if avg_buy else 0.0
+                return self._profit_remainder_liquidation(
+                    rule, ticker_lots, current_price, change,
+                    multi["long"] if multi else Regime.UNKNOWN,
+                    multi["short"] if multi else reading.regime,
+                    "uptrend_sideways_residual_guard",
+                    "단기 채널 하락 2일 확정 - 잔량 전량 청산",
+                )
             # 동일 하락 래치 회차 내에서 이미 분할 청산이 이뤄졌다면 2차 중복 이탈 청산 방지
             if st.get("downtrend_partially_liquidated"):
                 if self._logger:
@@ -1289,7 +2162,12 @@ class SplitEvaluator:
                     f"({reading.channel_slope_pct:+.2f}%/{rule.channel_lookback}봉) -> 이탈 청산 진행"
                 )
             return self._handle_trendbreak(
-                rule, ticker_lots, current_price, reading, st, reentry_gate="resistance"
+                rule, ticker_lots, current_price, reading, st,
+                reentry_gate="resistance",
+                exit_reason="단기 채널 하락 전환",
+                exit_trigger="channel_downtrend_transition",
+                exit_short_regime=str(reading.regime),
+                exit_long_regime=str(multi["long"]) if multi else None,
             )
 
         # 3. 상승/횡보 중 하단 채널선 하향 돌파 -> 연속 일(日) 확정 후 이탈 청산
@@ -1361,8 +2239,17 @@ class SplitEvaluator:
                         f"채널하단 {format_money(support, rule.market_type)}, "
                         f"{breakdown_rule_text}) -> 이탈 청산 진행"
                     )
+            short_label = {
+                Regime.UPTREND: "상승",
+                Regime.SIDEWAYS: "횡보",
+            }.get(reading.regime, "단기")
             return self._handle_trendbreak(
-                rule, ticker_lots, current_price, reading, st, reentry_gate="midline"
+                rule, ticker_lots, current_price, reading, st,
+                reentry_gate="midline",
+                exit_reason=f"{short_label} 채널 하단 이탈",
+                exit_trigger="channel_lower_break",
+                exit_short_regime=str(reading.regime),
+                exit_long_regime=str(multi["long"]) if multi else None,
             )
 
         # 이탈선 위로 회복 -> 청산 근거가 사라졌으므로 확정도 취소한다.
@@ -1466,8 +2353,12 @@ class SplitEvaluator:
         reading,
         st: dict,
         reentry_gate: str = "resistance",
+        exit_reason: str = "추세 이탈",
+        exit_trigger: str = "trend_break",
+        exit_long_regime: Optional[str] = None,
+        exit_short_regime: Optional[str] = None,
     ) -> List[SplitSignal]:
-        """추세 이탈 감지 시 전량 청산 또는 분할 매도+추종 데드라인 활성화를 결정한다."""
+        """이탈 원인별 전량 청산 또는 분할 매도+추종 데드라인 활성화를 결정한다."""
         total_qty = sum(l.quantity for l in ticker_lots)
         total_cost = sum(l.buy_price * l.quantity for l in ticker_lots)
         avg_buy = total_cost / total_qty if total_qty else 0.0
@@ -1489,7 +2380,7 @@ class SplitEvaluator:
         if partial_pct >= 100.0:
             if self._logger:
                 self._logger.info(
-                    f"[{display_ticker(rule.ticker)}] 추세 이탈 -> 통합 전량 청산(Bulk) "
+                    f"[{display_ticker(rule.ticker)}] {exit_reason} -> 통합 전량 청산(Bulk) "
                     f"{format_qty(total_qty, rule.market_type)} (평단 {format_money(avg_buy, rule.market_type)}, "
                     f"현재가 {format_money(current_price, rule.market_type)}, "
                     f"{indicator_txt})"
@@ -1500,11 +2391,14 @@ class SplitEvaluator:
                 action=OrderAction.SELL,
                 quantity=total_qty,
                 price=current_price,
-                reason=f"추세 이탈 통합 전량 청산(Bulk Sell, {format_qty(total_qty, rule.market_type)} {pct:+.1f}%)",
+                reason=f"{exit_reason} 통합 전량 청산(Bulk Sell, {format_qty(total_qty, rule.market_type)} {pct:+.1f}%)",
                 pct_change=pct,
                 level=max_level,
                 regime_liquidation=True,
                 reentry_gate=reentry_gate,
+                exit_trigger=exit_trigger,
+                exit_long_regime=exit_long_regime,
+                exit_short_regime=exit_short_regime,
             )]
 
         # 분할 매도: partial_pct% 만큼 즉시 매도, 나머지는 추종 데드라인
@@ -1514,7 +2408,7 @@ class SplitEvaluator:
         if sell_qty >= total_qty:
             if self._logger:
                 self._logger.info(
-                    f"[{display_ticker(rule.ticker)}] 추세 이탈 -> 수량 부족으로 전량 청산(Bulk) "
+                    f"[{display_ticker(rule.ticker)}] {exit_reason} -> 수량 부족으로 전량 청산(Bulk) "
                     f"{format_qty(total_qty, rule.market_type)} (평단 {format_money(avg_buy, rule.market_type)}, "
                     f"현재가 {format_money(current_price, rule.market_type)})"
                 )
@@ -1524,29 +2418,39 @@ class SplitEvaluator:
                 action=OrderAction.SELL,
                 quantity=total_qty,
                 price=current_price,
-                reason=f"추세 이탈 전량 청산(수량 부족, {format_qty(total_qty, rule.market_type)} {pct:+.1f}%)",
+                reason=f"{exit_reason} 전량 청산(수량 부족, {format_qty(total_qty, rule.market_type)} {pct:+.1f}%)",
                 pct_change=pct,
                 level=max_level,
                 regime_liquidation=True,
                 reentry_gate=reentry_gate,
+                exit_trigger=exit_trigger,
+                exit_long_regime=exit_long_regime,
+                exit_short_regime=exit_short_regime,
             )]
 
         if sell_qty <= 0:
             # 0%: 즉시 매도 없이 전량 추종 데드라인만 활성화
             # 상태 갱신은 여기서 직접 수행 (매도 체결이 없으므로 엔진 경유 불가)
             st["downtrend_partially_liquidated"] = True
-            st["trailing_lock"] = {
+            trailing_lock = {
                 "active": True,
                 "lock_price": current_price,
                 "drop_pct": rule.trendbreak_trailing_drop_pct,
                 "reentry_gate": reentry_gate,
             }
+            if exit_trigger is not None:
+                trailing_lock["exit_trigger"] = exit_trigger
+            if exit_long_regime is not None:
+                trailing_lock["exit_long_regime"] = exit_long_regime
+            if exit_short_regime is not None:
+                trailing_lock["exit_short_regime"] = exit_short_regime
+            st["trailing_lock"] = trailing_lock
             # 주문 없이 상태 전환이 끝났으므로 여기가 곧 커밋 지점이다.
             clear_breakdown_confirmation(st)
             if self._logger:
                 stop_price = current_price * (1 - rule.trendbreak_trailing_drop_pct / 100)
                 self._logger.info(
-                    f"[{display_ticker(rule.ticker)}] 추세 이탈 -> 추종 데드라인 활성화 "
+                    f"[{display_ticker(rule.ticker)}] {exit_reason} -> 추종 데드라인 활성화 "
                     f"(즉시 매도 0%, 전량 {format_qty(total_qty, rule.market_type)} 추적, "
                     f"기준가 {format_money(current_price, rule.market_type)}, "
                     f"청산선 {format_money(stop_price, rule.market_type)})"
@@ -1557,7 +2461,7 @@ class SplitEvaluator:
             remain_qty = total_qty - sell_qty
             stop_price = current_price * (1 - rule.trendbreak_trailing_drop_pct / 100)
             self._logger.info(
-                f"[{display_ticker(rule.ticker)}] 추세 이탈 -> 분할 청산 "
+                f"[{display_ticker(rule.ticker)}] {exit_reason} -> 분할 청산 "
                 f"{format_qty(sell_qty, rule.market_type)}/{format_qty(total_qty, rule.market_type)} ({partial_pct:.0f}%) 즉시 매도, "
                 f"잔량 {format_qty(remain_qty, rule.market_type)} 추종 데드라인 "
                 f"(기준가 {format_money(current_price, rule.market_type)}, "
@@ -1571,11 +2475,14 @@ class SplitEvaluator:
             action=OrderAction.SELL,
             quantity=sell_qty,
             price=current_price,
-            reason=f"추세 이탈 분할 청산({format_qty(sell_qty, rule.market_type)}/{format_qty(total_qty, rule.market_type)}, {pct:+.1f}%)",
+            reason=f"{exit_reason} 분할 청산({format_qty(sell_qty, rule.market_type)}/{format_qty(total_qty, rule.market_type)}, {pct:+.1f}%)",
             pct_change=pct,
             level=max_level,
             regime_partial_liquidation=True,
             reentry_gate=reentry_gate,
+            exit_trigger=exit_trigger,
+            exit_long_regime=exit_long_regime,
+            exit_short_regime=exit_short_regime,
         )]
 
     def _evaluate_trailing_lock(
@@ -1662,6 +2569,9 @@ class SplitEvaluator:
                 level=max_level,
                 regime_liquidation=True,  # 전량 청산 -> 레짐 리셋
                 reentry_gate=lock.get("reentry_gate", "resistance"),
+                exit_trigger=lock.get("exit_trigger"),
+                exit_long_regime=lock.get("exit_long_regime"),
+                exit_short_regime=lock.get("exit_short_regime"),
             )]
 
         # 3. 대기 (매수/매도 없음)
@@ -1744,6 +2654,43 @@ class SplitEvaluator:
         upper = ema20 * (1 + band_pct / 100)
         in_band = current_price <= upper
         bounced = current_price > reading.close or current_price > ema20
+        if rule.trend_entry_mode in ("rebound", "staged_rebound"):
+            prefix = "pullback_rebound_"
+            armed = bool(st.get(prefix + "armed"))
+            if not armed:
+                if in_band:
+                    st[prefix + "armed"] = True
+                    st[prefix + "start_date"] = today_str
+                    st[prefix + "low"] = current_price
+                    st[prefix + "wait_days"] = [today_str]
+                return None
+
+            wait_days = st.get(prefix + "wait_days", [])
+            if today_str not in wait_days:
+                wait_days.append(today_str)
+            st[prefix + "wait_days"] = wait_days
+            st[prefix + "low"] = min(float(st.get(prefix + "low", current_price)), current_price)
+            if len(wait_days) > rule.pullback_rebound_max_wait_bars:
+                for key in ("armed", "start_date", "low", "wait_days", "confirm_days"):
+                    st.pop(prefix + key, None)
+                return None
+            # 눌림을 관측한 다음 거래일부터 EMA20 재돌파와 전일 대비 상승을 확인한다.
+            rebound_ok = (
+                today_str != st.get(prefix + "start_date")
+                and in_band
+                and current_price > ema20
+                and current_price > reading.close
+            )
+            confirm_days = st.get(prefix + "confirm_days", [])
+            if rebound_ok:
+                if today_str not in confirm_days:
+                    confirm_days.append(today_str)
+            else:
+                confirm_days = []
+            st[prefix + "confirm_days"] = confirm_days
+            if len(confirm_days) < rule.pullback_rebound_confirm_bars:
+                return None
+            bounced = True
         if not (in_band and bounced):
             if self._logger:
                 self._logger.debug(
@@ -1756,6 +2703,8 @@ class SplitEvaluator:
             return None
 
         amount = rule.uptrend_add_amount_at(adds + 1)
+        if rule.trend_entry_mode in ("rebound", "staged_rebound"):
+            amount *= rule.pullback_rebound_add_amount_multiplier
         buy_qty = rule.quantize_qty(amount / current_price)
         if buy_qty <= 0:
             if self._logger:
@@ -1802,5 +2751,7 @@ class SplitEvaluator:
             pct_change=0.0,
             level=next_level,
             regime_add_swing_high=reading.swing_high,
+            entry_trigger=("pullback_rebound_add"
+                           if rule.trend_entry_mode in ("rebound", "staged_rebound") else None),
         )
 

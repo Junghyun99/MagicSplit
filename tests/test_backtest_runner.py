@@ -108,6 +108,33 @@ class TestValidateTickers:
 
 
 class TestRunBacktest:
+    def test_backtest_repository_preserves_all_decisions(
+        self, backtest_config, tmp_path,
+    ):
+        from src.infra.repo import JsonRepository as RealJsonRepository
+
+        ohlc = _make_ohlc_df(["AAPL"], days=5, price_step=0.0)
+        repository_kwargs = {}
+
+        def create_repository(*args, **kwargs):
+            repository_kwargs.update(kwargs)
+            return RealJsonRepository(*args, **kwargs)
+
+        with patch("src.backtest.runner.download_ohlc_data", return_value=ohlc), \
+             patch("src.backtest.runner.JsonRepository", side_effect=create_repository):
+            result = run_backtest(
+                config_path=backtest_config,
+                start_date="2024-01-02",
+                end_date="2024-01-08",
+                output_dir=str(tmp_path / "output"),
+            )
+
+        assert result is not None
+        assert repository_kwargs["max_decision_records"] is None
+        assert repository_kwargs["max_filter_event_records"] is None
+        assert repository_kwargs["max_shadow_score_records"] is None
+        assert repository_kwargs["max_shadow_event_records"] is None
+
     def test_basic_backtest_flow(self, backtest_config, tmp_path):
         """기본 백테스트 흐름: 데이터 다운 -> 시뮬레이션 -> 결과 파일 생성"""
         close_df = _make_ohlc_df(["AAPL"], days=10, start_price=100.0, price_step=-2.0)

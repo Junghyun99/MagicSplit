@@ -42,10 +42,29 @@ class JsonRepository(IRepository):
     """
 
     def __init__(self, root_path: str = "docs/data",
-                 max_history_records: int = 100000):
+                 max_history_records: int = 100000,
+                 defer_writes: bool = False,
+                 max_decision_records: Optional[int] = 1000,
+                 max_filter_event_records: Optional[int] = 5000,
+                 max_shadow_score_records: Optional[int] = 20000,
+                 max_shadow_event_records: Optional[int] = 5000):
         self._cache = {}  # ⚡ Bolt: Initialize cache first
+        self._defer_writes = defer_writes
+        self._dirty_paths = set()
         self.root = root_path
         self.max_history_records = max_history_records
+        if max_decision_records is not None and max_decision_records <= 0:
+            raise ValueError("max_decision_records must be positive or None")
+        self.max_decision_records = max_decision_records
+        if max_filter_event_records is not None and max_filter_event_records <= 0:
+            raise ValueError("max_filter_event_records must be positive or None")
+        self.max_filter_event_records = max_filter_event_records
+        if max_shadow_score_records is not None and max_shadow_score_records <= 0:
+            raise ValueError("max_shadow_score_records must be positive or None")
+        if max_shadow_event_records is not None and max_shadow_event_records <= 0:
+            raise ValueError("max_shadow_event_records must be positive or None")
+        self.max_shadow_score_records = max_shadow_score_records
+        self.max_shadow_event_records = max_shadow_event_records
         os.makedirs(self.root, exist_ok=True)
 
         self.positions_file = os.path.join(self.root, "positions.json")
@@ -53,8 +72,15 @@ class JsonRepository(IRepository):
         self.status_file = os.path.join(self.root, "status.json")
         self.last_sell_prices_file = os.path.join(self.root, "last_sell_prices.json")
         self.decisions_file = os.path.join(self.root, "decisions.json")
+        self.filter_events_file = os.path.join(self.root, "filter_events.json")
+        self.filter_episode_state_file = os.path.join(
+            self.root, "filter_episode_state.json"
+        )
         self.snapshots_file = os.path.join(self.root, "snapshots.json")
         self.regime_events_file = os.path.join(self.root, "regime_events.json")
+        self.shadow_mode_scores_file = os.path.join(self.root, "shadow_mode_scores.json")
+        self.shadow_mode_events_file = os.path.join(self.root, "shadow_mode_events.json")
+        self.shadow_mode_state_file = os.path.join(self.root, "shadow_mode_state.json")
         self.charts_dir = os.path.join(self.root, "charts")
 
         # 초기 파일 생성 (404 방지)
@@ -68,10 +94,20 @@ class JsonRepository(IRepository):
             self._save_json(self.last_sell_prices_file, {})
         if not os.path.exists(self.decisions_file):
             self._save_json(self.decisions_file, [])
+        if not os.path.exists(self.filter_events_file):
+            self._save_json(self.filter_events_file, [])
+        if not os.path.exists(self.filter_episode_state_file):
+            self._save_json(self.filter_episode_state_file, {})
         if not os.path.exists(self.snapshots_file):
             self._save_json(self.snapshots_file, [])
         if not os.path.exists(self.regime_events_file):
             self._save_json(self.regime_events_file, [])
+        if not os.path.exists(self.shadow_mode_scores_file):
+            self._save_json(self.shadow_mode_scores_file, [])
+        if not os.path.exists(self.shadow_mode_events_file):
+            self._save_json(self.shadow_mode_events_file, [])
+        if not os.path.exists(self.shadow_mode_state_file):
+            self._save_json(self.shadow_mode_state_file, {})
 
         # ⚡ Bolt: Memory cache to avoid redundant disk I/O and JSON decoding
         # This dramatically speeds up the backtest loop which constantly reads/writes status.
@@ -91,6 +127,9 @@ class JsonRepository(IRepository):
                 buy_date=item["buy_date"],
                 level=item.get("level", 0),
                 trailing_highest_price=item.get("trailing_highest_price"),
+                entry_long_regime=item.get("entry_long_regime"),
+                entry_short_regime=item.get("entry_short_regime"),
+                entry_trigger=item.get("entry_trigger"),
             ))
 
         # 레거시 마이그레이션: level=0인 lot에 순차 level 부여
@@ -120,6 +159,9 @@ class JsonRepository(IRepository):
                         buy_date=lot.buy_date,
                         level=i,
                         trailing_highest_price=lot.trailing_highest_price,
+                        entry_long_regime=lot.entry_long_regime,
+                        entry_short_regime=lot.entry_short_regime,
+                        entry_trigger=lot.entry_trigger,
                     ))
             else:
                 result.extend(ticker_lots)
@@ -172,6 +214,15 @@ class JsonRepository(IRepository):
             base = asdict(e)
             base["alias"] = alias_by_ticker[e.ticker]
             breakdown = base.pop("liquidation_lots", None)
+            if base.get("entry_long_regime") is None:
+                base.pop("entry_long_regime", None)
+            if base.get("entry_short_regime") is None:
+                base.pop("entry_short_regime", None)
+            if base.get("entry_trigger") is None:
+                base.pop("entry_trigger", None)
+            for field in ("exit_trigger", "exit_long_regime", "exit_short_regime"):
+                if base.get(field) is None:
+                    base.pop(field, None)
 
             # 통합 청산(Bulk): 소진 lot별 N개 레코드로 분리 기록(차수별 손익 보존)
             if breakdown:
@@ -183,7 +234,16 @@ class JsonRepository(IRepository):
                         "level": lot["level"],
                         "buy_price": lot["buy_price"],
                         "realized_pnl": lot["realized_pnl"],
+                        "entry_long_regime": lot.get("entry_long_regime"),
+                        "entry_short_regime": lot.get("entry_short_regime"),
+                        "entry_trigger": lot.get("entry_trigger"),
                     })
+                    if rec.get("entry_long_regime") is None:
+                        rec.pop("entry_long_regime", None)
+                    if rec.get("entry_short_regime") is None:
+                        rec.pop("entry_short_regime", None)
+                    if rec.get("entry_trigger") is None:
+                        rec.pop("entry_trigger", None)
                     enriched_execs.append(rec)
                 continue
 
@@ -357,7 +417,11 @@ class JsonRepository(IRepository):
         self._save_json(self.last_sell_prices_file, prices)
 
     def save_decision_log(self, date: str, reason: str) -> None:
-        """판단 내역(모니터링 사유)을 저장한다 (Rolling 방식)."""
+        """판단 내역을 저장한다.
+
+        실거래 저장소는 기본적으로 최근 1,000건을 유지한다. 백테스트는
+        ``max_decision_records=None``으로 생성해 전 기간 판단을 보존한다.
+        """
         # 동일한 날짜/시간의 중복 기록 방지 (주로 백테스트 환경용)
         data = self._load_json(self.decisions_file, default=[])
         if data and data[-1].get("date") == date and data[-1].get("reason") == reason:
@@ -368,11 +432,35 @@ class JsonRepository(IRepository):
             "reason": reason
         })
 
-        # 최근 1000건만 유지
-        if len(data) > 1000:
-            data = data[-1000:]
+        if (
+            self.max_decision_records is not None
+            and len(data) > self.max_decision_records
+        ):
+            data = data[-self.max_decision_records:]
 
         self._save_json(self.decisions_file, data)
+
+    def load_filter_events(self) -> List[dict]:
+        """구조화된 전략 차단 START/END 이벤트를 반환한다."""
+        return self._load_json(self.filter_events_file, default=[])
+
+    def load_filter_episode_state(self) -> Dict[str, dict]:
+        """재실행 후에도 이어갈 현재 차단 에피소드 상태를 반환한다."""
+        return self._load_json(self.filter_episode_state_file, default={})
+
+    def save_filter_episode_update(
+        self, events: List[dict], active_state: Dict[str, dict],
+    ) -> None:
+        """새 이벤트를 append하고 현재 열린 에피소드 상태를 교체한다."""
+        data = self._load_json(self.filter_events_file, default=[])
+        data.extend(events)
+        if (
+            self.max_filter_event_records is not None
+            and len(data) > self.max_filter_event_records
+        ):
+            data = data[-self.max_filter_event_records:]
+        self._save_json(self.filter_events_file, data)
+        self._save_json(self.filter_episode_state_file, active_state)
 
     def load_regime_events(self) -> List[dict]:
         """레짐 전이 이벤트 이력을 로드한다."""
@@ -393,6 +481,77 @@ class JsonRepository(IRepository):
             data = data[-5000:]
 
         self._save_json(self.regime_events_file, data)
+
+    def load_shadow_mode_state(self) -> Dict[str, dict]:
+        return self._load_json(self.shadow_mode_state_file, default={})
+
+    def load_shadow_mode_scores(self) -> List[dict]:
+        return self._load_json(self.shadow_mode_scores_file, default=[])
+
+    def load_shadow_mode_events(self) -> List[dict]:
+        return self._load_json(self.shadow_mode_events_file, default=[])
+
+    def save_shadow_mode_update(
+        self, scores: List[dict], events: List[dict], active_state: Dict[str, dict],
+    ) -> None:
+        self._append_json_records(
+            self.shadow_mode_scores_file, scores, self.max_shadow_score_records,
+            partition_key="score_version",
+        )
+        self._append_json_records(
+            self.shadow_mode_events_file, events, self.max_shadow_event_records,
+            partition_key="score_version",
+        )
+        self._save_json(self.shadow_mode_state_file, active_state)
+
+    def _append_json_records(
+        self, path: str, records: List[dict], limit: Optional[int],
+        partition_key: Optional[str] = None,
+    ) -> None:
+        """Append without copying the growing deferred-write cache on every day."""
+        if not records:
+            return
+        if self._defer_writes:
+            if path not in self._cache:
+                if os.path.exists(path):
+                    try:
+                        with open(path, "r", encoding="utf-8") as handle:
+                            self._cache[path] = json.load(handle)
+                    except (json.JSONDecodeError, IOError, OSError):
+                        self._cache[path] = []
+                else:
+                    self._cache[path] = []
+            data = self._cache[path]
+            data.extend(self._sanitize_for_json(records))
+            if limit is not None:
+                data[:] = self._trim_partitioned_records(
+                    data, limit, partition_key,
+                )
+            self._dirty_paths.add(path)
+            return
+        data = self._load_json(path, default=[])
+        data.extend(records)
+        if limit is not None:
+            data = self._trim_partitioned_records(data, limit, partition_key)
+        self._save_json(path, data)
+
+    @staticmethod
+    def _trim_partitioned_records(
+        records: List[dict], limit: int, partition_key: Optional[str],
+    ) -> List[dict]:
+        if partition_key is None:
+            return records[-limit:]
+        counts: Dict[object, int] = {}
+        kept = []
+        for record in reversed(records):
+            partition = record.get(partition_key)
+            count = counts.get(partition, 0)
+            if count >= limit:
+                continue
+            counts[partition] = count + 1
+            kept.append(record)
+        kept.reverse()
+        return kept
 
     def save_chart_series(self, ticker: str, chart: dict) -> None:
         """종목별 차트 시계열을 저장한다 (매 사이클 덮어쓰기).
@@ -434,7 +593,15 @@ class JsonRepository(IRepository):
 
     def clear_cache(self):
         """메모리 캐시를 비운다 (테스트 또는 외부 프로세스에 의한 파일 변경 대응용)."""
+        if self._dirty_paths:
+            self.flush()
         self._cache = {}
+
+    def flush(self) -> None:
+        """지연된 JSON 쓰기를 디스크에 반영한다."""
+        for path in sorted(self._dirty_paths):
+            self._write_json(path, self._cache[path])
+        self._dirty_paths.clear()
 
     def _load_json(self, path: str, default=None):
         if path in self._cache:
@@ -462,6 +629,14 @@ class JsonRepository(IRepository):
         return obj
     def _save_json(self, path: str, data):
         sanitized = self._sanitize_for_json(data)
+        if self._defer_writes:
+            self._cache[path] = sanitized
+            self._dirty_paths.add(path)
+            return
+
+        self._write_json(path, sanitized)
+
+    def _write_json(self, path: str, sanitized):
         # 기본적으로 4칸 들여쓰기로 변환
         content = json.dumps(sanitized, indent=4, ensure_ascii=False)
         

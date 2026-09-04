@@ -66,7 +66,7 @@
       "ticker": "005930",
       "enabled": true,
       "market_type": "domestic",
-      "preset": "large_cap_ks"
+      "preset": "cyclical_quality_ks"
     },
     {
       "ticker": "000660",
@@ -78,31 +78,31 @@
       "ticker": "000990",
       "enabled": true,
       "market_type": "domestic",
-      "preset": "large_cap_ks"
+      "preset": "cyclical_quality_ks"
     },
     {
       "ticker": "108320",
       "enabled": true,
       "market_type": "domestic",
-      "preset": "large_cap_ks"
+      "preset": "cyclical_quality_ks"
     },
     {
       "ticker": "009150",
       "enabled": true,
       "market_type": "domestic",
-      "preset": "large_cap_ks"
+      "preset": "cyclical_quality_ks"
     },
     {
       "ticker": "011070",
       "enabled": true,
       "market_type": "domestic",
-      "preset": "large_cap_ks"
+      "preset": "cyclical_quality_ks"
     },
     {
       "ticker": "046890",
       "enabled": true,
       "market_type": "domestic",
-      "preset": "large_cap_ks"
+      "preset": "cyclical_quality_ks"
     },
     {
       "ticker": "036540",
@@ -198,7 +198,7 @@
       "ticker": "181710",
       "enabled": true,
       "market_type": "domestic",
-      "preset": "large_cap_ks"
+      "preset": "cyclical_quality_ks"
     },
     {
       "ticker": "067160",
@@ -210,19 +210,19 @@
       "ticker": "023590",
       "enabled": true,
       "market_type": "domestic",
-      "preset": "large_cap_ks"
+      "preset": "cyclical_quality_ks"
     },
     {
       "ticker": "035600",
       "enabled": true,
       "market_type": "domestic",
-      "preset": "large_cap_ks"
+      "preset": "cyclical_quality_ks"
     },
     {
       "ticker": "030190",
       "enabled": true,
       "market_type": "domestic",
-      "preset": "large_cap_ks"
+      "preset": "cyclical_quality_ks"
     },
     {
       "ticker": "036570",
@@ -246,37 +246,37 @@
       "ticker": "005490",
       "enabled": true,
       "market_type": "domestic",
-      "preset": "large_cap_ks"
+      "preset": "cyclical_quality_ks"
     },
     {
       "ticker": "004020",
       "enabled": true,
       "market_type": "domestic",
-      "preset": "large_cap_ks"
+      "preset": "cyclical_quality_ks"
     },
     {
       "ticker": "010130",
       "enabled": true,
       "market_type": "domestic",
-      "preset": "large_cap_ks"
+      "preset": "cyclical_quality_ks"
     },
     {
       "ticker": "051910",
       "enabled": true,
       "market_type": "domestic",
-      "preset": "large_cap_ks"
+      "preset": "cyclical_quality_ks"
     },
     {
       "ticker": "011170",
       "enabled": true,
       "market_type": "domestic",
-      "preset": "large_cap_ks"
+      "preset": "cyclical_quality_ks"
     },
     {
       "ticker": "011780",
       "enabled": true,
       "market_type": "domestic",
-      "preset": "large_cap_ks"
+      "preset": "cyclical_quality_ks"
     },
     {
       "ticker": "014680",
@@ -294,13 +294,13 @@
       "ticker": "093370",
       "enabled": true,
       "market_type": "domestic",
-      "preset": "large_cap_ks"
+      "preset": "cyclical_quality_ks"
     },
     {
       "ticker": "006650",
       "enabled": true,
       "market_type": "domestic",
-      "preset": "large_cap_ks"
+      "preset": "cyclical_quality_ks"
     },
     {
       "ticker": "033780",
@@ -348,7 +348,8 @@
       "ticker": "003230",
       "enabled": true,
       "market_type": "domestic",
-      "preset": "consumer_staples_ks"
+      "preset": "consumer_staples_ks",
+      "trend_only_enabled": true
     },
     {
       "ticker": "001680",
@@ -378,8 +379,18 @@
     "trendbreak_partial_sell_pct": 50,
     "trendbreak_trailing_drop_pct": 3.0,
     "multi_horizon_regime_enabled": true,
+    "trend_only_enabled": true,
+    "uptrend_sideways_transition_partial_sell_pct": 50.0,
+    "uptrend_sideways_transition_confirm_bars": 2,
     "long_channel_lookback": 252,
     "long_sideways_exposure_multiplier": 0.7,
-    "long_uptrend_sideways_sell_multiplier": 1
+    "long_uptrend_sideways_sell_multiplier": 1,
+    "shadow_mode_enabled": false,
+    "shadow_mode_v2_enabled": true,
+    "shadow_mode_v3_enabled": false,
+    "shadow_mode_v3_1_enabled": false,
+    "shadow_mode_v3_2_enabled": false,
+    "shadow_mode_v2_routing_enabled": true,
+    "pullback_rebound_add_amount_multiplier": 0.5
   }
 }

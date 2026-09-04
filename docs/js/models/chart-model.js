@@ -224,6 +224,28 @@ window.ChartModel = (function () {
         }
 
         if (s.trailing_lock) badges.push({ text: '추종 데드라인 추적 중', tone: 'warning' });
+        if (s.uptrend_profit_trailing_active) {
+            const phase = s.uptrend_profit_trailing_phase === 'residual_guard' ? '잔량 보호' : '상승 추적';
+            badges.push({ text: `ATR 수익보호: ${phase}`, tone: 'warning' });
+        }
+        if (s.uptrend_profit_recovery_add_pending) {
+            badges.push({
+                text: `상승 복귀매수 대기 (${s.uptrend_profit_recovery_confirm_days || 0}일)`,
+                tone: 'info'
+            });
+        }
+        if (s.staged_rebound_wait_probe_days > 0) {
+            badges.push({
+                text: `상태지속 탐색 대기 (${s.staged_rebound_wait_probe_days}일)`,
+                tone: 'info'
+            });
+        }
+        if (s.staged_rebound_probe_open) {
+            badges.push({
+                text: `단계형 탐색 보유 (${s.staged_rebound_probe_pct || 0}%)`,
+                tone: 'info'
+            });
+        }
         if (s.post_liquidation) {
             const gate = s.reentry_gate === 'midline' ? '중심선' : '상단 저항선';
             badges.push({ text: `재진입 대기 (${gate} 회복 필요)`, tone: 'warning' });

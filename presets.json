@@ -16,6 +16,15 @@
         "buy_amount": 500000,
         "buy_amounts": [1000000, 500000]
     },
+    "cyclical_quality_ks": {
+        "max_lots": 100,
+        "buy_threshold_pct": -5,
+        "sell_threshold_pct": 10,
+        "trailing_drop_pct": 5,
+        "buy_amount": 500000,
+        "buy_amounts": [1000000, 500000],
+        "trend_only_enabled": false
+    },
     "consumer_staples_ks": {
         "max_lots": 100,
         "buy_threshold_pct": -5,
@@ -23,7 +32,8 @@
         "trailing_drop_pct": 5,
         "buy_amount": 500000,
         "buy_amounts": [1000000, 500000],
-        "trendbreak_partial_sell_pct": 50
+        "trendbreak_partial_sell_pct": 50,
+        "trend_only_enabled": false
     },
     "small_cap_us": {
         "max_lots": 100,

@@ -51,6 +51,103 @@ def engine(mock_broker, mock_repo, mock_logger, default_rules):
     )
 
 
+class TestShadowStrategyRouting:
+    @staticmethod
+    def _rule():
+        return StockRule(
+            "AAPL", -5.0, 10.0, 500, 10,
+            regime_enabled=True, regime_algo="channel",
+            multi_horizon_regime_enabled=True,
+            shadow_mode_v2_enabled=True,
+            shadow_mode_v2_routing_enabled=True,
+        )
+
+    @staticmethod
+    def _rows():
+        return [
+            {"ticker": "AAPL", "score_version": "price_action_v1"},
+            {"ticker": "AAPL", "score_version": "price_action_v2"},
+        ]
+
+    def _engine(self, rule, mock_broker, mock_repo, mock_logger):
+        return MagicSplitEngine(
+            broker=mock_broker, repo=mock_repo, logger=mock_logger,
+            stock_rules=[rule],
+        )
+
+    def test_v2_selects_trend_only_for_new_cycle(
+        self, mock_broker, mock_repo, mock_logger,
+    ):
+        rule = self._rule()
+        eng = self._engine(rule, mock_broker, mock_repo, mock_logger)
+        state = {}
+        with patch(
+            "src.core.engine.base.compute_shadow_observations",
+            return_value=self._rows(),
+        ), patch(
+            "src.core.engine.base.update_shadow_states_v2",
+            return_value=([], {}, [{"effective_state": "trend"}]),
+        ):
+            effective, override = eng._route_shadow_strategy(
+                rule, [], Portfolio(10000, {}, {"AAPL": 100}), None,
+                "2026-01-02", {}, state,
+            )
+        assert override is None
+        assert effective.trend_only_enabled is True
+        assert effective.trend_entry_mode == "staged_rebound"
+        assert state["AAPL"]["shadow_entry_candidate"] == "trend"
+
+    def test_open_cycle_keeps_owner_when_v2_changes(
+        self, mock_broker, mock_repo, mock_logger,
+    ):
+        rule = self._rule()
+        eng = self._engine(rule, mock_broker, mock_repo, mock_logger)
+        state = {"AAPL": {"shadow_cycle_owner": "range"}}
+        lots = [PositionLot("l1", "AAPL", 100, 1, "2026-01-01", 1)]
+        with patch(
+            "src.core.engine.base.compute_shadow_observations",
+            return_value=self._rows(),
+        ), patch(
+            "src.core.engine.base.update_shadow_states_v2",
+            return_value=([], {}, [{"effective_state": "trend"}]),
+        ):
+            effective, override = eng._route_shadow_strategy(
+                rule, lots, Portfolio(10000, {"AAPL": 1}, {"AAPL": 105}),
+                None, "2026-01-02", {}, state,
+            )
+        assert override is None
+        assert effective.trend_only_enabled is False
+        assert state["AAPL"]["shadow_cycle_owner"] == "range"
+        assert state["AAPL"]["shadow_v2_effective_state"] == "trend"
+
+    def test_filled_first_buy_locks_cycle_owner_and_flat_reset_releases_it(
+        self, mock_broker, mock_repo, mock_logger,
+    ):
+        rule = self._rule()
+        eng = self._engine(rule, mock_broker, mock_repo, mock_logger)
+        signal = SplitSignal(
+            "AAPL", None, OrderAction.BUY, 2, 100, "entry", 0, level=1,
+            entry_trigger="legacy_magic_split",
+        )
+        execution = TradeExecution(
+            "AAPL", OrderAction.BUY, 2, 100, 0, "2026-01-02",
+            ExecutionStatus.FILLED,
+        )
+        state = {"AAPL": {
+            "shadow_entry_candidate": "range",
+            "shadow_last_normal_mode": "range",
+        }}
+        updated = eng._update_positions(
+            [], [signal], [execution], "2026-01-02", regime_state=state,
+        )
+        assert len(updated) == 1
+        assert state["AAPL"]["shadow_cycle_owner"] == "range"
+        assert "shadow_entry_candidate" not in state["AAPL"]
+
+        eng._reset_regime_after_flat(state, "AAPL")
+        assert state["AAPL"] == {"shadow_last_normal_mode": "range"}
+
+
 class TestEngineInit:
     def test_filters_disabled_rules(self, mock_broker, mock_repo, mock_logger):
         """disabled 종목은 필터링"""
@@ -507,6 +604,188 @@ class TestUpdatePositions:
         assert updated[0].quantity == 5
         assert updated[0].level == 1
 
+    def test_buy_records_entry_regimes_on_lot_and_execution(self, engine):
+        signals = [
+            SplitSignal("AAPL", None, OrderAction.BUY, 5, 100.0,
+                        "초기 매수 Lv1", 0.0, level=1),
+        ]
+        executions = [
+            TradeExecution("AAPL", OrderAction.BUY, 5, 100.0, 1.0,
+                           "2026-04-10", ExecutionStatus.FILLED),
+        ]
+        state = {"AAPL": {"long_trend": "uptrend", "short_trend": "uptrend"}}
+
+        updated = engine._update_positions(
+            [], signals, executions, "2026-04-10", regime_state=state,
+        )
+
+        assert updated[0].entry_long_regime == "uptrend"
+        assert updated[0].entry_short_regime == "uptrend"
+        assert executions[0].entry_long_regime == "uptrend"
+        assert executions[0].entry_short_regime == "uptrend"
+
+    def test_buy_records_entry_trigger_and_clears_rebound_state(self, engine):
+        signal = SplitSignal(
+            "AAPL", None, OrderAction.BUY, 5, 100.0,
+            "반등 진입", 0.0, level=1, entry_trigger="rebound_initial_entry",
+        )
+        execution = TradeExecution(
+            "AAPL", OrderAction.BUY, 5, 100.0, 1.0,
+            "2026-04-10", ExecutionStatus.FILLED,
+        )
+        state = {"AAPL": {
+            "rebound_entry_armed": True,
+            "rebound_entry_confirmed": True,
+        }}
+        engine._update_positions(
+            [], [signal], [execution], "2026-04-10", regime_state=state,
+        )
+        assert execution.entry_trigger == "rebound_initial_entry"
+        assert "rebound_entry_armed" not in state["AAPL"]
+
+    @pytest.mark.parametrize(
+        "trigger", ["uptrend_profit_recovery_add", "pullback_rebound_add"],
+    )
+    def test_recovery_candidate_clears_only_after_exposure_buy_fills(
+        self, engine, trigger,
+    ):
+        signal = SplitSignal(
+            "AAPL", None, OrderAction.BUY, 5, 100.0,
+            "회복 매수", 0.0, level=2, entry_trigger=trigger,
+        )
+        execution = TradeExecution(
+            "AAPL", OrderAction.BUY, 5, 100.0, 1.0,
+            "2026-04-10", ExecutionStatus.FILLED,
+        )
+        state = {"AAPL": {
+            "adds": 2,
+            "uptrend_profit_trailing": {
+                "phase": "tracking", "recovery_add_pending": True,
+                "recovery_add_budget": 1000.0,
+                "recovery_add_confirm_days": ["2026-04-09", "2026-04-10"],
+                "recovery_add_origin": "uptrend_trailing",
+            },
+        }}
+
+        engine._update_positions(
+            [PositionLot("l1", "AAPL", 90.0, 5, "2026-01-01", 1)],
+            [signal], [execution], "2026-04-10", regime_state=state,
+        )
+
+        tracker = state["AAPL"]["uptrend_profit_trailing"]
+        assert "recovery_add_pending" not in tracker
+        assert state["AAPL"]["adds"] == 2
+        if trigger == "uptrend_profit_recovery_add":
+            assert state["AAPL"]["last_uptrend_profit_recovery_add_date"] == "2026-04-10"
+
+    def test_staged_rebound_probe_and_completion_update_state_on_fill(self, engine):
+        positions = []
+        state = {"AAPL": {}}
+        probe_signal = SplitSignal(
+            "AAPL", None, OrderAction.BUY, 5, 100.0,
+            "탐색 진입", 0.0, level=1,
+            entry_trigger="staged_rebound_probe_uptrend_short_recovery",
+        )
+        probe_execution = TradeExecution(
+            "AAPL", OrderAction.BUY, 5, 100.0, 1.0,
+            "2026-04-10", ExecutionStatus.FILLED,
+        )
+        positions = engine._update_positions(
+            positions, [probe_signal], [probe_execution], "2026-04-10",
+            regime_state=state,
+        )
+        assert state["AAPL"]["staged_rebound_probe_open"] is True
+        assert state["AAPL"]["staged_rebound_probe_origin"] == "uptrend_short_recovery"
+
+        complete_signal = SplitSignal(
+            "AAPL", None, OrderAction.BUY, 5, 105.0,
+            "완성 매수", 0.0, level=2,
+            entry_trigger="staged_rebound_confirm_add",
+        )
+        complete_execution = TradeExecution(
+            "AAPL", OrderAction.BUY, 5, 105.0, 1.0,
+            "2026-04-11", ExecutionStatus.FILLED,
+        )
+        engine._update_positions(
+            positions, [complete_signal], [complete_execution], "2026-04-11",
+            regime_state=state,
+        )
+        assert "staged_rebound_probe_open" not in state["AAPL"]
+        assert "staged_rebound_probe_origin" not in state["AAPL"]
+        assert state["AAPL"].get("adds", 0) == 0
+
+    def test_post_liquidation_probe_releases_gate_only_after_fill(self, engine):
+        signal = SplitSignal(
+            "AAPL", None, OrderAction.BUY, 2, 100.0,
+            "게이트 회복 탐색", 0.0, level=1,
+            entry_trigger="staged_rebound_probe_post_liquidation_recovery",
+        )
+        state = {"AAPL": {
+            "post_liquidation": True,
+            "post_liquidation_reentry_gate": "midline",
+            "aligned_downtrend_reentry_lock": True,
+        }}
+        rejected = TradeExecution(
+            "AAPL", OrderAction.BUY, 0, 0.0, 0.0,
+            "2026-04-10", ExecutionStatus.REJECTED,
+        )
+        engine._update_positions(
+            [], [signal], [rejected], "2026-04-10", regime_state=state,
+        )
+        assert state["AAPL"]["post_liquidation"] is True
+
+        filled = TradeExecution(
+            "AAPL", OrderAction.BUY, 2, 100.0, 1.0,
+            "2026-04-11", ExecutionStatus.FILLED,
+        )
+        engine._update_positions(
+            [], [signal], [filled], "2026-04-11", regime_state=state,
+        )
+        assert "post_liquidation" not in state["AAPL"]
+        assert "post_liquidation_reentry_gate" not in state["AAPL"]
+        assert "aligned_downtrend_reentry_lock" not in state["AAPL"]
+        assert state["AAPL"]["staged_rebound_probe_open"] is True
+        assert state["AAPL"]["staged_rebound_probe_pct"] == 25.0
+        assert state["AAPL"]["post_liquidation_recovery_probe_date"] == "2026-04-11"
+
+    def test_early_post_liquidation_probe_commits_stop_only_after_fill(self, engine):
+        signal = SplitSignal(
+            "AAPL", None, OrderAction.BUY, 1, 101.0,
+            "조기 반등 탐색", 0.0, level=1,
+            entry_trigger="staged_rebound_probe_post_liquidation_early_recovery",
+            early_probe_stop_price=98.0, early_probe_atr=2.0,
+        )
+        state = {"AAPL": {
+            "post_liquidation": True,
+            "post_liquidation_reentry_gate": "midline",
+            "post_liquidation_exit_trigger": "channel_lower_break",
+            "post_liquidation_exit_long_regime": "uptrend",
+            "post_liquidation_exit_short_regime": "sideways",
+        }}
+        rejected = TradeExecution(
+            "AAPL", OrderAction.BUY, 0, 0.0, 0.0,
+            "2026-04-10", ExecutionStatus.REJECTED,
+        )
+        engine._update_positions(
+            [], [signal], [rejected], "2026-04-10", regime_state=state,
+        )
+        assert state["AAPL"]["post_liquidation"] is True
+        assert "post_liquidation_early_probe_stop_price" not in state["AAPL"]
+
+        filled = TradeExecution(
+            "AAPL", OrderAction.BUY, 1, 101.0, 1.0,
+            "2026-04-11", ExecutionStatus.FILLED,
+        )
+        engine._update_positions(
+            [], [signal], [filled], "2026-04-11", regime_state=state,
+        )
+        assert "post_liquidation" not in state["AAPL"]
+        assert "post_liquidation_exit_trigger" not in state["AAPL"]
+        assert state["AAPL"]["staged_rebound_probe_open"] is True
+        assert state["AAPL"]["staged_rebound_probe_pct"] == 20.0
+        assert state["AAPL"]["post_liquidation_early_probe_stop_price"] == 98.0
+        assert state["AAPL"]["post_liquidation_early_probe_atr"] == 2.0
+
     def test_sell_removes_specific_lot(self, engine):
         """매도 체결 -> signal의 lot_id로 특정 lot 제거"""
         positions = [
@@ -523,6 +802,27 @@ class TestUpdatePositions:
 
         updated = engine._update_positions(positions, signals, executions, "2026-04-10")
         assert len(updated) == 0
+
+    def test_sell_copies_entry_regimes_from_target_lot(self, engine):
+        positions = [
+            PositionLot(
+                "lot_001", "AAPL", 90.0, 5, "2026-04-01", level=1,
+                entry_long_regime="sideways", entry_short_regime="uptrend",
+            ),
+        ]
+        signals = [
+            SplitSignal("AAPL", "lot_001", OrderAction.SELL, 5, 100.0,
+                        "Lv1 +11.1% -> 익절", 11.1, level=1),
+        ]
+        executions = [
+            TradeExecution("AAPL", OrderAction.SELL, 5, 100.0, 1.0,
+                           "2026-04-10", ExecutionStatus.FILLED),
+        ]
+
+        engine._update_positions(positions, signals, executions, "2026-04-10")
+
+        assert executions[0].entry_long_regime == "sideways"
+        assert executions[0].entry_short_regime == "uptrend"
 
     def test_sell_removes_by_level_not_fifo(self, engine):
         """매도는 FIFO가 아닌 마지막 차수(가장 높은 level) lot을 제거"""
@@ -1519,6 +1819,40 @@ class TestBulkLiquidation:
         # (90-70)+(90-60)+(90-50) per 5주 = (20+30+40)*5 = 450
         assert exe.realized_pnl == 450.0
 
+    def test_exit_context_is_copied_from_signal_to_execution(self, engine):
+        sig = self._bulk_signal(15)
+        sig.exit_trigger = "channel_lower_break"
+        sig.exit_long_regime = "uptrend"
+        sig.exit_short_regime = "sideways"
+        exe = self._exe(15)
+
+        engine._update_positions(
+            self._positions(), [sig], [exe],
+            "2024-01-02", last_sell_prices={}, regime_state={},
+        )
+
+        assert exe.exit_trigger == "channel_lower_break"
+        assert exe.exit_long_regime == "uptrend"
+        assert exe.exit_short_regime == "sideways"
+
+    def test_full_liquidation_preserves_exit_context_for_early_reentry(self, engine):
+        sig = self._bulk_signal(15, reentry_gate="midline")
+        sig.exit_trigger = "channel_lower_break"
+        sig.exit_long_regime = "uptrend"
+        sig.exit_short_regime = "sideways"
+        state = {}
+
+        engine._update_positions(
+            self._positions(), [sig], [self._exe(15)], "2024-01-02",
+            last_sell_prices={}, regime_state=state,
+        )
+
+        assert state["AAPL"]["post_liquidation_exit_trigger"] == "channel_lower_break"
+        assert state["AAPL"]["post_liquidation_exit_long_regime"] == "uptrend"
+        assert state["AAPL"]["post_liquidation_exit_short_regime"] == "sideways"
+        assert state["AAPL"]["post_liquidation_exit_price"] == 90.0
+        assert state["AAPL"]["post_liquidation_exit_date"] == "2024-01-01"
+
     def test_breakdown_records_per_lot(self, engine):
         exe = self._exe(15)
         engine._update_positions(
@@ -1637,6 +1971,24 @@ class TestPartialLiquidation:
         # 기본 3.0% 설정 확인
         assert lock["drop_pct"] == 3.0
         assert lock["reentry_gate"] == "resistance"
+
+    def test_partial_liquidation_carries_exit_context_into_trailing_lock(self, engine):
+        sig = self._partial_signal(7)
+        sig.exit_trigger = "channel_lower_break"
+        sig.exit_long_regime = "uptrend"
+        sig.exit_short_regime = "sideways"
+        exe = self._exe(7)
+        regime_state = {"AAPL": {}}
+
+        engine._update_positions(
+            self._positions(), [sig], [exe],
+            "2024-01-02", last_sell_prices={}, regime_state=regime_state,
+        )
+
+        lock = regime_state["AAPL"]["trailing_lock"]
+        assert lock["exit_trigger"] == "channel_lower_break"
+        assert lock["exit_long_regime"] == "uptrend"
+        assert lock["exit_short_regime"] == "sideways"
 
 
 class TestNormalSingleSell:
@@ -1869,7 +2221,7 @@ class TestChartDataPersistence:
 
         rule = StockRule(
             "AAPL", buy_threshold_pct=-5.0, sell_threshold_pct=10.0,
-            buy_amount=500, max_lots=10,
+            buy_amount=500, max_lots=10, market_type="domestic",
             regime_enabled=True, regime_algo="channel", channel_lookback=21,
         )
         closes = np.linspace(80.0, 100.0, 60)
@@ -1903,6 +2255,25 @@ class TestChartDataPersistence:
         assert chart["cols"][:2] == ["date", "close"]
         assert chart["rows"]
         assert chart["asof"] == "2026-07-31"
+
+    def test_adjacent_price_anomaly_blocks_before_strategy_evaluation(
+        self, chart_engine, mock_broker,
+    ):
+        mock_broker.get_portfolio.return_value = Portfolio(
+            total_cash=10_000.0,
+            holdings={},
+            current_prices={"AAPL": 140.0},
+        )
+        mock_broker.fetch_current_prices.return_value = {"AAPL": 140.0}
+        chart_engine.evaluator.evaluate_stock = MagicMock()
+
+        result = chart_engine.run_one_cycle(sim_date="2026-07-31")
+
+        chart_engine.evaluator.evaluate_stock.assert_not_called()
+        mock_broker.execute_orders.assert_not_called()
+        assert len(result.signals) == 1
+        assert result.signals[0].is_blocked
+        assert "전일 종가" in result.signals[0].reason
 
     def test_on_demand_mode_defers_chart_until_explicitly_generated(
         self, chart_engine, mock_repo,
@@ -2017,6 +2388,100 @@ class TestBreakdownConfirmationClearedOnFill:
         assert st["post_liquidation"] is True
         assert "breakdown_confirmed" not in st
         assert "breakdown_days" not in st
+
+
+class TestTransitionPartialLiquidation:
+    @staticmethod
+    def _enable_atr_policy(engine):
+        rule = engine.all_stock_rules[0]
+        rule.uptrend_profit_trailing_enabled = True
+        rule.uptrend_sideways_transition_partial_sell_pct = 50.0
+
+    def test_drains_high_levels_and_activates_residual_atr_guard(self, engine):
+        self._enable_atr_policy(engine)
+        lots = [
+            PositionLot("l1", "AAPL", 100.0, 50, "2026-01-01", 1),
+            PositionLot("l2", "AAPL", 110.0, 50, "2026-02-01", 2),
+        ]
+        state = {"AAPL": {
+            "uptrend_sideways_transition_target_qty": 50,
+            "uptrend_sideways_transition_sold_qty": 0,
+        }}
+        exe = TradeExecution(
+            "AAPL", OrderAction.SELL, 50, 105.0, 0.0,
+            "2026-07-30 10:00:00", ExecutionStatus.FILLED,
+        )
+        exe.exit_trigger = "uptrend_sideways_transition"
+        exe.exit_long_regime = "uptrend"
+        exe.exit_short_regime = "sideways"
+        exe.profit_trailing_origin = "sideways_transition"
+        exe.profit_trailing_atr = 4.0
+
+        updated = engine._apply_transition_partial_liquidation(
+            lots, exe, "AAPL", {}, state,
+        )
+
+        assert [lot.lot_id for lot in updated] == ["l1"]
+        assert state["AAPL"]["transition_de_risked"] is True
+        tracker = state["AAPL"]["uptrend_profit_trailing"]
+        assert tracker["phase"] == "residual_guard"
+        assert tracker["residual_anchor_price"] == 105.0
+        assert tracker["residual_atr_snapshot"] == 4.0
+        assert tracker["residual_distance"] == 6.0  # 1.5 ATR, 5~10% clamp
+        assert tracker["residual_stop_price"] == 99.0
+
+        buy_signal = SplitSignal(
+            "AAPL", None, OrderAction.BUY, 1, 106.0, "신규 매수", 0.0, level=2,
+        )
+        buy_exe = TradeExecution(
+            "AAPL", OrderAction.BUY, 1, 106.0, 0.0,
+            "2026-07-31 10:00:00", ExecutionStatus.FILLED,
+        )
+        engine._update_positions(
+            updated, [buy_signal], [buy_exe], "2026-07-31", regime_state=state,
+        )
+        assert state["AAPL"]["transition_de_risked"] is True
+        assert state["AAPL"]["uptrend_profit_partial_de_risked"] is True
+
+    def test_partial_fill_waits_for_transition_target_before_starting_lock(self, engine):
+        self._enable_atr_policy(engine)
+        lots = [
+            PositionLot("l1", "AAPL", 100.0, 50, "2026-01-01", 1),
+            PositionLot("l2", "AAPL", 110.0, 50, "2026-02-01", 2),
+        ]
+        state = {"AAPL": {
+            "uptrend_sideways_transition_target_qty": 50,
+            "uptrend_sideways_transition_sold_qty": 0,
+        }}
+        first = TradeExecution(
+            "AAPL", OrderAction.SELL, 20, 105.0, 0.0,
+            "2026-07-30 10:00:00", ExecutionStatus.PARTIAL,
+        )
+        first.profit_trailing_origin = "sideways_transition"
+        first.profit_trailing_atr = 4.0
+
+        updated = engine._apply_transition_partial_liquidation(
+            lots, first, "AAPL", {}, state,
+        )
+
+        assert state["AAPL"]["uptrend_sideways_transition_sold_qty"] == 20
+        assert "trailing_lock" not in state["AAPL"]
+
+        second = TradeExecution(
+            "AAPL", OrderAction.SELL, 30, 104.0, 0.0,
+            "2026-07-31 10:00:00", ExecutionStatus.FILLED,
+        )
+        second.profit_trailing_origin = "sideways_transition"
+        second.profit_trailing_atr = 4.0
+        updated = engine._apply_transition_partial_liquidation(
+            updated, second, "AAPL", {}, state,
+        )
+
+        assert sum(lot.quantity for lot in updated) == 50
+        assert state["AAPL"]["transition_de_risked"] is True
+        tracker = state["AAPL"]["uptrend_profit_trailing"]
+        assert tracker["residual_anchor_price"] == pytest.approx((20 * 105 + 30 * 104) / 50)
+        assert tracker["phase"] == "residual_guard"
 
 
 class TestNotificationFiltering:

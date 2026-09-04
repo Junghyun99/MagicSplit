@@ -8,6 +8,62 @@ REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 class TestStrategyConfig:
+    def test_profit_trailing_defaults_off(self, tmp_path):
+        config = {"stocks": [{
+            "ticker": "AAPL", "buy_threshold_pct": -5.0,
+            "sell_threshold_pct": 10.0, "buy_amount": 500,
+        }]}
+        path = tmp_path / "config.json"
+        path.write_text(json.dumps(config))
+        assert StrategyConfig(str(path)).rules[0].uptrend_profit_trailing_enabled is False
+        assert StrategyConfig(str(path)).rules[0].uptrend_profit_recovery_add_enabled is False
+
+    def test_profit_recovery_add_requires_profit_trailing(self, tmp_path):
+        config = {"global": {"uptrend_profit_recovery_add_enabled": True}, "stocks": [{
+            "ticker": "AAPL", "buy_threshold_pct": -5.0,
+            "sell_threshold_pct": 10.0, "buy_amount": 500,
+        }]}
+        path = tmp_path / "config.json"
+        path.write_text(json.dumps(config))
+        with pytest.raises(ValueError, match="uptrend_profit_recovery_add_enabled"):
+            StrategyConfig(str(path))
+
+    def test_profit_trailing_requires_channel_multi_and_partial_pct(self, tmp_path):
+        config = {"global": {"uptrend_profit_trailing_enabled": True}, "stocks": [{
+            "ticker": "AAPL", "buy_threshold_pct": -5.0,
+            "sell_threshold_pct": 10.0, "buy_amount": 500,
+        }]}
+        path = tmp_path / "config.json"
+        path.write_text(json.dumps(config))
+        with pytest.raises(ValueError, match="uptrend_profit_trailing_enabled"):
+            StrategyConfig(str(path))
+
+    def test_profit_trailing_global_inheritance_and_stock_override(self, tmp_path):
+        common = {"buy_threshold_pct": -5.0, "sell_threshold_pct": 10.0,
+                  "buy_amount": 500}
+        config = {
+            "global": {
+                "regime_enabled": True, "regime_algo": "channel",
+                "multi_horizon_regime_enabled": True,
+                "uptrend_sideways_transition_partial_sell_pct": 50.0,
+                "uptrend_profit_trailing_enabled": True,
+                "uptrend_profit_recovery_add_enabled": True,
+                "uptrend_profit_recovery_restore_pct": 40.0,
+            },
+            "stocks": [
+                {"ticker": "AAPL", **common},
+                {"ticker": "MSFT", "uptrend_profit_trailing_enabled": False,
+                 "uptrend_profit_recovery_add_enabled": False, **common},
+            ],
+        }
+        path = tmp_path / "config.json"
+        path.write_text(json.dumps(config))
+        rules = StrategyConfig(str(path)).rules
+        assert rules[0].uptrend_profit_trailing_enabled is True
+        assert rules[0].uptrend_profit_recovery_add_enabled is True
+        assert rules[0].uptrend_profit_recovery_restore_pct == 40.0
+        assert rules[1].uptrend_profit_trailing_enabled is False
+
     def test_load_valid_config(self, tmp_path):
         """유효한 config_overseas.json 로드"""
         config = {
@@ -260,6 +316,45 @@ class TestPresets:
 
         sc = StrategyConfig(str(cfg_file), presets_path=str(presets_file))
         assert sc.rules[0].buy_amounts == [500.0]
+
+
+class TestTickerOverrides:
+    def test_applies_only_to_named_ticker(self, tmp_path):
+        config = {
+            "stocks": [
+                {"ticker": "AAPL", "buy_amount": 500},
+                {"ticker": "MSFT", "buy_amount": 500},
+            ],
+            "ticker_overrides": {"AAPL": {"buy_amount": 1500}},
+        }
+        config_file = tmp_path / "config_overseas.json"
+        config_file.write_text(json.dumps(config))
+
+        rules = StrategyConfig(str(config_file)).rules
+        assert rules[0].buy_amount == 1500
+        assert rules[1].buy_amount == 500
+
+    def test_stock_overrides_has_final_precedence(self, tmp_path):
+        config = {
+            "stocks": [{"ticker": "AAPL", "buy_amount": 500}],
+            "ticker_overrides": {"AAPL": {"buy_amount": 1500}},
+            "stock_overrides": {"buy_amount": 3000},
+        }
+        config_file = tmp_path / "config_overseas.json"
+        config_file.write_text(json.dumps(config))
+
+        assert StrategyConfig(str(config_file)).rules[0].buy_amount == 3000
+
+    def test_unknown_ticker_rejected(self, tmp_path):
+        config = {
+            "stocks": [{"ticker": "AAPL", "buy_amount": 500}],
+            "ticker_overrides": {"MSFT": {"buy_amount": 1500}},
+        }
+        config_file = tmp_path / "config_overseas.json"
+        config_file.write_text(json.dumps(config))
+
+        with pytest.raises(ValueError, match="미등록 종목"):
+            StrategyConfig(str(config_file))
 
 
 class TestMaxExposureConfig:
@@ -584,6 +679,152 @@ class TestStrategyConfigRegime:
         assert rules[0].long_sideways_exposure_multiplier == 0.7
         assert rules[1].long_sideways_exposure_multiplier == 0.6
 
+    def test_trend_only_global_inheritance_and_stock_override(self, tmp_path):
+        config = {
+            "stocks": [
+                {"ticker": "AAPL"},
+                {"ticker": "MSFT", "trend_only_enabled": False},
+            ],
+            "global": {
+                "regime_enabled": True,
+                "regime_algo": "channel",
+                "multi_horizon_regime_enabled": True,
+                "trend_only_enabled": True,
+            },
+        }
+        config_file = tmp_path / "config_overseas.json"
+        config_file.write_text(json.dumps(config))
+
+        rules = StrategyConfig(str(config_file)).rules
+        assert rules[0].trend_only_enabled is True
+        assert rules[1].trend_only_enabled is False
+
+    def test_shadow_versions_global_inheritance_and_stock_override(self, tmp_path):
+        config = {
+            "stocks": [
+                {"ticker": "AAPL"},
+                {
+                    "ticker": "MSFT", "shadow_mode_v2_enabled": False,
+                    "shadow_mode_v2_routing_enabled": False,
+                },
+            ],
+            "global": {
+                "regime_enabled": True,
+                "regime_algo": "channel",
+                "shadow_mode_enabled": True,
+                "shadow_mode_v2_enabled": True,
+                "shadow_mode_v3_enabled": True,
+                "shadow_mode_v3_1_enabled": True,
+                "shadow_mode_v3_2_enabled": True,
+                "multi_horizon_regime_enabled": True,
+                "shadow_mode_v2_routing_enabled": True,
+                "pullback_rebound_add_amount_multiplier": 0.5,
+            },
+        }
+        config_file = tmp_path / "config_overseas.json"
+        config_file.write_text(json.dumps(config))
+
+        rules = StrategyConfig(str(config_file)).rules
+        assert rules[0].shadow_mode_enabled is True
+        assert rules[0].shadow_mode_v2_enabled is True
+        assert rules[0].shadow_mode_v3_enabled is True
+        assert rules[0].shadow_mode_v3_1_enabled is True
+        assert rules[0].shadow_mode_v3_2_enabled is True
+        assert rules[0].shadow_mode_v2_routing_enabled is True
+        assert rules[0].pullback_rebound_add_amount_multiplier == 0.5
+        assert rules[1].shadow_mode_enabled is True
+        assert rules[1].shadow_mode_v2_enabled is False
+        assert rules[1].shadow_mode_v3_enabled is True
+        assert rules[1].shadow_mode_v3_1_enabled is True
+        assert rules[1].shadow_mode_v3_2_enabled is True
+        assert rules[1].shadow_mode_v2_routing_enabled is False
+
+    def test_transition_policy_global_inheritance_and_stock_override(self, tmp_path):
+        config = {
+            "stocks": [
+                {"ticker": "AAPL"},
+                {
+                    "ticker": "MSFT",
+                    "uptrend_sideways_transition_partial_sell_pct": 25,
+                    "uptrend_sideways_transition_confirm_bars": 3,
+                },
+            ],
+            "global": {
+                "regime_enabled": True,
+                "regime_algo": "channel",
+                "multi_horizon_regime_enabled": True,
+                "uptrend_sideways_transition_partial_sell_pct": 50,
+                "uptrend_sideways_transition_confirm_bars": 2,
+            },
+        }
+        config_file = tmp_path / "config_overseas.json"
+        config_file.write_text(json.dumps(config))
+
+        rules = StrategyConfig(str(config_file)).rules
+        assert rules[0].uptrend_sideways_transition_partial_sell_pct == 50
+        assert rules[0].uptrend_sideways_transition_confirm_bars == 2
+        assert rules[1].uptrend_sideways_transition_partial_sell_pct == 25
+        assert rules[1].uptrend_sideways_transition_confirm_bars == 3
+
+    def test_rebound_policy_global_inheritance(self, tmp_path):
+        config = {
+            "stocks": [{"ticker": "AAPL"}],
+            "global": {
+                "regime_enabled": True, "regime_algo": "channel",
+                "multi_horizon_regime_enabled": True,
+                "trend_only_enabled": True, "trend_entry_mode": "rebound",
+                "rebound_entry_confirm_bars": 3,
+                "rebound_entry_require_midline": False,
+                "pullback_rebound_confirm_bars": 2,
+                "pullback_rebound_max_wait_bars": 8,
+            },
+        }
+        config_file = tmp_path / "config_overseas.json"
+        config_file.write_text(json.dumps(config))
+        rule = StrategyConfig(str(config_file)).rules[0]
+        assert rule.trend_entry_mode == "rebound"
+        assert rule.rebound_entry_confirm_bars == 3
+        assert rule.rebound_entry_require_midline is False
+        assert rule.pullback_rebound_confirm_bars == 2
+
+    def test_staged_wait_probe_global_inheritance_and_stock_override(self, tmp_path):
+        config = {
+            "stocks": [
+                {"ticker": "AAPL"},
+                {
+                    "ticker": "MSFT",
+                    "staged_rebound_wait_probe_enabled": False,
+                    "staged_rebound_wait_probe_pct": 30,
+                },
+            ],
+            "global": {
+                "regime_enabled": True, "regime_algo": "channel",
+                "multi_horizon_regime_enabled": True,
+                "trend_only_enabled": True, "trend_entry_mode": "staged_rebound",
+                "staged_rebound_wait_probe_enabled": True,
+                "staged_rebound_wait_probe_pct": 25,
+                "post_liquidation_recovery_probe_enabled": True,
+                "post_liquidation_early_probe_enabled": True,
+                "post_liquidation_early_probe_pct": 20,
+                "post_liquidation_early_probe_confirm_bars": 2,
+                "post_liquidation_early_probe_max_ema_atr": 1.0,
+                "post_liquidation_early_probe_stop_atr_multiplier": 2.0,
+            },
+        }
+        config_file = tmp_path / "config_overseas.json"
+        config_file.write_text(json.dumps(config))
+        first, second = StrategyConfig(str(config_file)).rules
+        assert first.staged_rebound_wait_probe_enabled is True
+        assert first.staged_rebound_wait_probe_pct == 25
+        assert first.post_liquidation_recovery_probe_enabled is True
+        assert first.post_liquidation_early_probe_enabled is True
+        assert first.post_liquidation_early_probe_pct == 20
+        assert first.post_liquidation_early_probe_confirm_bars == 2
+        assert second.staged_rebound_wait_probe_enabled is False
+        assert second.staged_rebound_wait_probe_pct == 30
+        assert second.post_liquidation_recovery_probe_enabled is True
+        assert second.post_liquidation_early_probe_enabled is True
+
     def test_invalid_channel_algo_raises(self, tmp_path):
         config = {
             "stocks": [{
@@ -609,6 +850,33 @@ class TestRepoConfigRegimeSeparation:
     def test_backtest_domestic_regime_on(self):
         sc = StrategyConfig(os.path.join(REPO_ROOT, "config_test_domestic.json"))
         assert sc.rules and all(r.regime_enabled is True for r in sc.rules)
+        trend_tickers = {r.ticker for r in sc.rules if r.trend_only_enabled}
+        assert trend_tickers == {
+            "000660", "036540", "007660", "067310", "095610", "079370",
+            "036930", "042700", "084370", "039030", "071280", "098460",
+            "068790", "083450", "035420", "035720", "067160", "036570",
+            "069080", "078340", "014680", "086520", "003230",
+        }
+        assert len(sc.rules) - len(trend_tickers) == 27
+        assert all(
+            r.uptrend_sideways_transition_partial_sell_pct == 50
+            and r.uptrend_sideways_transition_confirm_bars == 2
+            for r in sc.rules
+        )
+
+    def test_rebound_backtest_overlay_enables_all_stocks(self):
+        sc = StrategyConfig(os.path.join(REPO_ROOT, "config_test_domestic_rebound.json"))
+        assert len(sc.rules) == 50
+        assert all(r.trend_only_enabled for r in sc.rules)
+        assert all(r.trend_entry_mode == "staged_rebound" for r in sc.rules)
+        assert all(r.staged_rebound_probe_pct == 50 for r in sc.rules)
+        assert all(r.staged_rebound_allow_long_sideways for r in sc.rules)
+        assert all(r.staged_rebound_wait_probe_enabled for r in sc.rules)
+        assert all(r.staged_rebound_wait_probe_pct == 25 for r in sc.rules)
+        assert all(r.post_liquidation_recovery_probe_enabled for r in sc.rules)
+        assert all(r.post_liquidation_early_probe_enabled for r in sc.rules)
+        assert all(r.post_liquidation_early_probe_pct == 20 for r in sc.rules)
+        assert all(r.uptrend_sideways_transition_partial_sell_pct == 50 for r in sc.rules)
 
 
 class TestRepoCryptoConfig:

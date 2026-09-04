@@ -26,18 +26,83 @@ window.ConfigView = (function () {
         document.getElementById('global-channel-breakdown-tolerance-pct').value = globalConfig?.channel_breakdown_tolerance_pct !== undefined ? globalConfig.channel_breakdown_tolerance_pct : '';
         document.getElementById('global-channel-breakdown-atr-multiplier').value = globalConfig?.channel_breakdown_atr_multiplier !== undefined ? globalConfig.channel_breakdown_atr_multiplier : '';
         document.getElementById('global-multi-horizon-regime-enabled').checked = globalConfig?.multi_horizon_regime_enabled === true;
+        document.getElementById('global-trend-only-enabled').checked = globalConfig?.trend_only_enabled === true;
+        document.getElementById('global-trend-entry-mode').value = globalConfig?.trend_entry_mode || 'aligned';
+        document.getElementById('global-rebound-entry-confirm-bars').value = globalConfig?.rebound_entry_confirm_bars ?? '';
+        document.getElementById('global-rebound-entry-require-midline').checked = globalConfig?.rebound_entry_require_midline !== false;
+        document.getElementById('global-staged-rebound-probe-pct').value = globalConfig?.staged_rebound_probe_pct ?? '';
+        document.getElementById('global-staged-rebound-allow-long-sideways').checked = globalConfig?.staged_rebound_allow_long_sideways !== false;
+        document.getElementById('global-staged-rebound-require-long-midline').checked = globalConfig?.staged_rebound_require_long_midline !== false;
+        document.getElementById('global-staged-rebound-require-nonnegative-long-slope').checked = globalConfig?.staged_rebound_require_nonnegative_long_slope !== false;
+        document.getElementById('global-staged-rebound-wait-probe-enabled').checked = globalConfig?.staged_rebound_wait_probe_enabled === true;
+        document.getElementById('global-staged-rebound-wait-probe-pct').value = globalConfig?.staged_rebound_wait_probe_pct ?? '';
+        document.getElementById('global-post-liquidation-recovery-probe-enabled').checked = globalConfig?.post_liquidation_recovery_probe_enabled === true;
+        document.getElementById('global-post-liquidation-early-probe-enabled').checked = globalConfig?.post_liquidation_early_probe_enabled === true;
+        document.getElementById('global-post-liquidation-early-probe-pct').value = globalConfig?.post_liquidation_early_probe_pct ?? '';
+        document.getElementById('global-post-liquidation-early-probe-confirm-bars').value = globalConfig?.post_liquidation_early_probe_confirm_bars ?? '';
+        document.getElementById('global-post-liquidation-early-probe-max-ema-atr').value = globalConfig?.post_liquidation_early_probe_max_ema_atr ?? '';
+        document.getElementById('global-post-liquidation-early-probe-stop-atr-multiplier').value = globalConfig?.post_liquidation_early_probe_stop_atr_multiplier ?? '';
+        document.getElementById('global-pullback-rebound-confirm-bars').value = globalConfig?.pullback_rebound_confirm_bars ?? '';
+        document.getElementById('global-pullback-rebound-max-wait-bars').value = globalConfig?.pullback_rebound_max_wait_bars ?? '';
         document.getElementById('global-long-channel-lookback').value = globalConfig?.long_channel_lookback !== undefined ? globalConfig.long_channel_lookback : '';
         document.getElementById('global-long-sideways-exposure-multiplier').value = globalConfig?.long_sideways_exposure_multiplier !== undefined ? globalConfig.long_sideways_exposure_multiplier : '';
         document.getElementById('global-long-uptrend-sideways-sell-multiplier').value = globalConfig?.long_uptrend_sideways_sell_multiplier !== undefined ? globalConfig.long_uptrend_sideways_sell_multiplier : '';
+        document.getElementById('global-uptrend-sideways-transition-partial-sell-pct').value = globalConfig?.uptrend_sideways_transition_partial_sell_pct !== undefined ? globalConfig.uptrend_sideways_transition_partial_sell_pct : '';
+        document.getElementById('global-uptrend-sideways-transition-confirm-bars').value = globalConfig?.uptrend_sideways_transition_confirm_bars !== undefined ? globalConfig.uptrend_sideways_transition_confirm_bars : '';
+        document.getElementById('global-uptrend-profit-trailing-enabled').checked = globalConfig?.uptrend_profit_trailing_enabled === true;
+        document.getElementById('global-uptrend-profit-trailing-atr-multiplier').value = globalConfig?.uptrend_profit_trailing_atr_multiplier ?? '';
+        document.getElementById('global-uptrend-profit-trailing-max-distance-pct').value = globalConfig?.uptrend_profit_trailing_max_distance_pct ?? '';
+        document.getElementById('global-uptrend-profit-recovery-add-enabled').checked = globalConfig?.uptrend_profit_recovery_add_enabled === true;
+        document.getElementById('global-uptrend-profit-recovery-confirm-bars').value = globalConfig?.uptrend_profit_recovery_confirm_bars ?? '';
+        document.getElementById('global-uptrend-profit-recovery-restore-pct').value = globalConfig?.uptrend_profit_recovery_restore_pct ?? '';
+        document.getElementById('global-uptrend-profit-recovery-max-ema-atr').value = globalConfig?.uptrend_profit_recovery_max_ema_atr ?? '';
+        document.getElementById('global-uptrend-profit-recovery-max-ema-distance-pct').value = globalConfig?.uptrend_profit_recovery_max_ema_distance_pct ?? '';
+        document.getElementById('global-uptrend-profit-recovery-min-stop-headroom-atr').value = globalConfig?.uptrend_profit_recovery_min_stop_headroom_atr ?? '';
+        document.getElementById('global-transition-residual-atr-multiplier').value = globalConfig?.transition_residual_atr_multiplier ?? '';
+        document.getElementById('global-transition-residual-min-distance-pct').value = globalConfig?.transition_residual_min_distance_pct ?? '';
+        document.getElementById('global-transition-residual-max-distance-pct').value = globalConfig?.transition_residual_max_distance_pct ?? '';
         syncMultiHorizonSettings();
     }
 
     function syncMultiHorizonSettings() {
         const enabled = document.getElementById('global-multi-horizon-regime-enabled').checked;
-        document.querySelectorAll('.multi-horizon-setting input').forEach((input) => {
+        document.querySelectorAll('.multi-horizon-setting input, .multi-horizon-setting select').forEach((input) => {
             input.disabled = !enabled;
         });
         document.getElementById('multi-horizon-policy-note').style.display = enabled ? '' : 'none';
+        const mode = document.getElementById('global-trend-entry-mode').value;
+        const rebound = enabled
+            && document.getElementById('global-trend-only-enabled').checked
+            && (mode === 'rebound' || mode === 'staged_rebound');
+        document.querySelectorAll('.rebound-trend-setting input').forEach((input) => {
+            input.disabled = !rebound;
+        });
+        const staged = rebound && mode === 'staged_rebound';
+        document.querySelectorAll('.staged-rebound-setting input').forEach((input) => {
+            input.disabled = !staged;
+        });
+        const relaxedProbe = staged && (
+            document.getElementById('global-staged-rebound-wait-probe-enabled').checked
+            || document.getElementById('global-post-liquidation-recovery-probe-enabled').checked
+        );
+        document.getElementById('global-staged-rebound-wait-probe-pct').disabled = !relaxedProbe;
+        const earlyReentry = staged
+            && document.getElementById('global-post-liquidation-early-probe-enabled').checked;
+        document.querySelectorAll('.early-reentry-setting input').forEach((input) => {
+            input.disabled = !earlyReentry;
+        });
+        const recovery = enabled
+            && document.getElementById('global-uptrend-profit-trailing-enabled').checked
+            && document.getElementById('global-uptrend-profit-recovery-add-enabled').checked;
+        for (const id of [
+            'global-uptrend-profit-recovery-confirm-bars',
+            'global-uptrend-profit-recovery-restore-pct',
+            'global-uptrend-profit-recovery-max-ema-atr',
+            'global-uptrend-profit-recovery-max-ema-distance-pct',
+            'global-uptrend-profit-recovery-min-stop-headroom-atr'
+        ]) {
+            document.getElementById(id).disabled = !recovery;
+        }
     }
 
     function renderTickerList(stocks, activeIndex, onSelect, getDisplayName) {
@@ -80,6 +145,20 @@ window.ConfigView = (function () {
         document.getElementById('edit-uptrend-add-reset-pct').value = stock.uptrend_add_reset_pct !== undefined ? stock.uptrend_add_reset_pct : '';
         document.getElementById('edit-trendbreak-partial-sell-pct').value = stock.trendbreak_partial_sell_pct !== undefined ? stock.trendbreak_partial_sell_pct : '';
         document.getElementById('edit-trendbreak-trailing-drop-pct').value = stock.trendbreak_trailing_drop_pct !== undefined ? stock.trendbreak_trailing_drop_pct : '';
+        document.getElementById('edit-uptrend-sideways-transition-partial-sell-pct').value = stock.uptrend_sideways_transition_partial_sell_pct !== undefined ? stock.uptrend_sideways_transition_partial_sell_pct : '';
+        document.getElementById('edit-uptrend-sideways-transition-confirm-bars').value = stock.uptrend_sideways_transition_confirm_bars !== undefined ? stock.uptrend_sideways_transition_confirm_bars : '';
+        document.getElementById('edit-uptrend-profit-trailing-enabled').value = stock.uptrend_profit_trailing_enabled === undefined ? '' : String(stock.uptrend_profit_trailing_enabled);
+        document.getElementById('edit-uptrend-profit-trailing-atr-multiplier').value = stock.uptrend_profit_trailing_atr_multiplier ?? '';
+        document.getElementById('edit-uptrend-profit-trailing-max-distance-pct').value = stock.uptrend_profit_trailing_max_distance_pct ?? '';
+        document.getElementById('edit-uptrend-profit-recovery-add-enabled').value = stock.uptrend_profit_recovery_add_enabled === undefined ? '' : String(stock.uptrend_profit_recovery_add_enabled);
+        document.getElementById('edit-uptrend-profit-recovery-confirm-bars').value = stock.uptrend_profit_recovery_confirm_bars ?? '';
+        document.getElementById('edit-uptrend-profit-recovery-restore-pct').value = stock.uptrend_profit_recovery_restore_pct ?? '';
+        document.getElementById('edit-uptrend-profit-recovery-max-ema-atr').value = stock.uptrend_profit_recovery_max_ema_atr ?? '';
+        document.getElementById('edit-uptrend-profit-recovery-max-ema-distance-pct').value = stock.uptrend_profit_recovery_max_ema_distance_pct ?? '';
+        document.getElementById('edit-uptrend-profit-recovery-min-stop-headroom-atr').value = stock.uptrend_profit_recovery_min_stop_headroom_atr ?? '';
+        document.getElementById('edit-transition-residual-atr-multiplier').value = stock.transition_residual_atr_multiplier ?? '';
+        document.getElementById('edit-transition-residual-min-distance-pct').value = stock.transition_residual_min_distance_pct ?? '';
+        document.getElementById('edit-transition-residual-max-distance-pct').value = stock.transition_residual_max_distance_pct ?? '';
 
         renderLevelsTable(stock);
         renderUptrendAmountsTable(stock);
@@ -234,6 +313,20 @@ window.ConfigView = (function () {
             uptrend_add_reset_pct: document.getElementById('edit-uptrend-add-reset-pct').value,
             trendbreak_partial_sell_pct: document.getElementById('edit-trendbreak-partial-sell-pct').value,
             trendbreak_trailing_drop_pct: document.getElementById('edit-trendbreak-trailing-drop-pct').value,
+            uptrend_sideways_transition_partial_sell_pct: document.getElementById('edit-uptrend-sideways-transition-partial-sell-pct').value,
+            uptrend_sideways_transition_confirm_bars: document.getElementById('edit-uptrend-sideways-transition-confirm-bars').value,
+            uptrend_profit_trailing_enabled: document.getElementById('edit-uptrend-profit-trailing-enabled').value,
+            uptrend_profit_trailing_atr_multiplier: document.getElementById('edit-uptrend-profit-trailing-atr-multiplier').value,
+            uptrend_profit_trailing_max_distance_pct: document.getElementById('edit-uptrend-profit-trailing-max-distance-pct').value,
+            uptrend_profit_recovery_add_enabled: document.getElementById('edit-uptrend-profit-recovery-add-enabled').value,
+            uptrend_profit_recovery_confirm_bars: document.getElementById('edit-uptrend-profit-recovery-confirm-bars').value,
+            uptrend_profit_recovery_restore_pct: document.getElementById('edit-uptrend-profit-recovery-restore-pct').value,
+            uptrend_profit_recovery_max_ema_atr: document.getElementById('edit-uptrend-profit-recovery-max-ema-atr').value,
+            uptrend_profit_recovery_max_ema_distance_pct: document.getElementById('edit-uptrend-profit-recovery-max-ema-distance-pct').value,
+            uptrend_profit_recovery_min_stop_headroom_atr: document.getElementById('edit-uptrend-profit-recovery-min-stop-headroom-atr').value,
+            transition_residual_atr_multiplier: document.getElementById('edit-transition-residual-atr-multiplier').value,
+            transition_residual_min_distance_pct: document.getElementById('edit-transition-residual-min-distance-pct').value,
+            transition_residual_max_distance_pct: document.getElementById('edit-transition-residual-max-distance-pct').value,
             buyPcts,
             buyAmts,
             sellPcts,
@@ -260,9 +353,41 @@ window.ConfigView = (function () {
             channel_breakdown_tolerance_pct: document.getElementById('global-channel-breakdown-tolerance-pct').value,
             channel_breakdown_atr_multiplier: document.getElementById('global-channel-breakdown-atr-multiplier').value,
             multi_horizon_regime_enabled: document.getElementById('global-multi-horizon-regime-enabled').checked,
+            trend_only_enabled: document.getElementById('global-trend-only-enabled').checked,
+            trend_entry_mode: document.getElementById('global-trend-entry-mode').value,
+            rebound_entry_confirm_bars: document.getElementById('global-rebound-entry-confirm-bars').value,
+            rebound_entry_require_midline: document.getElementById('global-rebound-entry-require-midline').checked,
+            staged_rebound_probe_pct: document.getElementById('global-staged-rebound-probe-pct').value,
+            staged_rebound_allow_long_sideways: document.getElementById('global-staged-rebound-allow-long-sideways').checked,
+            staged_rebound_require_long_midline: document.getElementById('global-staged-rebound-require-long-midline').checked,
+            staged_rebound_require_nonnegative_long_slope: document.getElementById('global-staged-rebound-require-nonnegative-long-slope').checked,
+            staged_rebound_wait_probe_enabled: document.getElementById('global-staged-rebound-wait-probe-enabled').checked,
+            staged_rebound_wait_probe_pct: document.getElementById('global-staged-rebound-wait-probe-pct').value,
+            post_liquidation_recovery_probe_enabled: document.getElementById('global-post-liquidation-recovery-probe-enabled').checked,
+            post_liquidation_early_probe_enabled: document.getElementById('global-post-liquidation-early-probe-enabled').checked,
+            post_liquidation_early_probe_pct: document.getElementById('global-post-liquidation-early-probe-pct').value,
+            post_liquidation_early_probe_confirm_bars: document.getElementById('global-post-liquidation-early-probe-confirm-bars').value,
+            post_liquidation_early_probe_max_ema_atr: document.getElementById('global-post-liquidation-early-probe-max-ema-atr').value,
+            post_liquidation_early_probe_stop_atr_multiplier: document.getElementById('global-post-liquidation-early-probe-stop-atr-multiplier').value,
+            pullback_rebound_confirm_bars: document.getElementById('global-pullback-rebound-confirm-bars').value,
+            pullback_rebound_max_wait_bars: document.getElementById('global-pullback-rebound-max-wait-bars').value,
             long_channel_lookback: document.getElementById('global-long-channel-lookback').value,
             long_sideways_exposure_multiplier: document.getElementById('global-long-sideways-exposure-multiplier').value,
             long_uptrend_sideways_sell_multiplier: document.getElementById('global-long-uptrend-sideways-sell-multiplier').value,
+            uptrend_sideways_transition_partial_sell_pct: document.getElementById('global-uptrend-sideways-transition-partial-sell-pct').value,
+            uptrend_sideways_transition_confirm_bars: document.getElementById('global-uptrend-sideways-transition-confirm-bars').value,
+            uptrend_profit_trailing_enabled: document.getElementById('global-uptrend-profit-trailing-enabled').checked,
+            uptrend_profit_trailing_atr_multiplier: document.getElementById('global-uptrend-profit-trailing-atr-multiplier').value,
+            uptrend_profit_trailing_max_distance_pct: document.getElementById('global-uptrend-profit-trailing-max-distance-pct').value,
+            uptrend_profit_recovery_add_enabled: document.getElementById('global-uptrend-profit-recovery-add-enabled').checked,
+            uptrend_profit_recovery_confirm_bars: document.getElementById('global-uptrend-profit-recovery-confirm-bars').value,
+            uptrend_profit_recovery_restore_pct: document.getElementById('global-uptrend-profit-recovery-restore-pct').value,
+            uptrend_profit_recovery_max_ema_atr: document.getElementById('global-uptrend-profit-recovery-max-ema-atr').value,
+            uptrend_profit_recovery_max_ema_distance_pct: document.getElementById('global-uptrend-profit-recovery-max-ema-distance-pct').value,
+            uptrend_profit_recovery_min_stop_headroom_atr: document.getElementById('global-uptrend-profit-recovery-min-stop-headroom-atr').value,
+            transition_residual_atr_multiplier: document.getElementById('global-transition-residual-atr-multiplier').value,
+            transition_residual_min_distance_pct: document.getElementById('global-transition-residual-min-distance-pct').value,
+            transition_residual_max_distance_pct: document.getElementById('global-transition-residual-max-distance-pct').value,
         };
     }
 

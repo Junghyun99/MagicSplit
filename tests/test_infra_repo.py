@@ -13,6 +13,139 @@ def repo(tmp_path):
     return JsonRepository(str(tmp_path))
 
 
+def test_deferred_writes_remain_readable_and_flush_to_disk(tmp_path):
+    deferred = JsonRepository(str(tmp_path), defer_writes=True)
+    lot = PositionLot("lot_001", "AAPL", 150.0, 5, "2026-04-01", level=1)
+
+    deferred.save_positions([lot])
+
+    assert deferred.load_positions() == [lot]
+    assert not (tmp_path / "positions.json").exists()
+
+    deferred.flush()
+
+    assert json.loads((tmp_path / "positions.json").read_text(encoding="utf-8"))[0]["lot_id"] == "lot_001"
+
+
+class TestDecisionLogs:
+    def test_default_live_policy_keeps_latest_1000_records(self, tmp_path):
+        repo = JsonRepository(str(tmp_path), defer_writes=True)
+
+        for index in range(1002):
+            repo.save_decision_log(f"day-{index}", f"reason-{index}")
+
+        decisions = repo._load_json(repo.decisions_file, default=[])
+        assert len(decisions) == 1000
+        assert decisions[0]["date"] == "day-2"
+        assert decisions[-1]["date"] == "day-1001"
+
+    def test_unlimited_policy_preserves_full_backtest_period(self, tmp_path):
+        repo = JsonRepository(
+            str(tmp_path), defer_writes=True, max_decision_records=None,
+        )
+
+        for index in range(1002):
+            repo.save_decision_log(f"day-{index}", f"reason-{index}")
+
+        decisions = repo._load_json(repo.decisions_file, default=[])
+        assert len(decisions) == 1002
+        assert decisions[0]["date"] == "day-0"
+        assert decisions[-1]["date"] == "day-1001"
+
+    def test_decision_limit_must_be_positive_or_none(self, tmp_path):
+        with pytest.raises(ValueError, match="max_decision_records"):
+            JsonRepository(str(tmp_path), max_decision_records=0)
+
+    def test_filter_episode_events_append_and_state_round_trip(self, tmp_path):
+        repo = JsonRepository(str(tmp_path), defer_writes=True)
+        state = {"AAPL": {"reason_code": "long_downtrend"}}
+
+        repo.save_filter_episode_update(
+            [{"date": "d1", "ticker": "AAPL", "event": "block_start"}],
+            state,
+        )
+
+        assert repo.load_filter_events()[0]["event"] == "block_start"
+        assert repo.load_filter_episode_state() == state
+
+    def test_filter_event_limit_and_unlimited_mode(self, tmp_path):
+        limited = JsonRepository(
+            str(tmp_path / "limited"),
+            defer_writes=True,
+            max_filter_event_records=2,
+        )
+        limited.save_filter_episode_update(
+            [{"event": "one"}, {"event": "two"}, {"event": "three"}], {},
+        )
+        assert [row["event"] for row in limited.load_filter_events()] == ["two", "three"]
+
+        unlimited = JsonRepository(
+            str(tmp_path / "unlimited"),
+            defer_writes=True,
+            max_filter_event_records=None,
+        )
+        unlimited.save_filter_episode_update(
+            [{"event": str(index)} for index in range(5002)], {},
+        )
+        assert len(unlimited.load_filter_events()) == 5002
+
+    def test_filter_event_limit_must_be_positive_or_none(self, tmp_path):
+        with pytest.raises(ValueError, match="max_filter_event_records"):
+            JsonRepository(str(tmp_path), max_filter_event_records=0)
+
+    def test_shadow_records_are_limited_and_state_round_trips(self, tmp_path):
+        repo = JsonRepository(
+            str(tmp_path),
+            defer_writes=True,
+            max_shadow_score_records=2,
+            max_shadow_event_records=2,
+        )
+        state = {"AAPL": {"effective_mode": "trend"}}
+
+        repo.save_shadow_mode_update(
+            [{"date": "d1"}, {"date": "d2"}, {"date": "d3"}],
+            [{"event": "one"}, {"event": "two"}, {"event": "three"}],
+            state,
+        )
+
+        assert [row["date"] for row in repo.load_shadow_mode_scores()] == ["d2", "d3"]
+        assert [row["event"] for row in repo.load_shadow_mode_events()] == ["two", "three"]
+        assert repo.load_shadow_mode_state() == state
+
+    def test_shadow_record_limits_apply_per_version(self, tmp_path):
+        repo = JsonRepository(
+            str(tmp_path), defer_writes=True,
+            max_shadow_score_records=2, max_shadow_event_records=2,
+        )
+        scores = [
+            {"score_version": version, "value": value}
+            for value in range(3)
+            for version in (
+                "price_action_v1", "price_action_v2", "price_action_v3",
+                "price_action_v3_1", "price_action_v3_2",
+            )
+        ]
+        events = [dict(row) for row in scores]
+        repo.save_shadow_mode_update(scores, events, {})
+
+        kept_scores = repo.load_shadow_mode_scores()
+        kept_events = repo.load_shadow_mode_events()
+        for version in (
+            "price_action_v1", "price_action_v2", "price_action_v3",
+            "price_action_v3_1", "price_action_v3_2",
+        ):
+            assert [row["value"] for row in kept_scores if row["score_version"] == version] == [1, 2]
+            assert [row["value"] for row in kept_events if row["score_version"] == version] == [1, 2]
+
+    @pytest.mark.parametrize(
+        "setting",
+        ["max_shadow_score_records", "max_shadow_event_records"],
+    )
+    def test_shadow_limits_must_be_positive_or_none(self, tmp_path, setting):
+        with pytest.raises(ValueError, match=setting):
+            JsonRepository(str(tmp_path), **{setting: 0})
+
+
 class TestPositions:
     def test_save_and_load_positions(self, repo):
         """포지션 저장/로드 라운드트립"""
@@ -31,6 +164,17 @@ class TestPositions:
         assert loaded[0].level == 1
         assert loaded[1].lot_id == "lot_002"
         assert loaded[1].level == 1
+
+    def test_position_entry_regimes_round_trip(self, repo):
+        lot = PositionLot(
+            "lot_001", "AAPL", 150.0, 5, "2026-04-01", level=1,
+            entry_long_regime="uptrend", entry_short_regime="uptrend",
+        )
+        repo.save_positions([lot])
+
+        loaded = repo.load_positions()[0]
+        assert loaded.entry_long_regime == "uptrend"
+        assert loaded.entry_short_regime == "uptrend"
 
     def test_load_empty_positions(self, repo):
         """파일이 없으면 빈 리스트"""
@@ -63,6 +207,38 @@ class TestTradeHistory:
         assert len(data) == 1
         assert data[0]["reason"] == "초기 매수"
         assert len(data[0]["executions"]) == 1
+
+    def test_trade_history_saves_exit_context(self, repo):
+        execution = TradeExecution(
+            "AAPL", OrderAction.SELL, 5, 140.0, 1.75,
+            "2026-04-10", ExecutionStatus.FILLED,
+            exit_trigger="channel_lower_break",
+            exit_long_regime="uptrend",
+            exit_short_regime="sideways",
+        )
+        portfolio = Portfolio(8000.0, {}, {"AAPL": 140.0})
+
+        repo.save_trade_history([execution], portfolio, "상승 채널 하단 이탈")
+
+        saved = json.loads(
+            open(repo.history_file, encoding="utf-8").read()
+        )[0]["executions"][0]
+        assert saved["exit_trigger"] == "channel_lower_break"
+        assert saved["exit_long_regime"] == "uptrend"
+        assert saved["exit_short_regime"] == "sideways"
+
+    def test_trade_history_saves_entry_trigger(self, repo):
+        execution = TradeExecution(
+            "AAPL", OrderAction.BUY, 5, 140.0, 1.75,
+            "2026-04-10", ExecutionStatus.FILLED,
+            entry_trigger="rebound_initial_entry",
+        )
+        repo.save_trade_history(
+            [execution], Portfolio(8000.0, {"AAPL": 5}, {"AAPL": 140.0}),
+            "반등 진입",
+        )
+        saved = json.loads(open(repo.history_file, encoding="utf-8").read())[0]["executions"][0]
+        assert saved["entry_trigger"] == "rebound_initial_entry"
 
     def test_empty_executions_not_saved(self, repo):
         """체결 내역이 없으면 저장하지 않음 (초기화된 빈 상태 유지)"""

@@ -272,6 +272,11 @@ class TestTrendBreakLiquidation:
         assert s.lot_id is None
         assert s.quantity == 15  # 5+5+5
         assert s.regime_liquidation is True
+        assert "추세 이탈" in s.reason
+        assert "단기 채널" not in s.reason
+        assert s.exit_trigger == "trend_break"
+        assert s.exit_long_regime is None
+        assert s.exit_short_regime is None
         # 리셋은 체결 시 엔진이 수행 -> 평가 시점엔 상승 유지
         assert state["AAPL"]["regime"] == "uptrend"
 

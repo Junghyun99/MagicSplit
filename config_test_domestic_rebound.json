@@ -1,0 +1,40 @@
+{
+  "extends": "config_test_domestic.json",
+  "stock_overrides": {
+    "trend_only_enabled": true,
+    "trend_entry_mode": "staged_rebound",
+    "buy_amount": 1500000,
+    "buy_amounts": [3000000, 1500000],
+    "uptrend_sideways_transition_partial_sell_pct": 50.0
+  },
+  "global": {
+    "rebound_entry_confirm_bars": 2,
+    "rebound_entry_require_midline": true,
+    "staged_rebound_probe_pct": 50.0,
+    "staged_rebound_allow_long_sideways": true,
+    "staged_rebound_require_long_midline": true,
+    "staged_rebound_require_nonnegative_long_slope": true,
+    "pullback_rebound_confirm_bars": 1,
+    "pullback_rebound_max_wait_bars": 10,
+    "staged_rebound_wait_probe_enabled": true,
+    "staged_rebound_wait_probe_pct": 25.0,
+    "post_liquidation_recovery_probe_enabled": true,
+    "post_liquidation_early_probe_enabled": true,
+    "post_liquidation_early_probe_pct": 20.0,
+    "post_liquidation_early_probe_confirm_bars": 2,
+    "post_liquidation_early_probe_max_ema_atr": 1.0,
+    "post_liquidation_early_probe_stop_atr_multiplier": 2.0,
+    "uptrend_profit_trailing_enabled": true,
+    "uptrend_profit_trailing_atr_multiplier": 3.0,
+    "uptrend_profit_trailing_max_distance_pct": 12.0,
+    "uptrend_profit_recovery_add_enabled": false,
+    "uptrend_profit_recovery_confirm_bars": 2,
+    "uptrend_profit_recovery_restore_pct": 50.0,
+    "uptrend_profit_recovery_max_ema_atr": 1.0,
+    "uptrend_profit_recovery_max_ema_distance_pct": 4.0,
+    "uptrend_profit_recovery_min_stop_headroom_atr": 1.0,
+    "transition_residual_atr_multiplier": 1.5,
+    "transition_residual_min_distance_pct": 5.0,
+    "transition_residual_max_distance_pct": 10.0
+  }
+}

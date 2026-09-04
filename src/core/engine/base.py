@@ -24,7 +24,15 @@ from src.core.logic import (
     SplitEvaluator, build_dashboard_status, detect_mismatches, drain_lots_by_qty,
 )
 from src.core.logic.chart_builder import build_chart_series
+from src.core.logic.filter_events import update_filter_episodes
 from src.core.logic.regime_events import diff_regime_state, seed_events_from_state
+from src.core.logic.shadow_mode import (
+    SCORE_VERSION, SCORE_VERSION_V2, SCORE_VERSION_V3, SCORE_VERSION_V3_1,
+    SCORE_VERSION_V3_2,
+    compute_shadow_observations, update_shadow_states,
+    update_shadow_states_v2, update_shadow_states_v3, update_shadow_states_v3_1,
+    update_shadow_states_v3_2,
+)
 from src.core.logic.split_evaluator import clear_breakdown_confirmation
 from src.core.engine.registry import register_engine
 from src.utils.ticker_reader import display_ticker
@@ -114,15 +122,18 @@ class MagicSplitEngine:
             DayResult: 사이클 실행 결과
         """
         today = sim_date or datetime.now().strftime("%Y-%m-%d")
+        self._shadow_route_cache = {}
         self.stock_rules = self._order_rules(self.stock_rules)
 
         all_signals: List[SplitSignal] = []
         all_executions: List[TradeExecution] = []
         failed_tickers: List[str] = []
+        evaluated_tickers: Set[str] = set()
         portfolio: Optional[Portfolio] = None
         positions: Optional[List[PositionLot]] = None
         regime_state: dict = {}
         regime_before: dict = {}
+        shadow_state_before: dict = {}
         portfolio_refresh_failed: bool = False
 
         try:
@@ -133,6 +144,8 @@ class MagicSplitEngine:
             regime_state = self._load_regime_state()
             # 사이클 전 스냅샷. 종료 후 diff로 레짐 전이 이벤트를 뽑는다.
             regime_before = copy.deepcopy(regime_state)
+            if any(r.shadow_mode_v2_routing_enabled for r in self.stock_rules):
+                shadow_state_before = self.repo.load_shadow_mode_state()
 
             # Step 2.1: 상태 전환 감지 및 자동 초기화 (OFF -> ON)
             self._handle_state_transitions(positions, last_sell_prices, regime_state)
@@ -161,12 +174,33 @@ class MagicSplitEngine:
                         self.market_data.get_ohlc_window(rule.ticker, today)
                         if self.market_data is not None else None
                     )
-                    signals = self.evaluator.evaluate_stock(
-                        rule, positions, portfolio, last_sell_prices,
-                        ohlc_window=ohlc_window,
-                        regime_state=regime_state,
-                        evaluation_date=today,
+                    effective_rule = rule
+                    shadow_override = None
+                    if rule.shadow_mode_v2_routing_enabled:
+                        effective_rule, shadow_override = self._route_shadow_strategy(
+                            rule, positions, portfolio, ohlc_window, today,
+                            shadow_state_before, regime_state,
+                        )
+                    # 현재가를 확보한 직후 완성된 전일 종가와 비교한다.
+                    # 가격 단절이 의심되면 전략 평가와 모든 주문을 건너뛴다.
+                    anomaly_signal = self.evaluator.price_anomaly_signal(
+                        rule,
+                        portfolio.current_prices.get(rule.ticker, 0),
+                        ohlc_window,
                     )
+                    signals = (
+                        [anomaly_signal]
+                        if anomaly_signal is not None
+                        else shadow_override
+                        if shadow_override is not None
+                        else self.evaluator.evaluate_stock(
+                            effective_rule, positions, portfolio, last_sell_prices,
+                            ohlc_window=ohlc_window,
+                            regime_state=regime_state,
+                            evaluation_date=today,
+                        )
+                    )
+                    evaluated_tickers.add(rule.ticker)
 
                     # 신호 3-way 분류: blocked(경고) / info(상태보고) / active(주문)
                     blocked_signals = [s for s in signals if s.is_blocked]
@@ -275,6 +309,16 @@ class MagicSplitEngine:
                               last_sell_prices=last_sell_prices,
                               regime_state=regime_state,
                               skip_status=skip_status)
+                try:
+                    stamp = sim_date or datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                    self._record_filter_events(
+                        all_signals, persist_portfolio, regime_state, stamp,
+                        evaluated_tickers,
+                    )
+                except Exception as e:
+                    self.logger.warning(
+                        f"[Step 6] 차단 에피소드 저장 실패 (매매에는 영향 없음): {e}"
+                    )
                 # 레짐 전이 이벤트는 날짜별 이력이므로 차트 저장 정책과 무관하게
                 # 매 사이클 기록한다.
                 try:
@@ -284,6 +328,13 @@ class MagicSplitEngine:
                     )
                 except Exception as e:
                     self.logger.warning(f"[Step 6] 레짐 이벤트 저장 실패 (매매에는 영향 없음): {e}")
+                try:
+                    stamp = sim_date or datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                    self._record_shadow_modes(stamp, evaluated_tickers, persist_portfolio)
+                except Exception as e:
+                    self.logger.warning(
+                        f"[Step 6] 그림자 모드 저장 실패 (매매에는 영향 없음): {e}"
+                    )
 
                 # 대시보드 차트 데이터는 매매와 무관한 부가 산출물이다.
                 # on_demand(백테스트)에서는 runner가 전체 시뮬레이션 종료 후
@@ -854,7 +905,14 @@ class MagicSplitEngine:
 
             if exe.action == OrderAction.BUY:
                 sig = signal_map.get((exe.ticker, OrderAction.BUY))
+                exe.entry_trigger = sig.entry_trigger if sig is not None else None
                 level = sig.level if sig else 1
+                entry_state = (
+                    regime_state.get(exe.ticker, {})
+                    if regime_state is not None else {}
+                )
+                exe.entry_long_regime = entry_state.get("long_trend")
+                exe.entry_short_regime = entry_state.get("short_trend")
                 ts = datetime.now().strftime("%Y%m%d_%H%M%S")
                 lot_id = f"lot_{ts}_{exe.ticker}_{level:03d}"
                 new_lot = PositionLot(
@@ -864,6 +922,9 @@ class MagicSplitEngine:
                     quantity=exe.quantity,
                     buy_date=today,
                     level=level,
+                    entry_long_regime=exe.entry_long_regime,
+                    entry_short_regime=exe.entry_short_regime,
+                    entry_trigger=exe.entry_trigger,
                 )
                 updated.append(new_lot)
                 # 신규 lot이 last_lot이 되므로 동일 종목 기존 lot들의 trailing 상태 초기화.
@@ -887,6 +948,101 @@ class MagicSplitEngine:
                     st["last_add_swing_high"] = sig.regime_add_swing_high
                     st["last_add_price"] = exe.price
                     st["last_uptrend_add_date"] = today
+                # 상승→횡보 선제 감축은 실제 신규·추가매수 체결 후에만 재무장한다.
+                if regime_state is not None:
+                    st = regime_state.setdefault(exe.ticker, {})
+                    rule = next((r for r in self.all_stock_rules if r.ticker == exe.ticker), None)
+                    shadow_candidate = st.pop("shadow_entry_candidate", None)
+                    if shadow_candidate in ("trend", "range"):
+                        st["shadow_cycle_owner"] = shadow_candidate
+                    # ATR 수익보호 quota는 상승 정렬 복귀 시 재무장되므로,
+                    # 일반 매수 체결에서는 전환 감축 이력을 건드리지 않는다.
+                    if not (rule and rule.uptrend_profit_trailing_enabled):
+                        st.pop("transition_de_risked", None)
+                        for key in (
+                            "uptrend_sideways_transition_days",
+                            "uptrend_sideways_transition_last_date",
+                            "uptrend_sideways_transition_target_qty",
+                            "uptrend_sideways_transition_sold_qty",
+                        ):
+                            st.pop(key, None)
+                    for key in (
+                        "rebound_entry_armed", "rebound_entry_origin_regime",
+                        "rebound_entry_days", "rebound_entry_last_date",
+                        "rebound_entry_confirmed", "pullback_rebound_armed",
+                        "pullback_rebound_start_date", "pullback_rebound_low",
+                        "pullback_rebound_wait_days", "pullback_rebound_confirm_days",
+                        "staged_rebound_wait_probe_origin",
+                        "staged_rebound_wait_probe_days",
+                        "staged_rebound_wait_probe_last_date",
+                    ):
+                        st.pop(key, None)
+                    if (exe.entry_trigger
+                            and exe.entry_trigger.startswith("staged_rebound_probe_")):
+                        probe_origin = exe.entry_trigger.removeprefix(
+                            "staged_rebound_probe_"
+                        )
+                        st["staged_rebound_probe_open"] = True
+                        st["staged_rebound_probe_date"] = today
+                        st["staged_rebound_probe_origin"] = probe_origin
+                        st["staged_rebound_probe_pct"] = (
+                            rule.post_liquidation_early_probe_pct
+                            if rule and probe_origin == "post_liquidation_early_recovery"
+                            else
+                            rule.staged_rebound_wait_probe_pct
+                            if rule and probe_origin in (
+                                "aligned_persistent",
+                                "uptrend_short_sideways_persistent",
+                                "post_liquidation_recovery",
+                            )
+                            else rule.staged_rebound_probe_pct if rule else 50.0
+                        )
+                        if probe_origin in (
+                                "post_liquidation_recovery",
+                                "post_liquidation_early_recovery",
+                        ):
+                            # 주문 생성이 아닌 실제 체결 시점에만 게이트를 해제한다.
+                            for key in (
+                                "post_liquidation", "post_liquidation_reentry_gate",
+                                "aligned_downtrend_reentry_lock",
+                                "long_short_downtrend_liquidation_pending",
+                                "post_liquidation_exit_trigger",
+                                "post_liquidation_exit_long_regime",
+                                "post_liquidation_exit_short_regime",
+                                "post_liquidation_exit_price",
+                                "post_liquidation_exit_date",
+                            ):
+                                st.pop(key, None)
+                            st["post_liquidation_recovery_probe_date"] = today
+                            if probe_origin == "post_liquidation_early_recovery":
+                                st["post_liquidation_early_probe_stop_price"] = (
+                                    sig.early_probe_stop_price
+                                )
+                                st["post_liquidation_early_probe_atr"] = (
+                                    sig.early_probe_atr
+                                )
+                                st["post_liquidation_early_probe_date"] = today
+                    elif exe.entry_trigger == "staged_rebound_confirm_add":
+                        st.pop("staged_rebound_probe_open", None)
+                        st.pop("staged_rebound_probe_date", None)
+                        st.pop("staged_rebound_probe_origin", None)
+                        st.pop("staged_rebound_probe_pct", None)
+                        st.pop("post_liquidation_early_probe_stop_price", None)
+                        st.pop("post_liquidation_early_probe_atr", None)
+                    if exe.entry_trigger in (
+                            "uptrend_profit_recovery_add", "pullback_rebound_add"):
+                        tracker = st.get("uptrend_profit_trailing") or {}
+                        if tracker.get("recovery_add_pending"):
+                            for key in (
+                                "recovery_add_pending", "recovery_add_budget",
+                                "recovery_add_confirm_days", "recovery_add_origin",
+                            ):
+                                tracker.pop(key, None)
+                            if exe.entry_trigger == "uptrend_profit_recovery_add":
+                                st["last_uptrend_profit_recovery_add_date"] = today
+                                st["last_uptrend_profit_recovery_add_notional"] = (
+                                    exe.quantity * exe.price
+                                )
                 # 동적 재매수 소비: 매수 체결 시 직전 매도가 초기화
                 if last_sell_prices is not None and exe.ticker in last_sell_prices:
                     self.logger.info(
@@ -902,6 +1058,13 @@ class MagicSplitEngine:
 
             elif exe.action == OrderAction.SELL:
                 sig = signal_map.get((exe.ticker, OrderAction.SELL))
+                if sig is not None:
+                    exe.exit_trigger = sig.exit_trigger
+                    exe.exit_long_regime = sig.exit_long_regime
+                    exe.exit_short_regime = sig.exit_short_regime
+                    exe.profit_trailing_origin = sig.profit_trailing_origin
+                    exe.profit_trailing_atr = sig.profit_trailing_atr
+                    exe.profit_trailing_pre_partial_high = sig.profit_trailing_pre_partial_high
 
                 # 통합 전량청산(Bulk Sell): lot_id 없는 청산 매도는 체결 수량을
                 # 고차수(High Level)부터 순차 차감하며 lot을 지운다. 손익은 차감한
@@ -918,6 +1081,16 @@ class MagicSplitEngine:
                     updated = self._apply_partial_liquidation(
                         updated, exe, disp, last_sell_prices, regime_state,
                         reentry_gate=sig.reentry_gate or "resistance",
+                    )
+                    continue
+
+                # 상승 추적/상승→횡보 공유 감축: 체결 후 잔량 ATR 가드를 활성화한다.
+                if (sig is not None and (
+                        sig.transition_partial_liquidation
+                        or sig.profit_trailing_partial_liquidation)
+                        and sig.lot_id is None):
+                    updated = self._apply_transition_partial_liquidation(
+                        updated, exe, disp, last_sell_prices, regime_state,
                     )
                     continue
 
@@ -940,6 +1113,10 @@ class MagicSplitEngine:
 
                 if target_lot is None:
                     continue
+
+                exe.entry_long_regime = target_lot.entry_long_regime
+                exe.entry_short_regime = target_lot.entry_short_regime
+                exe.entry_trigger = target_lot.entry_trigger
 
                 if (exe.status == ExecutionStatus.PARTIAL
                         and exe.quantity < target_lot.quantity):
@@ -977,6 +1154,10 @@ class MagicSplitEngine:
                         self._reset_regime_after_flat(
                             regime_state, exe.ticker,
                             mark_liquidation=True, reentry_gate="midline",
+                            exit_trigger=exe.exit_trigger,
+                            exit_long_regime=exe.exit_long_regime,
+                            exit_short_regime=exe.exit_short_regime,
+                            exit_price=exe.price, exit_date=exe.date,
                         )
 
         return updated
@@ -999,6 +1180,11 @@ class MagicSplitEngine:
     def _reset_regime_after_flat(
         regime_state: dict, ticker: str, mark_liquidation: bool = False,
         reentry_gate: str = "resistance",
+        exit_trigger: Optional[str] = None,
+        exit_long_regime: Optional[str] = None,
+        exit_short_regime: Optional[str] = None,
+        exit_price: Optional[float] = None,
+        exit_date: Optional[str] = None,
     ) -> None:
         """전량 청산(잔여 0) 후 레짐 상태를 리셋하되 하락 래치 키는 보존한다.
 
@@ -1023,12 +1209,23 @@ class MagicSplitEngine:
                 "long_trend", "short_trend", "previous_long_regime", "previous_short_regime",
                 "long_downtrend_lock", "aligned_downtrend_reentry_lock",
                 "long_short_downtrend_liquidation_pending",
+                "shadow_last_normal_mode",
             )
             if k in st
         }
         if mark_liquidation:
             kept["post_liquidation"] = True
             kept["post_liquidation_reentry_gate"] = reentry_gate
+            if exit_trigger is not None:
+                kept["post_liquidation_exit_trigger"] = exit_trigger
+                if exit_long_regime is not None:
+                    kept["post_liquidation_exit_long_regime"] = exit_long_regime
+                if exit_short_regime is not None:
+                    kept["post_liquidation_exit_short_regime"] = exit_short_regime
+                if exit_price is not None:
+                    kept["post_liquidation_exit_price"] = exit_price
+                if exit_date is not None:
+                    kept["post_liquidation_exit_date"] = exit_date
         if kept:
             regime_state[ticker] = kept
         else:
@@ -1081,6 +1278,10 @@ class MagicSplitEngine:
             self._reset_regime_after_flat(
                 regime_state, exe.ticker, mark_liquidation=True,
                 reentry_gate=reentry_gate,
+                exit_trigger=exe.exit_trigger,
+                exit_long_regime=exe.exit_long_regime,
+                exit_short_regime=exe.exit_short_regime,
+                exit_price=exe.price, exit_date=exe.date,
             )
         return updated
 
@@ -1124,24 +1325,33 @@ class MagicSplitEngine:
                 self._reset_regime_after_flat(
                     regime_state, exe.ticker, mark_liquidation=True,
                     reentry_gate=reentry_gate,
+                    exit_trigger=exe.exit_trigger,
+                    exit_long_regime=exe.exit_long_regime,
+                    exit_short_regime=exe.exit_short_regime,
+                    exit_price=exe.price, exit_date=exe.date,
                 )
                 self.logger.info(f"[{disp}] 분할 청산 후 잔량 없음 -> 레짐 상태 초기화 (하락 래치 보존)")
             else:
                 st = regime_state.setdefault(exe.ticker, {})
 
+                st["downtrend_partially_liquidated"] = True
                 rule = next((r for r in self.stock_rules if r.ticker == exe.ticker), None)
                 if rule is None:
                     rule = next((r for r in self.all_stock_rules if r.ticker == exe.ticker), None)
-
                 drop_pct = rule.trendbreak_trailing_drop_pct if rule is not None else 3.0
-
-                st["downtrend_partially_liquidated"] = True
-                st["trailing_lock"] = {
+                trailing_lock = {
                     "active": True,
                     "lock_price": exe.price,
                     "drop_pct": drop_pct,
                     "reentry_gate": reentry_gate,
                 }
+                if exe.exit_trigger is not None:
+                    trailing_lock["exit_trigger"] = exe.exit_trigger
+                if exe.exit_long_regime is not None:
+                    trailing_lock["exit_long_regime"] = exe.exit_long_regime
+                if exe.exit_short_regime is not None:
+                    trailing_lock["exit_short_regime"] = exe.exit_short_regime
+                st["trailing_lock"] = trailing_lock
                 # 청산이 실제로 반영된 지금이 확정 카운터를 비울 시점이다.
                 # (신호 시점에 비우면 주문 거절 시 확정을 잃는다)
                 clear_breakdown_confirmation(st)
@@ -1151,6 +1361,125 @@ class MagicSplitEngine:
                     f"하락 허용치 {drop_pct}%)"
                 )
 
+        return updated
+
+    def _apply_transition_partial_liquidation(
+        self,
+        updated: List[PositionLot],
+        exe: TradeExecution,
+        disp: str,
+        last_sell_prices: Optional[dict],
+        regime_state: Optional[dict],
+    ) -> List[PositionLot]:
+        """상승 추적/상승→횡보가 공유하는 1회 감축 체결과 잔량 ATR 가드."""
+        updated, consumed = self._drain_lots_by_qty(
+            updated, exe.ticker, exe.quantity, exe,
+        )
+        if consumed > 0 and last_sell_prices is not None:
+            last_sell_prices[exe.ticker] = exe.price
+
+        remaining = [l for l in updated if l.ticker == exe.ticker]
+        self.logger.info(
+            f"[Position] 상승→횡보 선제 감축: {disp} "
+            f"{format_qty(consumed, self.market_type)} 소진 "
+            f"(잔여 {format_qty(sum(l.quantity for l in remaining), self.market_type)}), "
+            f"실현손익 {format_money(exe.realized_pnl, self.market_type)}"
+        )
+
+        if regime_state is not None and consumed > 0:
+            st = regime_state.setdefault(exe.ticker, {})
+            rule = next((r for r in self.stock_rules if r.ticker == exe.ticker), None)
+            if rule is None:
+                rule = next((r for r in self.all_stock_rules if r.ticker == exe.ticker), None)
+            if not (rule and rule.uptrend_profit_trailing_enabled):
+                sold_key = "uptrend_sideways_transition_sold_qty"
+                target_key = "uptrend_sideways_transition_target_qty"
+                sold_qty = float(st.get(sold_key, 0) or 0) + consumed
+                st[sold_key] = sold_qty
+                target_qty = float(st.get(target_key, sold_qty) or sold_qty)
+                if sold_qty + 1e-12 >= target_qty:
+                    st["transition_de_risked"] = True
+                    for key in (
+                        "uptrend_sideways_transition_days",
+                        "uptrend_sideways_transition_last_date",
+                        target_key, sold_key,
+                    ):
+                        st.pop(key, None)
+                if not remaining:
+                    self._reset_regime_after_flat(
+                        regime_state, exe.ticker, mark_liquidation=True,
+                        reentry_gate="midline",
+                        exit_trigger=exe.exit_trigger,
+                        exit_long_regime=exe.exit_long_regime,
+                        exit_short_regime=exe.exit_short_regime,
+                        exit_price=exe.price, exit_date=exe.date,
+                    )
+                return updated
+            tracker = st.setdefault("uptrend_profit_trailing", {})
+            sold_key = "uptrend_sideways_transition_sold_qty"
+            target_key = "uptrend_sideways_transition_target_qty"
+            target_qty = float(
+                tracker.get("target_qty", st.get(target_key, consumed)) or consumed
+            )
+            sold_qty = float(tracker.get("sold_qty", st.get(sold_key, 0)) or 0) + consumed
+            sold_notional = float(tracker.get("sold_notional", 0) or 0) + consumed * exe.price
+            tracker.update({
+                "phase": "partial_pending",
+                "origin": tracker.get("origin") or exe.profit_trailing_origin or "sideways_transition",
+                "target_qty": target_qty,
+                "sold_qty": sold_qty,
+                "sold_notional": sold_notional,
+                "atr_snapshot": float(
+                    tracker.get("atr_snapshot") or exe.profit_trailing_atr or 0
+                ),
+                "pre_partial_high": float(
+                    tracker.get("pre_partial_high")
+                    or exe.profit_trailing_pre_partial_high or exe.price
+                ),
+            })
+            st[sold_key] = sold_qty
+            if sold_qty + 1e-12 >= target_qty:
+                st["transition_de_risked"] = True
+                if rule and rule.uptrend_profit_trailing_enabled:
+                    st["uptrend_profit_partial_de_risked"] = True
+                for key in (
+                    "uptrend_sideways_transition_days",
+                    "uptrend_sideways_transition_last_date",
+                    target_key,
+                    sold_key,
+                ):
+                    st.pop(key, None)
+                if remaining and rule and rule.uptrend_profit_trailing_enabled:
+                    anchor = sold_notional / sold_qty
+                    atr = float(tracker["atr_snapshot"])
+                    raw_distance = rule.transition_residual_atr_multiplier * atr
+                    min_distance = anchor * rule.transition_residual_min_distance_pct / 100
+                    max_distance = anchor * rule.transition_residual_max_distance_pct / 100
+                    distance = min(max(raw_distance, min_distance), max_distance)
+                    tracker.update({
+                        "phase": "residual_guard", "active": True,
+                        "residual_anchor_price": anchor,
+                        "residual_atr_snapshot": atr,
+                        "residual_distance": distance,
+                        "residual_stop_price": anchor - distance,
+                    })
+                    self.logger.info(
+                        f"[{disp}] 잔량 ATR 수익보호 활성화 "
+                        f"(실제 감축 평균가 {format_money(anchor, self.market_type)}, "
+                        f"보호선 {format_money(anchor - distance, self.market_type)})"
+                    )
+                else:
+                    st.pop("uptrend_profit_trailing", None)
+
+        if regime_state is not None and not remaining:
+            self._reset_regime_after_flat(
+                regime_state, exe.ticker, mark_liquidation=True,
+                reentry_gate="midline",
+                exit_trigger=exe.exit_trigger,
+                exit_long_regime=exe.exit_long_regime,
+                exit_short_regime=exe.exit_short_regime,
+                exit_price=exe.price, exit_date=exe.date,
+            )
         return updated
 
     def _apply_trailing_bulk(
@@ -1191,6 +1520,10 @@ class MagicSplitEngine:
                 regime_state, exe.ticker,
                 mark_liquidation=self._uses_full_liquidation_reentry_gate(exe.ticker),
                 reentry_gate="midline",
+                exit_trigger=exe.exit_trigger,
+                exit_long_regime=exe.exit_long_regime,
+                exit_short_regime=exe.exit_short_regime,
+                exit_price=exe.price, exit_date=exe.date,
             )
         return updated
 
@@ -1256,6 +1589,26 @@ class MagicSplitEngine:
             regime_state_by_ticker=regime_state,
         )
         self.repo.save_status(status_data)
+
+    def _record_filter_events(
+        self,
+        signals: List[SplitSignal],
+        portfolio: Portfolio,
+        regime_state: dict,
+        stamp: str,
+        evaluated_tickers: Set[str],
+    ) -> None:
+        """전략적 매수 차단을 중복 없는 START/END 에피소드로 적재한다."""
+        previous = self.repo.load_filter_episode_state()
+        events, active_state = update_filter_episodes(
+            previous,
+            signals,
+            stamp,
+            portfolio.current_prices,
+            regime_state,
+            evaluated_tickers=evaluated_tickers,
+        )
+        self.repo.save_filter_episode_update(events, active_state)
 
     def generate_chart_artifacts(self, sim_date: Optional[str] = None) -> None:
         """현재 저장된 상태를 기준으로 대시보드 차트를 한 번 생성한다.
@@ -1345,6 +1698,229 @@ class MagicSplitEngine:
                     f"[Step 6] 레짐 이벤트 이력 초기화: 진행 중 상태 {len(events)}건 시딩"
                 )
         self.repo.save_regime_events(events)
+
+    def _record_shadow_modes(
+        self, stamp: str, evaluated_tickers: Set[str], portfolio: Portfolio,
+    ) -> None:
+        """가격행동 전략모드를 기록한다.
+
+        기본적으로 주문과 분리된다. 명시적인 V2 라우팅 실험에서는 같은 입력으로
+        종목 평가 전에 계산된 상태가 새 사이클의 전략 선택에만 사용된다.
+        """
+        if self.market_data is None:
+            return
+        day = stamp[:10]
+        observations_v1, observations_v2 = [], []
+        observations_v3, observations_v3_1, observations_v3_2 = [], [], []
+        for rule in self.stock_rules:
+            if not rule.enabled or not (
+                    rule.shadow_mode_enabled or rule.shadow_mode_v2_enabled
+                    or rule.shadow_mode_v3_enabled
+                    or rule.shadow_mode_v3_1_enabled
+                    or rule.shadow_mode_v3_2_enabled):
+                continue
+            if rule.ticker not in evaluated_tickers:
+                continue
+            cached = getattr(self, "_shadow_route_cache", {}).get(rule.ticker, {})
+            needs_uncached = (
+                rule.shadow_mode_enabled
+                or rule.shadow_mode_v3_enabled
+                or rule.shadow_mode_v3_1_enabled
+                or (rule.shadow_mode_v2_enabled and SCORE_VERSION_V2 not in cached)
+                or rule.shadow_mode_v3_2_enabled
+            )
+            if not needs_uncached:
+                continue
+            window = self.market_data.get_ohlc_window(rule.ticker, day)
+            rows = compute_shadow_observations(
+                rule, window, day, portfolio.current_prices.get(rule.ticker, 0.0),
+                include_v2=rule.shadow_mode_v2_enabled,
+                include_v3=rule.shadow_mode_v3_enabled,
+                include_v3_1=rule.shadow_mode_v3_1_enabled,
+                include_v3_2=rule.shadow_mode_v3_2_enabled,
+            )
+            by_version = {row["score_version"]: row for row in rows}
+            if rule.shadow_mode_enabled:
+                observations_v1.append(by_version[SCORE_VERSION])
+            if rule.shadow_mode_v2_enabled and SCORE_VERSION_V2 not in cached:
+                observations_v2.append(by_version[SCORE_VERSION_V2])
+            if rule.shadow_mode_v3_enabled:
+                observations_v3.append(by_version[SCORE_VERSION_V3])
+            if rule.shadow_mode_v3_1_enabled:
+                observations_v3_1.append(by_version[SCORE_VERSION_V3_1])
+            if rule.shadow_mode_v3_2_enabled:
+                observations_v3_2.append(by_version[SCORE_VERSION_V3_2])
+        if (not observations_v1 and not observations_v2
+                and not observations_v3 and not observations_v3_1
+                and not observations_v3_2
+                and not getattr(self, "_shadow_route_cache", {})):
+            return
+        stored = self.repo.load_shadow_mode_state()
+        versioned = any(
+            version in stored
+            for version in (
+                SCORE_VERSION, SCORE_VERSION_V2, SCORE_VERSION_V3,
+                SCORE_VERSION_V3_1, SCORE_VERSION_V3_2,
+            )
+        )
+        previous_v1 = stored.get(SCORE_VERSION, {}) if versioned else stored
+        previous_v2 = stored.get(SCORE_VERSION_V2, {}) if versioned else {}
+        previous_v3 = stored.get(SCORE_VERSION_V3, {}) if versioned else {}
+        previous_v3_1 = stored.get(SCORE_VERSION_V3_1, {}) if versioned else {}
+        previous_v3_2 = stored.get(SCORE_VERSION_V3_2, {}) if versioned else {}
+        events, scores = [], []
+        state = {
+            version: stored[version]
+            for version in (
+                SCORE_VERSION, SCORE_VERSION_V2, SCORE_VERSION_V3,
+                SCORE_VERSION_V3_1, SCORE_VERSION_V3_2,
+            )
+            if versioned and version in stored
+        }
+        route_cache = getattr(self, "_shadow_route_cache", {})
+        cached_updates = [
+            ticker_cache[SCORE_VERSION_V2]
+            for ticker_cache in route_cache.values()
+            if SCORE_VERSION_V2 in ticker_cache
+        ]
+        if cached_updates:
+            version_state = dict(previous_v2)
+            for update in cached_updates:
+                events.extend(update["events"])
+                scores.extend(update["scores"])
+                version_state[update["ticker"]] = update["state"]
+            state[SCORE_VERSION_V2] = version_state
+        if observations_v1:
+            version_events, version_state, version_scores = update_shadow_states(
+                previous_v1, observations_v1, day,
+            )
+            events.extend(version_events)
+            scores.extend(version_scores)
+            state[SCORE_VERSION] = version_state
+        if observations_v2:
+            version_events, version_state, version_scores = update_shadow_states_v2(
+                previous_v2, observations_v2, day,
+            )
+            events.extend(version_events)
+            scores.extend(version_scores)
+            state[SCORE_VERSION_V2] = version_state
+        if observations_v3:
+            version_events, version_state, version_scores = update_shadow_states_v3(
+                previous_v3, observations_v3, day,
+            )
+            events.extend(version_events)
+            scores.extend(version_scores)
+            state[SCORE_VERSION_V3] = version_state
+        if observations_v3_1:
+            version_events, version_state, version_scores = update_shadow_states_v3_1(
+                previous_v3_1, observations_v3_1, day,
+            )
+            events.extend(version_events)
+            scores.extend(version_scores)
+            state[SCORE_VERSION_V3_1] = version_state
+        if observations_v3_2:
+            version_events, version_state, version_scores = update_shadow_states_v3_2(
+                previous_v3_2, observations_v3_2, day,
+            )
+            events.extend(version_events)
+            scores.extend(version_scores)
+            state[SCORE_VERSION_V3_2] = version_state
+        self.repo.save_shadow_mode_update(scores, events, state)
+
+    def _route_shadow_strategy(
+        self,
+        rule: StockRule,
+        positions: List[PositionLot],
+        portfolio: Portfolio,
+        ohlc_window,
+        day: str,
+        stored_shadow_state: dict,
+        regime_state: dict,
+    ) -> Tuple[StockRule, Optional[List[SplitSignal]]]:
+        """V2가 새 사이클의 전략만 선택하도록 유효 규칙을 만든다.
+
+        이미 열린 사이클은 ``shadow_cycle_owner``를 계속 사용한다. 따라서 경계에서
+        그림자 상태가 바뀌어도 보유 중인 포지션의 전략이 왕복 전환되지 않는다.
+        """
+        price = float(portfolio.current_prices.get(rule.ticker, 0) or 0)
+        rows = compute_shadow_observations(
+            rule, ohlc_window, day, price,
+            include_v2=True,
+        )
+        by_version = {row["score_version"]: row for row in rows}
+        stored = stored_shadow_state or {}
+        versioned = any(
+            version in stored
+            for version in (
+                SCORE_VERSION, SCORE_VERSION_V2, SCORE_VERSION_V3,
+                SCORE_VERSION_V3_1, SCORE_VERSION_V3_2,
+            )
+        )
+        previous_v2 = stored.get(SCORE_VERSION_V2, {}) if versioned else {}
+        events_v2, state_v2, scores_v2 = update_shadow_states_v2(
+            previous_v2, [by_version[SCORE_VERSION_V2]], day,
+        )
+        route_cache = getattr(self, "_shadow_route_cache", None)
+        if route_cache is not None:
+            route_cache.setdefault(rule.ticker, {})[SCORE_VERSION_V2] = {
+                "ticker": rule.ticker,
+                "events": events_v2,
+                "scores": scores_v2,
+                "state": state_v2[rule.ticker],
+            }
+        v2_state = scores_v2[0]["effective_state"]
+
+        ticker_lots = [lot for lot in positions if lot.ticker == rule.ticker]
+        st = regime_state.setdefault(rule.ticker, {})
+        st["shadow_v2_effective_state"] = v2_state
+        if v2_state in ("trend", "range"):
+            st["shadow_last_normal_mode"] = v2_state
+
+        owner = st.get("shadow_cycle_owner")
+        if ticker_lots:
+            # 배포 전부터 있던 포지션에는 소유자가 없으므로 기존 정적 설정을 유지한다.
+            if owner not in ("trend", "range"):
+                return rule, None
+            return self._shadow_effective_rule(rule, owner), None
+
+        st.pop("shadow_cycle_owner", None)
+        st.pop("shadow_entry_candidate", None)
+
+        if v2_state == "risk_off":
+            return rule, [self._shadow_buy_blocked(
+                rule, price, "V2 risk_off - 새 사이클 진입 차단",
+            )]
+
+        selected = (
+            v2_state if v2_state in ("trend", "range")
+            else st.get("shadow_last_normal_mode")
+        )
+        if selected not in ("trend", "range"):
+            return rule, [self._shadow_buy_blocked(
+                rule, price, "V2 neutral - 확정된 이전 전략모드 대기",
+            )]
+        st["shadow_entry_candidate"] = selected
+        return self._shadow_effective_rule(rule, selected), None
+
+    @staticmethod
+    def _shadow_effective_rule(rule: StockRule, mode: str) -> StockRule:
+        if mode == "trend":
+            return replace(
+                rule, trend_only_enabled=True, trend_entry_mode="staged_rebound",
+            )
+        return replace(
+            rule, trend_only_enabled=False, trend_entry_mode="aligned",
+        )
+
+    @staticmethod
+    def _shadow_buy_blocked(
+        rule: StockRule, price: float, reason: str,
+    ) -> SplitSignal:
+        return SplitSignal(
+            ticker=rule.ticker, lot_id=None, action=OrderAction.BUY,
+            quantity=0, price=price, reason=reason, pct_change=0.0,
+            level=1, is_blocked=True,
+        )
 
     def _build_trade_markers(self, ticker: str, limit: int = 60) -> List[dict]:
         """차트에 찍을 최근 매매 마커를 history에서 추린다."""

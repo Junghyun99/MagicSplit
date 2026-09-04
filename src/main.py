@@ -106,22 +106,30 @@ class MagicSplitBot:
         )
 
     def _create_market_data(self, rules):
-        """레짐 필터 사용 종목이 있으면 마켓별 과거 일봉 제공자를 생성한다.
+        """국내 가격 단절 검사와 레짐 판정을 위한 과거 일봉 제공자를 생성한다.
 
-        레짐 미사용이면 None (기존 동작 - 다운로드 비용 없음).
-        domestic/overseas -> yfinance, crypto -> 업비트 공개 캔들 API.
+        국내는 레짐 미사용 시에도 전일 종가 검사에 필요한 최소 윈도우를
+        요청한다. 해외·코인은 레짐을 사용할 때만 제공자를 생성한다.
         """
+        if not rules:
+            return None
         regime_rules = [r for r in rules if r.regime_enabled]
-        if not regime_rules:
+        price_anomaly_rules = rules if self.market_type == "domestic" else []
+        market_data_rules = rules if price_anomaly_rules else regime_rules
+        if not market_data_rules:
             return None
 
         # ma_adx는 regime_min_bars(기본 200), channel은 channel_lookback(기본 63)만큼
-        # 필요하므로 큰 쪽 기준 + 지표 워밍업 여유
-        window_size = max(
-            max((r.regime_min_bars for r in regime_rules), default=200),
-            max((r.channel_lookback for r in regime_rules), default=63),
-            max((r.long_channel_lookback for r in regime_rules if r.multi_horizon_regime_enabled), default=0),
-        ) + 60
+        # 필요하므로 큰 쪽 기준 + 지표 워밍업 여유. 국내에서 레짐이 모두
+        # 꺼져 있으면 가격 단절 검사에 충분한 최근 5봉만 요청한다.
+        window_size = (
+            max(
+                max((r.regime_min_bars for r in regime_rules), default=200),
+                max((r.channel_lookback for r in regime_rules), default=63),
+                max((r.long_channel_lookback for r in regime_rules if r.multi_horizon_regime_enabled), default=0),
+            ) + 60
+            if regime_rules else 5
+        )
 
         from src.infra.data import UpbitMarketDataProvider, YFinanceMarketDataProvider
         if self.market_type == "crypto":
@@ -129,10 +137,11 @@ class MagicSplitBot:
         else:
             provider = YFinanceMarketDataProvider(
                 self.logger, window_size=window_size,
-                tickers=[r.ticker for r in regime_rules],
+                tickers=[r.ticker for r in market_data_rules],
             )
         self.logger.info(
-            f"[MarketData] 레짐 필터 활성 종목 {len(regime_rules)}개 -> "
+            f"[MarketData] 국내 가격 단절 검사 {len(price_anomaly_rules)}종목 / "
+            f"레짐 필터 {len(regime_rules)}종목 -> "
             f"{type(provider).__name__} 주입 (window {window_size}봉)"
         )
         return provider

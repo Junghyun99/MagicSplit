@@ -102,9 +102,72 @@ class StockRule:
     trendbreak_trailing_drop_pct: float = 3.0   # 잔량 추종 데드라인 하락 허용치(%)
     # 장·단기(252/63봉) 레짐 레이어. 기본 OFF로 기존 channel 동작을 보존한다.
     multi_horizon_regime_enabled: bool = False
+    # 장·단기 모두 상승일 때만 진입·추가매수하고, 횟보 중에는 보유만 한다.
+    trend_only_enabled: bool = False
+    # 추세 전용 최초 진입 방식: aligned=상승 정렬, rebound=반등 확인,
+    # staged_rebound=회복 구간 탐색 진입 후 상승 정렬에서 완성.
+    trend_entry_mode: str = "aligned"
+    rebound_entry_confirm_bars: int = 2
+    rebound_entry_require_midline: bool = True
+    staged_rebound_probe_pct: float = 50.0
+    staged_rebound_allow_long_sideways: bool = True
+    staged_rebound_require_long_midline: bool = True
+    staged_rebound_require_nonnegative_long_slope: bool = True
+    # 정확한 레짐 전환일을 놓친 경우 상태 지속 확인 후 소액 탐색 진입한다.
+    staged_rebound_wait_probe_enabled: bool = False
+    staged_rebound_wait_probe_pct: float = 25.0
+    # 전량청산 게이트 해제 시 일반 진입으로 단절되지 않고 탐색 진입한다.
+    post_liquidation_recovery_probe_enabled: bool = False
+    # 비하락 청산 뒤 엄격한 중심선 게이트보다 먼저 소액으로 회복을 탐색한다.
+    post_liquidation_early_probe_enabled: bool = False
+    post_liquidation_early_probe_pct: float = 20.0
+    post_liquidation_early_probe_confirm_bars: int = 2
+    post_liquidation_early_probe_max_ema_atr: float = 1.0
+    post_liquidation_early_probe_stop_atr_multiplier: float = 2.0
+    pullback_rebound_confirm_bars: int = 1
+    pullback_rebound_max_wait_bars: int = 10
+    # rebound/staged_rebound의 눌림반등 추가매수에만 적용하는 금액 배율.
+    # 최초 진입과 다른 상승장 매수 정책의 예산은 바꾸지 않는다.
+    pullback_rebound_add_amount_multiplier: float = 1.0
+    # (장기 상승, 단기 상승) -> (장기 상승, 단기 횡보) 확정 시 선제 감축.
+    # 0이면 비활성화되어 기존 동작을 완전히 보존한다.
+    uptrend_sideways_transition_partial_sell_pct: float = 0.0
+    uptrend_sideways_transition_confirm_bars: int = 2
+    # 상승 추세 수익보호: 넓은 ATR 추적 후 1회 감축, 잔량은 더 좁은 ATR 가드로 보호.
+    uptrend_profit_trailing_enabled: bool = False
+    uptrend_profit_trailing_atr_multiplier: float = 3.0
+    uptrend_profit_trailing_max_distance_pct: float = 12.0
+    # 50% 감축 후 상승 정렬 복귀 시, 기존 눌림까지의 긴 공백을 줄이는 1회 복원매수.
+    uptrend_profit_recovery_add_enabled: bool = False
+    uptrend_profit_recovery_confirm_bars: int = 2
+    uptrend_profit_recovery_restore_pct: float = 50.0
+    uptrend_profit_recovery_max_ema_atr: float = 1.0
+    uptrend_profit_recovery_max_ema_distance_pct: float = 4.0
+    uptrend_profit_recovery_min_stop_headroom_atr: float = 1.0
+    transition_residual_atr_multiplier: float = 1.5
+    transition_residual_min_distance_pct: float = 5.0
+    transition_residual_max_distance_pct: float = 10.0
     long_channel_lookback: int = 252
     long_sideways_exposure_multiplier: float = 0.7
     long_uptrend_sideways_sell_multiplier: float = 1.5
+    # 주문과 분리된 가격행동 기반 전략모드 그림자 판정.
+    shadow_mode_enabled: bool = False
+    # 완화 점수·롤링 확인·위험 회복을 적용한 비교용 V2. V1과 동시 기록한다.
+    shadow_mode_v2_enabled: bool = False
+    # V2 점수에 단계형 위험 회복 탐색을 추가한 비교용 V3.
+    shadow_mode_v3_enabled: bool = False
+    # 최초 위험 진입에서 회복 이력을 보존하는 V3.1.
+    shadow_mode_v3_1_enabled: bool = False
+    # 구조적 위험을 유지하며 최근 저점 반전을 10%로 탐색하는 V3.2.
+    shadow_mode_v3_2_enabled: bool = False
+    # 실험용 주문 연결. 새 사이클에서만 V2의 trend/range 판정을 채택하고,
+    # 포지션이 모두 청산될 때까지 선택한 전략을 고정한다.
+    shadow_mode_v2_routing_enabled: bool = False
+    shadow_mode_trend_threshold: float = 65.0
+    shadow_mode_range_threshold: float = 65.0
+    shadow_mode_risk_threshold: float = 60.0
+    shadow_mode_risk_ceiling: float = 40.0
+    shadow_mode_score_margin: float = 10.0
 
     def __post_init__(self):
         if self.buy_threshold_pct is None and not self.buy_threshold_pcts:
@@ -133,6 +196,176 @@ class StockRule:
             raise ValueError(
                 f"StockRule({self.ticker}): spread_threshold_pct는 0 이상이어야 합니다. "
                 f"got {self.spread_threshold_pct}"
+            )
+
+        if self.trend_only_enabled and not (
+                self.regime_enabled
+                and self.regime_algo == "channel"
+                and self.multi_horizon_regime_enabled):
+            raise ValueError(
+                f"StockRule({self.ticker}): trend_only_enabled는 "
+                "regime_enabled=true, regime_algo='channel', "
+                "multi_horizon_regime_enabled=true 조합이 필요합니다."
+            )
+        if (self.shadow_mode_enabled or self.shadow_mode_v2_enabled
+                or self.shadow_mode_v3_enabled
+                or self.shadow_mode_v3_1_enabled
+                or self.shadow_mode_v3_2_enabled
+                or self.shadow_mode_v2_routing_enabled) and not (
+                self.regime_enabled and self.regime_algo == "channel"):
+            raise ValueError(
+                f"StockRule({self.ticker}): shadow_mode_enabled/shadow_mode_v2_enabled/"
+                "shadow_mode_v3_enabled/shadow_mode_v3_1_enabled/"
+                "shadow_mode_v3_2_enabled는 "
+                "regime_enabled=true, regime_algo='channel' 조합이 필요합니다."
+            )
+        if self.shadow_mode_v2_routing_enabled and not (
+                self.shadow_mode_v2_enabled
+                and self.multi_horizon_regime_enabled):
+            raise ValueError(
+                f"StockRule({self.ticker}): shadow_mode_v2_routing_enabled는 "
+                "shadow_mode_v2_enabled=true, multi_horizon_regime_enabled=true가 필요합니다."
+            )
+        if (not math.isfinite(self.pullback_rebound_add_amount_multiplier)
+                or not 0 <= self.pullback_rebound_add_amount_multiplier <= 1):
+            raise ValueError(
+                f"StockRule({self.ticker}): pullback_rebound_add_amount_multiplier는 "
+                "0 이상 1 이하여야 합니다."
+            )
+        for name in (
+            "shadow_mode_trend_threshold", "shadow_mode_range_threshold",
+            "shadow_mode_risk_threshold", "shadow_mode_risk_ceiling",
+            "shadow_mode_score_margin",
+        ):
+            value = getattr(self, name)
+            if not math.isfinite(value) or not 0 <= value <= 100:
+                raise ValueError(f"StockRule({self.ticker}): {name}는 0~100 범위여야 합니다.")
+        if self.trend_entry_mode not in ("aligned", "rebound", "staged_rebound"):
+            raise ValueError(
+                f"StockRule({self.ticker}): trend_entry_mode는 'aligned', 'rebound', "
+                "'staged_rebound' 중 하나여야 합니다."
+            )
+        if self.trend_entry_mode in ("rebound", "staged_rebound") and not (
+                self.trend_only_enabled
+                and self.regime_enabled
+                and self.regime_algo == "channel"
+                and self.multi_horizon_regime_enabled):
+            raise ValueError(
+                f"StockRule({self.ticker}): rebound 진입 계열은 trend_only_enabled=true, "
+                "regime_enabled=true, regime_algo='channel', "
+                "multi_horizon_regime_enabled=true 조합이 필요합니다."
+            )
+        if not (0 < self.staged_rebound_probe_pct < 100):
+            raise ValueError(
+                f"StockRule({self.ticker}): staged_rebound_probe_pct는 0 초과 100 미만이어야 합니다."
+            )
+        if not (0 < self.staged_rebound_wait_probe_pct < 100):
+            raise ValueError(
+                f"StockRule({self.ticker}): staged_rebound_wait_probe_pct는 "
+                "0 초과 100 미만이어야 합니다."
+            )
+        if not (0 < self.post_liquidation_early_probe_pct < 100):
+            raise ValueError(
+                f"StockRule({self.ticker}): post_liquidation_early_probe_pct는 "
+                "0 초과 100 미만이어야 합니다."
+            )
+        if (self.staged_rebound_wait_probe_enabled
+                or self.post_liquidation_recovery_probe_enabled
+                or self.post_liquidation_early_probe_enabled) and not (
+                    self.trend_entry_mode == "staged_rebound"
+                    and self.trend_only_enabled
+                    and self.regime_enabled
+                    and self.regime_algo == "channel"
+                    and self.multi_horizon_regime_enabled):
+            raise ValueError(
+                f"StockRule({self.ticker}): 단계형 반등 대기·게이트 탐색은 "
+                "trend_entry_mode='staged_rebound', trend_only_enabled=true, "
+                "regime_enabled=true, regime_algo='channel', "
+                "multi_horizon_regime_enabled=true 조합이 필요합니다."
+            )
+        for name, value in (
+            ("rebound_entry_confirm_bars", self.rebound_entry_confirm_bars),
+            ("post_liquidation_early_probe_confirm_bars",
+             self.post_liquidation_early_probe_confirm_bars),
+            ("pullback_rebound_confirm_bars", self.pullback_rebound_confirm_bars),
+            ("pullback_rebound_max_wait_bars", self.pullback_rebound_max_wait_bars),
+            ("uptrend_profit_recovery_confirm_bars", self.uptrend_profit_recovery_confirm_bars),
+        ):
+            if (not isinstance(value, int) or isinstance(value, bool) or value < 1):
+                raise ValueError(f"StockRule({self.ticker}): {name}는 1 이상의 정수여야 합니다.")
+        for name, value in (
+            ("post_liquidation_early_probe_max_ema_atr",
+             self.post_liquidation_early_probe_max_ema_atr),
+            ("post_liquidation_early_probe_stop_atr_multiplier",
+             self.post_liquidation_early_probe_stop_atr_multiplier),
+        ):
+            if not math.isfinite(value) or value <= 0:
+                raise ValueError(f"StockRule({self.ticker}): {name}는 양수여야 합니다.")
+        if self.pullback_rebound_max_wait_bars < self.pullback_rebound_confirm_bars:
+            raise ValueError(
+                f"StockRule({self.ticker}): pullback_rebound_max_wait_bars는 "
+                "pullback_rebound_confirm_bars 이상이어야 합니다."
+            )
+
+        if not (0 <= self.uptrend_sideways_transition_partial_sell_pct < 100):
+            raise ValueError(
+                f"StockRule({self.ticker}): uptrend_sideways_transition_partial_sell_pct는 "
+                "0 이상 100 미만이어야 합니다."
+            )
+        if (not isinstance(self.uptrend_sideways_transition_confirm_bars, int)
+                or isinstance(self.uptrend_sideways_transition_confirm_bars, bool)
+                or self.uptrend_sideways_transition_confirm_bars < 1):
+            raise ValueError(
+                f"StockRule({self.ticker}): uptrend_sideways_transition_confirm_bars는 "
+                "1 이상의 정수여야 합니다."
+            )
+        if self.uptrend_sideways_transition_partial_sell_pct > 0 and not (
+                self.regime_enabled
+                and self.regime_algo == "channel"
+                and self.multi_horizon_regime_enabled):
+            raise ValueError(
+                f"StockRule({self.ticker}): 상승→횡보 선제청산은 "
+                "regime_enabled=true, regime_algo='channel', "
+                "multi_horizon_regime_enabled=true 조합이 필요합니다."
+            )
+        if self.uptrend_profit_trailing_enabled:
+            if not (
+                    self.regime_enabled
+                    and self.regime_algo == "channel"
+                    and self.multi_horizon_regime_enabled
+                    and self.uptrend_sideways_transition_partial_sell_pct > 0):
+                raise ValueError(
+                    f"StockRule({self.ticker}): uptrend_profit_trailing_enabled는 "
+                    "channel 장·단기 레짐과 0보다 큰 상승→횡보 선제청산 비율이 필요합니다."
+                )
+        if (self.uptrend_profit_recovery_add_enabled
+                and not self.uptrend_profit_trailing_enabled):
+            raise ValueError(
+                f"StockRule({self.ticker}): uptrend_profit_recovery_add_enabled는 "
+                "uptrend_profit_trailing_enabled=true가 필요합니다."
+            )
+        if not (0 < self.uptrend_profit_recovery_restore_pct <= 100):
+            raise ValueError(
+                f"StockRule({self.ticker}): uptrend_profit_recovery_restore_pct는 "
+                "0 초과 100 이하여야 합니다."
+            )
+        for name, value in (
+            ("uptrend_profit_trailing_atr_multiplier", self.uptrend_profit_trailing_atr_multiplier),
+            ("uptrend_profit_trailing_max_distance_pct", self.uptrend_profit_trailing_max_distance_pct),
+            ("uptrend_profit_recovery_max_ema_atr", self.uptrend_profit_recovery_max_ema_atr),
+            ("uptrend_profit_recovery_max_ema_distance_pct", self.uptrend_profit_recovery_max_ema_distance_pct),
+            ("uptrend_profit_recovery_min_stop_headroom_atr", self.uptrend_profit_recovery_min_stop_headroom_atr),
+            ("transition_residual_atr_multiplier", self.transition_residual_atr_multiplier),
+            ("transition_residual_min_distance_pct", self.transition_residual_min_distance_pct),
+            ("transition_residual_max_distance_pct", self.transition_residual_max_distance_pct),
+        ):
+            if value <= 0:
+                raise ValueError(f"StockRule({self.ticker}): {name}는 양수여야 합니다.")
+        if (self.transition_residual_min_distance_pct
+                > self.transition_residual_max_distance_pct):
+            raise ValueError(
+                f"StockRule({self.ticker}): transition_residual_min_distance_pct는 "
+                "transition_residual_max_distance_pct 이하여야 합니다."
             )
 
         if self.regime_enabled:
@@ -301,6 +534,9 @@ class PositionLot:
     buy_date: str        # 매수 일자
     level: int = 0       # 차수 (1차, 2차, ..., 100차). 0 = 레거시 데이터
     trailing_highest_price: Optional[float] = None  # 트레일링 스톱 활성화 이후 최고가
+    entry_long_regime: Optional[str] = None   # 매수 당시 장기 레짐 (손익 귀속용)
+    entry_short_regime: Optional[str] = None  # 매수 당시 단기 레짐 (손익 귀속용)
+    entry_trigger: Optional[str] = None       # 반등 최초진입/눌림 재상승 등 진입 원인
 
 
 @dataclass
@@ -349,6 +585,15 @@ class TradeExecution:
     # 각 항목: {lot_id, level, buy_price, quantity, realized_pnl}.
     # 저장 시 이 내역을 차수별 N개 레코드로 펼친다.
     liquidation_lots: Optional[List[dict]] = None
+    entry_long_regime: Optional[str] = None
+    entry_short_regime: Optional[str] = None
+    entry_trigger: Optional[str] = None
+    exit_trigger: Optional[str] = None
+    exit_long_regime: Optional[str] = None
+    exit_short_regime: Optional[str] = None
+    profit_trailing_origin: Optional[str] = None
+    profit_trailing_atr: Optional[float] = None
+    profit_trailing_pre_partial_high: Optional[float] = None
 
 
 @dataclass
@@ -368,14 +613,30 @@ class SplitSignal:
     # 상승장 누적매수(add) 신호 표식 + 체결 확정 시 기록할 스윙고점.
     # None이 아니면 "상승 add"이며, 매수 체결이 확정될 때 regime_state를 갱신한다.
     regime_add_swing_high: Optional[float] = None
+    # 체결 내역에서 최초 반등 진입과 눌림 재상승 추가매수를 구분한다.
+    entry_trigger: Optional[str] = None
+    # 전량청산 뒤 조기 탐색 체결 시 엔진이 보존할 고정 보호선.
+    early_probe_stop_price: Optional[float] = None
+    early_probe_atr: Optional[float] = None
     # 추세이탈 전량청산 매도 표식. 매도 체결이 확정될 때 regime_state를 리셋(flat 재시작)한다.
     regime_liquidation: bool = False
     # 채널 이탈 청산 뒤 적용할 신규 진입 게이트. 체결 확정 시 regime_state에 저장한다.
     # "midline"은 상승/횡보 채널 이탈, "resistance"는 하락 채널 청산에 사용한다.
     reentry_gate: Optional[str] = None
+    # 청산 당시 원인과 장·단기 레짐. 실행 내역에 복사해 사후 손익 분석에 사용한다.
+    exit_trigger: Optional[str] = None
+    exit_long_regime: Optional[str] = None
+    exit_short_regime: Optional[str] = None
     # 추세이탈 분할청산(Trailing Lock 1단계) 매도 표식.
     # 체결 시 잔량은 유지하고 trailing_lock 상태를 활성화한다.
     regime_partial_liquidation: bool = False
+    # 상승→횡보 선제 감축. 고차수 lot부터 차감한다.
+    transition_partial_liquidation: bool = False
+    # 상승 추세 ATR 수익보호의 공유 1회 감축. 전환 감축과 동일 quota를 쓴다.
+    profit_trailing_partial_liquidation: bool = False
+    profit_trailing_origin: Optional[str] = None
+    profit_trailing_atr: Optional[float] = None
+    profit_trailing_pre_partial_high: Optional[float] = None
     # 횡보장 trailing 벌크 매도 표식. 엔진이 _apply_trailing_bulk()로 라우팅.
     # regime_state 변경 없이 fired lot만 고차수부터 차감한다.
     trailing_bulk: bool = False

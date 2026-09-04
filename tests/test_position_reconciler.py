@@ -129,6 +129,18 @@ class TestDrainLotsByQty:
         assert [l.lot_id for l in out] == ["a1"]
         assert exe.liquidation_lots[0]["level"] == 2
 
+    def test_liquidation_breakdown_keeps_entry_regimes(self):
+        positions = [PositionLot(
+            "a1", "AAPL", 100.0, 5, "2026-04-01", level=1,
+            entry_long_regime="uptrend", entry_short_regime="uptrend",
+        )]
+        exe = self._exe("AAPL", 5, 120.0)
+
+        drain_lots_by_qty(positions, "AAPL", 5, exe)
+
+        assert exe.liquidation_lots[0]["entry_long_regime"] == "uptrend"
+        assert exe.liquidation_lots[0]["entry_short_regime"] == "uptrend"
+
     def test_partial_drain_keeps_lot_with_remainder(self):
         positions = [_lot("AAPL", 5, 1, "a1")]
         exe = self._exe("AAPL", 2, 120.0)

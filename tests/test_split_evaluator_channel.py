@@ -5,6 +5,7 @@
 청산 방식은 trendbreak_partial_sell_pct(50=절반+추종 데드라인, 100=전량)를 따른다.
 """
 import datetime
+from types import SimpleNamespace
 from unittest.mock import patch
 
 import numpy as np
@@ -44,6 +45,234 @@ def _uptrend_window(n=63, start=100.0, daily_pct=0.3):
 
 def _downtrend_window(n=63, start=100.0, daily_pct=-0.3):
     return _window(_geo(n, start, daily_pct))
+
+
+class TestUptrendProfitTrailing:
+    @staticmethod
+    def _rule():
+        return StockRule(
+            "AAPL", -5.0, 10.0, 500, 10,
+            regime_enabled=True, regime_algo="channel",
+            multi_horizon_regime_enabled=True,
+            uptrend_sideways_transition_partial_sell_pct=50.0,
+            uptrend_profit_trailing_enabled=True,
+        )
+
+    def test_activates_at_three_atr_then_partial_on_trailing_breach(self, evaluator):
+        rule = self._rule()
+        lots = [PositionLot("l1", "AAPL", 100.0, 10, "2026-01-01", 1)]
+        reading = SimpleNamespace(atr=5.0)
+        multi = {"long": Regime.UPTREND, "short": Regime.UPTREND}
+        st = {}
+
+        assert evaluator._evaluate_uptrend_profit_protection(
+            rule, lots, 115.0, reading, st, multi, True,
+        ) is None
+        tracker = st["uptrend_profit_trailing"]
+        assert tracker["stop_price"] == pytest.approx(101.2)  # 12% 거리 상한
+        assert evaluator._evaluate_uptrend_profit_protection(
+            rule, lots, 130.0, reading, st, multi, True,
+        ) is None
+        signals = evaluator._evaluate_uptrend_profit_protection(
+            rule, lots, 114.0, reading, st, multi, True,
+        )
+        assert signals[0].quantity == 5
+        assert signals[0].exit_trigger == "uptrend_profit_trailing_partial"
+        assert st["uptrend_profit_trailing"]["pre_partial_high"] == 130.0
+
+    def test_consumed_quota_makes_next_wide_breach_full_exit(self, evaluator):
+        rule = self._rule()
+        lots = [PositionLot("l1", "AAPL", 100.0, 5, "2026-01-01", 1)]
+        st = {
+            "uptrend_profit_partial_de_risked": True,
+            "uptrend_profit_trailing": {
+                "phase": "tracking", "active": True, "highest_price": 130.0,
+                "atr_snapshot": 5.0, "distance": 15.0, "stop_price": 115.0,
+            },
+        }
+        signals = evaluator._evaluate_uptrend_profit_protection(
+            rule, lots, 114.0, SimpleNamespace(atr=5.0), st,
+            {"long": Regime.UPTREND, "short": Regime.UPTREND}, True,
+        )
+        assert signals[0].regime_liquidation is True
+        assert signals[0].quantity == 5
+        assert signals[0].exit_trigger == "uptrend_profit_trailing_remainder"
+
+    def test_daily_atr_tightens_stop_but_atr_expansion_never_lowers_it(self, evaluator):
+        rule = self._rule()
+        lots = [PositionLot("l1", "AAPL", 100.0, 10, "2026-01-01", 1)]
+        st = {
+            "uptrend_profit_trailing": {
+                "phase": "tracking", "active": True, "highest_price": 130.0,
+                "atr_snapshot": 5.0, "distance": 15.0, "stop_price": 115.0,
+            },
+        }
+        multi = {"long": Regime.UPTREND, "short": Regime.UPTREND}
+
+        assert evaluator._evaluate_uptrend_profit_protection(
+            rule, lots, 125.0, SimpleNamespace(atr=2.0), st, multi, True,
+        ) is None
+        tracker = st["uptrend_profit_trailing"]
+        assert tracker["atr_snapshot"] == 2.0
+        assert tracker["distance"] == 6.0
+        assert tracker["stop_price"] == 124.0
+
+        assert evaluator._evaluate_uptrend_profit_protection(
+            rule, lots, 125.0, SimpleNamespace(atr=10.0), st, multi, True,
+        ) is None
+        tracker = st["uptrend_profit_trailing"]
+        assert tracker["atr_snapshot"] == 10.0
+        assert tracker["distance"] == pytest.approx(15.6)  # 최고가의 12% 상한
+        assert tracker["stop_price"] == 124.0
+
+    def test_transition_residual_guard_releases_on_aligned_uptrend(self, evaluator):
+        rule = self._rule()
+        lots = [PositionLot("l1", "AAPL", 100.0, 5, "2026-01-01", 1)]
+        st = {
+            "uptrend_profit_partial_de_risked": True,
+            "uptrend_profit_trailing": {
+                "phase": "residual_guard", "active": True,
+                "origin": "sideways_transition", "pre_partial_high": 120.0,
+                "atr_snapshot": 5.0, "wide_atr_snapshot": 5.0,
+                "residual_stop_price": 90.0,
+            },
+        }
+        assert evaluator._evaluate_uptrend_profit_protection(
+            rule, lots, 110.0, SimpleNamespace(atr=5.0), st,
+            {"long": Regime.UPTREND, "short": Regime.UPTREND}, True,
+        ) is None
+        assert st["uptrend_profit_trailing"]["phase"] == "tracking"
+        assert "uptrend_profit_partial_de_risked" not in st
+
+    def test_profit_trailing_residual_releases_below_previous_high_on_alignment(
+        self, evaluator,
+    ):
+        rule = self._rule()
+        lots = [PositionLot("l1", "AAPL", 100.0, 5, "2026-01-01", 1)]
+        st = {
+            "uptrend_profit_partial_de_risked": True,
+            "uptrend_profit_trailing": {
+                "phase": "residual_guard", "active": True,
+                "origin": "uptrend_trailing", "pre_partial_high": 130.0,
+                "atr_snapshot": 5.0, "wide_atr_snapshot": 5.0,
+                "residual_stop_price": 90.0,
+            },
+        }
+
+        signals = evaluator._evaluate_uptrend_profit_protection(
+            rule, lots, 110.0, SimpleNamespace(atr=5.0), st,
+            {"long": Regime.UPTREND, "short": Regime.UPTREND}, True,
+        )
+
+        assert signals is None
+        tracker = st["uptrend_profit_trailing"]
+        assert tracker["phase"] == "tracking"
+        assert tracker["highest_price"] == 110.0
+        assert tracker["stop_price"] == pytest.approx(96.8)
+        assert "uptrend_profit_partial_de_risked" not in st
+
+        signals = evaluator._evaluate_uptrend_profit_protection(
+            rule, lots, 96.0, SimpleNamespace(atr=5.0), st,
+            {"long": Regime.UPTREND, "short": Regime.UPTREND}, True,
+        )
+        assert signals[0].quantity == 3  # 5주의 50%를 정수 주문 단위로 올림
+        assert signals[0].regime_liquidation is False
+        assert signals[0].exit_trigger == "uptrend_profit_trailing_partial"
+
+    def test_profit_trailing_residual_stays_locked_without_alignment(self, evaluator):
+        rule = self._rule()
+        lots = [PositionLot("l1", "AAPL", 100.0, 5, "2026-01-01", 1)]
+        st = {
+            "uptrend_profit_partial_de_risked": True,
+            "uptrend_profit_trailing": {
+                "phase": "residual_guard", "active": True,
+                "origin": "uptrend_trailing", "pre_partial_high": 130.0,
+                "atr_snapshot": 5.0, "wide_atr_snapshot": 5.0,
+                "residual_stop_price": 90.0,
+            },
+        }
+
+        signals = evaluator._evaluate_uptrend_profit_protection(
+            rule, lots, 110.0, SimpleNamespace(atr=5.0), st,
+            {"long": Regime.UPTREND, "short": Regime.SIDEWAYS}, False,
+        )
+
+        assert signals == []
+        assert st["uptrend_profit_trailing"]["phase"] == "residual_guard"
+
+    def test_recovery_add_waits_two_aligned_days_then_restores_half_sold_notional(
+        self, evaluator,
+    ):
+        rule = self._rule()
+        rule.uptrend_profit_recovery_add_enabled = True
+        lots = [PositionLot("l1", "AAPL", 100.0, 5, "2026-01-01", 1)]
+        st = {
+            "uptrend_profit_partial_de_risked": True,
+            "uptrend_profit_trailing": {
+                "phase": "residual_guard", "active": True,
+                "origin": "uptrend_trailing", "pre_partial_high": 130.0,
+                "atr_snapshot": 5.0, "wide_atr_snapshot": 5.0,
+                "residual_stop_price": 90.0, "sold_notional": 1000.0,
+            },
+        }
+        multi = {"long": Regime.UPTREND, "short": Regime.UPTREND}
+        reading = SimpleNamespace(atr=5.0, ema20=108.0)
+
+        assert evaluator._evaluate_uptrend_profit_protection(
+            rule, lots, 110.0, reading, st, multi, True,
+            evaluation_date="2026-04-01",
+        ) is None
+        tracker = st["uptrend_profit_trailing"]
+        assert tracker["recovery_add_pending"] is True
+        assert tracker["recovery_add_confirm_days"] == ["2026-04-01"]
+
+        signals = evaluator._evaluate_uptrend_profit_protection(
+            rule, lots, 111.0, reading, st, multi, True,
+            evaluation_date="2026-04-02",
+        )
+        assert signals[0].entry_trigger == "uptrend_profit_recovery_add"
+        assert signals[0].quantity == 4  # min(감축대금 50%=500, 일반 add=500) / 111
+        assert signals[0].level == 2
+        assert "uptrend_profit_partial_de_risked" not in st
+
+    def test_recovery_add_waits_when_price_is_overextended(self, evaluator):
+        rule = self._rule()
+        rule.uptrend_profit_recovery_add_enabled = True
+        lots = [PositionLot("l1", "AAPL", 100.0, 5, "2026-01-01", 1)]
+        st = {
+            "uptrend_profit_trailing": {
+                "phase": "tracking", "active": True, "highest_price": 115.0,
+                "atr_snapshot": 5.0, "distance": 15.0, "stop_price": 100.0,
+                "recovery_add_pending": True, "recovery_add_budget": 1000.0,
+                "recovery_add_confirm_days": ["2026-04-01"],
+            },
+        }
+
+        assert evaluator._evaluate_uptrend_profit_protection(
+            rule, lots, 115.0, SimpleNamespace(atr=5.0, ema20=108.0), st,
+            {"long": Regime.UPTREND, "short": Regime.UPTREND}, True,
+            evaluation_date="2026-04-02",
+        ) is None
+        assert st["uptrend_profit_trailing"]["recovery_add_pending"] is True
+
+    def test_recovery_add_waits_without_one_atr_stop_headroom(self, evaluator):
+        rule = self._rule()
+        rule.uptrend_profit_recovery_add_enabled = True
+        lots = [PositionLot("l1", "AAPL", 100.0, 5, "2026-01-01", 1)]
+        st = {
+            "uptrend_profit_trailing": {
+                "phase": "tracking", "active": True, "highest_price": 110.0,
+                "atr_snapshot": 5.0, "distance": 15.0, "stop_price": 108.0,
+                "recovery_add_pending": True, "recovery_add_budget": 1000.0,
+                "recovery_add_confirm_days": ["2026-04-01"],
+            },
+        }
+
+        assert evaluator._evaluate_uptrend_profit_protection(
+            rule, lots, 110.0, SimpleNamespace(atr=5.0, ema20=108.0), st,
+            {"long": Regime.UPTREND, "short": Regime.UPTREND}, True,
+            evaluation_date="2026-04-02",
+        ) is None
 
 
 def _sideways_window(n=63, base=100.0, wobble=2.0):
@@ -260,6 +489,42 @@ class TestChannelSidewaysBreakdown:
         assert signals[0].quantity == 10
         assert signals[0].regime_liquidation is True
         assert signals[0].reentry_gate == "midline"
+        assert "횡보 채널 하단 이탈" in signals[0].reason
+        assert "단기 채널 하락 전환" not in signals[0].reason
+        assert signals[0].exit_trigger == "channel_lower_break"
+        assert signals[0].exit_short_regime == "sideways"
+        assert signals[0].exit_long_regime is None
+
+    def test_uptrend_breakdown_is_labeled_separately(self, evaluator):
+        window = _uptrend_window()
+        rule = _channel_rule(trendbreak_partial_sell_pct=100.0)
+        support = _support(rule, window)
+
+        signals = _eval_until_confirmed(
+            evaluator, rule, [_lot()], _pf(support * 0.95), window, {},
+        )
+
+        assert len(signals) == 1
+        assert "상승 채널 하단 이탈" in signals[0].reason
+        assert signals[0].exit_trigger == "channel_lower_break"
+        assert signals[0].exit_short_regime == "uptrend"
+
+    def test_breakdown_records_long_and_short_exit_regimes(self, evaluator):
+        window = _sideways_window(n=252)
+        rule = _channel_rule(
+            trendbreak_partial_sell_pct=100.0,
+            multi_horizon_regime_enabled=True,
+            long_channel_lookback=126,
+        )
+        support = _support(rule, window)
+
+        signals = _eval_until_confirmed(
+            evaluator, rule, [_lot()], _pf(support * 0.95), window, {},
+        )
+
+        assert len(signals) == 1
+        assert signals[0].exit_long_regime == "sideways"
+        assert signals[0].exit_short_regime == "sideways"
 
     def test_breakdown_tolerance_delays_trigger(self, evaluator):
         # 허용 오차 5%: 지지선 바로 아래로는 이탈 아님, 5% 넘게 뚫어야 이탈
@@ -421,6 +686,10 @@ class TestChannelDowntrendLiquidation:
         assert signals[0].action == OrderAction.SELL
         assert signals[0].regime_liquidation is True
         assert signals[0].reentry_gate == "resistance"
+        assert "단기 채널 하락 전환" in signals[0].reason
+        assert "채널 하단 이탈" not in signals[0].reason
+        assert signals[0].exit_trigger == "channel_downtrend_transition"
+        assert signals[0].exit_short_regime == "downtrend"
 
     def test_downtrend_latch_blocks_initial_buy(self, evaluator):
         window = _downtrend_window()
@@ -505,6 +774,9 @@ class TestChannelTrailingLock:
         lots = [_lot(qty=5)]
         st = {"AAPL": {"trailing_lock": {
             "active": True, "lock_price": lock_price, "drop_pct": 3.0,
+            "exit_trigger": "channel_lower_break",
+            "exit_long_regime": "uptrend",
+            "exit_short_regime": "sideways",
         }}}
         signals = evaluator.evaluate_stock(
             rule, lots, _pf(lock_price * 0.99), ohlc_window=window, regime_state=st,
@@ -552,6 +824,9 @@ class TestChannelTrailingLock:
         lots = [_lot(qty=5)]
         st = {"AAPL": {"trailing_lock": {
             "active": True, "lock_price": lock_price, "drop_pct": 3.0,
+            "exit_trigger": "channel_lower_break",
+            "exit_long_regime": "uptrend",
+            "exit_short_regime": "sideways",
         }}}
         signals = evaluator.evaluate_stock(
             rule, lots, _pf(lock_price * 0.96), ohlc_window=window, regime_state=st,
@@ -560,6 +835,9 @@ class TestChannelTrailingLock:
         assert signals[0].action == OrderAction.SELL
         assert signals[0].quantity == 5
         assert signals[0].regime_liquidation is True
+        assert signals[0].exit_trigger == "channel_lower_break"
+        assert signals[0].exit_long_regime == "uptrend"
+        assert signals[0].exit_short_regime == "sideways"
 
     def test_lock_takes_precedence_over_downtrend_latch(self, evaluator):
         # 락 + 하락 래치 동시 활성: 락 평가가 우선 (반복 분할매도 방지)
