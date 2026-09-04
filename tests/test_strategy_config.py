@@ -703,7 +703,10 @@ class TestStrategyConfigRegime:
         config = {
             "stocks": [
                 {"ticker": "AAPL"},
-                {"ticker": "MSFT", "shadow_mode_v2_enabled": False},
+                {
+                    "ticker": "MSFT", "shadow_mode_v2_enabled": False,
+                    "shadow_mode_v2_routing_enabled": False,
+                },
             ],
             "global": {
                 "regime_enabled": True,
@@ -713,6 +716,9 @@ class TestStrategyConfigRegime:
                 "shadow_mode_v3_enabled": True,
                 "shadow_mode_v3_1_enabled": True,
                 "shadow_mode_v3_2_enabled": True,
+                "multi_horizon_regime_enabled": True,
+                "shadow_mode_v2_routing_enabled": True,
+                "pullback_rebound_add_amount_multiplier": 0.5,
             },
         }
         config_file = tmp_path / "config_overseas.json"
@@ -724,11 +730,14 @@ class TestStrategyConfigRegime:
         assert rules[0].shadow_mode_v3_enabled is True
         assert rules[0].shadow_mode_v3_1_enabled is True
         assert rules[0].shadow_mode_v3_2_enabled is True
+        assert rules[0].shadow_mode_v2_routing_enabled is True
+        assert rules[0].pullback_rebound_add_amount_multiplier == 0.5
         assert rules[1].shadow_mode_enabled is True
         assert rules[1].shadow_mode_v2_enabled is False
         assert rules[1].shadow_mode_v3_enabled is True
         assert rules[1].shadow_mode_v3_1_enabled is True
         assert rules[1].shadow_mode_v3_2_enabled is True
+        assert rules[1].shadow_mode_v2_routing_enabled is False
 
     def test_transition_policy_global_inheritance_and_stock_override(self, tmp_path):
         config = {

@@ -124,6 +124,7 @@ class StrategyConfig:
         "shadow_mode_v3_enabled",
         "shadow_mode_v3_1_enabled",
         "shadow_mode_v3_2_enabled",
+        "shadow_mode_v2_routing_enabled",
     )
     _REGIME_KEYS_STR = ("regime_algo", "trend_entry_mode")
     _REGIME_KEYS_INT = (
@@ -148,6 +149,7 @@ class StrategyConfig:
         "post_liquidation_early_probe_pct",
         "post_liquidation_early_probe_max_ema_atr",
         "post_liquidation_early_probe_stop_atr_multiplier",
+        "pullback_rebound_add_amount_multiplier",
         "long_sideways_exposure_multiplier", "long_uptrend_sideways_sell_multiplier",
         "uptrend_sideways_transition_partial_sell_pct",
         "uptrend_profit_trailing_atr_multiplier",

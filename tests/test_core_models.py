@@ -361,6 +361,22 @@ class TestStockRuleChannelRegime:
         assert rule.shadow_mode_v3_enabled is False
         assert rule.shadow_mode_v3_1_enabled is False
         assert rule.shadow_mode_v3_2_enabled is False
+        assert rule.shadow_mode_v2_routing_enabled is False
+        assert rule.pullback_rebound_add_amount_multiplier == 1.0
+
+    def test_shadow_routing_and_pullback_multiplier_validate_dependencies(self):
+        with pytest.raises(ValueError, match="shadow_mode_v2_routing_enabled"):
+            StockRule(
+                "AAPL", -5.0, 10.0, 500, 10,
+                regime_enabled=True, regime_algo="channel",
+                multi_horizon_regime_enabled=True,
+                shadow_mode_v2_routing_enabled=True,
+            )
+        with pytest.raises(ValueError, match="pullback_rebound_add_amount_multiplier"):
+            StockRule(
+                "AAPL", -5.0, 10.0, 500, 10,
+                pullback_rebound_add_amount_multiplier=1.1,
+            )
 
     @pytest.mark.parametrize("regime_enabled,regime_algo", [
         (False, "channel"), (True, "ma_adx"),

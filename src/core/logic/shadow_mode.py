@@ -1,4 +1,4 @@
-"""Price-action shadow classifier. It never participates in order decisions."""
+"""Price-action classifier, observation-only unless explicit routing flags opt in."""
 from __future__ import annotations
 
 import math

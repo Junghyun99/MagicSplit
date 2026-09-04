@@ -2701,6 +2701,8 @@ class SplitEvaluator:
             return None
 
         amount = rule.uptrend_add_amount_at(adds + 1)
+        if rule.trend_entry_mode in ("rebound", "staged_rebound"):
+            amount *= rule.pullback_rebound_add_amount_multiplier
         buy_qty = rule.quantize_qty(amount / current_price)
         if buy_qty <= 0:
             if self._logger:

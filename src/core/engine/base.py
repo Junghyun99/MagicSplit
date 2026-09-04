@@ -122,6 +122,7 @@ class MagicSplitEngine:
             DayResult: 사이클 실행 결과
         """
         today = sim_date or datetime.now().strftime("%Y-%m-%d")
+        self._shadow_route_cache = {}
         self.stock_rules = self._order_rules(self.stock_rules)
 
         all_signals: List[SplitSignal] = []
@@ -132,6 +133,7 @@ class MagicSplitEngine:
         positions: Optional[List[PositionLot]] = None
         regime_state: dict = {}
         regime_before: dict = {}
+        shadow_state_before: dict = {}
         portfolio_refresh_failed: bool = False
 
         try:
@@ -142,6 +144,8 @@ class MagicSplitEngine:
             regime_state = self._load_regime_state()
             # 사이클 전 스냅샷. 종료 후 diff로 레짐 전이 이벤트를 뽑는다.
             regime_before = copy.deepcopy(regime_state)
+            if any(r.shadow_mode_v2_routing_enabled for r in self.stock_rules):
+                shadow_state_before = self.repo.load_shadow_mode_state()
 
             # Step 2.1: 상태 전환 감지 및 자동 초기화 (OFF -> ON)
             self._handle_state_transitions(positions, last_sell_prices, regime_state)
@@ -170,6 +174,13 @@ class MagicSplitEngine:
                         self.market_data.get_ohlc_window(rule.ticker, today)
                         if self.market_data is not None else None
                     )
+                    effective_rule = rule
+                    shadow_override = None
+                    if rule.shadow_mode_v2_routing_enabled:
+                        effective_rule, shadow_override = self._route_shadow_strategy(
+                            rule, positions, portfolio, ohlc_window, today,
+                            shadow_state_before, regime_state,
+                        )
                     # 현재가를 확보한 직후 완성된 전일 종가와 비교한다.
                     # 가격 단절이 의심되면 전략 평가와 모든 주문을 건너뛴다.
                     anomaly_signal = self.evaluator.price_anomaly_signal(
@@ -180,8 +191,10 @@ class MagicSplitEngine:
                     signals = (
                         [anomaly_signal]
                         if anomaly_signal is not None
+                        else shadow_override
+                        if shadow_override is not None
                         else self.evaluator.evaluate_stock(
-                            rule, positions, portfolio, last_sell_prices,
+                            effective_rule, positions, portfolio, last_sell_prices,
                             ohlc_window=ohlc_window,
                             regime_state=regime_state,
                             evaluation_date=today,
@@ -939,6 +952,9 @@ class MagicSplitEngine:
                 if regime_state is not None:
                     st = regime_state.setdefault(exe.ticker, {})
                     rule = next((r for r in self.all_stock_rules if r.ticker == exe.ticker), None)
+                    shadow_candidate = st.pop("shadow_entry_candidate", None)
+                    if shadow_candidate in ("trend", "range"):
+                        st["shadow_cycle_owner"] = shadow_candidate
                     # ATR 수익보호 quota는 상승 정렬 복귀 시 재무장되므로,
                     # 일반 매수 체결에서는 전환 감축 이력을 건드리지 않는다.
                     if not (rule and rule.uptrend_profit_trailing_enabled):
@@ -1193,6 +1209,7 @@ class MagicSplitEngine:
                 "long_trend", "short_trend", "previous_long_regime", "previous_short_regime",
                 "long_downtrend_lock", "aligned_downtrend_reentry_lock",
                 "long_short_downtrend_liquidation_pending",
+                "shadow_last_normal_mode",
             )
             if k in st
         }
@@ -1685,7 +1702,11 @@ class MagicSplitEngine:
     def _record_shadow_modes(
         self, stamp: str, evaluated_tickers: Set[str], portfolio: Portfolio,
     ) -> None:
-        """가격행동 전략모드를 계산하되 매매 상태에는 연결하지 않는다."""
+        """가격행동 전략모드를 기록한다.
+
+        기본적으로 주문과 분리된다. 명시적인 V2 라우팅 실험에서는 같은 입력으로
+        종목 평가 전에 계산된 상태가 새 사이클의 전략 선택에만 사용된다.
+        """
         if self.market_data is None:
             return
         day = stamp[:10]
@@ -1700,6 +1721,16 @@ class MagicSplitEngine:
                 continue
             if rule.ticker not in evaluated_tickers:
                 continue
+            cached = getattr(self, "_shadow_route_cache", {}).get(rule.ticker, {})
+            needs_uncached = (
+                rule.shadow_mode_enabled
+                or rule.shadow_mode_v3_enabled
+                or rule.shadow_mode_v3_1_enabled
+                or (rule.shadow_mode_v2_enabled and SCORE_VERSION_V2 not in cached)
+                or rule.shadow_mode_v3_2_enabled
+            )
+            if not needs_uncached:
+                continue
             window = self.market_data.get_ohlc_window(rule.ticker, day)
             rows = compute_shadow_observations(
                 rule, window, day, portfolio.current_prices.get(rule.ticker, 0.0),
@@ -1711,7 +1742,7 @@ class MagicSplitEngine:
             by_version = {row["score_version"]: row for row in rows}
             if rule.shadow_mode_enabled:
                 observations_v1.append(by_version[SCORE_VERSION])
-            if rule.shadow_mode_v2_enabled:
+            if rule.shadow_mode_v2_enabled and SCORE_VERSION_V2 not in cached:
                 observations_v2.append(by_version[SCORE_VERSION_V2])
             if rule.shadow_mode_v3_enabled:
                 observations_v3.append(by_version[SCORE_VERSION_V3])
@@ -1721,7 +1752,8 @@ class MagicSplitEngine:
                 observations_v3_2.append(by_version[SCORE_VERSION_V3_2])
         if (not observations_v1 and not observations_v2
                 and not observations_v3 and not observations_v3_1
-                and not observations_v3_2):
+                and not observations_v3_2
+                and not getattr(self, "_shadow_route_cache", {})):
             return
         stored = self.repo.load_shadow_mode_state()
         versioned = any(
@@ -1745,6 +1777,19 @@ class MagicSplitEngine:
             )
             if versioned and version in stored
         }
+        route_cache = getattr(self, "_shadow_route_cache", {})
+        cached_updates = [
+            ticker_cache[SCORE_VERSION_V2]
+            for ticker_cache in route_cache.values()
+            if SCORE_VERSION_V2 in ticker_cache
+        ]
+        if cached_updates:
+            version_state = dict(previous_v2)
+            for update in cached_updates:
+                events.extend(update["events"])
+                scores.extend(update["scores"])
+                version_state[update["ticker"]] = update["state"]
+            state[SCORE_VERSION_V2] = version_state
         if observations_v1:
             version_events, version_state, version_scores = update_shadow_states(
                 previous_v1, observations_v1, day,
@@ -1781,6 +1826,101 @@ class MagicSplitEngine:
             scores.extend(version_scores)
             state[SCORE_VERSION_V3_2] = version_state
         self.repo.save_shadow_mode_update(scores, events, state)
+
+    def _route_shadow_strategy(
+        self,
+        rule: StockRule,
+        positions: List[PositionLot],
+        portfolio: Portfolio,
+        ohlc_window,
+        day: str,
+        stored_shadow_state: dict,
+        regime_state: dict,
+    ) -> Tuple[StockRule, Optional[List[SplitSignal]]]:
+        """V2가 새 사이클의 전략만 선택하도록 유효 규칙을 만든다.
+
+        이미 열린 사이클은 ``shadow_cycle_owner``를 계속 사용한다. 따라서 경계에서
+        그림자 상태가 바뀌어도 보유 중인 포지션의 전략이 왕복 전환되지 않는다.
+        """
+        price = float(portfolio.current_prices.get(rule.ticker, 0) or 0)
+        rows = compute_shadow_observations(
+            rule, ohlc_window, day, price,
+            include_v2=True,
+        )
+        by_version = {row["score_version"]: row for row in rows}
+        stored = stored_shadow_state or {}
+        versioned = any(
+            version in stored
+            for version in (
+                SCORE_VERSION, SCORE_VERSION_V2, SCORE_VERSION_V3,
+                SCORE_VERSION_V3_1, SCORE_VERSION_V3_2,
+            )
+        )
+        previous_v2 = stored.get(SCORE_VERSION_V2, {}) if versioned else {}
+        events_v2, state_v2, scores_v2 = update_shadow_states_v2(
+            previous_v2, [by_version[SCORE_VERSION_V2]], day,
+        )
+        route_cache = getattr(self, "_shadow_route_cache", None)
+        if route_cache is not None:
+            route_cache.setdefault(rule.ticker, {})[SCORE_VERSION_V2] = {
+                "ticker": rule.ticker,
+                "events": events_v2,
+                "scores": scores_v2,
+                "state": state_v2[rule.ticker],
+            }
+        v2_state = scores_v2[0]["effective_state"]
+
+        ticker_lots = [lot for lot in positions if lot.ticker == rule.ticker]
+        st = regime_state.setdefault(rule.ticker, {})
+        st["shadow_v2_effective_state"] = v2_state
+        if v2_state in ("trend", "range"):
+            st["shadow_last_normal_mode"] = v2_state
+
+        owner = st.get("shadow_cycle_owner")
+        if ticker_lots:
+            # 배포 전부터 있던 포지션에는 소유자가 없으므로 기존 정적 설정을 유지한다.
+            if owner not in ("trend", "range"):
+                return rule, None
+            return self._shadow_effective_rule(rule, owner), None
+
+        st.pop("shadow_cycle_owner", None)
+        st.pop("shadow_entry_candidate", None)
+
+        if v2_state == "risk_off":
+            return rule, [self._shadow_buy_blocked(
+                rule, price, "V2 risk_off - 새 사이클 진입 차단",
+            )]
+
+        selected = (
+            v2_state if v2_state in ("trend", "range")
+            else st.get("shadow_last_normal_mode")
+        )
+        if selected not in ("trend", "range"):
+            return rule, [self._shadow_buy_blocked(
+                rule, price, "V2 neutral - 확정된 이전 전략모드 대기",
+            )]
+        st["shadow_entry_candidate"] = selected
+        return self._shadow_effective_rule(rule, selected), None
+
+    @staticmethod
+    def _shadow_effective_rule(rule: StockRule, mode: str) -> StockRule:
+        if mode == "trend":
+            return replace(
+                rule, trend_only_enabled=True, trend_entry_mode="staged_rebound",
+            )
+        return replace(
+            rule, trend_only_enabled=False, trend_entry_mode="aligned",
+        )
+
+    @staticmethod
+    def _shadow_buy_blocked(
+        rule: StockRule, price: float, reason: str,
+    ) -> SplitSignal:
+        return SplitSignal(
+            ticker=rule.ticker, lot_id=None, action=OrderAction.BUY,
+            quantity=0, price=price, reason=reason, pct_change=0.0,
+            level=1, is_blocked=True,
+        )
 
     def _build_trade_markers(self, ticker: str, limit: int = 60) -> List[dict]:
         """차트에 찍을 최근 매매 마커를 history에서 추린다."""

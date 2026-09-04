@@ -422,6 +422,31 @@ def test_rebound_pullback_add_waits_for_next_day_ema_recovery():
     assert second.entry_trigger == "pullback_rebound_add"
 
 
+def test_rebound_pullback_add_applies_amount_multiplier():
+    rule = _rule(
+        trend_only_enabled=True, trend_entry_mode="rebound",
+        uptrend_add_amount=1000, pullback_rebound_add_amount_multiplier=0.5,
+        max_exposure_pct=100,
+    )
+    evaluator = SplitEvaluator()
+    state = {"adds": 0}
+    lot = _lot(price=100, qty=5)
+    evaluator._evaluate_uptrend_add(
+        rule, [lot], lot, 99.0,
+        SimpleNamespace(ema20=100.0, close=100.0, swing_high=110.0),
+        state, _portfolio(99.0, qty=5, cash=10000),
+        evaluation_date="2025-01-02",
+    )
+    signal = evaluator._evaluate_uptrend_add(
+        rule, [lot], lot, 101.0,
+        SimpleNamespace(ema20=100.0, close=100.0, swing_high=110.0),
+        state, _portfolio(101.0, qty=5, cash=10000),
+        evaluation_date="2025-01-03",
+    )
+    assert signal is not None
+    assert signal.quantity == 4
+
+
 def test_staged_rebound_probe_accepts_two_recovery_cases():
     rule = _rule(trend_only_enabled=True, trend_entry_mode="staged_rebound")
     evaluator = SplitEvaluator()

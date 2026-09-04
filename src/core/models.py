@@ -126,6 +126,9 @@ class StockRule:
     post_liquidation_early_probe_stop_atr_multiplier: float = 2.0
     pullback_rebound_confirm_bars: int = 1
     pullback_rebound_max_wait_bars: int = 10
+    # rebound/staged_rebound의 눌림반등 추가매수에만 적용하는 금액 배율.
+    # 최초 진입과 다른 상승장 매수 정책의 예산은 바꾸지 않는다.
+    pullback_rebound_add_amount_multiplier: float = 1.0
     # (장기 상승, 단기 상승) -> (장기 상승, 단기 횡보) 확정 시 선제 감축.
     # 0이면 비활성화되어 기존 동작을 완전히 보존한다.
     uptrend_sideways_transition_partial_sell_pct: float = 0.0
@@ -157,6 +160,9 @@ class StockRule:
     shadow_mode_v3_1_enabled: bool = False
     # 구조적 위험을 유지하며 최근 저점 반전을 10%로 탐색하는 V3.2.
     shadow_mode_v3_2_enabled: bool = False
+    # 실험용 주문 연결. 새 사이클에서만 V2의 trend/range 판정을 채택하고,
+    # 포지션이 모두 청산될 때까지 선택한 전략을 고정한다.
+    shadow_mode_v2_routing_enabled: bool = False
     shadow_mode_trend_threshold: float = 65.0
     shadow_mode_range_threshold: float = 65.0
     shadow_mode_risk_threshold: float = 60.0
@@ -204,13 +210,27 @@ class StockRule:
         if (self.shadow_mode_enabled or self.shadow_mode_v2_enabled
                 or self.shadow_mode_v3_enabled
                 or self.shadow_mode_v3_1_enabled
-                or self.shadow_mode_v3_2_enabled) and not (
+                or self.shadow_mode_v3_2_enabled
+                or self.shadow_mode_v2_routing_enabled) and not (
                 self.regime_enabled and self.regime_algo == "channel"):
             raise ValueError(
                 f"StockRule({self.ticker}): shadow_mode_enabled/shadow_mode_v2_enabled/"
                 "shadow_mode_v3_enabled/shadow_mode_v3_1_enabled/"
                 "shadow_mode_v3_2_enabled는 "
                 "regime_enabled=true, regime_algo='channel' 조합이 필요합니다."
+            )
+        if self.shadow_mode_v2_routing_enabled and not (
+                self.shadow_mode_v2_enabled
+                and self.multi_horizon_regime_enabled):
+            raise ValueError(
+                f"StockRule({self.ticker}): shadow_mode_v2_routing_enabled는 "
+                "shadow_mode_v2_enabled=true, multi_horizon_regime_enabled=true가 필요합니다."
+            )
+        if (not math.isfinite(self.pullback_rebound_add_amount_multiplier)
+                or not 0 <= self.pullback_rebound_add_amount_multiplier <= 1):
+            raise ValueError(
+                f"StockRule({self.ticker}): pullback_rebound_add_amount_multiplier는 "
+                "0 이상 1 이하여야 합니다."
             )
         for name in (
             "shadow_mode_trend_threshold", "shadow_mode_range_threshold",

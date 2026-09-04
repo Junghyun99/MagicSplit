@@ -51,6 +51,103 @@ def engine(mock_broker, mock_repo, mock_logger, default_rules):
     )
 
 
+class TestShadowStrategyRouting:
+    @staticmethod
+    def _rule():
+        return StockRule(
+            "AAPL", -5.0, 10.0, 500, 10,
+            regime_enabled=True, regime_algo="channel",
+            multi_horizon_regime_enabled=True,
+            shadow_mode_v2_enabled=True,
+            shadow_mode_v2_routing_enabled=True,
+        )
+
+    @staticmethod
+    def _rows():
+        return [
+            {"ticker": "AAPL", "score_version": "price_action_v1"},
+            {"ticker": "AAPL", "score_version": "price_action_v2"},
+        ]
+
+    def _engine(self, rule, mock_broker, mock_repo, mock_logger):
+        return MagicSplitEngine(
+            broker=mock_broker, repo=mock_repo, logger=mock_logger,
+            stock_rules=[rule],
+        )
+
+    def test_v2_selects_trend_only_for_new_cycle(
+        self, mock_broker, mock_repo, mock_logger,
+    ):
+        rule = self._rule()
+        eng = self._engine(rule, mock_broker, mock_repo, mock_logger)
+        state = {}
+        with patch(
+            "src.core.engine.base.compute_shadow_observations",
+            return_value=self._rows(),
+        ), patch(
+            "src.core.engine.base.update_shadow_states_v2",
+            return_value=([], {}, [{"effective_state": "trend"}]),
+        ):
+            effective, override = eng._route_shadow_strategy(
+                rule, [], Portfolio(10000, {}, {"AAPL": 100}), None,
+                "2026-01-02", {}, state,
+            )
+        assert override is None
+        assert effective.trend_only_enabled is True
+        assert effective.trend_entry_mode == "staged_rebound"
+        assert state["AAPL"]["shadow_entry_candidate"] == "trend"
+
+    def test_open_cycle_keeps_owner_when_v2_changes(
+        self, mock_broker, mock_repo, mock_logger,
+    ):
+        rule = self._rule()
+        eng = self._engine(rule, mock_broker, mock_repo, mock_logger)
+        state = {"AAPL": {"shadow_cycle_owner": "range"}}
+        lots = [PositionLot("l1", "AAPL", 100, 1, "2026-01-01", 1)]
+        with patch(
+            "src.core.engine.base.compute_shadow_observations",
+            return_value=self._rows(),
+        ), patch(
+            "src.core.engine.base.update_shadow_states_v2",
+            return_value=([], {}, [{"effective_state": "trend"}]),
+        ):
+            effective, override = eng._route_shadow_strategy(
+                rule, lots, Portfolio(10000, {"AAPL": 1}, {"AAPL": 105}),
+                None, "2026-01-02", {}, state,
+            )
+        assert override is None
+        assert effective.trend_only_enabled is False
+        assert state["AAPL"]["shadow_cycle_owner"] == "range"
+        assert state["AAPL"]["shadow_v2_effective_state"] == "trend"
+
+    def test_filled_first_buy_locks_cycle_owner_and_flat_reset_releases_it(
+        self, mock_broker, mock_repo, mock_logger,
+    ):
+        rule = self._rule()
+        eng = self._engine(rule, mock_broker, mock_repo, mock_logger)
+        signal = SplitSignal(
+            "AAPL", None, OrderAction.BUY, 2, 100, "entry", 0, level=1,
+            entry_trigger="legacy_magic_split",
+        )
+        execution = TradeExecution(
+            "AAPL", OrderAction.BUY, 2, 100, 0, "2026-01-02",
+            ExecutionStatus.FILLED,
+        )
+        state = {"AAPL": {
+            "shadow_entry_candidate": "range",
+            "shadow_last_normal_mode": "range",
+        }}
+        updated = eng._update_positions(
+            [], [signal], [execution], "2026-01-02", regime_state=state,
+        )
+        assert len(updated) == 1
+        assert state["AAPL"]["shadow_cycle_owner"] == "range"
+        assert "shadow_entry_candidate" not in state["AAPL"]
+
+        eng._reset_regime_after_flat(state, "AAPL")
+        assert state["AAPL"] == {"shadow_last_normal_mode": "range"}
+
+
 class TestEngineInit:
     def test_filters_disabled_rules(self, mock_broker, mock_repo, mock_logger):
         """disabled 종목은 필터링"""
