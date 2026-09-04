@@ -1,0 +1,52 @@
+{
+    "ARM": {
+        "reason_code": "confirmed_downtrend",
+        "reason": "DOWNTREND 확정 - 추가 매수 차단",
+        "start_date": "2026-09-05",
+        "start_price": 252.62,
+        "start_long_regime": "unknown",
+        "start_short_regime": "unknown",
+        "last_seen_date": "2026-09-05",
+        "blocked_days": 1
+    },
+    "AVGO": {
+        "reason_code": "legacy_reentry_gate",
+        "reason": "이탈 청산 후 재진입 대기 - 상단 저항선 미회복 (현재가 USD 356.29 <= 기준선 USD 415.41)",
+        "start_date": "2026-09-05",
+        "start_price": 356.29,
+        "start_long_regime": "unknown",
+        "start_short_regime": "unknown",
+        "last_seen_date": "2026-09-05",
+        "blocked_days": 1
+    },
+    "ICLN": {
+        "reason_code": "confirmed_downtrend",
+        "reason": "DOWNTREND 확정 - 신규 진입 차단",
+        "start_date": "2026-09-05",
+        "start_price": 17.695,
+        "start_long_regime": "unknown",
+        "start_short_regime": "unknown",
+        "last_seen_date": "2026-09-05",
+        "blocked_days": 1
+    },
+    "LITE": {
+        "reason_code": "legacy_reentry_gate",
+        "reason": "이탈 청산 후 재진입 대기 - 상단 저항선 미회복 (현재가 USD 865.93 <= 기준선 USD 1,024.50)",
+        "start_date": "2026-09-05",
+        "start_price": 865.93,
+        "start_long_regime": "unknown",
+        "start_short_regime": "unknown",
+        "last_seen_date": "2026-09-05",
+        "blocked_days": 1
+    },
+    "TSLA": {
+        "reason_code": "confirmed_downtrend",
+        "reason": "DOWNTREND 확정 - 신규 진입 차단",
+        "start_date": "2026-09-05",
+        "start_price": 354.82,
+        "start_long_regime": "unknown",
+        "start_short_regime": "unknown",
+        "last_seen_date": "2026-09-05",
+        "blocked_days": 1
+    }
+}
