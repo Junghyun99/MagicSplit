@@ -41,7 +41,7 @@ class TestEvaluateInitialBuy:
 
 
 class TestAdjacentPriceAnomalyGuard:
-    """액면분할/병합 의심 가격 단절은 전일 종가 기준으로 검사한다."""
+    """국내 액면분할/병합 의심 가격 단절만 전일 종가 기준으로 검사한다."""
 
     @staticmethod
     def _ohlc(previous_close):
@@ -54,13 +54,15 @@ class TestAdjacentPriceAnomalyGuard:
     def test_blocks_ticker_before_trading_when_current_price_gaps_30_percent(
         self, evaluator, create_rule, create_portfolio,
     ):
-        rule = create_rule(ticker="AAPL", sell_pct=10.0)
+        rule = create_rule(
+            ticker="005930", market_type="domestic", sell_pct=10.0,
+        )
         portfolio = create_portfolio(
-            prices={"AAPL": 130.0}, holdings={"AAPL": 5},
+            prices={"005930": 130.0}, holdings={"005930": 5},
         )
 
         signal = evaluator.price_anomaly_signal(
-            rule, portfolio.current_prices["AAPL"], self._ohlc(100.0),
+            rule, portfolio.current_prices["005930"], self._ohlc(100.0),
         )
 
         assert signal is not None
@@ -70,22 +72,36 @@ class TestAdjacentPriceAnomalyGuard:
         assert "전일 종가" in signal.reason
         assert "직전매도" not in signal.reason
 
+    @pytest.mark.parametrize("market_type", ["overseas", "crypto"])
+    def test_skips_non_domestic_market_even_when_price_gap_is_large(
+        self, evaluator, create_rule, market_type,
+    ):
+        rule = create_rule(ticker="AAPL", market_type=market_type)
+
+        signal = evaluator.price_anomaly_signal(
+            rule, 140.0, self._ohlc(100.0),
+        )
+
+        assert signal is None
+
     def test_allows_long_term_appreciation_when_adjacent_price_is_normal(
         self, evaluator, create_rule, create_portfolio,
     ):
-        rule = create_rule(ticker="AAPL", buy_amount=500)
+        rule = create_rule(
+            ticker="005930", market_type="domestic", buy_amount=500,
+        )
         portfolio = create_portfolio(
-            cash=10_000.0, prices={"AAPL": 200.0},
+            cash=10_000.0, prices={"005930": 200.0},
         )
 
         anomaly = evaluator.price_anomaly_signal(
-            rule, portfolio.current_prices["AAPL"], self._ohlc(198.0),
+            rule, portfolio.current_prices["005930"], self._ohlc(198.0),
         )
         signals = evaluator.evaluate_stock(
             rule,
             [],
             portfolio,
-            last_sell_prices={"AAPL": 100.0},
+            last_sell_prices={"005930": 100.0},
         )
 
         assert anomaly is None

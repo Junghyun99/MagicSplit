@@ -136,7 +136,7 @@ class TestMagicSplitBot:
 
 
 class TestCreateMarketData:
-    """가격 단절 검사와 레짐 필터용 과거 일봉 제공자 주입 판단."""
+    """국내 가격 단절 검사와 레짐 필터용 과거 일봉 제공자 주입 판단."""
 
     def _bot_stub(self, market_type):
         bot = MagicSplitBot.__new__(MagicSplitBot)  # __init__ 우회
@@ -151,13 +151,25 @@ class TestCreateMarketData:
         base.update(over)
         return StockRule(**base)
 
-    def test_minimal_yfinance_provider_when_regime_disabled(self):
+    def test_minimal_yfinance_provider_for_domestic_price_guard(self):
         from src.infra.data import YFinanceMarketDataProvider
-        bot = self._bot_stub("overseas")
-        provider = bot._create_market_data([self._rule()])
+        bot = self._bot_stub("domestic")
+        provider = bot._create_market_data([
+            self._rule(ticker="005930", market_type="domestic"),
+        ])
         assert isinstance(provider, YFinanceMarketDataProvider)
         assert provider.window_size == 5
-        assert provider._tickers == ["AAPL"]
+        assert provider._tickers == ["005930"]
+
+    @pytest.mark.parametrize("market_type", ["overseas", "crypto"])
+    def test_no_provider_for_non_domestic_when_regime_disabled(self, market_type):
+        bot = self._bot_stub(market_type)
+        rule = self._rule(
+            ticker="KRW-BTC" if market_type == "crypto" else "AAPL",
+            market_type=market_type,
+        )
+
+        assert bot._create_market_data([rule]) is None
 
     def test_yfinance_provider_for_overseas(self):
         from src.infra.data import YFinanceMarketDataProvider

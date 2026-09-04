@@ -2221,7 +2221,7 @@ class TestChartDataPersistence:
 
         rule = StockRule(
             "AAPL", buy_threshold_pct=-5.0, sell_threshold_pct=10.0,
-            buy_amount=500, max_lots=10,
+            buy_amount=500, max_lots=10, market_type="domestic",
             regime_enabled=True, regime_algo="channel", channel_lookback=21,
         )
         closes = np.linspace(80.0, 100.0, 60)

@@ -1659,7 +1659,9 @@ class SplitEvaluator:
     def price_anomaly_signal(
         self, rule: StockRule, current_price: float, ohlc_window,
     ) -> Optional[SplitSignal]:
-        """현재가와 전일 종가의 단절을 감지해 종목 거래 차단 신호를 만든다."""
+        """국내 종목의 현재가와 전일 종가 단절을 감지해 거래를 차단한다."""
+        if rule.market_type != "domestic":
+            return None
         if not math.isfinite(current_price) or current_price <= 0:
             return None
         if ohlc_window is None:

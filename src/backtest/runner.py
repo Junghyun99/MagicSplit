@@ -123,8 +123,9 @@ def run_backtest(
         max_shadow_score_records=None,
         max_shadow_event_records=None,
     )
-    # 전일 가격 단절 검사와 레짐 지표용 시세 제공자 (브로커와 분리).
+    # 국내 전일 가격 단절 검사와 레짐 지표용 시세 제공자 (브로커와 분리).
     regime_active = any(getattr(r, "regime_enabled", False) for r in rules)
+    price_anomaly_active = market_type == "domestic"
     window_size = (
         max(
             max((r.regime_min_bars for r in rules), default=200),
@@ -133,7 +134,11 @@ def run_backtest(
         ) + 60
         if regime_active else 2
     )
-    market_data = BacktestMarketDataProvider(ohlc_df, window_size=window_size)
+    market_data = (
+        BacktestMarketDataProvider(ohlc_df, window_size=window_size)
+        if regime_active or price_anomaly_active
+        else None
+    )
     engine = MagicSplitEngine(
         broker=broker,
         repo=repo,
