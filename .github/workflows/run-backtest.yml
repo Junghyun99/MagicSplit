@@ -84,11 +84,31 @@ jobs:
             print('Backtest returned no result.')
         "
 
+    - name: Upload full backtest results
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: backtest-${{ github.run_number }}-${{ env.MARKET_VAL }}
+        path: |
+          docs/data/backtest/
+          logs/backtest/
+        if-no-files-found: warn
+        retention-days: 90
+        compression-level: 9
+
     - name: Commit, rebase, and push results
       run: |
         git config user.name "github-actions[bot]"
         git config user.email "github-actions[bot]@users.noreply.github.com"
         git add --force docs/data/backtest/ logs/backtest/ || true
+        max_git_blob_bytes=$((95 * 1024 * 1024))
+        while IFS= read -r -d '' file; do
+          size=$(stat -c%s "$file")
+          if [ "$size" -ge "$max_git_blob_bytes" ]; then
+            echo "Skipping oversized Git result: $file ($size bytes); full file is in the workflow artifact"
+            git reset -q HEAD -- "$file"
+          fi
+        done < <(find docs/data/backtest logs/backtest -type f -print0 2>/dev/null)
         if ! git diff --cached --quiet; then
           git commit -m "backtest result update (${{ inputs.start }} ~ ${{ inputs.end }}) [skip ci]"
           git pull --rebase origin main
