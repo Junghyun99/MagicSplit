@@ -1,11 +1,11 @@
 {
-    "last_updated": "2026-09-08 14:31:20",
+    "last_updated": "2026-09-08 15:31:20",
     "last_run_date": "2026-09-08",
     "market_type": "crypto",
     "reason": "모니터링 - 신호 없음",
     "exchange_rate": null,
     "portfolio": {
-        "total_value": 12104247.231328622,
+        "total_value": 12115830.23492862,
         "cash_balance": 2159542.60325092,
         "holdings": [
             {
@@ -19,8 +19,8 @@
                 "ticker": "KRW-ETH",
                 "alias": "KRW-ETH",
                 "qty": 0.77220024,
-                "price": 3351000.0,
-                "value": 2587643.00424
+                "price": 3366000.0,
+                "value": 2599226.00784
             },
             {
                 "ticker": "KRW-USDT",
@@ -138,7 +138,7 @@
             "total_qty": 0.77220024,
             "lot_count": 1,
             "total_invested": 2970896.02,
-            "current_value": 2587643.0,
+            "current_value": 2599226.01,
             "lots": [
                 {
                     "lot_id": "lot_20260717_000000_KRW-ETH_001_migrate",
@@ -146,17 +146,17 @@
                     "quantity": 0.77220024,
                     "buy_date": "2026-07-17",
                     "level": 1,
-                    "current_price": 3351000.0,
-                    "pct_change": -12.9
+                    "current_price": 3366000.0,
+                    "pct_change": -12.51
                 }
             ],
-            "current_price": 3351000.0,
+            "current_price": 3366000.0,
             "alias": "KRW-ETH",
             "avg_buy_price": 3847313.0,
-            "unrealized_pnl": -383253.02,
-            "unrealized_pnl_pct": -12.9,
+            "unrealized_pnl": -371670.01,
+            "unrealized_pnl_pct": -12.51,
             "realized_pnl": -854581.65,
-            "total_pnl": -1237834.67
+            "total_pnl": -1226251.66
         }
     },
     "realized_pnl_by_ticker": {
@@ -195,7 +195,7 @@
         "deductions": [
             {
                 "reason": "현금 비중 부족",
-                "points": 10.7
+                "points": 10.8
             },
             {
                 "reason": "단일 종목 집중도 과다",
@@ -208,7 +208,7 @@
         ],
         "sync_error": false,
         "alerts": ["⚠️ 단일 종목 집중도 과다 (60.2%)"],
-        "max_ticker_concentration": 60.23,
+        "max_ticker_concentration": 60.17,
         "high_level_ratio": 0.0
     }
 }
