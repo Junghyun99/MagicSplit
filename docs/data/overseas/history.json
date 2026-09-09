@@ -2291,5 +2291,36 @@
                 "alias": "펩시코"
             }
         ]
+    },
+    {
+        "id": "tx_20260910_000123",
+        "date": "2026-09-10 00:01:23",
+        "portfolio_value": 19897.0004,
+        "cash_balance": 797.87,
+        "net_deposit": 0.77,
+        "total_trade_amount": 513.3,
+        "reason": "브로드컴(AVGO):SKIP(이탈 청산 후 재진입 대기 - 상단 저항선 미회복 (현재가 USD 362.63 <= 기준선 USD 413.92)),\n에이알엠 홀딩스(ADR)(ARM):SKIP(DOWNTREND 확정 - 추가 매수 차단),\nISHARES GLOBAL CLEAN ENERGY(ICLN):SKIP(DOWNTREND 확정 - 신규 진입 차단),\n테슬라(TSLA):SKIP(DOWNTREND 확정 - 신규 진입 차단),\n루멘텀 홀딩스(LITE):SKIP(이탈 청산 후 재진입 대기 - 상단 저항선 미회복 (현재가 USD 1,020.68 <= 기준선 USD 1,059.56)),\n팔란티어 테크(PLTR):SKIP(현금 부족: 보유 현금 USD 290.02 < 매수 예정 금액 USD 2,563.05 (15주)),\nSCHWAB US DIVIDEND EQUITY(SCHD):SELL(상승 채널 하단 이탈 분할 청산(15주/29주, +2.0%)),\n카메코(CCJ):SKIP(현금 부족: 보유 현금 USD 797.87 < 매수 예정 금액 USD 902.21 (9주))",
+        "executions": [
+            {
+                "ticker": "SCHD",
+                "action": "SELL",
+                "quantity": 15,
+                "price": 34.22,
+                "fee": 0.0,
+                "date": "2026-09-10 00:01:18",
+                "status": "FILLED",
+                "reason": "ODNO=0030450281",
+                "lot_id": "lot_20260728_000119_SCHD_001",
+                "level": 1,
+                "buy_price": 33.55,
+                "realized_pnl": 10.05,
+                "exit_trigger": "channel_lower_break",
+                "exit_short_regime": "uptrend",
+                "profit_trailing_origin": null,
+                "profit_trailing_atr": null,
+                "profit_trailing_pre_partial_high": null,
+                "alias": "SCHWAB US DIVIDEND EQUITY"
+            }
+        ]
     }
 ]

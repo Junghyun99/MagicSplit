@@ -188,5 +188,14 @@
         "event": "breakdown_pending",
         "price": 34.38,
         "count": 1
+    },
+    {
+        "date": "2026-09-10 00:01:24",
+        "ticker": "SCHD",
+        "event": "trailing_lock_on",
+        "price": 34.225,
+        "lock_price": 34.22,
+        "stop": 33.1934,
+        "gate": "midline"
     }
 ]
