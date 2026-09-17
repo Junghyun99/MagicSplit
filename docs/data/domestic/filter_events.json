@@ -108,5 +108,29 @@
         "long_regime": "unknown",
         "short_regime": "unknown",
         "price": 79730.0
+    },
+    {
+        "date": "2026-09-17",
+        "ticker": "307520",
+        "event": "block_end",
+        "reason_code": "confirmed_downtrend",
+        "reason": "DOWNTREND 확정 - 신규 진입 차단",
+        "long_regime": "unknown",
+        "short_regime": "unknown",
+        "price": 22180.0,
+        "start_date": "2026-09-07",
+        "start_price": 22845.0,
+        "blocked_days": 4,
+        "end_cause": "reason_changed"
+    },
+    {
+        "date": "2026-09-17",
+        "ticker": "307520",
+        "event": "block_start",
+        "reason_code": "legacy_reentry_gate",
+        "reason": "이탈 청산 후 재진입 대기 - 상단 저항선 미회복 (현재가 KRW 22,180 <= 기준선 KRW 24,536)",
+        "long_regime": "unknown",
+        "short_regime": "unknown",
+        "price": 22180.0
     }
 ]
